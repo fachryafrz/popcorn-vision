@@ -2,7 +2,7 @@ import footer from "../footer.json";
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 
-import logo from "../../public/popcorn.png";
+import logo from "/popcorn.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
