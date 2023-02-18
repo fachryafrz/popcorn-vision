@@ -1,0 +1,17 @@
+.swiper-button-disabled {
+  @apply !opacity-25;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  * {
+    @apply outline-none;
+  }
+
+  img {
+    @apply w-full h-full object-cover pointer-events-none;
+  }
+}

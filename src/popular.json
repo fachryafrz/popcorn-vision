@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTk4ODQzNDY3Ml5BMl5BanBnXkFtZTcwODA0NTM4Nw@@._V1_.jpg",
+    "title": "The Dark Knight",
+    "release_date": "2008",
+    "genre": "Action, Crime"
+  },
+  {
+    "id": 2,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDFlMmM4Y2QtNDg1ZS00MWVlLTlmODgtZDdhYjY5YjdhN2M0XkEyXkFqcGdeQXVyNTI4MjkwNjA@._V1_.jpg",
+    "title": "Jurassic Park",
+    "release_date": "1993",
+    "genre": "Adventure, Sci-Fi"
+  },
+  {
+    "id": 3,
+    "poster": "https://m.media-amazon.com/images/M/MV5BM2MyNjYxNmUtYTAwNi00MTYxLWJmNWYtYzZlODY3ZTk3OTFlXkEyXkFqcGdeQXVyNzkwMjQ5NzM@._V1_FMjpg_UX1000_.jpg",
+    "title": "The Godfather",
+    "release_date": "1972",
+    "genre": "Crime, Drama"
+  },
+  {
+    "id": 4,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMTQ2ODFlMDAtNzdhOC00ZDYzLWE3YTMtNDU4ZGFmZmJmYTczXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg",
+    "title": "E.T. the Extra-Terrestrial",
+    "release_date": "1982",
+    "genre": "Adventure, Sci-Fi"
+  },
+  {
+    "id": 5,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDdmZGU3NDQtY2E5My00ZTliLWIzOTUtMTY4ZGI1YjdiNjk3XkEyXkFqcGdeQXVyNTA4NzY1MzY@._V1_.jpg",
+    "title": "Titanic",
+    "release_date": "1997",
+    "genre": "Romance, Drama"
+  },
+  {
+    "id": 6,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMDFkYTc0MGEtZmNhMC00ZDIzLWFmNTEtODM1ZmRlYWMwMWFmXkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+    "title": "The Shawshank Redemption",
+    "release_date": "1994",
+    "genre": "Drama"
+  },
+  {
+    "id": 7,
+    "poster": "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_FMjpg_UX1000_.jpg",
+    "title": "Inception",
+    "release_date": "2010",
+    "genre": "Action, Sci-Fi"
+  },
+  {
+    "id": 8,
+    "poster": "https://m.media-amazon.com/images/M/MV5BYTYxNGMyZTYtMjE3MS00MzNjLWFjNmYtMDk3N2FmM2JiM2M1XkEyXkFqcGdeQXVyNjY5NDU4NzI@._V1_FMjpg_UX1000_.jpg",
+    "title": "The Lion King",
+    "release_date": "1994",
+    "genre": "Animation, Family"
+  },
+  {
+    "id": 9,
+    "poster": "https://m.media-amazon.com/images/M/MV5BNWIwODRlZTUtY2U3ZS00Yzg1LWJhNzYtMmZiYmEyNmU1NjMzXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_FMjpg_UX1000_.jpg",
+    "title": "Forrest Gump",
+    "release_date": "1994",
+    "genre": "Drama, Romance"
+  },
+  {
+    "id": 10,
+    "poster": "https://m.media-amazon.com/images/M/MV5BNDYxNjQyMjAtNTdiOS00NGYwLWFmNTAtNThmYjU5ZGI2YTI1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_.jpg",
+    "title": "The Avengers",
+    "release_date": "2012",
+    "genre": "Action, Sci-Fi"
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "icon": "shieldHalf",
+    "type": "Action",
+    "count": "1.300"
+  },
+  {
+    "id": 2,
+    "icon": "colorWand",
+    "type": "Fantasy",
+    "count": "800"
+  },
+  {
+    "id": 3,
+    "icon": "happy",
+    "type": "Comedy",
+    "count": "1.000"
+  },
+  {
+    "id": 4,
+    "icon": "body",
+    "type": "Drama",
+    "count": "1.500"
+  },
+  {
+    "id": 5,
+    "icon": "help",
+    "type": "Mystery",
+    "count": "1.500"
+  },
+  {
+    "id": 6,
+    "icon": "heart",
+    "type": "Romance",
+    "count": "1.500"
+  },
+  {
+    "id": 7,
+    "icon": "skull",
+    "type": "Horror",
+    "count": "1.500"
+  },
+  {
+    "id": 8,
+    "icon": "fitness",
+    "type": "Thriller",
+    "count": "1.500"
+  }
+]
