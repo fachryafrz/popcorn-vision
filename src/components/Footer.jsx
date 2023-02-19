@@ -43,25 +43,29 @@ const Footer = () => {
           </p>
           <div className="flex gap-2 flex-wrap">
             <a
-              href="#!"
+              href="https://facebook.com/fachryafrz"
+              target="_blank"
               className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoFacebook} className="text-[1.25rem]" />
             </a>
             <a
-              href="#!"
+              href="https://twitter.com/fachryafrz"
+              target="_blank"
               className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoTwitter} className="text-[1.25rem]" />
             </a>
             <a
-              href="#!"
+              href="https://instagram.com/fachryafrz"
+              target="_blank"
               className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoInstagram} className="text-[1.25rem]" />
             </a>
             <a
-              href="#!"
+              href="https://youtube.com/#fachryafrz"
+              target="_blank"
               className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoYoutube} className="text-[1.25rem]" />
