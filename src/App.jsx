@@ -25,7 +25,7 @@ const App = () => {
                   <Genres />
                 </section>
                 <section id="popular">
-                  <FilmSlider />
+                  <FilmSlider title="Popular Now" />
                 </section>
                 <section id="trending">
                   <Trending />

@@ -20,6 +20,8 @@ const HomeSlider = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const fetchMovies = async () => {
       axios
         .get("https://api.themoviedb.org/3/movie/now_playing", {
