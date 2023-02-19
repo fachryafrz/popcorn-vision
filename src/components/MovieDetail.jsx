@@ -27,7 +27,7 @@ const MovieDetail = ({ id }) => {
     <div className="flex flex-col bg-base-dark-gray text-white">
       <figure className="max-h-[70vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video">
         <img
-          src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
           alt={movie.title}
           className="object-top"
         />
@@ -36,7 +36,7 @@ const MovieDetail = ({ id }) => {
         <div className="mx-auto max-w-7xl flex gap-6 px-4 lg:px-[9rem] pb-[2rem] md:pb-[5rem]">
           <figure className="max-w-[200px] hidden md:block lg:max-w-[250px] aspect-poster rounded-xl overflow-hidden self-start sticky top-12">
             <img
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
               alt={movie.title}
             />
           </figure>
@@ -45,7 +45,7 @@ const MovieDetail = ({ id }) => {
               <div className="min-w-fit">
                 <figure className="max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
                   <img
-                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
                     alt={movie.title}
                   />
                 </figure>
@@ -54,7 +54,8 @@ const MovieDetail = ({ id }) => {
                 <h1 className="font-bold text-3xl lg:text-5xl line-clamp-2 md:py-2">
                   {movie.title}
                 </h1>
-                <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1">
+                <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
+                  {new Date(movie.release_date).getFullYear()} &bull;{" "}
                   {`${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`}{" "}
                   &bull;{" "}
                   {movie.genres &&
@@ -67,8 +68,7 @@ const MovieDetail = ({ id }) => {
                           {genre.name}
                         </span>
                       );
-                    })}{" "}
-                  &bull; {new Date(movie.release_date).getFullYear()}
+                    })}
                 </div>
                 <table className="max-w-fit hidden sm:block">
                   <tr>

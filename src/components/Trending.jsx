@@ -28,13 +28,13 @@ const Trending = () => {
       <div className="relative flex flex-col items-center lg:flex-row gap-8 p-8 lg:p-[3rem] rounded-xl md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t lg:before:bg-gradient-to-r before:from-black before:via-black before:opacity-[70%] before:invisible lg:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-r after:from-black">
         <figure className="absolute inset-0 z-0 blur lg:blur-none">
           <img
-            src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
             alt={movie.title}
           />
         </figure>
         <figure className="z-30 max-w-[300px] aspect-poster rounded-2xl overflow-hidden">
           <img
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
             alt={movie.title}
           />
         </figure>

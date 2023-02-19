@@ -59,7 +59,7 @@ const HomeSlider = () => {
             >
               <figure className="absolute inset-0 -z-10">
                 <img
-                  src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+                  src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
                   alt={movie.title}
                   className="object-top"
                 />
