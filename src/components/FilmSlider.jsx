@@ -1,17 +1,56 @@
 import { Autoplay, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import slides from "../popular.json";
 
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
+import { Link } from "react-router-dom";
+
 const FilmSlider = () => {
+  const [movies, setMovies] = useState([]);
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      axios
+        .get("https://api.themoviedb.org/3/movie/popular", {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        })
+        .then((response) => {
+          setMovies(response.data.results);
+        });
+    };
+
+    fetchMovies();
+  }, []);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      axios
+        .get("https://api.themoviedb.org/3/genre/movie/list", {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        })
+        .then((response) => {
+          setGenres(response.data.genres);
+        });
+    };
+
+    fetchGenres();
+  }, []);
+
   return (
     <div>
-      <h2 className="sr-only">Most Popular</h2>
+      <h2 className="sr-only">Popular Now</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
         spaceBetween={16}
@@ -31,38 +70,60 @@ const FilmSlider = () => {
           640: {
             slidesPerView: 3,
           },
-          1024: {
+          768: {
             slidesPerView: 4,
           },
         }}
-        className="px-4 py-[5rem] lg:px-[16rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden lg:before:block lg:after:block"
+        className="px-4 py-[5rem] lg:px-[16rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[16rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[16rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden lg:before:block lg:after:block"
       >
-        {slides.map((slide) => (
-          <SwiperSlide
-            key={slide.id}
-            className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
-          >
-            <a href="#!">
-              <figure className="rounded-lg overflow-hidden aspect-poster">
-                <img src={slide.poster} alt={slide.title} />
-              </figure>
-              <div className="mt-2">
-                <h3
-                  title={slide.title}
-                  className="font-bold text-lg line-clamp-1"
-                >
-                  {slide.title}
-                </h3>
-                <span className="text-gray-400 whitespace-nowrap">
-                  {slide.release_date} &bull; {slide.genre}
-                </span>
-              </div>
-            </a>
-          </SwiperSlide>
-        ))}
+        {movies.map((movie, index) => {
+          const movieGenres =
+            movie.genre_ids && genres
+              ? movie.genre_ids.map((genreId) =>
+                  genres.find((genre) => genre.id === genreId)
+                )
+              : [];
 
-        <div className="absolute top-[2rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[9rem] flex justify-between items-center xl:max-w-none">
-          <p className="font-bold text-2xl lg:text-3xl">Most Popular</p>
+          return (
+            <SwiperSlide
+              key={index}
+              className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
+            >
+              <Link to={`/${movie.id}`}>
+                <figure className="rounded-lg overflow-hidden aspect-poster">
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                    alt={movie.title}
+                  />
+                </figure>
+                <div className="mt-2">
+                  <h3
+                    title={movie.title}
+                    className="font-bold text-lg line-clamp-1"
+                  >
+                    {movie.title}
+                  </h3>
+                  <div className="whitespace-nowrap flex items-center gap-1">
+                    <span className="text-gray-400 whitespace-nowrap">
+                      {new Date(movie.release_date).getFullYear()} &bull;
+                    </span>
+                    {movieGenres.map((genre, index) => (
+                      <span
+                        key={index}
+                        className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray text-sm"
+                      >
+                        {genre.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            </SwiperSlide>
+          );
+        })}
+
+        <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[9rem] flex justify-between items-center xl:max-w-none">
+          <p className="font-bold text-2xl lg:text-3xl">Popular Now</p>
           <div className="flex gap-4 items-center">
             <button className="prev h-[1.5rem]">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>

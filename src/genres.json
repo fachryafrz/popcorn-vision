@@ -27,24 +27,24 @@
     "id": 5,
     "icon": "help",
     "type": "Mystery",
-    "count": "1.500"
+    "count": "500"
   },
   {
     "id": 6,
     "icon": "heart",
     "type": "Romance",
-    "count": "1.500"
+    "count": "900"
   },
   {
     "id": 7,
     "icon": "skull",
     "type": "Horror",
-    "count": "1.500"
+    "count": "750"
   },
   {
     "id": 8,
     "icon": "fitness",
     "type": "Thriller",
-    "count": "1.500"
+    "count": "500"
   }
 ]

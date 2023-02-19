@@ -15,7 +15,7 @@ const Genres = () => {
   }, []);
 
   return (
-    <div className="px-4 py-[5rem] lg:px-[9rem] flex flex-col gap-8 max-w-7xl mx-auto">
+    <div className="px-4 py-[2rem] md:py-[5rem] lg:px-[9rem] flex flex-col gap-8 max-w-7xl mx-auto">
       <div className="flex flex-col text-center justify-between items-center gap-8 lg:flex-row lg:text-start lg:gap-[4rem]">
         <h2 className="sr-only">Genres</h2>
         <p className="lg:w-[55%] font-bold text-4xl md:text-5xl leading-tight tracking-wide">

@@ -9,13 +9,13 @@ const Footer = () => {
   const createdYear = 2023;
 
   return (
-    <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[5rem] flex flex-col">
+    <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[5rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure className="w-[100px]">
           <img src={logo} alt="Popcorn Prespective" />
         </figure>
         <p className="font-bold text-4xl pointer-events-none">
-          Popcorn Prespective
+          Popcorn <br /> Prespective
         </p>
       </div>
       <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
