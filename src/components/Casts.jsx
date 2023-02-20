@@ -1,6 +1,4 @@
-import logo from "/popcorn.png";
-
-const Casts = ({ actor, index }) => {
+const Casts = ({ logo, actor, index }) => {
   return (
     <div key={index} className="flex gap-2 items-start">
       <figure className="!w-[50px] !h-[50px] aspect-squar rounded-full overflow-hidden flex-shrink-0">
