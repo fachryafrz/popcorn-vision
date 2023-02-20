@@ -4,6 +4,7 @@ const Copyright = () => {
       Designed by
       <a
         href="https://dribbble.com/iamehsan"
+        target="_blank"
         className="text-[#ea4c89] hover:font-medium transition-all"
       >
         Ehsan Gholampour
@@ -11,6 +12,7 @@ const Copyright = () => {
       & Developed by
       <a
         href="https://dribbble.com/fachryafrz"
+        target="_blank"
         className="text-[#ea4c89] hover:font-medium transition-all"
       >
         Fachry Dwi Afriza
