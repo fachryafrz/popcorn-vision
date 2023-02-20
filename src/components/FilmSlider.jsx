@@ -12,6 +12,8 @@ import "swiper/css/autoplay";
 
 import { Link } from "react-router-dom";
 
+import logo from "/popcorn.png";
+
 const FilmSlider = () => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -94,10 +96,12 @@ const FilmSlider = () => {
                   <div
                     className={
                       movie.poster_path === null
-                        ? `w-full h-full bg-base-gray`
+                        ? `w-full h-full bg-base-dark-gray grid place-items-center`
                         : `hidden`
                     }
-                  ></div>
+                  >
+                    <img src={logo} alt={movie.title} className="w-fit h-fit" />
+                  </div>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title}

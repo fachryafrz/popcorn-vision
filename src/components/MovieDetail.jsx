@@ -45,6 +45,10 @@ const MovieDetail = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
+    document.title = `${movie.title} - Popcorn Prespective`;
+  }, [movie]);
+
+  useEffect(() => {
     const fetchGenres = async () => {
       axios
         .get("https://api.themoviedb.org/3/genre/movie/list", {
@@ -272,7 +276,7 @@ const MovieDetail = ({ id }) => {
                               readMore ? "" : "line-clamp-3"
                             } prose max-w-none text-gray-400`}
                           >
-                            <p>{review.content}</p>
+                            <div>{review.content}</div>
                           </div>
                         </div>
                       );

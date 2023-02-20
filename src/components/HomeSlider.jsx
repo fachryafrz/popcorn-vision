@@ -37,6 +37,10 @@ const HomeSlider = () => {
     fetchMovies();
   }, []);
 
+  useEffect(() => {
+    document.title = "Popcorn Prespective";
+  }, []);
+
   return (
     <div>
       <h2 className="sr-only">Movie Highlights</h2>

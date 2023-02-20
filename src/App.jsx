@@ -7,6 +7,7 @@ import Trending from "./components/Trending";
 import MovieDetail from "./components/MovieDetail";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { useEffect } from "react";
 
 const App = () => {
   return (
