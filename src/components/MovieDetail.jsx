@@ -7,15 +7,22 @@ import { Autoplay, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
+import Casts from "./Casts";
+import logo from "/popcorn.png";
 
 const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
   const [numActors, setNumActors] = useState(5);
   const [showAllActors, setShowAllActors] = useState(false);
   const [genres, setGenres] = useState([]);
+  const [readMore, setReadMore] = useState(false);
 
   const handleShowAllActors = () => {
     setShowAllActors(!showAllActors);
+  };
+
+  const handleReadMore = () => {
+    setReadMore(!readMore);
   };
 
   useEffect(() => {
@@ -26,7 +33,7 @@ const MovieDetail = ({ id }) => {
         .get(`https://api.themoviedb.org/3/movie/${id}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            append_to_response: "credits,similar",
+            append_to_response: "credits,similar,reviews",
           },
         })
         .then((response) => {
@@ -56,6 +63,19 @@ const MovieDetail = ({ id }) => {
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
       <figure className="max-h-[70vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video">
+        <div
+          className={
+            movie.poster_path === null
+              ? `w-full h-full bg-base-dark-gray flex justify-center`
+              : `hidden`
+          }
+        >
+          <img
+            src={logo}
+            alt="Popcorn Prespective"
+            className="object-none w-fit h-fit"
+          />
+        </div>
         <img
           src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
           alt={movie.title}
@@ -65,7 +85,20 @@ const MovieDetail = ({ id }) => {
       <div className="z-10 -mt-[4rem] sm:-mt-[14rem]">
         <div className="mx-auto max-w-7xl flex gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           <div className="max-w-[200px] hidden md:flex flex-col gap-2 lg:max-w-[250px] self-start sticky top-8">
-            <figure className="aspect-poster rounded-xl overflow-hidden">
+            <figure className="w-[200px] lg:w-[250px] aspect-poster rounded-xl overflow-hidden">
+              <div
+                className={
+                  movie.poster_path === null
+                    ? `w-full h-full bg-base-dark-gray flex items-center`
+                    : `hidden`
+                }
+              >
+                <img
+                  src={logo}
+                  alt="Popcorn Prespective"
+                  className="object-none w-fit h-fit"
+                />
+              </div>
               <img
                 src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
                 alt={movie.title}
@@ -154,10 +187,83 @@ const MovieDetail = ({ id }) => {
                 </table>
               </div>
             </div>
-            <div className="prose max-w-none text-white">
+            <div className="text-white flex flex-col gap-6">
               <div className="flex flex-col gap-2 ">
-                <h2 className="text-white m-0">Overview</h2>
+                <h2 className="font-bold text-2xl text-white m-0">Overview</h2>
                 <p className="text-gray-400 text-lg">{movie.overview}</p>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-0 py-2">
+                  <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
+                  <button
+                    onClick={handleReadMore}
+                    className="text-primary-blue hover:font-medium transition-all"
+                  >
+                    {`${readMore ? "Shrink" : "Expand all"}`}
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {movie.reviews &&
+                    movie.reviews.results &&
+                    movie.reviews.results.map((review, index) => {
+                      const dateStr = review.updated_at;
+                      const date = new Date(dateStr);
+                      const options = {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      };
+                      const formattedDate = date.toLocaleString(
+                        "en-US",
+                        options
+                      );
+
+                      const imgUrlAPI = review.author_details.avatar_path;
+                      const imgUrl = imgUrlAPI?.startsWith("/http")
+                        ? imgUrlAPI.replace(/^\//, "")
+                        : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
+
+                      return (
+                        <div
+                          key={index}
+                          id="reviewsCard"
+                          className="flex flex-col gap-4 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
+                        >
+                          <div className="flex gap-4">
+                            <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
+                              <div
+                                className={
+                                  imgUrlAPI === null
+                                    ? `w-full h-full bg-base-dark-gray p-2`
+                                    : `hidden`
+                                }
+                              >
+                                <img src={logo} alt="Popcorn Prespective" />
+                              </div>
+                              {imgUrl && (
+                                <img src={`${imgUrl}`} alt={review.author} />
+                              )}
+                            </figure>
+                            <div>
+                              <p className="font-medium text-lg">
+                                {review.author}
+                              </p>
+                              <span className="text-sm text-gray-400">
+                                {formattedDate}
+                              </span>
+                            </div>
+                          </div>
+                          <div
+                            className={`${
+                              readMore ? "" : "line-clamp-3"
+                            } prose max-w-none text-gray-400`}
+                          >
+                            <p>{review.content}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
           </div>
@@ -172,36 +278,13 @@ const MovieDetail = ({ id }) => {
                     showAllActors ? movie.credits.cast.length : numActors
                   )
                   .map((actor, index) => {
-                    return (
-                      <div key={index} className="flex gap-2 items-start">
-                        <figure className="!w-[50px] !h-[50px] aspect-square bg-base-gray rounded-full overflow-hidden flex-shrink-0">
-                          <img
-                            src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
-                            alt={actor.name}
-                          />
-                        </figure>
-                        <div>
-                          <h3
-                            title={actor.name}
-                            className="font-medium line-clamp-2"
-                          >
-                            {actor.name}
-                          </h3>
-                          <p className="text-sm text-gray-400 line-clamp-1">
-                            as{" "}
-                            <span title={actor.character}>
-                              {actor.character}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    );
+                    return <Casts actor={actor} key={index} />;
                   })}
               <button
                 onClick={handleShowAllActors}
                 className="text-primary-blue flex items-center justify-center bg-base-dark-gray gap-2 font-medium hover:bg-gray-600 py-2 px-4 rounded-t-lg sticky bottom-0"
               >
-                {showAllActors ? "Hide" : "Show All"}
+                {showAllActors ? "Show Less" : "Show All"}
                 <IonIcon
                   icon={
                     showAllActors
@@ -214,6 +297,7 @@ const MovieDetail = ({ id }) => {
             </div>
           </div>
         </div>
+
         <div id="Similar Movies">
           <h2 className="sr-only">Similar</h2>
           <Swiper
@@ -256,8 +340,15 @@ const MovieDetail = ({ id }) => {
                     key={index}
                     className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
                   >
-                    <Link to={`/${movie.id}`}>
+                    <Link to={`/movies/${movie.id}`}>
                       <figure className="rounded-lg overflow-hidden aspect-poster">
+                        <div
+                          className={
+                            movie.poster_path === null
+                              ? `w-full h-full bg-base-gray`
+                              : `hidden`
+                          }
+                        ></div>
                         <img
                           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                           alt={movie.title}

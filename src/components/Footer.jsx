@@ -9,7 +9,7 @@ const Footer = () => {
   const createdYear = 2023;
 
   return (
-    <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[5rem] flex flex-col text-white">
+    <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure className="w-[100px]">
           <img src={logo} alt="Popcorn Prespective" />

@@ -32,7 +32,7 @@ const App = () => {
                 </section>
               </Route>
               <Route
-                path="/:id"
+                path="/movies/:id"
                 render={({ match }) => <MovieDetail id={match.params.id} />}
               />
             </Switch>

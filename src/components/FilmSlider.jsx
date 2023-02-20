@@ -89,8 +89,15 @@ const FilmSlider = () => {
               key={index}
               className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
             >
-              <Link to={`/${movie.id}`}>
+              <Link to={`/movies/${movie.id}`}>
                 <figure className="rounded-lg overflow-hidden aspect-poster">
+                  <div
+                    className={
+                      movie.poster_path === null
+                        ? `w-full h-full bg-base-gray`
+                        : `hidden`
+                    }
+                  ></div>
                   <img
                     src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                     alt={movie.title}

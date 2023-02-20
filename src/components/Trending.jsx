@@ -53,7 +53,7 @@ const Trending = () => {
           </h3>
           <p className="line-clamp-4">{movie.overview}</p>
           <Link
-            to={`/${movie.id}`}
+            to={`/movies/${movie.id}`}
             className="w-full mt-4 p-4 md:px-8 rounded-lg bg-primary-yellow text-black uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hover:bg-opacity-100 hover:scale-105 active:scale-100"
           >
             <IonIcon
