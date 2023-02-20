@@ -82,7 +82,7 @@ const MovieDetail = ({ id }) => {
           className="object-top"
         />
       </figure>
-      <div className="z-10 -mt-[4rem] sm:-mt-[14rem]">
+      <div className="z-10 -mt-[4rem] md:-mt-[14rem]">
         <div className="mx-auto max-w-7xl flex gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           <div className="max-w-[200px] hidden md:flex flex-col gap-2 lg:max-w-[250px] self-start sticky top-8">
             <figure className="w-[200px] lg:w-[250px] aspect-poster rounded-xl overflow-hidden">
@@ -119,14 +119,28 @@ const MovieDetail = ({ id }) => {
             <div className="flex gap-2 items-center md:gap-0">
               <div className="min-w-fit flex flex-col gap-1">
                 <figure className="max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
+                  <div
+                    className={
+                      movie.poster_path === null
+                        ? `w-full h-full bg-base-dark-gray`
+                        : `hidden`
+                    }
+                  >
+                    <img
+                      src={logo}
+                      alt="Popcorn Prespective"
+                      className="w-fit h-fit"
+                    />
+                  </div>
                   <img
                     src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
                     alt={movie.title}
+                    className={movie.poster_path === null ? `hidden` : `block`}
                   />
                 </figure>
                 <Link
                   to="/"
-                  className="flex gap-2 items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg text-sm hover:bg-opacity-30 active:bg-opacity-50 sm:hidden"
+                  className="flex gap-2 items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg text-sm hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
                 >
                   <IonIcon
                     icon={Icons.homeOutline}
@@ -345,10 +359,16 @@ const MovieDetail = ({ id }) => {
                         <div
                           className={
                             movie.poster_path === null
-                              ? `w-full h-full bg-base-gray`
+                              ? `w-full h-full bg-base-dark-gray grid place-items-center`
                               : `hidden`
                           }
-                        ></div>
+                        >
+                          <img
+                            src={logo}
+                            alt={movie.title}
+                            className="w-fit h-fit"
+                          />
+                        </div>
                         <img
                           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                           alt={movie.title}
