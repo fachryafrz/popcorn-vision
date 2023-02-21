@@ -24,7 +24,7 @@ export function CastsList({ logo, movie }) {
             })}
         {movie.credits &&
         movie.credits.cast &&
-        movie.credits.cast.length > 1 ? (
+        movie.credits.cast.length > 5 ? (
           <button
             onClick={handleShowAllActors}
             className="text-primary-blue flex items-center justify-center bg-base-dark-gray gap-2 font-medium hover:bg-gray-600 py-2 px-4 rounded-t-lg sticky bottom-0"
