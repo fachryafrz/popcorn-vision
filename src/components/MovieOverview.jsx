@@ -1,15 +1,19 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 export function MovieOverview({ logo, movie }) {
   const [readMore, setReadMore] = useState(false);
+  const history = useHistory();
 
   const handleReadMore = () => {
     setReadMore(!readMore);
   };
 
+  const handleGoBack = () => {
+    history.goBack();
+  };
   return (
     <div className="flex flex-col gap-6 self-start w-full">
       <div className="flex gap-2 items-center md:gap-0">
@@ -34,19 +38,22 @@ export function MovieOverview({ logo, movie }) {
               className={movie.poster_path === null ? `hidden` : `block`}
             />
           </figure>
-          <Link
-            to="/"
+          <button
+            onClick={handleGoBack}
             className="flex gap-2 items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg text-sm hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
           >
             <IonIcon
-              icon={Icons.homeOutline}
+              icon={Icons.returnDownBack}
               className="!w-4 h-full aspect-square"
             />
-            Go Home
-          </Link>
+            Go Back
+          </button>
         </div>
         <div className="flex flex-col gap-4">
-          <h1 className="font-bold text-3xl lg:text-5xl line-clamp-2 md:py-2">
+          <h1
+            title={movie.title}
+            className="font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
+          >
             {movie.title}
           </h1>
           <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
@@ -102,7 +109,7 @@ export function MovieOverview({ logo, movie }) {
           <p className="text-gray-400 text-lg">{movie.overview}</p>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-0 py-2">
+          <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2">
             <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
             <button
               onClick={handleReadMore}

@@ -57,7 +57,7 @@ const MovieDetail = ({ id }) => {
       {/* Movie Background/Backdrop */}
       <MovieBackdrop logo={logo} movie={movie} />
       <div className="z-10 -mt-[4rem] md:-mt-[14rem]">
-        <div className="mx-auto max-w-7xl flex gap-8 px-4 pb-[2rem] md:pb-[5rem]">
+        <div className="mx-auto max-w-7xl flex gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
           <MoviePoster logo={logo} movie={movie} />
           {/* Middle */}

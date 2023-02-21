@@ -12,7 +12,7 @@ export function CastsList({ logo, movie }) {
   };
 
   return (
-    <div className="hidden lg:flex flex-col gap-4 self-start sticky top-8 w-[500px]">
+    <div className="hidden lg:flex flex-col gap-4 self-start sticky top-20 w-[500px]">
       <h2 className="font-bold text-2xl">Cast & Crews</h2>
       <div className="flex flex-col gap-4">
         {movie.credits &&

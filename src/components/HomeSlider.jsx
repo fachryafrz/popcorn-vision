@@ -48,11 +48,11 @@ const HomeSlider = () => {
         modules={[Pagination, Autoplay, EffectFade]}
         effect="fade"
         loop={true}
-        // autoplay={{
-        //   delay: 5000,
-        //   disableOnInteraction: false,
-        //   pauseOnMouseEnter: true,
-        // }}
+        autoplay={{
+          delay: 5000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
         spaceBetween={0}
         slidesPerView={1}
         className="lg:rounded-bl-[3rem] lg:ml-[5rem]"

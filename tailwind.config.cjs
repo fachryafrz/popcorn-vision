@@ -5,6 +5,10 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      boxShadow: {
+        "custom-left": "4px 4px 0px -0 #202735",
+        "custom-right": "-4px 4px 0px -0 #202735",
+      },
       colors: {
         base: {
           "dark-gray": "#202735",
