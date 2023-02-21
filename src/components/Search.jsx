@@ -29,6 +29,10 @@ export default function Search() {
   };
 
   useEffect(() => {
+    document.title = "Search - Popcorn Prespective";
+  }, []);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
 
     const fetchBgMovies = async () => {
