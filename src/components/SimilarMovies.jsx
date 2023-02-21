@@ -9,7 +9,7 @@ import { FilmCard } from "./FilmCard";
 export function SimilarMovies({ logo, movie, genres }) {
   return (
     <div id="Similar Movies">
-      <h2 className="sr-only">Similar</h2>
+      <h2 className="sr-only">Recommendations</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
         spaceBetween={16}
@@ -35,9 +35,9 @@ export function SimilarMovies({ logo, movie, genres }) {
         }}
         className="px-4 py-[5rem] lg:px-[16rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden lg:before:block lg:after:block before:pointer-events-none after:pointer-events-none"
       >
-        {movie.similar &&
-          movie.similar.results &&
-          movie.similar.results.map((movie, index) => {
+        {movie.recommendations &&
+          movie.recommendations.results &&
+          movie.recommendations.results.map((movie, index) => {
             const movieGenres =
               movie.genre_ids && genres
                 ? movie.genre_ids.map((genreId) =>
@@ -56,7 +56,7 @@ export function SimilarMovies({ logo, movie, genres }) {
           })}
 
         <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[1rem] flex justify-between items-center xl:max-w-none">
-          <p className="font-bold text-2xl lg:text-3xl">Similar</p>
+          <p className="font-bold text-xl lg:text-2xl">Recommendations</p>
           <div className="flex gap-4 items-center">
             <button className="prev h-[1.5rem]">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>

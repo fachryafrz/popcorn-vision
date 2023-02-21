@@ -1,8 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
 
-import { format } from "date-fns";
-
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -10,9 +8,15 @@ import { Link } from "react-router-dom";
 const Trending = () => {
   const [movie, setMovie] = useState([]);
 
+  const getRandomInt = () => {
+    return Math.floor(Math.random() * 18);
+  };
+
+  console.log();
+
   useEffect(() => {
     axios
-      .get("https://api.themoviedb.org/3/trending/movie/day", {
+      .get("https://api.themoviedb.org/3/trending/movie/week", {
         params: {
           api_key: "84aa2a7d5e4394ded7195035a4745dbd",
         },

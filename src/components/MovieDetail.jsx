@@ -21,7 +21,7 @@ const MovieDetail = ({ id }) => {
         .get(`https://api.themoviedb.org/3/movie/${id}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            append_to_response: "credits,similar,reviews",
+            append_to_response: "credits,recommendations,reviews",
           },
         })
         .then((response) => {

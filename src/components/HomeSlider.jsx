@@ -24,7 +24,7 @@ const HomeSlider = () => {
 
     const fetchMovies = async () => {
       axios
-        .get("https://api.themoviedb.org/3/movie/now_playing", {
+        .get("https://api.themoviedb.org/3/movie/upcoming", {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
           },

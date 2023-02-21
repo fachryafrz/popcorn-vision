@@ -109,7 +109,7 @@ export function MovieOverview({ logo, movie }) {
           <p className="text-gray-400 text-lg">{movie.overview}</p>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2">
+          <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm">
             <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
             <button
               onClick={handleReadMore}

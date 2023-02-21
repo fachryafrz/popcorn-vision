@@ -15,14 +15,14 @@ import { Link } from "react-router-dom";
 
 import logo from "/popcorn.png";
 
-const FilmSlider = () => {
+const FilmSlider = ({ title, apiUrl }) => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
 
   useEffect(() => {
     const fetchMovies = async () => {
       axios
-        .get("https://api.themoviedb.org/3/movie/popular", {
+        .get(`https://api.themoviedb.org/3${apiUrl}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
           },
@@ -53,7 +53,7 @@ const FilmSlider = () => {
 
   return (
     <div>
-      <h2 className="sr-only">Popular Now</h2>
+      <h2 className="sr-only">{title}</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
         spaceBetween={16}
@@ -98,7 +98,7 @@ const FilmSlider = () => {
         })}
 
         <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[9rem] flex justify-between items-center xl:max-w-none">
-          <p className="font-bold text-2xl lg:text-3xl">Popular Now</p>
+          <p className="font-bold text-2xl lg:text-3xl">{title}</p>
           <div className="flex gap-4 items-center">
             <button className="prev h-[1.5rem]">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
