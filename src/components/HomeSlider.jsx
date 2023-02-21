@@ -48,11 +48,11 @@ const HomeSlider = () => {
         modules={[Pagination, Autoplay, EffectFade]}
         effect="fade"
         loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
+        // autoplay={{
+        //   delay: 5000,
+        //   disableOnInteraction: false,
+        //   pauseOnMouseEnter: true,
+        // }}
         spaceBetween={0}
         slidesPerView={1}
         className="lg:rounded-bl-[3rem] lg:ml-[5rem]"
@@ -61,16 +61,21 @@ const HomeSlider = () => {
           return (
             <SwiperSlide
               key={index}
-              className="h-fit md:h-[90vh] flex items-end md:p-4 lg:p-[4rem] relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-tr before:from-base-dark-gray before:via-base-dark-gray before:opacity-0 md:before:opacity-[50%] after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
+              className="min-h-fit sm:h-[90vh] flex items-end sm:p-4 lg:p-[4rem] relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-tr before:from-base-dark-gray before:via-base-dark-gray before:opacity-0 sm:before:opacity-[50%] after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
             >
-              <figure className="static md:absolute inset-0 -z-10 aspect-video">
+              <figure className="sm:absolute sm:inset-x-0 sm:top-0 min-h-fit sm:h-full -z-10 aspect-poster sm:aspect-auto">
+                <img
+                  src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
+                  alt={movie.title}
+                  className="object-top sm:hidden"
+                />
                 <img
                   src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
                   alt={movie.title}
-                  className="object-top"
+                  className="object-top hidden sm:block"
                 />
               </figure>
-              <div className="hidden md:flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%]">
+              <div className="hidden sm:flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%]">
                 <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2">
                   {movie.title}
                 </h3>
@@ -91,7 +96,7 @@ const HomeSlider = () => {
                     </span>
                   </div>
                 </div>
-                <p className="line-clamp-1 md:line-clamp-3">{movie.overview}</p>
+                <p className="line-clamp-2 md:line-clamp-3">{movie.overview}</p>
                 <div className="flex gap-4 mt-4">
                   <Link
                     to={`/movies/${movie.id}`}
