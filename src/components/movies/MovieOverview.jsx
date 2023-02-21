@@ -57,7 +57,7 @@ export function MovieOverview({ logo, movie, page }) {
             {movie.title}
           </h1>
           <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
-            {new Date(movie.release_date).getFullYear()} &bull;
+            {new Date(movie.release_date).getFullYear()} &bull;{" "}
             {`${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`} &bull;
             {movie.genres &&
               movie.genres.map((genre) => {
