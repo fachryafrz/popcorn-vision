@@ -11,11 +11,9 @@ import { useEffect, useState } from "react";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
-import { Link } from "react-router-dom";
-
 import logo from "/popcorn.png";
 
-const FilmSlider = ({ title, apiUrl }) => {
+export default function FilmSlider({ title, apiUrl, releasedYear }) {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
 
@@ -25,6 +23,10 @@ const FilmSlider = ({ title, apiUrl }) => {
         .get(`https://api.themoviedb.org/3${apiUrl}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            watch_region: "US",
+            with_watch_providers: "2,3",
+            "vote_average.gte": 7.5,
+            first_air_date_year: releasedYear,
           },
         })
         .then((response) => {
@@ -38,7 +40,7 @@ const FilmSlider = ({ title, apiUrl }) => {
   useEffect(() => {
     const fetchGenres = async () => {
       axios
-        .get("https://api.themoviedb.org/3/genre/movie/list", {
+        .get("https://api.themoviedb.org/3/genre/tv/list", {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
           },
@@ -114,6 +116,4 @@ const FilmSlider = ({ title, apiUrl }) => {
       </Swiper>
     </div>
   );
-};
-
-export default FilmSlider;
+}

@@ -3,7 +3,6 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper";
 import axios from "axios";
 
-import dMovie from "../highlight.json";
 import logo from "/popcorn.png";
 
 import "swiper/css";
@@ -12,7 +11,6 @@ import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
-import { Link } from "react-router-dom";
 
 export default function Search() {
   const [movies, setMovies] = useState([]);
@@ -64,7 +62,7 @@ export default function Search() {
         });
     };
 
-    if (searchQuery.length > 2) {
+    if (searchQuery.length > 1) {
       fetchMovies();
     }
   }, [searchQuery]);
@@ -120,6 +118,7 @@ export default function Search() {
           <form onSubmit={handleSubmit} className={`w-full`}>
             <input
               onChange={handleSearchQuery}
+              autoFocus={true}
               type="text"
               placeholder="Search"
               className={`text-white bg-transparent w-full`}
@@ -127,7 +126,7 @@ export default function Search() {
             <input type="submit" className="sr-only" />
           </form>
         </div>
-        <div className="pt-12 p-4 lg:px-[9rem] mx-auto max-w-7xl flex flex-col gap-8">
+        <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-8">
           <h2 className="font-bold text-3xl text-center">
             Search{" "}
             {searchQuery ? (

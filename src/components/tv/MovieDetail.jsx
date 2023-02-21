@@ -18,7 +18,7 @@ const MovieDetail = ({ id }) => {
 
     const fetchMovie = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/movie/${id}`, {
+        .get(`https://api.themoviedb.org/3/tv/${id}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
             append_to_response: "credits,recommendations,reviews",
@@ -33,13 +33,13 @@ const MovieDetail = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${movie.title} - Popcorn Prespective`;
+    document.title = `${movie.name} - Popcorn Prespective`;
   }, [movie]);
 
   useEffect(() => {
     const fetchGenres = async () => {
       axios
-        .get("https://api.themoviedb.org/3/genre/movie/list", {
+        .get("https://api.themoviedb.org/3/genre/tv/list", {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
           },

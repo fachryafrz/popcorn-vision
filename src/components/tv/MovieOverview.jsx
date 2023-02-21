@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export function MovieOverview({ logo, movie }) {
   const [readMore, setReadMore] = useState(false);
@@ -34,7 +34,7 @@ export function MovieOverview({ logo, movie }) {
             </div>
             <img
               src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
-              alt={movie.title}
+              alt={movie.name}
               className={movie.poster_path === null ? `hidden` : `block`}
             />
           </figure>
@@ -51,14 +51,19 @@ export function MovieOverview({ logo, movie }) {
         </div>
         <div className="flex flex-col gap-4">
           <h1
-            title={movie.title}
+            title={movie.name}
             className="font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
           >
-            {movie.title}
+            {movie.name}
           </h1>
           <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
-            {new Date(movie.release_date).getFullYear()} &bull;
-            {`${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`} &bull;
+            {new Date(movie.first_air_date).getFullYear()} &bull;{" "}
+            {`${movie.number_of_episodes} Episodes`} &bull;{" "}
+            {`${movie.number_of_seasons} Seasons`} &bull;{" "}
+            {`${
+              movie.last_episode_to_air && movie.last_episode_to_air.runtime
+            }m`}{" "}
+            &bull;
             {movie.genres &&
               movie.genres.map((genre) => {
                 return (
@@ -91,13 +96,21 @@ export function MovieOverview({ logo, movie }) {
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                <td>{`${Math.floor(movie.runtime / 60)}h ${
-                  movie.runtime % 60
+                <td>{`${
+                  movie.last_episode_to_air && movie.last_episode_to_air.runtime
                 }m`}</td>
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Release Date</td>
-                <td>{new Date(movie.release_date).getFullYear()}</td>
+                <td>{new Date(movie.first_air_date).getFullYear()}</td>
+              </tr>
+              <tr>
+                <td className="pr-8 py-1 text-gray-400">Seasons</td>
+                <td>{movie.number_of_seasons}</td>
+              </tr>
+              <tr>
+                <td className="pr-8 py-1 text-gray-400">Episodes</td>
+                <td>{movie.number_of_episodes}</td>
               </tr>
             </tbody>
           </table>

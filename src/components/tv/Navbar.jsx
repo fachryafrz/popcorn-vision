@@ -20,13 +20,22 @@ export default function Navbar({ logo }) {
             Prespective
           </span>
         </Link>
-        <Link
-          to="/search"
-          className="flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hover:bg-opacity-40 transition-all hover:scale-105 active:scale-100 ml-auto"
-        >
-          <IonIcon icon={Icons.search} className="text-[1.25rem]" />
-          <span className="hidden sm:block">Search</span>
-        </Link>
+        <div className="flex items-center gap-4 sm:gap-8">
+          <Link
+            to="/tv"
+            className="text-base-gray flex items-center gap-2 hover:text-white"
+          >
+            <IonIcon icon={Icons.tvOutline} className="text-[1.25rem]" />
+            <span className="hidden sm:block">TV Series</span>
+          </Link>
+          <Link
+            to="/search"
+            className="flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hover:bg-opacity-40 transition-all hover:scale-105 active:scale-100 ml-auto"
+          >
+            <IonIcon icon={Icons.search} className="text-[1.25rem]" />
+            <span className="hidden sm:block">Search</span>
+          </Link>
+        </div>
       </div>
     </nav>
   );

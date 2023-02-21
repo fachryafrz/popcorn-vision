@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 export function MoviePoster({ logo, movie }) {
   const history = useHistory();

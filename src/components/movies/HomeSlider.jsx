@@ -16,7 +16,7 @@ import "swiper/css/effect-fade";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const HomeSlider = () => {
+const HomeSlider = ({ apiUrl }) => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
@@ -24,9 +24,10 @@ const HomeSlider = () => {
 
     const fetchMovies = async () => {
       axios
-        .get("https://api.themoviedb.org/3/movie/upcoming", {
+        .get(`https://api.themoviedb.org/3${apiUrl}`, {
           params: {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            region: "US",
           },
         })
         .then((response) => {

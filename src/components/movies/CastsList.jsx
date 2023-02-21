@@ -22,20 +22,26 @@ export function CastsList({ logo, movie }) {
             .map((actor, index) => {
               return <Casts logo={logo} actor={actor} key={index} />;
             })}
-        <button
-          onClick={handleShowAllActors}
-          className="text-primary-blue flex items-center justify-center bg-base-dark-gray gap-2 font-medium hover:bg-gray-600 py-2 px-4 rounded-t-lg sticky bottom-0"
-        >
-          {showAllActors ? "Show Less" : "Show All"}
-          <IonIcon
-            icon={
-              showAllActors
-                ? Icons.chevronUpCircleOutline
-                : Icons.chevronDownCircleOutline
-            }
-            className="text-[1.5rem]"
-          />
-        </button>
+        {movie.credits &&
+        movie.credits.cast &&
+        movie.credits.cast.length > 1 ? (
+          <button
+            onClick={handleShowAllActors}
+            className="text-primary-blue flex items-center justify-center bg-base-dark-gray gap-2 font-medium hover:bg-gray-600 py-2 px-4 rounded-t-lg sticky bottom-0"
+          >
+            {showAllActors ? "Show Less" : "Show All"}
+            <IonIcon
+              icon={
+                showAllActors
+                  ? Icons.chevronUpCircleOutline
+                  : Icons.chevronDownCircleOutline
+              }
+              className="text-[1.5rem]"
+            />
+          </button>
+        ) : (
+          ``
+        )}
       </div>
     </div>
   );

@@ -1,12 +1,16 @@
-import footer from "../footer.json";
+import footer from "../../footer.json";
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 
 import logo from "/popcorn.png";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const createdYear = 2023;
+
+  const location = useLocation();
+  const isTvPage = location.pathname.startsWith("/tv");
 
   return (
     <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
@@ -29,7 +33,7 @@ const Footer = () => {
                     key={link.name}
                     className="font-light tracking-wider hover:font-normal transition-all max-w-fit"
                   >
-                    <a href={link.url}>{link.name}</a>
+                    <Link href={isTvPage ? `/tv` : `/`}>{link.name}</Link>
                   </li>
                 ))}
             </ul>

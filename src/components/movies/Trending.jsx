@@ -8,12 +8,6 @@ import { Link } from "react-router-dom";
 const Trending = () => {
   const [movie, setMovie] = useState([]);
 
-  const getRandomInt = () => {
-    return Math.floor(Math.random() * 18);
-  };
-
-  console.log();
-
   useEffect(() => {
     axios
       .get("https://api.themoviedb.org/3/trending/movie/week", {
