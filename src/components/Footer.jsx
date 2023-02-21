@@ -64,7 +64,7 @@ const Footer = () => {
               <IonIcon icon={Icons.logoInstagram} className="text-[1.25rem]" />
             </a>
             <a
-              href="https://youtube.com/#fachryafrz"
+              href="https://youtube.com/@fachryafrz"
               target="_blank"
               className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
             >
