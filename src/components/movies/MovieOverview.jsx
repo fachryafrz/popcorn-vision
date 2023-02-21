@@ -33,7 +33,7 @@ export function MovieOverview({ logo, movie, page }) {
               />
             </div>
             <img
-              src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={movie.title}
               className={movie.poster_path === null ? `hidden` : `block`}
             />
