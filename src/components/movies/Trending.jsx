@@ -5,12 +5,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const Trending = () => {
+const Trending = ({ apiUrl }) => {
   const [movie, setMovie] = useState([]);
 
   useEffect(() => {
     axios
-      .get("https://api.themoviedb.org/3/trending/movie/week", {
+      .get(`https://api.themoviedb.org/3${apiUrl}`, {
         params: {
           api_key: "84aa2a7d5e4394ded7195035a4745dbd",
         },

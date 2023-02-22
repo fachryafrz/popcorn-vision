@@ -40,7 +40,7 @@ const App = () => {
                   <FilmSlider title="Popular Now" apiUrl="/movie/popular" />
                 </section>
                 <section id="trending">
-                  <Trending />
+                  <Trending apiUrl={`/trending/movie/day`} />
                 </section>
                 <section id="topRated">
                   <FilmSlider title="Top Rated" apiUrl="/movie/top_rated" />
@@ -61,7 +61,7 @@ const App = () => {
                   <TVFilmSlider title="Top Rated" apiUrl="/tv/popular" />
                 </section>
                 <section id="trending">
-                  <TVTrending apiUrl="/discover/tv" />
+                  <TVTrending apiUrl="/trending/tv/day" />
                 </section>
                 <section id="popular">
                   <TVFilmSlider
