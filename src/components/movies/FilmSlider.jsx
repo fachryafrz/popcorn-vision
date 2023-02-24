@@ -12,18 +12,35 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
 import logo from "/popcorn.png";
+import { useLocation } from "react-router-dom";
 
 const FilmSlider = ({ title, apiUrl }) => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
 
+  const location = useLocation();
+  const isTvPage = location.pathname.startsWith("/tv");
+
+  const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+  let params = {
+    api_key: apiKey,
+    region: "US",
+    include_adult: false,
+  };
+
+  if (isTvPage) {
+    params = {
+      api_key: apiKey,
+      watch_region: "US",
+      with_watch_providers: "2,3",
+    };
+  }
+
   useEffect(() => {
     const fetchMovies = async () => {
       axios
         .get(`https://api.themoviedb.org/3${apiUrl}`, {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
+          params,
         })
         .then((response) => {
           setMovies(response.data.results);
@@ -90,7 +107,12 @@ const FilmSlider = ({ title, apiUrl }) => {
               key={index}
               className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
             >
-              <FilmCard movie={movie} logo={logo} movieGenres={movieGenres} />
+              <FilmCard
+                movie={movie}
+                logo={logo}
+                movieGenres={movieGenres}
+                isTvPage={isTvPage}
+              />
             </SwiperSlide>
           );
         })}

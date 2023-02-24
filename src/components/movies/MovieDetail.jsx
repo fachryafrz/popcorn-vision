@@ -8,23 +8,40 @@ import { useEffect, useState } from "react";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import logo from "/popcorn.png";
+import { useLocation } from "react-router-dom";
 
 const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
   const [genres, setGenres] = useState([]);
   const [page, setPage] = useState();
 
+  const location = useLocation();
+  const isTvPage = location.pathname.startsWith("/tv");
+
+  const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+  let params = {
+    api_key: apiKey,
+    append_to_response: "credits,recommendations,reviews",
+  };
+
+  if (isTvPage) {
+    params = {
+      api_key: apiKey,
+      append_to_response: "credits,recommendations,reviews",
+    };
+  }
+
   useEffect(() => {
     window.scrollTo(0, 0);
 
     const fetchMovie = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/movie/${id}`, {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            append_to_response: "credits,recommendations,reviews",
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${id}`,
+          {
+            params,
+          }
+        )
         .then((response) => {
           setMovie(response.data);
         });
@@ -34,17 +51,24 @@ const MovieDetail = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${movie.title} - Popcorn Prespective`;
+    document.title = `${
+      !isTvPage ? movie.title : movie.name
+    } - Popcorn Prespective`;
   }, [movie]);
 
   useEffect(() => {
     const fetchGenres = async () => {
       axios
-        .get("https://api.themoviedb.org/3/genre/movie/list", {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/genre/${
+            !isTvPage ? `movie` : `tv`
+          }/list`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            },
+          }
+        )
         .then((response) => {
           setGenres(response.data.genres);
         });
@@ -73,18 +97,28 @@ const MovieDetail = ({ id }) => {
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
       {/* Movie Background/Backdrop */}
-      <MovieBackdrop logo={logo} movie={movie} />
-      <div className="z-10 -mt-[4rem] md:-mt-[14rem]">
+      <MovieBackdrop logo={logo} movie={movie} isTvPage={isTvPage} />
+      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[24rem] lg:-mt-[30rem]">
         <div className="mx-auto max-w-7xl flex gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <MoviePoster logo={logo} movie={movie} />
+          <MoviePoster logo={logo} movie={movie} isTvPage={isTvPage} />
           {/* Middle */}
-          <MovieOverview logo={logo} movie={movie} page={page} />
+          <MovieOverview
+            logo={logo}
+            movie={movie}
+            page={page}
+            isTvPage={isTvPage}
+          />
           {/* Right */}
-          <CastsList logo={logo} movie={movie} />
+          <CastsList logo={logo} movie={movie} isTvPage={isTvPage} />
         </div>
         {/* Similar */}
-        <SimilarMovies logo={logo} movie={movie} genres={genres} />
+        <SimilarMovies
+          logo={logo}
+          movie={movie}
+          genres={genres}
+          isTvPage={isTvPage}
+        />
       </div>
     </div>
   );

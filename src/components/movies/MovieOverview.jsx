@@ -3,7 +3,7 @@ import * as Icons from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-export function MovieOverview({ logo, movie, page }) {
+export function MovieOverview({ logo, movie, page, isTvPage }) {
   const [readMore, setReadMore] = useState(false);
   const history = useHistory();
 
@@ -16,7 +16,7 @@ export function MovieOverview({ logo, movie, page }) {
   };
   return (
     <div className="flex flex-col gap-6 self-start w-full">
-      <div className="flex gap-2 items-center md:gap-0">
+      <div className="flex gap-4 items-center md:gap-0">
         <div className="min-w-fit flex flex-col gap-1">
           <figure className="max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
             <div
@@ -34,7 +34,7 @@ export function MovieOverview({ logo, movie, page }) {
             </div>
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-              alt={movie.title}
+              alt={!isTvPage ? movie.title : movie.name}
               className={movie.poster_path === null ? `hidden` : `block`}
             />
           </figure>
@@ -51,14 +51,22 @@ export function MovieOverview({ logo, movie, page }) {
         </div>
         <div className="flex flex-col gap-4">
           <h1
-            title={movie.title}
+            title={!isTvPage ? movie.title : movie.name}
             className="font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
           >
-            {movie.title}
+            {!isTvPage ? movie.title : movie.name}
           </h1>
           <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
-            {new Date(movie.release_date).getFullYear()} &bull;{" "}
-            {`${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`} &bull;
+            {new Date(
+              !isTvPage ? movie.release_date : movie.first_air_date
+            ).getFullYear()}{" "}
+            &bull;{" "}
+            {!isTvPage
+              ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
+              : `${
+                  movie.last_episode_to_air && movie.last_episode_to_air.runtime
+                }m`}{" "}
+            &bull;
             {movie.genres &&
               movie.genres.map((genre) => {
                 return (
@@ -91,14 +99,38 @@ export function MovieOverview({ logo, movie, page }) {
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                <td>{`${Math.floor(movie.runtime / 60)}h ${
-                  movie.runtime % 60
+                <td>{`${Math.floor(
+                  !isTvPage
+                    ? movie.runtime / 60
+                    : movie.last_episode_to_air &&
+                        movie.last_episode_to_air.runtime
+                )}h ${
+                  !isTvPage
+                    ? movie.runtime % 60
+                    : movie.last_episode_to_air &&
+                      movie.last_episode_to_air.runtime
                 }m`}</td>
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Release Date</td>
-                <td>{new Date(movie.release_date).getFullYear()}</td>
+                <td>
+                  {new Date(
+                    !isTvPage ? movie.release_date : movie.first_air_date
+                  ).getFullYear()}
+                </td>
               </tr>
+              {isTvPage && (
+                <tr>
+                  <td className="pr-8 py-1 text-gray-400">Seasons</td>
+                  <td>{movie.number_of_seasons}</td>
+                </tr>
+              )}
+              {isTvPage && (
+                <tr>
+                  <td className="pr-8 py-1 text-gray-400">Episodes</td>
+                  <td>{movie.number_of_episodes}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -109,15 +141,19 @@ export function MovieOverview({ logo, movie, page }) {
           <p className="text-gray-400 text-lg">{movie.overview}</p>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm">
-            <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
-            <button
-              onClick={handleReadMore}
-              className="text-primary-blue hover:font-medium transition-all"
-            >
-              {`${readMore ? "Shrink" : "Expand all"}`}
-            </button>
-          </div>
+          {movie.reviews && movie.reviews.results.length !== 0 ? (
+            <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm">
+              <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
+              <button
+                onClick={handleReadMore}
+                className="text-primary-blue hover:font-medium transition-all"
+              >
+                {`${readMore ? "Shrink" : "Expand all"}`}
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
           <div className="flex flex-col gap-2">
             {movie.reviews &&
               movie.reviews.results &&

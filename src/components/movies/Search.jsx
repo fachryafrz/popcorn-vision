@@ -11,12 +11,32 @@ import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
+import { useLocation } from "react-router-dom";
 
 export default function Search() {
   const [movies, setMovies] = useState([]);
   const [bgMovies, setBgMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
+
+  const location = useLocation();
+  const isTvPage = location.pathname.startsWith("/tv");
+
+  const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+  let params = {
+    api_key: apiKey,
+    region: "US",
+    include_adult: false,
+  };
+
+  if (isTvPage) {
+    params = {
+      api_key: apiKey,
+      watch_region: "US",
+      with_watch_providers: "2,3",
+      first_air_date_year: new Date().getFullYear() - 1,
+    };
+  }
 
   const handleSearchQuery = (e) => {
     setSearchQuery(e.target.value);
@@ -27,7 +47,9 @@ export default function Search() {
   };
 
   useEffect(() => {
-    document.title = "Search - Popcorn Prespective";
+    document.title = `Search ${
+      !isTvPage ? `Movies` : `TV Series`
+    } - Popcorn Prespective`;
   }, []);
 
   useEffect(() => {
@@ -51,12 +73,15 @@ export default function Search() {
   useEffect(() => {
     const fetchMovies = async () => {
       axios
-        .get("https://api.themoviedb.org/3/search/movie", {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            query: searchQuery.replace(/\s+/g, "+"),
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              query: searchQuery.replace(/\s+/g, "+"),
+            },
+          }
+        )
         .then((response) => {
           setMovies(response.data.results);
         });
@@ -102,7 +127,7 @@ export default function Search() {
               <figure className="aspect-square">
                 <img
                   src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
-                  alt={`${movie.title}`}
+                  alt={`${!isTvPage ? movie.title : movie.name}`}
                   className={`blur-3xl`}
                 />
               </figure>
@@ -133,8 +158,10 @@ export default function Search() {
               <React.Fragment>
                 for <q>{searchQuery}</q>
               </React.Fragment>
+            ) : !isTvPage ? (
+              `Movies`
             ) : (
-              "Movies"
+              `TV Series`
             )}
           </h2>
           <div
@@ -157,6 +184,7 @@ export default function Search() {
                     movie={movie}
                     logo={logo}
                     movieGenres={movieGenres}
+                    isTvPage={isTvPage}
                   />
                 </SwiperSlide>
               );

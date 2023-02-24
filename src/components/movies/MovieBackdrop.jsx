@@ -1,8 +1,8 @@
 import React from "react";
 
-export function MovieBackdrop({ logo, movie }) {
+export function MovieBackdrop({ logo, movie, isTvPage }) {
   return (
-    <figure className="max-h-[70vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video">
+    <figure className="max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video opacity-30">
       <div
         className={
           movie.poster_path === null
@@ -18,7 +18,7 @@ export function MovieBackdrop({ logo, movie }) {
       </div>
       <img
         src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
-        alt={movie.title}
+        alt={!isTvPage ? movie.title : movie.name}
         className="object-top"
       />
     </figure>

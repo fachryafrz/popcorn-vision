@@ -11,17 +11,6 @@ import Trending from "./components/movies/Trending";
 import MovieDetail from "./components/movies/MovieDetail";
 import Search from "./components/movies/Search";
 
-// TV
-import TVNavbar from "./components/tv/Navbar";
-import TVCopyright from "./components/tv/Copyright";
-import TVFilmSlider from "./components/tv/FilmSlider";
-import TVFooter from "./components/tv/Footer";
-import TVGenres from "./components/tv/Genres";
-import TVHomeSlider from "./components/tv/HomeSlider";
-import TVTrending from "./components/tv/Trending";
-import TVMovieDetail from "./components/tv/MovieDetail";
-import TVSearch from "./components/tv/Search";
-
 const App = () => {
   return (
     <Router>
@@ -32,12 +21,12 @@ const App = () => {
           <main className="pb-8">
             <Switch>
               <Route exact path="/">
-                <HomeSlider apiUrl="/movie/popular" />
+                <HomeSlider apiUrl="/discover/movie" />
                 <section id="genres">
                   <Genres />
                 </section>
-                <section id="popular">
-                  <FilmSlider title="Popular Now" apiUrl="/movie/popular" />
+                <section id="nowPlaying">
+                  <FilmSlider title="Now Playing" apiUrl="/movie/now_playing" />
                 </section>
                 <section id="trending">
                   <Trending apiUrl={`/trending/movie/day`} />
@@ -56,27 +45,23 @@ const App = () => {
 
               {/* TV Series */}
               <Route exact path="/tv">
-                <TVHomeSlider apiUrl="/tv/popular" />
+                <HomeSlider apiUrl="/tv/popular" />
                 <section id="popular">
-                  <TVFilmSlider title="Top Rated" apiUrl="/tv/popular" />
+                  <FilmSlider title="Airing Today" apiUrl="/tv/airing_today" />
                 </section>
                 <section id="trending">
-                  <TVTrending apiUrl="/trending/tv/day" />
+                  <Trending apiUrl="/trending/tv/day" />
                 </section>
                 <section id="popular">
-                  <TVFilmSlider
-                    title="New Releases"
-                    apiUrl="/discover/tv"
-                    releasedYear={new Date().getFullYear() - 1}
-                  />
+                  <FilmSlider title="Discover" apiUrl="/discover/tv" />
                 </section>
               </Route>
               <Route path="/tv/search">
-                <TVSearch />
+                <Search />
               </Route>
               <Route
                 path="/tv/:id"
-                render={({ match }) => <TVMovieDetail id={match.params.id} />}
+                render={({ match }) => <MovieDetail id={match.params.id} />}
               />
             </Switch>
           </main>

@@ -3,7 +3,7 @@ import * as Icons from "ionicons/icons";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-export function MoviePoster({ logo, movie }) {
+export function MoviePoster({ logo, movie, isTvPage }) {
   const history = useHistory();
 
   const handleGoBack = () => {
@@ -28,7 +28,7 @@ export function MoviePoster({ logo, movie }) {
         </div>
         <img
           src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
-          alt={movie.title}
+          alt={!isTvPage ? movie.title : movie.name}
         />
       </figure>
       <button

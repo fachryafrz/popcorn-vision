@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-export function FilmCard({ movie, logo, movieGenres }) {
+export function FilmCard({ movie, logo, movieGenres, isTvPage }) {
   return (
-    <Link to={`/movies/${movie.id}`}>
+    <Link to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}>
       <figure className="rounded-lg overflow-hidden aspect-poster">
         <div
           className={
@@ -12,20 +12,30 @@ export function FilmCard({ movie, logo, movieGenres }) {
               : `hidden`
           }
         >
-          <img src={logo} alt={movie.title} className="w-fit h-fit" />
+          <img
+            src={logo}
+            alt={!isTvPage ? movie.title : movie.name}
+            className="w-fit h-fit"
+          />
         </div>
         <img
           src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
+          alt={!isTvPage ? movie.title : movie.name}
         />
       </figure>
       <div className="mt-2">
-        <h3 title={movie.title} className="font-bold text-lg line-clamp-1">
-          {movie.title}
+        <h3
+          title={!isTvPage ? movie.title : movie.name}
+          className="font-bold text-lg line-clamp-1"
+        >
+          {!isTvPage ? movie.title : movie.name}
         </h3>
         <div className="whitespace-nowrap flex items-center gap-1">
           <span className="text-gray-400 whitespace-nowrap">
-            {new Date(movie.release_date).getFullYear()} &bull;
+            {new Date(
+              !isTvPage ? movie.release_date : movie.first_air_date
+            ).getFullYear()}{" "}
+            &bull;
           </span>
           {movieGenres &&
             movieGenres.map(

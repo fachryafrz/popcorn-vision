@@ -5,7 +5,7 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
 
-export function SimilarMovies({ logo, movie, genres }) {
+export function SimilarMovies({ logo, movie, genres, isTvPage }) {
   return (
     <div id="Similar Movies">
       <h2 className="sr-only">Recommendations</h2>
@@ -49,7 +49,12 @@ export function SimilarMovies({ logo, movie, genres }) {
                 key={index}
                 className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
               >
-                <FilmCard movie={movie} logo={logo} movieGenres={movieGenres} />
+                <FilmCard
+                  movie={movie}
+                  logo={logo}
+                  movieGenres={movieGenres}
+                  isTvPage={isTvPage}
+                />
               </SwiperSlide>
             );
           })}

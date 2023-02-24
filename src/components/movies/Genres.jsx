@@ -41,12 +41,6 @@ const Genres = () => {
             <div>
               <h3 className="font-bold text-lg">{genre.type}</h3>
               <p className="text-gray-400">{genre.count}+ Movies</p>
-              <a
-                href="#!"
-                className="text-primary-blue hover:underline hover:underline-offset-2"
-              >
-                View more
-              </a>
             </div>
           </div>
         ))}
