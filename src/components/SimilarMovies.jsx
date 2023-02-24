@@ -59,24 +59,34 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
             );
           })}
 
-        {movie.recommendations && movie.recommendations.results.length !== 0 ? (
-          <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[1rem] flex justify-between items-center xl:max-w-none">
-            <p className="font-bold text-xl lg:text-2xl">Recommendations</p>
-            <div className="flex gap-4 items-center">
-              <button className="prev h-[1.5rem]">
+        <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[1rem] flex justify-between items-center xl:max-w-none">
+          <p className="font-bold text-xl lg:text-2xl">
+            {movie.recommendations && movie.recommendations.results.length !== 0
+              ? `Recommendations`
+              : ``}
+          </p>
+          <div className="flex gap-4 items-center">
+            <button className="prev h-[1.5rem]">
+              {movie.recommendations &&
+              movie.recommendations.results.length !== 0 ? (
                 <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
-              </button>
-              <button className="next h-[1.5rem]">
+              ) : (
+                ``
+              )}
+            </button>
+            <button className="next h-[1.5rem]">
+              {movie.recommendations &&
+              movie.recommendations.results.length !== 0 ? (
                 <IonIcon
                   icon={chevronForward}
                   className="text-[1.5rem]"
                 ></IonIcon>
-              </button>
-            </div>
+              ) : (
+                ``
+              )}
+            </button>
           </div>
-        ) : (
-          ""
-        )}
+        </div>
       </Swiper>
     </div>
   );

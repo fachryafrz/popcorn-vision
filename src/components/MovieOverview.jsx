@@ -151,12 +151,6 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
       </div>
       <div className="text-white flex flex-col gap-6">
         <div className="flex flex-col gap-2 ">
-          {loading && (
-            <Loading
-              height="[20px] sm:h-[150px]"
-              className={`h-[20px] sm:h-[150px]`}
-            />
-          )}
           <h2 className="font-bold text-2xl text-white m-0">Overview</h2>
           <p className="text-gray-400 text-lg">{movie.overview}</p>
         </div>

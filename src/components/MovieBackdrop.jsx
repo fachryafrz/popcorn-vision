@@ -17,7 +17,7 @@ export function MovieBackdrop({ logo, movie, isTvPage, loading }) {
           className="object-none w-fit h-fit"
         />
       </div>
-      {loading && <Loading />}
+      {loading && <Loading height="z-0" />}
       <img
         src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
         alt={!isTvPage ? movie.title : movie.name}
