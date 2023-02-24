@@ -24,20 +24,6 @@ export default function Search() {
   const isTvPage = location.pathname.startsWith("/tv");
 
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
-  let params = {
-    api_key: apiKey,
-    region: "US",
-    include_adult: false,
-  };
-
-  if (isTvPage) {
-    params = {
-      api_key: apiKey,
-      watch_region: "US",
-      with_watch_providers: "2,3",
-      first_air_date_year: new Date().getFullYear() - 1,
-    };
-  }
 
   const handleSearchQuery = (e) => {
     setSearchQuery(e.target.value);
@@ -45,6 +31,21 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
+    axios
+      .get(
+        `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
+        {
+          params: {
+            api_key: apiKey,
+            query: searchQuery.replace(/\s+/g, "+"),
+          },
+        }
+      )
+      .then((response) => {
+        setMovies(response.data.results);
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -58,11 +59,16 @@ export default function Search() {
 
     const fetchBgMovies = async () => {
       axios
-        .get("https://api.themoviedb.org/3/movie/now_playing", {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/now_playing`,
+          {
+            params: {
+              api_key: apiKey,
+            },
+          }
+        )
         .then((response) => {
           setBgMovies(response.data.results.slice(0, 5));
         });
@@ -70,32 +76,6 @@ export default function Search() {
 
     fetchBgMovies();
   }, []);
-
-  useEffect(() => {
-    setLoading(true);
-    const fetchMovies = async () => {
-      axios
-        .get(
-          `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
-          {
-            params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-              query: searchQuery.replace(/\s+/g, "+"),
-            },
-          }
-        )
-        .then((response) => {
-          setMovies(response.data.results);
-          setTimeout(() => {
-            setLoading(false);
-          }, 2000);
-        });
-    };
-
-    if (searchQuery.length > 1) {
-      fetchMovies();
-    }
-  }, [searchQuery]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -106,7 +86,7 @@ export default function Search() {
           }/list`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: apiKey,
             },
           }
         )
