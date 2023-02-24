@@ -1,4 +1,4 @@
-import footer from "../../footer.json";
+import footer from "../footer.json";
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 

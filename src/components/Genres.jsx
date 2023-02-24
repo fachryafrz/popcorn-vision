@@ -1,4 +1,4 @@
-import genres from "../../genres.json";
+import genres from "../genres.json";
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useEffect, useState } from "react";

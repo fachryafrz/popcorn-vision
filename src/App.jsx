@@ -1,15 +1,15 @@
 import logo from "/popcorn.png";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // Movies
-import Navbar from "./components/movies/Navbar";
-import Copyright from "./components/movies/Copyright";
-import FilmSlider from "./components/movies/FilmSlider";
-import Footer from "./components/movies/Footer";
-import Genres from "./components/movies/Genres";
-import HomeSlider from "./components/movies/HomeSlider";
-import Trending from "./components/movies/Trending";
-import MovieDetail from "./components/movies/MovieDetail";
-import Search from "./components/movies/Search";
+import Navbar from "./components/Navbar";
+import Copyright from "./components/Copyright";
+import FilmSlider from "./components/FilmSlider";
+import Footer from "./components/Footer";
+import Genres from "./components/Genres";
+import HomeSlider from "./components/HomeSlider";
+import Trending from "./components/Trending";
+import MovieDetail from "./components/MovieDetail";
+import Search from "./components/Search";
 
 const App = () => {
   return (

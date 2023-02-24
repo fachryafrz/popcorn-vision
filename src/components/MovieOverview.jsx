@@ -99,17 +99,16 @@ export function MovieOverview({ logo, movie, page, isTvPage }) {
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                <td>{`${Math.floor(
-                  !isTvPage
-                    ? movie.runtime / 60
-                    : movie.last_episode_to_air &&
+                <td>
+                  {!isTvPage
+                    ? `${Math.floor(movie.runtime / 60)}h ${
+                        movie.runtime % 60
+                      }m`
+                    : `${
+                        movie.last_episode_to_air &&
                         movie.last_episode_to_air.runtime
-                )}h ${
-                  !isTvPage
-                    ? movie.runtime % 60
-                    : movie.last_episode_to_air &&
-                      movie.last_episode_to_air.runtime
-                }m`}</td>
+                      }m`}
+                </td>
               </tr>
               <tr>
                 <td className="pr-8 py-1 text-gray-400">Release Date</td>
