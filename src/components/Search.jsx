@@ -18,6 +18,7 @@ export default function Search() {
   const [bgMovies, setBgMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -71,6 +72,7 @@ export default function Search() {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     const fetchMovies = async () => {
       axios
         .get(
@@ -84,6 +86,7 @@ export default function Search() {
         )
         .then((response) => {
           setMovies(response.data.results);
+          setLoading(false);
         });
     };
 
@@ -185,6 +188,7 @@ export default function Search() {
                     logo={logo}
                     movieGenres={movieGenres}
                     isTvPage={isTvPage}
+                    loading={loading}
                   />
                 </SwiperSlide>
               );
