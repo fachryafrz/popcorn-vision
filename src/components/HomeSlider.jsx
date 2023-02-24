@@ -56,6 +56,8 @@ const HomeSlider = ({ apiUrl }) => {
   }, [movies]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     document.title = "Popcorn Prespective";
   }, []);
 

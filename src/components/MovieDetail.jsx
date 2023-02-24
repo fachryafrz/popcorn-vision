@@ -47,7 +47,9 @@ const MovieDetail = ({ id }) => {
         )
         .then((response) => {
           setMovie(response.data);
-          setLoading(false);
+          setTimeout(() => {
+            setLoading(false);
+          }, 2000);
         });
     };
 

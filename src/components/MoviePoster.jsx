@@ -27,11 +27,14 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
             className="object-none w-fit h-fit"
           />
         </div>
-        {loading && <Loading />}
-        <img
-          src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
-          alt={!isTvPage ? movie.title : movie.name}
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <img
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt={!isTvPage ? movie.title : movie.name}
+          />
+        )}
       </figure>
       <button
         onClick={handleGoBack}

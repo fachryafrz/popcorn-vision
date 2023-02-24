@@ -19,15 +19,19 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
             className="w-fit h-fit"
           />
         </div>
-        {loading && <Loading />}
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={!isTvPage ? movie.title : movie.name}
-        />
+        {loading ? (
+          <Loading />
+        ) : (
+          <img
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt={!isTvPage ? movie.title : movie.name}
+          />
+        )}
       </figure>
       <div className="mt-2">
-        {loading && <Loading height="[20px]" />}
-        {!loading && (
+        {loading ? (
+          <Loading height="[20px]" />
+        ) : (
           <h3
             title={!isTvPage ? movie.title : movie.name}
             className="font-bold text-lg line-clamp-1"
@@ -35,8 +39,9 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
             {!isTvPage ? movie.title : movie.name}
           </h3>
         )}
-        {loading && <Loading height="[10px] mt-1" />}
-        {!loading && (
+        {loading ? (
+          <Loading height="[10px] mt-1" />
+        ) : (
           <div className="whitespace-nowrap flex items-center gap-1">
             <span className="text-gray-400 whitespace-nowrap">
               {new Date(

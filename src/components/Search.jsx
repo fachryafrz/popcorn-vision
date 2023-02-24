@@ -86,7 +86,9 @@ export default function Search() {
         )
         .then((response) => {
           setMovies(response.data.results);
-          setLoading(false);
+          setTimeout(() => {
+            setLoading(false);
+          }, 2000);
         });
     };
 
