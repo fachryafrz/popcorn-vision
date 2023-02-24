@@ -36,7 +36,7 @@ const App = () => {
                 </section>
               </Route>
               <Route exact path="/search">
-                <Search />
+                <Search apiUrl={`/movie/now_playing`} />
               </Route>
               <Route
                 path="/movies/:id"
@@ -57,7 +57,7 @@ const App = () => {
                 </section>
               </Route>
               <Route path="/tv/search">
-                <Search />
+                <Search apiUrl={`/tv/airing_today`} />
               </Route>
               <Route
                 path="/tv/:id"

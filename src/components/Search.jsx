@@ -13,7 +13,7 @@ import { search } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
 import { useLocation } from "react-router-dom";
 
-export default function Search() {
+export default function Search({ apiUrl }) {
   const [movies, setMovies] = useState([]);
   const [bgMovies, setBgMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,16 +61,11 @@ export default function Search() {
 
     const fetchBgMovies = async () => {
       axios
-        .get(
-          `https://api.themoviedb.org/3/${
-            !isTvPage ? `movie` : `tv`
-          }/now_playing`,
-          {
-            params: {
-              api_key: apiKey,
-            },
-          }
-        )
+        .get(`https://api.themoviedb.org/3${apiUrl}`, {
+          params: {
+            api_key: apiKey,
+          },
+        })
         .then((response) => {
           setBgMovies(response.data.results.slice(0, 5));
         });
