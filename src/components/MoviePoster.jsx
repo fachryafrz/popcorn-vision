@@ -1,9 +1,10 @@
+import { Loading } from "./Loading";
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-export function MoviePoster({ logo, movie, isTvPage }) {
+export function MoviePoster({ logo, movie, isTvPage, loading }) {
   const history = useHistory();
 
   const handleGoBack = () => {
@@ -26,6 +27,7 @@ export function MoviePoster({ logo, movie, isTvPage }) {
             className="object-none w-fit h-fit"
           />
         </div>
+        {loading && <Loading />}
         <img
           src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
           alt={!isTvPage ? movie.title : movie.name}

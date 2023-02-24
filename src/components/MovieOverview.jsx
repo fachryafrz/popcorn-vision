@@ -2,8 +2,9 @@ import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Loading } from "./Loading";
 
-export function MovieOverview({ logo, movie, page, isTvPage }) {
+export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   const [readMore, setReadMore] = useState(false);
   const history = useHistory();
 
@@ -18,7 +19,7 @@ export function MovieOverview({ logo, movie, page, isTvPage }) {
     <div className="flex flex-col gap-6 self-start w-full">
       <div className="flex gap-4 items-center md:gap-0">
         <div className="min-w-fit flex flex-col gap-1">
-          <figure className="max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
+          <figure className="h-[150px] max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
             <div
               className={
                 movie.poster_path === null
@@ -32,6 +33,7 @@ export function MovieOverview({ logo, movie, page, isTvPage }) {
                 className="w-fit h-fit"
               />
             </div>
+            {loading && <Loading />}
             <img
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
               alt={!isTvPage ? movie.title : movie.name}
@@ -49,13 +51,24 @@ export function MovieOverview({ logo, movie, page, isTvPage }) {
             Go Back
           </button>
         </div>
-        <div className="flex flex-col gap-4">
-          <h1
-            title={!isTvPage ? movie.title : movie.name}
-            className="font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
-          >
-            {!isTvPage ? movie.title : movie.name}
-          </h1>
+        <div className="flex flex-col gap-4 w-full">
+          {loading && <Loading height="[50px]" className={`h-[50px]`} />}
+          {!loading && (
+            <h1
+              title={!isTvPage ? movie.title : movie.name}
+              className="font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
+            >
+              {!isTvPage ? movie.title : movie.name}
+            </h1>
+          )}
+
+          {loading && (
+            <Loading
+              height="[20px] sm:h-[150px]"
+              className={`h-[20px] sm:h-[150px]`}
+            />
+          )}
+
           <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
             {new Date(
               !isTvPage ? movie.release_date : movie.first_air_date
@@ -79,63 +92,71 @@ export function MovieOverview({ logo, movie, page, isTvPage }) {
                 );
               })}
           </div>
-          <table className="max-w-fit hidden sm:block">
-            <tbody>
-              <tr>
-                <td className="pr-8 py-1 text-gray-400">Genre</td>
-                <td className="flex gap-1">
-                  {movie.genres &&
-                    movie.genres.map((genre) => {
-                      return (
-                        <span
-                          key={genre.id}
-                          className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray self-center"
-                        >
-                          {genre.name}
-                        </span>
-                      );
-                    })}
-                </td>
-              </tr>
-              <tr>
-                <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                <td>
-                  {!isTvPage
-                    ? `${Math.floor(movie.runtime / 60)}h ${
-                        movie.runtime % 60
-                      }m`
-                    : `${
-                        movie.last_episode_to_air &&
-                        movie.last_episode_to_air.runtime
-                      }m`}
-                </td>
-              </tr>
-              <tr>
-                <td className="pr-8 py-1 text-gray-400">Release Date</td>
-                <td>
-                  {new Date(
-                    !isTvPage ? movie.release_date : movie.first_air_date
-                  ).getFullYear()}
-                </td>
-              </tr>
-              {isTvPage && (
+          {!loading && (
+            <table className="max-w-fit hidden sm:block">
+              <tbody>
                 <tr>
-                  <td className="pr-8 py-1 text-gray-400">Seasons</td>
-                  <td>{movie.number_of_seasons}</td>
+                  <td className="pr-8 py-1 text-gray-400">Genre</td>
+                  <td className="flex gap-1">
+                    {movie.genres &&
+                      movie.genres.map((genre) => {
+                        return (
+                          <span
+                            key={genre.id}
+                            className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray self-center"
+                          >
+                            {genre.name}
+                          </span>
+                        );
+                      })}
+                  </td>
                 </tr>
-              )}
-              {isTvPage && (
                 <tr>
-                  <td className="pr-8 py-1 text-gray-400">Episodes</td>
-                  <td>{movie.number_of_episodes}</td>
+                  <td className="pr-8 py-1 text-gray-400">Runtime</td>
+                  <td>
+                    {!isTvPage
+                      ? `${Math.floor(movie.runtime / 60)}h ${
+                          movie.runtime % 60
+                        }m`
+                      : `${
+                          movie.last_episode_to_air &&
+                          movie.last_episode_to_air.runtime
+                        }m`}
+                  </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+                <tr>
+                  <td className="pr-8 py-1 text-gray-400">Release Date</td>
+                  <td>
+                    {new Date(
+                      !isTvPage ? movie.release_date : movie.first_air_date
+                    ).getFullYear()}
+                  </td>
+                </tr>
+                {isTvPage && (
+                  <tr>
+                    <td className="pr-8 py-1 text-gray-400">Seasons</td>
+                    <td>{movie.number_of_seasons}</td>
+                  </tr>
+                )}
+                {isTvPage && (
+                  <tr>
+                    <td className="pr-8 py-1 text-gray-400">Episodes</td>
+                    <td>{movie.number_of_episodes}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
       <div className="text-white flex flex-col gap-6">
         <div className="flex flex-col gap-2 ">
+          {loading && (
+            <Loading
+              height="[20px] sm:h-[150px]"
+              className={`h-[20px] sm:h-[150px]`}
+            />
+          )}
           <h2 className="font-bold text-2xl text-white m-0">Overview</h2>
           <p className="text-gray-400 text-lg">{movie.overview}</p>
         </div>

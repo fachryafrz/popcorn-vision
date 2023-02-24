@@ -14,6 +14,7 @@ const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
   const [genres, setGenres] = useState([]);
   const [page, setPage] = useState();
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -34,6 +35,8 @@ const MovieDetail = ({ id }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    setLoading(true);
+
     const fetchMovie = async () => {
       axios
         .get(
@@ -44,6 +47,7 @@ const MovieDetail = ({ id }) => {
         )
         .then((response) => {
           setMovie(response.data);
+          setLoading(false);
         });
     };
 
@@ -97,20 +101,36 @@ const MovieDetail = ({ id }) => {
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
       {/* Movie Background/Backdrop */}
-      <MovieBackdrop logo={logo} movie={movie} isTvPage={isTvPage} />
-      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[24rem] lg:-mt-[30rem]">
+      <MovieBackdrop
+        logo={logo}
+        movie={movie}
+        isTvPage={isTvPage}
+        loading={loading}
+      />
+      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[22rem]">
         <div className="mx-auto max-w-7xl flex gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <MoviePoster logo={logo} movie={movie} isTvPage={isTvPage} />
+          <MoviePoster
+            logo={logo}
+            movie={movie}
+            isTvPage={isTvPage}
+            loading={loading}
+          />
           {/* Middle */}
           <MovieOverview
             logo={logo}
             movie={movie}
             page={page}
             isTvPage={isTvPage}
+            loading={loading}
           />
           {/* Right */}
-          <CastsList logo={logo} movie={movie} isTvPage={isTvPage} />
+          <CastsList
+            logo={logo}
+            movie={movie}
+            isTvPage={isTvPage}
+            loading={loading}
+          />
         </div>
         {/* Similar */}
         <SimilarMovies
@@ -118,6 +138,7 @@ const MovieDetail = ({ id }) => {
           movie={movie}
           genres={genres}
           isTvPage={isTvPage}
+          loading={loading}
         />
       </div>
     </div>

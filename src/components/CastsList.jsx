@@ -3,7 +3,7 @@ import * as Icons from "ionicons/icons";
 import { useState } from "react";
 import Casts from "./Casts";
 
-export function CastsList({ logo, movie }) {
+export function CastsList({ logo, movie, loading }) {
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
 
@@ -20,7 +20,14 @@ export function CastsList({ logo, movie }) {
           movie.credits.cast
             .slice(0, showAllActors ? movie.credits.cast.length : numActors)
             .map((actor, index) => {
-              return <Casts logo={logo} actor={actor} key={index} />;
+              return (
+                <Casts
+                  logo={logo}
+                  actor={actor}
+                  key={index}
+                  loading={loading}
+                />
+              );
             })}
         {movie.credits &&
         movie.credits.cast &&

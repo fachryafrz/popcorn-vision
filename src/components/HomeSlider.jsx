@@ -15,9 +15,11 @@ import "swiper/css/effect-fade";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Loading } from "./Loading";
 
 const HomeSlider = ({ apiUrl }) => {
   const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -46,6 +48,7 @@ const HomeSlider = ({ apiUrl }) => {
         })
         .then((response) => {
           setMovies(response.data.results.slice(0, 5));
+          setLoading(false);
         });
     };
 
@@ -119,7 +122,7 @@ const HomeSlider = ({ apiUrl }) => {
                 <div className="flex gap-4 mt-4">
                   <Link
                     to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}
-                    className="w-full text-sm p-4 md:px-8 rounded-lg bg-primary-blue bg-opacity-60 uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hover:bg-opacity-100 hover:scale-105 active:scale-100 md:text-base"
+                    className="btn bg-primary-blue bg-opacity-60"
                   >
                     <IonIcon
                       icon={informationCircleOutline}
@@ -132,7 +135,7 @@ const HomeSlider = ({ apiUrl }) => {
                       !isTvPage ? movie.title : movie.name
                     }`}
                     target="_blank"
-                    className="w-full text-sm p-4 md:px-8 rounded-lg bg-base-gray bg-opacity-40 uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hover:bg-opacity-100 hover:scale-105 active:scale-100 md:text-base"
+                    className="btn bg-base-gray bg-opacity-40"
                   >
                     <IonIcon
                       icon={playOutline}
