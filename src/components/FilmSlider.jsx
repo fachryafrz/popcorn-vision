@@ -53,11 +53,16 @@ const FilmSlider = ({ title, apiUrl }) => {
   useEffect(() => {
     const fetchGenres = async () => {
       axios
-        .get("https://api.themoviedb.org/3/genre/movie/list", {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/genre/${
+            !isTvPage ? `movie` : `tv`
+          }/list`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            },
+          }
+        )
         .then((response) => {
           setGenres(response.data.genres);
         });
