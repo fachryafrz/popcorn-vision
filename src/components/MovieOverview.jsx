@@ -175,7 +175,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
         </div>
         <div className="flex flex-col gap-2">
           {movie.reviews && movie.reviews.results.length !== 0 ? (
-            <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm">
+            <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
               {loading ? (
                 <Loading height="[30px] max-w-[100px]" className={`h-[30px]`} />
               ) : (
