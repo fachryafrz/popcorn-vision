@@ -18,4 +18,8 @@
   .btn {
     @apply w-full text-sm p-4 md:px-8 rounded-lg uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hover:bg-opacity-100 hover:scale-105 active:scale-100 md:text-base;
   }
+
+  .prose * {
+    @apply !text-gray-400;
+  }
 }

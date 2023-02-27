@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Loading } from "./Loading";
+import ReactMarkdown from "react-markdown";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -146,11 +147,17 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 </tr>
                 <tr>
                   <td className="pr-8 py-1 text-gray-400">Release Date</td>
-                  <td>
-                    {new Date(
-                      !isTvPage ? movie.release_date : movie.first_air_date
-                    ).getFullYear()}
-                  </td>
+                  {!isTvPage ? (
+                    <td>{new Date(movie.release_date).getFullYear()}</td>
+                  ) : (
+                    <td>
+                      {new Date(movie.first_air_date).getFullYear()}{" "}
+                      {new Date(movie.last_air_date).getFullYear() ===
+                      new Date(movie.first_air_date).getFullYear()
+                        ? null
+                        : `- ${new Date(movie.last_air_date).getFullYear()}`}
+                    </td>
+                  )}
                 </tr>
                 {isTvPage && (
                   <tr>
@@ -309,12 +316,12 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     <div
                       className={`${
                         readMore ? "" : "line-clamp-3"
-                      } prose max-w-none text-gray-400`}
+                      } prose max-w-none !text-gray-400`}
                     >
                       {loading ? (
                         <Loading height="[150px]" className={`h-[150px]`} />
                       ) : (
-                        <div>{review.content}</div>
+                        <ReactMarkdown children={review.content} />
                       )}
                     </div>
                   </div>
