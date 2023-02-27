@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper";
 import axios from "axios";
@@ -19,6 +19,7 @@ export default function Search({ apiUrl }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
+  const searchRef = useRef();
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -31,6 +32,7 @@ export default function Search({ apiUrl }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    searchRef.current.blur();
     setLoading(true);
     axios
       .get(
@@ -129,6 +131,7 @@ export default function Search({ apiUrl }) {
           <IonIcon icon={search} className={`text-[1.25rem]`} />
           <form onSubmit={handleSubmit} className={`w-full`}>
             <input
+              ref={searchRef}
               onChange={handleSearchQuery}
               autoFocus={true}
               type="text"
