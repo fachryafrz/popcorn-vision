@@ -83,9 +83,11 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             />
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
-              {new Date(
-                !isTvPage ? movie.release_date : movie.first_air_date
-              ).getFullYear()}{" "}
+              {!isTvPage
+                ? movie.release_date
+                : `${new Date(movie.first_air_date).getFullYear()}-${new Date(
+                    movie.last_air_date
+                  ).getFullYear()}`}{" "}
               &bull;{" "}
               {!isTvPage
                 ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
