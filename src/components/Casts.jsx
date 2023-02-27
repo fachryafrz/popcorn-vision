@@ -26,7 +26,7 @@ const Casts = ({ logo, actor, index, loading }) => {
         {loading ? (
           <Loading height="[20px]" className="!w-full" />
         ) : (
-          <h3 title={actor.name} className="font-medium line-clamp-2">
+          <h3 title={actor.name} className="font-medium line-clamp-1">
             {actor.name}
           </h3>
         )}

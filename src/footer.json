@@ -5,23 +5,23 @@
     "links": [
       {
         "name": "Movies",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "TV Channel",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Cinema Ticket",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Newsletter",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Blogs Article",
-        "url": "#!"
+        "url": "/"
       }
     ]
   },
@@ -31,19 +31,19 @@
     "links": [
       {
         "name": "Sign Up",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Download App",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Choose Plan",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Pay Method",
-        "url": "#!"
+        "url": "/"
       }
     ]
   },
@@ -53,23 +53,23 @@
     "links": [
       {
         "name": "Partnership",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Terms of Use",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "About",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Pricing",
-        "url": "#!"
+        "url": "/"
       },
       {
         "name": "Contact",
-        "url": "#!"
+        "url": "/"
       }
     ]
   }

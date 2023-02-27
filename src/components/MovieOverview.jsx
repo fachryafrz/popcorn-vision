@@ -27,7 +27,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   };
   return (
     <div className="flex flex-col gap-6 self-start w-full">
-      <div className="flex gap-4 items-center md:gap-0">
+      <div className="flex gap-2 items-center md:gap-0">
         <div className="min-w-fit flex flex-col gap-1">
           <figure className="h-[150px] max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
             <div
@@ -83,11 +83,17 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             />
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
-              {!isTvPage
-                ? movie.release_date
-                : `${new Date(movie.first_air_date).getFullYear()}-${new Date(
-                    movie.last_air_date
-                  ).getFullYear()}`}{" "}
+              {!isTvPage ? (
+                new Date(movie.release_date).getFullYear()
+              ) : (
+                <span>
+                  {new Date(movie.first_air_date).getFullYear()}{" "}
+                  {new Date(movie.last_air_date).getFullYear() ===
+                  new Date(movie.first_air_date).getFullYear()
+                    ? null
+                    : `- ${new Date(movie.last_air_date).getFullYear()}`}
+                </span>
+              )}
               &bull;{" "}
               {!isTvPage
                 ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
@@ -191,51 +197,56 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             <p className="text-gray-400 text-lg">{movie.overview}</p>
           )}
         </div>
-        <div className="flex flex-col gap-2 ">
-          {loading ? (
-            <Loading height="auto aspect-video !w-full" className={`h-auto`} />
-          ) : (
-            <div className="container max-w-fit">
-              <Swiper
-                modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-                thumbs={{ swiper: thumbsSwiper }}
-                spaceBetween={16}
-                navigation={{
-                  enabled: true,
-                  nextEl: "#next",
-                  prevEl: "#prev",
-                }}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: true,
-                  pauseOnMouseEnter: true,
-                }}
-                style={{
-                  "--swiper-navigation-color": "#fff",
-                  "--swiper-pagination-color": "#fff",
-                }}
-                className="relative"
-              >
-                {movie.images &&
-                  movie.images.backdrops.map((img) => {
-                    return (
-                      <SwiperSlide>
-                        <figure className="rounded-lg overflow-hidden">
-                          <img
-                            src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
-                            alt={``}
-                          />
-                        </figure>
-                      </SwiperSlide>
-                    );
-                  })}
+        {movie.images && movie.images.backdrops.length !== 0 ? (
+          <div className="flex flex-col gap-2 ">
+            {loading ? (
+              <Loading
+                height="auto aspect-video !w-full"
+                className={`h-auto`}
+              />
+            ) : (
+              <div className="container max-w-fit">
+                <Swiper
+                  modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+                  thumbs={{ swiper: thumbsSwiper }}
+                  spaceBetween={16}
+                  navigation={{
+                    enabled: true,
+                    nextEl: "#next",
+                    prevEl: "#prev",
+                  }}
+                  autoplay={{
+                    delay: 3000,
+                    disableOnInteraction: true,
+                    pauseOnMouseEnter: true,
+                  }}
+                  style={{
+                    "--swiper-navigation-color": "#fff",
+                    "--swiper-pagination-color": "#fff",
+                  }}
+                  className="relative"
+                >
+                  {movie.images &&
+                    movie.images.backdrops.map((img, index) => {
+                      return (
+                        <SwiperSlide key={index}>
+                          <figure className="rounded-lg overflow-hidden">
+                            <img
+                              src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
+                              alt={``}
+                            />
+                          </figure>
+                        </SwiperSlide>
+                      );
+                    })}
 
-                <div id="next" className="swiper-btn-next h-full"></div>
-                <div id="prev" className="swiper-btn-prev h-full"></div>
-              </Swiper>
-            </div>
-          )}
-        </div>
+                  <div id="next" className="swiper-btn-next h-full"></div>
+                  <div id="prev" className="swiper-btn-prev h-full"></div>
+                </Swiper>
+              </div>
+            )}
+          </div>
+        ) : null}
         <div className="flex flex-col gap-2">
           {movie.reviews && movie.reviews.results.length !== 0 ? (
             <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
@@ -251,9 +262,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 {`${readMore ? "Shrink" : "Expand all"}`}
               </button>
             </div>
-          ) : (
-            ""
-          )}
+          ) : null}
           <div className="flex flex-col gap-2">
             {movie.reviews &&
               movie.reviews.results &&

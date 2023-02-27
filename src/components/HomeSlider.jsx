@@ -36,7 +36,6 @@ const HomeSlider = ({ apiUrl }) => {
       api_key: apiKey,
       watch_region: "US",
       with_watch_providers: "2,3",
-      first_air_date_year: new Date().getFullYear() - 1,
     };
   }
 
@@ -87,7 +86,7 @@ const HomeSlider = ({ apiUrl }) => {
             >
               <figure className="sm:absolute sm:inset-x-0 sm:top-0 min-h-fit sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
-                  src={`https://image.tmdb.org/t/p/w1280${movie.poster_path}`}
+                  src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
                   alt={!isTvPage ? movie.title : movie.name}
                   className="object-top sm:hidden"
                 />

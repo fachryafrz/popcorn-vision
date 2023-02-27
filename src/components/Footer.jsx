@@ -33,7 +33,7 @@ const Footer = () => {
                     key={link.name}
                     className="font-light tracking-wider hover:font-normal transition-all max-w-fit"
                   >
-                    <Link href={isTvPage ? `/tv` : `/`}>{link.name}</Link>
+                    <Link to={isTvPage ? `/tv` : `/`}>{link.name}</Link>
                   </li>
                 ))}
             </ul>

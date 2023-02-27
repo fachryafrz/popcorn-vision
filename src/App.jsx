@@ -45,15 +45,15 @@ const App = () => {
 
               {/* TV Series */}
               <Route exact path="/tv">
-                <HomeSlider apiUrl="/tv/popular" />
-                <section id="popular">
-                  <FilmSlider title="Airing Today" apiUrl="/tv/airing_today" />
+                <HomeSlider apiUrl="/discover/tv" />
+                <section id="onTheAir">
+                  <FilmSlider title="On The Air" apiUrl="/tv/on_the_air" />
                 </section>
                 <section id="trending">
                   <Trending apiUrl="/trending/tv/day" />
                 </section>
-                <section id="popular">
-                  <FilmSlider title="Discover" apiUrl="/discover/tv" />
+                <section id="topRated">
+                  <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
                 </section>
               </Route>
               <Route path="/tv/search">

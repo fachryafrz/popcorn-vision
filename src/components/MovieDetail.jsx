@@ -47,9 +47,11 @@ const MovieDetail = ({ id }) => {
         )
         .then((response) => {
           setMovie(response.data);
-          setTimeout(() => {
-            setLoading(false);
-          }, 2000);
+          document.onload(
+            setTimeout(() => {
+              setLoading(false);
+            }, 2000)
+          );
         });
     };
 
@@ -110,7 +112,7 @@ const MovieDetail = ({ id }) => {
         loading={loading}
       />
       <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[22rem]">
-        <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
+        <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
           <div className="md:col-span-3">
             <MoviePoster

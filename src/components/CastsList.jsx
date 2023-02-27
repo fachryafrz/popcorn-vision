@@ -12,7 +12,11 @@ export function CastsList({ logo, movie, loading }) {
   };
 
   return (
-    <div className="hidden max-w-full lg:flex flex-col gap-4 self-start sticky top-20 w-max">
+    <div
+      className={`hidden max-w-full lg:flex flex-col gap-4 self-start w-max ${
+        !showAllActors ? `sticky top-20` : null
+      }`}
+    >
       <h2 className="font-bold text-2xl">Cast & Crews</h2>
       <div className="flex flex-col gap-4">
         {movie.credits &&
@@ -31,7 +35,7 @@ export function CastsList({ logo, movie, loading }) {
             })}
         {movie.credits &&
         movie.credits.cast &&
-        movie.credits.cast.length > 5 ? (
+        movie.credits.cast.length > numActors ? (
           <button
             onClick={handleShowAllActors}
             className={`text-primary-blue ${
