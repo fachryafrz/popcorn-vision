@@ -43,7 +43,7 @@ const FilmSlider = ({ title, apiUrl }) => {
           params,
         })
         .then((response) => {
-          setMovies(response.data.results);
+          setMovies(response.data.results.slice(0, 10));
         });
     };
 

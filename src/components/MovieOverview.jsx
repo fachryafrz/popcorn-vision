@@ -2,12 +2,13 @@ import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper";
+import { Autoplay, EffectFade, FreeMode, Navigation, Thumbs } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Loading } from "./Loading";
 import ReactMarkdown from "react-markdown";
 
 import "swiper/css";
+import "swiper/css/effect-fade";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
@@ -207,7 +208,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             ) : (
               <div className="container max-w-fit">
                 <Swiper
-                  modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+                  modules={[FreeMode, Navigation, Thumbs, Autoplay, EffectFade]}
+                  effect="fade"
                   thumbs={{ swiper: thumbsSwiper }}
                   spaceBetween={16}
                   navigation={{
@@ -247,8 +249,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             )}
           </div>
         ) : null}
-        <div className="flex flex-col gap-2">
-          {movie.reviews && movie.reviews.results.length !== 0 ? (
+        {movie.reviews && movie.reviews.results.length !== 0 ? (
+          <div className="flex flex-col gap-2">
             <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
               {loading ? (
                 <Loading height="[30px] max-w-[100px]" className={`h-[30px]`} />
@@ -262,84 +264,86 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 {`${readMore ? "Shrink" : "Expand all"}`}
               </button>
             </div>
-          ) : null}
-          <div className="flex flex-col gap-2">
-            {movie.reviews &&
-              movie.reviews.results &&
-              movie.reviews.results.map((review, index) => {
-                const dateStr = review.updated_at;
-                const date = new Date(dateStr);
-                const options = {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                };
-                const formattedDate = date.toLocaleString("en-US", options);
+            <div className="flex flex-col gap-2">
+              {movie.reviews &&
+                movie.reviews.results &&
+                movie.reviews.results.map((review, index) => {
+                  const dateStr = review.updated_at;
+                  const date = new Date(dateStr);
+                  const options = {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  };
+                  const formattedDate = date.toLocaleString("en-US", options);
 
-                const imgUrlAPI = review.author_details.avatar_path;
-                const imgUrl = imgUrlAPI?.startsWith("/http")
-                  ? imgUrlAPI.replace(/^\//, "")
-                  : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
+                  const imgUrlAPI = review.author_details.avatar_path;
+                  const imgUrl = imgUrlAPI?.startsWith("/http")
+                    ? imgUrlAPI.replace(/^\//, "")
+                    : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
 
-                return (
-                  <div
-                    key={index}
-                    id="reviewsCard"
-                    className="flex flex-col gap-4 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
-                  >
-                    <div className="flex gap-4">
-                      <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
-                        <div
-                          className={`relative ${
-                            imgUrlAPI === null
-                              ? `w-full h-full bg-base-dark-gray p-2`
-                              : `hidden`
-                          }`}
-                        >
-                          <img src={logo} alt="Popcorn Prespective" />
+                  return (
+                    <div
+                      key={index}
+                      id="reviewsCard"
+                      className="flex flex-col gap-4 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
+                    >
+                      <div className="flex gap-4">
+                        <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
+                          <div
+                            className={`relative ${
+                              imgUrlAPI === null
+                                ? `w-full h-full bg-base-dark-gray p-2`
+                                : `hidden`
+                            }`}
+                          >
+                            <img src={logo} alt="Popcorn Prespective" />
+                          </div>
+                          {loading ? <Loading /> : false}
+                          {imgUrl && (
+                            <img src={`${imgUrl}`} alt={review.author} />
+                          )}
+                        </figure>
+                        <div className="flex flex-col justify-center">
+                          {loading ? (
+                            <Loading
+                              height="[20px] !w-[70px]"
+                              className={`h-[20px]`}
+                            />
+                          ) : (
+                            <p className="font-medium text-lg">
+                              {review.author}
+                            </p>
+                          )}
+                          {loading ? (
+                            <Loading
+                              height="[10px] mt-1 !w-[100px]"
+                              className={`h-[10px]`}
+                            />
+                          ) : (
+                            <span className="text-sm text-gray-400">
+                              {formattedDate}
+                            </span>
+                          )}
                         </div>
-                        {loading ? <Loading /> : false}
-                        {imgUrl && (
-                          <img src={`${imgUrl}`} alt={review.author} />
-                        )}
-                      </figure>
-                      <div className="flex flex-col justify-center">
+                      </div>
+                      <div
+                        className={`${
+                          readMore ? "" : "line-clamp-3"
+                        } prose max-w-none !text-gray-400`}
+                      >
                         {loading ? (
-                          <Loading
-                            height="[20px] !w-[70px]"
-                            className={`h-[20px]`}
-                          />
+                          <Loading height="[150px]" className={`h-[150px]`} />
                         ) : (
-                          <p className="font-medium text-lg">{review.author}</p>
-                        )}
-                        {loading ? (
-                          <Loading
-                            height="[10px] mt-1 !w-[100px]"
-                            className={`h-[10px]`}
-                          />
-                        ) : (
-                          <span className="text-sm text-gray-400">
-                            {formattedDate}
-                          </span>
+                          <ReactMarkdown children={review.content} />
                         )}
                       </div>
                     </div>
-                    <div
-                      className={`${
-                        readMore ? "" : "line-clamp-3"
-                      } prose max-w-none !text-gray-400`}
-                    >
-                      {loading ? (
-                        <Loading height="[150px]" className={`h-[150px]`} />
-                      ) : (
-                        <ReactMarkdown children={review.content} />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

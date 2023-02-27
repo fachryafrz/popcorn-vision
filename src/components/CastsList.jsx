@@ -2,6 +2,7 @@ import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useState } from "react";
 import Casts from "./Casts";
+import { Loading } from "./Loading";
 
 export function CastsList({ logo, movie, loading }) {
   const [showAllActors, setShowAllActors] = useState(false);
@@ -17,7 +18,11 @@ export function CastsList({ logo, movie, loading }) {
         !showAllActors ? `sticky top-20` : null
       }`}
     >
-      <h2 className="font-bold text-2xl">Cast & Crews</h2>
+      {loading ? (
+        <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
+      ) : (
+        <h2 className="font-bold text-2xl">Cast & Crews</h2>
+      )}
       <div className="flex flex-col gap-4">
         {movie.credits &&
           movie.credits.cast &&

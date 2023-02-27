@@ -36,7 +36,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
       >
         {movie.recommendations &&
           movie.recommendations.results &&
-          movie.recommendations.results.map((movie, index) => {
+          movie.recommendations.results.slice(0, 10).map((movie, index) => {
             const movieGenres =
               movie.genre_ids && genres
                 ? movie.genre_ids.map((genreId) =>
