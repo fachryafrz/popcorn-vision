@@ -22,13 +22,13 @@ const MovieDetail = ({ id }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
-    append_to_response: "credits,recommendations,reviews",
+    append_to_response: "credits,recommendations,reviews,images",
   };
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
-      append_to_response: "credits,recommendations,reviews",
+      append_to_response: "credits,recommendations,reviews,images",
     };
   }
 
@@ -110,29 +110,35 @@ const MovieDetail = ({ id }) => {
         loading={loading}
       />
       <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[22rem]">
-        <div className="mx-auto max-w-7xl flex gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
+        <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 lg:gap-8 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <MoviePoster
-            logo={logo}
-            movie={movie}
-            isTvPage={isTvPage}
-            loading={loading}
-          />
+          <div className="md:col-span-3">
+            <MoviePoster
+              logo={logo}
+              movie={movie}
+              isTvPage={isTvPage}
+              loading={loading}
+            />
+          </div>
           {/* Middle */}
-          <MovieOverview
-            logo={logo}
-            movie={movie}
-            page={page}
-            isTvPage={isTvPage}
-            loading={loading}
-          />
+          <div className="col-span-12 md:col-span-9 lg:col-span-7">
+            <MovieOverview
+              logo={logo}
+              movie={movie}
+              page={page}
+              isTvPage={isTvPage}
+              loading={loading}
+            />
+          </div>
           {/* Right */}
-          <CastsList
-            logo={logo}
-            movie={movie}
-            isTvPage={isTvPage}
-            loading={loading}
-          />
+          <div className="lg:col-span-2">
+            <CastsList
+              logo={logo}
+              movie={movie}
+              isTvPage={isTvPage}
+              loading={loading}
+            />
+          </div>
         </div>
         {/* Similar */}
         <SimilarMovies

@@ -1,12 +1,21 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Autoplay, FreeMode, Navigation, Thumbs } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { Loading } from "./Loading";
+
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/thumbs";
+import "swiper/css/autoplay";
 
 export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   const [readMore, setReadMore] = useState(false);
   const history = useHistory();
+  const [thumbsSwiper, setThumbsSwiper] = useState();
 
   const handleReadMore = () => {
     setReadMore(!readMore);
@@ -171,6 +180,51 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             <Loading height="[150px]" className={`h-[150px]`} />
           ) : (
             <p className="text-gray-400 text-lg">{movie.overview}</p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 ">
+          {loading ? (
+            <Loading height="auto aspect-video !w-full" className={`h-auto`} />
+          ) : (
+            <div className="container max-w-fit">
+              <Swiper
+                modules={[FreeMode, Navigation, Thumbs, Autoplay]}
+                thumbs={{ swiper: thumbsSwiper }}
+                spaceBetween={16}
+                navigation={{
+                  enabled: true,
+                  nextEl: "#next",
+                  prevEl: "#prev",
+                }}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: true,
+                  pauseOnMouseEnter: true,
+                }}
+                style={{
+                  "--swiper-navigation-color": "#fff",
+                  "--swiper-pagination-color": "#fff",
+                }}
+                className="relative"
+              >
+                {movie.images &&
+                  movie.images.backdrops.map((img) => {
+                    return (
+                      <SwiperSlide>
+                        <figure className="rounded-lg overflow-hidden">
+                          <img
+                            src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
+                            alt={``}
+                          />
+                        </figure>
+                      </SwiperSlide>
+                    );
+                  })}
+
+                <div id="next" className="swiper-btn-next h-full"></div>
+                <div id="prev" className="swiper-btn-prev h-full"></div>
+              </Swiper>
+            </div>
           )}
         </div>
         <div className="flex flex-col gap-2">
