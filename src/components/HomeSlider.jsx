@@ -107,7 +107,7 @@ const HomeSlider = ({ apiUrl }) => {
                       className="text-primary-yellow !w-5 h-full aspect-square"
                     />
                     <span className="text-base md:text-xl text-white">
-                      {movie.vote_average}
+                      {Math.round(movie.vote_average * 10) / 10}
                     </span>
                   </div>
                   <span>|</span>

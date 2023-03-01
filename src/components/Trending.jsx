@@ -64,7 +64,9 @@ const Trending = ({ apiUrl }) => {
                 alt="IMDb"
               />
             </figure>
-            <span className="text-lg font-bold">{movie.vote_average}</span>
+            <span className="text-lg font-bold">
+              {Math.round(movie.vote_average * 10) / 10}
+            </span>
           </div>
           <h3 className="font-bold text-2xl lg:text-3xl">
             {!isTvPage ? movie.title : movie.name} (

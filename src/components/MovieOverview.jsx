@@ -85,7 +85,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
               {!isTvPage ? (
-                new Date(movie.release_date).getFullYear()
+                <span>{new Date(movie.release_date).getFullYear()}</span>
               ) : (
                 <span>
                   {new Date(movie.first_air_date).getFullYear()}{" "}

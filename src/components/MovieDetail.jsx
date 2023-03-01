@@ -109,7 +109,7 @@ const MovieDetail = ({ id }) => {
         isTvPage={isTvPage}
         loading={loading}
       />
-      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] md:-mt-[22rem]">
+      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] lg:-mt-[22rem]">
         <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
           <div className="md:col-span-3">
