@@ -99,8 +99,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               {!isTvPage
                 ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
                 : `${
-                    movie.last_episode_to_air &&
-                    movie.last_episode_to_air.runtime
+                    movie.episode_run_time[0] && movie.episode_run_time[0]
                   }m`}{" "}
               &bull;
               {movie.genres &&
@@ -149,8 +148,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                           movie.runtime % 60
                         }m`
                       : `${
-                          movie.last_episode_to_air &&
-                          movie.last_episode_to_air.runtime
+                          movie.episode_run_time[0] && movie.episode_run_time[0]
                         }m`}
                   </td>
                 </tr>
