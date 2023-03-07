@@ -125,10 +125,10 @@ const FilmSlider = ({ title, apiUrl }) => {
         <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[9rem] flex justify-between items-center xl:max-w-none">
           <p className="font-bold text-2xl lg:text-3xl">{title}</p>
           <div className="flex gap-4 items-center">
-            <button className="prev h-[1.5rem]">
+            <button className="prev h-[1.5rem]" aria-label="Move slider left">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
             </button>
-            <button className="next h-[1.5rem]">
+            <button className="next h-[1.5rem]" aria-label="Move slider right">
               <IonIcon
                 icon={chevronForward}
                 className="text-[1.5rem]"

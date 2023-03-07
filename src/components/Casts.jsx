@@ -11,12 +11,13 @@ const Casts = ({ logo, actor, index, loading }) => {
               : `hidden`
           }
         >
-          <img src={logo} alt="Popcorn Prespective" />
+          <img loading="lazy" src={logo} alt="Popcorn Prespective" />
         </div>
         {loading ? (
           <Loading />
         ) : (
           <img
+            loading="lazy"
             src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
             alt={actor.name}
           />

@@ -14,6 +14,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
           }
         >
           <img
+            loading="lazy"
             src={logo}
             alt={!isTvPage ? movie.title : movie.name}
             className="w-fit h-fit"
@@ -23,6 +24,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
           <Loading />
         ) : (
           <img
+            loading="lazy"
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={!isTvPage ? movie.title : movie.name}
           />

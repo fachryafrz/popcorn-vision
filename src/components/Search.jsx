@@ -115,6 +115,7 @@ export default function Search({ apiUrl }) {
             <SwiperSlide key={index} className={`max-h-[100px]`}>
               <figure className="aspect-square">
                 <img
+                  loading="lazy"
                   src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
                   alt={`${!isTvPage ? movie.title : movie.name}`}
                   className={`blur-3xl`}

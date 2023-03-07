@@ -22,6 +22,7 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
           }
         >
           <img
+            loading="lazy"
             src={logo}
             alt="Popcorn Prespective"
             className="object-none w-fit h-fit"
@@ -31,6 +32,7 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
           <Loading />
         ) : (
           <img
+            loading="lazy"
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={!isTvPage ? movie.title : movie.name}
           />

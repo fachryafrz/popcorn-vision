@@ -86,11 +86,13 @@ const HomeSlider = ({ apiUrl }) => {
             >
               <figure className="sm:absolute sm:inset-x-0 sm:top-0 min-h-fit sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
+                  loading="lazy"
                   src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
                   alt={!isTvPage ? movie.title : movie.name}
                   className="object-top sm:hidden"
                 />
                 <img
+                  loading="lazy"
                   src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
                   alt={!isTvPage ? movie.title : movie.name}
                   className="object-top hidden sm:block"

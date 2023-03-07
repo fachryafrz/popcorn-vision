@@ -16,7 +16,7 @@ const Footer = () => {
     <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure className="w-[100px]">
-          <img src={logo} alt="Popcorn Prespective" />
+          <img loading="lazy" src={logo} alt="Popcorn Prespective" />
         </figure>
         <p className="font-bold text-4xl pointer-events-none">
           Popcorn <br /> Prespective

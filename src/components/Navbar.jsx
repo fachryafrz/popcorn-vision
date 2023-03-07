@@ -16,7 +16,7 @@ export default function Navbar({ logo }) {
           className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit"
         >
           <figure className="aspect-square w-[50px] border-r pr-2">
-            <img src={logo} alt="Popcorn Prespective" />
+            <img loading="lazy" src={logo} alt="Popcorn Prespective" />
           </figure>
           <span>
             Popcorn <br />

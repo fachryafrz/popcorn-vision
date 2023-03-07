@@ -39,6 +39,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               }
             >
               <img
+                loading="lazy"
                 src={logo}
                 alt="Popcorn Prespective"
                 className="w-fit h-fit"
@@ -48,6 +49,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               <Loading />
             ) : (
               <img
+                loading="lazy"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={!isTvPage ? movie.title : movie.name}
                 className={movie.poster_path === null ? `hidden` : `block`}
@@ -232,6 +234,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         <SwiperSlide key={index}>
                           <figure className="rounded-lg overflow-hidden">
                             <img
+                              loading="lazy"
                               src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                               alt={``}
                             />
@@ -295,11 +298,19 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                                 : `hidden`
                             }`}
                           >
-                            <img src={logo} alt="Popcorn Prespective" />
+                            <img
+                              loading="lazy"
+                              src={logo}
+                              alt="Popcorn Prespective"
+                            />
                           </div>
                           {loading ? <Loading /> : false}
                           {imgUrl && (
-                            <img src={`${imgUrl}`} alt={review.author} />
+                            <img
+                              loading="lazy"
+                              src={`${imgUrl}`}
+                              alt={review.author}
+                            />
                           )}
                         </figure>
                         <div className="flex flex-col justify-center">
