@@ -52,7 +52,7 @@ const HomeSlider = ({ apiUrl }) => {
     };
 
     fetchMovies();
-  }, [movies]);
+  }, [apiUrl]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
