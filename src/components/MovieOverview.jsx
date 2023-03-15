@@ -291,20 +291,23 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                       />
                     </button>
                   </div>
-                  {filteredVideos.map((vid, index) => {
-                    return (
-                      <SwiperSlide key={index}>
-                        <iframe
-                          src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                          title="YouTube video player"
-                          loading="lazy"
-                          frameBorder="0"
-                          allowFullScreen
-                          className={`w-full h-full aspect-video rounded-lg`}
-                        ></iframe>
-                      </SwiperSlide>
-                    );
-                  })}
+                  {filteredVideos
+                    .slice()
+                    .reverse()
+                    .map((vid, index) => {
+                      return (
+                        <SwiperSlide key={index}>
+                          <iframe
+                            src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
+                            title="YouTube video player"
+                            loading="lazy"
+                            frameBorder="0"
+                            allowFullScreen
+                            className={`w-full h-full aspect-video rounded-lg`}
+                          ></iframe>
+                        </SwiperSlide>
+                      );
+                    })}
 
                   {movie.images &&
                     movie.images.backdrops.map((img, index) => {
