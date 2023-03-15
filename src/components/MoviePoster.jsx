@@ -12,7 +12,7 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
   };
 
   return (
-    <div className="max-w-[200px] hidden md:flex flex-col gap-2 lg:max-w-full self-start sticky top-20">
+    <div className="max-w-[200px] hidden md:flex flex-col gap-2 md:max-w-full self-start sticky top-20">
       <figure className="aspect-poster rounded-xl overflow-hidden">
         <div
           className={

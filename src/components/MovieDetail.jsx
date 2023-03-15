@@ -22,13 +22,13 @@ const MovieDetail = ({ id }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
-    append_to_response: "credits,recommendations,reviews,images",
+    append_to_response: "credits,recommendations,reviews,images,videos",
   };
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
-      append_to_response: "credits,recommendations,reviews,images",
+      append_to_response: "credits,recommendations,reviews,images,videos",
     };
   }
 

@@ -152,7 +152,7 @@ export default function Search({ apiUrl }) {
             ) : !isTvPage ? (
               `Movies`
             ) : (
-              `TV Series`
+              `TV Shows`
             )}
           </h2>
           <div

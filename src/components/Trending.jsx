@@ -68,7 +68,7 @@ const Trending = ({ apiUrl }) => {
               />
             </figure>
             <span className="text-lg font-bold">
-              {Math.round(movie.vote_average * 10) / 10}
+              {Math.ceil(movie.vote_average * 10) / 10}
             </span>
           </div>
           <h3 className="font-bold text-2xl lg:text-3xl">

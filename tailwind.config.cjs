@@ -26,6 +26,7 @@ module.exports = {
     },
   },
   plugins: [
+    require("autoprefixer"),
     require("@tailwindcss/typography"),
     require("@tailwindcss/line-clamp"),
     plugin(function ({ addVariant }) {
