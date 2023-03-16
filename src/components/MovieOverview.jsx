@@ -20,9 +20,9 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
+import FilmReviews from "./FilmReviews";
 
 export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
-  const [readMore, setReadMore] = useState(false);
   const history = useHistory();
   const [thumbsSwiper, setThumbsSwiper] = useState();
   const filteredVideos =
@@ -30,10 +30,6 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
     movie.videos.results.filter(
       (result) => result.site === "YouTube" && result.official === true
     );
-
-  const handleReadMore = () => {
-    setReadMore(!readMore);
-  };
 
   const handleGoBack = () => {
     history.goBack();
@@ -338,12 +334,6 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               ) : (
                 <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
               )}
-              <button
-                onClick={handleReadMore}
-                className="text-primary-blue hover:font-medium transition-all"
-              >
-                {`${readMore ? "Shrink" : "Expand all"}`}
-              </button>
             </div>
             <div className="flex flex-col gap-2">
               {movie.reviews &&
@@ -352,85 +342,13 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   .slice()
                   .reverse()
                   .map((review, index) => {
-                    const dateStr = review.updated_at;
-                    const date = new Date(dateStr);
-                    const options = {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    };
-                    const formattedDate = date.toLocaleString("en-US", options);
-
-                    const imgUrlAPI = review.author_details.avatar_path;
-                    const imgUrl = imgUrlAPI?.startsWith("/http")
-                      ? imgUrlAPI.replace(/^\//, "")
-                      : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
-
                     return (
-                      <div
+                      <FilmReviews
                         key={index}
-                        id="reviewsCard"
-                        className="flex flex-col gap-4 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
-                      >
-                        <div className="flex gap-4">
-                          <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
-                            <div
-                              className={`relative ${
-                                imgUrlAPI === null
-                                  ? `w-full h-full bg-base-dark-gray p-2`
-                                  : `hidden`
-                              }`}
-                            >
-                              <img
-                                loading="lazy"
-                                src={logo}
-                                alt="Popcorn Prespective"
-                              />
-                            </div>
-                            {loading ? <Loading /> : false}
-                            {imgUrl && (
-                              <img
-                                loading="lazy"
-                                src={`${imgUrl}`}
-                                alt={review.author}
-                              />
-                            )}
-                          </figure>
-                          <div className="flex flex-col justify-center">
-                            {loading ? (
-                              <Loading
-                                height="[20px] !w-[70px]"
-                                className={`h-[20px]`}
-                              />
-                            ) : (
-                              <p className="font-medium text-lg">
-                                {review.author}
-                              </p>
-                            )}
-                            {loading ? (
-                              <Loading
-                                height="[10px] mt-1 !w-[100px]"
-                                className={`h-[10px]`}
-                              />
-                            ) : (
-                              <span className="text-sm text-gray-400">
-                                {formattedDate}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div
-                          className={`${
-                            readMore ? "" : "line-clamp-3"
-                          } prose max-w-none !text-gray-400`}
-                        >
-                          {loading ? (
-                            <Loading height="[150px]" className={`h-[150px]`} />
-                          ) : (
-                            <ReactMarkdown children={review.content} />
-                          )}
-                        </div>
-                      </div>
+                        loading={loading}
+                        logo={logo}
+                        review={review}
+                      />
                     );
                   })}
             </div>
