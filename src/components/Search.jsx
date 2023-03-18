@@ -11,15 +11,16 @@ import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
-export default function Search({ apiUrl }) {
+export default function Search({ apiUrl, query }) {
   const [movies, setMovies] = useState([]);
   const [bgMovies, setBgMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const searchRef = useRef();
+  const history = useHistory();
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -30,8 +31,16 @@ export default function Search({ apiUrl }) {
     setSearchQuery(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (e = null) => {
+    if (e) {
+      e.preventDefault();
+    }
+    history.push(
+      `/${!isTvPage ? `search` : `tv/search`}/${searchQuery.replace(
+        /\s+/g,
+        "+"
+      )}`
+    );
     searchRef.current.blur();
     setLoading(true);
     axios
@@ -51,6 +60,30 @@ export default function Search({ apiUrl }) {
         }, 1000);
       });
   };
+
+  useEffect(() => {
+    if (query) {
+      setSearchQuery(query.replace(/\+/g, " "));
+      searchRef.current.blur();
+      setLoading(true);
+      axios
+        .get(
+          `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
+          {
+            params: {
+              api_key: apiKey,
+              query: searchQuery.replace(/\s+/g, "+"),
+            },
+          }
+        )
+        .then((response) => {
+          setMovies(response.data.results);
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        });
+    }
+  }, [query]);
 
   useEffect(() => {
     document.title = `Search ${
@@ -138,6 +171,7 @@ export default function Search({ apiUrl }) {
               type="text"
               placeholder="Search"
               className={`text-white bg-transparent w-full`}
+              value={searchQuery ? searchQuery : ``}
             />
             <input type="submit" className="sr-only" />
           </form>

@@ -39,6 +39,16 @@ const App = () => {
                 <Search apiUrl={`/movie/now_playing`} />
               </Route>
               <Route
+                exact
+                path="/search/:query"
+                render={({ match }) => (
+                  <Search
+                    apiUrl={`/movie/now_playing`}
+                    query={match.params.query}
+                  />
+                )}
+              />
+              <Route
                 path="/movies/:id"
                 render={({ match }) => <MovieDetail id={match.params.id} />}
               />
@@ -56,9 +66,19 @@ const App = () => {
                   <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
                 </section>
               </Route>
-              <Route path="/tv/search">
+              <Route exact path="/tv/search">
                 <Search apiUrl={`/tv/airing_today`} />
               </Route>
+              <Route
+                exact
+                path="/tv/search/:query"
+                render={({ match }) => (
+                  <Search
+                    apiUrl={`/movie/now_playing`}
+                    query={match.params.query}
+                  />
+                )}
+              />
               <Route
                 path="/tv/:id"
                 render={({ match }) => <MovieDetail id={match.params.id} />}

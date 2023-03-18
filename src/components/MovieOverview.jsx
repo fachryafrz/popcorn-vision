@@ -288,7 +288,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     </button>
                   </div>
                   {filteredVideos
-                    .slice()
+                    .slice(0, 5)
                     .reverse()
                     .map((vid, index) => {
                       return (
@@ -306,7 +306,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     })}
 
                   {movie.images &&
-                    movie.images.backdrops.map((img, index) => {
+                    movie.images.backdrops.slice(0, 5).map((img, index) => {
                       return (
                         <SwiperSlide key={index}>
                           <figure className="rounded-lg overflow-hidden">

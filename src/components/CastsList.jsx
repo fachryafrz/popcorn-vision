@@ -14,9 +14,7 @@ export function CastsList({ logo, movie, loading }) {
 
   return (
     <div
-      className={`hidden max-w-full lg:flex flex-col gap-4 self-start w-max ${
-        !showAllActors ? `sticky top-20` : null
-      }`}
+      className={`hidden max-w-full lg:flex flex-col gap-4 self-start w-max sticky top-20`}
     >
       {loading ? (
         <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
