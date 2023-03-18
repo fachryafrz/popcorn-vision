@@ -288,8 +288,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     </button>
                   </div>
                   {filteredVideos
-                    .slice(0, 5)
                     .reverse()
+                    .slice(0, 5)
                     .map((vid, index) => {
                       return (
                         <SwiperSlide key={index}>
