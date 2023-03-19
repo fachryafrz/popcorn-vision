@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Loading } from "./Loading";
 import ReactMarkdown from "react-markdown";
 
@@ -23,6 +23,10 @@ export default function FilmReviews({ logo, review, loading }) {
   const handleReadMore = () => {
     setReadMore(!readMore);
   };
+
+  useEffect(() => {
+    setReadMore(false);
+  }, []);
 
   return (
     <div
