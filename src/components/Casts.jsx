@@ -35,7 +35,9 @@ const Casts = ({ logo, actor, index, loading }) => {
           <Loading height="[10px] mt-1" className="!w-full" />
         ) : (
           <p className="text-sm text-gray-400 line-clamp-1">
-            as <span title={actor.character}>{actor.character}</span>
+            {actor.character !== "" && (
+              <span title={actor.character}>as {actor.character}</span>
+            )}
           </p>
         )}
       </div>
