@@ -11,18 +11,18 @@ export default function Navbar({ logo }) {
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur-sm bg-opacity-90">
-      <h1 className="sr-only">Popcorn Prespective</h1>
+      <h1 className="sr-only">Popcorn Vision</h1>
       <div className="max-w-7xl mx-auto py-2 px-6 flex flex-wrap justify-between">
         <Link
           to={isTvPage ? `/tv` : `/`}
           className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit"
         >
           <figure className="aspect-square w-[50px] border-r pr-2">
-            <img loading="lazy" src={logo} alt="Popcorn Prespective" />
+            <img loading="lazy" src={logo} alt="Popcorn Vision" />
           </figure>
           <span>
             Popcorn <br />
-            Prespective
+            Vision
           </span>
         </Link>
         <div className="flex items-center gap-4 sm:gap-8">

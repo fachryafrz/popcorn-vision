@@ -16,10 +16,10 @@ const Footer = () => {
     <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure className="w-[100px]">
-          <img loading="lazy" src={logo} alt="Popcorn Prespective" />
+          <img loading="lazy" src={logo} alt="Popcorn Vision" />
         </figure>
         <p className="font-bold text-4xl pointer-events-none">
-          Popcorn <br /> Prespective
+          Popcorn <br /> Vision
         </p>
       </div>
       <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
@@ -79,7 +79,7 @@ const Footer = () => {
       </div>
       <div className="p-8 flex justify-center border-t border-base-gray border-opacity-25 text-center">
         <p>
-          Popcorn Prespective &copy;{" "}
+          Popcorn Vision &copy;{" "}
           {createdYear == currentYear
             ? createdYear
             : `${createdYear}-${currentYear}`}{" "}
