@@ -79,7 +79,7 @@ const Footer = () => {
       </div>
       <div className="p-8 flex justify-center border-t border-base-gray border-opacity-25 text-center">
         <p>
-          Popcorn Vision &copy;{" "}
+          {import.meta.env.VITE_APP_NAME} &copy;{" "}
           {createdYear == currentYear
             ? createdYear
             : `${createdYear}-${currentYear}`}{" "}
