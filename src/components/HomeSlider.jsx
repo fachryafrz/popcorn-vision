@@ -82,9 +82,9 @@ const HomeSlider = ({ apiUrl }) => {
           return (
             <SwiperSlide
               key={index}
-              className="min-h-fit sm:h-[600px] flex items-end sm:p-4 lg:p-[4rem] relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-tr before:from-base-dark-gray before:via-base-dark-gray before:opacity-0 sm:before:opacity-[50%] after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
+              className="min-h-fit sm:h-[600px] flex items-end relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray before:opacity-[75%] sm:before:opacity-[100%] after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
             >
-              <figure className="sm:absolute sm:inset-x-0 sm:top-0 min-h-fit sm:h-full -z-10 aspect-poster sm:aspect-auto">
+              <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
@@ -98,7 +98,7 @@ const HomeSlider = ({ apiUrl }) => {
                   className="object-top hidden sm:block"
                 />
               </figure>
-              <div className="hidden sm:flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%]">
+              <div className="flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%] absolute bottom-0 inset-x-0 p-4 lg:p-[4rem]">
                 <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2">
                   {!isTvPage ? movie.title : movie.name}
                 </h3>
