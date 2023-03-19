@@ -31,6 +31,15 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
       (result) => result.site === "YouTube" && result.official === true
     );
 
+  const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
+  const date = new Date(dateStr);
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const formattedDate = date.toLocaleString("en-US", options);
+
   const handleGoBack = () => {
     history.goBack();
   };
@@ -81,7 +90,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <h1
               title={!isTvPage ? movie.title : movie.name}
-              className="max-w-fit font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2"
+              className="max-w-fit font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
             >
               {!isTvPage ? movie.title : movie.name}
             </h1>
@@ -95,7 +104,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
               {!isTvPage ? (
-                <span>{new Date(movie.release_date).getFullYear()}</span>
+                <span>{new Date(formattedDate).getFullYear()}</span>
               ) : (
                 <span>
                   {`${movie.number_of_seasons} Season${
@@ -140,18 +149,29 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <table className="max-w-fit hidden sm:block [&_td]:py-1 [&_td]:whitespace-nowrap">
               <tbody>
-                {/* <tr>
-                  <td className="pr-8 py-1 text-gray-400 whitespace-nowrap">
-                    {!isTvPage ? `Produced by` : `Created by`}
-                  </td>
-                  <td className={`!whitespace-normal`}>
-                    {!isTvPage
-                      ? movie.production_companies
-                          .map((item) => item.name)
-                          .join(", ")
-                      : movie.created_by.map((item) => item.name).join(", ")}
-                  </td>
-                </tr> */}
+                {!isTvPage
+                  ? movie.production_companies.length > 0 && (
+                      <tr>
+                        <td className="pr-8 py-1 text-gray-400 whitespace-nowrap">
+                          Produced by
+                        </td>
+                        <td className={`!whitespace-normal`}>
+                          {movie.production_companies
+                            .map((item) => item.name)
+                            .join(", ")}
+                        </td>
+                      </tr>
+                    )
+                  : movie.created_by.length > 0 && (
+                      <tr>
+                        <td className="pr-8 py-1 text-gray-400 whitespace-nowrap">
+                          Created by
+                        </td>
+                        <td className={`!whitespace-normal`}>
+                          {movie.created_by.map((item) => item.name).join(", ")}
+                        </td>
+                      </tr>
+                    )}
                 <tr>
                   <td className="pr-8 py-1 text-gray-400">Runtime</td>
                   <td>
@@ -168,14 +188,17 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 <tr>
                   <td className="pr-8 py-1 text-gray-400">Release Date</td>
                   {!isTvPage ? (
-                    <td>{new Date(movie.release_date).getFullYear()}</td>
+                    <td>{formattedDate}</td>
                   ) : (
                     <td>
-                      {new Date(movie.first_air_date).getFullYear()}{" "}
+                      {formattedDate}{" "}
                       {new Date(movie.last_air_date).getFullYear() ===
                       new Date(movie.first_air_date).getFullYear()
                         ? null
-                        : `- ${new Date(movie.last_air_date).getFullYear()}`}
+                        : `- ${new Date(movie.last_air_date).toLocaleString(
+                            "en-US",
+                            options
+                          )}`}
                     </td>
                   )}
                 </tr>

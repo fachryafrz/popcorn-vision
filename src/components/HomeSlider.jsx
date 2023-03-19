@@ -99,7 +99,7 @@ const HomeSlider = ({ apiUrl }) => {
                 />
               </figure>
               <div className="flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%] absolute bottom-0 inset-x-0 p-4 lg:p-[4rem]">
-                <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2">
+                <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
                   {!isTvPage ? movie.title : movie.name}
                 </h3>
                 <div className="flex items-center gap-2 text-sm font-medium">
