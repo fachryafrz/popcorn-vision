@@ -11,7 +11,7 @@ const Casts = ({ logo, actor, index, loading }) => {
               : `hidden`
           }
         >
-          <img loading="lazy" src={logo} alt="Popcorn Prespective" />
+          <img loading="lazy" src={logo} alt={import.meta.env.VITE_APP_NAME} />
         </div>
         {loading ? (
           <Loading />

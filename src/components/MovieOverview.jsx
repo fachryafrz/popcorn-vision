@@ -58,7 +58,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               <img
                 loading="lazy"
                 src={logo}
-                alt="Popcorn Prespective"
+                alt={import.meta.env.VITE_APP_NAME}
                 className="w-fit h-fit"
               />
             </div>

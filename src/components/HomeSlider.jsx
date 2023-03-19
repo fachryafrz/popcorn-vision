@@ -57,7 +57,7 @@ const HomeSlider = ({ apiUrl }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    document.title = "Popcorn Prespective";
+    document.title = "Popcorn Vision";
   }, []);
 
   return (

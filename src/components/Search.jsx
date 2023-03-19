@@ -86,9 +86,9 @@ export default function Search({ apiUrl, query }) {
   }, [query]);
 
   useEffect(() => {
-    document.title = `Search ${
-      !isTvPage ? `Movies` : `TV Series`
-    } - Popcorn Prespective`;
+    document.title = `Search ${!isTvPage ? `Movies` : `TV Series`} - ${
+      import.meta.env.VITE_APP_NAME
+    }`;
   }, []);
 
   useEffect(() => {

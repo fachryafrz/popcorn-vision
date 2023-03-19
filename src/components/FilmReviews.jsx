@@ -42,7 +42,11 @@ export default function FilmReviews({ logo, review, loading }) {
                 : `hidden`
             }`}
           >
-            <img loading="lazy" src={logo} alt="Popcorn Prespective" />
+            <img
+              loading="lazy"
+              src={logo}
+              alt={import.meta.env.VITE_APP_NAME}
+            />
           </div>
           {loading ? <Loading /> : false}
           {imgUrl && (

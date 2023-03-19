@@ -57,9 +57,9 @@ const MovieDetail = ({ id }) => {
   }, [id]);
 
   useEffect(() => {
-    document.title = `${
-      !isTvPage ? movie.title : movie.name
-    } - Popcorn Prespective`;
+    document.title = `${!isTvPage ? movie.title : movie.name} - ${
+      import.meta.env.VITE_APP_NAME
+    }`;
   }, [movie]);
 
   useEffect(() => {

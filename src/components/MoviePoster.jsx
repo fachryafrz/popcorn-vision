@@ -24,7 +24,7 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
           <img
             loading="lazy"
             src={logo}
-            alt="Popcorn Prespective"
+            alt={import.meta.env.VITE_APP_NAME}
             className="object-none w-fit h-fit"
           />
         </div>
