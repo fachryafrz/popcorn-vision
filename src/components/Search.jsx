@@ -38,7 +38,7 @@ export default function Search({ apiUrl, query }) {
     history.push(
       `/${!isTvPage ? `search` : `tv/search`}/${searchQuery.replace(
         /\s+/g,
-        "+"
+        "-"
       )}`
     );
     searchRef.current.blur();
@@ -63,7 +63,7 @@ export default function Search({ apiUrl, query }) {
 
   useEffect(() => {
     if (query) {
-      setSearchQuery(query.replace(/\+/g, " "));
+      setSearchQuery(query.replace(/\-/g, " "));
       searchRef.current.blur();
       setLoading(true);
       axios
