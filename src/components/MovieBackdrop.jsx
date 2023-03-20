@@ -6,7 +6,7 @@ export function MovieBackdrop({ logo, movie, isTvPage, loading }) {
     <figure className="max-h-[600px] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video md:opacity-50">
       <div
         className={
-          movie.poster_path === null
+          movie.backdrop_path === null
             ? `w-full h-full bg-base-dark-gray flex justify-center`
             : `hidden`
         }
