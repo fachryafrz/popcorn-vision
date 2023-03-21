@@ -186,7 +186,9 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   </td>
                 </tr>
                 <tr>
-                  <td className="pr-8 py-1 text-gray-400">Release Date</td>
+                  <td className="pr-8 py-1 text-gray-400">
+                    {!isTvPage ? `Release Date` : `Air Date`}
+                  </td>
                   {!isTvPage ? (
                     <td>{formattedDate}</td>
                   ) : (
