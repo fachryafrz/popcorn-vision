@@ -141,13 +141,15 @@ const MovieDetail = ({ id }) => {
           </div>
         </div>
         {/* Similar */}
-        <SimilarMovies
-          logo={logo}
-          movie={movie}
-          genres={genres}
-          isTvPage={isTvPage}
-          loading={loading}
-        />
+        {movie.recommendations && movie.recommendations.results.length > 0 && (
+          <SimilarMovies
+            logo={logo}
+            movie={movie}
+            genres={genres}
+            isTvPage={isTvPage}
+            loading={loading}
+          />
+        )}
       </div>
     </div>
   );

@@ -31,12 +31,15 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
           768: {
             slidesPerView: 4,
           },
+          1024: {
+            slidesPerView: 5,
+          },
         }}
-        className="px-4 py-[5rem] lg:px-[16rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden lg:before:block lg:after:block before:pointer-events-none after:pointer-events-none"
+        className="px-4 py-[5rem] xl:px-[8rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
         {movie.recommendations &&
           movie.recommendations.results &&
-          movie.recommendations.results.slice(0, 10).map((movie, index) => {
+          movie.recommendations.results.map((movie, index) => {
             const movieGenres =
               movie.genre_ids && genres
                 ? movie.genre_ids.map((genreId) =>
