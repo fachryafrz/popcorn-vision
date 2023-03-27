@@ -37,7 +37,7 @@ export default function Navbar({ logo }) {
               className="text-[1.25rem]"
             />
             <span className="hidden sm:block">
-              {isTvPage ? `Movies` : `TV Series`}
+              {isTvPage ? `Movies` : `TV Shows`}
             </span>
           </Link>
           <Link
