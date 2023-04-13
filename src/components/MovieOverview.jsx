@@ -123,7 +123,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               {!isTvPage
                 ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
                 : `${
-                    movie.last_episode_to_air.runtime &&
+                    movie.last_episode_to_air &&
                     movie.last_episode_to_air.runtime
                   }m`}{" "}
               &bull;
@@ -172,38 +172,43 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         </td>
                       </tr>
                     )}
-                <tr>
-                  <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                  <td>
-                    {!isTvPage
-                      ? `${Math.floor(movie.runtime / 60)}h ${
-                          movie.runtime % 60
-                        }m`
-                      : `${
-                          movie.last_episode_to_air.runtime &&
-                          movie.last_episode_to_air.runtime
-                        }m`}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="pr-8 py-1 text-gray-400">
-                    {!isTvPage ? `Release Date` : `Air Date`}
-                  </td>
-                  {!isTvPage ? (
-                    <td>{formattedDate}</td>
-                  ) : (
+                {movie.runtime || movie.last_episode_to_air ? (
+                  <tr>
+                    <td className="pr-8 py-1 text-gray-400">Runtime</td>
                     <td>
-                      {formattedDate}{" "}
-                      {new Date(movie.last_air_date).getFullYear() ===
-                      new Date(movie.first_air_date).getFullYear()
-                        ? null
-                        : `- ${new Date(movie.last_air_date).toLocaleString(
-                            "en-US",
-                            options
-                          )}`}
+                      {!isTvPage
+                        ? `${Math.floor(movie.runtime / 60)}h ${
+                            movie.runtime % 60
+                          }m`
+                        : `${
+                            movie.last_episode_to_air &&
+                            movie.last_episode_to_air.runtime
+                          }m`}
                     </td>
-                  )}
-                </tr>
+                  </tr>
+                ) : null}
+                {movie.release_date || movie.first_air_date ? (
+                  <tr>
+                    <td className="pr-8 py-1 text-gray-400">
+                      {!isTvPage ? `Release Date` : `Air Date`}
+                    </td>
+                    {!isTvPage ? (
+                      <td>{formattedDate}</td>
+                    ) : (
+                      <td>
+                        {formattedDate}{" "}
+                        {new Date(movie.last_air_date).getFullYear() ===
+                        new Date(movie.first_air_date).getFullYear()
+                          ? null
+                          : `- ${new Date(movie.last_air_date).toLocaleString(
+                              "en-US",
+                              options
+                            )}`}
+                      </td>
+                    )}
+                  </tr>
+                ) : null}
+
                 {isTvPage && (
                   <tr>
                     <td className="pr-8 py-1 text-gray-400">Chapter</td>

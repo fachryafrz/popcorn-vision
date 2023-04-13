@@ -15,7 +15,6 @@ const App = () => {
   return (
     <Router>
       <div id="app" className="bg-base-dark-gray min-h-screen text-white">
-        <Copyright />
         <div id="website">
           <Navbar logo={logo} />
           <main className="pb-8">
@@ -89,6 +88,7 @@ const App = () => {
             <Footer />
           </footer>
         </div>
+        <Copyright />
       </div>
     </Router>
   );
