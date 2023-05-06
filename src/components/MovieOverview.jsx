@@ -197,13 +197,12 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     ) : (
                       <td>
                         {formattedDate}{" "}
-                        {new Date(movie.last_air_date).getFullYear() ===
-                        new Date(movie.first_air_date).getFullYear()
-                          ? null
-                          : `- ${new Date(movie.last_air_date).toLocaleString(
+                        {movie.last_air_date !== null
+                          ? `- ${new Date(movie.last_air_date).toLocaleString(
                               "en-US",
                               options
-                            )}`}
+                            )}`
+                          : null}
                       </td>
                     )}
                   </tr>
