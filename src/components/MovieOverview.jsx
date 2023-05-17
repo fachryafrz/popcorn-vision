@@ -104,7 +104,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
               {!isTvPage ? (
-                <span>{new Date(formattedDate).getFullYear()}</span>
+                <span>{formattedDate}</span>
               ) : (
                 <span>
                   {`${movie.number_of_seasons} Season${
@@ -120,13 +120,14 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 </span>
               )}
               &bull;{" "}
-              {!isTvPage
-                ? `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`
-                : `${
-                    movie.last_episode_to_air &&
-                    movie.last_episode_to_air.runtime
-                  }m`}{" "}
-              &bull;
+              {!isTvPage &&
+                `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`}
+              {isTvPage &&
+                `${
+                  movie.episode_run_time.length > 0
+                    ? movie.episode_run_time[0]
+                    : movie.last_episode_to_air.runtime
+                }m`}
               {movie.genres &&
                 movie.genres.map((genre) => {
                   return (
@@ -176,14 +177,16 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   <tr>
                     <td className="pr-8 py-1 text-gray-400">Runtime</td>
                     <td>
-                      {!isTvPage
-                        ? `${Math.floor(movie.runtime / 60)}h ${
-                            movie.runtime % 60
-                          }m`
-                        : `${
-                            movie.last_episode_to_air &&
-                            movie.last_episode_to_air.runtime
-                          }m`}
+                      {!isTvPage &&
+                        `${Math.floor(movie.runtime / 60)}h ${
+                          movie.runtime % 60
+                        }m`}
+                      {isTvPage &&
+                        `${
+                          movie.episode_run_time.length > 0
+                            ? movie.episode_run_time[0]
+                            : movie.last_episode_to_air.runtime
+                        }m`}
                     </td>
                   </tr>
                 ) : null}
