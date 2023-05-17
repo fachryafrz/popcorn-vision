@@ -76,8 +76,8 @@ const FilmSlider = ({ title, apiUrl }) => {
       <h2 className="sr-only">{title}</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
-        spaceBetween={8}
-        slidesPerView={3}
+        spaceBetween={16}
+        slidesPerView={2}
         loop={true}
         autoplay={{
           delay: 5000,
