@@ -23,6 +23,9 @@ module.exports = {
       aspectRatio: {
         poster: "2 / 3",
       },
+      screens: {
+        xs: "365px",
+      },
     },
   },
   plugins: [
