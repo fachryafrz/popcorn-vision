@@ -131,7 +131,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     )}
 
                 {!isTvPage
-                  ? movie.runtime && (
+                  ? movie.runtime > 0 && (
                       <tr>
                         <td className="text-gray-400">Runtime</td>
                         <td>{`${Math.floor(movie.runtime / 60)}h ${
