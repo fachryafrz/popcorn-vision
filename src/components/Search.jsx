@@ -177,7 +177,7 @@ export default function Search({ apiUrl, query }) {
           </form>
         </div>
         <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-8">
-          <h2 className="font-bold text-3xl text-center">
+          <h2 className="font-bold text-xl sm:text-3xl text-center">
             Search{" "}
             {searchQuery ? (
               <React.Fragment>
