@@ -45,64 +45,63 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   };
   return (
     <div className="flex flex-col gap-6 self-start w-full">
-      <div className="flex gap-2 items-center md:gap-0">
-        <div className="min-w-fit flex flex-col gap-1">
-          <figure className="h-[150px] max-w-[100px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
-            <div
-              className={
-                movie.poster_path === null
-                  ? `w-full h-full bg-base-dark-gray`
-                  : `hidden`
-              }
+      <div className="flex gap-2 md:gap-0">
+        <div className="flex flex-col gap-1">
+          <div className="sticky top-20 flex flex-col gap-1">
+            <figure className="h-[120px] sm:h-[150px] max-h-[150px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
+              <div
+                className={
+                  movie.poster_path === null
+                    ? `w-full h-full bg-base-dark-gray`
+                    : `hidden`
+                }
+              >
+                <img
+                  loading="lazy"
+                  src={logo}
+                  alt={import.meta.env.VITE_APP_NAME}
+                  className="w-fit h-fit"
+                />
+              </div>
+              {loading ? (
+                <Loading />
+              ) : (
+                <img
+                  loading="lazy"
+                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  alt={!isTvPage ? movie.title : movie.name}
+                  className={movie.poster_path === null ? `hidden` : `block`}
+                />
+              )}
+            </figure>
+            <button
+              onClick={handleGoBack}
+              className="flex gap-2 text-xs sm:text-sm items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
             >
-              <img
-                loading="lazy"
-                src={logo}
-                alt={import.meta.env.VITE_APP_NAME}
-                className="w-fit h-fit"
+              <IonIcon
+                icon={Icons.returnDownBack}
+                className="!w-4 h-full aspect-square"
               />
-            </div>
-            {loading ? (
-              <Loading />
-            ) : (
-              <img
-                loading="lazy"
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                alt={!isTvPage ? movie.title : movie.name}
-                className={movie.poster_path === null ? `hidden` : `block`}
-              />
-            )}
-          </figure>
-          <button
-            onClick={handleGoBack}
-            className="flex gap-2 items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg text-sm hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
-          >
-            <IonIcon
-              icon={Icons.returnDownBack}
-              className="!w-4 h-full aspect-square"
-            />
-            Go Back
-          </button>
+              Go Back
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col w-full">
           {loading ? (
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (
             <h1
               title={!isTvPage ? movie.title : movie.name}
-              className="max-w-fit font-bold text-3xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
+              className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
             >
               {!isTvPage ? movie.title : movie.name}
             </h1>
           )}
 
           {loading ? (
-            <Loading
-              height="[20px] sm:hidden"
-              className={`h-[20px] sm:hidden`}
-            />
+            <Loading height="[20px] hidden" className={`h-[20px] hidden`} />
           ) : (
-            <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
+            <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center hidden">
               {!isTvPage ? (
                 `${formattedDate} • `
               ) : (
@@ -142,16 +141,16 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
 
           {loading ? (
             <Loading
-              height="[150px] !w-[400px] hidden sm:block"
+              height="[150px] mt-2 sm:!w-[400px]"
               className={`h-[150px]`}
             />
           ) : (
-            <table className="max-w-fit hidden sm:block [&_td]:py-1 [&_td]:whitespace-nowrap">
+            <table className="max-w-fit text-xs sm:text-base [&_td]:pr-2 [&_td]:py-1 [&_td]:whitespace-nowrap">
               <tbody>
                 {!isTvPage
                   ? movie.production_companies.length > 0 && (
                       <tr>
-                        <td className="pr-8 py-1 text-gray-400 whitespace-nowrap">
+                        <td className="text-gray-400 whitespace-nowrap">
                           Produced by
                         </td>
                         <td className={`!whitespace-normal`}>
@@ -163,7 +162,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     )
                   : movie.created_by.length > 0 && (
                       <tr>
-                        <td className="pr-8 py-1 text-gray-400 whitespace-nowrap">
+                        <td className="text-gray-400 whitespace-nowrap">
                           Created by
                         </td>
                         <td className={`!whitespace-normal`}>
@@ -175,7 +174,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 {!isTvPage
                   ? movie.runtime && (
                       <tr>
-                        <td className="pr-8 py-1 text-gray-400">Runtime</td>
+                        <td className="text-gray-400">Runtime</td>
                         <td>{`${Math.floor(movie.runtime / 60)}h ${
                           movie.runtime % 60
                         }m`}</td>
@@ -183,13 +182,13 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     )
                   : movie.episode_run_time.length > 0 && (
                       <tr>
-                        <td className="pr-8 py-1 text-gray-400">Runtime</td>
+                        <td className="text-gray-400">Runtime</td>
                         <td>{`${movie.episode_run_time[0]}m`}</td>
                       </tr>
                     )}
                 {movie.release_date || movie.first_air_date ? (
                   <tr>
-                    <td className="pr-8 py-1 text-gray-400">
+                    <td className="text-gray-400">
                       {!isTvPage ? `Release Date` : `Air Date`}
                     </td>
                     {!isTvPage ? (
@@ -197,12 +196,11 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     ) : (
                       <td>
                         {formattedDate}{" "}
-                        {movie.last_air_date !== null
-                          ? `- ${new Date(movie.last_air_date).toLocaleString(
-                              "en-US",
-                              options
-                            )}`
-                          : null}
+                        {movie.last_air_date !== null ? (
+                          <span className="hidden sm:inline">{`- ${new Date(
+                            movie.last_air_date
+                          ).toLocaleString("en-US", options)}`}</span>
+                        ) : null}
                       </td>
                     )}
                   </tr>
@@ -210,8 +208,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
 
                 {isTvPage && (
                   <tr>
-                    <td className="pr-8 py-1 text-gray-400">Chapter</td>
-                    <td>
+                    <td className="text-gray-400">Chapter</td>
+                    <td className={`!whitespace-normal`}>
                       {`${movie.number_of_seasons} Season${
                         movie.number_of_seasons > 1 ? `s` : ``
                       }`}{" "}
@@ -222,7 +220,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   </tr>
                 )}
                 <tr>
-                  <td className="pr-8 py-1 text-gray-400">Genre</td>
+                  <td className="text-gray-400">Genre</td>
                   <td className="flex gap-1 flex-wrap">
                     {movie.genres &&
                       movie.genres.map((genre) => {
