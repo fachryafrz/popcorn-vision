@@ -86,7 +86,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             </button>
           </div>
         </div>
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col gap-2 sm:gap-0 w-full">
           {loading ? (
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (

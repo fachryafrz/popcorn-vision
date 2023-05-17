@@ -65,7 +65,8 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
                   )
               )} */}
             <p className="line-clamp-1">
-              {movieGenres && movieGenres.map((item) => item.name).join(", ")}
+              {movieGenres &&
+                movieGenres.map((item) => item && item.name).join(", ")}
             </p>
           </div>
         )}
