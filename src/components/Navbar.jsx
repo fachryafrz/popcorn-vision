@@ -36,7 +36,7 @@ export default function Navbar({ logo }) {
               icon={isTvPage ? Icons.filmOutline : Icons.tvOutline}
               className="text-[1.25rem]"
             />
-            <span className="hidden sm:block">
+            <span className="hidden xs:block">
               {isTvPage ? `Movies` : `TV Shows`}
             </span>
           </Link>

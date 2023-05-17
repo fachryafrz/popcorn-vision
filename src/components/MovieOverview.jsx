@@ -99,47 +99,6 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           )}
 
           {loading ? (
-            <Loading height="[20px] hidden" className={`h-[20px] hidden`} />
-          ) : (
-            <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center hidden">
-              {!isTvPage ? (
-                `${formattedDate} • `
-              ) : (
-                <span>
-                  {`${movie.number_of_seasons} Season${
-                    movie.number_of_seasons > 1 ? `s` : ``
-                  } (${movie.number_of_episodes} Episode${
-                    movie.number_of_episodes > 1 ? `s` : ``
-                  }) • ${formattedDate} ${
-                    movie.last_air_date !== null
-                      ? ` - ${new Date(movie.last_air_date).toLocaleString(
-                          "en-US",
-                          options
-                        )}`
-                      : ``
-                  } • `}
-                </span>
-              )}
-              {!isTvPage
-                ? movie.runtime &&
-                  `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m • `
-                : movie.episode_run_time.length > 0 &&
-                  `${movie.episode_run_time[0]}m • `}
-              {movie.genres &&
-                movie.genres.map((genre) => {
-                  return (
-                    <span
-                      key={genre.id}
-                      className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray self-start"
-                    >
-                      {genre.name}
-                    </span>
-                  );
-                })}
-            </div>
-          )}
-
-          {loading ? (
             <Loading
               height="[150px] mt-2 sm:!w-[400px]"
               className={`h-[150px]`}
