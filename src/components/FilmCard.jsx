@@ -44,14 +44,14 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
         {loading ? (
           <Loading height="[10px] mt-1" />
         ) : (
-          <div className="whitespace-nowrap flex items-center gap-1 text-xs sm:text-sm mt-1">
+          <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
             <span className="text-gray-400 whitespace-nowrap">
               {new Date(
                 !isTvPage ? movie.release_date : movie.first_air_date
               ).getFullYear()}{" "}
               &bull;
             </span>
-            {movieGenres &&
+            {/* {movieGenres &&
               movieGenres.map(
                 (genre, index) =>
                   genre &&
@@ -63,7 +63,10 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
                       {genre.name}
                     </span>
                   )
-              )}
+              )} */}
+            <p className="line-clamp-1">
+              {movieGenres.map((item) => item.name).join(", ")}
+            </p>
           </div>
         )}
       </div>

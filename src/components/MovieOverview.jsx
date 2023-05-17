@@ -104,7 +104,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               className={`h-[100px] sm:h-[150px]`}
             />
           ) : (
-            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 [&_td]:py-1 [&_td]:whitespace-nowrap">
+            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 first:[&_td]:align-top [&_td]:py-1 first:[&_td]:whitespace-nowrap">
               <tbody>
                 {!isTvPage
                   ? movie.production_companies.length > 0 && (
@@ -112,7 +112,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         <td className="text-gray-400 whitespace-nowrap">
                           Produced by
                         </td>
-                        <td className={`!whitespace-normal`}>
+                        <td className={` line-clamp-1 xl:line-clamp-none`}>
                           {movie.production_companies
                             .map((item) => item.name)
                             .join(", ")}
@@ -124,7 +124,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         <td className="text-gray-400 whitespace-nowrap">
                           Created by
                         </td>
-                        <td className={`!whitespace-normal`}>
+                        <td className={``}>
                           {movie.created_by.map((item) => item.name).join(", ")}
                         </td>
                       </tr>
@@ -168,7 +168,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 {isTvPage && (
                   <tr>
                     <td className="text-gray-400">Chapter</td>
-                    <td className={`!whitespace-normal`}>
+                    <td className={``}>
                       {`${movie.number_of_seasons} Season${
                         movie.number_of_seasons > 1 ? `s` : ``
                       }`}{" "}
@@ -180,7 +180,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 )}
                 <tr>
                   <td className="text-gray-400">Genre</td>
-                  <td className="flex gap-1 flex-wrap">
+                  {/* <td className="flex gap-1 flex-wrap">
                     {movie.genres &&
                       movie.genres.map((genre) => {
                         return (
@@ -192,6 +192,9 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                           </span>
                         );
                       })}
+                  </td> */}
+                  <td className={``}>
+                    {movie.genres.map((item) => item.name).join(", ")}
                   </td>
                 </tr>
               </tbody>
