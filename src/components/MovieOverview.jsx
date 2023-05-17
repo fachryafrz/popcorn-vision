@@ -100,11 +100,11 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
 
           {loading ? (
             <Loading
-              height="[150px] mt-2 sm:!w-[400px]"
-              className={`h-[150px]`}
+              height="[100px] sm:h-[150px] mt-2 sm:!w-[400px]"
+              className={`h-[100px] sm:h-[150px]`}
             />
           ) : (
-            <table className="max-w-fit text-xs sm:text-base [&_td]:pr-2 [&_td]:py-1 [&_td]:whitespace-nowrap">
+            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 [&_td]:py-1 [&_td]:whitespace-nowrap">
               <tbody>
                 {!isTvPage
                   ? movie.production_companies.length > 0 && (

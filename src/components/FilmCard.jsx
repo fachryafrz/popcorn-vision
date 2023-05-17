@@ -36,7 +36,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
         ) : (
           <h3
             title={!isTvPage ? movie.title : movie.name}
-            className="font-bold text-lg line-clamp-1"
+            className="font-bold text-sm sm:text-lg line-clamp-1"
           >
             {!isTvPage ? movie.title : movie.name}
           </h3>
@@ -44,7 +44,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
         {loading ? (
           <Loading height="[10px] mt-1" />
         ) : (
-          <div className="whitespace-nowrap flex items-center gap-1">
+          <div className="whitespace-nowrap flex items-center gap-1 text-xs sm:text-sm mt-1">
             <span className="text-gray-400 whitespace-nowrap">
               {new Date(
                 !isTvPage ? movie.release_date : movie.first_air_date
@@ -58,7 +58,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
                   genre.name && (
                     <span
                       key={index}
-                      className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray text-sm"
+                      className="py-0.5 px-2 bg-base-gray bg-opacity-40 rounded-lg text-gray-200 border border-base-gray"
                     >
                       {genre.name}
                     </span>

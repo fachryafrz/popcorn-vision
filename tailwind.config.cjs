@@ -24,7 +24,7 @@ module.exports = {
         poster: "2 / 3",
       },
       screens: {
-        xs: "365px",
+        xs: "375px",
       },
     },
   },
