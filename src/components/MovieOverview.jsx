@@ -104,30 +104,28 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <div className="text-gray-400 sm:hidden text-sm flex flex-wrap gap-1 items-center">
               {!isTvPage ? (
-                <span>{formattedDate}</span>
+                `${formattedDate} • `
               ) : (
                 <span>
                   {`${movie.number_of_seasons} Season${
                     movie.number_of_seasons > 1 ? `s` : ``
                   } (${movie.number_of_episodes} Episode${
                     movie.number_of_episodes > 1 ? `s` : ``
-                  }) `}
-                  &bull; {new Date(movie.first_air_date).getFullYear()}{" "}
-                  {new Date(movie.last_air_date).getFullYear() ===
-                  new Date(movie.first_air_date).getFullYear()
-                    ? null
-                    : `- ${new Date(movie.last_air_date).getFullYear()}`}
+                  }) • ${formattedDate} ${
+                    movie.last_air_date !== null
+                      ? ` - ${new Date(movie.last_air_date).toLocaleString(
+                          "en-US",
+                          options
+                        )}`
+                      : ``
+                  } • `}
                 </span>
               )}
-              &bull;{" "}
-              {!isTvPage &&
-                `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m`}
-              {isTvPage &&
-                `${
-                  movie.episode_run_time.length > 0
-                    ? movie.episode_run_time[0]
-                    : movie.last_episode_to_air.runtime
-                }m`}
+              {!isTvPage
+                ? movie.runtime &&
+                  `${Math.floor(movie.runtime / 60)}h ${movie.runtime % 60}m • `
+                : movie.episode_run_time.length > 0 &&
+                  `${movie.episode_run_time[0]}m • `}
               {movie.genres &&
                 movie.genres.map((genre) => {
                   return (
@@ -173,23 +171,22 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         </td>
                       </tr>
                     )}
-                {movie.runtime || movie.last_episode_to_air ? (
-                  <tr>
-                    <td className="pr-8 py-1 text-gray-400">Runtime</td>
-                    <td>
-                      {!isTvPage &&
-                        `${Math.floor(movie.runtime / 60)}h ${
+
+                {!isTvPage
+                  ? movie.runtime && (
+                      <tr>
+                        <td className="pr-8 py-1 text-gray-400">Runtime</td>
+                        <td>{`${Math.floor(movie.runtime / 60)}h ${
                           movie.runtime % 60
-                        }m`}
-                      {isTvPage &&
-                        `${
-                          movie.episode_run_time.length > 0
-                            ? movie.episode_run_time[0]
-                            : movie.last_episode_to_air.runtime
-                        }m`}
-                    </td>
-                  </tr>
-                ) : null}
+                        }m`}</td>
+                      </tr>
+                    )
+                  : movie.episode_run_time.length > 0 && (
+                      <tr>
+                        <td className="pr-8 py-1 text-gray-400">Runtime</td>
+                        <td>{`${movie.episode_run_time[0]}m`}</td>
+                      </tr>
+                    )}
                 {movie.release_date || movie.first_air_date ? (
                   <tr>
                     <td className="pr-8 py-1 text-gray-400">
