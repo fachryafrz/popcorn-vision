@@ -33,8 +33,6 @@ const MovieDetail = ({ id }) => {
   }
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-
     setLoading(true);
 
     const fetchMovie = async () => {

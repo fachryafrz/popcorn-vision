@@ -133,11 +133,12 @@ const HomeSlider = ({ apiUrl }) => {
                     />
                     Details
                   </Link>
-                  <a
-                    href={`https://imdb.com/find/?q=${
-                      !isTvPage ? movie.title : movie.name
-                    }`}
-                    target="_blank"
+                  <Link
+                    to={
+                      !isTvPage
+                        ? `/movies/${movie.id}#overview`
+                        : `/tv/${movie.id}#overview`
+                    }
                     className="btn bg-base-gray bg-opacity-40"
                   >
                     <IonIcon
@@ -145,7 +146,7 @@ const HomeSlider = ({ apiUrl }) => {
                       className="!w-5 h-full aspect-square"
                     />
                     Trailer
-                  </a>
+                  </Link>
                 </div>
               </div>
             </SwiperSlide>

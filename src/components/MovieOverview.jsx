@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import {
   Autoplay,
@@ -43,6 +43,21 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   const handleGoBack = () => {
     history.goBack();
   };
+
+  useEffect(() => {
+    const url = window.location.href;
+    const hasOverview = url.includes("#overview");
+
+    if (hasOverview) {
+      const element = document.getElementById("overview");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [movie]);
+
   return (
     <div className="flex flex-col gap-6 self-start w-full">
       <div className="flex gap-2 md:gap-0">
@@ -104,7 +119,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               className={`h-[100px] sm:h-[150px]`}
             />
           ) : (
-            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
+            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
               <tbody>
                 {!isTvPage
                   ? movie.production_companies.length > 0 && (
@@ -203,7 +218,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
         </div>
       </div>
       <div className="text-white flex flex-col gap-6">
-        <div className="flex flex-col gap-2 ">
+        <div id="overview" className="flex flex-col gap-2 ">
           {loading ? (
             <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
           ) : (
