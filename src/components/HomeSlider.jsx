@@ -76,7 +76,7 @@ const HomeSlider = ({ apiUrl }) => {
         }}
         spaceBetween={0}
         slidesPerView={1}
-        className="lg:rounded-bl-[3rem] lg:ml-[5rem]"
+        className="lg:rounded-bl-[3rem] xl:ml-[5rem]"
       >
         {movies.map((movie, index) => {
           return (
@@ -98,7 +98,7 @@ const HomeSlider = ({ apiUrl }) => {
                   className="object-top hidden sm:block"
                 />
               </figure>
-              <div className="flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[40%] absolute bottom-0 inset-x-0 p-4 lg:p-[4rem]">
+              <div className="flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[50%] absolute bottom-0 inset-x-0 p-4 xl:p-[4rem]">
                 <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
                   {!isTvPage ? movie.title : movie.name}
                 </h3>
