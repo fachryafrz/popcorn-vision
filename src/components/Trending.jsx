@@ -1,5 +1,5 @@
 import { IonIcon } from "@ionic/react";
-import { informationCircleOutline } from "ionicons/icons";
+import { informationCircleOutline, star } from "ionicons/icons";
 
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -60,15 +60,9 @@ const Trending = ({ apiUrl }) => {
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[400px] lg:items-start lg:text-start">
           <div className="flex gap-2 items-center">
-            <figure className="w-[50px] self-center ">
-              <img
-                loading="lazy"
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/IMDB_Logo_2016.svg/575px-IMDB_Logo_2016.svg.png"
-                alt="IMDb"
-              />
-            </figure>
+            <IonIcon icon={star} className="text-primary-yellow text-xl" />
             <span className="text-lg font-bold">
-              {Math.ceil(movie.vote_average * 10) / 10}
+              {Math.round(movie.vote_average * 10) / 10}
             </span>
           </div>
           <h3 className="font-bold text-2xl lg:text-3xl">
