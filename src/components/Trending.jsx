@@ -44,7 +44,7 @@ const Trending = ({ apiUrl }) => {
         {!isTvPage ? `Trending Movie` : `Trending TV Series`}
       </h2>
       <div className="relative flex flex-col items-center lg:flex-row gap-8 p-8 lg:p-[3rem] rounded-xl md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t lg:before:bg-gradient-to-r before:from-black before:via-black before:opacity-[70%] before:invisible lg:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-r after:from-black">
-        <figure className="absolute inset-0 z-0 blur lg:blur-none">
+        <figure className="absolute inset-0 z-0 blur-md lg:blur-md">
           <img
             loading="lazy"
             src={`https://image.tmdb.org/t/p/w780${movie.backdrop_path}`}
@@ -58,7 +58,7 @@ const Trending = ({ apiUrl }) => {
             alt={!isTvPage ? movie.title : movie.name}
           />
         </figure>
-        <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[400px] lg:items-start lg:text-start">
+        <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] lg:items-start lg:text-start">
           <div className="flex gap-2 items-center">
             <IonIcon icon={star} className="text-primary-yellow text-xl" />
             <span className="text-lg font-bold">
@@ -75,7 +75,7 @@ const Trending = ({ apiUrl }) => {
           <p className="line-clamp-4">{movie.overview}</p>
           <Link
             to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}
-            className="btn bg-primary-yellow text-black"
+            className="btn bg-primary-yellow text-black mt-4"
           >
             <IonIcon
               icon={informationCircleOutline}

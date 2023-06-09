@@ -145,7 +145,7 @@ export default function Search({ apiUrl, query }) {
       >
         {bgMovies.map((movie, index) => {
           return (
-            <SwiperSlide key={index} className={`max-h-[100px]`}>
+            <SwiperSlide key={index} className={`h-[100px]`}>
               <figure className="aspect-square">
                 <img
                   loading="lazy"

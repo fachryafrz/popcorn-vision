@@ -112,7 +112,7 @@ const HomeSlider = ({ apiUrl }) => {
                       {Math.round(movie.vote_average * 10) / 10}
                     </span>
                   </div>
-                  <span>|</span>
+                  <span>&bull;</span>
                   <div className="whitespace-nowrap flex items-center gap-2">
                     <span className="text-gray-400">
                       {new Date(
