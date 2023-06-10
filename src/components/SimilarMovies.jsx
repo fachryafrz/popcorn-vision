@@ -35,7 +35,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
             slidesPerView: 5,
           },
         }}
-        className="px-4 py-[5rem] xl:px-[8rem] pr-12 xl:pr-[8rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
+        className="px-4 py-[3rem] xl:px-[8rem] pr-12 xl:pr-[8rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
         {movie.recommendations &&
           movie.recommendations.results &&
@@ -62,7 +62,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
             );
           })}
 
-        <div className="absolute top-[2rem] md:top-[1.5rem] left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[1rem] flex justify-between items-center xl:max-w-none">
+        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
           <p className="font-bold text-xl lg:text-2xl">
             {movie.recommendations && movie.recommendations.results.length !== 0
               ? `Recommendations`
