@@ -128,7 +128,7 @@ export default function Search({ apiUrl, query }) {
     };
 
     fetchGenres();
-  }, []);
+  }, [query]);
 
   return (
     <div className="relative">
