@@ -17,7 +17,7 @@ import { useLocation } from "react-router-dom";
 const FilmSlider = ({
   title,
   apiUrl,
-  companies,
+  apiCompanies,
   apiGenres,
   apiUpcoming,
   apiSortBy = "popularity.desc",
@@ -34,7 +34,7 @@ const FilmSlider = ({
     sort_by: apiSortBy,
     region: "US",
     include_adult: false,
-    with_companies: companies,
+    with_companies: apiCompanies,
     with_genres: apiGenres,
     "primary_release_date.gte": apiUpcoming,
   };
@@ -44,8 +44,9 @@ const FilmSlider = ({
       api_key: apiKey,
       sort_by: apiSortBy,
       watch_region: "US",
-      with_watch_providers: "8",
-      first_air_date_year: apiUpcoming,
+      "first_air_date.gte": apiUpcoming,
+      with_companies: apiCompanies,
+      with_genres: apiGenres,
     };
   }
 
