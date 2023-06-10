@@ -129,7 +129,7 @@ const MovieDetail = ({ id }) => {
             />
           </div>
           {/* Right */}
-          <div className="lg:col-span-2">
+          <div className="col-span-12 lg:col-span-2">
             <CastsList
               logo={logo}
               movie={movie}

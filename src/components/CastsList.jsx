@@ -13,15 +13,23 @@ export function CastsList({ logo, movie, loading }) {
   };
 
   return (
-    <div
-      className={`hidden max-w-full lg:flex flex-col gap-4 self-start w-max sticky top-20`}
-    >
-      {loading ? (
-        <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
-      ) : (
-        <h2 className="font-bold text-2xl">Cast & Crews</h2>
-      )}
-      <div className="flex flex-col gap-4">
+    <div className={`max-w-full flex flex-col self-start sticky top-20`}>
+      <div className="flex items-center justify-between">
+        {loading ? (
+          <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
+        ) : (
+          <h2 className="font-bold text-2xl">Cast & Crews</h2>
+        )}
+        <button
+          onClick={handleShowAllActors}
+          className={`text-primary-blue ${
+            !loading ? `flex` : `hidden`
+          } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hover:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
+        >
+          {showAllActors ? "Show Less" : "Show All"}
+        </button>
+      </div>
+      <div className="flex lg:flex-col gap-4 overflow-hidden overflow-x-auto py-4">
         {movie.credits &&
           movie.credits.cast &&
           movie.credits.cast
@@ -42,8 +50,8 @@ export function CastsList({ logo, movie, loading }) {
           <button
             onClick={handleShowAllActors}
             className={`text-primary-blue ${
-              !loading ? `flex` : `hidden`
-            } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hover:bg-gray-600 py-2 px-4 sticky bottom-0`}
+              !loading ? `lg:flex` : `hidden`
+            } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hover:bg-gray-600 py-2 px-4 sticky bottom-0 text-sm whitespace-nowrap h-fit my-auto hidden`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon
