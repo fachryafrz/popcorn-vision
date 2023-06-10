@@ -20,7 +20,7 @@ const FilmSlider = ({
   companies,
   apiGenres,
   apiUpcoming,
-  apiSortBy,
+  apiSortBy = "popularity.desc",
 }) => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
@@ -31,21 +31,21 @@ const FilmSlider = ({
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
+    sort_by: apiSortBy,
     region: "US",
     include_adult: false,
     with_companies: companies,
     with_genres: apiGenres,
     "primary_release_date.gte": apiUpcoming,
-    sort_by: apiSortBy,
   };
-
-  console.log(params);
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
+      sort_by: apiSortBy,
       watch_region: "US",
-      with_watch_providers: "2,3",
+      with_watch_providers: "8",
+      first_air_date_year: apiUpcoming,
     };
   }
 
@@ -113,7 +113,7 @@ const FilmSlider = ({
             slidesPerView: 5,
           },
         }}
-        className="px-4 py-[3rem] xl:px-[8rem] mx-2 relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
+        className="px-4 py-[3rem] xl:px-[8rem] pr-12 xl:pr-[8rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
         {movies.map((movie, index) => {
           const movieGenres =
@@ -138,7 +138,7 @@ const FilmSlider = ({
           );
         })}
 
-        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 !max-w-7xl mx-auto px-4 lg:px-[1rem] flex justify-between items-center xl:max-w-none">
+        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
           <p className="font-bold text-lg md:text-2xl">{title}</p>
           <div className="flex gap-4 items-center">
             <button className="prev h-[1.5rem]" aria-label="Move slider left">

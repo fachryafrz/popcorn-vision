@@ -4,6 +4,7 @@ import { informationCircleOutline, star } from "ionicons/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import MovieTitleLogo from "./MovieTitleLogo";
 
 const Trending = ({ apiUrl }) => {
   const [movie, setMovie] = useState([]);
@@ -59,19 +60,26 @@ const Trending = ({ apiUrl }) => {
           />
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] lg:items-start lg:text-start">
-          <div className="flex gap-2 items-center">
-            <IonIcon icon={star} className="text-primary-yellow text-xl" />
-            <span className="text-lg font-bold">
-              {Math.round(movie.vote_average * 10) / 10}
-            </span>
-          </div>
-          <h3 className="font-bold text-2xl lg:text-3xl">
+          {/* <h3 className="font-bold text-2xl lg:text-3xl">
             {!isTvPage ? movie.title : movie.name} (
             {new Date(
               !isTvPage ? movie.release_date : movie.first_air_date
             ).getFullYear()}
             )
-          </h3>
+          </h3> */}
+          <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
+          <div className="flex gap-2 items-center">
+            <IonIcon icon={star} className="text-primary-yellow text-xl" />
+            <span className="text-lg font-bold">
+              {Math.round(movie.vote_average * 10) / 10}
+            </span>
+            <span>&bull;</span>
+            <time className="text-lg font-bold">
+              {new Date(
+                !isTvPage ? movie.release_date : movie.first_air_date
+              ).getFullYear()}
+            </time>
+          </div>
           <p className="line-clamp-4">{movie.overview}</p>
           <Link
             to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}

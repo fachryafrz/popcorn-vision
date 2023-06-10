@@ -16,8 +16,9 @@ import "swiper/css/effect-fade";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Loading } from "./Loading";
+import MovieTitleLogo from "./MovieTitleLogo";
 
-const HomeSlider = ({ apiUrl }) => {
+const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,6 +28,7 @@ const HomeSlider = ({ apiUrl }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
+    sort_by: apiSortBy,
     region: "US",
     include_adult: false,
   };
@@ -34,8 +36,10 @@ const HomeSlider = ({ apiUrl }) => {
   if (isTvPage) {
     params = {
       api_key: apiKey,
+      sort_by: apiSortBy,
       watch_region: "US",
-      with_watch_providers: "2,3",
+      with_watch_providers: "8",
+      first_air_date_year: apiUpcoming,
     };
   }
 
@@ -82,7 +86,7 @@ const HomeSlider = ({ apiUrl }) => {
           return (
             <SwiperSlide
               key={index}
-              className="min-h-fit sm:h-[600px] flex items-end relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray before:opacity-[75%] sm:before:opacity-[100%] after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
+              className="min-h-fit sm:h-[600px] flex items-end relative before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
             >
               <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
@@ -98,10 +102,11 @@ const HomeSlider = ({ apiUrl }) => {
                   className="object-top hidden sm:block"
                 />
               </figure>
-              <div className="flex flex-col gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[50%] absolute bottom-0 inset-x-0 p-4 xl:p-[4rem]">
-                <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+              <div className="flex flex-col items-center sm:items-start gap-2 lg:gap-4 z-20 md:max-w-[70%] lg:max-w-[50%] absolute bottom-0 inset-x-0 p-4 xl:p-[4rem]">
+                {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
                   {!isTvPage ? movie.title : movie.name}
-                </h3>
+                </h3> */}
+                <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
                 <div className="flex items-center gap-2 text-sm font-medium">
                   <div className="flex items-center gap-1">
                     <IonIcon
@@ -122,7 +127,7 @@ const HomeSlider = ({ apiUrl }) => {
                   </div>
                 </div>
                 <p className="line-clamp-2 md:line-clamp-3">{movie.overview}</p>
-                <div className="flex gap-4 mt-4">
+                <div className="flex gap-2 mt-4 w-full">
                   <Link
                     to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}
                     className="btn bg-primary-blue bg-opacity-60"

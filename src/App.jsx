@@ -13,6 +13,7 @@ import Search from "./components/Search";
 
 const App = () => {
   const today = new Date().toISOString().slice(0, 10);
+  const thisYear = new Date().getFullYear();
 
   return (
     <Router>
@@ -22,7 +23,7 @@ const App = () => {
           <main className="pb-8">
             <Switch>
               <Route exact path="/">
-                <HomeSlider apiUrl="/discover/movie" />
+                <HomeSlider apiUrl="/discover/movie" apiUpcoming={today} />
                 {/* <section id="genres">
                   <Genres />
                 </section> */}
@@ -161,9 +162,13 @@ const App = () => {
 
               {/* TV Series */}
               <Route exact path="/tv">
-                <HomeSlider apiUrl="/discover/tv" />
-                <section id="onTheAir">
-                  <FilmSlider title="On The Air" apiUrl="/tv/on_the_air" />
+                <HomeSlider apiUrl="/discover/tv" apiUpcoming={thisYear} />
+                <section id="onTheAir" className="pt-[2rem]">
+                  <FilmSlider
+                    title="On The Air"
+                    apiUrl="/discover/tv"
+                    apiUpcoming={thisYear}
+                  />
                 </section>
                 <section id="trending">
                   <Trending apiUrl="/trending/tv/day" />

@@ -21,6 +21,8 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import FilmReviews from "./FilmReviews";
+import axios from "axios";
+import MovieTitleLogo from "./MovieTitleLogo";
 
 export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
   const history = useHistory();
@@ -30,6 +32,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
     movie.videos.results.filter(
       (result) => result.site === "YouTube" && result.official === true
     );
+  const [movieTitleLogo, setMovieTitleLogo] = useState([]);
 
   const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
   const date = new Date(dateStr);
@@ -105,12 +108,16 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           {loading ? (
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (
-            <h1
-              title={!isTvPage ? movie.title : movie.name}
-              className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
-            >
-              {!isTvPage ? movie.title : movie.name}
-            </h1>
+            <div>
+              {/* <h1
+                title={!isTvPage ? movie.title : movie.name}
+                className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
+              >
+                {!isTvPage ? movie.title : movie.name}
+              </h1> */}
+
+              <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
+            </div>
           )}
 
           {loading ? (
