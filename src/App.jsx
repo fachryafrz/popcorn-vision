@@ -32,7 +32,7 @@ const App = () => {
                 </section>
                 <section id="upcoming">
                   <FilmSlider
-                    title="Upcoming"
+                    title="Upcoming Movies"
                     apiUrl="/movie/upcoming"
                     apiUpcoming={today}
                   />
@@ -42,7 +42,7 @@ const App = () => {
                 </section>
                 <section className="pt-[2rem]">
                   <FilmSlider
-                    title="Marvel Studios"
+                    title="Marvel Cinematic Universe"
                     apiUrl="/discover/movie"
                     apiCompanies="420"
                   />
