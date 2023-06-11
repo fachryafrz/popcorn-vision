@@ -32,7 +32,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
     movie.videos.results.filter(
       (result) => result.site === "YouTube" && result.official === true
     );
-  const [movieTitleLogo, setMovieTitleLogo] = useState([]);
+  const [movieTitle, setMovieTitle] = useState();
 
   const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
   const date = new Date(dateStr);
@@ -59,6 +59,28 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
     } else {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+  }, [movie]);
+
+  useEffect(() => {
+    const fetchMovieTitleLogo = async () => {
+      axios
+        .get(
+          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${
+            movie.id
+          }/images`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              language: "en",
+            },
+          }
+        )
+        .then((response) => {
+          setMovieTitle(response.data.logos[0]);
+        });
+    };
+
+    fetchMovieTitleLogo();
   }, [movie]);
 
   return (
@@ -109,14 +131,16 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (
             <div>
-              {/* <h1
-                title={!isTvPage ? movie.title : movie.name}
-                className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
-              >
-                {!isTvPage ? movie.title : movie.name}
-              </h1> */}
-
-              <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
+              {movieTitle && movieTitle !== null ? (
+                <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
+              ) : (
+                <h1
+                  title={!isTvPage ? movie.title : movie.name}
+                  className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
+                >
+                  {!isTvPage ? movie.title : movie.name}
+                </h1>
+              )}
             </div>
           )}
 
