@@ -152,16 +152,35 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
               <tbody>
+                {!isTvPage && movie.production_companies.length > 0 && (
+                  <tr>
+                    <td className="text-gray-400 whitespace-nowrap">
+                      Producer
+                    </td>
+                    <td className={` line-clamp-1 xl:line-clamp-none`}>
+                      {movie.production_companies
+                        .map((item) => item.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                )}
+
                 {!isTvPage
-                  ? movie.production_companies.length > 0 && (
+                  ? movie.credits &&
+                    movie.credits.crew &&
+                    movie.credits.crew.find(
+                      (person) => person.job === "Director"
+                    ) !== null && (
                       <tr>
                         <td className="text-gray-400 whitespace-nowrap">
-                          Produced by
+                          Director
                         </td>
-                        <td className={` line-clamp-1 xl:line-clamp-none`}>
-                          {movie.production_companies
-                            .map((item) => item.name)
-                            .join(", ")}
+                        <td className={``}>
+                          {
+                            movie.credits.crew.find(
+                              (person) => person.job === "Director"
+                            ).name
+                          }
                         </td>
                       </tr>
                     )
@@ -224,9 +243,10 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     </td>
                   </tr>
                 )}
-                <tr>
-                  <td className="text-gray-400">Genre</td>
-                  {/* <td className="flex gap-1 flex-wrap">
+                {movie.genres && movie.genres.length > 0 && (
+                  <tr>
+                    <td className="text-gray-400">Genre</td>
+                    {/* <td className="flex gap-1 flex-wrap">
                     {movie.genres &&
                       movie.genres.map((genre) => {
                         return (
@@ -239,10 +259,11 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                         );
                       })}
                   </td> */}
-                  <td className={``}>
-                    {movie.genres.map((item) => item.name).join(", ")}
-                  </td>
-                </tr>
+                    <td className={``}>
+                      {movie.genres.map((item) => item.name).join(", ")}
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           )}
