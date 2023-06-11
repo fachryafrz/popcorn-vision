@@ -13,14 +13,13 @@ const Footer = () => {
   const isTvPage = location.pathname.startsWith("/tv");
 
   return (
-    <div className="px-4 lg:px-[9rem] max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
+    <div className="px-4 lg:px-6 max-w-7xl mx-auto pt-[2rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
-        <figure className="w-[100px]">
+        <figure
+          className={`w-[100px] flex flex-col font-bold text-4xl text-center items-center after:leading-tight after:content-["Popcorn_Vision"]`}
+        >
           <img loading="lazy" src={logo} alt="Popcorn Vision" />
         </figure>
-        <p className="font-bold text-4xl pointer-events-none">
-          Popcorn <br /> Vision
-        </p>
       </div>
       <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {footer.map((footer) => (
