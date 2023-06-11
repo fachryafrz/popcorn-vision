@@ -11,7 +11,7 @@ export default function Navbar({ logo }) {
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
-      <h1 className="sr-only">Popcorn Vision</h1>
+      <h1 className="sr-only">{import.meta.env.VITE_APP_NAME}</h1>
       <div className="max-w-7xl mx-auto py-2 px-6 flex flex-wrap justify-between">
         <Link
           to={isTvPage ? `/tv` : `/`}
@@ -20,7 +20,11 @@ export default function Navbar({ logo }) {
           <figure
             className={`aspect-square w-[50px] flex items-center gap-1 after:content-["Popcorn_Vision"] after:leading-tight`}
           >
-            <img loading="lazy" src={logo} alt="Popcorn Vision" />
+            <img
+              loading="lazy"
+              src={logo}
+              alt={import.meta.env.VITE_APP_NAME}
+            />
           </figure>
         </Link>
         <div className="flex items-center gap-4 sm:gap-8">
