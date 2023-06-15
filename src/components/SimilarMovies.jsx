@@ -66,7 +66,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
 
         <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
           {loading ? (
-            <Loading height="[30px]" width="[200px]" />
+            <Loading classNames={`h-[30px] w-[200px]`} />
           ) : (
             <p className="font-bold text-xl lg:text-2xl">
               {movie.recommendations &&
