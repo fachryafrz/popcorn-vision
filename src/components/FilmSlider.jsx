@@ -13,6 +13,7 @@ import "swiper/css/autoplay";
 
 import logo from "/popcorn.png";
 import { useLocation } from "react-router-dom";
+import { Loading } from "./Loading";
 
 const FilmSlider = ({
   title,
@@ -24,6 +25,7 @@ const FilmSlider = ({
 }) => {
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -58,6 +60,9 @@ const FilmSlider = ({
         })
         .then((response) => {
           setMovies(response.data.results);
+          setTimeout(() => {
+            setLoading(false);
+          }, 500);
         });
     };
 
@@ -90,7 +95,7 @@ const FilmSlider = ({
       <h2 className="sr-only">{title}</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
-        spaceBetween={16}
+        spaceBetween={8}
         slidesPerView={2}
         loop={true}
         autoplay={{
@@ -114,7 +119,7 @@ const FilmSlider = ({
             slidesPerView: 5,
           },
         }}
-        className="px-4 py-[3rem] xl:px-[8rem] pr-12 xl:pr-[8rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
+        className="px-4 py-[3rem] xl:px-[8rem] pr-[5rem] xl:pr-[8rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
         {movies.map((movie, index) => {
           const movieGenres =
@@ -134,14 +139,24 @@ const FilmSlider = ({
                 logo={logo}
                 movieGenres={movieGenres}
                 isTvPage={isTvPage}
+                loading={loading}
               />
             </SwiperSlide>
           );
         })}
 
         <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
-          <p className="font-bold text-lg md:text-2xl">{title}</p>
-          <div className="flex gap-4 items-center">
+          {loading ? (
+            <Loading height="[30px]" width="[200px]" />
+          ) : (
+            <p className="font-bold text-lg md:text-2xl">{title}</p>
+          )}
+
+          <div
+            className={`flex gap-4 items-center ${
+              loading ? `opacity-0` : `opacity-100`
+            }`}
+          >
             <button className="prev h-[1.5rem]" aria-label="Move slider left">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
             </button>

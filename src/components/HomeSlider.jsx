@@ -91,18 +91,26 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
               className="min-h-fit sm:h-[600px] flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
             >
               <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
-                <img
-                  loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
-                  alt={!isTvPage ? movie.title : movie.name}
-                  className="object-top sm:hidden"
-                />
-                <img
-                  loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
-                  alt={!isTvPage ? movie.title : movie.name}
-                  className="object-top hidden sm:block"
-                />
+                {loading ? (
+                  <Loading classNames={`h-[600px]`} />
+                ) : (
+                  <img
+                    loading="lazy"
+                    src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
+                    alt={!isTvPage ? movie.title : movie.name}
+                    className="object-top sm:hidden"
+                  />
+                )}
+                {loading ? (
+                  <Loading classNames={`h-[600px]`} />
+                ) : (
+                  <img
+                    loading="lazy"
+                    src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+                    alt={!isTvPage ? movie.title : movie.name}
+                    className="object-top hidden sm:block"
+                  />
+                )}
               </figure>
               <div className="flex flex-col items-center sm:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute bottom-0 inset-x-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10">
                 {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">

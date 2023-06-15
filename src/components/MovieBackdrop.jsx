@@ -18,8 +18,11 @@ export function MovieBackdrop({ logo, movie, isTvPage, loading }) {
           className="object-none w-fit h-fit"
         />
       </div>
+
       {loading ? (
-        <Loading height="z-0" />
+        <Loading
+          classNames={`h-full relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-10`}
+        />
       ) : (
         <img
           loading="lazy"

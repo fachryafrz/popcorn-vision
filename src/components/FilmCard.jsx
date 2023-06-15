@@ -24,7 +24,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
           />
         </div>
         {loading ? (
-          <Loading />
+          <Loading height="[300px] sm:h-[400px]" className="h-[300px]" />
         ) : (
           <img
             loading="lazy"

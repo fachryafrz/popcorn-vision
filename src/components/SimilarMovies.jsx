@@ -4,8 +4,9 @@ import { Autoplay, Navigation } from "swiper";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
+import { Loading } from "./Loading";
 
-export function SimilarMovies({ logo, movie, genres, isTvPage }) {
+export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
   return (
     <div id="Similar Movies">
       <h2 className="sr-only">Recommendations</h2>
@@ -57,18 +58,29 @@ export function SimilarMovies({ logo, movie, genres, isTvPage }) {
                   logo={logo}
                   movieGenres={movieGenres}
                   isTvPage={isTvPage}
+                  loading={loading}
                 />
               </SwiperSlide>
             );
           })}
 
         <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
-          <p className="font-bold text-xl lg:text-2xl">
-            {movie.recommendations && movie.recommendations.results.length !== 0
-              ? `Recommendations`
-              : ``}
-          </p>
-          <div className="flex gap-4 items-center">
+          {loading ? (
+            <Loading height="[30px]" width="[200px]" />
+          ) : (
+            <p className="font-bold text-xl lg:text-2xl">
+              {movie.recommendations &&
+              movie.recommendations.results.length !== 0
+                ? `Recommendations`
+                : ``}
+            </p>
+          )}
+
+          <div
+            className={`flex gap-4 items-center ${
+              loading ? `opacity-0` : `opacity-100`
+            }`}
+          >
             <button className="prev h-[1.5rem]">
               {movie.recommendations &&
               movie.recommendations.results.length !== 0 ? (

@@ -57,7 +57,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [movie]);
 
