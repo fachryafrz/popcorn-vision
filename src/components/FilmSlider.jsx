@@ -61,7 +61,7 @@ const FilmSlider = ({
         .then((response) => {
           setMovies(response.data.results);
           setTimeout(() => {
-            setLoading(true);
+            setLoading(false);
           }, 500);
         });
     };
