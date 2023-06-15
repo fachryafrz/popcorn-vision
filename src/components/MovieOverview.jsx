@@ -279,7 +279,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           {loading ? (
             <Loading height="[150px]" className={`h-[150px]`} />
           ) : (
-            <p className="text-gray-400 text-lg">{movie.overview}</p>
+            <p className="text-gray-400 lg:text-lg">{movie.overview}</p>
           )}
         </div>
         {movie.images && movie.images.backdrops.length !== 0 ? (
