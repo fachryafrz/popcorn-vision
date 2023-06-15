@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Loading } from "./Loading";
 
 export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
+  const releaseDate = !isTvPage ? movie.release_date : movie.first_air_date;
+  const year = new Date(releaseDate + "Z").getFullYear();
+
   return (
     <Link to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}>
       <figure className="rounded-lg overflow-hidden aspect-poster">
@@ -46,10 +49,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
         ) : (
           <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
             <span className="text-gray-400 whitespace-nowrap">
-              {new Date(
-                !isTvPage ? movie.release_date : movie.first_air_date
-              ).getFullYear()}{" "}
-              &bull;
+              {year} &bull;
             </span>
             {/* {movieGenres &&
               movieGenres.map(
