@@ -12,7 +12,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
       <h2 className="sr-only">Recommendations</h2>
       <Swiper
         modules={[Navigation, Autoplay]}
-        spaceBetween={16}
+        spaceBetween={8}
         slidesPerView={2}
         loop={true}
         autoplay={{
