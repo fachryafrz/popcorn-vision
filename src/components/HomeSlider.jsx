@@ -44,6 +44,8 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
   }
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchMovies = async () => {
       axios
         .get(`https://api.themoviedb.org/3${apiUrl}`, {

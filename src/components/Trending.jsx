@@ -30,6 +30,8 @@ const Trending = ({ apiUrl }) => {
   }
 
   useEffect(() => {
+    setLoading(true);
+
     axios
       .get(`https://api.themoviedb.org/3${apiUrl}`, {
         params: {
@@ -42,7 +44,7 @@ const Trending = ({ apiUrl }) => {
           setLoading(false);
         }, 500);
       });
-  }, []);
+  }, [isTvPage]);
 
   return (
     <div className="px-4 lg:px-[9rem]">

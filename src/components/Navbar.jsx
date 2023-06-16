@@ -28,8 +28,8 @@ export default function Navbar({ logo }) {
           </figure>
         </Link>
         <div className="flex items-center gap-4 sm:gap-8">
-          <a
-            href={isTvPage ? `/` : `/tv`}
+          <Link
+            to={isTvPage ? `/` : `/tv`}
             className={`text-base-gray ${
               isTvPage === "/tv" ? `hidden` : `flex`
             } items-center gap-2 hover:text-white`}
@@ -41,7 +41,7 @@ export default function Navbar({ logo }) {
             <span className="hidden xs:block">
               {isTvPage ? `Movies` : `TV Shows`}
             </span>
-          </a>
+          </Link>
           <Link
             to={isTvPage ? `/tv/search` : `/search`}
             className={`${

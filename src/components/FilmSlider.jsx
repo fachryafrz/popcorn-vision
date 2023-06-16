@@ -53,6 +53,8 @@ const FilmSlider = ({
   }
 
   useEffect(() => {
+    setLoading(true);
+
     const fetchMovies = async () => {
       axios
         .get(`https://api.themoviedb.org/3${apiUrl}`, {
@@ -67,7 +69,7 @@ const FilmSlider = ({
     };
 
     fetchMovies();
-  }, []);
+  }, [isTvPage]);
 
   useEffect(() => {
     const fetchGenres = async () => {
@@ -88,7 +90,7 @@ const FilmSlider = ({
     };
 
     fetchGenres();
-  }, []);
+  }, [isTvPage]);
 
   return (
     <div>
