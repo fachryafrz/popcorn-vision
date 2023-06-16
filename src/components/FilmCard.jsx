@@ -23,35 +23,23 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
             className="w-fit h-fit"
           />
         </div>
-        {loading ? (
-          <Loading height="[300px] sm:h-[400px]" className="h-[300px]" />
-        ) : (
-          <img
-            loading="lazy"
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-            alt={!isTvPage ? movie.title : movie.name}
-          />
-        )}
+        <img
+          loading="lazy"
+          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+          alt={!isTvPage ? movie.title : movie.name}
+        />
       </figure>
       <div className="mt-2">
-        {loading ? (
-          <Loading height="[20px]" />
-        ) : (
-          <h3
-            title={!isTvPage ? movie.title : movie.name}
-            className="font-bold text-sm sm:text-lg line-clamp-1"
-          >
-            {!isTvPage ? movie.title : movie.name}
-          </h3>
-        )}
-        {loading ? (
-          <Loading height="[10px] mt-1" />
-        ) : (
-          <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
-            <span className="text-gray-400 whitespace-nowrap">
-              {year} &bull;
-            </span>
-            {/* {movieGenres &&
+        <h3
+          title={!isTvPage ? movie.title : movie.name}
+          className="font-bold text-sm sm:text-lg line-clamp-1"
+        >
+          {!isTvPage ? movie.title : movie.name}
+        </h3>
+
+        <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
+          <span className="text-gray-400 whitespace-nowrap">{year} &bull;</span>
+          {/* {movieGenres &&
               movieGenres.map(
                 (genre, index) =>
                   genre &&
@@ -64,12 +52,11 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
                     </span>
                   )
               )} */}
-            <p className="line-clamp-1">
-              {movieGenres &&
-                movieGenres.map((item) => item && item.name).join(", ")}
-            </p>
-          </div>
-        )}
+          <p className="line-clamp-1">
+            {movieGenres &&
+              movieGenres.map((item) => item && item.name).join(", ")}
+          </p>
+        </div>
       </div>
     </Link>
   );
