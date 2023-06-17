@@ -220,10 +220,14 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     ) : (
                       <td>
                         {formattedDate}{" "}
-                        {movie.last_air_date !== null ? (
-                          <span className="hidden xs:inline">{`- ${new Date(
-                            movie.last_air_date
-                          ).toLocaleString("en-US", options)}`}</span>
+                        {movie.last_air_date !== null &&
+                        movie.last_air_date !== movie.first_air_date ? (
+                          <span className="hidden xs:inline">
+                            {`- ${new Date(movie.last_air_date).toLocaleString(
+                              "en-US",
+                              options
+                            )}`}
+                          </span>
                         ) : null}
                       </td>
                     )}
