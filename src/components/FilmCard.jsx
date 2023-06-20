@@ -16,29 +16,47 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
               : `hidden`
           }
         >
+          {loading ? (
+            <Loading classNames={`aspect-poster`} />
+          ) : (
+            <img
+              loading="lazy"
+              src={logo}
+              alt={!isTvPage ? movie.title : movie.name}
+              className="w-fit h-fit"
+            />
+          )}
+        </div>
+        {loading ? (
+          <Loading classNames={`aspect-poster`} />
+        ) : (
           <img
             loading="lazy"
-            src={logo}
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
             alt={!isTvPage ? movie.title : movie.name}
-            className="w-fit h-fit"
           />
-        </div>
-        <img
-          loading="lazy"
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={!isTvPage ? movie.title : movie.name}
-        />
+        )}
       </figure>
       <div className="mt-2">
-        <h3
-          title={!isTvPage ? movie.title : movie.name}
-          className="font-bold text-sm sm:text-lg line-clamp-1"
-        >
-          {!isTvPage ? movie.title : movie.name}
-        </h3>
+        {loading ? (
+          <Loading classNames={`!h-[20px]`} />
+        ) : (
+          <h3
+            title={!isTvPage ? movie.title : movie.name}
+            className="font-bold text-sm sm:text-lg line-clamp-1"
+          >
+            {!isTvPage ? movie.title : movie.name}
+          </h3>
+        )}
 
         <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
-          <span className="text-gray-400 whitespace-nowrap">{year} &bull;</span>
+          {loading ? (
+            <Loading classNames={`!h-[10px] !w-[75px]`} />
+          ) : (
+            <span className="text-gray-400 whitespace-nowrap">
+              {year} &bull;
+            </span>
+          )}
           {/* {movieGenres &&
               movieGenres.map(
                 (genre, index) =>
@@ -52,10 +70,14 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
                     </span>
                   )
               )} */}
-          <p className="line-clamp-1">
-            {movieGenres &&
-              movieGenres.map((item) => item && item.name).join(", ")}
-          </p>
+          {loading ? (
+            <Loading classNames={`!h-[10px]`} />
+          ) : (
+            <p className="line-clamp-1">
+              {movieGenres &&
+                movieGenres.map((item) => item && item.name).join(", ")}
+            </p>
+          )}
         </div>
       </div>
     </Link>

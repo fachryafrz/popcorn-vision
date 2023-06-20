@@ -27,22 +27,9 @@ export default function Search({ apiUrl, query }) {
 
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
 
-  const handleSearchQuery = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSubmit = (e = null) => {
-    if (e) {
-      e.preventDefault();
-    }
-    history.push(
-      `/${!isTvPage ? `search` : `tv/search`}/${searchQuery.replace(
-        /\s+/g,
-        "-"
-      )}`
-    );
-    searchRef.current.blur();
+  const searchMovies = async () => {
     setLoading(true);
+
     axios
       .get(
         `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
@@ -61,27 +48,29 @@ export default function Search({ apiUrl, query }) {
       });
   };
 
+  const handleSearchQuery = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    history.push(
+      `/${!isTvPage ? `search` : `tv/search`}/${searchQuery.replace(
+        /\s+/g,
+        "-"
+      )}`
+    );
+
+    searchRef.current.blur();
+    searchMovies();
+  };
+
   useEffect(() => {
     if (query) {
       setSearchQuery(query.replace(/\-/g, " "));
-      searchRef.current.blur();
-      setLoading(true);
-      axios
-        .get(
-          `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
-          {
-            params: {
-              api_key: apiKey,
-              query: searchQuery.replace(/\s+/g, "+"),
-            },
-          }
-        )
-        .then((response) => {
-          setMovies(response.data.results);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        });
+      searchMovies();
+      // searchRef.current.blur();
     }
   }, [query]);
 
@@ -190,7 +179,7 @@ export default function Search({ apiUrl, query }) {
             )}
           </h2>
           <div
-            className={`grid gap-2 lg:gap-4 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
+            className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
           >
             {movies.map((movie, index) => {
               const movieGenres =
@@ -203,7 +192,7 @@ export default function Search({ apiUrl, query }) {
               return (
                 <SwiperSlide
                   key={index}
-                  className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
+                  className="overflow-hidden hover:scale-[1.025] active:scale-100 transition-all"
                 >
                   <FilmCard
                     movie={movie}

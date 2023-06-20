@@ -134,23 +134,15 @@ const FilmSlider = ({
           return (
             <SwiperSlide
               key={index}
-              className="overflow-hidden hover:scale-105 active:scale-100 transition-all order-2"
+              className="overflow-hidden max-w-[250px] hover:scale-[1.025] active:scale-100 transition-all order-2"
             >
-              {loading ? (
-                <div className="flex flex-col gap-1">
-                  <Loading classNames={`aspect-poster`} />
-                  <Loading classNames={`!h-[20px]`} />
-                  <Loading classNames={`!h-[10px]`} />
-                </div>
-              ) : (
-                <FilmCard
-                  movie={movie}
-                  logo={logo}
-                  movieGenres={movieGenres}
-                  isTvPage={isTvPage}
-                  loading={loading}
-                />
-              )}
+              <FilmCard
+                movie={movie}
+                logo={logo}
+                movieGenres={movieGenres}
+                isTvPage={isTvPage}
+                loading={loading}
+              />
             </SwiperSlide>
           );
         })}
