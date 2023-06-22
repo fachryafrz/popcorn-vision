@@ -4,9 +4,9 @@ const Casts = ({ logo, actor, index, loading }) => {
   return (
     <div
       key={index}
-      className="flex flex-col lg:flex-row text-center lg:text-start gap-2 items-center min-w-[100px]"
+      className="flex flex-col lg:flex-row text-center lg:text-start gap-2 items-center lg:items-start min-w-[120px]"
     >
-      <figure className="!w-[50px] !h-[50px] aspect-squar rounded-full overflow-hidden flex-shrink-0">
+      <figure className="!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0">
         <div
           className={
             actor.profile_path === null
@@ -14,7 +14,19 @@ const Casts = ({ logo, actor, index, loading }) => {
               : `hidden`
           }
         >
-          <img loading="lazy" src={logo} alt={import.meta.env.VITE_APP_NAME} />
+          {loading ? (
+            <Loading
+              width="auto"
+              height="auto"
+              classNames={`!w-[50px] !h-[50px] aspect-square rounded-full -m-2`}
+            />
+          ) : (
+            <img
+              loading="lazy"
+              src={logo}
+              alt={import.meta.env.VITE_APP_NAME}
+            />
+          )}
         </div>
         {loading ? (
           <Loading />
@@ -26,22 +38,27 @@ const Casts = ({ logo, actor, index, loading }) => {
           />
         )}
       </figure>
-      <div className="w-full">
+      <div className="w-full self-center">
         {loading ? (
           <Loading height="[20px]" className="!w-full" />
         ) : (
-          <h3 title={actor.name} className="font-medium lg:line-clamp-2">
+          <h3 title={actor.name} className="font-medium lg:line-clamp-1">
             {actor.name}
           </h3>
         )}
-        {loading ? (
-          <Loading height="[10px] mt-1" className="!w-full" />
-        ) : (
-          <p className="text-sm text-gray-400 lg:line-clamp-2 max-w-[120px] lg:max-w-none mx-auto lg:mx-0">
-            {actor.character !== "" && (
-              <span title={actor.character}>as {actor.character}</span>
+
+        {actor.character !== "" && (
+          <>
+            {loading ? (
+              <Loading height="[10px] mt-1" className="!w-full" />
+            ) : (
+              <p
+                className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1`}
+              >
+                <span title={actor.character}>{actor.character}</span>
+              </p>
             )}
-          </p>
+          </>
         )}
       </div>
     </div>

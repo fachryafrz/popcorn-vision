@@ -1,8 +1,8 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useState } from "react";
-import Casts from "./Casts";
-import { Loading } from "./Loading";
+import Casts from "../components/Casts";
+import { Loading } from "../components/Loading";
 
 export function CastsList({ logo, movie, loading }) {
   const [showAllActors, setShowAllActors] = useState(false);
@@ -29,7 +29,7 @@ export function CastsList({ logo, movie, loading }) {
           {showAllActors ? "Show Less" : "Show All"}
         </button>
       </div>
-      <div className="flex lg:flex-col gap-4 overflow-hidden overflow-x-auto py-4">
+      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 py-4">
         {movie.credits &&
           movie.credits.cast &&
           movie.credits.cast
@@ -50,8 +50,8 @@ export function CastsList({ logo, movie, loading }) {
           <button
             onClick={handleShowAllActors}
             className={`text-primary-blue ${
-              !loading ? `lg:flex` : `hidden`
-            } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hover:bg-gray-600 py-2 px-4 sticky bottom-0 text-sm whitespace-nowrap h-fit my-auto hidden`}
+              !loading ? `opacity-100` : `opacity-0`
+            } sticky bottom-0 lg:flex items-center justify-center gap-2 p-2 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hover:bg-white hover:bg-opacity-10 hidden text-sm font-medium`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon
@@ -60,7 +60,7 @@ export function CastsList({ logo, movie, loading }) {
                   ? Icons.chevronUpCircleOutline
                   : Icons.chevronDownCircleOutline
               }
-              className="text-[1.5rem]"
+              className="text-[1.25rem]"
             />
           </button>
         ) : (

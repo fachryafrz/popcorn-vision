@@ -130,7 +130,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           {loading ? (
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (
-            <div>
+            <>
               {movieTitle && movieTitle !== null ? (
                 <MovieTitleLogo movie={movie.id} isTvPage={isTvPage} />
               ) : (
@@ -141,7 +141,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   {!isTvPage ? movie.title : movie.name}
                 </h1>
               )}
-            </div>
+            </>
           )}
 
           {loading ? (
@@ -294,7 +294,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 className={`h-auto`}
               />
             ) : (
-              <div className="container max-w-fit">
+              <div className="max-w-max">
                 <Swiper
                   modules={[
                     FreeMode,
@@ -369,11 +369,12 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     movie.images.backdrops.slice(0, 5).map((img, index) => {
                       return (
                         <SwiperSlide key={index}>
-                          <figure className="rounded-lg overflow-hidden">
+                          <figure className="rounded-lg overflow-hidden w-full aspect-video">
                             <img
                               loading="lazy"
                               src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
                               alt={``}
+                              className={`w-full h-full object-cover`}
                             />
                           </figure>
                         </SwiperSlide>

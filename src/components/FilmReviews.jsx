@@ -73,7 +73,7 @@ export default function FilmReviews({ logo, review, loading }) {
         } prose max-w-none !text-gray-400`}
       >
         {loading ? (
-          <Loading height="[150px]" className={`h-[150px]`} />
+          <Loading height="[140px]" className={`h-[150px]`} />
         ) : (
           <ReactMarkdown children={review.content} />
         )}

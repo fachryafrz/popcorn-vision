@@ -1,8 +1,8 @@
-import { MovieBackdrop } from "./MovieBackdrop";
-import { MoviePoster } from "./MoviePoster";
-import { SimilarMovies } from "./SimilarMovies";
-import { CastsList } from "./CastsList";
-import { MovieOverview } from "./MovieOverview";
+import { MovieBackdrop } from "../components/MovieBackdrop";
+import { MoviePoster } from "../components/MoviePoster";
+import { SimilarMovies } from "../components/SimilarMovies";
+import { CastsList } from "../sections/CastsList";
+import { MovieOverview } from "../components/MovieOverview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import "swiper/css/navigation";

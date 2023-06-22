@@ -10,7 +10,7 @@ import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
-import { FilmCard } from "./FilmCard";
+import { FilmCard } from "../components/FilmCard";
 import { useHistory, useLocation } from "react-router-dom";
 
 export default function Search({ apiUrl, query }) {
