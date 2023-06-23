@@ -84,7 +84,9 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
         }}
         spaceBetween={0}
         slidesPerView={1}
-        className="lg:rounded-bl-[3rem] xl:ml-[5rem]"
+        className={`lg:rounded-bl-[3rem] xl:ml-[5rem] ${
+          loading && `h-[500px] sm:h-[600px]`
+        }`}
       >
         {movies.map((movie, index) => {
           return (

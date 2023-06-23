@@ -121,7 +121,9 @@ const FilmSlider = ({
             slidesPerView: 5,
           },
         }}
-        className="px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
+        className={`px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
+          loading && `h-[50vh] sm:h-[55vh] md:h-[60vh] xl:h-[70vh]`
+        }`}
       >
         {movies.map((movie, index) => {
           const movieGenres =
@@ -134,7 +136,10 @@ const FilmSlider = ({
           return (
             <SwiperSlide
               key={index}
-              className="overflow-hidden max-w-[250px] hover:scale-[1.025] active:scale-100 transition-all order-2"
+              className={`overflow-hidden hover:scale-[1.025] active:scale-100 transition-all order-2 ${
+                loading &&
+                `max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`
+              }`}
             >
               <FilmCard
                 movie={movie}

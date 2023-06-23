@@ -47,7 +47,7 @@ const Trending = ({ apiUrl }) => {
   }, [isTvPage]);
 
   return (
-    <div className="px-4 lg:px-[9rem]">
+    <div className="px-4 xl:px-[9rem]">
       <h2 className="sr-only">
         {!isTvPage ? `Trending Movie` : `Trending TV Series`}
       </h2>
