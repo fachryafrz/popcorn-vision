@@ -4,7 +4,6 @@ import ReactMarkdown from "react-markdown";
 
 export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
-  const reviewContent = useRef();
 
   const dateStr = review && review.updated_at;
   const date = new Date(dateStr);
@@ -42,18 +41,22 @@ export default function FilmReviews({ logo, review, loading }) {
                 : `hidden`
             }`}
           >
-            <img
-              loading="lazy"
-              src={logo}
-              alt={import.meta.env.VITE_APP_NAME}
-            />
+            {loading ? (
+              <Loading classNames={`!h-[50px] !w-[50px] -m-2`} />
+            ) : (
+              <img
+                loading="lazy"
+                src={logo}
+                alt={import.meta.env.VITE_APP_NAME}
+              />
+            )}
           </div>
           {loading ? <Loading /> : false}
           {imgUrl && (
             <img loading="lazy" src={`${imgUrl}`} alt={review.author} />
           )}
         </figure>
-        <div className="flex flex-col justify-start h-[50px]">
+        <div className="flex flex-col justify-center h-[50px]">
           {loading ? (
             <Loading height="[20px] !w-[70px]" className={`h-[20px]`} />
           ) : (
@@ -66,30 +69,25 @@ export default function FilmReviews({ logo, review, loading }) {
           )}
         </div>
       </div>
-      <div
-        ref={reviewContent}
-        className={`${
-          readMore ? `` : `line-clamp-3`
-        } prose max-w-none !text-gray-400`}
-      >
-        {loading ? (
-          <Loading height="[140px]" className={`h-[150px]`} />
-        ) : (
-          <ReactMarkdown children={review.content} />
-        )}
-      </div>
-      {!loading && (
-        <button
-          onClick={handleReadMore}
+      {loading ? (
+        <Loading classNames={`!h-[150px]`} />
+      ) : (
+        <div
           className={`${
-            reviewContent.current && reviewContent.current.clientHeight < 84
-              ? `hidden`
-              : `flex`
-          } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
+            readMore ? `` : `line-clamp-3`
+          } prose max-w-none !text-gray-400`}
         >
-          {readMore ? `Show less` : `Read more`}
-        </button>
+          <ReactMarkdown children={review.content} />
+        </div>
       )}
+      <button
+        onClick={handleReadMore}
+        className={`${
+          review.content.length > 250 ? `flex` : `hidden`
+        } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
+      >
+        {readMore ? `Show less` : `Read more`}
+      </button>
     </div>
   );
 }
