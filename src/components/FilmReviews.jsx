@@ -4,6 +4,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
+  const characterCounts = 100;
 
   const dateStr = review && review.updated_at;
   const date = new Date(dateStr);
@@ -25,7 +26,7 @@ export default function FilmReviews({ logo, review, loading }) {
 
   useEffect(() => {
     setReadMore(false);
-  }, []);
+  }, [review]);
 
   return (
     <div
@@ -72,19 +73,21 @@ export default function FilmReviews({ logo, review, loading }) {
       {loading ? (
         <Loading classNames={`!h-[150px]`} />
       ) : (
-        <div
-          className={`${
-            readMore ? `` : `line-clamp-3`
-          } prose max-w-none !text-gray-400`}
-        >
-          <ReactMarkdown children={review.content} />
+        <div className={`prose max-w-none !text-gray-400`}>
+          <ReactMarkdown
+            children={
+              readMore || review.content.length < characterCounts
+                ? review.content
+                : `${review.content.slice(0, characterCounts)}...`
+            }
+          />
         </div>
       )}
       {!loading && (
         <button
           onClick={handleReadMore}
           className={`${
-            review.content.length > 300 ? `flex` : `hidden`
+            review.content.length > characterCounts ? `flex` : `hidden`
           } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
         >
           {readMore ? `Show less` : `Read more`}
