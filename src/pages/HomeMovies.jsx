@@ -6,11 +6,7 @@ import Trending from "../components/Trending";
 export default function HomeMovies({ today, thisYear }) {
   return (
     <>
-      <HomeSlider
-        apiUrl="/discover/movie"
-        apiUpcoming={today}
-        apiSortBy={`popularity.desc`}
-      />
+      <HomeSlider apiUrl="/discover/movie" apiUpcoming={today} />
       {/* <section id="genres">
                   <Genres />
                 </section> */}
