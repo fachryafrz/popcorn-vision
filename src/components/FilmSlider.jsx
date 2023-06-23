@@ -121,7 +121,7 @@ const FilmSlider = ({
             slidesPerView: 5,
           },
         }}
-        className="px-4 py-[3rem] xl:px-[8rem] pr-[5rem] xl:pr-[8rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
+        className="px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
         {movies.map((movie, index) => {
           const movieGenres =
@@ -147,7 +147,7 @@ const FilmSlider = ({
           );
         })}
 
-        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 lg:px-[8rem] flex justify-between items-center xl:max-w-none">
+        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 xl:px-[9rem] flex justify-between items-center xl:max-w-none">
           {loading ? (
             <Loading classNames={`h-[30px] max-w-[150px]`} />
           ) : (
