@@ -29,13 +29,13 @@ export default function MovieTitleLogo({ movie, isTvPage }) {
   }, [movie]);
 
   return (
-    <figure className="mb-4">
+    <figure className="mb-4 w-full flex justify-center sm:max-w-fit">
       <img
         src={`https://image.tmdb.org/t/p/w500${
           movieTitleLogo && movieTitleLogo.file_path
         }`}
         alt={!isTvPage ? movie && movie.title : movie && movie.name}
-        className="w-auto max-h-[150px] object-contain"
+        className="max-w-full max-h-[200px] object-contain"
       />
     </figure>
   );

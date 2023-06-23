@@ -51,7 +51,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
             return (
               <SwiperSlide
                 key={index}
-                className="overflow-hidden hover:scale-105 active:scale-100 transition-all"
+                className="overflow-hidden hover:scale-[1.025] active:scale-100 transition-all"
               >
                 <FilmCard
                   movie={movie}

@@ -80,14 +80,16 @@ export default function FilmReviews({ logo, review, loading }) {
           <ReactMarkdown children={review.content} />
         </div>
       )}
-      <button
-        onClick={handleReadMore}
-        className={`${
-          review.content.length > 250 ? `flex` : `hidden`
-        } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
-      >
-        {readMore ? `Show less` : `Read more`}
-      </button>
+      {!loading && (
+        <button
+          onClick={handleReadMore}
+          className={`${
+            review.content.length > 300 ? `flex` : `hidden`
+          } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
+        >
+          {readMore ? `Show less` : `Read more`}
+        </button>
+      )}
     </div>
   );
 }

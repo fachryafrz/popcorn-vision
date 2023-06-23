@@ -107,10 +107,10 @@ const MovieDetail = ({ id }) => {
         isTvPage={isTvPage}
         loading={loading}
       />
-      <div className="z-10 -mt-[4rem] sm:-mt-[14rem] lg:-mt-[22rem]">
+      <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh]">
         <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <div className="md:col-span-3">
+          <div className="lg:col-span-3">
             <MoviePoster
               logo={logo}
               movie={movie}
@@ -119,7 +119,7 @@ const MovieDetail = ({ id }) => {
             />
           </div>
           {/* Middle */}
-          <div className="col-span-12 md:col-span-9 lg:col-span-7">
+          <div className="col-span-12 lg:col-span-7">
             <MovieOverview
               logo={logo}
               movie={movie}

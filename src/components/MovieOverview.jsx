@@ -85,10 +85,10 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
 
   return (
     <div className="flex flex-col gap-6 self-start w-full">
-      <div className="flex gap-2 md:gap-0">
+      <div className="flex gap-4 flex-col items-center sm:items-stretch sm:flex-row lg:gap-0">
         <div className="flex flex-col gap-1">
           <div className="sticky top-20 flex flex-col gap-1">
-            <figure className="h-[120px] sm:h-[150px] max-h-[150px] md:hidden lg:max-w-[250px] aspect-poster rounded-lg overflow-hidden self-start">
+            <figure className="w-[50vw] sm:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start">
               <div
                 className={
                   movie.poster_path === null
@@ -114,7 +114,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 />
               )}
             </figure>
-            <button
+            {/* <button
               onClick={handleGoBack}
               className="flex gap-2 text-xs sm:text-sm items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
             >
@@ -123,10 +123,10 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                 className="!w-4 h-full aspect-square"
               />
               Go Back
-            </button>
+            </button> */}
           </div>
         </div>
-        <div className="flex flex-col gap-2 sm:gap-0 w-full">
+        <div className="flex flex-col items-center md:justify-center sm:items-start gap-2 sm:gap-0 w-full">
           {loading ? (
             <Loading height="[50px] md:!w-[500px]" className={`h-[50px]`} />
           ) : (
@@ -150,12 +150,23 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               className={`h-[100px] sm:h-[150px]`}
             />
           ) : (
-            <table className="max-w-fit text-xs sm:text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
+            <table className="w-full text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
               <tbody>
-                {!isTvPage && movie.production_companies.length > 0 && (
+                {!isTvPage && movie.production_companies.length > 0 ? (
                   <tr>
                     <td className="text-gray-400 whitespace-nowrap">
-                      Producer
+                      Produced by
+                    </td>
+                    <td className={` line-clamp-1 xl:line-clamp-none`}>
+                      {movie.production_companies
+                        .map((item) => item.name)
+                        .join(", ")}
+                    </td>
+                  </tr>
+                ) : (
+                  <tr>
+                    <td className="text-gray-400 whitespace-nowrap">
+                      Produced by
                     </td>
                     <td className={` line-clamp-1 xl:line-clamp-none`}>
                       {movie.production_companies
@@ -173,7 +184,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                     ) !== null && (
                       <tr>
                         <td className="text-gray-400 whitespace-nowrap">
-                          Director
+                          Directed by
                         </td>
                         <td className={``}>
                           {
@@ -187,7 +198,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   : movie.created_by.length > 0 && (
                       <tr>
                         <td className="text-gray-400 whitespace-nowrap">
-                          Created by
+                          Directed by
                         </td>
                         <td className={``}>
                           {movie.created_by.map((item) => item.name).join(", ")}
@@ -283,7 +294,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           {loading ? (
             <Loading height="[150px]" className={`h-[150px]`} />
           ) : (
-            <p className="text-gray-400 lg:text-lg">{movie.overview}</p>
+            <p className="text-gray-400 md:text-lg">{movie.overview}</p>
           )}
         </div>
         {movie.images && movie.images.backdrops.length !== 0 ? (
