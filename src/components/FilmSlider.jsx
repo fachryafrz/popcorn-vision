@@ -14,6 +14,7 @@ import "swiper/css/autoplay";
 import logo from "/popcorn.png";
 import { useLocation } from "react-router-dom";
 import { Loading } from "./Loading";
+import CompanyLogo from "./CompanyLogo";
 
 const FilmSlider = ({
   title,
@@ -26,6 +27,7 @@ const FilmSlider = ({
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [companyLogo, setCompanyLogo] = useState();
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -47,7 +49,7 @@ const FilmSlider = ({
       sort_by: apiSortBy,
       watch_region: "US",
       "first_air_date.gte": apiUpcoming,
-      with_companies: apiCompanies,
+      with_networks: apiCompanies,
       with_genres: apiGenres,
     };
   }
@@ -85,7 +87,25 @@ const FilmSlider = ({
         });
     };
 
+    const fetchCompanyLogo = async () => {
+      axios
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `company` : `network`
+          }/${apiCompanies}/images`,
+          {
+            params: {
+              ...params,
+            },
+          }
+        )
+        .then((response) => {
+          setCompanyLogo(response.data.logos[0]);
+        });
+    };
+
     fetchMovies();
+    fetchCompanyLogo();
   }, [isTvPage]);
 
   useEffect(() => {
@@ -142,7 +162,7 @@ const FilmSlider = ({
             slidesPerGroup: 5,
           },
         }}
-        className={`px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
+        className={`px-4 pb-[2rem] pt-[4rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
           loading && `h-[50vh] sm:h-[55vh] md:h-[60vh] xl:h-[70vh]`
         }`}
       >
@@ -173,11 +193,17 @@ const FilmSlider = ({
           );
         })}
 
-        <div className="absolute top-2 md:top-0 left-0 right-0 h-8 px-4 xl:px-[9rem] flex justify-between items-center xl:max-w-none">
+        <div className="absolute top-0 left-0 right-0 h-[50px] px-4 xl:px-[9rem] flex justify-between items-end xl:max-w-none">
           {loading ? (
-            <Loading classNames={`h-[30px] max-w-[150px]`} />
+            <Loading classNames={`max-w-[150px]`} />
           ) : (
-            <p className="font-bold text-lg md:text-2xl">{title}</p>
+            <>
+              {apiCompanies ? (
+                <CompanyLogo logo={companyLogo} title={title} />
+              ) : (
+                <p className="font-bold text-lg md:text-2xl">{title}</p>
+              )}
+            </>
           )}
 
           <div

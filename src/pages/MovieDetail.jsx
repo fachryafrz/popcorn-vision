@@ -181,7 +181,7 @@ const MovieDetail = ({ id }) => {
       <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh]">
         <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-2">
             <MoviePoster
               logo={logo}
               movie={movie}
@@ -190,7 +190,7 @@ const MovieDetail = ({ id }) => {
             />
           </div>
           {/* Middle */}
-          <div className="col-span-12 lg:col-span-7">
+          <div className="col-span-12 lg:col-span-8">
             <MovieOverview
               logo={logo}
               movie={movie}

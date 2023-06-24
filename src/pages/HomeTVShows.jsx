@@ -21,10 +21,48 @@ export default function HomeTVShows({ today, thisYear }) {
           apiUpcoming={today}
         />
       </section>
+      <section id="topRated">
+        <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
+      </section>
       <section id="trending">
         <Trending apiUrl="/trending/tv/day" />
       </section>
-      <section className="pt-[2rem]">
+      <section id="disney+" className="pt-[2rem]">
+        <FilmSlider
+          title="Disney+ Series"
+          apiUrl="/discover/tv"
+          apiCompanies={2739}
+        />
+      </section>
+      <section id="netflix">
+        <FilmSlider
+          title="Netflix Series"
+          apiUrl="/discover/tv"
+          apiCompanies={213}
+        />
+      </section>
+      <section id="hbo">
+        <FilmSlider
+          title="HBO Series"
+          apiUrl="/discover/tv"
+          apiCompanies={49}
+        />
+      </section>
+      <section id="primevideo">
+        <FilmSlider
+          title="Prime Video Series"
+          apiUrl="/discover/tv"
+          apiCompanies={1024}
+        />
+      </section>
+      <section id="hulu">
+        <FilmSlider
+          title="Hulu Series"
+          apiUrl="/discover/tv"
+          apiCompanies={453}
+        />
+      </section>
+      <section>
         <FilmSlider
           title="Action & Adventure"
           apiUrl="/discover/tv"
@@ -71,9 +109,6 @@ export default function HomeTVShows({ today, thisYear }) {
       </section>
       <section>
         <FilmSlider title="War" apiUrl="/discover/tv" apiGenres={`10768`} />
-      </section>
-      <section id="topRated">
-        <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
       </section>
     </>
   );
