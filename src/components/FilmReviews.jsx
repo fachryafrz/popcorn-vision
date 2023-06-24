@@ -4,7 +4,7 @@ import ReactMarkdown from "react-markdown";
 
 export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
-  const characterCounts = 100;
+  const characterCounts = 200;
 
   const dateStr = review && review.updated_at;
   const date = new Date(dateStr);
