@@ -6,7 +6,7 @@ export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
   const characterCounts = 200;
 
-  const dateStr = review && review.updated_at;
+  const dateStr = review && review.created_at;
   const date = new Date(dateStr);
   const options = {
     year: "numeric",
@@ -66,7 +66,10 @@ export default function FilmReviews({ logo, review, loading }) {
           {loading ? (
             <Loading height="[10px] mt-1 !w-[100px]" className={`h-[10px]`} />
           ) : (
-            <span className="text-sm text-gray-400">{formattedDate}</span>
+            <span className="text-sm text-gray-400">
+              {formattedDate} (Updated at{" "}
+              {new Date(review.updated_at).toLocaleString("en-US", options)})
+            </span>
           )}
         </div>
       </div>

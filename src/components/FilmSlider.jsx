@@ -64,6 +64,20 @@ const FilmSlider = ({
           },
         })
         .then((response) => {
+          setMovies(response.data.results);
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
+        });
+
+      axios
+        .get(`https://api.themoviedb.org/3${apiUrl}`, {
+          params: {
+            ...params,
+            page: 2,
+          },
+        })
+        .then((response) => {
           setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
           setTimeout(() => {
             setLoading(false);

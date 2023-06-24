@@ -25,7 +25,7 @@ export default function HomeMovies({ today, thisYear }) {
       </section>
       <section className="pt-[2rem]">
         <FilmSlider
-          title="Marvel Cinematic Universe"
+          title="Marvel Studios"
           apiUrl="/discover/movie"
           apiCompanies="420"
         />

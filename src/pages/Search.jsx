@@ -37,6 +37,7 @@ export default function Search({ apiUrl, query }) {
           params: {
             api_key: apiKey,
             query: searchQuery.replace(/\s+/g, "+"),
+            sort_by: "popularity.desc",
           },
         }
       )

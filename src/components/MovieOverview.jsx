@@ -24,7 +24,7 @@ import FilmReviews from "./FilmReviews";
 import axios from "axios";
 import MovieTitleLogo from "./MovieTitleLogo";
 
-export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
+export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
   const history = useHistory();
   const [thumbsSwiper, setThumbsSwiper] = useState();
   const filteredVideos =
@@ -214,7 +214,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                       <tr>
                         <td className="text-gray-400">Runtime</td>
 
-                        {Math.floor(movie.runtime / 60) > 1 ? (
+                        {Math.floor(movie.runtime / 60) >= 1 ? (
                           <td>
                             {Math.floor(movie.runtime / 60)}h{" "}
                             {movie.runtime % 60}m
@@ -306,7 +306,7 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
             <p className="text-gray-400 md:text-lg">{movie.overview}</p>
           )}
         </div>
-        {movie.images && movie.images.backdrops.length !== 0 ? (
+        {movie.images && movie.images.backdrops.length !== 0 && (
           <div className="flex flex-col gap-2 ">
             {loading ? (
               <Loading
@@ -404,10 +404,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               </div>
             )}
           </div>
-        ) : (
-          ``
         )}
-        {movie.reviews && movie.reviews.results.length !== 0 ? (
+        {reviews && reviews.length !== 0 ? (
           <div className="flex flex-col gap-2">
             <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
               {loading ? (
@@ -417,9 +415,8 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
               )}
             </div>
             <div className="flex flex-col gap-2">
-              {movie.reviews &&
-                movie.reviews.results &&
-                movie.reviews.results
+              {reviews &&
+                reviews
                   .slice()
                   .reverse()
                   .map((review, index) => {

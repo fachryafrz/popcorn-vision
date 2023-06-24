@@ -13,9 +13,11 @@ import { useLocation } from "react-router-dom";
 const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
   const [genres, setGenres] = useState([]);
-  const [page, setPage] = useState();
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
+
+  const [totalReviewPages, setTotalReviewPages] = useState();
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -23,13 +25,13 @@ const MovieDetail = ({ id }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
-    append_to_response: "credits,reviews,images,videos",
+    append_to_response: "credits,images,videos",
   };
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
-      append_to_response: "credits,reviews,images,videos",
+      append_to_response: "credits,images,videos",
     };
   }
 
@@ -41,7 +43,9 @@ const MovieDetail = ({ id }) => {
         .get(
           `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${id}`,
           {
-            params,
+            params: {
+              ...params,
+            },
           }
         )
         .then((response) => {
@@ -70,7 +74,7 @@ const MovieDetail = ({ id }) => {
           }/list`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              ...params,
             },
           }
         )
@@ -85,14 +89,39 @@ const MovieDetail = ({ id }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/movie/${id}/reviews`, {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            page: page,
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}/reviews`,
+          {
+            params: {
+              ...params,
+              page: 1,
+            },
+          }
+        )
         .then((response) => {
-          setPage(response.data);
+          setReviews(response.data.results);
+          setTotalReviewPages(response.data.total_pages);
+        });
+
+      axios
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}/reviews`,
+          {
+            params: {
+              ...params,
+              page: 2,
+            },
+          }
+        )
+        .then((response) => {
+          setReviews((prevReviews) => [
+            ...prevReviews,
+            ...response.data.results,
+          ]);
         });
     };
 
@@ -114,10 +143,7 @@ const MovieDetail = ({ id }) => {
           }
         )
         .then((response) => {
-          setRecommendations((prevRecommendations) => [
-            ...prevRecommendations,
-            ...response.data.results,
-          ]);
+          setRecommendations(response.data.results);
         });
 
       axios
@@ -168,9 +194,9 @@ const MovieDetail = ({ id }) => {
             <MovieOverview
               logo={logo}
               movie={movie}
-              page={page}
               isTvPage={isTvPage}
               loading={loading}
+              reviews={reviews}
             />
           </div>
           {/* Right */}
