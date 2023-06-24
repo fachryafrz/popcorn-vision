@@ -15,6 +15,7 @@ const MovieDetail = ({ id }) => {
   const [genres, setGenres] = useState([]);
   const [page, setPage] = useState();
   const [loading, setLoading] = useState(true);
+  const [recommendations, setRecommendations] = useState([]);
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
@@ -22,13 +23,13 @@ const MovieDetail = ({ id }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
-    append_to_response: "credits,recommendations,reviews,images,videos",
+    append_to_response: "credits,reviews,images,videos",
   };
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
-      append_to_response: "credits,recommendations,reviews,images,videos",
+      append_to_response: "credits,reviews,images,videos",
     };
   }
 
@@ -98,6 +99,50 @@ const MovieDetail = ({ id }) => {
     fetchReviews();
   }, []);
 
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      axios
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}/recommendations`,
+          {
+            params: {
+              ...params,
+              page: 1,
+            },
+          }
+        )
+        .then((response) => {
+          setRecommendations((prevRecommendations) => [
+            ...prevRecommendations,
+            ...response.data.results,
+          ]);
+        });
+
+      axios
+        .get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}/recommendations`,
+          {
+            params: {
+              ...params,
+              page: 2,
+            },
+          }
+        )
+        .then((response) => {
+          setRecommendations((prevRecommendations) => [
+            ...prevRecommendations,
+            ...response.data.results,
+          ]);
+        });
+    };
+
+    fetchRecommendations();
+  }, []);
+
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
       {/* Movie Background/Backdrop */}
@@ -130,22 +175,25 @@ const MovieDetail = ({ id }) => {
           </div>
           {/* Right */}
           <div className="col-span-12 lg:col-span-2">
-            <CastsList
-              logo={logo}
-              movie={movie}
-              isTvPage={isTvPage}
-              loading={loading}
-            />
+            {movie.credits && movie.credits.cast.length > 0 && (
+              <CastsList
+                logo={logo}
+                movie={movie}
+                isTvPage={isTvPage}
+                loading={loading}
+              />
+            )}
           </div>
         </div>
         {/* Similar */}
-        {movie.recommendations && movie.recommendations.results.length > 0 && (
+        {recommendations && recommendations.length > 0 && (
           <SimilarMovies
             logo={logo}
             movie={movie}
             genres={genres}
             isTvPage={isTvPage}
             loading={loading}
+            recommendations={recommendations}
           />
         )}
       </div>

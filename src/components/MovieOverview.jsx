@@ -152,33 +152,36 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
           ) : (
             <table className="w-full md:max-w-fit text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
               <tbody>
-                {!isTvPage && movie.production_companies.length > 0 ? (
-                  <tr>
-                    <td className="text-gray-400 whitespace-nowrap">
-                      Produced by
-                    </td>
-                    <td className={` line-clamp-1 xl:line-clamp-none`}>
-                      {movie.production_companies
-                        .map((item) => item.name)
-                        .join(", ")}
-                    </td>
-                  </tr>
-                ) : (
-                  <tr>
-                    <td className="text-gray-400 whitespace-nowrap">
-                      Produced by
-                    </td>
-                    <td className={` line-clamp-1 xl:line-clamp-none`}>
-                      {movie.production_companies
-                        .map((item) => item.name)
-                        .join(", ")}
-                    </td>
-                  </tr>
-                )}
+                {!isTvPage
+                  ? movie.production_companies &&
+                    movie.production_companies.length > 0 && (
+                      <tr>
+                        <td className="text-gray-400 whitespace-nowrap">
+                          Produced by
+                        </td>
+                        <td className={` line-clamp-1 xl:line-clamp-none`}>
+                          {movie.production_companies
+                            .map((item) => item.name)
+                            .join(", ")}
+                        </td>
+                      </tr>
+                    )
+                  : movie.production_companies.length > 0 && (
+                      <tr>
+                        <td className="text-gray-400 whitespace-nowrap">
+                          Produced by
+                        </td>
+                        <td className={` line-clamp-1 xl:line-clamp-none`}>
+                          {movie.production_companies
+                            .map((item) => item.name)
+                            .join(", ")}
+                        </td>
+                      </tr>
+                    )}
 
                 {!isTvPage
                   ? movie.credits &&
-                    movie.credits.crew &&
+                    movie.credits.crew.length > 0 &&
                     movie.credits.crew.find(
                       (person) => person.job === "Director"
                     ) !== null && (
@@ -210,9 +213,15 @@ export function MovieOverview({ logo, movie, page, isTvPage, loading }) {
                   ? movie.runtime > 0 && (
                       <tr>
                         <td className="text-gray-400">Runtime</td>
-                        <td>{`${Math.floor(movie.runtime / 60)}h ${
-                          movie.runtime % 60
-                        }m`}</td>
+
+                        {Math.floor(movie.runtime / 60) > 1 ? (
+                          <td>
+                            {Math.floor(movie.runtime / 60)}h{" "}
+                            {movie.runtime % 60}m
+                          </td>
+                        ) : (
+                          <td>{movie.runtime % 60} minutes</td>
+                        )}
                       </tr>
                     )
                   : movie.episode_run_time.length > 0 && (

@@ -58,10 +58,13 @@ const FilmSlider = ({
     const fetchMovies = async () => {
       axios
         .get(`https://api.themoviedb.org/3${apiUrl}`, {
-          params,
+          params: {
+            ...params,
+            page: 1,
+          },
         })
         .then((response) => {
-          setMovies(response.data.results);
+          setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
           setTimeout(() => {
             setLoading(false);
           }, 1000);
@@ -81,6 +84,7 @@ const FilmSlider = ({
           {
             params: {
               api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              page: 1,
             },
           }
         )
@@ -99,7 +103,7 @@ const FilmSlider = ({
         modules={[Navigation, Autoplay]}
         spaceBetween={8}
         slidesPerView={2}
-        loop={true}
+        // loop={true}
         autoplay={{
           delay: 5000,
           disableOnInteraction: true,
@@ -113,12 +117,15 @@ const FilmSlider = ({
         breakpoints={{
           640: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
           },
           768: {
             slidesPerView: 4,
+            slidesPerGroup: 4,
           },
           1024: {
             slidesPerView: 5,
+            slidesPerGroup: 5,
           },
         }}
         className={`px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${

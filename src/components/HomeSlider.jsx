@@ -79,7 +79,7 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
         loop={true}
         autoplay={{
           delay: 5000,
-          disableOnInteraction: false,
+          disableOnInteraction: true,
           pauseOnMouseEnter: true,
         }}
         spaceBetween={0}

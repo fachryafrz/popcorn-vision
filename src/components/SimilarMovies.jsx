@@ -6,7 +6,14 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import { FilmCard } from "./FilmCard";
 import { Loading } from "./Loading";
 
-export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
+export function SimilarMovies({
+  logo,
+  movie,
+  genres,
+  isTvPage,
+  loading,
+  recommendations,
+}) {
   return (
     <div id="Similar Movies">
       <h2 className="sr-only">Recommendations</h2>
@@ -14,10 +21,10 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
         modules={[Navigation, Autoplay]}
         spaceBetween={8}
         slidesPerView={2}
-        loop={true}
+        // loop={true}
         autoplay={{
           delay: 5000,
-          disableOnInteraction: false,
+          disableOnInteraction: true,
           pauseOnMouseEnter: true,
         }}
         navigation={{
@@ -28,19 +35,22 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
         breakpoints={{
           640: {
             slidesPerView: 3,
+            slidesPerGroup: 3,
           },
           768: {
             slidesPerView: 4,
+            slidesPerGroup: 4,
           },
           1024: {
             slidesPerView: 5,
+            slidesPerGroup: 5,
           },
         }}
         className="px-4 py-[3rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none"
       >
-        {movie.recommendations &&
-          movie.recommendations.results &&
-          movie.recommendations.results.map((movie, index) => {
+        {recommendations &&
+          recommendations &&
+          recommendations.map((movie, index) => {
             const movieGenres =
               movie.genre_ids && genres
                 ? movie.genre_ids.map((genreId) =>
@@ -69,8 +79,7 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
             <Loading classNames={`h-[30px] max-w-[150px]`} />
           ) : (
             <p className="font-bold text-xl lg:text-2xl">
-              {movie.recommendations &&
-              movie.recommendations.results.length !== 0
+              {recommendations && recommendations.length !== 0
                 ? `Recommendations`
                 : ``}
             </p>
@@ -82,16 +91,14 @@ export function SimilarMovies({ logo, movie, genres, isTvPage, loading }) {
             }`}
           >
             <button className="prev h-[1.5rem]">
-              {movie.recommendations &&
-              movie.recommendations.results.length !== 0 ? (
+              {recommendations && recommendations.length !== 0 ? (
                 <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
               ) : (
                 ``
               )}
             </button>
             <button className="next h-[1.5rem]">
-              {movie.recommendations &&
-              movie.recommendations.results.length !== 0 ? (
+              {recommendations && recommendations.length !== 0 ? (
                 <IonIcon
                   icon={chevronForward}
                   className="text-[1.5rem]"

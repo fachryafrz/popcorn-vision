@@ -18,7 +18,7 @@ export default function Navbar({ logo }) {
           className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit"
         >
           <figure
-            className={`aspect-square w-[50px] flex items-center gap-1 after:content-["Popcorn_Vision"] after:leading-tight`}
+            className={`aspect-square w-[50px] flex items-center after:content-["Popcorn_Vision"] after:leading-tight after:pl-1`}
           >
             <img
               loading="lazy"
