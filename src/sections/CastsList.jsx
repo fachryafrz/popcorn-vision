@@ -29,7 +29,7 @@ export function CastsList({ logo, movie, loading }) {
           {showAllActors ? "Show Less" : "Show All"}
         </button>
       </div>
-      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 py-4">
+      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 max-h-[500px] overflow-y-auto pr-4">
         {movie.credits &&
           movie.credits.cast &&
           movie.credits.cast
@@ -41,6 +41,7 @@ export function CastsList({ logo, movie, loading }) {
                   actor={actor}
                   key={index}
                   loading={loading}
+                  showAllActors={showAllActors}
                 />
               );
             })}
@@ -51,7 +52,7 @@ export function CastsList({ logo, movie, loading }) {
             onClick={handleShowAllActors}
             className={`text-primary-blue ${
               !loading ? `opacity-100` : `opacity-0`
-            } sticky bottom-0 lg:flex items-center justify-center gap-2 p-2 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hover:bg-white hover:bg-opacity-10 hidden text-sm font-medium`}
+            } sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hover:bg-white hover:bg-opacity-10 hidden text-sm font-medium mb-2`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon

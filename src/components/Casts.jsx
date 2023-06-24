@@ -1,6 +1,6 @@
 import { Loading } from "./Loading";
 
-const Casts = ({ logo, actor, index, loading }) => {
+const Casts = ({ logo, actor, index, loading, showAllActors }) => {
   return (
     <div
       key={index}
@@ -42,7 +42,12 @@ const Casts = ({ logo, actor, index, loading }) => {
         {loading ? (
           <Loading height="[20px]" className="!w-full" />
         ) : (
-          <h3 title={actor.name} className="font-medium lg:line-clamp-1">
+          <h3
+            title={actor.name}
+            className={`font-medium lg:line-clamp-1 ${
+              showAllActors && `!line-clamp-none`
+            }`}
+          >
             {actor.name}
           </h3>
         )}
@@ -53,7 +58,9 @@ const Casts = ({ logo, actor, index, loading }) => {
               <Loading height="[10px] mt-1" className="!w-full" />
             ) : (
               <p
-                className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1`}
+                className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
+                  showAllActors && `!line-clamp-none`
+                }`}
               >
                 <span title={actor.character}>{actor.character}</span>
               </p>
