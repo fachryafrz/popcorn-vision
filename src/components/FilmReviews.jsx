@@ -84,7 +84,7 @@ export default function FilmReviews({ logo, review, loading }) {
         </div>
       )}
       {!loading && (
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           <button
             onClick={handleReadMore}
             className={`${
@@ -96,7 +96,7 @@ export default function FilmReviews({ logo, review, loading }) {
 
           {new Date(review.updated_at).toLocaleString("en-US", options) !==
             new Date(review.created_at).toLocaleString("en-US", options) && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 ml-auto">
               Updated at{" "}
               {new Date(review.updated_at).toLocaleString("en-US", options)}
             </span>

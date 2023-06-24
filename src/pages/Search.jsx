@@ -19,6 +19,7 @@ export default function Search({ apiUrl, query }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchMessage, setSearchMessage] = useState(false);
   const searchRef = useRef();
   const history = useHistory();
 
@@ -51,6 +52,7 @@ export default function Search({ apiUrl, query }) {
 
   const handleSearchQuery = (e) => {
     setSearchQuery(e.target.value);
+    setSearchMessage(false);
   };
 
   const handleSubmit = (e) => {
@@ -63,6 +65,7 @@ export default function Search({ apiUrl, query }) {
       )}`
     );
 
+    setSearchMessage(true);
     searchRef.current.blur();
     searchMovies();
   };
@@ -92,7 +95,7 @@ export default function Search({ apiUrl, query }) {
           },
         })
         .then((response) => {
-          setBgMovies(response.data.results.slice(0, 5));
+          setBgMovies(response.data.results.slice(0, 3));
         });
     };
 
@@ -131,11 +134,11 @@ export default function Search({ apiUrl, query }) {
         loop={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`z-0`}
+        className={`z-0 h-[100px]`}
       >
         {bgMovies.map((movie, index) => {
           return (
-            <SwiperSlide key={index} className={`h-[100px]`}>
+            <SwiperSlide key={index}>
               <figure className="aspect-square">
                 <img
                   loading="lazy"
@@ -168,7 +171,7 @@ export default function Search({ apiUrl, query }) {
         </div>
         <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-8">
           <h2 className="font-bold text-xl sm:text-3xl text-center">
-            Search{" "}
+            {searchQuery ? `Results` : `Search all`}{" "}
             {searchQuery ? (
               <React.Fragment>
                 for <q>{searchQuery}</q>
@@ -205,6 +208,14 @@ export default function Search({ apiUrl, query }) {
                 </SwiperSlide>
               );
             })}
+            {movies.length < 1 && (
+              <p className="text-gray-400 text-center col-span-5">
+                {searchQuery.length > 1 &&
+                  searchMessage &&
+                  !loading &&
+                  `Sorry, we can't find that film.`}
+              </p>
+            )}
           </div>
         </div>
       </div>

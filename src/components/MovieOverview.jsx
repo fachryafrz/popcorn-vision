@@ -209,27 +209,6 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                       </tr>
                     )}
 
-                {!isTvPage
-                  ? movie.runtime > 0 && (
-                      <tr>
-                        <td className="text-gray-400">Runtime</td>
-
-                        {Math.floor(movie.runtime / 60) >= 1 ? (
-                          <td>
-                            {Math.floor(movie.runtime / 60)}h{" "}
-                            {movie.runtime % 60}m
-                          </td>
-                        ) : (
-                          <td>{movie.runtime % 60} minutes</td>
-                        )}
-                      </tr>
-                    )
-                  : movie.episode_run_time.length > 0 && (
-                      <tr>
-                        <td className="text-gray-400">Runtime</td>
-                        <td>{`${movie.episode_run_time[0]}m`}</td>
-                      </tr>
-                    )}
                 {movie.release_date || movie.first_air_date ? (
                   <tr>
                     <td className="text-gray-400">
@@ -267,6 +246,7 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                     </td>
                   </tr>
                 )}
+
                 {movie.genres && movie.genres.length > 0 && (
                   <tr>
                     <td className="text-gray-400">Genre</td>
@@ -288,6 +268,36 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                     </td>
                   </tr>
                 )}
+
+                {!isTvPage
+                  ? movie.runtime > 0 && (
+                      <tr>
+                        <td className="text-gray-400">Runtime</td>
+
+                        {Math.floor(movie.runtime / 60) >= 1 ? (
+                          <td>
+                            {Math.floor(movie.runtime / 60)}h{" "}
+                            {movie.runtime % 60}m
+                          </td>
+                        ) : (
+                          <td>{movie.runtime % 60} minutes</td>
+                        )}
+                      </tr>
+                    )
+                  : movie.episode_run_time.length > 0 && (
+                      <tr>
+                        <td className="text-gray-400">Runtime</td>
+
+                        {Math.floor(movie.episode_run_time[0] / 60) >= 1 ? (
+                          <td>
+                            {Math.floor(movie.episode_run_time[0] / 60)}h{" "}
+                            {movie.episode_run_time[0] % 60}m
+                          </td>
+                        ) : (
+                          <td>{movie.episode_run_time[0] % 60} minutes</td>
+                        )}
+                      </tr>
+                    )}
               </tbody>
             </table>
           )}
