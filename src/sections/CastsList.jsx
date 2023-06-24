@@ -29,7 +29,7 @@ export function CastsList({ logo, movie, loading }) {
           {showAllActors ? "Show Less" : "Show All"}
         </button>
       </div>
-      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 max-h-[500px] overflow-y-auto pr-4">
+      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[500px] overflow-y-auto">
         {movie.credits &&
           movie.credits.cast &&
           movie.credits.cast
