@@ -66,10 +66,7 @@ export default function FilmReviews({ logo, review, loading }) {
           {loading ? (
             <Loading height="[10px] mt-1 !w-[100px]" className={`h-[10px]`} />
           ) : (
-            <span className="text-sm text-gray-400">
-              {formattedDate} (Updated at{" "}
-              {new Date(review.updated_at).toLocaleString("en-US", options)})
-            </span>
+            <span className="text-sm text-gray-400">{formattedDate}</span>
           )}
         </div>
       </div>
@@ -87,14 +84,24 @@ export default function FilmReviews({ logo, review, loading }) {
         </div>
       )}
       {!loading && (
-        <button
-          onClick={handleReadMore}
-          className={`${
-            review.content.length > characterCounts ? `flex` : `hidden`
-          } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
-        >
-          {readMore ? `Show less` : `Read more`}
-        </button>
+        <div className="flex items-center justify-between">
+          <button
+            onClick={handleReadMore}
+            className={`${
+              review.content.length > characterCounts ? `flex` : `hidden`
+            } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
+          >
+            {readMore ? `Show less` : `Read more`}
+          </button>
+
+          {new Date(review.updated_at).toLocaleString("en-US", options) !==
+            new Date(review.created_at).toLocaleString("en-US", options) && (
+            <span className="text-xs text-gray-400">
+              Updated at{" "}
+              {new Date(review.updated_at).toLocaleString("en-US", options)}
+            </span>
+          )}
+        </div>
       )}
     </div>
   );
