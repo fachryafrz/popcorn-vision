@@ -35,7 +35,7 @@ export default function MovieTitleLogo({ movie, isTvPage }) {
           movieTitleLogo && movieTitleLogo.file_path
         }`}
         alt={!isTvPage ? movie && movie.title : movie && movie.name}
-        className="max-w-full max-h-[200px] object-contain"
+        className="max-w-full max-h-[150px] object-contain"
       />
     </figure>
   );
