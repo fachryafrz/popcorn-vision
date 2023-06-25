@@ -1,15 +1,15 @@
 const Copyright = () => {
   return (
-    <div className="flex flex-wrap justify-center gap-1 p-2 bg-gray-900 text-sm cursor-default">
-      Designed by
+    <p className="text-center p-2 bg-gray-900 text-sm cursor-default">
+      Designed by{" "}
       <a
         href="https://dribbble.com/iamehsan"
         target="_blank"
         className="text-[#ea4c89] hover:font-medium transition-all"
       >
         Ehsan Gholampour
-      </a>
-      & Developed by
+      </a>{" "}
+      & Developed by{" "}
       <a
         href="https://dribbble.com/fachryafrz"
         target="_blank"
@@ -17,7 +17,7 @@ const Copyright = () => {
       >
         Fachry Dwi Afriza
       </a>
-    </div>
+    </p>
   );
 };
 
