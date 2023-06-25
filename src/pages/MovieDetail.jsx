@@ -16,6 +16,7 @@ const MovieDetail = ({ id }) => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [recommendations, setRecommendations] = useState([]);
+  const [backdrops, setBackdrops] = useState([]);
 
   const [totalReviewPages, setTotalReviewPages] = useState();
 
@@ -25,13 +26,13 @@ const MovieDetail = ({ id }) => {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
-    append_to_response: "credits,images,videos",
+    append_to_response: "credits,videos",
   };
 
   if (isTvPage) {
     params = {
       api_key: apiKey,
-      append_to_response: "credits,images,videos",
+      append_to_response: "credits,videos",
     };
   }
 
@@ -39,24 +40,43 @@ const MovieDetail = ({ id }) => {
     setLoading(true);
 
     const fetchMovie = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${id}`,
           {
+            params: { ...params },
+          }
+        );
+        setMovie(response.data);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
+    };
+
+    const fetchBackdrops = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}/images`,
+          {
             params: {
-              ...params,
+              api_key: apiKey,
+              include_image_language: "en",
             },
           }
-        )
-        .then((response) => {
-          setMovie(response.data);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        });
+        );
+        setBackdrops(response.data.backdrops);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
     };
 
     fetchMovie();
+    fetchBackdrops();
   }, [id]);
 
   useEffect(() => {
@@ -67,20 +87,21 @@ const MovieDetail = ({ id }) => {
 
   useEffect(() => {
     const fetchGenres = async () => {
-      axios
-        .get(
-          `https://api.themoviedb.org/3/genre/${
+      try {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/${
             !isTvPage ? `movie` : `tv`
-          }/list`,
+          }/${id}/list`,
           {
             params: {
               ...params,
             },
           }
-        )
-        .then((response) => {
-          setGenres(response.data.genres);
-        });
+        );
+        setGenres(response.data.genres);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
     };
 
     fetchGenres();
@@ -88,8 +109,8 @@ const MovieDetail = ({ id }) => {
 
   useEffect(() => {
     const fetchReviews = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${
             !isTvPage ? `movie` : `tv`
           }/${id}/reviews`,
@@ -99,14 +120,15 @@ const MovieDetail = ({ id }) => {
               page: 1,
             },
           }
-        )
-        .then((response) => {
-          setReviews(response.data.results);
-          setTotalReviewPages(response.data.total_pages);
-        });
+        );
+        setReviews(response.data.results);
+        setTotalReviewPages(response.data.total_pages);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
 
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${
             !isTvPage ? `movie` : `tv`
           }/${id}/reviews`,
@@ -116,13 +138,11 @@ const MovieDetail = ({ id }) => {
               page: 2,
             },
           }
-        )
-        .then((response) => {
-          setReviews((prevReviews) => [
-            ...prevReviews,
-            ...response.data.results,
-          ]);
-        });
+        );
+        setReviews((prevReviews) => [...prevReviews, ...response.data.results]);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
     };
 
     fetchReviews();
@@ -130,8 +150,8 @@ const MovieDetail = ({ id }) => {
 
   useEffect(() => {
     const fetchRecommendations = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${
             !isTvPage ? `movie` : `tv`
           }/${id}/recommendations`,
@@ -141,13 +161,14 @@ const MovieDetail = ({ id }) => {
               page: 1,
             },
           }
-        )
-        .then((response) => {
-          setRecommendations(response.data.results);
-        });
+        );
+        setRecommendations(response.data.results);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
 
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${
             !isTvPage ? `movie` : `tv`
           }/${id}/recommendations`,
@@ -157,13 +178,14 @@ const MovieDetail = ({ id }) => {
               page: 2,
             },
           }
-        )
-        .then((response) => {
-          setRecommendations((prevRecommendations) => [
-            ...prevRecommendations,
-            ...response.data.results,
-          ]);
-        });
+        );
+        setRecommendations((prevRecommendations) => [
+          ...prevRecommendations,
+          ...response.data.results,
+        ]);
+      } catch (error) {
+        console.error(`Errornya nih: ${error}`);
+      }
     };
 
     fetchRecommendations();
@@ -197,6 +219,7 @@ const MovieDetail = ({ id }) => {
               isTvPage={isTvPage}
               loading={loading}
               reviews={reviews}
+              backdrops={backdrops}
             />
           </div>
           {/* Right */}

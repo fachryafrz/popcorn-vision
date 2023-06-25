@@ -2,6 +2,9 @@ import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Loading } from "./Loading";
+import ReactMarkdown from "react-markdown";
 import {
   Autoplay,
   EffectFade,
@@ -9,10 +12,8 @@ import {
   Mousewheel,
   Navigation,
   Thumbs,
+  Zoom,
 } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Loading } from "./Loading";
-import ReactMarkdown from "react-markdown";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
@@ -20,17 +21,31 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
+import "swiper/css/zoom";
 import FilmReviews from "./FilmReviews";
 import axios from "axios";
 import MovieTitleLogo from "./MovieTitleLogo";
 
-export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
+export function MovieOverview({
+  logo,
+  movie,
+  isTvPage,
+  loading,
+  reviews,
+  backdrops,
+}) {
   const history = useHistory();
   const [thumbsSwiper, setThumbsSwiper] = useState();
   const filteredVideos =
     movie.videos &&
     movie.videos.results.filter(
-      (result) => result.site === "YouTube" && result.official === true
+      (result) =>
+        (result.site === "YouTube" &&
+          result.official === true &&
+          result.iso_639_1 === "en" &&
+          result.type === "Trailer") ||
+        result.type === "Teaser" ||
+        result.type === "Clip"
     );
   const [movieTitle, setMovieTitle] = useState();
 
@@ -316,7 +331,7 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
             <p className="text-gray-400 md:text-lg">{movie.overview}</p>
           )}
         </div>
-        {movie.images && movie.images.backdrops.length !== 0 && (
+        {filteredVideos && (
           <div className="flex flex-col gap-2 ">
             {loading ? (
               <Loading
@@ -333,7 +348,9 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                     Autoplay,
                     EffectFade,
                     Mousewheel,
+                    Zoom,
                   ]}
+                  zoom={true}
                   effect="fade"
                   thumbs={{ swiper: thumbsSwiper }}
                   spaceBetween={16}
@@ -352,7 +369,7 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                     "--swiper-navigation-color": "#fff",
                     "--swiper-pagination-color": "#fff",
                   }}
-                  className="relative"
+                  className="relative aspect-video rounded-lg overflow-hidden"
                 >
                   <div
                     id="navigation"
@@ -389,17 +406,17 @@ export function MovieOverview({ logo, movie, isTvPage, loading, reviews }) {
                             loading="lazy"
                             frameBorder="0"
                             allowFullScreen
-                            className={`w-full h-full aspect-video rounded-lg`}
+                            className={`w-full h-full`}
                           ></iframe>
                         </SwiperSlide>
                       );
                     })}
 
-                  {movie.images &&
-                    movie.images.backdrops.slice(0, 5).map((img, index) => {
+                  {backdrops &&
+                    backdrops.map((img, index) => {
                       return (
                         <SwiperSlide key={index}>
-                          <figure className="rounded-lg overflow-hidden w-full aspect-video">
+                          <figure className="swiper-zoom-container">
                             <img
                               loading="lazy"
                               src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
