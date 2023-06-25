@@ -247,6 +247,10 @@ const MovieDetail = ({ id }) => {
             movie.poster_path
           }`}
         />
+        <meta
+          name="twitter:image:alt"
+          content={!isTvPage ? movie.title : movie.name}
+        />
       </Helmet>
 
       {/* Movie Background/Backdrop */}
