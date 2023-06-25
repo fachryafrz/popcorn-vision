@@ -52,7 +52,7 @@ const MovieDetail = ({ id }) => {
           setLoading(false);
         }, 1000);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya movies: ${error}`);
       }
     };
 
@@ -71,7 +71,7 @@ const MovieDetail = ({ id }) => {
         );
         setBackdrops(response.data.backdrops);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya backdrops: ${error}`);
       }
     };
 
@@ -89,9 +89,9 @@ const MovieDetail = ({ id }) => {
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `https://api.themoviedb.org/3/genre/${
             !isTvPage ? `movie` : `tv`
-          }/${id}/list`,
+          }/list`,
           {
             params: {
               ...params,
@@ -100,12 +100,14 @@ const MovieDetail = ({ id }) => {
         );
         setGenres(response.data.genres);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya genres: ${error}`);
       }
     };
 
     fetchGenres();
   }, []);
+
+  console.log(genres);
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -124,7 +126,7 @@ const MovieDetail = ({ id }) => {
         setReviews(response.data.results);
         setTotalReviewPages(response.data.total_pages);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya reviews: ${error}`);
       }
 
       try {
@@ -141,7 +143,7 @@ const MovieDetail = ({ id }) => {
         );
         setReviews((prevReviews) => [...prevReviews, ...response.data.results]);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya reviews kedua: ${error}`);
       }
     };
 
@@ -164,7 +166,7 @@ const MovieDetail = ({ id }) => {
         );
         setRecommendations(response.data.results);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya recommendations: ${error}`);
       }
 
       try {
@@ -184,7 +186,7 @@ const MovieDetail = ({ id }) => {
           ...response.data.results,
         ]);
       } catch (error) {
-        console.error(`Errornya nih: ${error}`);
+        console.error(`Errornya recommendations kedua: ${error}`);
       }
     };
 
