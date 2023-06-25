@@ -482,7 +482,9 @@ export function MovieOverview({
                     <li key={index}>
                       <Link
                         to={`/movies/${item.id}`}
-                        className="flex items-center gap-2 bg-base-gray bg-opacity-10 hover:bg-opacity-30 p-2 rounded-xl w-full"
+                        className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hover:bg-opacity-30 p-2 rounded-xl w-full ${
+                          !loading && movie.id === item.id && `bg-primary-blue`
+                        }`}
                       >
                         {!loading && (
                           <span
