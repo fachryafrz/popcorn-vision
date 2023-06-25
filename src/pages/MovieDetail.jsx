@@ -218,6 +218,10 @@ const MovieDetail = ({ id }) => {
           }`}
         />
         <meta
+          property="og:image:alt"
+          content={!isTvPage ? movie.title : movie.name}
+        />
+        <meta
           property="og:url"
           content={`${import.meta.env.VITE_APP_URL}/${
             !isTvPage ? `movies` : `tv`
