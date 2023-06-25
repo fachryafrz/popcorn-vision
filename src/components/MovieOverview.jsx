@@ -73,7 +73,7 @@ export function MovieOverview({
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      // window.scrollTo({ top: 0, behavior: "auto" });
+      window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [movie]);
 
