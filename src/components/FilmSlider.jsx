@@ -58,38 +58,46 @@ const FilmSlider = ({
     setLoading(true);
 
     const fetchMovies = async () => {
-      axios
-        .get(`https://api.themoviedb.org/3${apiUrl}`, {
-          params: {
-            ...params,
-            page: 1,
-          },
-        })
-        .then((response) => {
-          setMovies(response.data.results);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        });
+      try {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3${apiUrl}`,
+          {
+            params: {
+              ...params,
+              page: 1,
+            },
+          }
+        );
+        setMovies(response.data.results);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.log(`Errornya movies:`, error);
+      }
 
-      axios
-        .get(`https://api.themoviedb.org/3${apiUrl}`, {
-          params: {
-            ...params,
-            page: 2,
-          },
-        })
-        .then((response) => {
-          setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        });
+      // try {
+      //   const response = await axios.get(
+      //     `https://api.themoviedb.org/3${apiUrl}`,
+      //     {
+      //       params: {
+      //         ...params,
+      //         page: 2,
+      //       },
+      //     }
+      //   );
+      //   setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
+      //   setTimeout(() => {
+      //     setLoading(false);
+      //   }, 1000);
+      // } catch (error) {
+      //   console.log(`Errornya movies:`, error);
+      // }
     };
 
     const fetchCompanyLogo = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/${
             !isTvPage ? `company` : `network`
           }/${apiCompanies}/images`,
@@ -98,36 +106,34 @@ const FilmSlider = ({
               ...params,
             },
           }
-        )
-        .then((response) => {
-          setCompanyLogo(response.data.logos[0]);
-        });
+        );
+        setCompanyLogo(response.data.logos[0]);
+      } catch (error) {
+        console.log(`Errornya company logo:`, error);
+      }
     };
 
-    fetchMovies();
-    fetchCompanyLogo();
-  }, [isTvPage]);
-
-  useEffect(() => {
     const fetchGenres = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://api.themoviedb.org/3/genre/${
             !isTvPage ? `movie` : `tv`
           }/list`,
           {
             params: {
               api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-              page: 1,
             },
           }
-        )
-        .then((response) => {
-          setGenres(response.data.genres);
-        });
+        );
+        setGenres(response.data.genres);
+      } catch (error) {
+        console.log(`Errornya genres:`, error);
+      }
     };
 
     fetchGenres();
+    fetchMovies();
+    fetchCompanyLogo();
   }, [isTvPage]);
 
   return (
