@@ -47,16 +47,22 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
     setLoading(true);
 
     const fetchMovies = async () => {
-      axios
-        .get(`${import.meta.env.VITE_API_BASE_URL}${apiUrl}`, {
-          params,
-        })
-        .then((response) => {
-          setMovies(response.data.results.slice(0, 5));
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
-        });
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}${apiUrl}`,
+          {
+            params: {
+              ...params,
+            },
+          }
+        );
+        setMovies(response.data.results);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      } catch (error) {
+        console.log(`Errornya homeslider:`, error);
+      }
     };
 
     fetchMovies();
@@ -64,8 +70,6 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "auto" });
-
-    document.title = "Popcorn Vision";
   }, []);
 
   return (
