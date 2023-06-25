@@ -29,37 +29,37 @@ export default function HomeTVShows({ today, thisYear }) {
       </section>
       <section id="disney+" className="pt-[2rem]">
         <FilmSlider
-          title="Disney+ Series"
+          title="Disney+"
           apiUrl="/discover/tv"
-          apiCompanies={2739}
+          // apiCompanies={2739}
         />
       </section>
       <section id="netflix">
         <FilmSlider
-          title="Netflix Series"
+          title="Netflix"
           apiUrl="/discover/tv"
-          apiCompanies={213}
+          // apiCompanies={213}
         />
       </section>
       <section id="hbo">
         <FilmSlider
-          title="HBO Series"
+          title="HBO"
           apiUrl="/discover/tv"
-          apiCompanies={49}
+          // apiCompanies={49}
         />
       </section>
       <section id="primevideo">
         <FilmSlider
-          title="Prime Video Series"
+          title="Prime Video"
           apiUrl="/discover/tv"
-          apiCompanies={1024}
+          // apiCompanies={1024}
         />
       </section>
       <section id="hulu">
         <FilmSlider
-          title="Hulu Series"
+          title="Hulu"
           apiUrl="/discover/tv"
-          apiCompanies={453}
+          // apiCompanies={453}
         />
       </section>
       <section id="trending">
