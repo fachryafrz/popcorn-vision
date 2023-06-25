@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import logo from "/popcorn.png";
 import { useLocation } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
@@ -178,14 +179,53 @@ const MovieDetail = ({ id }) => {
     fetchReviews();
   }, [id]);
 
-  useEffect(() => {
-    document.title = `${!isTvPage ? movie.title : movie.name} - ${
-      import.meta.env.VITE_APP_NAME
-    }`;
-  }, [movie]);
+  const filmReleaseDate = !isTvPage
+    ? new Date(movie.release_date).getFullYear()
+    : new Date(movie.last_air_date).getFullYear() ===
+      new Date(movie.first_air_date).getFullYear()
+    ? new Date(movie.first_air_date).getFullYear()
+    : `${new Date(movie.first_air_date).getFullYear()}-${new Date(
+        movie.last_air_date
+      ).getFullYear()}`;
 
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
+      <Helmet>
+        <meta name="robots" content="index, archive" />
+        <meta name="description" content={movie.overview} />
+        <link
+          rel="canonical"
+          href={`${import.meta.env.VITE_APP_URL}/${
+            !isTvPage ? `movies` : `tv`
+          }/${movie.id}`}
+        />
+
+        <title>{`${
+          !isTvPage ? movie.title : movie.name
+        } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}</title>
+
+        <meta
+          property="og:title"
+          content={`${
+            !isTvPage ? movie.title : movie.name
+          } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}
+        />
+        <meta property="og:description" content={movie.overview} />
+        <meta
+          property="og:image"
+          content={`${import.meta.env.VITE_API_IMAGE_URL_500}${
+            movie.poster_path
+          }`}
+        />
+        <meta
+          property="og:url"
+          content={`${import.meta.env.VITE_APP_URL}/${
+            !isTvPage ? `movies` : `tv`
+          }/${movie.id}`}
+        />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
       {/* Movie Background/Backdrop */}
       <MovieBackdrop
         logo={logo}

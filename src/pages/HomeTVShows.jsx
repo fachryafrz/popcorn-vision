@@ -2,10 +2,30 @@ import React from "react";
 import FilmSlider from "../components/FilmSlider";
 import HomeSlider from "../components/HomeSlider";
 import Trending from "../components/Trending";
+import { Helmet } from "react-helmet";
 
 export default function HomeTVShows({ today, thisYear }) {
   return (
     <>
+      <Helmet>
+        <meta name="robots" content="index, archive" />
+        <meta name="description" content={import.meta.env.VITE_APP_DESC} />
+        <meta name="keywords" content={import.meta.env.VITE_APP_KEYWORDS} />
+        <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
+
+        <meta property="og:title" content={import.meta.env.VITE_APP_NAME} />
+        <meta
+          property="og:description"
+          content={import.meta.env.VITE_APP_DESC}
+        />
+        <meta
+          property="og:image"
+          content={`${import.meta.env.VITE_APP_URL}/popcorn.png`}
+        />
+        <meta property="og:url" content={import.meta.env.VITE_APP_URL} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
       <HomeSlider apiUrl="/discover/tv" apiUpcoming={thisYear} />
       <section id="onTheAir" className="pt-[2rem]">
         <FilmSlider
