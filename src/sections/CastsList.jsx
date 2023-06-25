@@ -18,8 +18,8 @@ export function CastsList({ logo, movie, loading }) {
         {loading ? (
           <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
         ) : (
-          <h2 className="font-bold text-2xl">
-            Cast & Crews ({movie.credits.cast.length})
+          <h2 className="font-bold text-xl">
+            Casts & Credits {/* ({movie.credits.cast.length}) */}
           </h2>
         )}
         <button

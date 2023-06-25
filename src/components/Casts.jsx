@@ -33,7 +33,7 @@ const Casts = ({ logo, actor, index, loading, showAllActors }) => {
         ) : (
           <img
             loading="lazy"
-            src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
+            src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
             alt={actor.name}
           />
         )}

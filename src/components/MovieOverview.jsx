@@ -217,36 +217,6 @@ export function MovieOverview({
                       </tr>
                     )}
 
-                {!isTvPage
-                  ? movie.credits &&
-                    movie.credits.crew.length > 0 &&
-                    movie.credits.crew.find(
-                      (person) => person.job === "Director"
-                    ) !== null && (
-                      <tr>
-                        <td className="text-gray-400 whitespace-nowrap">
-                          Directed by
-                        </td>
-                        <td className={``}>
-                          {
-                            movie.credits.crew.find(
-                              (person) => person.job === "Director"
-                            ).name
-                          }
-                        </td>
-                      </tr>
-                    )
-                  : movie.created_by.length > 0 && (
-                      <tr>
-                        <td className="text-gray-400 whitespace-nowrap">
-                          Directed by
-                        </td>
-                        <td className={``}>
-                          {movie.created_by.map((item) => item.name).join(", ")}
-                        </td>
-                      </tr>
-                    )}
-
                 {movie.release_date || movie.first_air_date ? (
                   <tr>
                     <td className="text-gray-400">
@@ -340,6 +310,97 @@ export function MovieOverview({
                             {movie.episode_run_time[0] % 60 > 1 && `s`}
                           </td>
                         )}
+                      </tr>
+                    )}
+
+                {!isTvPage
+                  ? movie.credits &&
+                    movie.credits.crew.length > 0 &&
+                    movie.credits.crew.find(
+                      (person) => person.job === "Director"
+                    ) !== null && (
+                      <tr>
+                        <td className="text-gray-400 whitespace-nowrap">
+                          Directed by
+                        </td>
+                        <td className={`flex items-center gap-2`}>
+                          <img
+                            src={`https://image.tmdb.org/t/p/w185${
+                              movie.credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).profile_path
+                            }`}
+                            alt={
+                              movie.credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                            className={`aspect-square w-[40px] rounded-full`}
+                          />
+                          <div className="flex flex-col">
+                            <span className="">
+                              {
+                                movie.credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).name
+                              }
+                            </span>
+                            <span className="text-sm text-gray-400 ">
+                              {movie.credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).gender === 0
+                                ? `Not Specified`
+                                : movie.credits.crew.find(
+                                    (person) => person.job === "Director"
+                                  ).gender === 1
+                                ? `Female`
+                                : movie.credits.crew.find(
+                                    (person) => person.job === "Director"
+                                  ).gender === 2
+                                ? `Male`
+                                : ``}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  : movie.created_by.length > 0 && (
+                      <tr>
+                        <td className="text-gray-400 whitespace-nowrap">
+                          Directed by
+                        </td>
+                        <td
+                          className={`flex flex-col flex-wrap sm:flex-row items-start sm:items-center gap-2`}
+                        >
+                          {movie.created_by.map((item) => {
+                            const gender =
+                              item.gender === 0
+                                ? `Not Specified`
+                                : item.gender === 1
+                                ? `Female`
+                                : item.gender === 2
+                                ? `Male`
+                                : ``;
+
+                            return (
+                              <div className={`flex items-center gap-2`}>
+                                <img
+                                  src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                                  alt={item.name}
+                                  className={`aspect-square w-[40px] rounded-full`}
+                                />
+                                <div className={`flex flex-col`}>
+                                  <span className="">{item.name}</span>
+                                  {item.gender < 3 && (
+                                    <span className="text-sm text-gray-400 ">
+                                      {gender}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </td>
                       </tr>
                     )}
               </tbody>
@@ -464,7 +525,7 @@ export function MovieOverview({
             </div>
           )}
 
-        {!isTvPage && (
+        {!isTvPage && collections.parts && (
           <div className={`flex flex-col gap-2`}>
             <div id="collections" className="flex flex-col gap-2 ">
               {loading ? (
@@ -483,7 +544,9 @@ export function MovieOverview({
                       <Link
                         to={`/movies/${item.id}`}
                         className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hover:bg-opacity-30 p-2 rounded-xl w-full ${
-                          !loading && movie.id === item.id && `bg-primary-blue`
+                          !loading &&
+                          movie.id === item.id &&
+                          `bg-primary-blue bg-opacity-30`
                         }`}
                       >
                         {!loading && (
