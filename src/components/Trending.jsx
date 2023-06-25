@@ -22,7 +22,7 @@ const Trending = ({ num }) => {
     const fetchTrending = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/trending/${
+          `${import.meta.env.VITE_API_BASE_URL}/trending/${
             !isTvPage ? `movie` : `tv`
           }/week`,
           {
@@ -55,7 +55,9 @@ const Trending = ({ num }) => {
           ) : (
             <img
               loading="lazy"
-              src={`https://image.tmdb.org/t/p/w780${movie.backdrop_path}`}
+              src={`${import.meta.env.VITE_API_IMAGE_URL_780}${
+                movie.backdrop_path
+              }`}
               alt={!isTvPage ? movie.title : movie.name}
             />
           )}
@@ -66,7 +68,9 @@ const Trending = ({ num }) => {
           ) : (
             <img
               loading="lazy"
-              src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
+              src={`${import.meta.env.VITE_API_IMAGE_URL_780}${
+                movie.poster_path
+              }`}
               alt={!isTvPage ? movie.title : movie.name}
             />
           )}

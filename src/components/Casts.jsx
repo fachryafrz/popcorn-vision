@@ -33,7 +33,9 @@ const Casts = ({ logo, actor, index, loading, showAllActors }) => {
         ) : (
           <img
             loading="lazy"
-            src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+            src={`${import.meta.env.VITE_API_IMAGE_URL_185}${
+              actor.profile_path
+            }`}
             alt={actor.name}
           />
         )}

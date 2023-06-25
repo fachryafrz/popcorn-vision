@@ -18,7 +18,7 @@ export default function FilmReviews({ logo, review, loading }) {
   const imgUrlAPI = review.author_details.avatar_path;
   const imgUrl = imgUrlAPI?.startsWith("/http")
     ? imgUrlAPI.replace(/^\//, "")
-    : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
+    : `${import.meta.env.VITE_API_IMAGE_URL_500}${imgUrlAPI}`;
 
   const handleReadMore = () => {
     setReadMore(!readMore);

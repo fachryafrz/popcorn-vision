@@ -32,7 +32,9 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
         ) : (
           <img
             loading="lazy"
-            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
+              movie.poster_path
+            }`}
             alt={!isTvPage ? movie.title : movie.name}
           />
         )}

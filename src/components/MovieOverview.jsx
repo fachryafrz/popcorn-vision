@@ -81,7 +81,7 @@ export function MovieOverview({
     const fetchMovieTitleLogo = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${
+          `${import.meta.env.VITE_API_BASE_URL}/${!isTvPage ? `movie` : `tv`}/${
             movie.id
           }/images`,
           {
@@ -99,7 +99,7 @@ export function MovieOverview({
     const fetchCollections = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/collection/${
+          `${import.meta.env.VITE_API_BASE_URL}/collection/${
             movie &&
             movie.belongs_to_collection &&
             movie.belongs_to_collection.id
@@ -146,7 +146,9 @@ export function MovieOverview({
               ) : (
                 <img
                   loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                  src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
+                    movie.poster_path
+                  }`}
                   alt={!isTvPage ? movie.title : movie.name}
                   className={movie.poster_path === null ? `hidden` : `block`}
                 />
@@ -325,7 +327,7 @@ export function MovieOverview({
                         </td>
                         <td className={`flex items-center gap-2`}>
                           <img
-                            src={`https://image.tmdb.org/t/p/w185${
+                            src={`${import.meta.env.VITE_API_IMAGE_URL_185}${
                               movie.credits.crew.find(
                                 (person) => person.job === "Director"
                               ).profile_path
@@ -385,7 +387,9 @@ export function MovieOverview({
                             return (
                               <div className={`flex items-center gap-2`}>
                                 <img
-                                  src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                                  src={`${
+                                    import.meta.env.VITE_API_IMAGE_URL_185
+                                  }${item.profile_path}`}
                                   alt={item.name}
                                   className={`aspect-square w-[40px] rounded-full`}
                                 />
@@ -511,7 +515,9 @@ export function MovieOverview({
                           <figure className="swiper-zoom-container">
                             <img
                               loading="lazy"
-                              src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
+                              src={`${import.meta.env.VITE_API_IMAGE_URL_780}${
+                                img.file_path
+                              }`}
                               alt={``}
                               className={`w-full h-full object-cover`}
                             />
@@ -565,7 +571,9 @@ export function MovieOverview({
                             <img
                               src={
                                 item.poster_path
-                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                                  ? `${import.meta.env.VITE_API_IMAGE_URL_500}${
+                                      item.poster_path
+                                    }`
                                   : logo
                               }
                               alt={item.title}

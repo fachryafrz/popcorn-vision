@@ -10,7 +10,7 @@ export default function MovieTitleLogo({ movie, isTvPage }) {
     const fetchLogos = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${movie}/images`,
           {
@@ -31,7 +31,7 @@ export default function MovieTitleLogo({ movie, isTvPage }) {
   return (
     <figure className="mb-4 w-full flex justify-center sm:max-w-fit">
       <img
-        src={`https://image.tmdb.org/t/p/w500${
+        src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
           movieTitleLogo && movieTitleLogo.file_path
         }`}
         alt={!isTvPage ? movie && movie.title : movie && movie.name}

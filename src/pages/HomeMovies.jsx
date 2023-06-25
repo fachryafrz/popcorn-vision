@@ -30,49 +30,49 @@ export default function HomeMovies({ today, thisYear }) {
         <FilmSlider
           title="Marvel Studios"
           apiUrl="/discover/movie"
-          // apiCompanies="420"
+          apiCompanies="420"
         />
       </section>
       <section>
         <FilmSlider
           title="DC Comics"
           apiUrl="/discover/movie"
-          // apiCompanies="429"
+          apiCompanies="429"
         />
       </section>
       <section>
         <FilmSlider
           title="Walt Disney Pictures"
           apiUrl="/discover/movie"
-          // apiCompanies="2"
+          apiCompanies="2"
         />
       </section>
       <section>
         <FilmSlider
           title="Universal Pictures"
           apiUrl="/discover/movie"
-          // apiCompanies="33"
+          apiCompanies="33"
         />
       </section>
       <section>
         <FilmSlider
           title="Paramount Pictures"
           apiUrl="/discover/movie"
-          // apiCompanies="4"
+          apiCompanies="4"
         />
       </section>
       <section>
         <FilmSlider
           title="20th Century Studios"
           apiUrl="/discover/movie"
-          // apiCompanies="25"
+          apiCompanies="25"
         />
       </section>
       <section>
         <FilmSlider
           title="Pixar Animation Studios"
           apiUrl="/discover/movie"
-          // apiCompanies="3"
+          apiCompanies="3"
         />
       </section>
       <section id="trending">

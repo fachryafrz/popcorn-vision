@@ -32,7 +32,9 @@ export function MovieBackdrop({ logo, movie, isTvPage, loading }) {
       ) : (
         <img
           loading="lazy"
-          src={`https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`}
+          src={`${import.meta.env.VITE_API_IMAGE_URL_1280}${
+            movie.backdrop_path
+          }`}
           alt={!isTvPage ? movie.title : movie.name}
           className="object-top"
         />

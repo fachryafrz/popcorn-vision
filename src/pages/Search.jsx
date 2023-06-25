@@ -33,7 +33,9 @@ export default function Search({ apiUrl, query }) {
 
     axios
       .get(
-        `https://api.themoviedb.org/3/search/${!isTvPage ? `movie` : `tv`}`,
+        `${import.meta.env.VITE_API_BASE_URL}/search/${
+          !isTvPage ? `movie` : `tv`
+        }`,
         {
           params: {
             api_key: apiKey,
@@ -89,7 +91,7 @@ export default function Search({ apiUrl, query }) {
 
     const fetchBgMovies = async () => {
       axios
-        .get(`https://api.themoviedb.org/3${apiUrl}`, {
+        .get(`${import.meta.env.VITE_API_BASE_URL}${apiUrl}`, {
           params: {
             api_key: apiKey,
           },
@@ -106,7 +108,7 @@ export default function Search({ apiUrl, query }) {
     const fetchGenres = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/genre/${
+          `${import.meta.env.VITE_API_BASE_URL}/genre/${
             !isTvPage ? `movie` : `tv`
           }/list`,
           {

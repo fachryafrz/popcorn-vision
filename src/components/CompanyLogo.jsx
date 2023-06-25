@@ -4,7 +4,7 @@ export default function CompanyLogo({ logo, title }) {
   return (
     <figure className={`flex items-end`}>
       <img
-        src={`https://image.tmdb.org/t/p/w780${logo.file_path.replace(
+        src={`${import.meta.env.VITE_API_IMAGE_URL_780}${logo.file_path.replace(
           /\.png$/,
           ".svg"
         )}`}

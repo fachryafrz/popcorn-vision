@@ -60,7 +60,7 @@ const FilmSlider = ({
     const fetchMovies = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3${apiUrl}`,
+          `${import.meta.env.VITE_API_BASE_URL}${apiUrl}`,
           {
             params: {
               ...params,
@@ -75,35 +75,17 @@ const FilmSlider = ({
       } catch (error) {
         console.log(`Errornya movies:`, error);
       }
-
-      // try {
-      //   const response = await axios.get(
-      //     `https://api.themoviedb.org/3${apiUrl}`,
-      //     {
-      //       params: {
-      //         ...params,
-      //         page: 2,
-      //       },
-      //     }
-      //   );
-      //   setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
-      //   setTimeout(() => {
-      //     setLoading(false);
-      //   }, 1000);
-      // } catch (error) {
-      //   console.log(`Errornya movies:`, error);
-      // }
     };
 
     const fetchCompanyLogo = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `company` : `network`
           }/${apiCompanies}/images`,
           {
             params: {
-              ...params,
+              api_key: apiKey,
             },
           }
         );
@@ -116,7 +98,7 @@ const FilmSlider = ({
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/genre/${
+          `${import.meta.env.VITE_API_BASE_URL}/genre/${
             !isTvPage ? `movie` : `tv`
           }/list`,
           {
@@ -204,11 +186,12 @@ const FilmSlider = ({
             <Loading classNames={`max-w-[150px]`} />
           ) : (
             <>
-              {apiCompanies ? (
+              {/* {apiCompanies ? (
                 <CompanyLogo logo={companyLogo} title={title} />
               ) : (
                 <p className="font-bold text-lg md:text-2xl">{title}</p>
-              )}
+              )} */}
+              <p className="font-bold text-lg md:text-2xl">{title}</p>
             </>
           )}
 

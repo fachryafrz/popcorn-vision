@@ -42,7 +42,9 @@ const MovieDetail = ({ id }) => {
     const fetchMovie = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${id}`,
+          `${import.meta.env.VITE_API_BASE_URL}/${
+            !isTvPage ? `movie` : `tv`
+          }/${id}`,
           {
             params: { ...params },
           }
@@ -59,7 +61,7 @@ const MovieDetail = ({ id }) => {
     const fetchBackdrops = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${id}/images`,
           {
@@ -78,7 +80,7 @@ const MovieDetail = ({ id }) => {
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/genre/${
+          `${import.meta.env.VITE_API_BASE_URL}/genre/${
             !isTvPage ? `movie` : `tv`
           }/list`,
           {
@@ -96,7 +98,7 @@ const MovieDetail = ({ id }) => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${id}/reviews`,
           {
@@ -114,7 +116,7 @@ const MovieDetail = ({ id }) => {
 
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${id}/reviews`,
           {
@@ -133,7 +135,7 @@ const MovieDetail = ({ id }) => {
     const fetchRecommendations = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${id}/recommendations`,
           {
@@ -150,7 +152,7 @@ const MovieDetail = ({ id }) => {
 
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/${
+          `${import.meta.env.VITE_API_BASE_URL}/${
             !isTvPage ? `movie` : `tv`
           }/${id}/recommendations`,
           {
