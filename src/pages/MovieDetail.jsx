@@ -191,6 +191,7 @@ const MovieDetail = ({ id }) => {
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
       <Helmet>
+        {/* SEO */}
         <meta name="robots" content="index, archive" />
         <meta name="description" content={movie.overview} />
         <link
@@ -200,10 +201,12 @@ const MovieDetail = ({ id }) => {
           }/${movie.id}`}
         />
 
+        {/* Page Title */}
         <title>{`${
           !isTvPage ? movie.title : movie.name
         } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}</title>
 
+        {/* Open Graph */}
         <meta
           property="og:title"
           content={`${
@@ -228,6 +231,22 @@ const MovieDetail = ({ id }) => {
           }/${movie.id}`}
         />
         <meta property="og:type" content="website" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:title"
+          content={`${
+            !isTvPage ? movie.title : movie.name
+          } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}
+        />
+        <meta name="twitter:description" content={movie.overview} />
+        <meta
+          name="twitter:image"
+          content={`${import.meta.env.VITE_API_IMAGE_URL_500}${
+            movie.poster_path
+          }`}
+        />
       </Helmet>
 
       {/* Movie Background/Backdrop */}
