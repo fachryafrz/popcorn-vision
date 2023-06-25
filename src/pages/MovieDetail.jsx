@@ -75,17 +75,6 @@ const MovieDetail = ({ id }) => {
       }
     };
 
-    fetchMovie();
-    fetchBackdrops();
-  }, [id]);
-
-  useEffect(() => {
-    document.title = `${!isTvPage ? movie.title : movie.name} - ${
-      import.meta.env.VITE_APP_NAME
-    }`;
-  }, [movie]);
-
-  useEffect(() => {
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
@@ -104,12 +93,6 @@ const MovieDetail = ({ id }) => {
       }
     };
 
-    fetchGenres();
-  }, []);
-
-  console.log(genres);
-
-  useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
@@ -147,10 +130,6 @@ const MovieDetail = ({ id }) => {
       }
     };
 
-    fetchReviews();
-  }, []);
-
-  useEffect(() => {
     const fetchRecommendations = async () => {
       try {
         const response = await axios.get(
@@ -191,7 +170,17 @@ const MovieDetail = ({ id }) => {
     };
 
     fetchRecommendations();
-  }, []);
+    fetchMovie();
+    fetchGenres();
+    fetchBackdrops();
+    fetchReviews();
+  }, [id]);
+
+  useEffect(() => {
+    document.title = `${!isTvPage ? movie.title : movie.name} - ${
+      import.meta.env.VITE_APP_NAME
+    }`;
+  }, [movie]);
 
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">
