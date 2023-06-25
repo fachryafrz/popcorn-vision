@@ -101,7 +101,7 @@ export function MovieOverview({
         const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/collection/${
             movie &&
-            movie.belongs_to_collection &&
+            movie.belongs_to_collection !== null &&
             movie.belongs_to_collection.id
           }
           `,
@@ -119,6 +119,10 @@ export function MovieOverview({
 
     fetchCollections();
     fetchMovieTitleLogo();
+
+    if (movie.belongs_to_collection === null) {
+      setCollections({});
+    }
   }, [movie]);
 
   return (
@@ -326,19 +330,33 @@ export function MovieOverview({
                           Directed by
                         </td>
                         <td className={`flex items-center gap-2`}>
-                          <img
-                            src={`${import.meta.env.VITE_API_IMAGE_URL_185}${
-                              movie.credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).profile_path
-                            }`}
-                            alt={
-                              movie.credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).name
-                            }
-                            className={`aspect-square w-[40px] rounded-full`}
-                          />
+                          {movie.credits.crew.find(
+                            (person) => person.job === "Director"
+                          ).profile_path === null ? (
+                            <img
+                              src={logo}
+                              alt={
+                                movie.credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).name
+                              }
+                              className={`aspect-square w-[40px] rounded-full object-contain`}
+                            />
+                          ) : (
+                            <img
+                              src={`${import.meta.env.VITE_API_IMAGE_URL_185}${
+                                movie.credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).profile_path
+                              }`}
+                              alt={
+                                movie.credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).name
+                              }
+                              className={`aspect-square w-[40px] rounded-full`}
+                            />
+                          )}
                           <div className="flex flex-col">
                             <span className="">
                               {
@@ -386,13 +404,21 @@ export function MovieOverview({
 
                             return (
                               <div className={`flex items-center gap-2`}>
-                                <img
-                                  src={`${
-                                    import.meta.env.VITE_API_IMAGE_URL_185
-                                  }${item.profile_path}`}
-                                  alt={item.name}
-                                  className={`aspect-square w-[40px] rounded-full`}
-                                />
+                                {item.profile_path === null ? (
+                                  <img
+                                    src={logo}
+                                    alt={item.name}
+                                    className={`aspect-square w-[40px] rounded-full object-contain`}
+                                  />
+                                ) : (
+                                  <img
+                                    src={`${
+                                      import.meta.env.VITE_API_IMAGE_URL_185
+                                    }${item.profile_path}`}
+                                    alt={item.name}
+                                    className={`aspect-square w-[40px] rounded-full`}
+                                  />
+                                )}
                                 <div className={`flex flex-col`}>
                                   <span className="">{item.name}</span>
                                   {item.gender < 3 && (

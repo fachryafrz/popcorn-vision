@@ -150,26 +150,6 @@ const MovieDetail = ({ id }) => {
       } catch (error) {
         console.error(`Errornya recommendations: ${error}`);
       }
-
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/${
-            !isTvPage ? `movie` : `tv`
-          }/${id}/recommendations`,
-          {
-            params: {
-              ...params,
-              page: 2,
-            },
-          }
-        );
-        setRecommendations((prevRecommendations) => [
-          ...prevRecommendations,
-          ...response.data.results,
-        ]);
-      } catch (error) {
-        console.error(`Errornya recommendations kedua: ${error}`);
-      }
     };
 
     fetchRecommendations();
