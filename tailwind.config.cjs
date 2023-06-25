@@ -26,6 +26,14 @@ module.exports = {
       screens: {
         xs: "375px",
       },
+      gridTemplateColumns: {
+        24: "repeat(24, minmax(0, 1fr))",
+      },
+      gridColumn: {
+        "span-13": "span 13 / span 13",
+        "span-14": "span 14 / span 14",
+        "span-24": "span 24 / span 24",
+      },
     },
   },
   plugins: [

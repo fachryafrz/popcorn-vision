@@ -1,7 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Loading } from "./Loading";
 import ReactMarkdown from "react-markdown";
@@ -48,6 +48,7 @@ export function MovieOverview({
         result.type === "Clip"
     );
   const [movieTitle, setMovieTitle] = useState();
+  const [collections, setCollections] = useState({});
 
   const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
   const date = new Date(dateStr);
@@ -72,7 +73,7 @@ export function MovieOverview({
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      window.scrollTo({ top: 0, behavior: "auto" });
+      // window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [movie]);
 
@@ -95,6 +96,28 @@ export function MovieOverview({
         });
     };
 
+    const fetchCollections = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/collection/${
+            movie &&
+            movie.belongs_to_collection &&
+            movie.belongs_to_collection.id
+          }
+          `,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            },
+          }
+        );
+        setCollections(response.data);
+      } catch (error) {
+        console.error(`Errornya collections: ${error}`);
+      }
+    };
+
+    fetchCollections();
     fetchMovieTitleLogo();
   }, [movie]);
 
@@ -295,7 +318,10 @@ export function MovieOverview({
                             {movie.runtime % 60}m
                           </td>
                         ) : (
-                          <td>{movie.runtime % 60} minutes</td>
+                          <td>
+                            {movie.runtime % 60} minute
+                            {movie.runtime % 60 > 1 && `s`}
+                          </td>
                         )}
                       </tr>
                     )
@@ -309,7 +335,10 @@ export function MovieOverview({
                             {movie.episode_run_time[0] % 60}m
                           </td>
                         ) : (
-                          <td>{movie.episode_run_time[0] % 60} minutes</td>
+                          <td>
+                            {movie.episode_run_time[0] % 60} minute
+                            {movie.episode_run_time[0] % 60 > 1 && `s`}
+                          </td>
                         )}
                       </tr>
                     )}
@@ -323,7 +352,7 @@ export function MovieOverview({
           {loading ? (
             <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
           ) : (
-            <h2 className="font-bold text-2xl text-white m-0">Overview</h2>
+            <h2 className="font-bold text-xl text-white m-0">Overview</h2>
           )}
           {loading ? (
             <Loading height="[150px]" className={`h-[150px]`} />
@@ -331,89 +360,91 @@ export function MovieOverview({
             <p className="text-gray-400 md:text-lg">{movie.overview}</p>
           )}
         </div>
-        {filteredVideos && (
-          <div className="flex flex-col gap-2 ">
-            {loading ? (
-              <Loading
-                height="auto aspect-video !w-full"
-                className={`h-auto`}
-              />
-            ) : (
-              <div className="max-w-max">
-                <Swiper
-                  modules={[
-                    FreeMode,
-                    Navigation,
-                    Thumbs,
-                    Autoplay,
-                    EffectFade,
-                    Mousewheel,
-                    Zoom,
-                  ]}
-                  zoom={true}
-                  effect="fade"
-                  thumbs={{ swiper: thumbsSwiper }}
-                  spaceBetween={16}
-                  // mousewheel={true}
-                  navigation={{
-                    enabled: true,
-                    nextEl: "#next",
-                    prevEl: "#prev",
-                  }}
-                  // autoplay={{
-                  //   delay: 3000,
-                  //   disableOnInteraction: true,
-                  //   pauseOnMouseEnter: true,
-                  // }}
-                  style={{
-                    "--swiper-navigation-color": "#fff",
-                    "--swiper-pagination-color": "#fff",
-                  }}
-                  className="relative aspect-video rounded-lg overflow-hidden"
-                >
-                  <div
-                    id="navigation"
-                    className={`flex justify-between absolute inset-0 items-center flex-row-reverse px-4`}
+        {movie.videos &&
+          movie.videos.results.length > 0 &&
+          backdrops &&
+          backdrops.length > 0 && (
+            <div className="flex flex-col gap-2 ">
+              {loading ? (
+                <Loading
+                  height="auto aspect-video !w-full"
+                  className={`h-auto`}
+                />
+              ) : (
+                <div className="max-w-full">
+                  <Swiper
+                    modules={[
+                      FreeMode,
+                      Navigation,
+                      Thumbs,
+                      Autoplay,
+                      EffectFade,
+                      Mousewheel,
+                      Zoom,
+                    ]}
+                    zoom={true}
+                    effect="fade"
+                    thumbs={{ swiper: thumbsSwiper }}
+                    spaceBetween={16}
+                    // mousewheel={true}
+                    navigation={{
+                      enabled: true,
+                      nextEl: "#next",
+                      prevEl: "#prev",
+                    }}
+                    // autoplay={{
+                    //   delay: 3000,
+                    //   disableOnInteraction: true,
+                    //   pauseOnMouseEnter: true,
+                    // }}
+                    style={{
+                      "--swiper-navigation-color": "#fff",
+                      "--swiper-pagination-color": "#fff",
+                    }}
+                    className="relative aspect-video rounded-lg overflow-hidden"
                   >
-                    <button
-                      id="next"
-                      className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
+                    <div
+                      id="navigation"
+                      className={`flex justify-between absolute inset-0 items-center flex-row-reverse px-4`}
                     >
-                      <IonIcon
-                        icon={Icons.chevronForward}
-                        className={`text-[1.25rem]`}
-                      />
-                    </button>
-                    <button
-                      id="prev"
-                      className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
-                    >
-                      <IonIcon
-                        icon={Icons.chevronBack}
-                        className={`text-[1.25rem]`}
-                      />
-                    </button>
-                  </div>
-                  {filteredVideos
-                    .reverse()
-                    .slice(0, 5)
-                    .map((vid, index) => {
-                      return (
-                        <SwiperSlide key={index}>
-                          <iframe
-                            src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                            title="YouTube video player"
-                            loading="lazy"
-                            frameBorder="0"
-                            allowFullScreen
-                            className={`w-full h-full`}
-                          ></iframe>
-                        </SwiperSlide>
-                      );
-                    })}
+                      <button
+                        id="next"
+                        className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
+                      >
+                        <IonIcon
+                          icon={Icons.chevronForward}
+                          className={`text-[1.25rem]`}
+                        />
+                      </button>
+                      <button
+                        id="prev"
+                        className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
+                      >
+                        <IonIcon
+                          icon={Icons.chevronBack}
+                          className={`text-[1.25rem]`}
+                        />
+                      </button>
+                    </div>
+                    {filteredVideos
+                      .reverse()
+                      .slice(0, 5)
+                      .map((vid, index) => {
+                        return (
+                          <SwiperSlide key={index}>
+                            <iframe
+                              src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
+                              title="YouTube video player"
+                              loading="lazy"
+                              frameBorder="0"
+                              allowFullScreen
+                              className={`w-full h-full`}
+                            ></iframe>
+                          </SwiperSlide>
+                        );
+                      })}
 
-                  {backdrops &&
-                    backdrops.map((img, index) => {
+                    {backdrops.map((img, index) => {
                       return (
                         <SwiperSlide key={index}>
                           <figure className="swiper-zoom-container">
@@ -427,18 +458,99 @@ export function MovieOverview({
                         </SwiperSlide>
                       );
                     })}
-                </Swiper>
-              </div>
-            )}
+                  </Swiper>
+                </div>
+              )}
+            </div>
+          )}
+
+        {!isTvPage && (
+          <div className={`flex flex-col gap-2`}>
+            <div id="collections" className="flex flex-col gap-2 ">
+              {loading ? (
+                <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
+              ) : (
+                <h2 className="font-bold text-xl text-white m-0">
+                  {collections && collections.name}
+                </h2>
+              )}
+            </div>
+            <ul className="flex flex-col gap-1">
+              {collections.parts &&
+                collections.parts.map((item, index) => {
+                  return (
+                    <li key={index}>
+                      <Link
+                        to={`/movies/${item.id}`}
+                        className="flex items-center gap-2 bg-base-gray bg-opacity-10 hover:bg-opacity-30 p-2 rounded-xl w-full"
+                      >
+                        {!loading && (
+                          <span
+                            className={`text-gray-400 text-sm font-medium px-1`}
+                          >
+                            {index + 1}
+                          </span>
+                        )}
+                        <figure className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden">
+                          {loading ? (
+                            <Loading
+                              classNames={`!min-w-[50px] !max-w-[50px]`}
+                            />
+                          ) : (
+                            <img
+                              src={
+                                item.poster_path
+                                  ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+                                  : logo
+                              }
+                              alt={item.title}
+                              className={`object-contain`}
+                            />
+                          )}
+                        </figure>
+                        <div className="flex flex-col gap-1 items-start w-full">
+                          {loading ? (
+                            <Loading classNames={`!h-[20px] !max-w-[200px]`} />
+                          ) : (
+                            <p
+                              className="text-start line-clamp-2 font-medium"
+                              title={item.title}
+                            >
+                              {item.title}
+                            </p>
+                          )}
+                          {loading ? (
+                            <Loading classNames={`!h-[10px] !max-w-[50px]`} />
+                          ) : (
+                            <div className="text-sm text-gray-400 font-medium">
+                              {item.release_date
+                                ? new Date(item.release_date).getFullYear()
+                                : `Coming soon`}
+                            </div>
+                          )}
+                        </div>
+                        {loading ? (
+                          <Loading classNames={`h-[75px]`} />
+                        ) : (
+                          <p className="text-xs text-gray-400 line-clamp-3 w-full">
+                            {item.overview}
+                          </p>
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+            </ul>
           </div>
         )}
+
         {reviews && reviews.length !== 0 ? (
           <div className="flex flex-col gap-2">
             <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
               {loading ? (
                 <Loading height="[30px] max-w-[100px]" className={`h-[30px]`} />
               ) : (
-                <h2 className="font-bold text-2xl text-white m-0">Reviews</h2>
+                <h2 className="font-bold text-xl text-white m-0">Reviews</h2>
               )}
             </div>
             <div className="flex flex-col gap-2">

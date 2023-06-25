@@ -54,7 +54,7 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
             <Loading classNames={`!h-[10px] !w-[75px]`} />
           ) : (
             <span className="text-gray-400 whitespace-nowrap">
-              {releaseDate !== "" ? year : ``}
+              {releaseDate !== "" ? year : `Coming soon`}
             </span>
           )}
           {!loading && year !== "NaN" && movieGenres.length > 0 && (

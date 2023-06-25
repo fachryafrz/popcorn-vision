@@ -192,9 +192,9 @@ const MovieDetail = ({ id }) => {
         loading={loading}
       />
       <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh]">
-        <div className="mx-auto max-w-7xl grid grid-cols-12 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
+        <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
           {/* Left */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-6">
             <MoviePoster
               logo={logo}
               movie={movie}
@@ -203,7 +203,7 @@ const MovieDetail = ({ id }) => {
             />
           </div>
           {/* Middle */}
-          <div className="col-span-12 lg:col-span-7">
+          <div className="lg:col-span-13">
             <MovieOverview
               logo={logo}
               movie={movie}
@@ -214,7 +214,7 @@ const MovieDetail = ({ id }) => {
             />
           </div>
           {/* Right */}
-          <div className="col-span-12 lg:col-span-2">
+          <div className="lg:col-span-5">
             {movie.credits && movie.credits.cast.length > 0 && (
               <CastsList
                 logo={logo}
