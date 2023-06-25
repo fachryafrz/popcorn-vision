@@ -11,7 +11,7 @@ const Copyright = () => {
       </a>{" "}
       & Developed by{" "}
       <a
-        href="https://dribbble.com/fachryafrz"
+        href="https://fachryafrz.vercel.app"
         target="_blank"
         className="text-[#ea4c89] hover:font-medium transition-all"
       >

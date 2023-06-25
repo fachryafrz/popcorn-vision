@@ -25,7 +25,7 @@ export default function HomeTVShows({ today, thisYear }) {
         <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
       </section>
       <section id="trending">
-        <Trending apiUrl="/trending/tv/day" />
+        <Trending num={1} />
       </section>
       <section id="disney+" className="pt-[2rem]">
         <FilmSlider
@@ -61,6 +61,9 @@ export default function HomeTVShows({ today, thisYear }) {
           apiUrl="/discover/tv"
           apiCompanies={453}
         />
+      </section>
+      <section id="trending">
+        <Trending num={2} />
       </section>
       <section>
         <FilmSlider

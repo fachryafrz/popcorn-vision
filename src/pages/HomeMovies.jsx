@@ -24,7 +24,7 @@ export default function HomeMovies({ today, thisYear }) {
         <FilmSlider title="Top Rated" apiUrl="/movie/top_rated" />
       </section>
       <section id="trending">
-        <Trending apiUrl={`/trending/movie/day`} />
+        <Trending num={1} />
       </section>
       <section className="pt-[2rem]">
         <FilmSlider
@@ -74,6 +74,9 @@ export default function HomeMovies({ today, thisYear }) {
           apiUrl="/discover/movie"
           apiCompanies="3"
         />
+      </section>
+      <section id="trending">
+        <Trending num={2} />
       </section>
       <section>
         <FilmSlider title="Action" apiUrl="/discover/movie" apiGenres={`28`} />

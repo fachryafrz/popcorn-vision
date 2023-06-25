@@ -7,7 +7,7 @@ import { Link, useLocation } from "react-router-dom";
 import MovieTitleLogo from "./MovieTitleLogo";
 import { Loading } from "./Loading";
 
-const Trending = ({ apiUrl }) => {
+const Trending = ({ num }) => {
   const [movie, setMovie] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -15,35 +15,32 @@ const Trending = ({ apiUrl }) => {
   const isTvPage = location.pathname.startsWith("/tv");
 
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
-  let params = {
-    api_key: apiKey,
-    region: "US",
-    include_adult: false,
-  };
-
-  if (isTvPage) {
-    params = {
-      api_key: apiKey,
-      watch_region: "US",
-      with_watch_providers: "2,3",
-    };
-  }
 
   useEffect(() => {
     setLoading(true);
 
-    axios
-      .get(`https://api.themoviedb.org/3${apiUrl}`, {
-        params: {
-          api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-        },
-      })
-      .then((response) => {
-        setMovie(response.data.results.slice(0, 1)[0]);
+    const fetchTrending = async () => {
+      try {
+        const response = await axios.get(
+          `https://api.themoviedb.org/3/trending/${
+            !isTvPage ? `movie` : `tv`
+          }/week`,
+          {
+            params: {
+              api_key: apiKey,
+            },
+          }
+        );
+        setMovie(response.data.results[num - 1]);
         setTimeout(() => {
           setLoading(false);
         }, 500);
-      });
+      } catch (error) {
+        console.error(`Errornya trending: ${error}`);
+      }
+    };
+
+    fetchTrending();
   }, [isTvPage]);
 
   return (
@@ -82,6 +79,12 @@ const Trending = ({ apiUrl }) => {
             ).getFullYear()}
             )
           </h3> */}
+          {!loading && (
+            <span className="text-sm italic text-primary-yellow">
+              Trending #{num}
+            </span>
+          )}
+
           <div className="hidden md:block">
             {loading ? (
               <Loading height="[150px]" width="[300px]" className="w-[300px]" />
