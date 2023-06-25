@@ -585,12 +585,12 @@ export function MovieOverview({
                           {loading ? (
                             <Loading classNames={`!h-[20px] !max-w-[200px]`} />
                           ) : (
-                            <p
+                            <h3
                               className="text-start line-clamp-2 font-medium"
                               title={item.title}
                             >
                               {item.title}
-                            </p>
+                            </h3>
                           )}
                           {loading ? (
                             <Loading classNames={`!h-[10px] !max-w-[50px]`} />
