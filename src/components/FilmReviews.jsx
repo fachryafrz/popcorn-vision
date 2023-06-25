@@ -37,9 +37,7 @@ export default function FilmReviews({ logo, review, loading }) {
         <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
           <div
             className={`relative ${
-              imgUrlAPI === null
-                ? `w-full h-full bg-base-dark-gray p-2`
-                : `hidden`
+              imgUrlAPI === null ? `w-full h-full bg-base-dark-gray` : `hidden`
             }`}
           >
             {loading ? (
@@ -49,6 +47,7 @@ export default function FilmReviews({ logo, review, loading }) {
                 loading="lazy"
                 src={logo}
                 alt={import.meta.env.VITE_APP_NAME}
+                className={`object-contain`}
               />
             )}
           </div>

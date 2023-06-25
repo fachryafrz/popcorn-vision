@@ -202,16 +202,16 @@ const MovieDetail = ({ id }) => {
         />
 
         {/* Page Title */}
-        <title>{`${
-          !isTvPage ? movie.title : movie.name
-        } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}</title>
+        <title>{`${!isTvPage ? movie.title : movie.name} (${
+          filmReleaseDate ? filmReleaseDate : `Coming soon`
+        }) - ${import.meta.env.VITE_APP_NAME}`}</title>
 
         {/* Open Graph */}
         <meta
           property="og:title"
-          content={`${
-            !isTvPage ? movie.title : movie.name
-          } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}
+          content={`${!isTvPage ? movie.title : movie.name} (${
+            filmReleaseDate ? filmReleaseDate : `Coming soon`
+          }) - ${import.meta.env.VITE_APP_NAME}`}
         />
         <meta property="og:description" content={movie.overview} />
         <meta
@@ -236,9 +236,9 @@ const MovieDetail = ({ id }) => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content={`${
-            !isTvPage ? movie.title : movie.name
-          } (${filmReleaseDate}) - ${import.meta.env.VITE_APP_NAME}`}
+          content={`${!isTvPage ? movie.title : movie.name} (${
+            filmReleaseDate ? filmReleaseDate : `Coming soon`
+          }) - ${import.meta.env.VITE_APP_NAME}`}
         />
         <meta name="twitter:description" content={movie.overview} />
         <meta

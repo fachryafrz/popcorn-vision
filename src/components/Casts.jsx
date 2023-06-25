@@ -10,7 +10,7 @@ const Casts = ({ logo, actor, index, loading, showAllActors }) => {
         <div
           className={
             actor.profile_path === null
-              ? `w-full h-full bg-base-dark-gray p-2`
+              ? `w-full h-full bg-base-dark-gray`
               : `hidden`
           }
         >
@@ -25,6 +25,7 @@ const Casts = ({ logo, actor, index, loading, showAllActors }) => {
               loading="lazy"
               src={logo}
               alt={import.meta.env.VITE_APP_NAME}
+              className={`object-contain`}
             />
           )}
         </div>
