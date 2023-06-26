@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import FilmSlider from "../components/FilmSlider";
 import HomeSlider from "../components/HomeSlider";
 import Trending from "../components/Trending";
 import { Helmet } from "react-helmet";
+import ReactGA from "react-ga";
 
 export default function HomeMovies({ today, thisYear }) {
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname);
+  }, []);
+
   return (
     <>
       <Helmet>

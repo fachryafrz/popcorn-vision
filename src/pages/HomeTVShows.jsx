@@ -3,8 +3,14 @@ import FilmSlider from "../components/FilmSlider";
 import HomeSlider from "../components/HomeSlider";
 import Trending from "../components/Trending";
 import { Helmet } from "react-helmet";
+import ReactGA from "react-ga";
+import { useEffect } from "react";
 
 export default function HomeTVShows({ today, thisYear }) {
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname);
+  }, []);
+
   return (
     <>
       <Helmet>
