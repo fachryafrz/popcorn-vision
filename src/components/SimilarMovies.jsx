@@ -22,11 +22,11 @@ export function SimilarMovies({
         spaceBetween={8}
         slidesPerView={2}
         loop={true}
-        autoplay={{
-          delay: 5000,
-          disableOnInteraction: true,
-          pauseOnMouseEnter: true,
-        }}
+        // autoplay={{
+        //   delay: 5000,
+        //   disableOnInteraction: true,
+        //   pauseOnMouseEnter: true,
+        // }}
         navigation={{
           nextEl: ".next",
           prevEl: ".prev",
