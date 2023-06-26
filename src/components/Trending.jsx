@@ -83,11 +83,6 @@ const Trending = ({ num }) => {
             ).getFullYear()}
             )
           </h3> */}
-          {!loading && (
-            <span className="text-sm italic text-primary-yellow">
-              Trending #{num}
-            </span>
-          )}
 
           <div className="hidden md:block">
             {loading ? (
