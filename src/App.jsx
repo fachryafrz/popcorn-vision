@@ -1,6 +1,5 @@
 import logo from "/popcorn.png";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-// Movies
 import Navbar from "./components/Navbar";
 import Copyright from "./components/Copyright";
 import FilmSlider from "./components/FilmSlider";
@@ -14,7 +13,7 @@ import HomeMovies from "./pages/HomeMovies";
 import HomeTVShows from "./pages/HomeTVShows";
 import ReactGA from "react-ga";
 
-GA_TRACKING_ID = "UA-275172584-1";
+const GA_TRACKING_ID = "UA-275172584-1";
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {
