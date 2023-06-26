@@ -56,7 +56,7 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
             },
           }
         );
-        setMovies(response.data.results);
+        setMovies(response.data.results.slice(0, 10));
         setTimeout(() => {
           setLoading(false);
         }, 1000);
