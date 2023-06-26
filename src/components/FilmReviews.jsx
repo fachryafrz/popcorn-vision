@@ -4,7 +4,10 @@ import ReactMarkdown from "react-markdown";
 
 export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
-  const characterCounts = 200;
+  const text = review.content;
+  const words = text.split(" ");
+  const wordCount = words.length;
+  const maxLength = 50;
 
   const dateStr = review && review.created_at;
   const date = new Date(dateStr);
@@ -75,9 +78,9 @@ export default function FilmReviews({ logo, review, loading }) {
         <div className={`prose max-w-none !text-gray-400`}>
           <ReactMarkdown
             children={
-              readMore || review.content.length < characterCounts
-                ? review.content
-                : `${review.content.slice(0, characterCounts)}...`
+              readMore || wordCount < maxLength
+                ? text
+                : `${words.slice(0, maxLength).join(" ")}...`
             }
           />
         </div>
@@ -87,7 +90,7 @@ export default function FilmReviews({ logo, review, loading }) {
           <button
             onClick={handleReadMore}
             className={`${
-              review.content.length > characterCounts ? `flex` : `hidden`
+              words.length > maxLength ? `flex` : `hidden`
             } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
           >
             {readMore ? `Show less` : `Read more`}
