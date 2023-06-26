@@ -125,7 +125,7 @@ const FilmSlider = ({
         modules={[Navigation, Autoplay]}
         spaceBetween={8}
         slidesPerView={2}
-        // loop={true}
+        loop={true}
         autoplay={{
           delay: 5000,
           disableOnInteraction: true,
