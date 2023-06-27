@@ -5,7 +5,12 @@ import Trending from "../components/Trending";
 import { Helmet } from "react-helmet";
 import { useEffect } from "react";
 
-export default function HomeTVShows({ today, thisYear }) {
+export default function HomeTVShows({
+  today,
+  currentYear,
+  endOfYear,
+  firstDate,
+}) {
   return (
     <>
       <Helmet>
@@ -14,7 +19,7 @@ export default function HomeTVShows({ today, thisYear }) {
         <meta name="keywords" content={import.meta.env.VITE_APP_KEYWORDS} />
         <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
 
-        <title>{import.meta.env.VITE_APP_NAME}</title>
+        <title>{import.meta.env.VITE_APP_NAME} - TV</title>
 
         <meta property="og:title" content={import.meta.env.VITE_APP_NAME} />
         <meta
@@ -29,23 +34,33 @@ export default function HomeTVShows({ today, thisYear }) {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <HomeSlider apiUrl="/discover/tv" apiUpcoming={thisYear} />
+      <HomeSlider
+        apiUrl="/discover/tv"
+        date_gte={currentYear}
+        date_lte={today}
+      />
       <section id="onTheAir" className="pt-[2rem]">
         <FilmSlider
           title="Discover New Series"
           apiUrl="/discover/tv"
-          apiUpcoming={thisYear}
+          date_gte={firstDate}
+          date_lte={today}
         />
       </section>
       <section>
         <FilmSlider
           title="Upcoming Series"
           apiUrl="/discover/tv"
-          apiUpcoming={today}
+          date_gte={today}
+          date_lte={endOfYear}
         />
       </section>
       <section id="topRated">
-        <FilmSlider title="Top Rated" apiUrl="/tv/top_rated" />
+        <FilmSlider
+          title="Top Rated"
+          apiUrl="/discover/tv"
+          apiSortBy="vote_count.desc"
+        />
       </section>
       <section id="trending">
         <Trending num={1} />

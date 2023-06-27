@@ -21,7 +21,8 @@ const FilmSlider = ({
   apiUrl,
   apiCompanies,
   apiGenres,
-  apiUpcoming,
+  date_gte,
+  date_lte,
   apiSortBy = "popularity.desc",
 }) => {
   const [movies, setMovies] = useState([]);
@@ -38,9 +39,11 @@ const FilmSlider = ({
     sort_by: apiSortBy,
     region: "US",
     include_adult: false,
+    language: "en-US",
     with_companies: apiCompanies,
     with_genres: apiGenres,
-    "primary_release_date.gte": apiUpcoming,
+    "primary_release_date.gte": date_gte,
+    "primary_release_date.lte": date_lte,
   };
 
   if (isTvPage) {
@@ -48,9 +51,13 @@ const FilmSlider = ({
       api_key: apiKey,
       sort_by: apiSortBy,
       watch_region: "US",
-      "first_air_date.gte": apiUpcoming,
+      include_adult: false,
+      language: "en-US",
+      "first_air_date.gte": date_gte,
+      "first_air_date.lte": date_lte,
       with_networks: apiCompanies,
       with_genres: apiGenres,
+      include_null_first_air_dates: false,
     };
   }
 

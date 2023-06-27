@@ -5,11 +5,17 @@ import Trending from "../components/Trending";
 import { Helmet } from "react-helmet";
 import AdComponent from "../components/AdComponent";
 
-export default function HomeMovies({ today, thisYear }) {
+export default function HomeMovies({
+  today,
+  currentYear,
+  endOfYear,
+  firstDate,
+}) {
   return (
     <>
       <Helmet>
         <meta name="robots" content="index, archive" />
+        <meta name="title" content={import.meta.env.VITE_APP_NAME} />
         <meta name="description" content={import.meta.env.VITE_APP_DESC} />
         <meta name="keywords" content={import.meta.env.VITE_APP_KEYWORDS} />
         <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
@@ -29,22 +35,32 @@ export default function HomeMovies({ today, thisYear }) {
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <HomeSlider apiUrl="/discover/movie" apiUpcoming={today} />
+      <HomeSlider apiUrl="/discover/movie" date_gte={firstDate} />
       {/* <section id="genres">
                   <Genres />
                 </section> */}
       <section id="nowPlaying" className="pt-[2rem]">
-        <FilmSlider title="Now Playing" apiUrl="/movie/now_playing" />
+        <FilmSlider
+          title="Now Playing"
+          apiUrl="/discover/movie"
+          date_gte={firstDate}
+          date_lte={today}
+        />
       </section>
       <section id="upcoming">
         <FilmSlider
           title="Upcoming Movies"
-          apiUrl="/movie/upcoming"
-          apiUpcoming={today}
+          apiUrl="/discover/movie"
+          date_gte={today}
+          date_lte={endOfYear}
         />
       </section>
       <section id="topRated">
-        <FilmSlider title="Top Rated" apiUrl="/movie/top_rated" />
+        <FilmSlider
+          title="Top Rated"
+          apiUrl="/discover/movie"
+          apiSortBy="vote_count.desc"
+        />
       </section>
       {/* <section className="py-4">
         <AdComponent />

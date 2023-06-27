@@ -17,8 +17,20 @@ const GA_TRACKING_ID = "G-L0V4DXC6HK";
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {
-  const today = new Date().toISOString().slice(0, 10);
-  const thisYear = new Date().getFullYear();
+  const currentDate = new Date();
+
+  const today = currentDate.toISOString().slice(0, 10);
+
+  const firstDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    2
+  )
+    .toISOString()
+    .slice(0, 10);
+
+  const currentYear = currentDate.getFullYear();
+  const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
 
   return (
     <Router>
@@ -28,7 +40,12 @@ const App = () => {
           <main className="pb-8">
             <Switch>
               <Route exact path="/">
-                <HomeMovies today={today} thisYear={thisYear} />{" "}
+                <HomeMovies
+                  today={today}
+                  currentYear={currentYear}
+                  firstDate={firstDate}
+                  endOfYear={endOfYear}
+                />{" "}
               </Route>
               <Route exact path="/search">
                 <Search apiUrl={`/movie/now_playing`} />
@@ -50,7 +67,12 @@ const App = () => {
 
               {/* TV Series */}
               <Route exact path="/tv">
-                <HomeTVShows today={today} thisYear={thisYear} />{" "}
+                <HomeTVShows
+                  today={today}
+                  currentYear={currentYear}
+                  firstDate={firstDate}
+                  endOfYear={endOfYear}
+                />{" "}
               </Route>
               <Route exact path="/tv/search">
                 <Search apiUrl={`/tv/airing_today`} />

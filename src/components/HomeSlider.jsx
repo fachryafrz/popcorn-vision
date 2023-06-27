@@ -18,7 +18,12 @@ import { useEffect, useState } from "react";
 import { Loading } from "./Loading";
 import MovieTitleLogo from "./MovieTitleLogo";
 
-const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
+const HomeSlider = ({
+  apiUrl,
+  date_gte,
+  date_lte,
+  apiSortBy = "popularity.desc",
+}) => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,6 +36,9 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
     sort_by: apiSortBy,
     region: "US",
     include_adult: false,
+    language: "en-US",
+    "primary_release_date.gte": date_gte,
+    "primary_release_date.lte": date_lte,
   };
 
   if (isTvPage) {
@@ -38,8 +46,11 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
       api_key: apiKey,
       sort_by: apiSortBy,
       watch_region: "US",
-      with_watch_providers: "8",
-      first_air_date_year: apiUpcoming,
+      with_watch_providers: "8|9|49|337",
+      include_adult: false,
+      language: "en-US",
+      "first_air_date.gte": date_gte,
+      "first_air_date.lte": date_lte,
     };
   }
 
