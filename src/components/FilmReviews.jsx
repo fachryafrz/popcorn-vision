@@ -38,7 +38,7 @@ export default function FilmReviews({ logo, review, loading }) {
       className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
     >
       <div className="flex gap-2 items-center">
-        <figure className="aspect-square w-[50px] self-center rounded-full overflow-hidden">
+        <figure className="aspect-square !w-[50px] self-center rounded-full overflow-hidden">
           <div
             className={`relative ${
               imgUrlAPI === null ? `w-full h-full bg-base-dark-gray` : `hidden`
@@ -60,11 +60,11 @@ export default function FilmReviews({ logo, review, loading }) {
             <img loading="lazy" src={`${imgUrl}`} alt={review.author} />
           )}
         </figure>
-        <div className="flex flex-col justify-center h-[50px]">
+        <div className="flex flex-col justify-center max-w-[45vw]">
           {loading ? (
             <Loading height="[20px] !w-[70px]" className={`h-[20px]`} />
           ) : (
-            <span className="font-medium">{review.author}</span>
+            <span className="font-medium line-clamp-1">{review.author}</span>
           )}
           {loading ? (
             <Loading height="[10px] mt-1 !w-[100px]" className={`h-[10px]`} />
@@ -73,7 +73,9 @@ export default function FilmReviews({ logo, review, loading }) {
           )}
         </div>
         {!loading && (
-          <div className={`ml-auto flex items-start text-primary-yellow`}>
+          <div
+            className={`ml-auto flex items-start text-primary-yellow whitespace-nowrap`}
+          >
             <RatingStars rating={review.author_details.rating} />
           </div>
         )}
