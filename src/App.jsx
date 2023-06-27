@@ -13,7 +13,7 @@ import HomeMovies from "./pages/HomeMovies";
 import HomeTVShows from "./pages/HomeTVShows";
 import ReactGA from "react-ga4";
 
-const GA_TRACKING_ID = "G-FHEJ0Z4DW9";
+const GA_TRACKING_ID = "G-L0V4DXC6HK";
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {
