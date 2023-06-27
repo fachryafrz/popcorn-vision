@@ -32,11 +32,12 @@ const Trending = ({ num }) => {
           }
         );
         setMovie(response.data.results[num - 1]);
-        setTimeout(() => {
-          setLoading(false);
-        }, 500);
       } catch (error) {
         console.error(`Errornya trending: ${error}`);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 250);
       }
     };
 

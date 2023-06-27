@@ -56,11 +56,12 @@ const MovieDetail = ({ id }) => {
           }
         );
         setMovie(response.data);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
       } catch (error) {
         console.error(`Errornya movies: ${error}`);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 250);
       }
     };
 

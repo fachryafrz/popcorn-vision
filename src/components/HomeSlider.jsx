@@ -57,11 +57,12 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
           }
         );
         setMovies(response.data.results.slice(0, 5));
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
       } catch (error) {
         console.log(`Errornya homeslider:`, error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 250);
       }
     };
 
@@ -104,7 +105,7 @@ const HomeSlider = ({ apiUrl, apiUpcoming, apiSortBy = "popularity.desc" }) => {
                 ) : (
                   <img
                     loading="lazy"
-                    src={`${import.meta.env.VITE_API_IMAGE_URL_780}${
+                    src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
                       movie.poster_path
                     }`}
                     alt={!isTvPage ? movie.title : movie.name}

@@ -69,11 +69,12 @@ const FilmSlider = ({
           }
         );
         setMovies(response.data.results);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
       } catch (error) {
         console.log(`Errornya movies:`, error);
+      } finally {
+        setTimeout(() => {
+          setLoading(false);
+        }, 250);
       }
     };
 
