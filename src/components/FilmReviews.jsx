@@ -72,9 +72,11 @@ export default function FilmReviews({ logo, review, loading }) {
             <span className="text-sm text-gray-400">{formattedDate}</span>
           )}
         </div>
-        <div className={`ml-auto flex items-start text-primary-yellow`}>
-          <RatingStars rating={review.author_details.rating} />
-        </div>
+        {!loading && (
+          <div className={`ml-auto flex items-start text-primary-yellow`}>
+            <RatingStars rating={review.author_details.rating} />
+          </div>
+        )}
       </div>
       {loading ? (
         <Loading classNames={`!h-[150px]`} />

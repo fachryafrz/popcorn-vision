@@ -31,8 +31,11 @@ export function MovieOverview({
   movie,
   isTvPage,
   loading,
+  setReviews,
   reviews,
+  totalReviewPages,
   backdrops,
+  params,
 }) {
   const history = useHistory();
   const [thumbsSwiper, setThumbsSwiper] = useState();
@@ -50,6 +53,8 @@ export function MovieOverview({
   const [movieTitle, setMovieTitle] = useState();
   const [collections, setCollections] = useState({});
 
+  let [currentReviewPage, setCurrentReviewPage] = useState(1);
+
   const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
   const date = new Date(dateStr);
   const options = {
@@ -63,7 +68,32 @@ export function MovieOverview({
     history.goBack();
   };
 
+  const fetchMoreReviews = async () => {
+    setCurrentReviewPage((prevPage) => prevPage + 1);
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/${!isTvPage ? `movie` : `tv`}/${
+          movie.id
+        }/reviews`,
+        {
+          params: {
+            ...params,
+            page: currentReviewPage,
+          },
+        }
+      );
+      setReviews((prevReviews) => [...response.data.results, ...prevReviews]);
+    } catch (error) {
+      console.error(`Errornya reviews kedua: ${error}`);
+    } finally {
+      console.log(currentReviewPage);
+    }
+  };
+
   useEffect(() => {
+    setCurrentReviewPage(1);
+
     const url = window.location.href;
     const hasOverview = url.includes("#overview");
 
@@ -73,7 +103,7 @@ export function MovieOverview({
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
-      window.scrollTo({ top: 0, behavior: "auto" });
+      // window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [movie]);
 
@@ -643,7 +673,7 @@ export function MovieOverview({
           </div>
         )}
 
-        {reviews && reviews.length !== 0 ? (
+        {reviews && reviews.length !== 0 && (
           <div className="flex flex-col gap-2">
             <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
               {loading ? (
@@ -668,9 +698,15 @@ export function MovieOverview({
                     );
                   })}
             </div>
+            {totalReviewPages > 1 && currentReviewPage !== totalReviewPages && (
+              <button
+                onClick={() => fetchMoreReviews((currentReviewPage += 1))}
+                className="text-primary-blue py-2 flex justify-center hover:bg-white hover:bg-opacity-10 rounded-lg"
+              >
+                Load more reviews
+              </button>
+            )}
           </div>
-        ) : (
-          ``
         )}
       </div>
     </div>

@@ -7,6 +7,10 @@ const RatingStars = ({ rating }) => {
   const fullStarCount = Math.floor(rating / 2); // Jumlah bintang penuh
   const hasHalfStar = rating % 2 !== 0; // Apakah ada setengah bintang
 
+  if (rating < 1) {
+    return <div className="text-sm">Not rated</div>;
+  }
+
   const renderStars = () => {
     const stars = [];
 

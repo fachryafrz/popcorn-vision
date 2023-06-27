@@ -115,23 +115,6 @@ const MovieDetail = ({ id }) => {
       } catch (error) {
         console.error(`Errornya reviews: ${error}`);
       }
-
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/${
-            !isTvPage ? `movie` : `tv`
-          }/${id}/reviews`,
-          {
-            params: {
-              ...params,
-              page: 2,
-            },
-          }
-        );
-        setReviews((prevReviews) => [...prevReviews, ...response.data.results]);
-      } catch (error) {
-        console.error(`Errornya reviews kedua: ${error}`);
-      }
     };
 
     const fetchRecommendations = async () => {
@@ -261,6 +244,9 @@ const MovieDetail = ({ id }) => {
               loading={loading}
               reviews={reviews}
               backdrops={backdrops}
+              totalReviewPages={totalReviewPages}
+              setReviews={setReviews}
+              params={params}
             />
           </div>
           {/* Right */}
