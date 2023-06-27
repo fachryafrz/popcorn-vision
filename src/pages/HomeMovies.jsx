@@ -3,14 +3,9 @@ import FilmSlider from "../components/FilmSlider";
 import HomeSlider from "../components/HomeSlider";
 import Trending from "../components/Trending";
 import { Helmet } from "react-helmet";
-import ReactGA from "react-ga";
 import AdComponent from "../components/AdComponent";
 
 export default function HomeMovies({ today, thisYear }) {
-  useEffect(() => {
-    ReactGA.pageview(window.location.pathname);
-  }, []);
-
   return (
     <>
       <Helmet>
@@ -51,9 +46,9 @@ export default function HomeMovies({ today, thisYear }) {
       <section id="topRated">
         <FilmSlider title="Top Rated" apiUrl="/movie/top_rated" />
       </section>
-      <section className="py-4">
+      {/* <section className="py-4">
         <AdComponent />
-      </section>
+      </section> */}
       <section id="trending">
         <Trending num={1} />
       </section>

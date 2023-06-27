@@ -13,7 +13,6 @@ import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { FilmCard } from "../components/FilmCard";
 import { useHistory, useLocation } from "react-router-dom";
-import ReactGA from "react-ga";
 
 export default function Search({ apiUrl, query }) {
   const [movies, setMovies] = useState([]);
@@ -84,8 +83,6 @@ export default function Search({ apiUrl, query }) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-
-    ReactGA.pageview(window.location.pathname);
 
     const fetchBgMovies = async () => {
       axios

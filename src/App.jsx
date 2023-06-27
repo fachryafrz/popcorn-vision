@@ -11,9 +11,9 @@ import MovieDetail from "./pages/MovieDetail";
 import Search from "./pages/Search";
 import HomeMovies from "./pages/HomeMovies";
 import HomeTVShows from "./pages/HomeTVShows";
-import ReactGA from "react-ga";
+import ReactGA from "react-ga4";
 
-const GA_TRACKING_ID = "UA-275172584-1";
+const GA_TRACKING_ID = "G-FHEJ0Z4DW9";
 ReactGA.initialize(GA_TRACKING_ID);
 
 const App = () => {

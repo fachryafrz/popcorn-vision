@@ -10,7 +10,6 @@ import "swiper/css/autoplay";
 import logo from "/popcorn.png";
 import { useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import ReactGA from "react-ga";
 
 const MovieDetail = ({ id }) => {
   const [movie, setMovie] = useState([]);
@@ -37,10 +36,6 @@ const MovieDetail = ({ id }) => {
       append_to_response: "credits,videos",
     };
   }
-
-  useEffect(() => {
-    ReactGA.pageview(window.location.pathname);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
