@@ -4,7 +4,10 @@ import { Loading } from "./Loading";
 
 export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
   const releaseDate = !isTvPage ? movie.release_date : movie.first_air_date;
-  const year = new Date(releaseDate + "Z").getFullYear();
+
+  const date = new Date(releaseDate);
+  const options = { year: "numeric", month: "short" };
+  const formattedDate = date.toLocaleString("en-US", options);
 
   return (
     <Link to={!isTvPage ? `/movies/${movie.id}` : `/tv/${movie.id}`}>
@@ -56,10 +59,10 @@ export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
             <Loading classNames={`!h-[10px] !w-[75px]`} />
           ) : (
             <span className="text-gray-400 whitespace-nowrap">
-              {releaseDate !== "" ? year : `Coming soon`}
+              {releaseDate !== "" ? formattedDate : `Coming soon`}
             </span>
           )}
-          {!loading && year !== "NaN" && movieGenres.length > 0 && (
+          {!loading && formattedDate !== "NaN" && movieGenres.length > 0 && (
             <span className="text-gray-400 whitespace-nowrap">&bull;</span>
           )}
           {/* {movieGenres &&
