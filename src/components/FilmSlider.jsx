@@ -151,7 +151,7 @@ const FilmSlider = ({
             slidesPerGroup: 5,
           },
         }}
-        className={`px-4 pb-[2rem] pt-[4rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
+        className={`px-4 pb-[2rem] pt-[2.5rem] xl:px-[9rem] pr-[5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
           loading && `h-[50vh] sm:h-[55vh] md:h-[60vh] xl:h-[70vh]`
         }`}
       >
@@ -182,7 +182,7 @@ const FilmSlider = ({
           );
         })}
 
-        <div className="absolute top-0 left-0 right-0 h-[50px] px-4 xl:px-[9rem] flex justify-between items-end xl:max-w-none">
+        <div className="absolute top-0 left-0 right-0 h-[28px] px-4 xl:px-[9rem] flex justify-between items-end xl:max-w-none">
           {loading ? (
             <Loading classNames={`max-w-[150px]`} />
           ) : (

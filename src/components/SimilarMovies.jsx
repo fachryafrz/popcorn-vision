@@ -78,7 +78,7 @@ export function SimilarMovies({
           {loading ? (
             <Loading classNames={`h-[30px] max-w-[150px]`} />
           ) : (
-            <p className="font-bold text-xl lg:text-2xl">
+            <p className="font-bold lg:text-xl">
               {recommendations && recommendations.length !== 0
                 ? `Recommendations`
                 : ``}
