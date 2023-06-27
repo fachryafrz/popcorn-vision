@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Loading } from "./Loading";
 import ReactMarkdown from "react-markdown";
+import RatingStars from "./RatingStars";
 
 export default function FilmReviews({ logo, review, loading }) {
   const [readMore, setReadMore] = useState(false);
@@ -70,6 +71,9 @@ export default function FilmReviews({ logo, review, loading }) {
           ) : (
             <span className="text-sm text-gray-400">{formattedDate}</span>
           )}
+        </div>
+        <div className={`ml-auto flex items-start text-primary-yellow`}>
+          <RatingStars rating={review.author_details.rating} />
         </div>
       </div>
       {loading ? (
