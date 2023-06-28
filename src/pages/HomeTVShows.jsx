@@ -21,6 +21,7 @@ export default function HomeTVShows({
 
         <title>{import.meta.env.VITE_APP_NAME} - TV</title>
 
+        <meta property="og:site_name" content={import.meta.env.VITE_APP_NAME} />
         <meta property="og:title" content={import.meta.env.VITE_APP_NAME} />
         <meta
           property="og:description"

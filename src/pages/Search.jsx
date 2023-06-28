@@ -132,6 +132,7 @@ export default function Search({ apiUrl, query }) {
           import.meta.env.VITE_APP_NAME
         }`}</title>
 
+        <meta property="og:site_name" content={import.meta.env.VITE_APP_NAME} />
         <meta
           property="og:title"
           content={`Search ${!isTvPage ? `Movies` : `TV Series`} - ${
