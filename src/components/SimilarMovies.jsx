@@ -79,9 +79,9 @@ export function SimilarMovies({
             <Loading classNames={`h-[30px] max-w-[150px]`} />
           ) : (
             <p className="font-bold lg:text-xl">
-              {recommendations && recommendations.length !== 0
-                ? `Recommendations`
-                : ``}
+              {recommendations &&
+                recommendations.length > 0 &&
+                `Recommendations`}
             </p>
           )}
 
@@ -91,14 +91,14 @@ export function SimilarMovies({
             }`}
           >
             <button className="prev h-[1.5rem]">
-              {recommendations && recommendations.length !== 0 ? (
+              {recommendations && recommendations.length > 0 ? (
                 <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
               ) : (
                 ``
               )}
             </button>
             <button className="next h-[1.5rem]">
-              {recommendations && recommendations.length !== 0 ? (
+              {recommendations && recommendations.length > 0 ? (
                 <IonIcon
                   icon={chevronForward}
                   className="text-[1.5rem]"
