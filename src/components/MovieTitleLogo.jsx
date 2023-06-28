@@ -29,13 +29,13 @@ export default function MovieTitleLogo({ movie, isTvPage }) {
   }, [movie]);
 
   return (
-    <figure className="mb-4 w-full flex justify-center sm:max-w-fit">
+    <figure className="mb-4 flex justify-center max-h-[150px]">
       <img
         src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
           movieTitleLogo && movieTitleLogo.file_path
         }`}
         alt={!isTvPage ? movie && movie.title : movie && movie.name}
-        className="max-w-full max-h-[150px] object-contain"
+        className="object-contain"
       />
     </figure>
   );

@@ -18,7 +18,7 @@ const Casts = ({ logo, actor, index, loading, showAllActors }) => {
             <Loading
               width="auto"
               height="auto"
-              classNames={`!w-[50px] !h-[50px] aspect-square rounded-full -m-2`}
+              classNames={`!w-[50px] !h-[50px] aspect-square rounded-full`}
             />
           ) : (
             <img

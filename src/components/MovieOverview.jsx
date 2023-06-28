@@ -160,7 +160,7 @@ export function MovieOverview({
       <div className="flex gap-4 flex-col items-center sm:items-stretch sm:flex-row lg:gap-0">
         <div className="flex flex-col gap-1">
           <div className="sticky top-20 flex flex-col gap-1">
-            <figure className="w-[50vw] sm:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start">
+            <figure className="w-[50vw] sm:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl">
               <div
                 className={
                   movie.poster_path === null
@@ -172,7 +172,7 @@ export function MovieOverview({
                   loading="lazy"
                   src={logo}
                   alt={import.meta.env.VITE_APP_NAME}
-                  className="w-fit h-fit"
+                  className="object-contain"
                 />
               </div>
               {loading ? (
@@ -224,7 +224,7 @@ export function MovieOverview({
               className={`h-[100px] sm:h-[150px]`}
             />
           ) : (
-            <table className="w-full md:max-w-fit text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
+            <table className="w-full md:max-w-fit text-sm lg:text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
               <tbody>
                 {!isTvPage
                   ? movie.production_companies &&
@@ -675,7 +675,7 @@ export function MovieOverview({
 
         {reviews && reviews.length !== 0 && (
           <div className="flex flex-col gap-2">
-            <div className="flex gap-4 items-center justify-between bg-base-dark-gray sticky top-[4.125rem] py-2 bg-opacity-90 backdrop-blur-sm z-10">
+            <div className="flex gap-4 items-center justify-between bg-base-dark-gray backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10">
               {loading ? (
                 <Loading height="[30px] max-w-[100px]" className={`h-[30px]`} />
               ) : (

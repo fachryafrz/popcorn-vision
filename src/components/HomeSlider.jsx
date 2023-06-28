@@ -108,7 +108,7 @@ const HomeSlider = ({
           return (
             <SwiperSlide
               key={index}
-              className="min-h-fit sm:h-[600px] flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t lg:after:bg-gradient-to-tr after:from-base-dark-gray lg:after:opacity-[90%]"
+              className="min-h-fit sm:h-[600px] flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-base-dark-gray lg:after:opacity-[100%]"
             >
               <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 {loading ? (
@@ -136,7 +136,7 @@ const HomeSlider = ({
                   />
                 )}
               </figure>
-              <div className="flex flex-col items-center sm:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute bottom-0 inset-x-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10">
+              <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10">
                 {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
                   {!isTvPage ? movie.title : movie.name}
                 </h3> */}

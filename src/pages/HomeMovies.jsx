@@ -68,49 +68,49 @@ export default function HomeMovies({
       <section id="trending">
         <Trending num={1} />
       </section>
-      <section className="pt-[2rem]">
+      <section id="marvelStudios" className="pt-[2rem]">
         <FilmSlider
           title="Marvel Studios"
           apiUrl="/discover/movie"
           apiCompanies="420"
         />
       </section>
-      <section>
+      <section id="dcComics">
         <FilmSlider
           title="DC Comics"
           apiUrl="/discover/movie"
           apiCompanies="429"
         />
       </section>
-      <section>
+      <section id="waltDisneyPictures">
         <FilmSlider
           title="Walt Disney Pictures"
           apiUrl="/discover/movie"
           apiCompanies="2"
         />
       </section>
-      <section>
+      <section id="universalPictures">
         <FilmSlider
           title="Universal Pictures"
           apiUrl="/discover/movie"
           apiCompanies="33"
         />
       </section>
-      <section>
+      <section className="paramountPictures">
         <FilmSlider
           title="Paramount Pictures"
           apiUrl="/discover/movie"
           apiCompanies="4"
         />
       </section>
-      <section>
+      <section id="20thCenturyStudios">
         <FilmSlider
           title="20th Century Studios"
           apiUrl="/discover/movie"
           apiCompanies="25"
         />
       </section>
-      <section>
+      <section id="pixarAnimationStudios">
         <FilmSlider
           title="Pixar Animation Studios"
           apiUrl="/discover/movie"
@@ -120,33 +120,33 @@ export default function HomeMovies({
       <section id="trending">
         <Trending num={2} />
       </section>
-      <section>
+      <section id="action">
         <FilmSlider title="Action" apiUrl="/discover/movie" apiGenres={`28`} />
       </section>
-      <section>
+      <section id="drama">
         <FilmSlider title="Drama" apiUrl="/discover/movie" apiGenres={`18`} />
       </section>
-      <section>
+      <section id="comedy">
         <FilmSlider title="Comedy" apiUrl="/discover/movie" apiGenres={`35`} />
       </section>
-      <section>
+      <section id="mystery">
         <FilmSlider
           title="Mystery"
           apiUrl="/discover/movie"
           apiGenres={`9648`}
         />
       </section>
-      <section>
+      <section id="romance">
         <FilmSlider
           title="Romance"
           apiUrl="/discover/movie"
           apiGenres={`10749`}
         />
       </section>
-      <section>
+      <section id="horror">
         <FilmSlider title="Horror" apiUrl="/discover/movie" apiGenres={`27`} />
       </section>
-      <section>
+      <section id="scienceFiction">
         <FilmSlider
           title="Science Fiction"
           apiUrl="/discover/movie"

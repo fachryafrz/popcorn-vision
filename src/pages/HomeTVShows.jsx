@@ -41,13 +41,13 @@ export default function HomeTVShows({
       />
       <section id="onTheAir" className="pt-[2rem]">
         <FilmSlider
-          title="Discover New Series"
+          title="On The Air"
           apiUrl="/discover/tv"
           date_gte={firstDate}
           date_lte={today}
         />
       </section>
-      <section>
+      <section id="upcomingSeries">
         <FilmSlider
           title="Upcoming Series"
           apiUrl="/discover/tv"
@@ -87,52 +87,56 @@ export default function HomeTVShows({
       <section id="trending">
         <Trending num={2} />
       </section>
-      <section>
+      <section id="actionAdventure">
         <FilmSlider
           title="Action & Adventure"
           apiUrl="/discover/tv"
           apiGenres={`10759,10762`}
         />
       </section>
-      <section>
+      <section id="animation">
         <FilmSlider title="Animation" apiUrl="/discover/tv" apiGenres={`16`} />
       </section>
-      <section>
+      <section id="comedy">
         <FilmSlider title="Comedy" apiUrl="/discover/tv" apiGenres={`35`} />
       </section>
-      <section>
+      <section id="crime">
         <FilmSlider title="Crime" apiUrl="/discover/tv" apiGenres={`80`} />
       </section>
-      <section>
+      <section id="documentary">
         <FilmSlider
           title="Documentary"
           apiUrl="/discover/tv"
           apiGenres={`99`}
         />
       </section>
-      <section>
+      <section id="drama">
         <FilmSlider title="Drama" apiUrl="/discover/tv" apiGenres={`18`} />
       </section>
-      <section>
+      <section id="family">
         <FilmSlider title="Family" apiUrl="/discover/tv" apiGenres={`10751`} />
       </section>
-      <section>
+      <section id="mystery">
         <FilmSlider title="Mystery" apiUrl="/discover/tv" apiGenres={`9648`} />
       </section>
-      <section>
+      <section id="romance">
         <FilmSlider title="Romance" apiUrl="/discover/tv" apiGenres={`10749`} />
       </section>
-      <section>
-        <FilmSlider title="Reality" apiUrl="/discover/tv" apiGenres={`10764`} />
+      <section id="realityShow">
+        <FilmSlider
+          title="Reality Show"
+          apiUrl="/discover/tv"
+          apiGenres={`10764`}
+        />
       </section>
-      <section>
+      <section id="scienceFiction">
         <FilmSlider
           title="Science Fiction"
           apiUrl="/discover/tv"
           apiGenres={`10765`}
         />
       </section>
-      <section>
+      <section id="war">
         <FilmSlider title="War" apiUrl="/discover/tv" apiGenres={`10768`} />
       </section>
     </>

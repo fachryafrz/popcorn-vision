@@ -8,7 +8,7 @@ export default function FilmReviews({ logo, review, loading }) {
   const text = review.content;
   const words = text.split(" ");
   const wordCount = words.length;
-  const maxLength = 50;
+  const maxLength = 40;
 
   const dateStr = review && review.created_at;
   const date = new Date(dateStr);
@@ -45,7 +45,7 @@ export default function FilmReviews({ logo, review, loading }) {
             }`}
           >
             {loading ? (
-              <Loading classNames={`!h-[50px] !w-[50px] -m-2`} />
+              <Loading classNames={`!h-[50px] !w-[50px]`} />
             ) : (
               <img
                 loading="lazy"
