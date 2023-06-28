@@ -206,6 +206,12 @@ const MovieDetail = ({ id }) => {
         />
         <meta name="twitter:description" content={movie.overview} />
         <meta
+          property="twitter:url"
+          content={`${import.meta.env.VITE_APP_URL}/${
+            !isTvPage ? `movies` : `tv`
+          }/${movie.id}`}
+        />
+        <meta
           name="twitter:image"
           content={`${import.meta.env.VITE_API_IMAGE_URL_500}${
             movie.poster_path
