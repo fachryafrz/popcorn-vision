@@ -1,6 +1,6 @@
 # Popcorn Vision
 
-![Popcorn Vision](/src/assets/popcorn-vision.jpg)
+[![Popcorn Vision](/src/assets/popcorn-vision.jpg)](https://www.popcorn.vision)
 
 [![Website](https://img.shields.io/badge/Website-Visit%20Now-blue)](https://www.popcorn.vision)
 
