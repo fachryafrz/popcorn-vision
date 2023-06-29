@@ -29,28 +29,30 @@ export default function Search({ apiUrl, query }) {
 
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
 
-  const searchMovies = async () => {
+  const searchMovies = async (query) => {
     setLoading(true);
 
-    axios
-      .get(
+    try {
+      const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/search/${
           !isTvPage ? `movie` : `tv`
         }`,
         {
           params: {
             api_key: apiKey,
-            query: searchQuery.replace(/\s+/g, "+"),
+            query: searchQuery.replace(/\s+/g, "+") || query,
             sort_by: "popularity.desc",
           },
         }
-      )
-      .then((response) => {
-        setMovies(response.data.results);
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+      );
+      setMovies(response.data.results);
+    } catch (error) {
+      console.log(`Errornya search:`, error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 250);
+    }
   };
 
   const handleSearchQuery = (e) => {
@@ -62,9 +64,9 @@ export default function Search({ apiUrl, query }) {
     e.preventDefault();
 
     history.push(
-      `/${!isTvPage ? `search` : `tv/search`}/${searchQuery.replace(
+      `/${!isTvPage ? `search` : `tv/search`}?query=${searchQuery.replace(
         /\s+/g,
-        "-"
+        "+"
       )}`
     );
 
@@ -73,13 +75,19 @@ export default function Search({ apiUrl, query }) {
     searchMovies();
   };
 
+  // useEffect(() => {
+  //   if (query) {
+  //     setSearchQuery(query.replace(/\-/g, " "));
+  //     searchMovies();
+  //     // searchRef.current.blur();
+  //   }
+  // }, [query]);
+
   useEffect(() => {
-    if (query) {
-      setSearchQuery(query.replace(/\-/g, " "));
-      searchMovies();
-      // searchRef.current.blur();
-    }
-  }, [query]);
+    const query = new URLSearchParams(location.search).get("query");
+    setSearchQuery(query || "");
+    searchMovies(query);
+  }, [location.search]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
