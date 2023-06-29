@@ -206,7 +206,7 @@ const HomeSlider = ({
                           ? `/movies/${movie.id}#overview`
                           : `/tv/${movie.id}#overview`
                       }
-                      className="btn bg-base-gray bg-opacity-40"
+                      className="btn bg-base-gray bg-opacity-40 hocus:bg-white hocus:text-base-dark-gray"
                     >
                       <IonIcon
                         icon={playOutline}
