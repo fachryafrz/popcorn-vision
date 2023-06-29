@@ -354,7 +354,7 @@ export function MovieOverview({
                     movie.credits.crew.length > 0 &&
                     movie.credits.crew.find(
                       (person) => person.job === "Director"
-                    ) !== null && (
+                    ) && (
                       <tr>
                         <td className="text-gray-400 whitespace-nowrap">
                           Directed by
