@@ -99,7 +99,7 @@ export default function FilmReviews({ logo, review, loading }) {
             onClick={handleReadMore}
             className={`${
               words.length > maxLength ? `flex` : `hidden`
-            } text-primary-blue max-w-fit -mt-2 hover:font-medium`}
+            } text-primary-blue max-w-fit -mt-2 hocus:font-medium`}
           >
             {readMore ? `Show less` : `Read more`}
           </button>

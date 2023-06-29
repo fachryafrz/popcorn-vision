@@ -173,7 +173,7 @@ const FilmSlider = ({
           return (
             <SwiperSlide
               key={index}
-              className={`overflow-hidden hover:scale-[1.025] active:scale-100 transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`}
+              className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`}
             >
               <FilmCard
                 movie={movie}

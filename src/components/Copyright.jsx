@@ -5,7 +5,7 @@ const Copyright = () => {
       <a
         href="https://dribbble.com/iamehsan"
         target="_blank"
-        className="text-[#ea4c89] hover:font-medium transition-all"
+        className="text-[#ea4c89] hocus:font-medium transition-all"
       >
         Ehsan Gholampour
       </a>{" "}
@@ -13,7 +13,7 @@ const Copyright = () => {
       <a
         href="https://fachryafrz.vercel.app"
         target="_blank"
-        className="text-[#ea4c89] hover:font-medium transition-all"
+        className="text-[#ea4c89] hocus:font-medium transition-all"
       >
         Fachry Dwi Afriza
       </a>

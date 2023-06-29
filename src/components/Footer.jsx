@@ -30,7 +30,7 @@ const Footer = () => {
                 footer.links.map((link) => (
                   <li
                     key={link.name}
-                    className="font-light tracking-wider hover:font-normal transition-all max-w-fit"
+                    className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
                   >
                     <Link to={isTvPage ? `/tv` : `/`}>{link.name}</Link>
                   </li>
@@ -48,28 +48,28 @@ const Footer = () => {
             <a
               href="https://facebook.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
+              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoFacebook} className="text-[1.25rem]" />
             </a>
             <a
               href="https://twitter.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
+              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoTwitter} className="text-[1.25rem]" />
             </a>
             <a
               href="https://instagram.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
+              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoInstagram} className="text-[1.25rem]" />
             </a>
             <a
               href="https://youtube.com/@fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hover:bg-opacity-25 hover:scale-105 transition-all active:scale-100"
+              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={Icons.logoYoutube} className="text-[1.25rem]" />
             </a>

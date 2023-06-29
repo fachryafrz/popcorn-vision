@@ -46,7 +46,7 @@ export function MoviePoster({ logo, movie, isTvPage, loading }) {
       </figure>
       <button
         onClick={handleGoBack}
-        className="w-full text-sm p-4 md:px-8 rounded-lg bg-base-gray bg-opacity-10 uppercase font-medium tracking-wider flex justify-center items-center gap-2 transition-all hover:bg-opacity-30 active:bg-opacity-50"
+        className="w-full text-sm p-4 md:px-8 rounded-lg bg-base-gray bg-opacity-10 uppercase font-medium tracking-wider flex justify-center items-center gap-2 transition-all hocus:bg-opacity-30 active:bg-opacity-50"
       >
         <IonIcon
           icon={Icons.returnDownBack}

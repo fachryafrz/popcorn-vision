@@ -26,7 +26,7 @@ export function CastsList({ logo, movie, loading }) {
           onClick={handleShowAllActors}
           className={`text-primary-blue ${
             !loading ? `flex` : `hidden`
-          } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hover:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
+          } items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
         >
           {showAllActors ? "Show Less" : "Show All"}
         </button>
@@ -54,7 +54,7 @@ export function CastsList({ logo, movie, loading }) {
             onClick={handleShowAllActors}
             className={`text-primary-blue ${
               !loading ? `opacity-100` : `opacity-0`
-            } sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hover:bg-white hover:bg-opacity-10 hidden text-sm font-medium mb-2`}
+            } sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hocus:bg-white hocus:bg-opacity-10 hidden text-sm font-medium mb-2`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon

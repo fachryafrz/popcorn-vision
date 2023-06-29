@@ -190,7 +190,7 @@ export function MovieOverview({
             </figure>
             {/* <button
               onClick={handleGoBack}
-              className="flex gap-2 text-xs sm:text-sm items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg hover:bg-opacity-30 active:bg-opacity-50 md:hidden"
+              className="flex gap-2 text-xs sm:text-sm items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg hocus:bg-opacity-30 active:bg-opacity-50 md:hidden"
             >
               <IonIcon
                 icon={Icons.returnDownBack}
@@ -605,7 +605,7 @@ export function MovieOverview({
                     <li key={index}>
                       <Link
                         to={`/movies/${item.id}`}
-                        className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hover:bg-opacity-30 p-2 rounded-xl w-full ${
+                        className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
                           !loading &&
                           movie.id === item.id &&
                           `bg-primary-blue bg-opacity-30`
@@ -701,7 +701,7 @@ export function MovieOverview({
             {totalReviewPages > 1 && currentReviewPage !== totalReviewPages && (
               <button
                 onClick={() => fetchMoreReviews((currentReviewPage += 1))}
-                className="text-primary-blue py-2 flex justify-center hover:bg-white hover:bg-opacity-10 rounded-lg"
+                className="text-primary-blue py-2 flex justify-center hocus:bg-white hocus:bg-opacity-10 rounded-lg"
               >
                 Load more reviews
               </button>

@@ -298,7 +298,7 @@ export default function Search({ apiUrl, query }) {
                 return (
                   <SwiperSlide
                     key={index}
-                    className="overflow-hidden hover:scale-[1.025] active:scale-100 transition-all"
+                    className="overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all"
                   >
                     <FilmCard
                       movie={movie}
@@ -322,7 +322,7 @@ export default function Search({ apiUrl, query }) {
             {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
               <button
                 onClick={() => fetchMoreMovies((currentSearchPage += 1))}
-                className="text-primary-blue py-2 flex justify-center hover:bg-white hover:bg-opacity-10 rounded-lg"
+                className="text-primary-blue py-2 flex justify-center hocus:bg-white hocus:bg-opacity-10 rounded-lg"
               >
                 Load more movies
               </button>

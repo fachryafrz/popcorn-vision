@@ -32,7 +32,7 @@ export default function Navbar({ logo }) {
             to={isTvPage ? `/` : `/tv`}
             className={`text-base-gray ${
               isTvPage === "/tv" ? `hidden` : `flex`
-            } items-center gap-2 hover:text-white`}
+            } items-center gap-2 hocus:text-white`}
           >
             <IonIcon
               icon={isTvPage ? Icons.filmOutline : Icons.tvOutline}
@@ -44,7 +44,7 @@ export default function Navbar({ logo }) {
           </Link>
           <Link
             to={isTvPage ? `/tv/search` : `/search`}
-            className={`flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hover:bg-opacity-40 transition-all hover:scale-105 active:scale-100 ml-auto`}
+            className={`flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hocus:bg-opacity-40 transition-all hocus:scale-105 active:scale-100 ml-auto`}
           >
             <IonIcon icon={Icons.search} className="text-[1.25rem]" />
             <span className="hidden sm:block">Search</span>
