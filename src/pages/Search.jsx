@@ -12,7 +12,7 @@ import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { FilmCard } from "../components/FilmCard";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 
 export default function Search({ apiUrl, query }) {
   const [movies, setMovies] = useState([]);
@@ -23,9 +23,13 @@ export default function Search({ apiUrl, query }) {
   const [searchMessage, setSearchMessage] = useState(false);
   const searchRef = useRef();
   const history = useHistory();
+  let [currentSearchPage, setCurrentSearchPage] = useState(1);
+  const [totalSearchPages, setTotalSearchPages] = useState({});
 
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
+
+  const URLSearchQuery = new URLSearchParams(location.search).get("query");
 
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
 
@@ -46,6 +50,7 @@ export default function Search({ apiUrl, query }) {
         }
       );
       setMovies(response.data.results);
+      setTotalSearchPages(response.data.total_pages);
     } catch (error) {
       console.log(`Errornya search:`, error);
     } finally {
@@ -75,19 +80,13 @@ export default function Search({ apiUrl, query }) {
     searchMovies();
   };
 
-  // useEffect(() => {
-  //   if (query) {
-  //     setSearchQuery(query.replace(/\-/g, " "));
-  //     searchMovies();
-  //     // searchRef.current.blur();
-  //   }
-  // }, [query]);
-
   useEffect(() => {
-    const query = new URLSearchParams(location.search).get("query");
+    setCurrentSearchPage(1);
+
+    const query = URLSearchQuery;
     setSearchQuery(query || "");
     searchMovies(query);
-  }, [location.search]);
+  }, [location.search, isTvPage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,7 +125,30 @@ export default function Search({ apiUrl, query }) {
     };
 
     fetchGenres();
-  }, [query]);
+  }, [query, isTvPage]);
+
+  const fetchMoreMovies = async () => {
+    setCurrentSearchPage((prevPage) => prevPage + 1);
+
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/search/${
+          !isTvPage ? `movie` : `tv`
+        }`,
+        {
+          params: {
+            api_key: apiKey,
+            query: searchQuery.replace(/\s+/g, "+") || query,
+            sort_by: "popularity.desc",
+            page: currentSearchPage,
+          },
+        }
+      );
+      setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
+    } catch (error) {
+      console.log(`Errornya search:`, error);
+    }
+  };
 
   return (
     <>
@@ -204,7 +226,7 @@ export default function Search({ apiUrl, query }) {
               <input type="submit" className="sr-only" />
             </form>
           </div>
-          <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-8">
+          <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-4">
             <h2 className="font-bold text-xl sm:text-3xl text-center">
               {searchQuery ? `Results` : `Search all`}{" "}
               {searchQuery ? (
@@ -217,6 +239,34 @@ export default function Search({ apiUrl, query }) {
                 `TV Shows`
               )}
             </h2>
+            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-base-gray bg-opacity-20">
+              <Link
+                to={
+                  URLSearchQuery
+                    ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+                    : `/search`
+                }
+                className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
+                  !isTvPage &&
+                  `bg-white text-base-dark-gray hocus:bg-white hocus:bg-opacity-100`
+                }`}
+              >
+                Movies
+              </Link>
+              <Link
+                to={
+                  URLSearchQuery
+                    ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+                    : `/tv/search`
+                }
+                className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
+                  isTvPage &&
+                  `bg-white text-base-dark-gray hocus:bg-white hocus:bg-opacity-100`
+                }`}
+              >
+                TV Series
+              </Link>
+            </div>
             <div
               className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
             >
@@ -252,6 +302,14 @@ export default function Search({ apiUrl, query }) {
                 </p>
               )}
             </div>
+            {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
+              <button
+                onClick={() => fetchMoreMovies((currentSearchPage += 1))}
+                className="text-primary-blue py-2 flex justify-center hover:bg-white hover:bg-opacity-10 rounded-lg"
+              >
+                Load more movies
+              </button>
+            )}
           </div>
         </div>
       </div>
