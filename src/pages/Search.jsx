@@ -249,15 +249,11 @@ export default function Search({ apiUrl, query }) {
           </div>
           <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-4">
             <h2 className="font-bold text-xl sm:text-3xl text-center">
-              {searchQuery ? `Results` : `Search all`}{" "}
-              {searchQuery ? (
+              {searchQuery ? `Results` : `Search`}{" "}
+              {searchQuery && (
                 <React.Fragment>
                   for <q>{searchQuery}</q>
                 </React.Fragment>
-              ) : !isTvPage ? (
-                `Movies`
-              ) : (
-                `TV Shows`
               )}
             </h2>
             <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-base-gray bg-opacity-20 sticky top-6">
