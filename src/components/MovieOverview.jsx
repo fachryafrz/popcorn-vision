@@ -503,7 +503,7 @@ export function MovieOverview({
                       Mousewheel,
                       Zoom,
                     ]}
-                    zoom={true}
+                    // zoom={true}
                     effect="fade"
                     thumbs={{ swiper: thumbsSwiper }}
                     spaceBetween={16}
