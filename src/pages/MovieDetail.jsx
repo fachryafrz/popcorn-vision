@@ -168,7 +168,7 @@ const MovieDetail = ({ id }) => {
         {/* Page Title */}
         <title>{`${!isTvPage ? movie.title : movie.name} (${
           filmReleaseDate ? filmReleaseDate : `Coming soon`
-        }) - ${import.meta.env.VITE_APP_NAME}`}</title>
+        }) - ${import.meta.env.VITE_APP_NAME} ${isTvPage && `(TV)`}`}</title>
 
         {/* Open Graph */}
         <meta property="og:site_name" content={import.meta.env.VITE_APP_NAME} />

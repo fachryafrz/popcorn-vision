@@ -19,7 +19,7 @@ export default function HomeTVShows({
         <meta name="keywords" content={import.meta.env.VITE_APP_KEYWORDS} />
         <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
 
-        <title>{import.meta.env.VITE_APP_NAME} - TV</title>
+        <title>{import.meta.env.VITE_APP_NAME} (TV)</title>
 
         <meta property="og:site_name" content={import.meta.env.VITE_APP_NAME} />
         <meta property="og:title" content={import.meta.env.VITE_APP_NAME} />
