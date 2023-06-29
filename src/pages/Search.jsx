@@ -248,7 +248,7 @@ export default function Search({ apiUrl, query }) {
                 }
                 className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
                   !isTvPage &&
-                  `bg-white text-base-dark-gray hocus:bg-white hocus:bg-opacity-100`
+                  `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
               >
                 Movies
@@ -261,7 +261,7 @@ export default function Search({ apiUrl, query }) {
                 }
                 className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
                   isTvPage &&
-                  `bg-white text-base-dark-gray hocus:bg-white hocus:bg-opacity-100`
+                  `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
               >
                 TV Series
