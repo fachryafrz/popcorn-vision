@@ -10,6 +10,7 @@ import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
+import * as Icons from "ionicons/icons";
 import { search } from "ionicons/icons";
 import { FilmCard } from "../components/FilmCard";
 import { Link, useHistory, useLocation } from "react-router-dom";
@@ -30,7 +31,7 @@ export default function Search({ apiUrl, query }) {
   const isTvPage = location.pathname.startsWith("/tv");
 
   const URLSearchQuery = new URLSearchParams(location.search).get("query");
-
+  const [showButton, setShowButton] = useState(false);
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
 
   const searchMovies = async (query) => {
@@ -58,6 +59,26 @@ export default function Search({ apiUrl, query }) {
         setLoading(false);
       }, 250);
     }
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.pageYOffset;
+      setShowButton(scrollPosition > 150);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   const handleSearchQuery = (e) => {
@@ -239,7 +260,7 @@ export default function Search({ apiUrl, query }) {
                 `TV Shows`
               )}
             </h2>
-            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-base-gray bg-opacity-20">
+            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-base-gray bg-opacity-20 sticky top-6">
               <Link
                 to={
                   URLSearchQuery
@@ -310,6 +331,15 @@ export default function Search({ apiUrl, query }) {
                 Load more movies
               </button>
             )}
+
+            <button
+              onClick={scrollToTop}
+              className={`fixed bottom-4 right-4 lg:right-6 2xl:right-[5.5rem] flex max-w-fit aspect-square p-4 rounded-full bg-base-dark-gray bg-opacity-[50%] backdrop-blur border border-base-gray hocus:bg-white hocus:bg-opacity-100 hocus:text-base-dark-gray hocus:border-white transition-all opacity-0 pointer-events-none ${
+                showButton && `opacity-100 pointer-events-auto`
+              }`}
+            >
+              <IonIcon icon={Icons.arrowUp} />
+            </button>
           </div>
         </div>
       </div>
