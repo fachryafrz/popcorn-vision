@@ -408,7 +408,7 @@ export default function Search({ apiUrl, query }) {
               </div>
 
               {/* Sort By */}
-              <div></div>
+              <div className="hidden"></div>
             </div>
             <div
               className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
