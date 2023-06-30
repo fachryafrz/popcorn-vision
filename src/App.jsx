@@ -29,6 +29,14 @@ const App = () => {
     .toISOString()
     .slice(0, 10);
 
+  const thirtyDaysAgo = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() - 1,
+    2
+  )
+    .toISOString()
+    .slice(0, 10);
+
   const currentYear = currentDate.getFullYear();
   const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
 
@@ -45,6 +53,7 @@ const App = () => {
                   currentYear={currentYear}
                   firstDate={firstDate}
                   endOfYear={endOfYear}
+                  thirtyDaysAgo={thirtyDaysAgo}
                 />{" "}
               </Route>
               <Route exact path="/search">

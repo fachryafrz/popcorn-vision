@@ -10,6 +10,7 @@ export default function HomeMovies({
   currentYear,
   endOfYear,
   firstDate,
+  thirtyDaysAgo,
 }) {
   return (
     <>
@@ -36,7 +37,7 @@ export default function HomeMovies({
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <HomeSlider apiUrl="/discover/movie" date_gte={firstDate} />
+      <HomeSlider apiUrl="/discover/movie" date_gte={thirtyDaysAgo} />
       {/* <section id="genres">
                   <Genres />
                 </section> */}
@@ -44,7 +45,7 @@ export default function HomeMovies({
         <FilmSlider
           title="Now Playing"
           apiUrl="/discover/movie"
-          date_gte={firstDate}
+          date_gte={thirtyDaysAgo}
           date_lte={today}
         />
       </section>
