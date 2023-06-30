@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, EffectFade } from "swiper";
+import { Autoplay, EffectFade, Navigation } from "swiper";
 import axios from "axios";
 import { Helmet } from "react-helmet";
 
 import logo from "/popcorn.png";
 
 import "swiper/css";
+import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 import { IonIcon } from "@ionic/react";
@@ -14,12 +15,14 @@ import * as Icons from "ionicons/icons";
 import { search } from "ionicons/icons";
 import { FilmCard } from "../components/FilmCard";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { Loading } from "../components/Loading";
 
 export default function Search({ apiUrl, query }) {
   const [movies, setMovies] = useState([]);
   const [bgMovies, setBgMovies] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [genres, setGenres] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchMessage, setSearchMessage] = useState(false);
   const searchRef = useRef();
@@ -36,6 +39,7 @@ export default function Search({ apiUrl, query }) {
 
   const searchMovies = async (query) => {
     setLoading(true);
+    setSelectedGenres([]);
 
     try {
       const response = await axios.get(
@@ -152,24 +156,87 @@ export default function Search({ apiUrl, query }) {
     setCurrentSearchPage((prevPage) => prevPage + 1);
 
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_BASE_URL}/search/${
-          !isTvPage ? `movie` : `tv`
-        }`,
-        {
-          params: {
-            api_key: apiKey,
-            query: searchQuery.replace(/\s+/g, "+") || query,
-            sort_by: "popularity.desc",
-            page: currentSearchPage,
-          },
-        }
-      );
+      const selectedGenreIds = selectedGenres.join(",");
+
+      let response;
+
+      if (searchQuery) {
+        response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/search/${
+            !isTvPage ? `movie` : `tv`
+          }`,
+          {
+            params: {
+              api_key: apiKey,
+              query: searchQuery.replace(/\s+/g, "+"),
+              sort_by: "popularity.desc",
+              page: currentSearchPage,
+              include_adult: false,
+            },
+          }
+        );
+      } else {
+        response = await axios.get(
+          `${import.meta.env.VITE_API_BASE_URL}/discover/${
+            !isTvPage ? `movie` : `tv`
+          }`,
+          {
+            params: {
+              api_key: apiKey,
+              with_genres: selectedGenreIds,
+              sort_by: "popularity.desc",
+              page: currentSearchPage,
+              include_adult: false,
+            },
+          }
+        );
+      }
+
       setMovies((prevMovies) => [...prevMovies, ...response.data.results]);
     } catch (error) {
-      console.log(`Errornya search:`, error);
+      console.log(`Error fetching more movies:`, error);
     }
   };
+
+  useEffect(() => {
+    setSelectedGenres([]);
+  }, [isTvPage]);
+
+  const handleGenreClick = async (genreId) => {
+    setLoading(true);
+
+    history.push(`/${!isTvPage ? "search" : "tv/search"}`);
+
+    try {
+      const updatedGenres = selectedGenres.includes(genreId)
+        ? selectedGenres.filter((id) => id !== genreId)
+        : [...selectedGenres, genreId];
+
+      const selectedGenreIds = updatedGenres.join(",");
+
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_BASE_URL}/discover/${
+          !isTvPage ? "movie" : "tv"
+        }?api_key=${apiKey}&with_genres=${selectedGenreIds}`
+      );
+
+      setSelectedGenres(updatedGenres);
+      setMovies(response.data.results);
+      setTotalSearchPages(response.data.total_pages);
+    } catch (error) {
+      console.error("Error fetching movies by genre:", error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 250);
+    }
+  };
+
+  // console.log(
+  //   `${import.meta.env.VITE_API_BASE_URL}/discover/${
+  //     !isTvPage ? `movie` : `tv`
+  //   }?api_key=${apiKey}&with_genres=${selectedGenres.join(",")}`
+  // );
 
   return (
     <>
@@ -220,7 +287,9 @@ export default function Search({ apiUrl, query }) {
                 <figure className="aspect-square">
                   <img
                     loading="lazy"
-                    src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+                    src={`${import.meta.env.VITE_API_IMAGE_URL_500}${
+                      movie.backdrop_path
+                    }`}
                     alt={`${!isTvPage ? movie.title : movie.name}`}
                     className={`blur-3xl`}
                   />
@@ -256,33 +325,90 @@ export default function Search({ apiUrl, query }) {
                 </React.Fragment>
               )}
             </h2>
-            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur sticky top-[4.5rem] z-10">
-              <Link
-                to={
-                  URLSearchQuery
-                    ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-                    : `/search`
-                }
-                className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
-                  !isTvPage &&
-                  `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
-                }`}
+            <div className="grid md:grid-cols-[1fr_auto] gap-2 sticky top-[4.5rem] z-10 px-2">
+              {/* Genres */}
+              <Swiper
+                modules={[Navigation]}
+                spaceBetween={4}
+                slidesPerView={"auto"}
+                navigation={{
+                  nextEl: "#next",
+                  prevEl: "#prev",
+                  clickable: true,
+                }}
+                className={`w-full p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur relative`}
               >
-                Movies
-              </Link>
-              <Link
-                to={
-                  URLSearchQuery
-                    ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-                    : `/tv/search`
-                }
-                className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
-                  isTvPage &&
-                  `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
-                }`}
-              >
-                TV Series
-              </Link>
+                {genres.map((item) => {
+                  const activeGenre = selectedGenres.includes(item.id);
+
+                  return (
+                    <SwiperSlide key={item.id} className="w-fit">
+                      <button
+                        onClick={() => handleGenreClick(item.id)}
+                        className={`font-medium py-2 px-4 rounded-lg bg-base-gray bg-opacity-30 hocus:bg-opacity-50 ${
+                          activeGenre && `!bg-white !text-base-dark-gray`
+                        }`}
+                      >
+                        {item.name}
+                      </button>
+                    </SwiperSlide>
+                  );
+                })}
+
+                {/* Swiper Navigation */}
+                <div className="absolute inset-x-0 top-0 h-full z-20 flex justify-between pointer-events-none">
+                  <button
+                    id="prev"
+                    className="aspect-square h-full flex items-center relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray pointer-events-auto cursor-pointer transition-all"
+                  >
+                    <IonIcon icon={Icons.chevronBack} />
+                  </button>
+                  <button
+                    id="next"
+                    className="aspect-square h-full flex items-center justify-end relative before:absolute before:inset-0 before:bg-gradient-to-l before:from-base-dark-gray pointer-events-auto cursor-pointer transition-all"
+                  >
+                    <IonIcon icon={Icons.chevronForward} />
+                  </button>
+                </div>
+              </Swiper>
+
+              {/* Film type switcher */}
+              <div className="flex justify-center">
+                <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur">
+                  <Link
+                    to={
+                      URLSearchQuery
+                        ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+                        : `/search`
+                    }
+                    className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
+                      !isTvPage &&
+                      `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+                    }`}
+                  >
+                    Movies
+                  </Link>
+                  <Link
+                    to={
+                      URLSearchQuery
+                        ? `/tv/search?query=${URLSearchQuery.replace(
+                            /\s+/g,
+                            "+"
+                          )}`
+                        : `/tv/search`
+                    }
+                    className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
+                      isTvPage &&
+                      `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+                    }`}
+                  >
+                    TV Series
+                  </Link>
+                </div>
+              </div>
+
+              {/* Sort By */}
+              <div></div>
             </div>
             <div
               className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
