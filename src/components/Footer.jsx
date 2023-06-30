@@ -28,11 +28,13 @@ const Footer = () => {
             <ul>
               {footer.links &&
                 footer.links.map((link) => (
-                  <li
-                    key={link.name}
-                    className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
-                  >
-                    <Link to={isTvPage ? `/tv` : `/`}>{link.name}</Link>
+                  <li key={link.name}>
+                    <Link
+                      to={isTvPage ? `/tv` : `/`}
+                      className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
+                    >
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
             </ul>
