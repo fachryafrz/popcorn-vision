@@ -88,7 +88,7 @@ export default function HomeTVShows({
       <section id="trending">
         <Trending num={2} />
       </section>
-      <section id="actionAdventure">
+      <section id="actionAdventure" className="pt-[2rem]">
         <FilmSlider
           title="Action & Adventure"
           apiUrl="/discover/tv"

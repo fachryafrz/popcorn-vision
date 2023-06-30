@@ -121,7 +121,7 @@ export default function HomeMovies({
       <section id="trending">
         <Trending num={2} />
       </section>
-      <section id="action">
+      <section id="action" className="pt-[2rem]">
         <FilmSlider title="Action" apiUrl="/discover/movie" apiGenres={`28`} />
       </section>
       <section id="drama">
