@@ -83,7 +83,7 @@ export function MovieOverview({
           },
         }
       );
-      setReviews((prevReviews) => [...response.data.results, ...prevReviews]);
+      setReviews((prevReviews) => [...prevReviews, ...response.data.results]);
     } catch (error) {
       console.error(`Errornya reviews kedua: ${error}`);
     } finally {
@@ -687,19 +687,16 @@ export function MovieOverview({
             </div>
             <div className="flex flex-col gap-2">
               {reviews &&
-                reviews
-                  .slice()
-                  .reverse()
-                  .map((review, index) => {
-                    return (
-                      <FilmReviews
-                        key={index}
-                        loading={loading}
-                        logo={logo}
-                        review={review}
-                      />
-                    );
-                  })}
+                reviews.map((review, index) => {
+                  return (
+                    <FilmReviews
+                      key={index}
+                      loading={loading}
+                      logo={logo}
+                      review={review}
+                    />
+                  );
+                })}
             </div>
             {totalReviewPages > 1 && currentReviewPage !== totalReviewPages && (
               <button
