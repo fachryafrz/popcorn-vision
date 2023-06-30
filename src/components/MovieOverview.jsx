@@ -469,18 +469,21 @@ export function MovieOverview({
         </div>
       </div>
       <div className="text-white flex flex-col gap-6">
-        <div id="overview" className="flex flex-col gap-2 ">
-          {loading ? (
-            <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
-          ) : (
-            <h2 className="font-bold text-xl text-white m-0">Overview</h2>
-          )}
-          {loading ? (
-            <Loading height="[150px]" className={`h-[150px]`} />
-          ) : (
-            <p className="text-gray-400 md:text-lg">{movie.overview}</p>
-          )}
-        </div>
+        {movie.overview && (
+          <div id="overview" className="flex flex-col gap-2 ">
+            {loading ? (
+              <Loading height="[30px] !w-[150px]" className={`h-[30px]`} />
+            ) : (
+              <h2 className="font-bold text-xl text-white m-0">Overview</h2>
+            )}
+            {loading ? (
+              <Loading height="[150px]" className={`h-[150px]`} />
+            ) : (
+              <p className="text-gray-400 md:text-lg">{movie.overview}</p>
+            )}
+          </div>
+        )}
+
         {movie.videos &&
           movie.videos.results.length > 0 &&
           backdrops &&

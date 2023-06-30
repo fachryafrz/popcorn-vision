@@ -256,7 +256,7 @@ export default function Search({ apiUrl, query }) {
                 </React.Fragment>
               )}
             </h2>
-            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-base-gray bg-opacity-20 sticky top-6">
+            <div className="self-center flex items-center gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur sticky top-[4.5rem] z-10">
               <Link
                 to={
                   URLSearchQuery
