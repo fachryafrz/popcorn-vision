@@ -15,7 +15,7 @@ export default function Navbar({ logo }) {
       <div className="max-w-7xl mx-auto py-2 px-4 xl:px-6 flex flex-wrap justify-between">
         <Link
           to={isTvPage ? `/tv` : `/`}
-          className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit"
+          className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit hocus:scale-[1.025] transition-all"
         >
           <figure
             className={`aspect-square w-[50px] flex after:content-["Popcorn_Vision"] after:leading-tight after:pl-1 after:h-full after:flex after:items-center`}
