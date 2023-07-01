@@ -12,6 +12,11 @@ export default function Navbar({ logo }) {
 
   // Check if the current page is a TV page
   const isTvPage = location.pathname.startsWith("/tv");
+  const isSearchPage = location.pathname.startsWith(
+    !isTvPage ? `/search` : `/tv/search`
+  );
+
+  const URLSearchQuery = new URLSearchParams(location.search).get("query");
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
@@ -31,8 +36,8 @@ export default function Navbar({ logo }) {
             />
           </figure>
         </Link>
-        <div className="flex items-center gap-4 sm:gap-8">
-          <Link
+        <div className="flex items-center gap-2">
+          {/* <Link
             to={isTvPage ? `/` : `/tv`}
             className={`text-base-gray ${
               isTvPage === "/tv" ? `hidden` : `flex`
@@ -45,7 +50,47 @@ export default function Navbar({ logo }) {
             <span className="hidden xs:block">
               {isTvPage ? `Movies` : `TV Series`}
             </span>
-          </Link>
+          </Link> */}
+
+          <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur">
+            <Link
+              to={
+                isSearchPage
+                  ? URLSearchQuery
+                    ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+                    : `/search`
+                  : isTvPage
+                  ? `/`
+                  : `/tv`
+              }
+              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 flex items-center gap-2 ${
+                !isTvPage &&
+                `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
+            >
+              <IonIcon icon={Icons.filmOutline} className="text-[1.25rem]" />
+              <span className="hidden md:block">Movies</span>
+            </Link>
+            <Link
+              to={
+                isSearchPage
+                  ? URLSearchQuery
+                    ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+                    : `/tv/search`
+                  : isTvPage
+                  ? `/`
+                  : `/tv`
+              }
+              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 flex items-center gap-2 ${
+                isTvPage &&
+                `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
+            >
+              <IonIcon icon={Icons.tvOutline} className="text-[1.25rem]" />
+              <span className="hidden md:block">TV Series</span>
+            </Link>
+          </div>
+
           <Link
             to={isTvPage ? `/tv/search` : `/search`}
             className={`flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hocus:bg-opacity-40 transition-all hocus:scale-105 active:scale-100 ml-auto`}

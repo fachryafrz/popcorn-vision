@@ -220,8 +220,13 @@ export default function Search({ apiUrl, query, logo }) {
   };
 
   // Reset selected genres when switching between movie and TV pages
-  useEffect(() => {
+  const clearSelectedGenres = () => {
     setSelectedGenres([]);
+    setMovies([]);
+    setTotalSearchPages(0);
+  };
+  useEffect(() => {
+    clearSelectedGenres;
   }, [isTvPage]);
 
   // Event handler for genre selection
@@ -240,7 +245,7 @@ export default function Search({ apiUrl, query, logo }) {
       const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/discover/${
           !isTvPage ? "movie" : "tv"
-        }?api_key=${apiKey}&with_genres=${selectedGenreIds}`
+        }?api_key=${apiKey}&with_genres=${selectedGenreIds}&include_adult=false`
       );
 
       setSelectedGenres(updatedGenres);
@@ -254,12 +259,6 @@ export default function Search({ apiUrl, query, logo }) {
       }, 250);
     }
   };
-
-  // console.log(
-  //   `${import.meta.env.VITE_API_BASE_URL}/discover/${
-  //     !isTvPage ? `movie` : `tv`
-  //   }?api_key=${apiKey}&with_genres=${selectedGenres.join(",")}`
-  // );
 
   return (
     <>
@@ -352,7 +351,7 @@ export default function Search({ apiUrl, query, logo }) {
               <input type="submit" className="sr-only" />
             </form>
           </div>
-          <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-4">
+          <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-2">
             <h2 className="font-bold text-xl sm:text-3xl text-center">
               {searchQuery ? `Results` : `Search`}{" "}
               {searchQuery && (
@@ -407,44 +406,20 @@ export default function Search({ apiUrl, query, logo }) {
                   </button>
                 </div>
               </Swiper>
-
-              {/* Film type switcher */}
-              <div className="flex justify-center">
-                <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur">
-                  <Link
-                    to={
-                      URLSearchQuery
-                        ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-                        : `/search`
-                    }
-                    className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
-                      !isTvPage &&
-                      `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
-                    }`}
-                  >
-                    Movies
-                  </Link>
-                  <Link
-                    to={
-                      URLSearchQuery
-                        ? `/tv/search?query=${URLSearchQuery.replace(
-                            /\s+/g,
-                            "+"
-                          )}`
-                        : `/tv/search`
-                    }
-                    className={`font-medium py-2 px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 ${
-                      isTvPage &&
-                      `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
-                    }`}
-                  >
-                    TV Series
-                  </Link>
-                </div>
+              <div className="flex justify-end items-center">
+                <button
+                  onClick={clearSelectedGenres}
+                  className={`max-w-fit items-center gap-2 bg-[#323946] bg-opacity-50 backdrop-blur p-2 px-4 rounded-xl hocus:bg-opacity-100 ${
+                    selectedGenres.length > 0 ? `flex` : `hidden`
+                  }`}
+                >
+                  <IonIcon
+                    icon={Icons.closeCircleOutline}
+                    className={`text-[1.25rem]`}
+                  />
+                  Clear{" "}
+                </button>
               </div>
-
-              {/* Sort By */}
-              <div className="hidden"></div>
             </div>
             <div
               className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
