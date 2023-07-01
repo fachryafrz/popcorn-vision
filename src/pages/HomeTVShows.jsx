@@ -10,6 +10,7 @@ export default function HomeTVShows({
   currentYear,
   endOfYear,
   firstDate,
+  thirtyDaysAgo,
 }) {
   return (
     <>
@@ -35,16 +36,12 @@ export default function HomeTVShows({
         <meta property="og:type" content="website" />
       </Helmet>
 
-      <HomeSlider
-        apiUrl="/discover/tv"
-        date_gte={currentYear}
-        date_lte={today}
-      />
+      <HomeSlider apiUrl="/discover/tv" date_gte={thirtyDaysAgo} />
       <section id="onTheAir" className="pt-[2rem]">
         <FilmSlider
           title="On The Air"
           apiUrl="/discover/tv"
-          date_gte={firstDate}
+          date_gte={thirtyDaysAgo}
           date_lte={today}
         />
       </section>

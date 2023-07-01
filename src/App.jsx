@@ -81,6 +81,7 @@ const App = () => {
                   currentYear={currentYear}
                   firstDate={firstDate}
                   endOfYear={endOfYear}
+                  thirtyDaysAgo={thirtyDaysAgo}
                 />{" "}
               </Route>
               <Route exact path="/tv/search">
