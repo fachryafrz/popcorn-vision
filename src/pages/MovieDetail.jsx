@@ -1,35 +1,43 @@
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
+import { useLocation } from "react-router-dom";
+import axios from "axios";
+
+// Swiper
+import "swiper/css/navigation";
+import "swiper/css/autoplay";
+
+// Components
 import { MovieBackdrop } from "../components/MovieBackdrop";
 import { MoviePoster } from "../components/MoviePoster";
 import { SimilarMovies } from "../components/SimilarMovies";
 import { CastsList } from "../sections/CastsList";
 import { MovieOverview } from "../components/MovieOverview";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import "swiper/css/navigation";
-import "swiper/css/autoplay";
-import logo from "/popcorn.png";
-import { useLocation } from "react-router-dom";
-import { Helmet } from "react-helmet";
 
-const MovieDetail = ({ id }) => {
-  const [movie, setMovie] = useState([]);
-  const [genres, setGenres] = useState([]);
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [recommendations, setRecommendations] = useState([]);
-  const [backdrops, setBackdrops] = useState([]);
+const MovieDetail = ({ id, logo }) => {
+  // State variables
+  const [movie, setMovie] = useState([]); // Stores the movie data
+  const [genres, setGenres] = useState([]); // Stores the genres data
+  const [reviews, setReviews] = useState([]); // Stores the reviews data
+  const [loading, setLoading] = useState(true); // Indicates whether the data is loading or not
+  const [recommendations, setRecommendations] = useState([]); // Stores the recommendations data
+  const [backdrops, setBackdrops] = useState([]); // Stores the backdrop images data
+  const [totalReviewPages, setTotalReviewPages] = useState(); // Stores the total number of review pages
 
-  const [totalReviewPages, setTotalReviewPages] = useState();
+  // Other variables
+  const location = useLocation(); // Provides information about the current URL
+  const isTvPage = location.pathname.startsWith("/tv"); // Indicates whether it's a TV page or not
 
-  const location = useLocation();
-  const isTvPage = location.pathname.startsWith("/tv");
-
+  // API key for making requests
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+
+  // Parameters for the API request
   let params = {
     api_key: apiKey,
     append_to_response: "credits,videos",
   };
 
+  // Update params if it's a TV page
   if (isTvPage) {
     params = {
       api_key: apiKey,
@@ -40,6 +48,7 @@ const MovieDetail = ({ id }) => {
   useEffect(() => {
     setLoading(true);
 
+    // Fetch movie details
     const fetchMovie = async () => {
       try {
         const response = await axios.get(
@@ -52,7 +61,7 @@ const MovieDetail = ({ id }) => {
         );
         setMovie(response.data);
       } catch (error) {
-        console.error(`Errornya movies: ${error}`);
+        console.error(`Error fetching movie: ${error}`);
       } finally {
         setTimeout(() => {
           setLoading(false);
@@ -60,6 +69,7 @@ const MovieDetail = ({ id }) => {
       }
     };
 
+    // Fetch backdrops
     const fetchBackdrops = async () => {
       try {
         const response = await axios.get(
@@ -75,10 +85,11 @@ const MovieDetail = ({ id }) => {
         );
         setBackdrops(response.data.backdrops);
       } catch (error) {
-        console.error(`Errornya backdrops: ${error}`);
+        console.error(`Error fetching backdrops: ${error}`);
       }
     };
 
+    // Fetch genres
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
@@ -93,10 +104,11 @@ const MovieDetail = ({ id }) => {
         );
         setGenres(response.data.genres);
       } catch (error) {
-        console.error(`Errornya genres: ${error}`);
+        console.error(`Error fetching genres: ${error}`);
       }
     };
 
+    // Fetch reviews
     const fetchReviews = async () => {
       try {
         const response = await axios.get(
@@ -113,10 +125,11 @@ const MovieDetail = ({ id }) => {
         setReviews(response.data.results);
         setTotalReviewPages(response.data.total_pages);
       } catch (error) {
-        console.error(`Errornya reviews: ${error}`);
+        console.error(`Error fetching reviews: ${error}`);
       }
     };
 
+    // Fetch recommendations
     const fetchRecommendations = async () => {
       try {
         const response = await axios.get(
@@ -132,10 +145,11 @@ const MovieDetail = ({ id }) => {
         );
         setRecommendations(response.data.results);
       } catch (error) {
-        console.error(`Errornya recommendations: ${error}`);
+        console.error(`Error fetching recommendations: ${error}`);
       }
     };
 
+    // Trigger the fetch functions
     fetchRecommendations();
     fetchMovie();
     fetchGenres();
@@ -143,14 +157,15 @@ const MovieDetail = ({ id }) => {
     fetchReviews();
   }, [id]);
 
+  // Determine the film release date based on whether it's a movie or TV show
   const filmReleaseDate = !isTvPage
-    ? new Date(movie.release_date).getFullYear()
+    ? new Date(movie.release_date).getFullYear() // For movies, use the release_date
     : new Date(movie.last_air_date).getFullYear() ===
       new Date(movie.first_air_date).getFullYear()
-    ? new Date(movie.first_air_date).getFullYear()
+    ? new Date(movie.first_air_date).getFullYear() // For TV shows with the same first and last air date, use the first_air_date
     : `${new Date(movie.first_air_date).getFullYear()}-${new Date(
         movie.last_air_date
-      ).getFullYear()}`;
+      ).getFullYear()}`; // For TV shows with different first and last air dates, format the release date as a range
 
   return (
     <div className="flex flex-col bg-base-dark-gray text-white">

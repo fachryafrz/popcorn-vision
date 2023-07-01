@@ -1,42 +1,57 @@
+// React
 import React, { useEffect, useRef, useState } from "react";
+import { Link, useHistory, useLocation } from "react-router-dom";
+
+// Ionic
+import { IonIcon } from "@ionic/react";
+import { search } from "ionicons/icons";
+import * as Icons from "ionicons/icons";
+
+// Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Navigation } from "swiper";
-import axios from "axios";
-import { Helmet } from "react-helmet";
-
-import logo from "/popcorn.png";
-
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
-import { IonIcon } from "@ionic/react";
-import * as Icons from "ionicons/icons";
-import { search } from "ionicons/icons";
-import { FilmCard } from "../components/FilmCard";
-import { Link, useHistory, useLocation } from "react-router-dom";
-import { Loading } from "../components/Loading";
 
-export default function Search({ apiUrl, query }) {
+// Axios
+import axios from "axios";
+
+// React Helmet
+import { Helmet } from "react-helmet";
+
+// Components
+import { FilmCard } from "../components/FilmCard";
+
+export default function Search({ apiUrl, query, logo }) {
+  // Movie related state
   const [movies, setMovies] = useState([]);
   const [bgMovies, setBgMovies] = useState([]);
+
+  // Search related state
   const [searchQuery, setSearchQuery] = useState("");
-  const [genres, setGenres] = useState([]);
-  const [selectedGenres, setSelectedGenres] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchMessage, setSearchMessage] = useState(false);
   const searchRef = useRef();
-  const history = useHistory();
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState({});
 
+  // Genre related state
+  const [genres, setGenres] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
+
+  // Loading and UI state
+  const [loading, setLoading] = useState(true);
+  const [showButton, setShowButton] = useState(false);
+
+  // Other dependencies and variables
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
-
   const URLSearchQuery = new URLSearchParams(location.search).get("query");
-  const [showButton, setShowButton] = useState(false);
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+  const history = useHistory();
 
+  // Function to search movies
   const searchMovies = async (query) => {
     setLoading(true);
     setSelectedGenres([]);
@@ -44,7 +59,7 @@ export default function Search({ apiUrl, query }) {
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_BASE_URL}/search/${
-          !isTvPage ? `movie` : `tv`
+          !isTvPage ? "movie" : "tv"
         }`,
         {
           params: {
@@ -65,6 +80,7 @@ export default function Search({ apiUrl, query }) {
     }
   };
 
+  // Event listener for scroll
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.pageYOffset;
@@ -78,6 +94,7 @@ export default function Search({ apiUrl, query }) {
     };
   }, []);
 
+  // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -85,16 +102,18 @@ export default function Search({ apiUrl, query }) {
     });
   };
 
+  // Event handler for search query input
   const handleSearchQuery = (e) => {
     setSearchQuery(e.target.value);
     setSearchMessage(false);
   };
 
+  // Event handler for form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
     history.push(
-      `/${!isTvPage ? `search` : `tv/search`}?query=${searchQuery.replace(
+      `/${!isTvPage ? "search" : "tv/search"}?query=${searchQuery.replace(
         /\s+/g,
         "+"
       )}`
@@ -105,6 +124,7 @@ export default function Search({ apiUrl, query }) {
     searchMovies();
   };
 
+  // Initial load and URL search query update
   useEffect(() => {
     setCurrentSearchPage(1);
 
@@ -113,9 +133,8 @@ export default function Search({ apiUrl, query }) {
     searchMovies(query);
   }, [location.search, isTvPage]);
 
+  // Fetch background movies
   useEffect(() => {
-    window.scrollTo(0, 0);
-
     const fetchBgMovies = async () => {
       axios
         .get(`${import.meta.env.VITE_API_BASE_URL}${apiUrl}`, {
@@ -131,12 +150,13 @@ export default function Search({ apiUrl, query }) {
     fetchBgMovies();
   }, []);
 
+  // Fetch genres
   useEffect(() => {
     const fetchGenres = async () => {
       axios
         .get(
           `${import.meta.env.VITE_API_BASE_URL}/genre/${
-            !isTvPage ? `movie` : `tv`
+            !isTvPage ? "movie" : "tv"
           }/list`,
           {
             params: {
@@ -152,6 +172,7 @@ export default function Search({ apiUrl, query }) {
     fetchGenres();
   }, [query, isTvPage]);
 
+  // Fetch more movies based on search or selected genres
   const fetchMoreMovies = async () => {
     setCurrentSearchPage((prevPage) => prevPage + 1);
 
@@ -163,7 +184,7 @@ export default function Search({ apiUrl, query }) {
       if (searchQuery) {
         response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/search/${
-            !isTvPage ? `movie` : `tv`
+            !isTvPage ? "movie" : "tv"
           }`,
           {
             params: {
@@ -178,7 +199,7 @@ export default function Search({ apiUrl, query }) {
       } else {
         response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/discover/${
-            !isTvPage ? `movie` : `tv`
+            !isTvPage ? "movie" : "tv"
           }`,
           {
             params: {
@@ -198,10 +219,12 @@ export default function Search({ apiUrl, query }) {
     }
   };
 
+  // Reset selected genres when switching between movie and TV pages
   useEffect(() => {
     setSelectedGenres([]);
   }, [isTvPage]);
 
+  // Event handler for genre selection
   const handleGenreClick = async (genreId) => {
     setLoading(true);
 
@@ -241,21 +264,28 @@ export default function Search({ apiUrl, query }) {
   return (
     <>
       <Helmet>
+        {/* Meta tags */}
         <meta name="robots" content="index, archive" />
         <meta name="description" content={import.meta.env.VITE_APP_DESC} />
         <meta name="keywords" content={import.meta.env.VITE_APP_KEYWORDS} />
         <link rel="canonical" href={import.meta.env.VITE_APP_URL} />
 
+        {/* Title */}
         {URLSearchQuery ? (
-          <title>{`${searchQuery} - ${import.meta.env.VITE_APP_NAME} ${
-            !isTvPage ? `` : `(TV)`
-          }`}</title>
+          <title>
+            {`${searchQuery} - ${import.meta.env.VITE_APP_NAME} ${
+              !isTvPage ? `` : `(TV)`
+            }`}
+          </title>
         ) : (
-          <title>{`Search ${!isTvPage ? `Movies` : `TV Series`} - ${
-            import.meta.env.VITE_APP_NAME
-          } ${!isTvPage ? `` : `(TV)`}`}</title>
+          <title>
+            {`Search ${!isTvPage ? `Movies` : `TV Series`} - ${
+              import.meta.env.VITE_APP_NAME
+            } ${!isTvPage ? `` : `(TV)`}`}
+          </title>
         )}
 
+        {/* Open Graph tags */}
         <meta property="og:site_name" content={import.meta.env.VITE_APP_NAME} />
         <meta
           property="og:title"

@@ -1,22 +1,26 @@
+// React and React-related
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+
+// Custom Components
 import { FilmCard } from "./FilmCard";
+import { Loading } from "./Loading";
+
+// Swiper
 import { Autoplay, Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-
-import { IonIcon } from "@ionic/react";
-import { chevronBack, chevronForward } from "ionicons/icons";
-
-import axios from "axios";
-import { useEffect, useState } from "react";
-
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
-import logo from "/popcorn.png";
-import { useLocation } from "react-router-dom";
-import { Loading } from "./Loading";
-import CompanyLogo from "./CompanyLogo";
+// Ionic
+import { IonIcon } from "@ionic/react";
+import { chevronBack, chevronForward } from "ionicons/icons";
+
+// External Libraries
+import axios from "axios";
 
 const FilmSlider = ({
+  logo,
   title,
   apiUrl,
   apiCompanies,
@@ -25,15 +29,19 @@ const FilmSlider = ({
   date_lte,
   apiSortBy = "popularity.desc",
 }) => {
+  // State variables
   const [movies, setMovies] = useState([]);
   const [genres, setGenres] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [companyLogo, setCompanyLogo] = useState();
 
+  // Location and page information
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
 
+  // API key
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+
+  // API parameters
   let params = {
     api_key: apiKey,
     sort_by: apiSortBy,
@@ -55,7 +63,7 @@ const FilmSlider = ({
       language: "en-US",
       "first_air_date.gte": date_gte,
       "first_air_date.lte": date_lte,
-      with_networks: apiCompanies,
+      with_networks: apiCompanies || "2739|213|49|1024|453",
       with_genres: apiGenres,
       include_null_first_air_dates: false,
     };
@@ -85,24 +93,6 @@ const FilmSlider = ({
       }
     };
 
-    const fetchCompanyLogo = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_BASE_URL}/${
-            !isTvPage ? `company` : `network`
-          }/${apiCompanies}/images`,
-          {
-            params: {
-              api_key: apiKey,
-            },
-          }
-        );
-        setCompanyLogo(response.data.logos[0]);
-      } catch (error) {
-        console.log(`Errornya company logo:`, error);
-      }
-    };
-
     const fetchGenres = async () => {
       try {
         const response = await axios.get(
@@ -123,7 +113,6 @@ const FilmSlider = ({
 
     fetchGenres();
     fetchMovies();
-    fetchCompanyLogo();
   }, [isTvPage]);
 
   return (
@@ -159,7 +148,7 @@ const FilmSlider = ({
           },
         }}
         className={`px-4 pb-[2rem] pt-[2.5rem] xl:px-[9rem] pr-[3rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none ${
-          loading && `h-[60vh] xl:h-[70vh]`
+          loading && `h-[400px]`
         }`}
       >
         {movies.map((movie, index) => {

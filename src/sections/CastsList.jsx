@@ -1,6 +1,10 @@
+import { useState } from "react";
+
+// Ionic
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
-import { useState } from "react";
+
+// Components
 import Casts from "../components/Casts";
 import { Loading } from "../components/Loading";
 

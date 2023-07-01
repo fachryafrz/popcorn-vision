@@ -1,15 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
+
+// Component imports
 import { Loading } from "./Loading";
 import ReactMarkdown from "react-markdown";
 import RatingStars from "./RatingStars";
 
 export default function FilmReviews({ logo, review, loading }) {
+  // Read More state
   const [readMore, setReadMore] = useState(false);
+
+  // Review content variables
   const text = review.content;
   const words = text.split(" ");
   const wordCount = words.length;
   const maxLength = 40;
 
+  // Review date variables
   const dateStr = review && review.created_at;
   const date = new Date(dateStr);
   const options = {
@@ -19,16 +25,19 @@ export default function FilmReviews({ logo, review, loading }) {
   };
   const formattedDate = date.toLocaleString("en-US", options);
 
+  // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
   const imgUrl = imgUrlAPI?.startsWith("/http")
     ? imgUrlAPI.replace(/^\//, "")
     : `${import.meta.env.VITE_API_IMAGE_URL_500}${imgUrlAPI}`;
 
+  // Toggle the "Read More" state
   const handleReadMore = () => {
     setReadMore(!readMore);
   };
 
   useEffect(() => {
+    // Reset the "Read More" state when the review changes
     setReadMore(false);
   }, [review]);
 

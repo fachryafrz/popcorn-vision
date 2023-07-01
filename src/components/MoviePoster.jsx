@@ -1,8 +1,13 @@
-import { Loading } from "./Loading";
-import { IonIcon } from "@ionic/react";
-import * as Icons from "ionicons/icons";
+// React-related imports
 import React from "react";
 import { useHistory } from "react-router-dom";
+
+// Ionic React imports
+import { IonIcon } from "@ionic/react";
+import * as Icons from "ionicons/icons";
+
+// Component
+import { Loading } from "./Loading";
 
 export function MoviePoster({ logo, movie, isTvPage, loading }) {
   const history = useHistory();

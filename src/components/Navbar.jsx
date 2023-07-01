@@ -1,13 +1,17 @@
+// Ionic Framework imports
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
+
+// React-related imports
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar({ logo }) {
+  // Get the current location
   const location = useLocation();
+
+  // Check if the current page is a TV page
   const isTvPage = location.pathname.startsWith("/tv");
-  const isSearchTvPage = location.pathname.startsWith("/tv/search");
-  const isSearchPage = location.pathname.startsWith("/search");
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">

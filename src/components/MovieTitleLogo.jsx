@@ -1,7 +1,8 @@
+// External library import
 import axios from "axios";
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+
+// React-related imports
+import React, { useState, useEffect } from "react";
 
 export default function MovieTitleLogo({ movie, isTvPage }) {
   const [movieTitleLogo, setMovieTitleLogo] = useState([]);

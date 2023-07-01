@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+
+// Components
 import { Loading } from "./Loading";
 
 export function FilmCard({ movie, logo, movieGenres, isTvPage, loading }) {
   const releaseDate = !isTvPage ? movie.release_date : movie.first_air_date;
-
   const date = new Date(releaseDate);
   const options = { year: "numeric", month: "short" };
   const formattedDate = date.toLocaleString("en-US", options);

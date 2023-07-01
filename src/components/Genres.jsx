@@ -1,7 +1,12 @@
+// React imports
+import { useEffect, useState } from "react";
+
+// External JSON file import
 import genres from "../genres.json";
+
+// Ionic React imports
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
-import { useEffect, useState } from "react";
 
 const Genres = () => {
   const [icons, setIcons] = useState([]);

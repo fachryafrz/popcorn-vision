@@ -1,14 +1,19 @@
+// React Router imports
+import { Link, useLocation } from "react-router-dom";
+
+// JSON import
 import footer from "../footer.json";
+
+// Ionic React imports
 import { IonIcon } from "@ionic/react";
 import * as Icons from "ionicons/icons";
 
-import logo from "/popcorn.png";
-import { Link, useLocation } from "react-router-dom";
-
-const Footer = () => {
+const Footer = ({ logo }) => {
+  // Date variables
   const currentYear = new Date().getFullYear();
   const createdYear = 2023;
 
+  // React Router variables
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
 

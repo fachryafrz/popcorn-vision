@@ -1,10 +1,14 @@
-import { IonIcon } from "@ionic/react";
-import * as Icons from "ionicons/icons";
+// External libraries
 import { useEffect, useRef, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
+
+// Ionic React Icons
+import { IonIcon } from "@ionic/react";
+import * as Icons from "ionicons/icons";
+
+// Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Loading } from "./Loading";
-import ReactMarkdown from "react-markdown";
 import {
   Autoplay,
   EffectFade,
@@ -15,6 +19,7 @@ import {
   Zoom,
 } from "swiper";
 
+// Swiper styles
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/free-mode";
@@ -22,8 +27,10 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
+
+// Custom Components
+import { Loading } from "./Loading";
 import FilmReviews from "./FilmReviews";
-import axios from "axios";
 import MovieTitleLogo from "./MovieTitleLogo";
 
 export function MovieOverview({
@@ -37,8 +44,16 @@ export function MovieOverview({
   backdrops,
   params,
 }) {
+  // Router
   const history = useHistory();
+
+  // State Variables
   const [thumbsSwiper, setThumbsSwiper] = useState();
+  const [movieTitle, setMovieTitle] = useState();
+  const [collections, setCollections] = useState({});
+  let [currentReviewPage, setCurrentReviewPage] = useState(1);
+
+  // Videos
   const filteredVideos =
     movie.videos &&
     movie.videos.results.filter(
@@ -50,11 +65,8 @@ export function MovieOverview({
         result.type === "Teaser" ||
         result.type === "Clip"
     );
-  const [movieTitle, setMovieTitle] = useState();
-  const [collections, setCollections] = useState({});
 
-  let [currentReviewPage, setCurrentReviewPage] = useState(1);
-
+  // Release Date
   const dateStr = !isTvPage ? movie.release_date : movie.first_air_date;
   const date = new Date(dateStr);
   const options = {
@@ -63,10 +75,6 @@ export function MovieOverview({
     day: "numeric",
   };
   const formattedDate = date.toLocaleString("en-US", options);
-
-  const handleGoBack = () => {
-    history.goBack();
-  };
 
   const fetchMoreReviews = async () => {
     setCurrentReviewPage((prevPage) => prevPage + 1);
@@ -94,6 +102,7 @@ export function MovieOverview({
   useEffect(() => {
     setCurrentReviewPage(1);
 
+    // Scroll to overview section if URL includes "#overview"
     const url = window.location.href;
     const hasOverview = url.includes("#overview");
 
@@ -103,14 +112,15 @@ export function MovieOverview({
         element.scrollIntoView({ behavior: "smooth" });
       }
     } else {
+      // Scroll to top of the page
       window.scrollTo({ top: 0, behavior: "auto" });
     }
   }, [movie]);
 
   useEffect(() => {
     const fetchMovieTitleLogo = async () => {
-      axios
-        .get(
+      try {
+        const response = await axios.get(
           `${import.meta.env.VITE_API_BASE_URL}/${!isTvPage ? `movie` : `tv`}/${
             movie.id
           }/images`,
@@ -120,10 +130,11 @@ export function MovieOverview({
               language: "en",
             },
           }
-        )
-        .then((response) => {
-          setMovieTitle(response.data.logos[0]);
-        });
+        );
+        setMovieTitle(response.data.logos[0]);
+      } catch (error) {
+        console.log(error);
+      }
     };
 
     const fetchCollections = async () => {

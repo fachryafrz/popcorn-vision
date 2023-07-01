@@ -1,8 +1,15 @@
+// React
 import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper";
+
+// Ionic React
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
+
+// Swiper React
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation } from "swiper";
+
+// Custom Components
 import { FilmCard } from "./FilmCard";
 import { Loading } from "./Loading";
 

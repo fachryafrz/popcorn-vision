@@ -1,3 +1,4 @@
+// Components
 import { Loading } from "./Loading";
 
 const Casts = ({ logo, actor, index, loading, showAllActors }) => {

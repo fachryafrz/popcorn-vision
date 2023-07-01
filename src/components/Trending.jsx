@@ -1,19 +1,28 @@
+// React
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+
+// Ionic React
 import { IonIcon } from "@ionic/react";
 import { informationCircleOutline, star } from "ionicons/icons";
 
+// Axios
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+
+// Custom Components
 import MovieTitleLogo from "./MovieTitleLogo";
 import { Loading } from "./Loading";
 
 const Trending = ({ num }) => {
+  // State variables
   const [movie, setMovie] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Location
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
 
+  // API key
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
 
   useEffect(() => {

@@ -1,20 +1,22 @@
-// Import Swiper React components
+// Axios and React imports
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+// Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, EffectFade } from "swiper";
-
-import { Link, useLocation } from "react-router-dom";
-
-// Ionic Icons
-import { IonIcon } from "@ionic/react";
-import { star, informationCircleOutline, playOutline } from "ionicons/icons";
-
-// Import Swiper styles
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
+// React Router imports
+import { Link, useLocation } from "react-router-dom";
+
+// Ionic React imports
+import { IonIcon } from "@ionic/react";
+import { star, informationCircleOutline, playOutline } from "ionicons/icons";
+
+// Component imports
 import { Loading } from "./Loading";
 import MovieTitleLogo from "./MovieTitleLogo";
 
@@ -24,12 +26,15 @@ const HomeSlider = ({
   date_lte,
   apiSortBy = "popularity.desc",
 }) => {
+  // State variables
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Location information
   const location = useLocation();
   const isTvPage = location.pathname.startsWith("/tv");
 
+  // API key and params
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   let params = {
     api_key: apiKey,
@@ -41,6 +46,7 @@ const HomeSlider = ({
     "primary_release_date.lte": date_lte,
   };
 
+  // Adjust params for TV page
   if (isTvPage) {
     params = {
       api_key: apiKey,

@@ -1,4 +1,6 @@
 import React from "react";
+
+// Components
 import { Loading } from "./Loading";
 
 export function MovieBackdrop({ logo, movie, isTvPage, loading }) {

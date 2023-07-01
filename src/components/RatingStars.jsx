@@ -1,11 +1,14 @@
+// React
 import React from "react";
+
+// Ionicons Icons
 import { IonIcon } from "@ionic/react";
 import { star, starHalf, starOutline } from "ionicons/icons";
 
 const RatingStars = ({ rating }) => {
-  const maxRating = 10; // Jumlah maksimal rating
-  const fullStarCount = Math.floor(rating / 2); // Jumlah bintang penuh
-  const hasHalfStar = rating % 2 !== 0; // Apakah ada setengah bintang
+  const maxRating = 10; // Maximum rating value
+  const fullStarCount = Math.floor(rating / 2); // Number of full stars
+  const hasHalfStar = rating % 2 !== 0; // Indicates if there is a half star
 
   if (rating < 1) {
     return <div className="text-sm">Not rated</div>;
@@ -14,17 +17,17 @@ const RatingStars = ({ rating }) => {
   const renderStars = () => {
     const stars = [];
 
-    // Render bintang penuh
+    // Render full stars
     for (let i = 0; i < fullStarCount; i++) {
       stars.push(<IonIcon key={i} icon={star} />);
     }
 
-    // Render setengah bintang jika ada
+    // Render half star if available
     if (hasHalfStar) {
       stars.push(<IonIcon key={fullStarCount} icon={starHalf} />);
     }
 
-    // Render bintang kosong jika rating belum mencapai maksimum
+    // Render empty stars if rating has not reached the maximum
     const remainingStars = 5 - Math.ceil(rating / 2);
     for (let i = 0; i < remainingStars; i++) {
       stars.push(
