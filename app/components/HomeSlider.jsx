@@ -20,7 +20,7 @@ import TitleLogo from "./TitleLogo";
 
 export default function HomeSlider({ films }) {
   return (
-    <section>
+    <section id="HomeSlider">
       <h2 className="sr-only">Discover Movies</h2>
       <Swiper
         modules={[Pagination, Autoplay, EffectFade]}
@@ -57,11 +57,11 @@ export default function HomeSlider({ films }) {
                 />
               </figure>
               <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10 text-white">
-                <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+                {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
                   {film.title}
-                </h3>
+                </h3> */}
 
-                {/* <TitleLogo film={film} /> */}
+                <TitleLogo film={film.id} />
 
                 <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
                   <div className="flex items-center gap-1 text-primary-yellow">
