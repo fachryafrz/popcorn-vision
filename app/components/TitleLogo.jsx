@@ -33,7 +33,7 @@ export default function TitleLogo({ film, isItTvPage }) {
       <img
         src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
         alt={film.title}
-        className="max-h-[150px]"
+        className="max-h-[150px] lg:max-h-[200px]"
       />
     </figure>
   );

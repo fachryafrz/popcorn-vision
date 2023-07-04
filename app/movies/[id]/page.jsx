@@ -5,8 +5,8 @@ import FilmPoster from "./components/FilmPoster";
 import FilmOverview from "./components/FilmOverview";
 import CastsList from "./components/CastsList";
 
-async function getFilm(id, path) {
-  const res = await axios.get(`${process.env.API_URL}/movie/${id}${path}`, {
+async function getFilm(id, type, path) {
+  const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
     params: {
       api_key: process.env.API_KEY,
       language: "en",
@@ -16,14 +16,14 @@ async function getFilm(id, path) {
   return res.data;
 }
 
-export default async function FilmDetail({ params }) {
+export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
-  const film = await getFilm(id);
-  const credits = await getFilm(id, "/credits");
-  const videos = await getFilm(id, "/videos");
-  const images = await getFilm(id, "/images");
-  const reviews = await getFilm(id, "/reviews");
+  const film = await getFilm(id, type);
+  const credits = await getFilm(id, type, "/credits");
+  const videos = await getFilm(id, type, "/videos");
+  const images = await getFilm(id, type, "/images");
+  const reviews = await getFilm(id, type, "/reviews");
 
   return (
     <>

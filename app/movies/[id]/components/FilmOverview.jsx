@@ -15,10 +15,19 @@ import "swiper/css/zoom";
 import FilmMedia from "./FilmMedia";
 import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
+import { usePathname } from "next/navigation";
 
 export default function FilmOverview({ film, videos, images, reviews }) {
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
+
   // Release Date
-  const dateStr = film.release_date;
+  const dateStr = isItTvPage(film.release_date, film.first_air_date);
   const date = new Date(dateStr);
   const options = {
     year: "numeric",
@@ -69,7 +78,7 @@ export default function FilmOverview({ film, videos, images, reviews }) {
         </div>
         <div className="flex flex-col items-center md:justify-center sm:items-start gap-2 sm:gap-0 w-full">
           {images.logos.length > 0 ? (
-            <TitleLogo film={film.id} />
+            <TitleLogo film={film.id} isItTvPage={isItTvPage} />
           ) : (
             <h1
               title={film.title}
