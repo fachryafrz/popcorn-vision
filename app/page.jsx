@@ -3,6 +3,7 @@ import React from "react";
 import HomeSlider from "./components/HomeSlider";
 import FilmSlider from "./components/FilmSlider";
 import logo from "./popcorn.png";
+import Trending from "./components/Trending";
 
 async function getGenres() {
   const res = await axios.get(`${process.env.API_URL}/genre/movie/list`, {
@@ -10,6 +11,7 @@ async function getGenres() {
       api_key: process.env.API_KEY,
     },
   });
+
   return res.data.genres;
 }
 
@@ -40,6 +42,16 @@ async function getFilms(
   });
 
   return res.data;
+}
+
+async function getTrending(num) {
+  const res = await axios.get(`${process.env.API_URL}/trending/movie/week`, {
+    params: {
+      api_key: process.env.API_KEY,
+    },
+  });
+
+  return res.data.results[num - 1];
 }
 
 export default async function HomeMovies() {
@@ -76,6 +88,8 @@ export default async function HomeMovies() {
     null,
     "vote_count.desc"
   );
+  const trendingFirst = await getTrending(1);
+  console.log(trendingFirst);
 
   return (
     <>
@@ -89,6 +103,9 @@ export default async function HomeMovies() {
       </section>
       <section id="TopRated">
         <FilmSlider films={topRated} title={`Top Rated`} genres={genres} />
+      </section>
+      <section id="trending">
+        <Trending film={trendingFirst} />
       </section>
     </>
   );
