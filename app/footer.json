@@ -1,0 +1,76 @@
+[
+  {
+    "id": 1,
+    "section": "Services",
+    "links": [
+      {
+        "name": "Movies",
+        "url": "/"
+      },
+      {
+        "name": "TV Channel",
+        "url": "/"
+      },
+      {
+        "name": "Cinema Ticket",
+        "url": "/"
+      },
+      {
+        "name": "Newsletter",
+        "url": "/"
+      },
+      {
+        "name": "Blogs Article",
+        "url": "/"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "section": "Information",
+    "links": [
+      {
+        "name": "Sign Up",
+        "url": "/"
+      },
+      {
+        "name": "Download App",
+        "url": "/"
+      },
+      {
+        "name": "Choose Plan",
+        "url": "/"
+      },
+      {
+        "name": "Pay Method",
+        "url": "/"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "section": "Company",
+    "links": [
+      {
+        "name": "Partnership",
+        "url": "/"
+      },
+      {
+        "name": "Terms of Use",
+        "url": "/"
+      },
+      {
+        "name": "About",
+        "url": "/"
+      },
+      {
+        "name": "Pricing",
+        "url": "/"
+      },
+      {
+        "name": "Contact",
+        "url": "/"
+      }
+    ]
+  }
+]

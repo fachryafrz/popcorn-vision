@@ -1,6 +1,8 @@
 import Head from "next/head";
 import "./globals.css";
 import Navbar from "./Navbar";
+import Footer from "./Footer";
+import Copyright from "./components/Copyright";
 
 // Components
 
@@ -16,6 +18,10 @@ export default function RootLayout({ children }) {
         <main className="pb-8">{children}</main>
 
         {/* Footer */}
+        <Footer />
+
+        {/* Copyright */}
+        <Copyright />
       </body>
     </html>
   );
