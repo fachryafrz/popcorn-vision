@@ -41,7 +41,7 @@ export default function FilmOverview({ film, logo, videos, images }) {
               >
                 <img
                   loading="lazy"
-                  src={logo}
+                  src={`/popcorn.png`}
                   alt={process.env.APP_NAME}
                   className="object-contain"
                 />
@@ -49,7 +49,7 @@ export default function FilmOverview({ film, logo, videos, images }) {
 
               <img
                 loading="lazy"
-                src={`${process.env.API_IMAGE_500}${film.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
                 alt={film.title}
                 className={film.poster_path === null ? `hidden` : `block`}
               />
@@ -168,7 +168,7 @@ export default function FilmOverview({ film, logo, videos, images }) {
                         (person) => person.job === "Director"
                       ).profile_path === null ? (
                         <img
-                          src={logo}
+                          src={`/popcorn.png`}
                           alt={
                             film.credits.crew.find(
                               (person) => person.job === "Director"
@@ -178,7 +178,7 @@ export default function FilmOverview({ film, logo, videos, images }) {
                         />
                       ) : (
                         <img
-                          src={`${process.env.API_IMAGE_185}${
+                          src={`https://image.tmdb.org/t/p/w185${
                             film.credits.crew.find(
                               (person) => person.job === "Director"
                             ).profile_path
@@ -253,7 +253,7 @@ export default function FilmOverview({ film, logo, videos, images }) {
                     <FilmReviews
                       key={index}
                       loading={loading}
-                      logo={logo}
+                      logo={`/popcorn.png`}
                       review={review}
                     />
                   );
