@@ -68,6 +68,14 @@ export default async function HomeMovies() {
   const homeSlider = await getFilms("/discover/movie", thirtyDaysAgo);
   const nowPlaying = await getFilms("/discover/movie", thirtyDaysAgo, today);
   const upcoming = await getFilms("/discover/movie", today, endOfYear);
+  const topRated = await getFilms(
+    "/discover/movie",
+    null,
+    null,
+    null,
+    null,
+    "vote_count.desc"
+  );
 
   return (
     <>
@@ -78,6 +86,9 @@ export default async function HomeMovies() {
       </section>
       <section id="Upcoming">
         <FilmSlider films={upcoming} title={`Upcoming`} genres={genres} />
+      </section>
+      <section id="TopRated">
+        <FilmSlider films={topRated} title={`Top Rated`} genres={genres} />
       </section>
     </>
   );
