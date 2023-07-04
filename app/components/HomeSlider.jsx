@@ -84,7 +84,7 @@ export default function HomeSlider({ films }) {
 
                 <div className="flex gap-2 mt-4 w-full">
                   <Link
-                    href={`/movie/${film.id}`}
+                    href={`/movies/${film.id}`}
                     className="btn bg-primary-blue bg-opacity-60"
                   >
                     <IonIcon
@@ -94,7 +94,7 @@ export default function HomeSlider({ films }) {
                     Details
                   </Link>
                   <Link
-                    href={`/movie/${film.id}#overview`}
+                    href={`/movies/${film.id}#overview`}
                     className="btn bg-base-gray bg-opacity-40 hocus:bg-white hocus:text-base-dark-gray"
                   >
                     <IonIcon

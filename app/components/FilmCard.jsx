@@ -5,7 +5,7 @@ import React from "react";
 
 export default function FilmCard({ film, genres }) {
   return (
-    <Link href={`/movie/${film.id}`} className={`flex flex-col`}>
+    <Link href={`/movies/${film.id}`} className={`flex flex-col`}>
       <figure className="rounded-lg overflow-hidden aspect-poster">
         <img
           src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}

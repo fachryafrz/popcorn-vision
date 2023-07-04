@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Head({
+export default function HeadCustom({
   title = process.env.APP_NAME,
   description = process.env.APP_DESC,
   url = process.env.APP_URL,

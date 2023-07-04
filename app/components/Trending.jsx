@@ -53,7 +53,7 @@ export default function Trending({ film }) {
           <p className="line-clamp-4">{film.overview}</p>
 
           <Link
-            href={`/movie/${film.id}`}
+            href={`/movies/${film.id}`}
             className="btn bg-primary-yellow text-black mt-4"
           >
             <IonIcon

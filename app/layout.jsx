@@ -1,7 +1,7 @@
+import Head from "next/head";
 import "./globals.css";
 
 // Components
-import Head from "./Head";
 
 export default function RootLayout({ children }) {
   return (
