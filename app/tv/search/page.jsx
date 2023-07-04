@@ -1,5 +1,5 @@
+import Search from "@/app/search/Search";
 import React from "react";
-import Search from "./Search";
 
 export default function page() {
   return <Search />;
