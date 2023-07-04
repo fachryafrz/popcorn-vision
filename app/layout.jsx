@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
         {/* Navbar */}
 
         {/* Main Content */}
-        <main className="pb-8">{children}</main>
+        <main className="pb-8 text-white">{children}</main>
 
         {/* Footer */}
       </body>

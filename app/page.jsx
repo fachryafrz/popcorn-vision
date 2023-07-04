@@ -1,11 +1,24 @@
 import axios from "axios";
 import React from "react";
 import HomeSlider from "./components/HomeSlider";
+import FilmSlider from "./components/FilmSlider";
+import logo from "./popcorn.png";
+
+async function getGenres() {
+  const res = await axios.get(`${process.env.API_URL}/genre/movie/list`, {
+    params: {
+      api_key: process.env.API_KEY,
+    },
+  });
+  return res.data.genres;
+}
 
 async function getFilms(
   apiUrl,
   date_gte,
   date_lte,
+  apiCompanies,
+  apiGenres,
   apiSortBy = "popularity.desc"
 ) {
   let params = {
@@ -14,6 +27,8 @@ async function getFilms(
     region: "US",
     include_adult: false,
     language: "en-US",
+    with_companies: apiCompanies,
+    with_genres: apiGenres,
     "primary_release_date.gte": date_gte,
     "primary_release_date.lte": date_lte,
   };
@@ -49,12 +64,21 @@ export default async function HomeMovies() {
   const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
 
   // API Requests
+  const genres = await getGenres();
   const homeSlider = await getFilms("/discover/movie", thirtyDaysAgo);
+  const nowPlaying = await getFilms("/discover/movie", thirtyDaysAgo, today);
+  const upcoming = await getFilms("/discover/movie", today, endOfYear);
 
   return (
     <>
       <h1 className="sr-only">{process.env.APP_NAME}</h1>
       <HomeSlider films={homeSlider} />
+      <section id="NowPlaying" className="pt-[2rem]">
+        <FilmSlider films={nowPlaying} title={`Now Playing`} genres={genres} />
+      </section>
+      <section id="Upcoming">
+        <FilmSlider films={upcoming} title={`Upcoming`} genres={genres} />
+      </section>
     </>
   );
 }
