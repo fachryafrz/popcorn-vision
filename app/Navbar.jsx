@@ -15,7 +15,7 @@ export default function Navbar() {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
   );
-  const URLSearchQuery = new URLSearchParams(location.search).get("query");
+  const URLSearchQuery = new URLSearchParams(pathname.search).get("query");
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">

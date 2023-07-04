@@ -6,8 +6,22 @@ import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
 import React from "react";
 import TitleLogo from "./TitleLogo";
+import { usePathname } from "next/navigation";
 
 export default function Trending({ film }) {
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
+  const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
+  const date = new Date(releaseDate);
+  const options = { year: "numeric", month: "short" };
+  const formattedDate = date.toLocaleString("en-US", options);
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
+
   return (
     <div className="px-4 xl:px-[9rem]">
       <h2 className="sr-only">{`Trending Movie`}</h2>
@@ -36,7 +50,7 @@ export default function Trending({ film }) {
         </h3> */}
 
           <div className="hidden md:block">
-            <TitleLogo film={film.id} />
+            <TitleLogo film={film.id} isItTvPage={isItTvPage} />
           </div>
 
           <div className="flex gap-2 items-center">
@@ -45,15 +59,13 @@ export default function Trending({ film }) {
               {Math.round(film.vote_average * 10) / 10}
             </span>
             <span>&bull;</span>
-            <time className="text-lg font-bold">
-              {new Date(film.release_date).getFullYear()}
-            </time>
+            <time className="text-lg font-bold">{date.getFullYear()}</time>
           </div>
 
           <p className="line-clamp-4">{film.overview}</p>
 
           <Link
-            href={`/movies/${film.id}`}
+            href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}
             className="btn bg-primary-yellow text-black mt-4"
           >
             <IonIcon

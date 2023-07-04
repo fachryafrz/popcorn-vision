@@ -10,8 +10,12 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
+import { usePathname } from "next/navigation";
 
 export default function FilmSlider({ films, title, genres }) {
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
   return (
     <>
       <h2 className="sr-only">{title}</h2>
@@ -55,7 +59,9 @@ export default function FilmSlider({ films, title, genres }) {
               key={film.id}
               className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`}
             >
-              <FilmCard film={film} genres={filmGenres} />
+              <article>
+                <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
+              </article>
             </SwiperSlide>
           );
         })}

@@ -2,25 +2,31 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function TitleLogo({ film }) {
+export default function TitleLogo({ film, isItTvPage }) {
   const [titleLogo, setTitleLogo] = useState({});
 
   useEffect(() => {
     const fetchTitleLogo = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/movie/${film}/images`, {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            language: "en",
-          },
-        })
+        .get(
+          `https://api.themoviedb.org/3/${isItTvPage(
+            `movie`,
+            `tv`
+          )}/${film}/images`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              language: "en",
+            },
+          }
+        )
         .then((response) => {
           setTitleLogo(response.data.logos[0]);
         });
     };
 
     fetchTitleLogo();
-  }, [film]);
+  }, [film, isItTvPage]);
 
   return (
     <figure className="mb-4 flex justify-center">

@@ -17,10 +17,18 @@ import "swiper/css/effect-fade";
 
 // Components
 import TitleLogo from "./TitleLogo";
+import { usePathname } from "next/navigation";
 
 export default function HomeSlider({ films }) {
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
   return (
-    <section id="HomeSlider">
+    <section id="HomeSlider" className="pb-[2rem]">
       <h2 className="sr-only">Discover Movies</h2>
       <Swiper
         modules={[Pagination, Autoplay, EffectFade]}
@@ -36,6 +44,14 @@ export default function HomeSlider({ films }) {
         className={`lg:rounded-bl-[3rem] xl:!ml-[5rem] h-[500px] sm:h-[600px]`}
       >
         {films.results.slice(0, 5).map((film) => {
+          const releaseDate = isItTvPage(
+            film.release_date,
+            film.first_air_date
+          );
+          const date = new Date(releaseDate);
+          const options = { year: "numeric", month: "short" };
+          const formattedDate = date.toLocaleString("en-US", options);
+
           return (
             <SwiperSlide
               key={film.id}
@@ -45,23 +61,23 @@ export default function HomeSlider({ films }) {
                 <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
-                  alt={film.title}
+                  alt={isItTvPage(film.title, film.name)}
                   className="object-top sm:hidden"
                 />
 
                 <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
-                  alt={film.title}
+                  alt={isItTvPage(film.title, film.name)}
                   className="object-top hidden sm:block"
                 />
               </figure>
               <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10 text-white">
                 {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
-                  {film.title}
+                  {isItTvPage(film.title,film.name)}
                 </h3> */}
 
-                <TitleLogo film={film.id} />
+                <TitleLogo film={film.id} isItTvPage={isItTvPage} />
 
                 <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
                   <div className="flex items-center gap-1 text-primary-yellow">
@@ -75,8 +91,8 @@ export default function HomeSlider({ films }) {
                   </div>
 
                   <span>&bull;</span>
-                  <div className="whitespace-nowrap flex items-center gap-2">
-                    <span>{new Date(film.release_date).getFullYear()}</span>
+                  <div className="whitespace-nowrap flex items-center gap-2 md:text-xl">
+                    <span>{date.getFullYear()}</span>
                   </div>
                 </div>
 
@@ -84,7 +100,7 @@ export default function HomeSlider({ films }) {
 
                 <div className="flex gap-2 mt-4 w-full">
                   <Link
-                    href={`/movies/${film.id}`}
+                    href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}
                     className="btn bg-primary-blue bg-opacity-60"
                   >
                     <IonIcon
@@ -94,7 +110,10 @@ export default function HomeSlider({ films }) {
                     Details
                   </Link>
                   <Link
-                    href={`/movies/${film.id}#overview`}
+                    href={isItTvPage(
+                      `/movies/${film.id}#overview`,
+                      `/tv/${film.id}#overview`
+                    )}
                     className="btn bg-base-gray bg-opacity-40 hocus:bg-white hocus:text-base-dark-gray"
                   >
                     <IonIcon
