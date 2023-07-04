@@ -1,0 +1,28 @@
+{
+  "name": "Popcorn Vision",
+  "short_name": "Popcorn Vision",
+  "description": "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+  "icons": [
+    {
+      "src": "maskable_x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#202735",
+  "theme_color": "#202735"
+}

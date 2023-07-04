@@ -1,27 +1,25 @@
+.swiper-button-disabled {
+  @apply !opacity-0 !pointer-events-none;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer components {
+  * {
+    @apply outline-none;
   }
-}
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  img {
+    @apply w-full h-full object-cover pointer-events-none;
+  }
+
+  .btn {
+    @apply w-full text-sm p-4 md:px-8 rounded-lg uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hocus:bg-opacity-100 hocus:scale-[1.025] active:scale-100 md:text-base;
+  }
+
+  .prose * {
+    @apply !text-gray-400;
+  }
 }
