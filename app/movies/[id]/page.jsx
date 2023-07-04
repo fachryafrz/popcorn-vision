@@ -23,6 +23,7 @@ export default async function FilmDetail({ params }) {
   const credits = await getFilm(id, "/credits");
   const videos = await getFilm(id, "/videos");
   const images = await getFilm(id, "/images");
+  const reviews = await getFilm(id, "/reviews");
 
   return (
     <>
@@ -37,7 +38,12 @@ export default async function FilmDetail({ params }) {
             </div>
             {/* Middle */}
             <div className="lg:col-span-13">
-              <FilmOverview film={film} videos={videos} images={images} />
+              <FilmOverview
+                film={film}
+                videos={videos}
+                images={images}
+                reviews={reviews}
+              />
             </div>
             {/* Right */}
             <div className="lg:col-span-5">

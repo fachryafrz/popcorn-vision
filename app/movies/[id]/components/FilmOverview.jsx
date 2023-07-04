@@ -14,8 +14,9 @@ import "swiper/css/autoplay";
 import "swiper/css/zoom";
 import FilmMedia from "./FilmMedia";
 import FilmCollection from "./FilmCollection";
+import FilmReviews from "./FilmReviews";
 
-export default function FilmOverview({ film, logo, videos, images }) {
+export default function FilmOverview({ film, videos, images, reviews }) {
   // Release Date
   const dateStr = film.release_date;
   const date = new Date(dateStr);
@@ -237,38 +238,9 @@ export default function FilmOverview({ film, logo, videos, images }) {
 
         {film.belongs_to_collection !== null && <FilmCollection film={film} />}
 
-        {/* {reviews && reviews.length !== 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="flex gap-4 items-center justify-between bg-base-dark-gray backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10">
-              {loading ? (
-                <Loading height="[30px] max-w-[100px]" className={`h-[30px]`} />
-              ) : (
-                <h2 className="font-bold text-xl text-white m-0">Reviews</h2>
-              )}
-            </div>
-            <div className="flex flex-col gap-2">
-              {reviews &&
-                reviews.map((review, index) => {
-                  return (
-                    <FilmReviews
-                      key={index}
-                      loading={loading}
-                      logo={`/popcorn.png`}
-                      review={review}
-                    />
-                  );
-                })}
-            </div>
-            {totalReviewPages > 1 && currentReviewPage !== totalReviewPages && (
-              <button
-                onClick={() => fetchMoreReviews((currentReviewPage += 1))}
-                className="text-primary-blue py-2 flex justify-center hocus:bg-white hocus:bg-opacity-10 rounded-lg"
-              >
-                Load more reviews
-              </button>
-            )}
-          </div>
-        )} */}
+        {reviews.results.length > 0 && (
+          <FilmReviews reviews={reviews} film={film} />
+        )}
       </div>
     </div>
   );
