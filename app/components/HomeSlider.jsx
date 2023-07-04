@@ -79,19 +79,19 @@ export default function HomeSlider({ films }) {
 
                 <TitleLogo film={film.id} isItTvPage={isItTvPage} />
 
-                <div className="flex items-center gap-2 text-sm font-medium text-gray-400">
+                <div className="flex items-center gap-2 text-sm font-bold text-white md:text-xl">
                   <div className="flex items-center gap-1 text-primary-yellow">
                     <IonIcon
                       icon={star}
                       className="!w-5 h-full aspect-square"
                     />
-                    <span className="text-base md:text-xl text-white">
+                    <span className="text-base md:text-xl !text-white">
                       {Math.round(film.vote_average * 10) / 10}
                     </span>
                   </div>
 
                   <span>&bull;</span>
-                  <div className="whitespace-nowrap flex items-center gap-2 md:text-xl">
+                  <div className="whitespace-nowrap flex items-center gap-2">
                     <span>{date.getFullYear()}</span>
                   </div>
                 </div>

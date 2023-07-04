@@ -17,7 +17,13 @@ import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
 import { usePathname } from "next/navigation";
 
-export default function FilmOverview({ film, videos, images, reviews }) {
+export default function FilmOverview({
+  film,
+  videos,
+  images,
+  reviews,
+  credits,
+}) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -64,16 +70,6 @@ export default function FilmOverview({ film, videos, images, reviews }) {
                 className={film.poster_path === null ? `hidden` : `block`}
               />
             </figure>
-            {/* <button
-            onClick={handleGoBack}
-            className="flex gap-2 text-xs sm:text-sm items-center justify-center bg-base-gray bg-opacity-10 py-2 rounded-lg hocus:bg-opacity-30 active:bg-opacity-50 md:hidden"
-          >
-            <IonIcon
-              icon={Icons.returnDownBack}
-              className="!w-4 h-full aspect-square"
-            />
-            Go Back
-          </button> */}
           </div>
         </div>
         <div className="flex flex-col items-center md:justify-center sm:items-start gap-2 sm:gap-0 w-full">
@@ -106,14 +102,30 @@ export default function FilmOverview({ film, videos, images, reviews }) {
 
               {film.release_date || film.first_air_date ? (
                 <tr>
-                  <td className="text-gray-400">{`Release Date`}</td>
-
-                  <td>{formattedDate}</td>
+                  <td className="text-gray-400">
+                    {!isTvPage ? `Release Date` : `Air Date`}
+                  </td>
+                  {!isTvPage ? (
+                    <td>{formattedDate}</td>
+                  ) : (
+                    <td>
+                      {formattedDate}{" "}
+                      {film.last_air_date !== null &&
+                      film.last_air_date !== film.first_air_date ? (
+                        <span className="hidden xs:inline">
+                          {`- ${new Date(film.last_air_date).toLocaleString(
+                            "en-US",
+                            options
+                          )}`}
+                        </span>
+                      ) : null}
+                    </td>
+                  )}
                 </tr>
               ) : null}
 
-              {/* TV Page Only */}
-              {/* <tr>
+              {isTvPage && (
+                <tr>
                   <td className="text-gray-400">Chapter</td>
                   <td className={``}>
                     {`${film.number_of_seasons} Season${
@@ -123,111 +135,165 @@ export default function FilmOverview({ film, videos, images, reviews }) {
                       film.number_of_episodes > 1 ? `s` : ``
                     })`}
                   </td>
-                </tr> */}
+                </tr>
+              )}
 
               {film.genres && film.genres.length > 0 && (
                 <tr>
                   <td className="text-gray-400">Genre</td>
-                  {/* <td className="flex gap-1 flex-wrap">
-                  {film.genres &&
-                    film.genres.map((genre) => {
-                      return (
-                        <span
-                          key={genre.id}
-                          className="py-0.5 px-2 bg-base-gray bg-opacity-40 backdrop-blur-sm rounded-lg text-gray-200 border border-base-gray self-start"
-                        >
-                          {genre.name}
-                        </span>
-                      );
-                    })}
-                </td> */}
-                  <td className={``}>
-                    {film.genres.map((item) => item.name).join(", ")}
-                  </td>
+
+                  <td>{film.genres.map((item) => item.name).join(", ")}</td>
                 </tr>
               )}
 
-              {film.runtime > 0 && (
-                <tr>
-                  <td className="text-gray-400">Runtime</td>
+              {!isTvPage
+                ? film.runtime > 0 && (
+                    <tr>
+                      <td className="text-gray-400">Runtime</td>
 
-                  {Math.floor(film.runtime / 60) >= 1 ? (
-                    <td>
-                      {Math.floor(film.runtime / 60)}h {film.runtime % 60}m
-                    </td>
-                  ) : (
-                    <td>
-                      {film.runtime % 60} minute
-                      {film.runtime % 60 > 1 && `s`}
-                    </td>
-                  )}
-                </tr>
-              )}
-
-              {film.credits &&
-                film.credits.crew.length > 0 &&
-                film.credits.crew.find(
-                  (person) => person.job === "Director"
-                ) && (
-                  <tr>
-                    <td className="text-gray-400 whitespace-nowrap">
-                      Directed by
-                    </td>
-                    <td className={`flex items-center gap-2`}>
-                      {film.credits.crew.find(
-                        (person) => person.job === "Director"
-                      ).profile_path === null ? (
-                        <img
-                          src={`/popcorn.png`}
-                          alt={
-                            film.credits.crew.find(
-                              (person) => person.job === "Director"
-                            ).name
-                          }
-                          className={`aspect-square w-[40px] rounded-full object-contain`}
-                        />
+                      {Math.floor(film.runtime / 60) >= 1 ? (
+                        <td>
+                          {Math.floor(film.runtime / 60)}h {film.runtime % 60}m
+                        </td>
                       ) : (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w185${
-                            film.credits.crew.find(
-                              (person) => person.job === "Director"
-                            ).profile_path
-                          }`}
-                          alt={
-                            film.credits.crew.find(
-                              (person) => person.job === "Director"
-                            ).name
-                          }
-                          className={`aspect-square w-[40px] rounded-full`}
-                        />
+                        <td>
+                          {film.runtime % 60} minute
+                          {film.runtime % 60 > 1 && `s`}
+                        </td>
                       )}
-                      <div className="flex flex-col">
-                        <span className="">
-                          {
-                            film.credits.crew.find(
+                    </tr>
+                  )
+                : film.episode_run_time.length > 0 && (
+                    <tr>
+                      <td className="text-gray-400">Runtime</td>
+
+                      {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
+                        <td>
+                          {Math.floor(film.episode_run_time[0] / 60)}h{" "}
+                          {film.episode_run_time[0] % 60}m
+                        </td>
+                      ) : (
+                        <td>
+                          {film.episode_run_time[0] % 60} minute
+                          {film.episode_run_time[0] % 60 > 1 && `s`}
+                        </td>
+                      )}
+                    </tr>
+                  )}
+
+              {!isTvPage
+                ? credits &&
+                  credits.crew.length > 0 &&
+                  credits.crew.find((person) => person.job === "Director") && (
+                    <tr>
+                      <td className="text-gray-400 whitespace-nowrap">
+                        Directed by
+                      </td>
+                      <td className={`flex items-center gap-2`}>
+                        {credits.crew.find(
+                          (person) => person.job === "Director"
+                        ).profile_path === null ? (
+                          <img
+                            src={`/popcorn.png`}
+                            alt={
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                            className={`aspect-square w-[40px] rounded-full object-contain`}
+                          />
+                        ) : (
+                          <img
+                            src={`https://image.tmdb.org/t/p/w185${
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).profile_path
+                            }`}
+                            alt={
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                            className={`aspect-square w-[40px] rounded-full`}
+                          />
+                        )}
+                        <div className="flex flex-col">
+                          <span className="">
+                            {
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                          </span>
+                          <span className="text-sm text-gray-400 ">
+                            {credits.crew.find(
                               (person) => person.job === "Director"
-                            ).name
-                          }
-                        </span>
-                        <span className="text-sm text-gray-400 ">
-                          {film.credits.crew.find(
-                            (person) => person.job === "Director"
-                          ).gender === 0
-                            ? `Not Specified`
-                            : film.credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).gender === 1
-                            ? `Female`
-                            : film.credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).gender === 2
-                            ? `Male`
-                            : ``}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                )}
+                            ).gender === 0
+                              ? `Not Specified`
+                              : credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).gender === 1
+                              ? `Female`
+                              : credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).gender === 2
+                              ? `Male`
+                              : ``}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                : film.created_by.length > 0 && (
+                    <tr>
+                      <td className="text-gray-400 whitespace-nowrap">
+                        Directed by
+                      </td>
+                      <td
+                        className={`flex flex-col flex-wrap sm:flex-row items-start sm:items-center gap-2`}
+                      >
+                        {film.created_by.map((item, index) => {
+                          const gender =
+                            item.gender === 0
+                              ? `Not Specified`
+                              : item.gender === 1
+                              ? `Female`
+                              : item.gender === 2
+                              ? `Male`
+                              : ``;
+
+                          return (
+                            <div
+                              key={index}
+                              className={`flex items-center gap-2`}
+                            >
+                              {item.profile_path === null ? (
+                                <img
+                                  src={`/popcorn.png`}
+                                  alt={item.name}
+                                  className={`aspect-square w-[40px] rounded-full object-contain`}
+                                />
+                              ) : (
+                                <img
+                                  src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                                  alt={item.name}
+                                  className={`aspect-square w-[40px] rounded-full`}
+                                />
+                              )}
+                              <div className={`flex flex-col`}>
+                                <span className="">{item.name}</span>
+                                {item.gender < 3 && (
+                                  <span className="text-sm text-gray-400 ">
+                                    {gender}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </td>
+                    </tr>
+                  )}
             </tbody>
           </table>
         </div>
@@ -245,7 +311,9 @@ export default function FilmOverview({ film, videos, images, reviews }) {
           <FilmMedia videos={videos} images={images.backdrops} />
         )}
 
-        {film.belongs_to_collection !== null && <FilmCollection film={film} />}
+        {!isTvPage && film.belongs_to_collection !== null && (
+          <FilmCollection film={film} />
+        )}
 
         {reviews.results.length > 0 && (
           <FilmReviews reviews={reviews} film={film} />

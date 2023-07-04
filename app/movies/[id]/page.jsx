@@ -43,6 +43,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
                 videos={videos}
                 images={images}
                 reviews={reviews}
+                credits={credits}
               />
             </div>
             {/* Right */}
