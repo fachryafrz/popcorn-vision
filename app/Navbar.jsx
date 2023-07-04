@@ -4,7 +4,7 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 
 import { usePathname } from "next/navigation";
 
@@ -15,8 +15,9 @@ export default function Navbar() {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
   );
-  const URLSearchQuery = new URLSearchParams(pathname.search).get("query");
-
+  const URLSearchQuery = new URLSearchParams(window.location.search).get(
+    "query"
+  );
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
       <div className="max-w-7xl mx-auto py-2 px-4 xl:px-6 flex flex-wrap justify-between">
@@ -39,7 +40,7 @@ export default function Navbar() {
             <Link
               href={
                 isSearchPage
-                  ? URLSearchQuery
+                  ? URLSearchQuery !== null
                     ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
                     : `/search`
                   : `/`
@@ -55,7 +56,7 @@ export default function Navbar() {
             <Link
               href={
                 isSearchPage
-                  ? URLSearchQuery
+                  ? URLSearchQuery !== null
                     ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
                     : `/tv/search`
                   : `/tv`
