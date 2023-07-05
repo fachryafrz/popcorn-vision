@@ -16,6 +16,47 @@ async function getFilm(id, type, path) {
   return res.data;
 }
 
+export async function generateMetadata({ params, type = "movie" }) {
+  const { id } = params;
+  const film = await getFilm(id, type);
+
+  const isTvPage = type !== "movie" ? true : false;
+  console.log(isTvPage);
+
+  const filmReleaseDate = !isTvPage
+    ? new Date(film.release_date).getFullYear() // For movies, use the release_date
+    : new Date(film.last_air_date).getFullYear() ===
+      new Date(film.first_air_date).getFullYear()
+    ? new Date(film.first_air_date).getFullYear() // For TV shows with the same first and last air date, use the first_air_date
+    : `${new Date(film.first_air_date).getFullYear()}-${new Date(
+        film.last_air_date
+      ).getFullYear()}`;
+
+  return {
+    title: `${!isTvPage ? film.title : film.name} (${filmReleaseDate})`,
+    description: film.overview,
+    alternates: {
+      canonical: `/${!isTvPage ? `movies` : `tv`}/${film.id}`,
+    },
+    openGraph: {
+      title: `${!isTvPage ? film.title : film.name} (${filmReleaseDate})`,
+      description: film.overview,
+      url: `${process.env.APP_URL}/${!isTvPage ? `movies` : `tv`}/${film.id}`,
+      siteName: process.env.APP_NAME,
+      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${!isTvPage ? film.title : film.name} (${filmReleaseDate})`,
+      description: film.overview,
+      creator: "@fachryafrz",
+      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+    },
+  };
+}
+
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
