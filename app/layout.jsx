@@ -3,11 +3,14 @@ import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Copyright from "./components/Copyright";
 
+const keywords =
+  "movies, TV shows, film reviews, movie database, TV series, film news, cinema releases, movie trailers, film recommendations, popular movies, top TV shows, movie ratings, celebrity news, upcoming releases, film analysis, binge-watching, movie genres, movie quotes, TV show episodes, box office hits, award-winning films";
+
 export const metadata = {
-  generator: process.env.APP_NAME,
-  applicationName: process.env.APP_NAME,
+  generator: "Popcorn Vision",
+  applicationName: "Popcorn Vision",
   referrer: "origin-when-cross-origin",
-  keywords: process.env.APP_KEYWORDS.split(", "),
+  keywords: keywords.split(", "),
   authors: [
     { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
   ],
@@ -20,20 +23,22 @@ export const metadata = {
     initialScale: 1,
   },
   title: {
-    default: process.env.APP_NAME,
+    default: "Popcorn Vision",
     template: "%s - Popcorn Vision",
   },
-  description: process.env.APP_DESC,
-  metadataBase: new URL(process.env.APP_URL),
+  description:
+    "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+  metadataBase: new URL("https://www.popcorn.vision"),
   alternates: {
     canonical: "/",
     languages: "en-US",
   },
   openGraph: {
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    url: process.env.APP_URL,
-    siteName: process.env.APP_NAME,
+    title: "Popcorn Vision",
+    description:
+      "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+    url: "https://www.popcorn.vision",
+    siteName: "Popcorn Vision",
     images: "/popcorn.png",
     locale: "en_US",
     type: "website",
@@ -47,8 +52,9 @@ export const metadata = {
   manifest: "/manifest.json",
   twitter: {
     card: "summary_large_image",
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
+    title: "Popcorn Vision",
+    description:
+      "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
     creator: "@fachryafrz",
     images: "/popcorn.png",
   },
