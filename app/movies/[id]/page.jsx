@@ -42,7 +42,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       description: film.overview,
       url: `${process.env.APP_URL}/${`movies`}/${film.id}`,
       siteName: process.env.APP_NAME,
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
       locale: "en_US",
       type: "website",
     },
@@ -51,7 +51,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
       description: film.overview,
       creator: "@fachryafrz",
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
     },
   };
 }

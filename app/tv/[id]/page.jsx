@@ -45,7 +45,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       description: film.overview,
       url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.APP_NAME,
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
       locale: "en_US",
       type: "website",
     },
@@ -58,7 +58,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       }) - ${process.env.APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
     },
   };
 }
