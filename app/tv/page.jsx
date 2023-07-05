@@ -47,7 +47,7 @@ async function getFilms(
   apiUrl,
   date_gte,
   date_lte,
-  apiCompanies,
+  apiCompanies = "2739|213|49|1024|453",
   apiGenres,
   apiSortBy = "popularity.desc"
 ) {
@@ -60,7 +60,7 @@ async function getFilms(
     language: "en-US",
     "first_air_date.gte": date_gte,
     "first_air_date.lte": date_lte,
-    with_networks: apiCompanies || "2739|213|49|1024|453",
+    with_networks: apiCompanies,
     with_genres: apiGenres,
     include_null_first_air_dates: false,
   };
@@ -142,6 +142,130 @@ export default async function Home() {
       </section>
       <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(1)} />
+      </section>
+      <section id="Disney+">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, "2739")}
+          title={`Disney+`}
+          genres={genres}
+        />
+      </section>
+      <section id="Netflix">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, "213")}
+          title={`Netflix`}
+          genres={genres}
+        />
+      </section>
+      <section id="HBO">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, "49")}
+          title={`HBO`}
+          genres={genres}
+        />
+      </section>
+      <section id="Prime Video">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, "1024")}
+          title={`Prime Video`}
+          genres={genres}
+        />
+      </section>
+      <section id="Hulu">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, "453")}
+          title={`Hulu`}
+          genres={genres}
+        />
+      </section>
+      <section id="Trending" className="py-[2rem]">
+        <Trending film={await getTrending(2)} />
+      </section>
+
+      {/* Genres */}
+      <section id="Action & Adventure">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10759")}
+          title={`Action & Adventure`}
+          genres={genres}
+        />
+      </section>
+      <section id="Animation">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "16")}
+          title={`Animation`}
+          genres={genres}
+        />
+      </section>
+      <section id="Comedy">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "35")}
+          title={`Comedy`}
+          genres={genres}
+        />
+      </section>
+      <section id="Crime">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "80")}
+          title={`Crime`}
+          genres={genres}
+        />
+      </section>
+      <section id="Documentary">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "99")}
+          title={`Documentary`}
+          genres={genres}
+        />
+      </section>
+      <section id="Drama">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "18")}
+          title={`Drama`}
+          genres={genres}
+        />
+      </section>
+      <section id="Family">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10751")}
+          title={`Family`}
+          genres={genres}
+        />
+      </section>
+      <section id="Mystery">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "9648")}
+          title={`Mystery`}
+          genres={genres}
+        />
+      </section>
+      <section id="Romance">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10749")}
+          title={`Romance`}
+          genres={genres}
+        />
+      </section>
+      <section id="Reality Show">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10764")}
+          title={`Reality Show`}
+          genres={genres}
+        />
+      </section>
+      <section id="Science Fiction">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10765")}
+          title={`Science Fiction`}
+          genres={genres}
+        />
+      </section>
+      <section id="War">
+        <FilmSlider
+          films={await getFilms("/discover/tv", null, null, null, "10768")}
+          title={`War`}
+          genres={genres}
+        />
       </section>
     </>
   );
