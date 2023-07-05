@@ -3,26 +3,23 @@ import Search from "./Search";
 
 export const metadata = {
   title: "Search Movies",
-  description:
-    "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+  description: process.env.APP_DESC,
   alternates: {
-    canonical: "https://www.popcorn.vision",
+    canonical: process.env.APP_URL,
   },
   openGraph: {
-    title: "Popcorn Vision",
-    description:
-      "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
-    url: "https://www.popcorn.vision",
-    siteName: "Popcorn Vision",
+    title: process.env.APP_NAME,
+    description: process.env.APP_DESC,
+    url: process.env.APP_URL,
+    siteName: process.env.APP_NAME,
     images: "/popcorn.png",
     locale: "en_US",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Popcorn Vision",
-    description:
-      "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+    title: process.env.APP_NAME,
+    description: process.env.APP_DESC,
     creator: "@fachryafrz",
     images: "/popcorn.png",
   },
