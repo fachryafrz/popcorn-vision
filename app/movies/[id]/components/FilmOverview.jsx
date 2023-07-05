@@ -112,14 +112,14 @@ export default function FilmOverview({
                       <td>
                         {formattedDate}{" "}
                         {film.last_air_date !== null &&
-                        film.last_air_date !== film.first_air_date ? (
-                          <span className="hidden xs:inline">
-                            {`- ${new Date(film.last_air_date).toLocaleString(
-                              "en-US",
-                              options
-                            )}`}
-                          </span>
-                        ) : null}
+                          film.last_air_date !== film.first_air_date && (
+                            <span className="hidden xs:inline">
+                              {`- ${new Date(film.last_air_date).toLocaleString(
+                                "en-US",
+                                options
+                              )}`}
+                            </span>
+                          )}
                       </td>
                     )}
                   </tr>

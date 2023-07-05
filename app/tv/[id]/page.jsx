@@ -18,24 +18,30 @@ export async function generateMetadata({ params, type = "tv" }) {
   const film = await getFilm(id, type);
 
   const isTvPage = type !== "movie" ? true : false;
+  const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
 
-  const filmReleaseDate = !isTvPage
-    ? new Date(film.release_date).getFullYear() // For movies, use the release_date
-    : new Date(film.last_air_date).getFullYear() ===
-      new Date(film.first_air_date).getFullYear()
-    ? new Date(film.first_air_date).getFullYear() // For TV shows with the same first and last air date, use the first_air_date
-    : `${new Date(film.first_air_date).getFullYear()}-${new Date(
-        film.last_air_date
-      ).getFullYear()}`;
+  const filmReleaseDate = date.getFullYear();
+  const lastAirDate =
+    film.last_air_date !== null && film.last_air_date !== film.first_air_date;
 
   return {
-    title: `${film.name} (${filmReleaseDate})`,
+    title: `${film.name} (${
+      lastAirDate
+        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+        : filmReleaseDate
+    })`,
     description: film.overview,
     alternates: {
       canonical: `/${`tv`}/${film.id}`,
     },
     openGraph: {
-      title: `${film.name} (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(
+              film.last_air_date
+            ).getFullYear()} - ${process.env.APP_NAME}`
+          : filmReleaseDate
+      })`,
       description: film.overview,
       url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.APP_NAME,
@@ -45,7 +51,13 @@ export async function generateMetadata({ params, type = "tv" }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${film.name} (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(
+              film.last_air_date
+            ).getFullYear()} - ${process.env.APP_NAME}`
+          : filmReleaseDate
+      })`,
       description: film.overview,
       creator: "@fachryafrz",
       images: `${process.env.API_IMAGE_500}${film.poster_path}`,
