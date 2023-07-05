@@ -22,7 +22,9 @@ export async function generateMetadata({ params, type = "tv" }) {
 
   const filmReleaseDate = date.getFullYear();
   const lastAirDate =
-    film.last_air_date !== null && film.last_air_date !== film.first_air_date;
+    film.last_air_date !== null &&
+    new Date(film.last_air_date).getFullYear() !==
+      new Date(film.first_air_date).getFullYear();
 
   return {
     title: `${film.name} (${
@@ -37,11 +39,9 @@ export async function generateMetadata({ params, type = "tv" }) {
     openGraph: {
       title: `${film.name} (${
         lastAirDate
-          ? `${filmReleaseDate}-${new Date(
-              film.last_air_date
-            ).getFullYear()} - ${process.env.APP_NAME}`
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
           : filmReleaseDate
-      })`,
+      }) - ${process.env.APP_NAME}`,
       description: film.overview,
       url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.APP_NAME,
@@ -53,11 +53,9 @@ export async function generateMetadata({ params, type = "tv" }) {
       card: "summary_large_image",
       title: `${film.name} (${
         lastAirDate
-          ? `${filmReleaseDate}-${new Date(
-              film.last_air_date
-            ).getFullYear()} - ${process.env.APP_NAME}`
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
           : filmReleaseDate
-      })`,
+      }) - ${process.env.APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
       images: `${process.env.API_IMAGE_500}${film.poster_path}`,
