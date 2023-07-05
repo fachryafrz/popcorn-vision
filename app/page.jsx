@@ -5,7 +5,6 @@ import FilmSlider from "./components/FilmSlider";
 import Trending from "./components/Trending";
 
 export const metadata = {
-  title: process.env.APP_NAME,
   description: process.env.APP_DESC,
   alternates: {
     canonical: process.env.APP_URL,
@@ -25,6 +24,11 @@ export const metadata = {
     description: process.env.APP_DESC,
     creator: "@fachryafrz",
     images: "/popcorn.png",
+  },
+  icons: {
+    icon: "/popcorn.png",
+    shortcut: "/popcorn.png",
+    apple: "/apple-touch-icon.png",
   },
 };
 
