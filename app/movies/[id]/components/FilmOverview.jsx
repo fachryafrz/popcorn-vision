@@ -66,7 +66,7 @@ export default function FilmOverview({
               <img
                 loading="lazy"
                 src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
-                alt={film.title}
+                alt={isItTvPage(film.title, film.name)}
                 className={film.poster_path === null ? `hidden` : `block`}
               />
             </figure>
@@ -77,10 +77,10 @@ export default function FilmOverview({
             <TitleLogo film={film.id} isItTvPage={isItTvPage} />
           ) : (
             <h1
-              title={film.title}
+              title={isItTvPage(film.title, film.name)}
               className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
             >
-              {film.title}
+              {isItTvPage(film.title, film.name)}
             </h1>
           )}
 
@@ -124,19 +124,21 @@ export default function FilmOverview({
                 </tr>
               ) : null}
 
-              {isTvPage && (
-                <tr>
-                  <td className="text-gray-400">Chapter</td>
-                  <td className={``}>
-                    {`${film.number_of_seasons} Season${
-                      film.number_of_seasons > 1 ? `s` : ``
-                    }`}{" "}
-                    {`(${film.number_of_episodes} Episode${
-                      film.number_of_episodes > 1 ? `s` : ``
-                    })`}
-                  </td>
-                </tr>
-              )}
+              {isTvPage &&
+                film.number_of_seasons > 0 &&
+                film.number_of_episodes > 0 && (
+                  <tr>
+                    <td className="text-gray-400">Chapter</td>
+                    <td className={``}>
+                      {`${film.number_of_seasons} Season${
+                        film.number_of_seasons > 1 ? `s` : ``
+                      }`}{" "}
+                      {`(${film.number_of_episodes} Episode${
+                        film.number_of_episodes > 1 ? `s` : ``
+                      })`}
+                    </td>
+                  </tr>
+                )}
 
               {film.genres && film.genres.length > 0 && (
                 <tr>
