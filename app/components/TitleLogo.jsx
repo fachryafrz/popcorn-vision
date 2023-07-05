@@ -4,7 +4,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 
 export default function TitleLogo({ film }) {
-  const [titleLogo, setTitleLogo] = useState({});
+  const [titleLogo, setTitleLogo] = useState([]);
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -13,9 +13,9 @@ export default function TitleLogo({ film }) {
     const fetchTitleLogo = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/${
-            !isTvPage ? `movie` : `tv`
-          }/${film}/images`,
+          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${
+            film.id
+          }/images`,
           {
             params: {
               api_key: "84aa2a7d5e4394ded7195035a4745dbd",
@@ -35,7 +35,7 @@ export default function TitleLogo({ film }) {
     <figure className="mb-4 flex justify-center">
       <img
         src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-        alt={film.title}
+        alt={!isTvPage ? film.title : film.name}
         className="max-h-[150px] lg:max-h-[200px]"
       />
     </figure>

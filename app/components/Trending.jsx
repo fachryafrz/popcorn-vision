@@ -50,7 +50,7 @@ export default function Trending({ film }) {
         </h3> */}
 
           <div className="hidden md:block">
-            <TitleLogo film={film.id} />
+            <TitleLogo film={film} />
           </div>
 
           <div className="flex gap-2 items-center">
