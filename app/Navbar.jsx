@@ -6,18 +6,22 @@ import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
 import React, { useEffect } from "react";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
   );
-  const URLSearchQuery = new URLSearchParams(window.location.search).get(
-    "query"
-  );
+  let URLSearchQuery = useSearchParams().get("query");
+
+  useEffect(() => {
+    console.log(router.pathname);
+  }, [router]);
+
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
       <div className="max-w-7xl mx-auto py-2 px-4 xl:px-6 flex flex-wrap justify-between">
@@ -40,7 +44,7 @@ export default function Navbar() {
             <Link
               href={
                 isSearchPage
-                  ? URLSearchQuery !== null
+                  ? URLSearchQuery
                     ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
                     : `/search`
                   : `/`
@@ -56,7 +60,7 @@ export default function Navbar() {
             <Link
               href={
                 isSearchPage
-                  ? URLSearchQuery !== null
+                  ? URLSearchQuery
                     ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
                     : `/tv/search`
                   : `/tv`

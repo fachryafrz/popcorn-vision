@@ -21,7 +21,7 @@ import axios from "axios";
 
 // Components
 import FilmCard from "../components/FilmCard";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Search() {
   // Movie related state
@@ -49,9 +49,7 @@ export default function Search() {
   const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   const router = useRouter();
 
-  const URLSearchQuery = new URLSearchParams(window.location.search).get(
-    "query"
-  );
+  const URLSearchQuery = useSearchParams().get("query");
 
   // Function to search movies
   const searchMovies = async (query) => {
@@ -107,14 +105,13 @@ export default function Search() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    router.push(
+    router.replace(
       `/${!isTvPage ? "search" : "tv/search"}?query=${searchQuery.replace(
         /\s+/g,
         "+"
       )}`
     );
 
-    setSearchMessage(true);
     searchRef.current.blur();
     searchMovies();
   };
@@ -124,8 +121,10 @@ export default function Search() {
     setCurrentSearchPage(1);
 
     const query = URLSearchQuery;
-    setSearchQuery(query || "");
-    searchMovies(query);
+    if (query !== null) {
+      setSearchQuery(query || "");
+      searchMovies(query);
+    }
   }, [URLSearchQuery, isTvPage]);
 
   // Fetch background movies
@@ -222,7 +221,7 @@ export default function Search() {
 
   // Event handler for genre selection
   const handleGenreClick = async (genreId) => {
-    router.push(!isTvPage ? "/search" : "/tv/search");
+    router.replace(!isTvPage ? "/search" : "/tv/search");
 
     try {
       const updatedGenres = selectedGenres.includes(genreId)
