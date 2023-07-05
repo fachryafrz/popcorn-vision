@@ -18,10 +18,6 @@ export default function Navbar() {
   );
   let URLSearchQuery = useSearchParams().get("query");
 
-  useEffect(() => {
-    console.log(router.pathname);
-  }, [router]);
-
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
       <div className="max-w-7xl mx-auto py-2 px-4 xl:px-6 flex flex-wrap justify-between">
@@ -40,7 +36,7 @@ export default function Navbar() {
           </figure>
         </Link>
         <div className="flex items-center gap-2">
-          <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur">
+          <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-30 backdrop-blur">
             <Link
               href={
                 isSearchPage
