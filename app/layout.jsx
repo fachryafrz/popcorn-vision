@@ -27,6 +27,7 @@ export const metadata = {
   metadataBase: new URL(process.env.APP_URL),
   alternates: {
     canonical: "/",
+    languages: "en-US",
   },
   openGraph: {
     title: process.env.APP_NAME,

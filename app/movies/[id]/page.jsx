@@ -32,17 +32,15 @@ export async function generateMetadata({ params, type = "movie" }) {
       ).getFullYear()}`;
 
   return {
-    title: `${!isTvPage ? film.title : film.name} (${filmReleaseDate})`,
+    title: `${film.title} (${filmReleaseDate})`,
     description: film.overview,
     alternates: {
-      canonical: `/${!isTvPage ? `movies` : `tv`}/${film.id}`,
+      canonical: `/${`movies`}/${film.id}`,
     },
     openGraph: {
-      title: `${
-        !isTvPage ? film.title : film.name
-      } (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
       description: film.overview,
-      url: `${process.env.APP_URL}/${!isTvPage ? `movies` : `tv`}/${film.id}`,
+      url: `${process.env.APP_URL}/${`movies`}/${film.id}`,
       siteName: process.env.APP_NAME,
       images: `${process.env.API_IMAGE_500}${film.poster_path}`,
       locale: "en_US",
@@ -50,9 +48,7 @@ export async function generateMetadata({ params, type = "movie" }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${
-        !isTvPage ? film.title : film.name
-      } (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
       description: film.overview,
       creator: "@fachryafrz",
       images: `${process.env.API_IMAGE_500}${film.poster_path}`,
