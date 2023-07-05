@@ -1,10 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 
-export default function TitleLogo({ film, isItTvPage }) {
+export default function TitleLogo({ film }) {
   const [titleLogo, setTitleLogo] = useState({});
 
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
   useEffect(() => {
     const fetchTitleLogo = async () => {
       axios

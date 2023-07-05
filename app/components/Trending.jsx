@@ -12,15 +12,15 @@ export default function Trending({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
-  const date = new Date(releaseDate);
-  const options = { year: "numeric", month: "short" };
-  const formattedDate = date.toLocaleString("en-US", options);
-
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
     return type;
   };
+
+  const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
+  const date = new Date(releaseDate);
+  const options = { year: "numeric", month: "short" };
+  const formattedDate = date.toLocaleString("en-US", options);
 
   return (
     <div className="px-4 xl:px-[9rem]">
@@ -50,7 +50,7 @@ export default function Trending({ film }) {
         </h3> */}
 
           <div className="hidden md:block">
-            <TitleLogo film={film.id} isItTvPage={isItTvPage} />
+            <TitleLogo film={film.id} />
           </div>
 
           <div className="flex gap-2 items-center">

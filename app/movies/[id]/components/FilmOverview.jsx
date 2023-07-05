@@ -16,8 +16,6 @@ import FilmMedia from "./FilmMedia";
 import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
 import { usePathname } from "next/navigation";
-import HeadCustom from "@/app/HeadCustom";
-import Head from "next/head";
 
 export default function FilmOverview({
   film,
