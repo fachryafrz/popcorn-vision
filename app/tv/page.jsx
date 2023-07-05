@@ -111,9 +111,9 @@ export default async function Home() {
           genres={genres}
         />
       </section>
-      {/* <section id="Trending" className="py-[2rem]">
+      <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(1)} />
-      </section> */}
+      </section>
     </>
   );
 }

@@ -77,7 +77,7 @@ export default function HomeSlider({ films }) {
                   {isItTvPage(film.title,film.name)}
                 </h3> */}
 
-                <TitleLogo film={film} />
+                {/* <TitleLogo film={film} /> */}
 
                 <div className="flex items-center gap-2 text-sm font-bold text-white md:text-xl">
                   <div className="flex items-center gap-1 text-primary-yellow">
