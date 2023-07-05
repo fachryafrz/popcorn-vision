@@ -41,16 +41,8 @@ export default function Trending({ film }) {
           />
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
-          {/* <h3 className="font-bold text-2xl md:text-3xl">
-          {film.title} (
-          {new Date(
-            film.release_date : film.first_air_date
-          ).getFullYear()}
-          )
-        </h3> */}
-
           <div className="hidden md:block">
-            {/* <TitleLogo film={film} /> */}
+            <TitleLogo film={film} />
           </div>
 
           <div className="flex gap-2 items-center">

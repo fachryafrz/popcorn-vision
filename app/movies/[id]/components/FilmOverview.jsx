@@ -75,7 +75,7 @@ export default function FilmOverview({
           </div>
           <div className="flex flex-col items-center md:justify-center sm:items-start gap-2 sm:gap-0 w-full">
             {images.logos.length > 0 ? (
-              <TitleLogo film={film.id} isItTvPage={isItTvPage} />
+              <TitleLogo film={film} />
             ) : (
               <h1
                 title={isItTvPage(film.title, film.name)}

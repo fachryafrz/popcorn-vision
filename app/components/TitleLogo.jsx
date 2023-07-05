@@ -4,7 +4,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 
 export default function TitleLogo({ film }) {
-  const [titleLogo, setTitleLogo] = useState([]);
+  const [titleLogo, setTitleLogo] = useState({});
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -32,12 +32,20 @@ export default function TitleLogo({ film }) {
   }, [film, isTvPage]);
 
   return (
-    <figure className="mb-4 flex justify-center">
-      <img
-        src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-        alt={!isTvPage ? film.title : film.name}
-        className="max-h-[150px] lg:max-h-[200px]"
-      />
-    </figure>
+    <>
+      {titleLogo ? (
+        <figure className="mb-4 flex justify-center">
+          <img
+            src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
+            alt={!isTvPage ? film.title : film.name}
+            className="max-h-[150px] lg:max-h-[200px]"
+          />
+        </figure>
+      ) : (
+        <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+          {!isTvPage ? film.title : film.name}
+        </h3>
+      )}
+    </>
   );
 }

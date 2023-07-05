@@ -73,11 +73,7 @@ export default function HomeSlider({ films }) {
                 />
               </figure>
               <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10 text-white">
-                {/* <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
-                  {isItTvPage(film.title,film.name)}
-                </h3> */}
-
-                {/* <TitleLogo film={film} /> */}
+                <TitleLogo film={film} />
 
                 <div className="flex items-center gap-2 text-sm font-bold text-white md:text-xl">
                   <div className="flex items-center gap-1 text-primary-yellow">
