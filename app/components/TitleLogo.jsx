@@ -9,18 +9,13 @@ export default function TitleLogo({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const isItTvPage = (movie, tv) => {
-    const type = !isTvPage ? movie : tv;
-    return type;
-  };
   useEffect(() => {
     const fetchTitleLogo = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/${isItTvPage(
-            `movie`,
-            `tv`
-          )}/${film}/images`,
+          `https://api.themoviedb.org/3/${
+            !isTvPage ? `movie` : `tv`
+          }/${film}/images`,
           {
             params: {
               api_key: "84aa2a7d5e4394ded7195035a4745dbd",
@@ -34,7 +29,7 @@ export default function TitleLogo({ film }) {
     };
 
     fetchTitleLogo();
-  }, [film, isItTvPage]);
+  }, [film, isTvPage]);
 
   return (
     <figure className="mb-4 flex justify-center">
