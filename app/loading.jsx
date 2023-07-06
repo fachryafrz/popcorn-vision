@@ -21,9 +21,9 @@ export default function loading() {
       <section
         className={`h-[532px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[70%] lg:[&_*]:max-w-[50%] xl:px-[9rem]`}
       >
-        <div className={`h-[200px] w-full`}></div>
+        <div className={`h-[150px] lg:h-[200px] w-full`}></div>
         <div className={`h-[24px] w-[100px]`}></div>
-        <div className={`h-[48px] md:h-[72px] w-full`}></div>
+        <div className={`h-[50px] md:h-[100px] w-full`}></div>
       </section>
 
       {/* FilmSlider */}

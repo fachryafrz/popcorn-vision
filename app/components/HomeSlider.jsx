@@ -41,6 +41,7 @@ export default function HomeSlider({ films }) {
         }}
         spaceBetween={0}
         slidesPerView={1}
+        className={`h-[600px]`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
