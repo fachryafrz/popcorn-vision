@@ -41,7 +41,6 @@ export default function HomeSlider({ films }) {
         }}
         spaceBetween={0}
         slidesPerView={1}
-        className={`lg:rounded-bl-[3rem] xl:!ml-[5rem] h-[500px] sm:h-[600px]`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -55,24 +54,24 @@ export default function HomeSlider({ films }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-base-dark-gray lg:after:opacity-[100%]"
+              className="flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-base-dark-gray lg:after:opacity-[100%] lg:max-h-[600px]"
             >
               <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
                   alt={isItTvPage(film.title, film.name)}
-                  className="object-top sm:hidden"
+                  className="object-top md:hidden"
                 />
 
                 <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
                   alt={isItTvPage(film.title, film.name)}
-                  className="object-top hidden sm:block"
+                  className="object-top hidden md:block"
                 />
               </figure>
-              <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:p-[4rem] before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-base-dark-gray h-full justify-end [&_*]:z-10 text-white">
+              <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:pl-[9rem] h-full justify-end [&_*]:z-10 text-white">
                 <TitleLogo film={film} />
 
                 <div className="flex items-center gap-2 text-sm font-bold text-white md:text-xl">

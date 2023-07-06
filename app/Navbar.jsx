@@ -20,7 +20,7 @@ export default function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
-      <div className="max-w-7xl mx-auto py-2 px-4 xl:px-6 flex flex-wrap justify-between">
+      <div className="mx-auto py-2 px-4 xl:px-[9rem] flex flex-wrap justify-between">
         <Link
           href={!isTvPage ? `/` : `/tv`}
           className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit hocus:scale-[1.025] transition-all"
