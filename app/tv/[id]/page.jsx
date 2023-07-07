@@ -16,6 +16,7 @@ async function getFilm(id, type, path) {
 export async function generateMetadata({ params, type = "tv" }) {
   const { id } = params;
   const film = await getFilm(id, type);
+  const images = await getFilm(id, type, "/images");
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
@@ -45,7 +46,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       description: film.overview,
       url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.APP_NAME,
-      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
       locale: "en_US",
       type: "website",
     },
@@ -58,7 +59,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       }) - ${process.env.APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
-      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
     },
   };
 }
