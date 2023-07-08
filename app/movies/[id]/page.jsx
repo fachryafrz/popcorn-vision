@@ -32,6 +32,18 @@ export async function generateMetadata({ params, type = "movie" }) {
         film.last_air_date
       ).getFullYear()}`;
 
+  let backdrops;
+
+  if (images.backdrops.length > 0) {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+    };
+  } else {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+    };
+  }
+
   return {
     title: `${film.title} (${filmReleaseDate})`,
     description: film.overview,
@@ -43,7 +55,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       description: film.overview,
       url: `${process.env.APP_URL}/${`movies`}/${film.id}`,
       siteName: process.env.APP_NAME,
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+      ...backdrops,
       locale: "en_US",
       type: "website",
     },
@@ -52,7 +64,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
       description: film.overview,
       creator: "@fachryafrz",
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+      ...backdrops,
     },
   };
 }
