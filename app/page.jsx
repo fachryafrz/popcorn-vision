@@ -78,7 +78,11 @@ async function getTrending(num) {
     },
   });
 
-  return res.data.results[num - 1];
+  if (num) {
+    return res.data.results[num - 1];
+  } else {
+    return res.data;
+  }
 }
 
 export default async function Home() {
@@ -108,7 +112,7 @@ export default async function Home() {
   return (
     <>
       <h1 className="sr-only">{`Popcorn Vision`}</h1>
-      <HomeSlider films={await getFilms("/discover/movie", thirtyDaysAgo)} />
+      <HomeSlider films={await getTrending()} />
 
       <section id="Now Playing">
         <FilmSlider
@@ -142,7 +146,7 @@ export default async function Home() {
       </section>
 
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(1)} />
+        <Trending film={await getTrending(6)} />
       </section>
 
       <section id="Marvel Studios">
@@ -202,7 +206,7 @@ export default async function Home() {
       </section>
 
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(2)} />
+        <Trending film={await getTrending(7)} />
       </section>
 
       <section id="Action">
