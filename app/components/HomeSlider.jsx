@@ -41,7 +41,7 @@ export default function HomeSlider({ films }) {
         }}
         spaceBetween={0}
         slidesPerView={1}
-        className={`h-[600px]`}
+        className={`lg:h-[600px] xl:!ml-[4.5rem]`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -55,7 +55,7 @@ export default function HomeSlider({ films }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative after:absolute after:inset-0 after:bg-gradient-to-t after:from-base-dark-gray lg:after:opacity-[100%] lg:max-h-[600px]"
+              className="flex items-end relative after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-dark-gray after:via-base-dark-gray md:after:via-transparent after:h-[75%] md:after:h-[100%] lg:after:opacity-[100%] lg:max-h-[600px] aspect-poster md:aspect-auto"
             >
               <figure className="min-h-fit w-full sm:h-full -z-10 aspect-poster sm:aspect-auto">
                 <img
@@ -72,7 +72,7 @@ export default function HomeSlider({ films }) {
                   className="object-top hidden md:block"
                 />
               </figure>
-              <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:pl-[9rem] h-full justify-end [&_*]:z-10 text-white">
+              <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[70%] lg:max-w-[50%] absolute inset-0 p-4 xl:pl-[4.5rem] h-full justify-end [&_*]:z-10 text-white before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-dark-gray">
                 <TitleLogo film={film} />
 
                 <div className="flex items-center gap-2 text-sm font-bold text-white md:text-xl">
