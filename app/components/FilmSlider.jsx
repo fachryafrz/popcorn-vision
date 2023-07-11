@@ -12,9 +12,20 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 
-export default function FilmSlider({ films, title, genres }) {
+export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+
+  const sortedFilms = [...films.results].sort((a, b) => {
+    const dateA = new Date(!isTvPage ? a.release_date : a.first_air_date);
+    const dateB = new Date(!isTvPage ? b.release_date : b.first_air_date);
+
+    if (sort === "ASC") {
+      return dateA - dateB;
+    } else if (sort === "DESC") {
+      return dateB - dateA;
+    }
+  });
 
   return (
     <>
@@ -46,7 +57,7 @@ export default function FilmSlider({ films, title, genres }) {
         }}
         className={`!px-4 !pb-[2rem] !pt-[2.5rem] xl:!px-[9rem] !pr-[3rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
       >
-        {films.results.map((film) => {
+        {sortedFilms.map((film) => {
           const filmGenres =
             film.genre_ids && genres
               ? film.genre_ids.map((genreId) =>

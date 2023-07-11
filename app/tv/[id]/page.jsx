@@ -27,6 +27,18 @@ export async function generateMetadata({ params, type = "tv" }) {
     new Date(film.last_air_date).getFullYear() !==
       new Date(film.first_air_date).getFullYear();
 
+  let backdrops;
+
+  if (images.backdrops.length > 0) {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+    };
+  } else {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+    };
+  }
+
   return {
     title: `${film.name} (${
       lastAirDate
@@ -46,7 +58,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       description: film.overview,
       url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.APP_NAME,
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+      ...backdrops,
       locale: "en_US",
       type: "website",
     },
@@ -59,7 +71,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       }) - ${process.env.APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+      ...backdrops,
     },
   };
 }

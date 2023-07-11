@@ -127,6 +127,7 @@ export default async function Home() {
           films={await getFilms("/discover/movie", today, endOfYear)}
           title={`Upcoming`}
           genres={genres}
+          sort={"ASC"}
         />
       </section>
 
