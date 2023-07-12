@@ -12,7 +12,7 @@
   }
 
   img {
-    @apply w-full h-full object-cover pointer-events-none;
+    @apply w-full h-full object-cover;
   }
 
   .btn {
