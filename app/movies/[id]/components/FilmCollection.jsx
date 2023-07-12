@@ -5,6 +5,8 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 export default function FilmCollection({ film }) {
+  const [apiData, setApiData] = useState();
+  const [collectionTitle, setCollectionTitle] = useState();
   const [collections, setCollections] = useState({});
 
   useEffect(() => {
@@ -19,7 +21,15 @@ export default function FilmCollection({ film }) {
             },
           }
         );
-        setCollections(res.data);
+        setApiData(res.data);
+        setCollectionTitle(res.data.name);
+        const sortedCollections = res.data.parts.sort((a, b) => {
+          const dateA = new Date(a.release_date);
+          const dateB = new Date(b.release_date);
+
+          return dateA - dateB;
+        });
+        setCollections(sortedCollections);
       } catch (error) {
         console.error(`Errornya collections: ${error}`);
       }
@@ -32,12 +42,12 @@ export default function FilmCollection({ film }) {
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="flex flex-col gap-2 ">
         <h2 className="font-bold text-xl text-white m-0">
-          {collections && collections.name}
+          {apiData && collectionTitle}
         </h2>
       </div>
       <ul className="flex flex-col gap-1">
-        {collections.parts &&
-          collections.parts.map((item, index) => {
+        {apiData &&
+          collections.map((item, index) => {
             return (
               <li key={index}>
                 <Link
