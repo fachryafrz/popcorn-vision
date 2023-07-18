@@ -1,3 +1,5 @@
+export const revalidate = 3600; // revalidate this page every 60 seconds
+
 import axios from "axios";
 import React from "react";
 import HomeSlider from "../components/HomeSlider";
