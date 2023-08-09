@@ -334,7 +334,7 @@ export default function FilmOverview({
                           Directed by
                         </th>
                         <td
-                          className={`flex flex-col flex-wrap sm:flex-row items-start sm:items-center gap-2`}
+                          className={`flex flex-wrap items-start sm:items-center gap-2`}
                         >
                           {film.created_by.map((item, index) => {
                             const gender =
