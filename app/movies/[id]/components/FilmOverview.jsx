@@ -16,6 +16,8 @@ import FilmMedia from "./FilmMedia";
 import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
 import { usePathname } from "next/navigation";
+import { IonIcon } from "@ionic/react";
+import { calendarOutline, timeOutline, tvOutline } from "ionicons/icons";
 
 export default function FilmOverview({
   film,
@@ -85,41 +87,72 @@ export default function FilmOverview({
               </h1>
             )}
 
-            <table className="w-full md:max-w-fit text-sm lg:text-base first:[&_td]:pr-2 sm:first:[&_td]:pr-6 first:[&_td]:align-top [&_td]:leading-relaxed first:[&_td]:whitespace-nowrap">
+            <table
+              className={`w-full md:max-w-fit text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 sm:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
+            >
               <tbody>
                 {film.production_companies &&
                   film.production_companies.length > 0 && (
                     <tr>
-                      <td className="text-gray-400 whitespace-nowrap">
+                      {/* <th className="text-gray-400 whitespace-nowrap">
                         Produced by
-                      </td>
-                      <td className={` line-clamp-1`}>
+                      </th> */}
+                      {/* <td className={` line-clamp-1`}>
                         {film.production_companies
                           .map((item) => item.name)
                           .join(", ")}
+                      </td> */}
+                      <td colSpan="2" className={`lg:hidden`}>
+                        <div className={`flex gap-4 flex-wrap`}>
+                          {film.production_companies.map(
+                            (item) =>
+                              item.logo_path !== null && (
+                                <img
+                                  key={item.id}
+                                  src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                  alt={item.name}
+                                  title={item.name}
+                                  className={`object-contain w-[33%] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                                />
+                              )
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )}
 
                 {film.release_date || film.first_air_date ? (
                   <tr>
-                    <td className="text-gray-400">
+                    <th className="text-gray-400">
                       {!isTvPage ? `Release Date` : `Air Date`}
-                    </td>
+                    </th>
                     {!isTvPage ? (
-                      <td>{formattedDate}</td>
+                      <td>
+                        <div className={`flex items-center gap-2`}>
+                          <IonIcon icon={calendarOutline} />
+
+                          <time dateTime={film.release_date}>
+                            {formattedDate}
+                          </time>
+                        </div>
+                      </td>
                     ) : (
                       <td>
-                        {formattedDate}{" "}
-                        {film.last_air_date !== null &&
-                          film.last_air_date !== film.first_air_date && (
-                            <span className="hidden xs:inline">
-                              {`- ${new Date(film.last_air_date).toLocaleString(
-                                "en-US",
-                                options
-                              )}`}
-                            </span>
-                          )}
+                        <div className={`flex items-center gap-2`}>
+                          <IonIcon icon={calendarOutline} />
+
+                          <time dateTime={film.first_air_date}>
+                            {formattedDate}{" "}
+                            {film.last_air_date !== null &&
+                              film.last_air_date !== film.first_air_date && (
+                                <span className="hidden xs:inline">
+                                  {`- ${new Date(
+                                    film.last_air_date
+                                  ).toLocaleString("en-US", options)}`}
+                                </span>
+                              )}
+                          </time>
+                        </div>
                       </td>
                     )}
                   </tr>
@@ -129,61 +162,104 @@ export default function FilmOverview({
                   film.number_of_seasons > 0 &&
                   film.number_of_episodes > 0 && (
                     <tr>
-                      <td className="text-gray-400">Chapter</td>
-                      <td className={``}>
-                        {`${film.number_of_seasons} Season${
-                          film.number_of_seasons > 1 ? `s` : ``
-                        }`}{" "}
-                        {`(${film.number_of_episodes} Episode${
-                          film.number_of_episodes > 1 ? `s` : ``
-                        })`}
+                      <th className="text-gray-400">Chapter</th>
+                      <td>
+                        <div className={`flex items-center gap-2`}>
+                          <IonIcon icon={tvOutline} />
+
+                          <span>
+                            {`${film.number_of_seasons} Season${
+                              film.number_of_seasons > 1 ? `s` : ``
+                            }`}{" "}
+                            {`(${film.number_of_episodes} Episode${
+                              film.number_of_episodes > 1 ? `s` : ``
+                            })`}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   )}
 
-                {film.genres && film.genres.length > 0 && (
-                  <tr>
-                    <td className="text-gray-400">Genre</td>
-
-                    <td>{film.genres.map((item) => item.name).join(", ")}</td>
-                  </tr>
-                )}
-
                 {!isTvPage
                   ? film.runtime > 0 && (
                       <tr>
-                        <td className="text-gray-400">Runtime</td>
+                        <th className="text-gray-400">Runtime</th>
 
                         {Math.floor(film.runtime / 60) >= 1 ? (
                           <td>
-                            {Math.floor(film.runtime / 60)}h {film.runtime % 60}
-                            m
+                            <div className={`flex items-center gap-2`}>
+                              <IonIcon icon={timeOutline} />
+
+                              <time>
+                                {Math.floor(film.runtime / 60)}h{" "}
+                                {film.runtime % 60}m
+                              </time>
+                            </div>
                           </td>
                         ) : (
                           <td>
-                            {film.runtime % 60} minute
-                            {film.runtime % 60 > 1 && `s`}
+                            <div className={`flex items-center gap-2`}>
+                              <IonIcon icon={timeOutline} />
+
+                              <time>
+                                {film.runtime % 60} minute
+                                {film.runtime % 60 > 1 && `s`}
+                              </time>
+                            </div>
                           </td>
                         )}
                       </tr>
                     )
                   : film.episode_run_time.length > 0 && (
                       <tr>
-                        <td className="text-gray-400">Runtime</td>
+                        <th className="text-gray-400">Runtime</th>
 
                         {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
                           <td>
-                            {Math.floor(film.episode_run_time[0] / 60)}h{" "}
-                            {film.episode_run_time[0] % 60}m
+                            <div className={`flex items-center gap-2`}>
+                              <IonIcon icon={timeOutline} />
+
+                              <time>
+                                {Math.floor(film.episode_run_time[0] / 60)}h{" "}
+                                {film.episode_run_time[0] % 60}m
+                              </time>
+                            </div>
                           </td>
                         ) : (
                           <td>
-                            {film.episode_run_time[0] % 60} minute
-                            {film.episode_run_time[0] % 60 > 1 && `s`}
+                            <div className={`flex items-center gap-2`}>
+                              <IonIcon icon={timeOutline} />
+
+                              <time>
+                                {film.episode_run_time[0] % 60} minute
+                                {film.episode_run_time[0] % 60 > 1 && `s`}
+                              </time>
+                            </div>
                           </td>
                         )}
                       </tr>
                     )}
+
+                {film.genres && film.genres.length > 0 && (
+                  <tr>
+                    <th className="text-gray-400">Genre</th>
+
+                    {/* <td>{film.genres.map((item) => item.name).join(", ")}</td> */}
+
+                    <td className="py-1 gap-1 flex flex-wrap">
+                      {film.genres.map((item) => {
+                        return (
+                          <span
+                            key={item.id}
+                            className={`p-1 px-3 bg-base-gray bg-opacity-50 rounded-full`}
+                          >
+                            {item.name}
+                          </span>
+                        );
+                      })}
+                    </td>
+                  </tr>
+                )}
 
                 {!isTvPage
                   ? credits &&
@@ -192,9 +268,9 @@ export default function FilmOverview({
                       (person) => person.job === "Director"
                     ) && (
                       <tr>
-                        <td className="text-gray-400 whitespace-nowrap">
+                        <th className="text-gray-400 whitespace-nowrap">
                           Directed by
-                        </td>
+                        </th>
                         <td className={`flex items-center gap-2`}>
                           {credits.crew.find(
                             (person) => person.job === "Director"
@@ -252,9 +328,9 @@ export default function FilmOverview({
                     )
                   : film.created_by.length > 0 && (
                       <tr>
-                        <td className="text-gray-400 whitespace-nowrap">
+                        <th className="text-gray-400 whitespace-nowrap">
                           Directed by
-                        </td>
+                        </th>
                         <td
                           className={`flex flex-col flex-wrap sm:flex-row items-start sm:items-center gap-2`}
                         >

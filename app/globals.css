@@ -1,5 +1,5 @@
 .swiper-button-disabled {
-  @apply !opacity-0 !pointer-events-none;
+  @apply !opacity-25 !pointer-events-none;
 }
 
 @tailwind base;

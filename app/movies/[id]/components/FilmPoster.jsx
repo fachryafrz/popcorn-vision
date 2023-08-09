@@ -5,7 +5,7 @@ import React from "react";
 
 export default function FilmPoster({ film }) {
   return (
-    <div className="hidden lg:flex flex-col gap-2 md:max-w-full self-start sticky top-20">
+    <div className="hidden lg:flex flex-col gap-4 md:max-w-full self-start sticky top-20">
       <figure className="aspect-poster rounded-xl overflow-hidden shadow-2xl">
         <div
           className={
@@ -28,6 +28,21 @@ export default function FilmPoster({ film }) {
           alt={film.title}
         />
       </figure>
+
+      <div className={`grid grid-cols-2 gap-4`}>
+        {film.production_companies.map(
+          (item) =>
+            item.logo_path !== null && (
+              <img
+                key={item.id}
+                src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                alt={item.name}
+                title={item.name}
+                className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+              />
+            )
+        )}
+      </div>
     </div>
   );
 }

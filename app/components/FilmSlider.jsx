@@ -11,6 +11,7 @@ import "swiper/css/autoplay";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();
@@ -35,7 +36,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
         modules={[Navigation]}
         spaceBetween={8}
         slidesPerView={2}
-        loop={true}
+        // loop={true}
         navigation={{
           nextEl: ".next",
           prevEl: ".prev",
@@ -78,7 +79,9 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
         })}
 
         <div className="absolute top-0 left-0 right-0 h-[28px] px-4 xl:px-[9rem] flex justify-between items-end xl:max-w-none">
-          <p className="font-bold text-lg md:text-2xl">{title}</p>
+          <div className="flex gap-4 items-end">
+            <p className="font-bold text-lg md:text-2xl">{title}</p>
+          </div>
 
           <div className={`flex gap-4 items-center`}>
             <button className="prev h-[1.5rem]" aria-label="Move slider left">

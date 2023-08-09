@@ -38,6 +38,7 @@ export default function TitleLogo({ film }) {
           <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={!isTvPage ? film.title : film.name}
+            title={!isTvPage ? film.title : film.name}
             className="max-h-[150px] lg:max-h-[200px]"
           />
         </figure>
