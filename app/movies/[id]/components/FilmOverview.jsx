@@ -103,7 +103,9 @@ export default function FilmOverview({
                           .join(", ")}
                       </td> */}
                       <td colSpan="2" className={`lg:hidden`}>
-                        <div className={`flex gap-4 flex-wrap`}>
+                        <div
+                          className={`flex gap-4 flex-wrap justify-center sm:justify-start`}
+                        >
                           {film.production_companies.map(
                             (item) =>
                               item.logo_path !== null && (
@@ -112,7 +114,7 @@ export default function FilmOverview({
                                   src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                   alt={item.name}
                                   title={item.name}
-                                  className={`object-contain w-[33%] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                                  className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
                                 />
                               )
                           )}
