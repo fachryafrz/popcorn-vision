@@ -77,6 +77,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const videos = await getFilm(id, type, "/videos");
   const images = await getFilm(id, type, "/images");
   const reviews = await getFilm(id, type, "/reviews");
+  const providers = await getFilm(id, type, "/watch/providers");
 
   return (
     <>
@@ -97,6 +98,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
                 images={images}
                 reviews={reviews}
                 credits={credits}
+                providers={providers}
               />
             </div>
             {/* Right */}

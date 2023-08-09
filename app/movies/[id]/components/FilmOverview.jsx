@@ -25,6 +25,7 @@ export default function FilmOverview({
   images,
   reviews,
   credits,
+  providers,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -47,10 +48,10 @@ export default function FilmOverview({
   return (
     <>
       <div className="flex flex-col gap-6 self-start w-full">
-        <div className="flex gap-4 flex-col items-center sm:items-stretch sm:flex-row lg:gap-0">
+        <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
           <div className="flex flex-col gap-1">
             <div className="sticky top-20 flex flex-col gap-1">
-              <figure className="w-[50vw] sm:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl">
+              <figure className="w-[50vw] md:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl">
                 <div
                   className={
                     film.poster_path === null
@@ -75,7 +76,7 @@ export default function FilmOverview({
               </figure>
             </div>
           </div>
-          <div className="flex flex-col items-center md:justify-center sm:items-start gap-2 sm:gap-0 w-full">
+          <div className="flex flex-col items-center md:justify-center md:items-start gap-2 md:gap-0 w-full">
             {images.logos.length > 0 ? (
               <TitleLogo film={film} />
             ) : (
@@ -88,7 +89,7 @@ export default function FilmOverview({
             )}
 
             <table
-              className={`w-full md:max-w-fit text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 sm:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
+              className={`w-full md:max-w-fit text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 md:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
             >
               <tbody>
                 {film.production_companies &&
@@ -104,7 +105,7 @@ export default function FilmOverview({
                       </td> */}
                       <td colSpan="2" className={`lg:hidden`}>
                         <div
-                          className={`flex gap-4 flex-wrap justify-center sm:justify-start`}
+                          className={`flex gap-4 flex-wrap justify-center md:justify-start`}
                         >
                           {film.production_companies.map(
                             (item) =>
@@ -122,6 +123,59 @@ export default function FilmOverview({
                       </td>
                     </tr>
                   )}
+
+                {providers.results && providers.results.ID && (
+                  <tr>
+                    <th className="text-gray-400 whitespace-nowrap">
+                      Providers
+                    </th>
+
+                    <td colSpan="2">
+                      <div
+                        className={`flex gap-2 flex-wrap justify-center md:justify-start py-1`}
+                      >
+                        {providers.results.ID.rent
+                          ? providers.results.ID.rent.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )
+                          : providers.results.ID.buy
+                          ? providers.results.ID.buy.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )
+                          : providers.results.ID.flatrate.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )}
+                      </div>
+                    </td>
+                  </tr>
+                )}
 
                 {film.release_date || film.first_air_date ? (
                   <tr>
@@ -333,9 +387,7 @@ export default function FilmOverview({
                         <th className="text-gray-400 whitespace-nowrap">
                           Directed by
                         </th>
-                        <td
-                          className={`flex flex-wrap items-start sm:items-center gap-2`}
-                        >
+                        <td className={`flex flex-wrap items-center gap-2`}>
                           {film.created_by.map((item, index) => {
                             const gender =
                               item.gender === 0
