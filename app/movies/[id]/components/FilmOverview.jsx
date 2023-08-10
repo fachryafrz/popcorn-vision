@@ -51,7 +51,7 @@ export default function FilmOverview({
         <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
           <div className="flex flex-col gap-1">
             <div className="sticky top-20 flex flex-col gap-1">
-              <figure className="w-[50vw] md:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl">
+              <figure className="w-[50vw] md:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl relative">
                 <div
                   className={
                     film.poster_path === null
@@ -73,6 +73,20 @@ export default function FilmOverview({
                   alt={isItTvPage(film.title, film.name)}
                   className={film.poster_path === null ? `hidden` : `block`}
                 />
+
+                {film.vote_average > 0 && (
+                  <div
+                    className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
+                      film.vote_average >= 1 && film.vote_average <= 3
+                        ? `border-primary-red`
+                        : film.vote_average >= 4 && film.vote_average <= 7
+                        ? `border-primary-yellow`
+                        : `border-green-500`
+                    }`}
+                  >
+                    {film.vote_average.toFixed(1)}
+                  </div>
+                )}
               </figure>
             </div>
           </div>
