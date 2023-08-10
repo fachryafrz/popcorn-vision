@@ -91,350 +91,344 @@ export default function FilmOverview({
             <table
               className={`w-full md:max-w-fit text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 md:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
             >
-              <tbody>
-                {film.production_companies &&
-                  film.production_companies.length > 0 && (
-                    <tr>
-                      {/* <th className="text-gray-400 whitespace-nowrap">
+              {film.production_companies &&
+                film.production_companies.length > 0 && (
+                  <tr>
+                    {/* <th className="text-gray-400 whitespace-nowrap">
                         Produced by
                       </th> */}
-                      {/* <td className={` line-clamp-1`}>
+                    {/* <td className={` line-clamp-1`}>
                         {film.production_companies
                           .map((item) => item.name)
                           .join(", ")}
                       </td> */}
-                      <td colSpan="2" className={`lg:hidden`}>
-                        <div
-                          className={`flex gap-4 flex-wrap justify-center md:justify-start`}
-                        >
-                          {film.production_companies.map(
-                            (item) =>
-                              item.logo_path !== null && (
-                                <img
-                                  key={item.id}
-                                  src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                  alt={item.name}
-                                  title={item.name}
-                                  className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                                />
-                              )
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-
-                {film.release_date || film.first_air_date ? (
-                  <tr>
-                    <th className="text-gray-400">
-                      {!isTvPage ? `Release Date` : `Air Date`}
-                    </th>
-                    {!isTvPage ? (
-                      <td>
-                        <div className={`flex items-center gap-2`}>
-                          <IonIcon icon={calendarOutline} />
-
-                          <time dateTime={film.release_date}>
-                            {formattedDate}
-                          </time>
-                        </div>
-                      </td>
-                    ) : (
-                      <td>
-                        <div className={`flex items-center gap-2`}>
-                          <IonIcon icon={calendarOutline} />
-
-                          <time dateTime={film.first_air_date}>
-                            {formattedDate}{" "}
-                            {film.last_air_date !== null &&
-                              film.last_air_date !== film.first_air_date && (
-                                <span className="hidden xs:inline">
-                                  {`- ${new Date(
-                                    film.last_air_date
-                                  ).toLocaleString("en-US", options)}`}
-                                </span>
-                              )}
-                          </time>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ) : null}
-
-                {isTvPage &&
-                  film.number_of_seasons > 0 &&
-                  film.number_of_episodes > 0 && (
-                    <tr>
-                      <th className="text-gray-400">Chapter</th>
-                      <td>
-                        <div className={`flex items-center gap-2`}>
-                          <IonIcon icon={tvOutline} />
-
-                          <span>
-                            {`${film.number_of_seasons} Season${
-                              film.number_of_seasons > 1 ? `s` : ``
-                            }`}{" "}
-                            {`(${film.number_of_episodes} Episode${
-                              film.number_of_episodes > 1 ? `s` : ``
-                            })`}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-
-                {!isTvPage
-                  ? film.runtime > 0 && (
-                      <tr>
-                        <th className="text-gray-400">Runtime</th>
-
-                        {Math.floor(film.runtime / 60) >= 1 ? (
-                          <td>
-                            <div className={`flex items-center gap-2`}>
-                              <IonIcon icon={timeOutline} />
-                              <time>{film.runtime} minutes</time>
-                              <time>
-                                ({Math.floor(film.runtime / 60)}h{" "}
-                                {film.runtime % 60}m)
-                              </time>
-                            </div>
-                          </td>
-                        ) : (
-                          <td>
-                            <div className={`flex items-center gap-2`}>
-                              <IonIcon icon={timeOutline} />
-
-                              <time>
-                                {film.runtime % 60} minute
-                                {film.runtime % 60 > 1 && `s`}
-                              </time>
-                            </div>
-                          </td>
+                    <td colSpan="2" className={`lg:hidden`}>
+                      <div
+                        className={`flex gap-4 flex-wrap justify-center md:justify-start`}
+                      >
+                        {film.production_companies.map(
+                          (item) =>
+                            item.logo_path !== null && (
+                              <img
+                                key={item.id}
+                                src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                alt={item.name}
+                                title={item.name}
+                                className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                              />
+                            )
                         )}
-                      </tr>
-                    )
-                  : film.episode_run_time.length > 0 && (
-                      <tr>
-                        <th className="text-gray-400">Runtime</th>
-
-                        {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
-                          <td>
-                            <div className={`flex items-center gap-2`}>
-                              <IonIcon icon={timeOutline} />
-
-                              <time>
-                                {Math.floor(film.episode_run_time[0] / 60)}h{" "}
-                                {film.episode_run_time[0] % 60}m
-                              </time>
-                            </div>
-                          </td>
-                        ) : (
-                          <td>
-                            <div className={`flex items-center gap-2`}>
-                              <IonIcon icon={timeOutline} />
-
-                              <time>
-                                {film.episode_run_time[0] % 60} minute
-                                {film.episode_run_time[0] % 60 > 1 && `s`}
-                              </time>
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    )}
-
-                {film.genres && film.genres.length > 0 && (
-                  <tr>
-                    <th className="text-gray-400">Genre</th>
-
-                    {/* <td>{film.genres.map((item) => item.name).join(", ")}</td> */}
-
-                    <td className="py-1 gap-1 flex flex-wrap">
-                      {film.genres.map((item) => {
-                        return (
-                          <span
-                            key={item.id}
-                            className={`p-1 px-3 bg-base-gray bg-opacity-50 rounded-full`}
-                          >
-                            {item.name}
-                          </span>
-                        );
-                      })}
-                    </td>
-                  </tr>
-                )}
-
-                {!isTvPage
-                  ? credits &&
-                    credits.crew.length > 0 &&
-                    credits.crew.find(
-                      (person) => person.job === "Director"
-                    ) && (
-                      <tr>
-                        <th className="text-gray-400 whitespace-nowrap">
-                          Directed by
-                        </th>
-                        <td className={`flex items-center gap-2`}>
-                          {credits.crew.find(
-                            (person) => person.job === "Director"
-                          ).profile_path === null ? (
-                            <img
-                              src={`/popcorn.png`}
-                              alt={
-                                credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).name
-                              }
-                              className={`aspect-square w-[40px] rounded-full object-contain`}
-                            />
-                          ) : (
-                            <img
-                              src={`https://image.tmdb.org/t/p/w185${
-                                credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).profile_path
-                              }`}
-                              alt={
-                                credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).name
-                              }
-                              className={`aspect-square w-[40px] rounded-full`}
-                            />
-                          )}
-                          <div className="flex flex-col">
-                            <span className="">
-                              {
-                                credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).name
-                              }
-                            </span>
-                            <span className="text-sm text-gray-400 ">
-                              {credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).gender === 0
-                                ? `Not Specified`
-                                : credits.crew.find(
-                                    (person) => person.job === "Director"
-                                  ).gender === 1
-                                ? `Female`
-                                : credits.crew.find(
-                                    (person) => person.job === "Director"
-                                  ).gender === 2
-                                ? `Male`
-                                : ``}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    )
-                  : film.created_by.length > 0 && (
-                      <tr>
-                        <th className="text-gray-400 whitespace-nowrap">
-                          Directed by
-                        </th>
-                        <td className={`flex flex-wrap items-center gap-2`}>
-                          {film.created_by.map((item, index) => {
-                            const gender =
-                              item.gender === 0
-                                ? `Not Specified`
-                                : item.gender === 1
-                                ? `Female`
-                                : item.gender === 2
-                                ? `Male`
-                                : ``;
-
-                            return (
-                              <div
-                                key={index}
-                                className={`flex items-center gap-2`}
-                              >
-                                {item.profile_path === null ? (
-                                  <img
-                                    src={`/popcorn.png`}
-                                    alt={item.name}
-                                    className={`aspect-square w-[40px] rounded-full object-contain`}
-                                  />
-                                ) : (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
-                                    alt={item.name}
-                                    className={`aspect-square w-[40px] rounded-full`}
-                                  />
-                                )}
-                                <div className={`flex flex-col`}>
-                                  <span className="">{item.name}</span>
-                                  {item.gender < 3 && (
-                                    <span className="text-sm text-gray-400 ">
-                                      {gender}
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </td>
-                      </tr>
-                    )}
-
-                {providers.results && providers.results.ID && (
-                  <tr>
-                    <th className="text-gray-400 whitespace-nowrap">
-                      Providers
-                    </th>
-
-                    <td>
-                      <div className="flex flex-col gap-1 justify-center md:justify-start pt-4">
-                        <span className={`text-gray-400 text-sm`}>
-                          Available in
-                        </span>
-
-                        <div className={`flex gap-2 flex-wrap`}>
-                          {providers.results.ID.rent
-                            ? providers.results.ID.rent.map(
-                                (item) =>
-                                  item.logo_path !== null && (
-                                    <img
-                                      key={item.provider_id}
-                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                      alt={item.provider_name}
-                                      title={item.provider_name}
-                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    />
-                                  )
-                              )
-                            : providers.results.ID.buy
-                            ? providers.results.ID.buy.map(
-                                (item) =>
-                                  item.logo_path !== null && (
-                                    <img
-                                      key={item.provider_id}
-                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                      alt={item.provider_name}
-                                      title={item.provider_name}
-                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    />
-                                  )
-                              )
-                            : providers.results.ID.flatrate.map(
-                                (item) =>
-                                  item.logo_path !== null && (
-                                    <img
-                                      key={item.provider_id}
-                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                      alt={item.provider_name}
-                                      title={item.provider_name}
-                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    />
-                                  )
-                              )}
-                        </div>
                       </div>
                     </td>
                   </tr>
                 )}
-              </tbody>
+
+              {film.release_date || film.first_air_date ? (
+                <tr>
+                  <th className="text-gray-400">
+                    {!isTvPage ? `Release Date` : `Air Date`}
+                  </th>
+                  {!isTvPage ? (
+                    <td>
+                      <div className={`flex items-center gap-2`}>
+                        <IonIcon icon={calendarOutline} />
+
+                        <time dateTime={film.release_date}>
+                          {formattedDate}
+                        </time>
+                      </div>
+                    </td>
+                  ) : (
+                    <td>
+                      <div className={`flex items-center gap-2`}>
+                        <IonIcon icon={calendarOutline} />
+
+                        <time dateTime={film.first_air_date}>
+                          {formattedDate}{" "}
+                          {film.last_air_date !== null &&
+                            film.last_air_date !== film.first_air_date && (
+                              <span className="hidden xs:inline">
+                                {`- ${new Date(
+                                  film.last_air_date
+                                ).toLocaleString("en-US", options)}`}
+                              </span>
+                            )}
+                        </time>
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ) : null}
+
+              {isTvPage &&
+                film.number_of_seasons > 0 &&
+                film.number_of_episodes > 0 && (
+                  <tr>
+                    <th className="text-gray-400">Chapter</th>
+                    <td>
+                      <div className={`flex items-center gap-2`}>
+                        <IonIcon icon={tvOutline} />
+
+                        <span>
+                          {`${film.number_of_seasons} Season${
+                            film.number_of_seasons > 1 ? `s` : ``
+                          }`}{" "}
+                          {`(${film.number_of_episodes} Episode${
+                            film.number_of_episodes > 1 ? `s` : ``
+                          })`}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+
+              {!isTvPage
+                ? film.runtime > 0 && (
+                    <tr>
+                      <th className="text-gray-400">Runtime</th>
+
+                      {Math.floor(film.runtime / 60) >= 1 ? (
+                        <td>
+                          <div className={`flex items-center gap-2`}>
+                            <IonIcon icon={timeOutline} />
+                            <time>{film.runtime} minutes</time>
+                            <time>
+                              ({Math.floor(film.runtime / 60)}h{" "}
+                              {film.runtime % 60}m)
+                            </time>
+                          </div>
+                        </td>
+                      ) : (
+                        <td>
+                          <div className={`flex items-center gap-2`}>
+                            <IonIcon icon={timeOutline} />
+
+                            <time>
+                              {film.runtime % 60} minute
+                              {film.runtime % 60 > 1 && `s`}
+                            </time>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  )
+                : film.episode_run_time.length > 0 && (
+                    <tr>
+                      <th className="text-gray-400">Runtime</th>
+
+                      {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
+                        <td>
+                          <div className={`flex items-center gap-2`}>
+                            <IonIcon icon={timeOutline} />
+
+                            <time>
+                              {Math.floor(film.episode_run_time[0] / 60)}h{" "}
+                              {film.episode_run_time[0] % 60}m
+                            </time>
+                          </div>
+                        </td>
+                      ) : (
+                        <td>
+                          <div className={`flex items-center gap-2`}>
+                            <IonIcon icon={timeOutline} />
+
+                            <time>
+                              {film.episode_run_time[0] % 60} minute
+                              {film.episode_run_time[0] % 60 > 1 && `s`}
+                            </time>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  )}
+
+              {film.genres && film.genres.length > 0 && (
+                <tr>
+                  <th className="text-gray-400">Genre</th>
+
+                  {/* <td>{film.genres.map((item) => item.name).join(", ")}</td> */}
+
+                  <td className="py-1 gap-1 flex flex-wrap">
+                    {film.genres.map((item) => {
+                      return (
+                        <span
+                          key={item.id}
+                          className={`p-1 px-3 bg-base-gray bg-opacity-50 rounded-full`}
+                        >
+                          {item.name}
+                        </span>
+                      );
+                    })}
+                  </td>
+                </tr>
+              )}
+
+              {!isTvPage
+                ? credits &&
+                  credits.crew.length > 0 &&
+                  credits.crew.find((person) => person.job === "Director") && (
+                    <tr>
+                      <th className="text-gray-400 whitespace-nowrap">
+                        Directed by
+                      </th>
+                      <td className={`flex items-center gap-2`}>
+                        {credits.crew.find(
+                          (person) => person.job === "Director"
+                        ).profile_path === null ? (
+                          <img
+                            src={`/popcorn.png`}
+                            alt={
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                            className={`aspect-square w-[40px] rounded-full object-contain`}
+                          />
+                        ) : (
+                          <img
+                            src={`https://image.tmdb.org/t/p/w185${
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).profile_path
+                            }`}
+                            alt={
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                            className={`aspect-square w-[40px] rounded-full`}
+                          />
+                        )}
+                        <div className="flex flex-col">
+                          <span className="">
+                            {
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).name
+                            }
+                          </span>
+                          <span className="text-sm text-gray-400 ">
+                            {credits.crew.find(
+                              (person) => person.job === "Director"
+                            ).gender === 0
+                              ? `Not Specified`
+                              : credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).gender === 1
+                              ? `Female`
+                              : credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).gender === 2
+                              ? `Male`
+                              : ``}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                : film.created_by.length > 0 && (
+                    <tr>
+                      <th className="text-gray-400 whitespace-nowrap">
+                        Directed by
+                      </th>
+                      <td className={`flex flex-wrap items-center gap-2`}>
+                        {film.created_by.map((item, index) => {
+                          const gender =
+                            item.gender === 0
+                              ? `Not Specified`
+                              : item.gender === 1
+                              ? `Female`
+                              : item.gender === 2
+                              ? `Male`
+                              : ``;
+
+                          return (
+                            <div
+                              key={index}
+                              className={`flex items-center gap-2`}
+                            >
+                              {item.profile_path === null ? (
+                                <img
+                                  src={`/popcorn.png`}
+                                  alt={item.name}
+                                  className={`aspect-square w-[40px] rounded-full object-contain`}
+                                />
+                              ) : (
+                                <img
+                                  src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                                  alt={item.name}
+                                  className={`aspect-square w-[40px] rounded-full`}
+                                />
+                              )}
+                              <div className={`flex flex-col`}>
+                                <span className="">{item.name}</span>
+                                {item.gender < 3 && (
+                                  <span className="text-sm text-gray-400 ">
+                                    {gender}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </td>
+                    </tr>
+                  )}
+
+              {providers.results && providers.results.ID && (
+                <tr>
+                  <th className="text-gray-400 whitespace-nowrap">Providers</th>
+
+                  <td>
+                    <div className="flex flex-col gap-1 justify-center md:justify-start pt-4">
+                      <span className={`text-gray-400 text-sm`}>
+                        Available in
+                      </span>
+
+                      <div className={`flex gap-2 flex-wrap`}>
+                        {providers.results.ID.rent
+                          ? providers.results.ID.rent.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )
+                          : providers.results.ID.buy
+                          ? providers.results.ID.buy.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )
+                          : providers.results.ID.flatrate.map(
+                              (item) =>
+                                item.logo_path !== null && (
+                                  <img
+                                    key={item.provider_id}
+                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                    alt={item.provider_name}
+                                    title={item.provider_name}
+                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                  />
+                                )
+                            )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </table>
           </div>
         </div>

@@ -6,7 +6,7 @@ import React from "react";
 export default function FilmPoster({ film }) {
   return (
     <div className="hidden lg:flex flex-col gap-4 md:max-w-full self-start sticky top-20">
-      <figure className="aspect-poster rounded-xl overflow-hidden shadow-2xl">
+      <figure className="aspect-poster rounded-xl overflow-hidden shadow-2xl relative">
         <div
           className={
             film.poster_path === null
@@ -27,6 +27,20 @@ export default function FilmPoster({ film }) {
           src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
           alt={film.title}
         />
+
+        {film.vote_average > 0 && (
+          <div
+            className={`absolute top-0 left-0 font-semibold aspect-square grid place-items-center rounded-full border-2 w-11 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
+              film.vote_average >= 1 && film.vote_average <= 3
+                ? `border-primary-red`
+                : film.vote_average >= 4 && film.vote_average <= 7
+                ? `border-primary-yellow`
+                : `border-green-500`
+            }`}
+          >
+            {film.vote_average.toFixed(1)}
+          </div>
+        )}
       </figure>
 
       <div className={`grid grid-cols-2 gap-4`}>
