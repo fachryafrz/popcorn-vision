@@ -124,59 +124,6 @@ export default function FilmOverview({
                     </tr>
                   )}
 
-                {providers.results && providers.results.ID && (
-                  <tr>
-                    <th className="text-gray-400 whitespace-nowrap">
-                      Providers
-                    </th>
-
-                    <td colSpan="2">
-                      <div
-                        className={`flex gap-2 flex-wrap justify-center md:justify-start py-1`}
-                      >
-                        {providers.results.ID.rent
-                          ? providers.results.ID.rent.map(
-                              (item) =>
-                                item.logo_path !== null && (
-                                  <img
-                                    key={item.provider_id}
-                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                    alt={item.provider_name}
-                                    title={item.provider_name}
-                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                  />
-                                )
-                            )
-                          : providers.results.ID.buy
-                          ? providers.results.ID.buy.map(
-                              (item) =>
-                                item.logo_path !== null && (
-                                  <img
-                                    key={item.provider_id}
-                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                    alt={item.provider_name}
-                                    title={item.provider_name}
-                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                  />
-                                )
-                            )
-                          : providers.results.ID.flatrate.map(
-                              (item) =>
-                                item.logo_path !== null && (
-                                  <img
-                                    key={item.provider_id}
-                                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                    alt={item.provider_name}
-                                    title={item.provider_name}
-                                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                  />
-                                )
-                            )}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-
                 {film.release_date || film.first_air_date ? (
                   <tr>
                     <th className="text-gray-400">
@@ -245,10 +192,10 @@ export default function FilmOverview({
                           <td>
                             <div className={`flex items-center gap-2`}>
                               <IonIcon icon={timeOutline} />
-
+                              <time>{film.runtime} minutes</time>
                               <time>
-                                {Math.floor(film.runtime / 60)}h{" "}
-                                {film.runtime % 60}m
+                                ({Math.floor(film.runtime / 60)}h{" "}
+                                {film.runtime % 60}m)
                               </time>
                             </div>
                           </td>
@@ -430,6 +377,63 @@ export default function FilmOverview({
                         </td>
                       </tr>
                     )}
+
+                {providers.results && providers.results.ID && (
+                  <tr>
+                    <th className="text-gray-400 whitespace-nowrap">
+                      Providers
+                    </th>
+
+                    <td>
+                      <div className="flex flex-col gap-1 justify-center md:justify-start pt-4">
+                        <span className={`text-gray-400 text-sm`}>
+                          Available in
+                        </span>
+
+                        <div className={`flex gap-2 flex-wrap`}>
+                          {providers.results.ID.rent
+                            ? providers.results.ID.rent.map(
+                                (item) =>
+                                  item.logo_path !== null && (
+                                    <img
+                                      key={item.provider_id}
+                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                      alt={item.provider_name}
+                                      title={item.provider_name}
+                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                    />
+                                  )
+                              )
+                            : providers.results.ID.buy
+                            ? providers.results.ID.buy.map(
+                                (item) =>
+                                  item.logo_path !== null && (
+                                    <img
+                                      key={item.provider_id}
+                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                      alt={item.provider_name}
+                                      title={item.provider_name}
+                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                    />
+                                  )
+                              )
+                            : providers.results.ID.flatrate.map(
+                                (item) =>
+                                  item.logo_path !== null && (
+                                    <img
+                                      key={item.provider_id}
+                                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                      alt={item.provider_name}
+                                      title={item.provider_name}
+                                      className={`object-contain w-[40px] aspect-square inline rounded-xl`}
+                                    />
+                                  )
+                              )}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
