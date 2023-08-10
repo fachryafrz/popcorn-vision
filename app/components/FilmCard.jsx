@@ -16,7 +16,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
 
   return (
     <Link href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}>
-      <figure className="rounded-lg overflow-hidden aspect-poster">
+      <figure className="rounded-lg overflow-hidden aspect-poster relative">
         <div
           className={
             film.poster_path === null
@@ -37,6 +37,20 @@ export default function FilmCard({ film, genres, isTvPage }) {
           src={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
           alt={isItTvPage(film.title, film.name)}
         />
+
+        {film.vote_average > 0 && (
+          <div
+            className={`absolute top-0 left-0 text-xs font-semibold aspect-square flex max-w-fit rounded-full border-2 p-2 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
+              film.vote_average >= 1 && film.vote_average <= 3
+                ? `border-primary-red`
+                : film.vote_average >= 4 && film.vote_average <= 7
+                ? `border-primary-yellow`
+                : `border-green-500`
+            }`}
+          >
+            {film.vote_average.toFixed(1)}
+          </div>
+        )}
       </figure>
       <div className="mt-2">
         <h3
