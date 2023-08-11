@@ -101,6 +101,13 @@ export default async function Home() {
   )
     .toISOString()
     .slice(0, 10);
+  const tomorrow = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate() + 2
+  )
+    .toISOString()
+    .slice(0, 10);
   const thirtyDaysAgo = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth() - 1,
@@ -117,23 +124,23 @@ export default async function Home() {
   return (
     <>
       <h1 className="sr-only">{`Popcorn Vision (TV)`}</h1>
-      <HomeSlider films={await getTrending()} />
-      <section id="On The Air">
+      <HomeSlider films={await getTrending()} genres={genres} />
+      <section name="On The Air">
         <FilmSlider
           films={await getFilms("/discover/tv", thirtyDaysAgo, today)}
           title={`On The Air`}
           genres={genres}
         />
       </section>
-      <section id="Upcoming">
+      <section name="Upcoming">
         <FilmSlider
-          films={await getFilms("/discover/tv", today, endOfYear)}
+          films={await getFilms("/discover/tv", tomorrow, endOfYear)}
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
         />
       </section>
-      <section id="Top Rated">
+      <section name="Top Rated">
         <FilmSlider
           films={await getFilms(
             "/discover/tv",
@@ -147,127 +154,127 @@ export default async function Home() {
           genres={genres}
         />
       </section>
-      <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(6)} />
+      <section name="Trending" className="py-[2rem]">
+        <Trending film={await getTrending(6)} genres={genres} />
       </section>
-      <section id="Disney+">
+      <section name="Disney+">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, "2739")}
           title={`Disney+`}
           genres={genres}
         />
       </section>
-      <section id="Netflix">
+      <section name="Netflix">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, "213")}
           title={`Netflix`}
           genres={genres}
         />
       </section>
-      <section id="HBO">
+      <section name="HBO">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, "49")}
           title={`HBO`}
           genres={genres}
         />
       </section>
-      <section id="Prime Video">
+      <section name="Prime Video">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, "1024")}
           title={`Prime Video`}
           genres={genres}
         />
       </section>
-      <section id="Hulu">
+      <section name="Hulu">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, "453")}
           title={`Hulu`}
           genres={genres}
         />
       </section>
-      <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(7)} />
+      <section name="Trending" className="py-[2rem]">
+        <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
       {/* Genres */}
-      <section id="Action & Adventure">
+      <section name="Action & Adventure">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10759")}
           title={`Action & Adventure`}
           genres={genres}
         />
       </section>
-      <section id="Animation">
+      <section name="Animation">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "16")}
           title={`Animation`}
           genres={genres}
         />
       </section>
-      <section id="Comedy">
+      <section name="Comedy">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "35")}
           title={`Comedy`}
           genres={genres}
         />
       </section>
-      <section id="Crime">
+      <section name="Crime">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "80")}
           title={`Crime`}
           genres={genres}
         />
       </section>
-      <section id="Documentary">
+      <section name="Documentary">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "99")}
           title={`Documentary`}
           genres={genres}
         />
       </section>
-      <section id="Drama">
+      <section name="Drama">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "18")}
           title={`Drama`}
           genres={genres}
         />
       </section>
-      <section id="Family">
+      <section name="Family">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10751")}
           title={`Family`}
           genres={genres}
         />
       </section>
-      <section id="Mystery">
+      <section name="Mystery">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "9648")}
           title={`Mystery`}
           genres={genres}
         />
       </section>
-      <section id="Romance">
+      <section name="Romance">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10749")}
           title={`Romance`}
           genres={genres}
         />
       </section>
-      <section id="Reality Show">
+      <section name="Reality Show">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10764")}
           title={`Reality Show`}
           genres={genres}
         />
       </section>
-      <section id="Science Fiction">
+      <section name="Science Fiction">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10765")}
           title={`Science Fiction`}
           genres={genres}
         />
       </section>
-      <section id="War">
+      <section name="War">
         <FilmSlider
           films={await getFilms("/discover/tv", null, null, null, "10768")}
           title={`War`}
