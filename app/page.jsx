@@ -114,7 +114,7 @@ export default async function Home() {
   return (
     <>
       <h1 className="sr-only">{`Popcorn Vision`}</h1>
-      <HomeSlider films={await getTrending()} />
+      <HomeSlider films={await getTrending()} genres={genres} />
 
       <section id="Now Playing">
         <FilmSlider
@@ -149,7 +149,7 @@ export default async function Home() {
       </section>
 
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(6)} />
+        <Trending film={await getTrending(6)} genres={genres} />
       </section>
 
       <section id="Marvel Studios">
@@ -209,7 +209,7 @@ export default async function Home() {
       </section>
 
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(7)} />
+        <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
       <section id="Action">

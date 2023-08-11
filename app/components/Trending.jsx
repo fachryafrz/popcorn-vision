@@ -8,7 +8,7 @@ import React from "react";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 
-export default function Trending({ film }) {
+export default function Trending({ film, genres }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -16,6 +16,13 @@ export default function Trending({ film }) {
     const type = !isTvPage ? movie : tv;
     return type;
   };
+
+  const filmGenres =
+    film.genre_ids && genres
+      ? film.genre_ids.map((genreId) =>
+          genres.find((genre) => genre.id === genreId)
+        )
+      : [];
 
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
   const date = new Date(releaseDate);
@@ -51,9 +58,18 @@ export default function Trending({ film }) {
             <span>{film.vote_average.toFixed(1)}</span>
             <span>&bull;</span>
             <time>{date.getFullYear()}</time>
+            {filmGenres &&
+              filmGenres.slice(0, 1).map((genre) => {
+                return (
+                  <>
+                    <span>&bull;</span>
+                    <span key={genre.id}>{genre.name}</span>
+                  </>
+                );
+              })}
           </div>
 
-          <p className="line-clamp-4">{film.overview}</p>
+          <p className="line-clamp-3">{film.overview}</p>
 
           <Link
             href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}
