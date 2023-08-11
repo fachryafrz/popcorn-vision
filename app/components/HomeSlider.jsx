@@ -29,7 +29,7 @@ export default function HomeSlider({ films, genres }) {
   };
 
   return (
-    <section id="HomeSlider" className="pb-[2rem]">
+    <section name="Home Slider" className="pb-[2rem]">
       <h2 className="sr-only">Discover Movies</h2>
       <Swiper
         modules={[Pagination, Autoplay, EffectFade]}

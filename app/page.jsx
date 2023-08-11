@@ -91,6 +91,15 @@ export default async function Home() {
   // Get current date and other date-related variables
   const currentDate = new Date();
   const today = currentDate.toISOString().slice(0, 10);
+
+  const tomorrow = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate() + 2
+  )
+    .toISOString()
+    .slice(0, 10);
+
   const firstDate = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
@@ -116,7 +125,7 @@ export default async function Home() {
       <h1 className="sr-only">{`Popcorn Vision`}</h1>
       <HomeSlider films={await getTrending()} genres={genres} />
 
-      <section id="Now Playing">
+      <section name="Now Playing">
         <FilmSlider
           films={await getFilms("/discover/movie", thirtyDaysAgo, today)}
           title={`Now Playing`}
@@ -124,16 +133,16 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Upcoming">
+      <section name="Upcoming">
         <FilmSlider
-          films={await getFilms("/discover/movie", today, endOfYear)}
+          films={await getFilms("/discover/movie", tomorrow, endOfYear)}
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
         />
       </section>
 
-      <section id="Top Rated">
+      <section name="Top Rated">
         <FilmSlider
           films={await getFilms(
             "/discover/movie",
@@ -148,11 +157,11 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Trending" className="py-[2rem]">
+      <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(6)} genres={genres} />
       </section>
 
-      <section id="Marvel Studios">
+      <section name="Marvel Studios">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "420")}
           title={`Marvel Studios`}
@@ -160,7 +169,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="DC Comics">
+      <section name="DC Comics">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "429")}
           title={`DC Comics`}
@@ -168,7 +177,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Walt Disney">
+      <section name="Walt Disney">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "2")}
           title={`Walt Disney`}
@@ -176,7 +185,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Universal Pictures">
+      <section name="Universal Pictures">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "33")}
           title={`Universal Pictures`}
@@ -184,7 +193,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Paramount">
+      <section name="Paramount">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "4")}
           title={`Paramount`}
@@ -192,7 +201,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="20th Century Studios">
+      <section name="20th Century Studios">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "25")}
           title={`20th Century Studios`}
@@ -200,7 +209,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Pixar Animation">
+      <section name="Pixar Animation">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, "3")}
           title={`Pixar Animation`}
@@ -208,11 +217,11 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Trending" className="py-[2rem]">
+      <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
-      <section id="Action">
+      <section name="Action">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "28")}
           title={`Action`}
@@ -220,7 +229,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Drama">
+      <section name="Drama">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "18")}
           title={`Drama`}
@@ -228,7 +237,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Comedy">
+      <section name="Comedy">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "35")}
           title={`Comedy`}
@@ -236,7 +245,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Mystery">
+      <section name="Mystery">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "9648")}
           title={`Mystery`}
@@ -244,7 +253,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Romance">
+      <section name="Romance">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "10749")}
           title={`Romance`}
@@ -252,7 +261,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Horror">
+      <section name="Horror">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "27")}
           title={`Horror`}
@@ -260,7 +269,7 @@ export default async function Home() {
         />
       </section>
 
-      <section id="Science Fiction">
+      <section name="Science Fiction">
         <FilmSlider
           films={await getFilms("/discover/movie", null, null, null, "878")}
           title={`Science Fiction`}
