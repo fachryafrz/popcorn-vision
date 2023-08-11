@@ -38,7 +38,9 @@ export default function FilmPoster({ film }) {
                 : `border-green-500`
             }`}
           >
-            {film.vote_average.toFixed(1)}
+            {film.vote_average < 9.9
+              ? film.vote_average.toFixed(1)
+              : film.vote_average}
           </div>
         )}
       </figure>
