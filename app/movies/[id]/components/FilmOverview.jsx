@@ -2,7 +2,7 @@
 "use client";
 
 import TitleLogo from "@/app/components/TitleLogo";
-import React from "react";
+import React, { useState } from "react";
 
 // Swiper styles
 import "swiper/css";
@@ -17,7 +17,13 @@ import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
 import { usePathname } from "next/navigation";
 import { IonIcon } from "@ionic/react";
-import { calendarOutline, timeOutline, tvOutline } from "ionicons/icons";
+import {
+  arrowRedoOutline,
+  calendarOutline,
+  timeOutline,
+  tvOutline,
+} from "ionicons/icons";
+import ShareModal from "./ShareModal";
 
 export default function FilmOverview({
   film,
@@ -44,6 +50,21 @@ export default function FilmOverview({
     day: "numeric",
   };
   const formattedDate = date.toLocaleString("en-US", options);
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: "Shared via My Website",
+        text: "Check out this awesome content!",
+        url: window.location.href,
+      });
+      console.log("Content shared successfully");
+    } catch (error) {
+      console.error("Error sharing content:", error);
+    }
+  };
+
+  const [isActive, setIsActive] = useState(false);
 
   return (
     <>
@@ -394,7 +415,7 @@ export default function FilmOverview({
                   <th className="text-gray-400 whitespace-nowrap">Providers</th>
 
                   <td>
-                    <div className="flex flex-col gap-1 justify-center md:justify-start pt-4">
+                    <div className="flex flex-col gap-1 justify-center md:justify-start py-4">
                       <span className={`text-gray-400 text-sm`}>
                         Available in
                       </span>
@@ -443,6 +464,26 @@ export default function FilmOverview({
                   </td>
                 </tr>
               )}
+
+              <tr>
+                <td className={`flex items-center gap-1`}>
+                  <button
+                    onClick={handleShare}
+                    className={`flex sm:hidden items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
+                  >
+                    <IonIcon icon={arrowRedoOutline} />
+                    <span>Share</span>
+                  </button>
+
+                  <button
+                    onClick={() => setIsActive(!isActive)}
+                    className={`hidden sm:flex items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
+                  >
+                    <IonIcon icon={arrowRedoOutline} />
+                    <span>Share</span>
+                  </button>
+                </td>
+              </tr>
             </table>
           </div>
         </div>
@@ -468,6 +509,8 @@ export default function FilmOverview({
           )}
         </div>
       </div>
+
+      <ShareModal isActive={isActive} setIsActive={setIsActive} />
     </>
   );
 }
