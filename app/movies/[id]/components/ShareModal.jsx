@@ -1,8 +1,5 @@
 "use client";
 
-import { IonIcon } from "@ionic/react";
-import { chevronBackOutline, chevronForwardOutline } from "ionicons/icons";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   FacebookIcon,
@@ -14,16 +11,14 @@ import {
 } from "react-share";
 
 export default function ShareModal({ isActive, setIsActive }) {
-  const appURL = `https://popcorn.vision`;
-  const pathname = usePathname();
-  const fullURL = `${appURL}${pathname}`;
+  const URL = window.location.href;
 
   const [copied, setCopied] = useState(false);
   const modal = useRef();
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(fullURL);
+      await navigator.clipboard.writeText(URL);
       setCopied(true);
       setTimeout(() => setCopied(false), 5000); // Reset copied state after 2 seconds
     } catch (error) {
@@ -50,39 +45,30 @@ export default function ShareModal({ isActive, setIsActive }) {
       <div
         id="modal"
         ref={modal}
-        className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-50 backdrop-blur-xl w-full`}
+        className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-50 backdrop-blur-xl w-full flex flex-col items-center`}
       >
         <h2>Share</h2>
 
-        <div className={`mt-2 flex items-center gap-2 mb-4`}>
-          <WhatsappShareButton
-            url={fullURL}
-            title={`Check out this amazing film!`}
-          >
+        <div className={`mt-2 flex items-center justify-center gap-2 mb-4`}>
+          <WhatsappShareButton url={URL} title={`Check out this amazing film!`}>
             <WhatsappIcon size={50} round={true} />
           </WhatsappShareButton>
 
-          <FacebookShareButton
-            url={fullURL}
-            title={`Check out this amazing film!`}
-          >
+          <FacebookShareButton url={URL} title={`Check out this amazing film!`}>
             <FacebookIcon size={50} round={true} />
           </FacebookShareButton>
 
-          <TwitterShareButton
-            url={fullURL}
-            title={`Check out this amazing film!`}
-          >
+          <TwitterShareButton url={URL} title={`Check out this amazing film!`}>
             <TwitterIcon size={50} round={true} />
           </TwitterShareButton>
         </div>
 
         <div
-          className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-black text-sm border border-white border-opacity-50`}
+          className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-black text-sm border border-white border-opacity-50 w-full`}
         >
           <input
             type="text"
-            value={fullURL}
+            value={URL}
             readOnly
             className={`bg-transparent w-full`}
           />
