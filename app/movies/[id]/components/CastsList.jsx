@@ -22,12 +22,14 @@ export default function CastsList({ credits }) {
           Casts & Credits {/* ({credits.cast.length}) */}
         </h2>
 
-        <button
-          onClick={handleShowAllActors}
-          className={`text-primary-blue flex items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
-        >
-          {showAllActors ? "Show Less" : "Show All"}
-        </button>
+        {credits && credits.cast && credits.cast.length > numActors && (
+          <button
+            onClick={handleShowAllActors}
+            className={`text-primary-blue flex items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
+          >
+            {showAllActors ? "Show Less" : "Show All"}
+          </button>
+        )}
       </div>
       <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[500px] overflow-y-auto">
         {credits &&
@@ -43,7 +45,7 @@ export default function CastsList({ credits }) {
                 />
               );
             })}
-        {credits && credits.cast && credits.cast.length > numActors ? (
+        {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
             className={`text-primary-blue sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hocus:bg-white hocus:bg-opacity-10 hidden text-sm font-medium mb-2`}
@@ -58,8 +60,6 @@ export default function CastsList({ credits }) {
               className="text-[1.25rem]"
             />
           </button>
-        ) : (
-          ``
         )}
       </div>
     </div>

@@ -123,7 +123,7 @@ export default function FilmOverview({
             )}
 
             <table
-              className={`w-full md:max-w-fit text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 md:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
+              className={`w-full text-sm lg:text-base [&_td]:leading-loose [&_th]:text-left [&_th]:whitespace-nowrap [&_th]:pr-2 md:[&_th]:pr-6 [&_th]:w-[100px] [&_th]:font-normal [&_th]:hidden`}
             >
               {film.production_companies &&
                 film.production_companies.length > 0 && (
@@ -465,7 +465,7 @@ export default function FilmOverview({
               )}
 
               <tr>
-                <td className={`flex items-center gap-1`}>
+                <td className={`flex items-center justify-end gap-1`}>
                   <button
                     onClick={handleShare}
                     className={`flex sm:hidden items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
