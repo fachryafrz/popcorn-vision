@@ -54,11 +54,10 @@ export default function FilmOverview({
   const handleShare = async () => {
     try {
       await navigator.share({
-        title: "Shared via My Website",
-        text: "Check out this awesome content!",
+        title: "Shared via Popcorn Vision",
+        text: "Check out this amazing film!",
         url: window.location.href,
       });
-      console.log("Content shared successfully");
     } catch (error) {
       console.error("Error sharing content:", error);
     }
