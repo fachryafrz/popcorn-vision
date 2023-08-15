@@ -2,6 +2,7 @@ import "./globals.css";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import Copyright from "./components/Copyright";
+import GoogleAnalytics from "./components/GoogleAnalytics";
 
 export const metadata = {
   generator: process.env.APP_NAME,
@@ -70,6 +71,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/popcorn.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
+      <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-dark-gray text-white">
         {/* Navbar */}
         <Navbar />
