@@ -47,7 +47,7 @@ export default function ShareModal({ isActive, setIsActive }) {
         ref={modal}
         className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-50 backdrop-blur-xl w-full flex flex-col items-center`}
       >
-        <h2>Share</h2>
+        <h2>Share to</h2>
 
         <div className={`mt-2 flex items-center justify-center gap-2 mb-4`}>
           <WhatsappShareButton url={URL} title={`Check out this amazing film!`}>

@@ -54,7 +54,7 @@ export default function FilmOverview({
   const handleShare = async () => {
     try {
       await navigator.share({
-        // title: "Shared via Popcorn Vision",
+        title: "Shared via Popcorn Vision",
         // text: "Check out this amazing film!",
         url: window.location.href,
       });
