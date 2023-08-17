@@ -1,17 +1,6 @@
 export default function loading() {
+  const sectionCount = 2;
   const itemCount = 7;
-
-  const renderItems = () => {
-    return Array.from({ length: itemCount }, (_, index) => (
-      <div key={index} className={`flex flex-col gap-1 !bg-opacity-0`}>
-        <div
-          className={`h-[250px] w-[40vw] sm:w-[28vw] md:w-[23.5vw] lg:w-[19vw] xl:w-[13vw]`}
-        ></div>
-        <div className={`h-[20px]`}></div>
-        <div className={`h-[1rem]`}></div>
-      </div>
-    ));
-  };
 
   return (
     <div
@@ -27,24 +16,27 @@ export default function loading() {
       </section>
 
       {/* FilmSlider */}
-      <section
-        className={`flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4 xl:px-[9rem]`}
-      >
-        <div className={`h-[28px] w-[100px]`}></div>
-        <div className={`flex gap-2 flex-nowrap overflow-hidden !bg-opacity-0`}>
-          {renderItems()}
-        </div>
-      </section>
-
-      {/* FilmSlider */}
-      <section
-        className={`flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4 xl:px-[9rem]`}
-      >
-        <div className={`h-[28px] w-[100px] bg-opacity-[15%]`}></div>
-        <div className={`flex gap-2 flex-nowrap overflow-hidden !bg-opacity-0`}>
-          {renderItems()}
-        </div>
-      </section>
+      {[...Array(sectionCount).keys()].map((a) => (
+        <section
+          key={a}
+          className={`flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4 xl:px-[9rem]`}
+        >
+          <div className={`h-[28px] w-[100px]`}></div>
+          <div
+            className={`flex gap-2 flex-nowrap overflow-hidden !bg-opacity-0`}
+          >
+            {[...Array(itemCount).keys()].map((b) => (
+              <div key={b} className={`flex flex-col gap-1 !bg-opacity-0`}>
+                <div
+                  className={`h-[250px] w-[40vw] sm:w-[28vw] md:w-[23.5vw] lg:w-[19vw] xl:w-[13vw]`}
+                ></div>
+                <div className={`h-[20px]`}></div>
+                <div className={`h-[1rem]`}></div>
+              </div>
+            ))}{" "}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
