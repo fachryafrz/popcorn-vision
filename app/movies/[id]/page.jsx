@@ -23,14 +23,9 @@ export async function generateMetadata({ params, type = "movie" }) {
 
   const isTvPage = type !== "movie" ? true : false;
 
-  const filmReleaseDate = !isTvPage
-    ? new Date(film.release_date).getFullYear() // For movies, use the release_date
-    : new Date(film.last_air_date).getFullYear() ===
-      new Date(film.first_air_date).getFullYear()
-    ? new Date(film.first_air_date).getFullYear() // For TV shows with the same first and last air date, use the first_air_date
-    : `${new Date(film.first_air_date).getFullYear()}-${new Date(
-        film.last_air_date
-      ).getFullYear()}`;
+  const filmReleaseDate = film.release_date
+    ? new Date(film.release_date).getFullYear()
+    : `Coming soon`;
 
   let backdrops;
 
@@ -38,9 +33,13 @@ export async function generateMetadata({ params, type = "movie" }) {
     backdrops = {
       images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
     };
-  } else {
+  } else if (film.backdrop_path) {
     backdrops = {
       images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+    };
+  } else if (film.poster_path) {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
     };
   }
 

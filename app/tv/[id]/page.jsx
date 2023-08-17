@@ -33,9 +33,13 @@ export async function generateMetadata({ params, type = "tv" }) {
     backdrops = {
       images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
     };
-  } else {
+  } else if (film.backdrop_path) {
     backdrops = {
       images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+    };
+  } else if (film.poster_path) {
+    backdrops = {
+      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
     };
   }
 
