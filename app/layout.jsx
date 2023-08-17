@@ -1,6 +1,6 @@
 import "./globals.css";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Copyright from "./components/Copyright";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 

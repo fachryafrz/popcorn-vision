@@ -13,7 +13,7 @@ import React from "react";
 import { usePathname } from "next/navigation";
 
 // JSON import
-import footer from "./footer.json";
+import footer from "@/app/json/footer.json";
 
 export default function Footer() {
   // Date variables
