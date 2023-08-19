@@ -8,20 +8,20 @@
         "url": "/"
       },
       {
-        "name": "TV Channel",
-        "url": "/"
+        "name": "TV Series",
+        "url": "/tv"
       },
       {
-        "name": "Cinema Ticket",
-        "url": "/"
+        "name": "Streaming",
+        "url": "/streaming"
       },
       {
         "name": "Newsletter",
-        "url": "/"
+        "url": "/newsletter"
       },
       {
         "name": "Blogs Article",
-        "url": "/"
+        "url": "/blog"
       }
     ]
   },
@@ -31,19 +31,19 @@
     "links": [
       {
         "name": "Sign Up",
-        "url": "/"
+        "url": "/signup"
       },
       {
         "name": "Download App",
-        "url": "/"
+        "url": "/download"
       },
       {
         "name": "Choose Plan",
-        "url": "/"
+        "url": "/plans"
       },
       {
         "name": "Pay Method",
-        "url": "/"
+        "url": "/pay"
       }
     ]
   },
@@ -53,23 +53,23 @@
     "links": [
       {
         "name": "Partnership",
-        "url": "/"
+        "url": "/partnership"
       },
       {
         "name": "Terms of Use",
-        "url": "/"
+        "url": "/tou"
       },
       {
         "name": "About",
-        "url": "/"
+        "url": "/about"
       },
       {
         "name": "Pricing",
-        "url": "/"
+        "url": "/pricing"
       },
       {
         "name": "Contact",
-        "url": "/"
+        "url": "https://fachryafrz.vercel.app"
       }
     ]
   }

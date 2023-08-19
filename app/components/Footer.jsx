@@ -42,7 +42,7 @@ export default function Footer() {
                 footer.links.map((link) => (
                   <li key={link.name}>
                     <Link
-                      href={isTvPage ? `/tv` : `/`}
+                      href={link.url}
                       className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
                     >
                       {link.name}
