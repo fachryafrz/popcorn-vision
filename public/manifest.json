@@ -4,7 +4,7 @@
   "description": "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
   "icons": [
     {
-      "src": "maskable_x512.png",
+      "src": "maskable_icon_x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
