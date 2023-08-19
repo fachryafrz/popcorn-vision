@@ -396,7 +396,7 @@ export default function Search() {
             {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
               <button
                 onClick={() => fetchMoreMovies((currentSearchPage += 1))}
-                className="text-primary-blue py-2 flex justify-center hocus:bg-white hocus:bg-opacity-10 rounded-lg"
+                className="text-primary-blue py-2 flex justify-center bg-white bg-opacity-10 hocus:bg-opacity-20 rounded-lg"
               >
                 Load more movies
               </button>
