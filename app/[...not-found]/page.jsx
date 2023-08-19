@@ -24,7 +24,7 @@ export default function NotFound() {
     <div className={`flex flex-col items-center justify-center h-[90vh] p-4`}>
       <h2 className={`sr-only`}>Not Found</h2>
       <img
-        src={`/popcorn.png`}
+        src={`/sad_popcorn.png`}
         alt={process.env.APP_NAME}
         className={`h-[200px] w-[200px] object-contain`}
       />
