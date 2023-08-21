@@ -11,7 +11,7 @@ import {
 } from "react-share";
 
 export default function ShareModal({ isActive, setIsActive }) {
-  const URL = window.location.href;
+  const [URL, setURL] = useState("");
 
   const [copied, setCopied] = useState(false);
   const modal = useRef();
@@ -27,6 +27,8 @@ export default function ShareModal({ isActive, setIsActive }) {
   };
 
   useEffect(() => {
+    setURL(window.location.href);
+
     const handleActive = (e) => {
       if (!modal.current.contains(e.target)) {
         setIsActive(false);

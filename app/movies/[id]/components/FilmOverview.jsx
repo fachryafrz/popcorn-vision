@@ -2,7 +2,7 @@
 "use client";
 
 import TitleLogo from "@/app/components/TitleLogo";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // Swiper styles
 import "swiper/css";
@@ -33,6 +33,7 @@ export default function FilmOverview({
   credits,
   providers,
 }) {
+  const [URL, setURL] = useState("");
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -51,12 +52,16 @@ export default function FilmOverview({
   };
   const formattedDate = date.toLocaleString("en-US", options);
 
+  useEffect(() => {
+    setURL(window.location.href);
+  }, []);
+
   const handleShare = async () => {
     try {
       await navigator.share({
         title: "Shared via Popcorn Vision",
         // text: "Check out this amazing film!",
-        url: window.location.href,
+        url: URL,
       });
     } catch (error) {
       console.error("Error sharing content:", error);
