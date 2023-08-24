@@ -90,14 +90,24 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="p-8 flex justify-center border-t border-base-gray border-opacity-25 text-center">
-        <p>
+      <div className="p-4 flex flex-col justify-center border-t border-base-gray border-opacity-25 text-center">
+        <span>
           Popcorn Vision &copy;{" "}
           {createdYear == currentYear
             ? createdYear
             : `${createdYear}-${currentYear}`}{" "}
           all rights reserved
-        </p>
+        </span>
+        <span className={`flex gap-1 items-center justify-center`}>
+          <span>Powered by</span>
+          <a href="https://themoviedb.org" target="_blank" className={`mt-1`}>
+            <img
+              src={`https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`}
+              alt={`The Movie DB`}
+              className={`w-20 object-contain`}
+            />
+          </a>
+        </span>
       </div>
     </div>
   );
