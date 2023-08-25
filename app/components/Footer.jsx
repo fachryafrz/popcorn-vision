@@ -28,10 +28,12 @@ export default function Footer() {
     <div className="px-4 lg:px-6 mx-auto pt-[2rem] xl:px-[9rem] flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure
-          className={`w-[200px] flex flex-col font-bold text-4xl text-center items-center after:leading-tight after:content-["Popcorn_Vision"]`}
-        >
-          <img loading="lazy" src={`/popcorn.png`} alt="Popcorn Vision" />
-        </figure>
+          style={{ background: `url(/popcorn.png)`, backgroundSize: `contain` }}
+          className={`w-[200px] aspect-square`}
+        ></figure>
+        <figcaption
+          className={`w-[200px] font-bold text-4xl text-center items-center after:leading-tight after:content-["Popcorn_Vision"]`}
+        ></figcaption>
       </div>
       <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {footer.map((footer) => (

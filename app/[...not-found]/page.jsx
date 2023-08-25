@@ -23,12 +23,14 @@ export default function NotFound() {
   return (
     <div className={`flex flex-col items-center justify-center h-[90vh] p-4`}>
       <h2 className={`sr-only`}>Not Found</h2>
-      <img
-        src={`/sad_popcorn.png`}
-        alt={process.env.APP_NAME}
-        className={`h-[200px] w-[200px] object-contain`}
-      />
-      <p>Oops! We don&apos;t think we have this page.</p>
+      <figure
+        style={{
+          background: `url(/sad_popcorn.png)`,
+          backgroundSize: `contain`,
+        }}
+        className={`w-[200px] aspect-square`}
+      ></figure>
+      <p>Oops! We don&apos;t have this page.</p>
       <p>Try searching for something else.</p>
       <div
         className={`mt-4 px-4 py-4 -top-8 w-full max-w-xl sm:mx-auto bg-gray-600 bg-opacity-[90%] backdrop-blur flex items-center gap-4 mx-4 rounded-2xl shadow-xl border-t-4 border-x-4 border-base-dark-gray before:absolute before:w-4 before:h-4 before:bg-transparent before:top-3 before:-left-5 before:rounded-br-xl before:shadow-custom-left after:absolute after:w-4 after:h-4 after:bg-transparent after:top-3 after:-right-5 after:rounded-bl-xl after:shadow-custom-right`}

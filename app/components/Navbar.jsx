@@ -23,17 +23,18 @@ export default function Navbar() {
       <div className="mx-auto py-2 px-4 xl:px-[9rem] flex flex-wrap justify-between">
         <Link
           href={!isTvPage ? `/` : `/tv`}
-          className="flex gap-2 items-center font-semibold tracking-wide leading-none max-w-fit"
+          className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
         >
           <figure
-            className={`aspect-square w-[50px] flex after:content-["Popcorn_Vision"] after:leading-tight after:pl-1 after:h-full after:flex after:items-center`}
-          >
-            <img
-              loading="lazy"
-              src={`/popcorn.png`}
-              alt={process.env.APP_NAME}
-            />
-          </figure>
+            style={{
+              background: `url(/popcorn.png)`,
+              backgroundSize: `contain`,
+            }}
+            className={`w-[50px] aspect-square`}
+          ></figure>
+          <figcaption
+            className={`w-[70px] after:content-["Popcorn_Vision"] after:leading-tight after:h-full after:flex after:items-center`}
+          ></figcaption>
         </Link>
         <div className="flex items-center gap-2">
           <div className="flex place-content-center w-fit gap-1 p-1 rounded-xl bg-[#323946] bg-opacity-30 backdrop-blur">
