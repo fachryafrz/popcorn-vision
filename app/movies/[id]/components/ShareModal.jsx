@@ -41,32 +41,34 @@ export default function ShareModal({ isActive, setIsActive }) {
   return (
     <div
       className={`${
-        isActive ? `block` : `hidden`
-      } fixed inset-0 w-screen h-screen z-50 bg-black bg-opacity-75 grid place-items-center p-8`}
+        isActive
+          ? `opacity-100 pointer-events-auto`
+          : `opacity-0 pointer-events-none`
+      } fixed inset-0 w-screen h-screen z-50 bg-black bg-opacity-75 backdrop-blur grid place-items-center p-8 transition-all`}
     >
       <div
         id="modal"
         ref={modal}
-        className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-50 backdrop-blur-xl w-full flex flex-col items-center`}
+        className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-75 w-full flex flex-col items-center`}
       >
         <h2>Share to</h2>
 
         <div className={`mt-2 flex items-center justify-center gap-2 mb-4`}>
-          <WhatsappShareButton url={URL} title={`Check out this amazing film!`}>
+          <WhatsappShareButton url={URL}>
             <WhatsappIcon size={50} round={true} />
           </WhatsappShareButton>
 
-          <FacebookShareButton url={URL} title={`Check out this amazing film!`}>
+          <FacebookShareButton url={URL}>
             <FacebookIcon size={50} round={true} />
           </FacebookShareButton>
 
-          <TwitterShareButton url={URL} title={`Check out this amazing film!`}>
+          <TwitterShareButton url={URL}>
             <TwitterIcon size={50} round={true} />
           </TwitterShareButton>
         </div>
 
         <div
-          className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-black text-sm border border-white border-opacity-50 w-full`}
+          className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl bg-black bg-opacity-50 text-sm border border-white border-opacity-50 w-full`}
         >
           <input
             type="text"
