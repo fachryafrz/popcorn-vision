@@ -60,17 +60,25 @@ export default function FilmCollection({ film }) {
                     {index + 1}
                   </span>
 
-                  <figure className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden">
-                    <img
-                      src={
-                        item.poster_path
-                          ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
-                          : `/popcorn.png`
-                      }
-                      alt={item.title}
-                      className={`object-contain`}
-                    />
-                  </figure>
+                  <div className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center">
+                    {item.poster_path ? (
+                      <figure className={`w-full`}>
+                        <img
+                          src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                          alt={item.title}
+                          className={`object-contain`}
+                        />
+                      </figure>
+                    ) : (
+                      <figure
+                        style={{
+                          background: `url(/popcorn.png)`,
+                          backgroundSize: `contain`,
+                        }}
+                        className={`aspect-square w-[50px]`}
+                      ></figure>
+                    )}
+                  </div>
                   <div className="flex flex-col gap-1 items-start w-full">
                     <h3
                       className="text-start line-clamp-2 font-medium"

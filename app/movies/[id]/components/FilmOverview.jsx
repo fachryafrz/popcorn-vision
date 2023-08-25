@@ -314,29 +314,26 @@ export default function FilmOverview({
                         {credits.crew.find(
                           (person) => person.job === "Director"
                         ).profile_path === null ? (
-                          <img
-                            src={`/popcorn.png`}
-                            alt={
-                              credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).name
-                            }
-                            className={`aspect-square w-[40px] rounded-full object-contain`}
-                          />
+                          <figure
+                            style={{
+                              background: `url(/popcorn.png)`,
+                              backgroundSize: `contain`,
+                            }}
+                            className={`aspect-square w-[50px]`}
+                          ></figure>
                         ) : (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w185${
-                              credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).profile_path
-                            }`}
-                            alt={
-                              credits.crew.find(
-                                (person) => person.job === "Director"
-                              ).name
-                            }
-                            className={`aspect-square w-[40px] rounded-full`}
-                          />
+                          <figure
+                            style={{
+                              background: `url(https://image.tmdb.org/t/p/w185${
+                                credits.crew.find(
+                                  (person) => person.job === "Director"
+                                ).profile_path
+                              })`,
+                              backgroundSize: `cover`,
+                              backgroundPosition: `center`,
+                            }}
+                            className={`aspect-square w-[50px] rounded-full`}
+                          ></figure>
                         )}
                         <div className="flex flex-col">
                           <span className="">

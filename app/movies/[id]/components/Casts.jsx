@@ -4,28 +4,26 @@ import React from "react";
 export default function Casts({ actor, showAllActors }) {
   return (
     <div className="flex flex-col lg:flex-row text-center lg:text-start gap-2 items-center lg:items-start min-w-[120px]">
-      <figure className="!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0">
-        <div
-          className={
-            actor.profile_path === null
-              ? `w-full h-full bg-base-dark-gray`
-              : `hidden`
-          }
-        >
-          <img
-            loading="lazy"
-            src={`/popcorn.png`}
-            alt={process.env.APP_NAME}
-            className={`object-contain`}
-          />
-        </div>
-
-        <img
-          loading="lazy"
-          src={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
-          alt={actor.name}
-        />
-      </figure>
+      <div className="!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0">
+        {actor.profile_path === null ? (
+          <figure
+            style={{
+              background: `url(/popcorn.png)`,
+              backgroundSize: `contain`,
+            }}
+            className={`w-[50px] aspect-square`}
+          ></figure>
+        ) : (
+          <figure
+            style={{
+              background: `url(https://image.tmdb.org/t/p/w185${actor.profile_path})`,
+              backgroundSize: `cover`,
+              backgroundPosition: `center`,
+            }}
+            className={`w-[50px] aspect-square`}
+          ></figure>
+        )}
+      </div>
       <div className="w-full self-center">
         <h3
           title={actor.name}

@@ -42,23 +42,27 @@ export default function ReviewCard({ review }) {
   return (
     <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
       <div className="flex gap-2 items-center">
-        <figure className="aspect-square !w-[50px] self-center rounded-full overflow-hidden">
-          <div
-            className={`relative ${
-              imgUrlAPI === null ? `w-full h-full bg-base-dark-gray` : `hidden`
-            }`}
-          >
-            <img
-              loading="lazy"
-              src={`/popcorn.png`}
-              alt={process.env.APP_NAME}
-              className={`object-contain`}
-            />
-          </div>
-          {imgUrl && (
-            <img loading="lazy" src={`${imgUrl}`} alt={review.author} />
+        <div className="aspect-square !w-[50px] self-center rounded-full overflow-hidden bg-base-dark-gray">
+          {imgUrlAPI === null ? (
+            <figure
+              style={{
+                background: `url(/popcorn.png)`,
+                backgroundSize: `contain`,
+              }}
+              className={`w-[50px] aspect-square`}
+            ></figure>
+          ) : (
+            imgUrl && (
+              <figure
+                style={{
+                  background: `url(${imgUrl})`,
+                  backgroundSize: `cover`,
+                }}
+                className={`w-[50px] aspect-square`}
+              ></figure>
+            )
           )}
-        </figure>
+        </div>
         <div className="flex flex-col justify-center max-w-[45vw]">
           <span className="font-medium line-clamp-1">{review.author}</span>
 
