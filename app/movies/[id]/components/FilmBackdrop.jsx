@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import Image from "next/image";
 import React from "react";
 
 export default function FilmBackdrop({ film }) {
@@ -19,11 +20,13 @@ export default function FilmBackdrop({ film }) {
         />
       </div>
 
-      <img
+      <Image
         loading="lazy"
         src={`${process.env.API_IMAGE_1280}${film.backdrop_path}`}
         alt={film.title}
         className="object-top"
+        width={1280}
+        height={1280}
       />
     </figure>
   );

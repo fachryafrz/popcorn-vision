@@ -7,6 +7,7 @@ import Link from "next/link";
 import React from "react";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -34,18 +35,22 @@ export default function Trending({ film, genres }) {
       <h2 className="sr-only">{`Trending Movie`}</h2>
       <div className="relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black">
         <figure className="absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0">
-          <img
+          <Image
             loading="lazy"
             src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
             alt={film.title}
             className={`object-top`}
+            width={500}
+            height={500}
           />
         </figure>
         <figure className="z-30 max-w-[300px] aspect-poster rounded-2xl overflow-hidden">
-          <img
+          <Image
             loading="lazy"
             src={`https://image.tmdb.org/t/p/w780${film.poster_path}`}
             alt={film.title}
+            width={500}
+            height={500}
           />
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">

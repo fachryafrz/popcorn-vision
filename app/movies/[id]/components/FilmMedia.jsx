@@ -23,6 +23,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
+import Image from "next/image";
 
 export default function FilmMedia({ videos, images }) {
   const filteredVideos =
@@ -109,11 +110,13 @@ export default function FilmMedia({ videos, images }) {
             return (
               <SwiperSlide key={index}>
                 <figure className="swiper-zoom-container">
-                  <img
+                  <Image
                     loading="lazy"
                     src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
                     alt={``}
                     className={`w-full h-full object-cover`}
+                    width={780}
+                    height={780}
                   />
                 </figure>
               </SwiperSlide>

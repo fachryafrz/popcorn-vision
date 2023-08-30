@@ -18,6 +18,7 @@ import "swiper/css/effect-fade";
 // Components
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
@@ -66,18 +67,22 @@ export default function HomeSlider({ films, genres }) {
               className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-dark-gray after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-dark-gray after:via-base-dark-gray after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[600px] aspect-poster sm:aspect-[4/3] md:aspect-auto"
             >
               <figure className="h-full w-full -z-10">
-                <img
+                <Image
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
                   alt={isItTvPage(film.title, film.name)}
                   className="object-top sm:hidden"
+                  width={500}
+                  height={500}
                 />
 
-                <img
+                <Image
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
                   alt={isItTvPage(film.title, film.name)}
                   className="object-top hidden sm:block"
+                  width={1280}
+                  height={1280}
                 />
               </figure>
               <div className="flex flex-col items-center md:items-start gap-2 lg:gap-2 z-20 md:max-w-[50%] lg:max-w-[50%] absolute inset-0 p-4 xl:pl-[9rem] h-full justify-end [&_*]:z-10 text-white">
