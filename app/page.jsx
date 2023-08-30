@@ -127,7 +127,7 @@ export default async function Home() {
       <HomeSlider films={await getTrending()} genres={genres} />
 
       {/* Now Playing */}
-      <section name="Now Playing">
+      <section id="Now Playing">
         <FilmSlider
           films={await getFilms("/discover/movie", thirtyDaysAgo, today)}
           title={`Now Playing`}
@@ -136,7 +136,7 @@ export default async function Home() {
       </section>
 
       {/* Upcoming */}
-      <section name="Upcoming">
+      <section id="Upcoming">
         <FilmSlider
           films={await getFilms("/discover/movie", tomorrow, endOfYear)}
           title={`Upcoming`}
@@ -146,7 +146,7 @@ export default async function Home() {
       </section>
 
       {/* Top Rated */}
-      <section name="Top Rated">
+      <section id="Top Rated">
         <FilmSlider
           films={await getFilms(
             "/discover/movie",
@@ -162,13 +162,13 @@ export default async function Home() {
       </section>
 
       {/* Trending */}
-      <section name="Trending" className="py-[2rem]">
+      <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(6)} genres={genres} />
       </section>
 
       {/* Companies */}
       {companies.map(async (company) => (
-        <section key={company.id} name={company.name}>
+        <section key={company.id} id={company.name}>
           <FilmSlider
             films={await getFilms("/discover/movie", null, null, company.id)}
             title={company.name}
@@ -178,13 +178,13 @@ export default async function Home() {
       ))}
 
       {/* Trending */}
-      <section name="Trending" className="py-[2rem]">
+      <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
       {/* Genres */}
       {genres.map(async (genre) => (
-        <section key={genre.id} name={genre.name}>
+        <section key={genre.id} id={genre.name}>
           <FilmSlider
             films={await getFilms(
               "/discover/movie",

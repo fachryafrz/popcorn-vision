@@ -128,7 +128,7 @@ export default async function Home() {
       <HomeSlider films={await getTrending()} genres={genres} />
 
       {/* On The Air */}
-      <section name="On The Air">
+      <section id="On The Air">
         <FilmSlider
           films={await getFilms("/discover/tv", thirtyDaysAgo, today)}
           title={`On The Air`}
@@ -137,7 +137,7 @@ export default async function Home() {
       </section>
 
       {/* Upcoming */}
-      <section name="Upcoming">
+      <section id="Upcoming">
         <FilmSlider
           films={await getFilms("/discover/tv", tomorrow, endOfYear)}
           title={`Upcoming`}
@@ -147,7 +147,7 @@ export default async function Home() {
       </section>
 
       {/* Top Rated */}
-      <section name="Top Rated">
+      <section id="Top Rated">
         <FilmSlider
           films={await getFilms(
             "/discover/tv",
@@ -163,13 +163,13 @@ export default async function Home() {
       </section>
 
       {/* Trending */}
-      <section name="Trending" className="py-[2rem]">
+      <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(6)} genres={genres} />
       </section>
 
       {/* Providers */}
       {providers.map(async (provider) => (
-        <section key={provider.id} name={provider.name}>
+        <section key={provider.id} id={provider.name}>
           <FilmSlider
             films={await getFilms("/discover/tv", null, null, provider.id)}
             title={provider.name}
@@ -179,13 +179,13 @@ export default async function Home() {
       ))}
 
       {/* Trending */}
-      <section name="Trending" className="py-[2rem]">
+      <section id="Trending" className="py-[2rem]">
         <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
       {/* Genres */}
       {genres.map(async (genre) => (
-        <section key={genre.id} name={genre.name}>
+        <section key={genre.id} id={genre.name}>
           <FilmSlider
             films={await getFilms("/discover/tv", null, null, null, genre.id)}
             title={genre.name}
