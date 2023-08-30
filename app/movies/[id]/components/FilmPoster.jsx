@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import Image from "next/image";
 import React from "react";
 
 export default function FilmPoster({ film }) {
@@ -23,12 +22,10 @@ export default function FilmPoster({ film }) {
           />
         </div>
 
-        <Image
+        <img
           loading="lazy"
           src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
           alt={film.title}
-          width={500}
-          height={500}
         />
 
         {film.vote_average > 0 && (
@@ -52,14 +49,12 @@ export default function FilmPoster({ film }) {
         {film.production_companies.map(
           (item) =>
             item.logo_path !== null && (
-              <Image
+              <img
                 key={item.id}
                 src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                 alt={item.name}
                 title={item.name}
                 className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                width={500}
-                height={500}
               />
             )
         )}

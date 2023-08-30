@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
 import axios from "axios";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -64,12 +63,10 @@ export default function FilmCollection({ film }) {
                   <div className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center">
                     {item.poster_path ? (
                       <figure className={`w-full`}>
-                        <Image
+                        <img
                           src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                           alt={item.title}
                           className={`object-contain`}
-                          width={500}
-                          height={500}
                         />
                       </figure>
                     ) : (

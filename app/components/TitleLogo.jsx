@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 
 export default function TitleLogo({ film }) {
   const [titleLogo, setTitleLogo] = useState({});
@@ -36,13 +35,11 @@ export default function TitleLogo({ film }) {
     <>
       {titleLogo ? (
         <figure className="mb-4 flex justify-center">
-          <Image
+          <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={!isTvPage ? film.title : film.name}
             title={!isTvPage ? film.title : film.name}
             className="max-w-[300px] lg:max-w-none lg:max-h-[150px]"
-            width={1000}
-            height={1000}
           />
           <figcaption>
             <h3 className={`sr-only`}>{!isTvPage ? film.title : film.name}</h3>

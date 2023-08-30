@@ -24,7 +24,6 @@ import {
   tvOutline,
 } from "ionicons/icons";
 import ShareModal from "./ShareModal";
-import Image from "next/image";
 
 export default function FilmOverview({
   film,
@@ -93,13 +92,11 @@ export default function FilmOverview({
                   />
                 </div>
 
-                <Image
+                <img
                   loading="lazy"
                   src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
                   alt={isItTvPage(film.title, film.name)}
                   className={film.poster_path === null ? `hidden` : `block`}
-                  width={500}
-                  height={500}
                 />
 
                 {film.vote_average > 0 && (
@@ -151,14 +148,12 @@ export default function FilmOverview({
                         {film.production_companies.map(
                           (item) =>
                             item.logo_path !== null && (
-                              <Image
+                              <img
                                 key={item.id}
                                 src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                 alt={item.name}
                                 title={item.name}
                                 className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                                width={500}
-                                height={500}
                               />
                             )
                         )}
@@ -395,12 +390,10 @@ export default function FilmOverview({
                                   className={`aspect-square w-[40px] rounded-full object-contain`}
                                 />
                               ) : (
-                                <Image
+                                <img
                                   src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
                                   alt={item.name}
                                   className={`aspect-square w-[40px] rounded-full`}
-                                  width={500}
-                                  height={500}
                                 />
                               )}
                               <div className={`flex flex-col`}>
@@ -433,14 +426,12 @@ export default function FilmOverview({
                           ? providers.results.ID.rent.map(
                               (item) =>
                                 item.logo_path !== null && (
-                                  <Image
+                                  <img
                                     key={item.provider_id}
                                     src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                     alt={item.provider_name}
                                     title={item.provider_name}
                                     className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    width={500}
-                                    height={500}
                                   />
                                 )
                             )
@@ -448,28 +439,24 @@ export default function FilmOverview({
                           ? providers.results.ID.buy.map(
                               (item) =>
                                 item.logo_path !== null && (
-                                  <Image
+                                  <img
                                     key={item.provider_id}
                                     src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                     alt={item.provider_name}
                                     title={item.provider_name}
                                     className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    width={500}
-                                    height={500}
                                   />
                                 )
                             )
                           : providers.results.ID.flatrate.map(
                               (item) =>
                                 item.logo_path !== null && (
-                                  <Image
+                                  <img
                                     key={item.provider_id}
                                     src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                     alt={item.provider_name}
                                     title={item.provider_name}
                                     className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                                    width={500}
-                                    height={500}
                                   />
                                 )
                             )}

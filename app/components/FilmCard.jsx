@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 
-import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
@@ -33,12 +32,10 @@ export default function FilmCard({ film, genres, isTvPage }) {
           />
         </div>
 
-        <Image
+        <img
           loading="lazy"
           src={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
           alt={isItTvPage(film.title, film.name)}
-          width={500}
-          height={500}
         />
 
         {film.vote_average > 0 && (
