@@ -5,6 +5,7 @@ import React from "react";
 import HomeSlider from "../components/HomeSlider";
 import FilmSlider from "../components/FilmSlider";
 import Trending from "../components/Trending";
+import providers from "../json/providers.json";
 
 export const metadata = {
   title: "TV",
@@ -77,7 +78,7 @@ async function getFilms(
 }
 
 async function getTrending(num) {
-  const res = await axios.get(`${process.env.API_URL}/trending/tv/week`, {
+  const res = await axios.get(`${process.env.API_URL}/trending/tv/day`, {
     params: {
       api_key: process.env.API_KEY,
     },
@@ -125,6 +126,8 @@ export default async function Home() {
     <>
       <h1 className="sr-only">{`Popcorn Vision (TV)`}</h1>
       <HomeSlider films={await getTrending()} genres={genres} />
+
+      {/* On The Air */}
       <section name="On The Air">
         <FilmSlider
           films={await getFilms("/discover/tv", thirtyDaysAgo, today)}
@@ -132,6 +135,8 @@ export default async function Home() {
           genres={genres}
         />
       </section>
+
+      {/* Upcoming */}
       <section name="Upcoming">
         <FilmSlider
           films={await getFilms("/discover/tv", tomorrow, endOfYear)}
@@ -140,6 +145,8 @@ export default async function Home() {
           sort={"ASC"}
         />
       </section>
+
+      {/* Top Rated */}
       <section name="Top Rated">
         <FilmSlider
           films={await getFilms(
@@ -154,133 +161,38 @@ export default async function Home() {
           genres={genres}
         />
       </section>
+
+      {/* Trending */}
       <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(6)} genres={genres} />
       </section>
-      <section name="Disney+">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, "2739")}
-          title={`Disney+`}
-          genres={genres}
-        />
-      </section>
-      <section name="Netflix">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, "213")}
-          title={`Netflix`}
-          genres={genres}
-        />
-      </section>
-      <section name="HBO">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, "49")}
-          title={`HBO`}
-          genres={genres}
-        />
-      </section>
-      <section name="Prime Video">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, "1024")}
-          title={`Prime Video`}
-          genres={genres}
-        />
-      </section>
-      <section name="Hulu">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, "453")}
-          title={`Hulu`}
-          genres={genres}
-        />
-      </section>
+
+      {/* Providers */}
+      {providers.map(async (provider) => (
+        <section key={provider.id} name={provider.name}>
+          <FilmSlider
+            films={await getFilms("/discover/tv", null, null, provider.id)}
+            title={provider.name}
+            genres={genres}
+          />
+        </section>
+      ))}
+
+      {/* Trending */}
       <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
       {/* Genres */}
-      <section name="Action & Adventure">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10759")}
-          title={`Action & Adventure`}
-          genres={genres}
-        />
-      </section>
-      <section name="Animation">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "16")}
-          title={`Animation`}
-          genres={genres}
-        />
-      </section>
-      <section name="Comedy">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "35")}
-          title={`Comedy`}
-          genres={genres}
-        />
-      </section>
-      <section name="Crime">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "80")}
-          title={`Crime`}
-          genres={genres}
-        />
-      </section>
-      <section name="Documentary">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "99")}
-          title={`Documentary`}
-          genres={genres}
-        />
-      </section>
-      <section name="Drama">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "18")}
-          title={`Drama`}
-          genres={genres}
-        />
-      </section>
-      <section name="Family">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10751")}
-          title={`Family`}
-          genres={genres}
-        />
-      </section>
-      <section name="Mystery">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "9648")}
-          title={`Mystery`}
-          genres={genres}
-        />
-      </section>
-      <section name="Romance">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10749")}
-          title={`Romance`}
-          genres={genres}
-        />
-      </section>
-      <section name="Reality Show">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10764")}
-          title={`Reality Show`}
-          genres={genres}
-        />
-      </section>
-      <section name="Science Fiction">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10765")}
-          title={`Science Fiction`}
-          genres={genres}
-        />
-      </section>
-      <section name="War">
-        <FilmSlider
-          films={await getFilms("/discover/tv", null, null, null, "10768")}
-          title={`War`}
-          genres={genres}
-        />
-      </section>
+      {genres.map(async (genre) => (
+        <section key={genre.id} name={genre.name}>
+          <FilmSlider
+            films={await getFilms("/discover/tv", null, null, null, genre.id)}
+            title={genre.name}
+            genres={genres}
+          />
+        </section>
+      ))}
     </>
   );
 }

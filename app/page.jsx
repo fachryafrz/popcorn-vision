@@ -5,6 +5,7 @@ import React from "react";
 import HomeSlider from "./components/HomeSlider";
 import FilmSlider from "./components/FilmSlider";
 import Trending from "./components/Trending";
+import companies from "./json/companies.json";
 
 export const metadata = {
   description: process.env.APP_DESC,
@@ -74,7 +75,7 @@ async function getFilms(
 }
 
 async function getTrending(num) {
-  const res = await axios.get(`${process.env.API_URL}/trending/movie/week`, {
+  const res = await axios.get(`${process.env.API_URL}/trending/movie/day`, {
     params: {
       api_key: process.env.API_KEY,
     },
@@ -125,6 +126,7 @@ export default async function Home() {
       <h1 className="sr-only">{`Popcorn Vision`}</h1>
       <HomeSlider films={await getTrending()} genres={genres} />
 
+      {/* Now Playing */}
       <section name="Now Playing">
         <FilmSlider
           films={await getFilms("/discover/movie", thirtyDaysAgo, today)}
@@ -133,6 +135,7 @@ export default async function Home() {
         />
       </section>
 
+      {/* Upcoming */}
       <section name="Upcoming">
         <FilmSlider
           films={await getFilms("/discover/movie", tomorrow, endOfYear)}
@@ -142,6 +145,7 @@ export default async function Home() {
         />
       </section>
 
+      {/* Top Rated */}
       <section name="Top Rated">
         <FilmSlider
           films={await getFilms(
@@ -157,125 +161,43 @@ export default async function Home() {
         />
       </section>
 
+      {/* Trending */}
       <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(6)} genres={genres} />
       </section>
 
-      <section name="Marvel Studios">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "420")}
-          title={`Marvel Studios`}
-          genres={genres}
-        />
-      </section>
+      {/* Companies */}
+      {companies.map(async (company) => (
+        <section key={company.id} name={company.name}>
+          <FilmSlider
+            films={await getFilms("/discover/movie", null, null, company.id)}
+            title={company.name}
+            genres={genres}
+          />
+        </section>
+      ))}
 
-      <section name="DC Comics">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "429")}
-          title={`DC Comics`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Walt Disney">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "2")}
-          title={`Walt Disney`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Universal Pictures">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "33")}
-          title={`Universal Pictures`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Paramount">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "4")}
-          title={`Paramount`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="20th Century Studios">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "25")}
-          title={`20th Century Studios`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Pixar Animation">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, "3")}
-          title={`Pixar Animation`}
-          genres={genres}
-        />
-      </section>
-
+      {/* Trending */}
       <section name="Trending" className="py-[2rem]">
         <Trending film={await getTrending(7)} genres={genres} />
       </section>
 
-      <section name="Action">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "28")}
-          title={`Action`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Drama">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "18")}
-          title={`Drama`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Comedy">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "35")}
-          title={`Comedy`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Mystery">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "9648")}
-          title={`Mystery`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Romance">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "10749")}
-          title={`Romance`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Horror">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "27")}
-          title={`Horror`}
-          genres={genres}
-        />
-      </section>
-
-      <section name="Science Fiction">
-        <FilmSlider
-          films={await getFilms("/discover/movie", null, null, null, "878")}
-          title={`Science Fiction`}
-          genres={genres}
-        />
-      </section>
+      {/* Genres */}
+      {genres.map(async (genre) => (
+        <section key={genre.id} name={genre.name}>
+          <FilmSlider
+            films={await getFilms(
+              "/discover/movie",
+              null,
+              null,
+              null,
+              genre.id
+            )}
+            title={genre.name}
+            genres={genres}
+          />
+        </section>
+      ))}
     </>
   );
 }
