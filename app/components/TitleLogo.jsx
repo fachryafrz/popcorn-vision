@@ -32,7 +32,7 @@ export default function TitleLogo({ film }) {
   }, [film, isTvPage]);
 
   return (
-    <div>
+    <>
       {titleLogo ? (
         <figure className="mb-4 flex justify-center">
           <img
@@ -50,6 +50,6 @@ export default function TitleLogo({ film }) {
           {!isTvPage ? film.title : film.name}
         </h3>
       )}
-    </div>
+    </>
   );
 }
