@@ -30,13 +30,13 @@ export default function ShareModal({ isActive, setIsActive }) {
     setURL(window.location.href);
 
     const handleActive = (e) => {
-      if (!modal.current.contains(e.target)) {
+      if (modal && modal.current && !modal.current.contains(e.target)) {
         setIsActive(false);
       }
     };
 
     document.addEventListener(`mousedown`, handleActive);
-  }, []);
+  }, [setIsActive]);
 
   return (
     <div

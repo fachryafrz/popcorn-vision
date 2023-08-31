@@ -1,6 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
-import { chevronBack, chevronForward } from "ionicons/icons";
+import {
+  chevronBack,
+  chevronBackCircle,
+  chevronForward,
+  chevronForwardCircle,
+} from "ionicons/icons";
 import React from "react";
 
 // Swiper
@@ -72,24 +77,24 @@ export default function FilmMedia({ videos, images }) {
         >
           <div
             id="navigation"
-            className={`flex justify-between absolute inset-0 items-center flex-row-reverse px-4`}
+            className={`flex justify-between absolute inset-0 items-center flex-row-reverse`}
           >
             <button
               id="next"
-              className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
+              className={`z-40 flex items-center text-white p-2`}
             >
-              <IonIcon icon={chevronForward} className={`text-[1.25rem]`} />
+              <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
             </button>
             <button
               id="prev"
-              className={`z-40 grid place-items-center shadow rounded-full bg-white text-base-dark-gray p-1`}
+              className={`z-40 flex items-center text-white p-2`}
             >
-              <IonIcon icon={chevronBack} className={`text-[1.25rem]`} />
+              <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
             </button>
           </div>
           {filteredVideos
             .reverse()
-            .slice(0, 5)
+            .slice(0, 10)
             .map((vid, index) => {
               return (
                 <SwiperSlide key={index}>
@@ -105,7 +110,7 @@ export default function FilmMedia({ videos, images }) {
               );
             })}
 
-          {images.map((img, index) => {
+          {images.slice(0, 10).map((img, index) => {
             return (
               <SwiperSlide key={index}>
                 <figure className="swiper-zoom-container">
