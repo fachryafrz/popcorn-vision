@@ -31,7 +31,7 @@ export default function CastsList({ credits }) {
           </button>
         )}
       </div>
-      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[500px] overflow-y-auto">
+      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto">
         {credits &&
           credits.cast &&
           credits.cast
