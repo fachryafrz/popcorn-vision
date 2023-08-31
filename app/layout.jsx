@@ -39,11 +39,6 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-  icons: {
-    icon: "/popcorn.png",
-    shortcut: "/popcorn.png",
-    apple: "/apple-touch-icon.png",
-  },
   themeColor: "#202735",
   manifest: "/manifest.json",
   twitter: {
@@ -67,10 +62,6 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-pt-20">
-      <head>
-        <link rel="icon" href="/popcorn.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </head>
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-dark-gray text-white">
         {/* Navbar */}
