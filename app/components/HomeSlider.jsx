@@ -28,6 +28,16 @@ export default function HomeSlider({ films, genres }) {
     return type;
   };
 
+  function slugify(text) {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  }
+
   return (
     <section name="Home Slider" className="pb-[2rem]">
       <h2 className="sr-only">Discover Movies</h2>
@@ -97,14 +107,10 @@ export default function HomeSlider({ films, genres }) {
                   <div className="whitespace-nowrap flex items-center gap-2">
                     <span>{date.getFullYear()}</span>
                   </div>
+                  <span>&bull;</span>
                   {filmGenres &&
                     filmGenres.slice(0, 1).map((genre) => {
-                      return (
-                        <>
-                          <span>&bull;</span>
-                          <span key={genre.id}>{genre.name}</span>
-                        </>
-                      );
+                      return <span key={genre.id}>{genre.name}</span>;
                     })}
                 </div>
 
@@ -114,7 +120,10 @@ export default function HomeSlider({ films, genres }) {
 
                 <div className="flex gap-2 mt-4 w-full">
                   <Link
-                    href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}
+                    href={isItTvPage(
+                      `/movies/${film.id}-${slugify(film.title)}`,
+                      `/tv/${film.id}-${slugify(film.name)}`
+                    )}
                     className="btn bg-primary-blue bg-opacity-60"
                   >
                     <IonIcon
@@ -125,8 +134,8 @@ export default function HomeSlider({ films, genres }) {
                   </Link>
                   <Link
                     href={isItTvPage(
-                      `/movies/${film.id}#overview`,
-                      `/tv/${film.id}#overview`
+                      `/movies/${film.id}-${slugify(film.title)}#overview`,
+                      `/tv/${film.id}-${slugify(film.name)}#overview`
                     )}
                     className="btn bg-base-gray bg-opacity-40 hocus:bg-white hocus:text-base-dark-gray"
                   >

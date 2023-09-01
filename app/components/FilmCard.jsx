@@ -14,8 +14,23 @@ export default function FilmCard({ film, genres, isTvPage }) {
     return type;
   };
 
+  function slugify(text) {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  }
+
   return (
-    <Link href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}>
+    <Link
+      href={isItTvPage(
+        `/movies/${film.id}-${slugify(film.title)}`,
+        `/tv/${film.id}-${slugify(film.name)}`
+      )}
+    >
       <figure className="rounded-lg overflow-hidden aspect-poster relative">
         <div
           className={

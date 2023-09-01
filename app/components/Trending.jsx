@@ -29,6 +29,16 @@ export default function Trending({ film, genres }) {
   const options = { year: "numeric", month: "short" };
   const formattedDate = date.toLocaleString("en-US", options);
 
+  function slugify(text) {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  }
+
   return (
     <div className="px-4 xl:px-[9rem]">
       <h2 className="sr-only">{`Trending Movie`}</h2>
@@ -53,7 +63,7 @@ export default function Trending({ film, genres }) {
             <TitleLogo film={film} />
           </div>
 
-          <div className="flex gap-2 items-center font-medium">
+          <div className="flex gap-1 items-center font-medium">
             <IonIcon icon={star} className="text-primary-yellow text-xl" />
             <span>{film.vote_average.toFixed(1)}</span>
             <span>&bull;</span>
@@ -72,7 +82,10 @@ export default function Trending({ film, genres }) {
           <p className="line-clamp-3">{film.overview}</p>
 
           <Link
-            href={isItTvPage(`/movies/${film.id}`, `/tv/${film.id}`)}
+            href={isItTvPage(
+              `/movies/${film.id}-${slugify(film.title)}`,
+              `/tv/${film.id}-${slugify(film.name)}`
+            )}
             className="btn bg-primary-yellow text-black mt-4"
           >
             <IonIcon

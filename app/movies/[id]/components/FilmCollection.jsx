@@ -45,6 +45,16 @@ export default function FilmCollection({ film }) {
     setShowAllCollection(false);
   }, [film]);
 
+  function slugify(text) {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  }
+
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="flex flex-col gap-2 ">
@@ -60,7 +70,7 @@ export default function FilmCollection({ film }) {
               return (
                 <li key={index}>
                   <Link
-                    href={`/movies/${item.id}`}
+                    href={`/movies/${item.id}-${slugify(film.title)}`}
                     className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
                       film.id === item.id && `bg-primary-blue bg-opacity-30`
                     }`}
