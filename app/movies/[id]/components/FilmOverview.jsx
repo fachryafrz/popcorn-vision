@@ -117,11 +117,20 @@ export default function FilmOverview({
           </div>
           <div className="flex flex-col items-center md:justify-center md:items-start gap-2 md:gap-0 w-full">
             {images.logos.length > 0 ? (
-              <TitleLogo film={film} />
+              <>
+                <TitleLogo film={film} />
+
+                <h1
+                  title={isItTvPage(film.title, film.name)}
+                  className="sr-only"
+                >
+                  {isItTvPage(film.title, film.name)}
+                </h1>
+              </>
             ) : (
               <h1
                 title={isItTvPage(film.title, film.name)}
-                className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight"
+                className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight text-center md:text-start"
               >
                 {isItTvPage(film.title, film.name)}
               </h1>
@@ -501,7 +510,11 @@ export default function FilmOverview({
             <FilmMedia videos={videos} images={images.backdrops} />
           )}
 
-          {!isTvPage && film.belongs_to_collection !== null && (
+          {!isTvPage ? (
+            film.belongs_to_collection !== null && (
+              <FilmCollection film={film} />
+            )
+          ) : (
             <FilmCollection film={film} />
           )}
 
