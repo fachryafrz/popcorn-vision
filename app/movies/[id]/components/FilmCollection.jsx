@@ -193,7 +193,9 @@ function FilmSeason({ film, item, index }) {
       <button
         onClick={handleViewSeason}
         className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
-          viewSeason ? `rounded-t-xl !bg-opacity-30` : `rounded-xl`
+          viewSeason
+            ? `rounded-t-xl bg-primary-blue bg-opacity-30`
+            : `rounded-xl`
         }`}
       >
         <span className={`text-gray-400 text-sm font-medium px-1`}>
