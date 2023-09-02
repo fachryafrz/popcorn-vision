@@ -245,16 +245,22 @@ function FilmSeason({ film, item, index }) {
             title={`${item.name} (${item.episode_count} Episode${
               item.episode_count > 1 ? `s` : ``
             })`}
-            className="text-start line-clamp-2 font-medium"
+            className="text-start line-clamp-1 md:line-clamp-2 font-medium"
           >
-            {`${item.name} (${item.episode_count} Episode${
-              item.episode_count > 1 ? `s` : ``
-            })`}
+            {item.name}
           </h3>
 
-          <div className="text-sm text-gray-400 font-medium">
-            {item.air_date ? formattedDate : `Coming soon`}
-          </div>
+          <span className="text-sm text-gray-400 font-medium">
+            {`${item.episode_count} Episode${
+              item.episode_count > 1 ? `s` : ``
+            }`}
+          </span>
+
+          {item.air_date && (
+            <span className="text-sm text-gray-400 font-medium">
+              {formattedDate}
+            </span>
+          )}
         </div>
 
         <p
@@ -355,9 +361,11 @@ function FilmEpisodes({ id, season }) {
                     {item.name}
                   </h3>
 
-                  <div className="text-sm text-gray-400 font-medium">
-                    {item.air_date ? formattedDate : `Coming soon`}
-                  </div>
+                  {item.air_date && (
+                    <div className="text-sm text-gray-400 font-medium">
+                      {formattedDate}
+                    </div>
+                  )}
                 </div>
 
                 {/* <p className="text-xs text-gray-400 w-full text-start">
