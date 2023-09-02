@@ -269,7 +269,7 @@ function FilmSeason({ film, item, index }) {
 
         <p
           title={item.overview}
-          className="text-xs text-gray-400 line-clamp-3 w-full text-start"
+          className="hidden text-xs text-gray-400 sm:line-clamp-3 w-full text-start"
         >
           {item.overview}
         </p>
