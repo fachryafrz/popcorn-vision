@@ -7,6 +7,7 @@ import {
   chevronDownOutline,
   chevronForwardCircle,
   chevronUpOutline,
+  star,
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -80,7 +81,10 @@ export default function FilmCollection({ film }) {
 
   return (
     <div className={`flex flex-col gap-2`}>
-      <div id="collections" className="flex flex-col gap-2 ">
+      <div
+        id="collections"
+        className="flex flex-col gap-2 bg-base-dark-gray backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10"
+      >
         <h2 className="font-bold text-xl text-white m-0">
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
         </h2>
@@ -250,14 +254,14 @@ function FilmSeason({ film, item, index }) {
             {item.name}
           </h3>
 
-          <span className="text-sm text-gray-400 font-medium">
+          <span className="text-xs sm:text-sm text-gray-400 font-medium line-clamp-1">
             {`${item.episode_count} Episode${
               item.episode_count > 1 ? `s` : ``
             }`}
           </span>
 
           {item.air_date && (
-            <span className="text-sm text-gray-400 font-medium">
+            <span className="text-xs sm:text-sm text-gray-400 font-medium">
               {formattedDate}
             </span>
           )}
@@ -312,8 +316,13 @@ function FilmEpisodes({ id, season }) {
         prevEl: `#prevEps`,
         nextEl: `#nextEps`,
       }}
-      slidesPerView={2}
+      slidesPerView={1}
       spaceBetween={4}
+      breakpoints={{
+        640: {
+          slidesPerView: 2,
+        },
+      }}
       className={`bg-base-gray bg-opacity-10 !p-2 rounded-b-xl relative`}
     >
       {episodes &&
@@ -348,7 +357,7 @@ function FilmEpisodes({ id, season }) {
                           background: `url(/popcorn.png)`,
                           backgroundSize: `contain`,
                         }}
-                        className={`aspect-square w-[50px]`}
+                        className={`aspect-square h-full`}
                       ></div>
                     </div>
                   )}
@@ -361,11 +370,39 @@ function FilmEpisodes({ id, season }) {
                     {item.name}
                   </h3>
 
-                  {item.air_date && (
-                    <div className="text-sm text-gray-400 font-medium">
-                      {formattedDate}
-                    </div>
-                  )}
+                  <div
+                    className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+                  >
+                    {item.vote_average > 1 && (
+                      <span className={`flex items-center gap-1`}>
+                        <IonIcon
+                          icon={star}
+                          className={`text-primary-yellow`}
+                        />
+                        {item.vote_average && item.vote_average.toFixed(1)}
+                      </span>
+                    )}
+
+                    {item.vote_average > 1 && item.air_date && (
+                      <span>&bull;</span>
+                    )}
+
+                    {item.air_date && <span>{formattedDate}</span>}
+
+                    {item.air_date && item.runtime && <span>&bull;</span>}
+
+                    {item.runtime && (
+                      <span>
+                        {Math.floor(item.runtime / 60) >= 1
+                          ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
+                              item.runtime % 60
+                            )}m`
+                          : `${item.runtime} minute${
+                              item.runtime % 60 > 1 && `s`
+                            }`}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* <p className="text-xs text-gray-400 w-full text-start">
