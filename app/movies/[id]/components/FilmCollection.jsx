@@ -70,7 +70,7 @@ export default function FilmCollection({ film }) {
               return (
                 <li key={index}>
                   <Link
-                    href={`/movies/${item.id}-${slugify(film.title)}`}
+                    href={`/movies/${item.id}-${slugify(item.title)}`}
                     className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
                       film.id === item.id && `bg-primary-blue bg-opacity-30`
                     }`}
