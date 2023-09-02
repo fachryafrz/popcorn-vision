@@ -91,6 +91,16 @@ export default function FilmCollection({ film }) {
             collections
               .slice(0, showAllCollection ? collections.length : numCollection)
               .map((item, index) => {
+                // Release Date
+                const dateStr = item.release_date;
+                const date = new Date(dateStr);
+                const options = {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                };
+                const formattedDate = date.toLocaleString("en-US", options);
+
                 return (
                   <li key={item.id}>
                     <Link
@@ -133,13 +143,14 @@ export default function FilmCollection({ film }) {
                         </h3>
 
                         <div className="text-sm text-gray-400 font-medium">
-                          {item.release_date
-                            ? new Date(item.release_date).getFullYear()
-                            : `Coming soon`}
+                          {item.release_date ? formattedDate : `Coming soon`}
                         </div>
                       </div>
 
-                      <p className="text-xs text-gray-400 line-clamp-3 w-full">
+                      <p
+                        title={item.overview}
+                        className="text-xs text-gray-400 line-clamp-3 w-full"
+                      >
                         {item.overview}
                       </p>
                     </Link>
@@ -179,6 +190,14 @@ export default function FilmCollection({ film }) {
 
 function FilmSeason({ film, item, index }) {
   const [viewSeason, setViewSeason] = useState(false);
+  const dateStr = item.air_date;
+  const date = new Date(dateStr);
+  const options = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  };
+  const formattedDate = date.toLocaleString("en-US", options);
 
   const handleViewSeason = () => {
     setViewSeason(!viewSeason);
@@ -222,14 +241,19 @@ function FilmSeason({ film, item, index }) {
           )}
         </div>
         <div className="flex flex-col gap-1 items-start w-full">
-          <h3 className="text-start line-clamp-2 font-medium" title={item.name}>
-            {item.name}
+          <h3
+            title={`${item.name} (${item.episode_count} Episode${
+              item.episode_count > 1 ? `s` : ``
+            })`}
+            className="text-start line-clamp-2 font-medium"
+          >
+            {`${item.name} (${item.episode_count} Episode${
+              item.episode_count > 1 ? `s` : ``
+            })`}
           </h3>
 
           <div className="text-sm text-gray-400 font-medium">
-            {item.air_date
-              ? new Date(item.air_date).getFullYear()
-              : `Coming soon`}
+            {item.air_date ? formattedDate : `Coming soon`}
           </div>
         </div>
 
@@ -288,6 +312,16 @@ function FilmEpisodes({ id, season }) {
     >
       {episodes &&
         episodes.map((item) => {
+          // Release Date
+          const dateStr = item.air_date;
+          const date = new Date(dateStr);
+          const options = {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          };
+          const formattedDate = date.toLocaleString("en-US", options);
+
           return (
             <SwiperSlide key={item.id} className={`!h-auto`}>
               <button
@@ -322,9 +356,7 @@ function FilmEpisodes({ id, season }) {
                   </h3>
 
                   <div className="text-sm text-gray-400 font-medium">
-                    {item.air_date
-                      ? new Date(item.air_date).getFullYear()
-                      : `Coming soon`}
+                    {item.air_date ? formattedDate : `Coming soon`}
                   </div>
                 </div>
 
