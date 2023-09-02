@@ -398,7 +398,7 @@ export default function Search() {
                 onClick={() => fetchMoreMovies((currentSearchPage += 1))}
                 className="text-primary-blue py-2 flex justify-center bg-white bg-opacity-10 hocus:bg-opacity-20 rounded-lg"
               >
-                Load more movies
+                Load more
               </button>
             )}
 
