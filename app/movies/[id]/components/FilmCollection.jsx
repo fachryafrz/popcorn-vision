@@ -81,15 +81,9 @@ export default function FilmCollection({ film }) {
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="flex flex-col gap-2 ">
-        {!isTvPage ? (
-          <h2 className="font-bold text-xl text-white m-0">
-            {apiData && collectionTitle}
-          </h2>
-        ) : (
-          <h2 className="font-bold text-xl text-white m-0">
-            {`${film.name} Collection`}
-          </h2>
-        )}
+        <h2 className="font-bold text-xl text-white m-0">
+          {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
+        </h2>
       </div>
       <ul className="flex flex-col gap-1 relative">
         {!isTvPage
@@ -152,18 +146,25 @@ export default function FilmCollection({ film }) {
                   </li>
                 );
               })
-          : filteredSeasons.map((item, index) => {
-              return (
-                <li key={item.id}>
-                  <FilmSeason film={film} item={item} index={index} />
-                </li>
-              );
-            })}
+          : filteredSeasons
+              .slice(
+                0,
+                showAllCollection ? filteredSeasons.length : numCollection
+              )
+              .map((item, index) => {
+                return (
+                  <li key={item.id}>
+                    <FilmSeason film={film} item={item} index={index} />
+                  </li>
+                );
+              })}
 
-        {apiData && collections.length > numCollection && (
+        {(!isTvPage
+          ? apiData && collections.length > numCollection
+          : filteredSeasons.length > numCollection) && (
           <div
             className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-dark-gray justify-center items-end h-[200px] text-primary-blue ${
-              showAllCollection ? `hidden` : `flex`
+              showAllCollection ? "hidden" : "flex"
             }`}
           >
             <button onClick={handleShowAllCollection}>
