@@ -1,15 +1,41 @@
 import axios from "axios";
 
+async function getFilms(
+  apiUrl,
+  date_gte,
+  date_lte,
+  apiCompanies,
+  apiGenres,
+  apiSortBy = "popularity.desc"
+) {
+  let params = {
+    api_key: process.env.API_KEY,
+    sort_by: apiSortBy,
+    region: "US",
+    include_adult: false,
+    language: "en-US",
+    with_companies: apiCompanies,
+    with_genres: apiGenres,
+    "primary_release_date.gte": date_gte,
+    "primary_release_date.lte": date_lte,
+  };
+
+  const res = await axios.get(`${process.env.API_URL}${apiUrl}`, {
+    params: {
+      ...params,
+    },
+  });
+
+  return res.data.results;
+}
+
 async function getTrending(type) {
   try {
-    const res = await axios.get(
-      `${process.env.API_URL}/trending/${type}/week`,
-      {
-        params: {
-          api_key: process.env.API_KEY,
-        },
-      }
-    );
+    const res = await axios.get(`${process.env.API_URL}/trending/${type}/day`, {
+      params: {
+        api_key: process.env.API_KEY,
+      },
+    });
 
     return res.data.results; // Assuming the data is in the 'results' property
   } catch (error) {
@@ -19,19 +45,133 @@ async function getTrending(type) {
 }
 
 export default async function sitemap() {
+  let allMovies = [];
+  let allSeries = [];
+
+  const currentDate = new Date();
+  const today = currentDate.toISOString().slice(0, 10);
+
+  const tomorrow = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate() + 2
+  )
+    .toISOString()
+    .slice(0, 10);
+
+  const firstDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    2
+  )
+    .toISOString()
+    .slice(0, 10);
+  const thirtyDaysAgo = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() - 1,
+    2
+  )
+    .toISOString()
+    .slice(0, 10);
+  const currentYear = currentDate.getFullYear();
+  const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
+
+  const slugify = (text) => {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/ /g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  };
+
   try {
-    const allMovies = await getTrending("movie");
-    const allSeries = await getTrending("tv");
+    // Movies
+    const trendingMovies = await getTrending("movie");
+    const nowPlayingMovies = await getFilms(
+      "/discover/movie",
+      thirtyDaysAgo,
+      today
+    );
+    const upcomingMovies = await getFilms(
+      "/discover/movie",
+      tomorrow,
+      endOfYear
+    );
+    const topRatedMovies = await getFilms(
+      "/discover/movie",
+      null,
+      null,
+      null,
+      null,
+      "vote_count.desc"
+    );
 
-    const movies = allMovies.map((item) => ({
-      url: `${process.env.APP_URL}/movies/${item.id}`,
-      lastModified: item.release_date,
-    }));
+    // Series
+    const trendingSeries = await getTrending("tv");
+    const onTheAirSeries = await getFilms("/discover/tv", thirtyDaysAgo, today);
+    const upcomingSeries = await getFilms("/discover/tv", tomorrow, endOfYear);
+    const topRatedSeries = await getFilms(
+      "/discover/tv",
+      null,
+      null,
+      null,
+      null,
+      "vote_count.desc"
+    );
 
-    const series = allSeries.map((item) => ({
-      url: `${process.env.APP_URL}/tv/${item.id}`,
-      lastModified: item.first_air_date,
-    }));
+    // Push to All Movies Array //
+    trendingMovies.forEach((item) => {
+      allMovies.push({
+        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        lastModified: item.release_date,
+      });
+    });
+    nowPlayingMovies.forEach((item) => {
+      allMovies.push({
+        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        lastModified: item.release_date,
+      });
+    });
+    upcomingMovies.forEach((item) => {
+      allMovies.push({
+        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        lastModified: item.release_date,
+      });
+    });
+    topRatedMovies.forEach((item) => {
+      allMovies.push({
+        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        lastModified: item.release_date,
+      });
+    });
+
+    // Push to All Series Array //
+    trendingSeries.forEach((item) => {
+      allSeries.push({
+        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        lastModified: item.first_air_date,
+      });
+    });
+    onTheAirSeries.forEach((item) => {
+      allSeries.push({
+        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        lastModified: item.first_air_date,
+      });
+    });
+    upcomingSeries.forEach((item) => {
+      allSeries.push({
+        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        lastModified: item.first_air_date,
+      });
+    });
+    topRatedSeries.forEach((item) => {
+      allSeries.push({
+        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        lastModified: item.first_air_date,
+      });
+    });
 
     return [
       {
@@ -46,8 +186,8 @@ export default async function sitemap() {
         url: `${process.env.APP_URL}/tv/search`,
         lastModified: new Date(),
       },
-      ...movies,
-      ...series,
+      ...allMovies,
+      ...allSeries,
     ];
   } catch (error) {
     console.error("Error generating sitemap:", error);
