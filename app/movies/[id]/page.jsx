@@ -4,6 +4,7 @@ import FilmBackdrop from "./components/FilmBackdrop";
 import FilmPoster from "./components/FilmPoster";
 import FilmOverview from "./components/FilmOverview";
 import CastsList from "./components/CastsList";
+import FilmSlider from "@/app/components/FilmSlider";
 
 async function getFilm(id, type, path) {
   const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
@@ -14,6 +15,16 @@ async function getFilm(id, type, path) {
   });
 
   return res.data;
+}
+
+async function getGenres(type) {
+  const res = await axios.get(`${process.env.API_URL}/genre/${type}/list`, {
+    params: {
+      api_key: process.env.API_KEY,
+    },
+  });
+
+  return res.data.genres;
 }
 
 export async function generateMetadata({ params, type = "movie" }) {
@@ -77,14 +88,17 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const images = await getFilm(id, type, "/images");
   const reviews = await getFilm(id, type, "/reviews");
   const providers = await getFilm(id, type, "/watch/providers");
+  const recommendations = await getFilm(id, type, "/recommendations");
+
+  const genres = await getGenres(type);
 
   return (
     <>
-      <div className="flex flex-col bg-base-dark-gray text-white">
+      <div className="flex flex-col bg-base-dark-gray text-white pb-[2rem] md:pb-[5rem]">
         {/* Movie Background/Backdrop */}
         <FilmBackdrop film={film} />
-        <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh]">
-          <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4 pb-[2rem] md:pb-[5rem]">
+        <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh] mb-8">
+          <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4">
             {/* Left */}
             <div className="lg:col-span-6">
               <FilmPoster film={film} />
@@ -106,6 +120,15 @@ export default async function FilmDetail({ params, type = "movie" }) {
             </div>
           </div>
         </div>
+
+        {/* Recommendations */}
+        <section id={`Recommendations`}>
+          <FilmSlider
+            films={recommendations}
+            title={`Recommendations`}
+            genres={genres}
+          />
+        </section>
       </div>
     </>
   );
