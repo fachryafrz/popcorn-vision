@@ -97,7 +97,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       <div className="flex flex-col bg-base-dark-gray text-white pb-[2rem] md:pb-[5rem]">
         {/* Movie Background/Backdrop */}
         <FilmBackdrop film={film} />
-        <div className="z-10 -mt-[10vh] md:-mt-[20vh] lg:-mt-[30vh] xl:-mt-[50vh] mb-8">
+        <div className="z-10 -mt-[25vh] md:-mt-[50vh] mb-8">
           <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4">
             {/* Left */}
             <div className="lg:col-span-6">
