@@ -128,39 +128,33 @@ export default async function Home() {
       <HomeSlider films={await getTrending()} genres={genres} />
 
       {/* On The Air */}
-      <section id="On The Air">
-        <FilmSlider
-          films={await getFilms("/discover/tv", thirtyDaysAgo, today)}
-          title={`On The Air`}
-          genres={genres}
-        />
-      </section>
+      <FilmSlider
+        films={await getFilms("/discover/tv", thirtyDaysAgo, today)}
+        title={`On The Air`}
+        genres={genres}
+      />
 
       {/* Upcoming */}
-      <section id="Upcoming">
-        <FilmSlider
-          films={await getFilms("/discover/tv", tomorrow, endOfYear)}
-          title={`Upcoming`}
-          genres={genres}
-          sort={"ASC"}
-        />
-      </section>
+      <FilmSlider
+        films={await getFilms("/discover/tv", tomorrow, endOfYear)}
+        title={`Upcoming`}
+        genres={genres}
+        sort={"ASC"}
+      />
 
       {/* Top Rated */}
-      <section id="Top Rated">
-        <FilmSlider
-          films={await getFilms(
-            "/discover/tv",
-            null,
-            null,
-            null,
-            null,
-            "vote_count.desc"
-          )}
-          title={`Top Rated`}
-          genres={genres}
-        />
-      </section>
+      <FilmSlider
+        films={await getFilms(
+          "/discover/tv",
+          null,
+          null,
+          null,
+          null,
+          "vote_count.desc"
+        )}
+        title={`Top Rated`}
+        genres={genres}
+      />
 
       {/* Trending */}
       <section id="Trending" className="py-[2rem]">
@@ -169,13 +163,12 @@ export default async function Home() {
 
       {/* Providers */}
       {providers.map(async (provider) => (
-        <section key={provider.id} id={provider.name}>
-          <FilmSlider
-            films={await getFilms("/discover/tv", null, null, provider.id)}
-            title={provider.name}
-            genres={genres}
-          />
-        </section>
+        <FilmSlider
+          key={provider.id}
+          films={await getFilms("/discover/tv", null, null, provider.id)}
+          title={provider.name}
+          genres={genres}
+        />
       ))}
 
       {/* Trending */}
@@ -185,13 +178,12 @@ export default async function Home() {
 
       {/* Genres */}
       {genres.map(async (genre) => (
-        <section key={genre.id} id={genre.name}>
-          <FilmSlider
-            films={await getFilms("/discover/tv", null, null, null, genre.id)}
-            title={genre.name}
-            genres={genres}
-          />
-        </section>
+        <FilmSlider
+          key={genre.id}
+          films={await getFilms("/discover/tv", null, null, null, genre.id)}
+          title={genre.name}
+          genres={genres}
+        />
       ))}
     </>
   );

@@ -29,7 +29,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   });
 
   return (
-    <>
+    <section id={title}>
       <h2 className="sr-only">{title}</h2>
 
       <Swiper
@@ -96,6 +96,6 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           </div>
         </div>
       </Swiper>
-    </>
+    </section>
   );
 }

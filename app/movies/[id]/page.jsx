@@ -122,13 +122,13 @@ export default async function FilmDetail({ params, type = "movie" }) {
         </div>
 
         {/* Recommendations */}
-        <section id={`Recommendations`}>
+        {recommendations.results.length > 0 && (
           <FilmSlider
             films={recommendations}
             title={`Recommendations`}
             genres={genres}
           />
-        </section>
+        )}
       </div>
     </>
   );

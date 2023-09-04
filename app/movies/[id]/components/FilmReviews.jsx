@@ -7,7 +7,7 @@ export default function FilmReviews({ reviews, film }) {
   let [currentReviewPage, setCurrentReviewPage] = useState(1);
   const [moreReviews, setMoreReviews] = useState(reviews.results);
   const [showAllReviews, setShowAllReviews] = useState(false);
-  const numReviews = 3;
+  const numReviews = 2;
 
   const handleShowAllReviews = () => {
     setShowAllReviews(true);

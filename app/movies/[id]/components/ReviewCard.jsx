@@ -114,7 +114,7 @@ export default function ReviewCard({ review }) {
           <div
             onMouseEnter={() => setIsDateHovered(true)}
             onMouseLeave={() => setIsDateHovered(false)}
-            className={`max-w-fit text-sm text-gray-400 flex gap-1`}
+            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex gap-1`}
           >
             <span>
               {isDateHovered ? formattedDate : timeAgo(review.created_at)}
@@ -128,7 +128,7 @@ export default function ReviewCard({ review }) {
                       "en-US",
                       options
                     )})`
-                  : `(Edited)`}
+                  : `(edited)`}
               </span>
             )}
           </div>
