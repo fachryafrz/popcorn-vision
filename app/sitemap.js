@@ -125,25 +125,25 @@ export default async function sitemap() {
     trendingMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
-        lastModified: item.release_date,
+        lastModified: new Date(),
       });
     });
     nowPlayingMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
-        lastModified: item.release_date,
+        lastModified: new Date(),
       });
     });
     upcomingMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
-        lastModified: item.release_date,
+        lastModified: new Date(),
       });
     });
     topRatedMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
-        lastModified: item.release_date,
+        lastModified: new Date(),
       });
     });
 
@@ -151,25 +151,25 @@ export default async function sitemap() {
     trendingSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
-        lastModified: item.first_air_date,
+        lastModified: new Date(),
       });
     });
     onTheAirSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
-        lastModified: item.first_air_date,
+        lastModified: new Date(),
       });
     });
     upcomingSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
-        lastModified: item.first_air_date,
+        lastModified: new Date(),
       });
     });
     topRatedSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
-        lastModified: item.first_air_date,
+        lastModified: new Date(),
       });
     });
 
