@@ -86,8 +86,8 @@ export default function ReviewCard({ review }) {
 
   return (
     <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
-      <div className="flex gap-2 items-center">
-        <div className="aspect-square !w-[50px] self-center rounded-full overflow-hidden bg-base-dark-gray">
+      <div className="flex gap-2 items-start">
+        <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-dark-gray">
           {imgUrlAPI === null ? (
             <figure
               style={{
@@ -109,17 +109,18 @@ export default function ReviewCard({ review }) {
           )}
         </div>
         <div className="flex flex-col justify-center max-w-[45vw]">
-          <span className="font-medium line-clamp-1">{review.author}</span>
+          <span title={review.author} className="font-medium line-clamp-1">
+            {review.author}
+          </span>
 
           <div
             onMouseEnter={() => setIsDateHovered(true)}
             onMouseLeave={() => setIsDateHovered(false)}
-            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex gap-1`}
+            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1`}
           >
             <span>
               {isDateHovered ? formattedDate : timeAgo(review.created_at)}
             </span>
-
             {new Date(review.updated_at).toLocaleString("en-US", options) !==
               new Date(review.created_at).toLocaleString("en-US", options) && (
               <span>
