@@ -62,7 +62,10 @@ export default function FilmCollection({ film }) {
       }
     };
 
-    fetchCollections();
+    if (film.belongs_to_collection) {
+      fetchCollections();
+    }
+
     setShowAllCollection(false);
   }, [film]);
 
@@ -391,10 +394,6 @@ function FilmEpisodes({ id, season }) {
                       <span>&bull;</span>
                     )}
 
-                    {item.air_date && <span>{formattedDate}</span>}
-
-                    {item.air_date && item.runtime && <span>&bull;</span>}
-
                     {item.runtime && (
                       <span>
                         {Math.floor(item.runtime / 60) >= 1
@@ -406,6 +405,10 @@ function FilmEpisodes({ id, season }) {
                             }`}
                       </span>
                     )}
+
+                    {item.air_date && item.runtime && <span>&bull;</span>}
+
+                    {item.air_date && <span>{formattedDate}</span>}
                   </div>
                 </div>
 

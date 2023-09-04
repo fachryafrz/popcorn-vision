@@ -6,6 +6,7 @@ import RatingStars from "./RatingStars";
 export default function ReviewCard({ review }) {
   // Read More state
   const [readMore, setReadMore] = useState(false);
+  const [isDateHovered, setIsDateHovered] = useState(false);
 
   // Review content variables
   const text = review.content;
@@ -25,9 +26,10 @@ export default function ReviewCard({ review }) {
 
   // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
-  const imgUrl = imgUrlAPI?.startsWith("/http")
-    ? imgUrlAPI.replace(/^\//, "")
-    : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
+  const imgUrl =
+    imgUrlAPI && imgUrlAPI.startsWith("/http")
+      ? imgUrlAPI.replace(/^\//, "")
+      : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
 
   // Toggle the "Read More" state
   const handleReadMore = () => {
@@ -38,6 +40,49 @@ export default function ReviewCard({ review }) {
     // Reset the "Read More" state when the review changes
     setReadMore(false);
   }, [review]);
+
+  const timeAgo = (date) => {
+    var seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    var interval = seconds / 31536000;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) + ` year${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) +
+        ` month${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    interval = seconds / 604800;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) + ` week${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) + ` day${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) + ` hour${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return (
+        Math.floor(interval) +
+        ` minute${Math.floor(interval) > 1 ? `s` : ``} ago`
+      );
+    }
+    return Math.floor(seconds) + ` second${intervalFloored > 1 ? `s` : ``} ago`;
+  };
 
   return (
     <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
@@ -66,7 +111,27 @@ export default function ReviewCard({ review }) {
         <div className="flex flex-col justify-center max-w-[45vw]">
           <span className="font-medium line-clamp-1">{review.author}</span>
 
-          <span className="text-sm text-gray-400">{formattedDate}</span>
+          <div
+            onMouseEnter={() => setIsDateHovered(true)}
+            onMouseLeave={() => setIsDateHovered(false)}
+            className={`max-w-fit text-sm text-gray-400 flex gap-1`}
+          >
+            <span>
+              {isDateHovered ? formattedDate : timeAgo(review.created_at)}
+            </span>
+
+            {new Date(review.updated_at).toLocaleString("en-US", options) !==
+              new Date(review.created_at).toLocaleString("en-US", options) && (
+              <span>
+                {isDateHovered
+                  ? `(${new Date(review.updated_at).toLocaleString(
+                      "en-US",
+                      options
+                    )})`
+                  : `(Edited)`}
+              </span>
+            )}
+          </div>
         </div>
 
         <div
@@ -93,14 +158,6 @@ export default function ReviewCard({ review }) {
         >
           {readMore ? `Show less` : `Read more`}
         </button>
-
-        {new Date(review.updated_at).toLocaleString("en-US", options) !==
-          new Date(review.created_at).toLocaleString("en-US", options) && (
-          <span className="text-xs text-gray-400 ml-auto">
-            Updated at{" "}
-            {new Date(review.updated_at).toLocaleString("en-US", options)}
-          </span>
-        )}
       </div>
     </div>
   );
