@@ -10,7 +10,7 @@ import { star, informationCircleOutline, playOutline } from "ionicons/icons";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, EffectFade } from "swiper";
+import { Pagination, Autoplay, EffectFade, Keyboard } from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
@@ -42,7 +42,7 @@ export default function HomeSlider({ films, genres }) {
     <section name="Home Slider" className="pb-[2rem]">
       <h2 className="sr-only">Discover Movies</h2>
       <Swiper
-        modules={[Pagination, Autoplay, EffectFade]}
+        modules={[Pagination, Autoplay, EffectFade, Keyboard]}
         effect="fade"
         loop={true}
         autoplay={{
@@ -50,6 +50,7 @@ export default function HomeSlider({ films, genres }) {
           disableOnInteraction: true,
           pauseOnMouseEnter: true,
         }}
+        keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
         className={`lg:h-[600px]`}
