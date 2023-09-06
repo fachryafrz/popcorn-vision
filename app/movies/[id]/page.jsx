@@ -125,7 +125,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
         {recommendations.results.length > 0 && (
           <FilmSlider
             films={recommendations}
-            title={`Recommendations`}
+            title={
+              recommendations.results.length > 1
+                ? `Recommendations`
+                : `Recommendation`
+            }
             genres={genres}
           />
         )}
