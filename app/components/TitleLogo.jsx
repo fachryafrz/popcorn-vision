@@ -39,14 +39,14 @@ export default function TitleLogo({ film }) {
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={!isTvPage ? film.title : film.name}
             title={!isTvPage ? film.title : film.name}
-            className="max-w-[300px] lg:max-w-none lg:max-h-[150px]"
+            className="max-h-[150px]"
           />
           <figcaption>
             <h3 className={`sr-only`}>{!isTvPage ? film.title : film.name}</h3>
           </figcaption>
         </figure>
       ) : (
-        <h3 className="font-bold text-2xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+        <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
           {!isTvPage ? film.title : film.name}
         </h3>
       )}
