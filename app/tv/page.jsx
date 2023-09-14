@@ -7,34 +7,36 @@ import FilmSlider from "../components/FilmSlider";
 import Trending from "../components/Trending";
 import providers from "../json/providers.json";
 
-export const metadata = {
-  title: "TV",
-  description: process.env.APP_DESC,
-  alternates: {
-    canonical: process.env.APP_URL,
-  },
-  openGraph: {
-    title: process.env.APP_NAME,
+export async function generateMetadata() {
+  return {
+    title: "TV",
     description: process.env.APP_DESC,
-    url: process.env.APP_URL,
-    siteName: process.env.APP_NAME,
-    images: "/popcorn.png",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    creator: "@fachryafrz",
-    images: "/popcorn.png",
-  },
-  icons: {
-    icon: "/popcorn.png",
-    shortcut: "/popcorn.png",
-    apple: "/apple-touch-icon.png",
-  },
-};
+    alternates: {
+      canonical: `${process.env.APP_URL}/tv`,
+    },
+    openGraph: {
+      title: process.env.APP_NAME,
+      description: process.env.APP_DESC,
+      url: `${process.env.APP_URL}/tv`,
+      siteName: process.env.APP_NAME,
+      images: "/popcorn.png",
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: process.env.APP_NAME,
+      description: process.env.APP_DESC,
+      creator: "@fachryafrz",
+      images: "/popcorn.png",
+    },
+    icons: {
+      icon: "/popcorn.png",
+      shortcut: "/popcorn.png",
+      apple: "/apple-touch-icon.png",
+    },
+  };
+}
 
 async function getGenres() {
   const res = await axios.get(`${process.env.API_URL}/genre/tv/list`, {
