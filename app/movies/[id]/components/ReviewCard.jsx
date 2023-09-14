@@ -14,7 +14,7 @@ export default function ReviewCard({ review }) {
   const text = review.content;
   const words = text.split(" ");
   const wordCount = words.length;
-  const maxLength = 40;
+  const maxLength = 30;
 
   // Review date variables
   const dateStr = review && review.created_at;
@@ -162,12 +162,14 @@ export default function ReviewCard({ review }) {
         </ReactMarkdown>
       </div>
 
-      <div className="flex items-center">
+      <div
+        className={`${
+          words.length > maxLength ? `flex` : `hidden`
+        } items-center`}
+      >
         <button
           onClick={handleReadMore}
-          className={`${
-            words.length > maxLength ? `flex` : `hidden`
-          } text-primary-blue max-w-fit -mt-2 hocus:font-medium`}
+          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium`}
         >
           {readMore ? `Show less` : `Read more`}
         </button>
