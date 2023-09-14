@@ -40,7 +40,7 @@ export default function Trending({ film, genres }) {
   }
 
   return (
-    <div className="px-4 xl:px-[9rem]">
+    <div className="px-4 mx-auto max-w-7xl">
       <h2 className="sr-only">{`Trending Movie`}</h2>
       <div className="relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black">
         <figure className="absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0">

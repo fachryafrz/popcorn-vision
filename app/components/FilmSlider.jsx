@@ -56,7 +56,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
             slidesPerGroup: 5,
           },
         }}
-        className={`!px-4 !pb-[2rem] !pt-[2.5rem] xl:!px-[9rem] !pr-[3rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
+        className={`!px-4 !pb-[2rem] !pt-[2.5rem] max-w-7xl 2xl:max-w-none 2xl:!px-[9rem] !pr-[3rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray before:max-w-[9rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[9rem] after:!h-full after:bg-gradient-to-l after:from-base-dark-gray after:z-10 before:hidden after:hidden 2xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
           const filmGenres =
@@ -78,7 +78,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           );
         })}
 
-        <div className="absolute top-0 left-0 right-0 h-[28px] px-4 xl:px-[9rem] flex justify-between items-end xl:max-w-none">
+        <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl 2xl:max-w-none 2xl:px-[9rem] flex justify-between items-end">
           <div className="flex gap-4 items-end">
             <p className="font-bold text-lg md:text-2xl">{title}</p>
           </div>
