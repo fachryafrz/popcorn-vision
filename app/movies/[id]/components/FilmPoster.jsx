@@ -45,22 +45,23 @@ export default function FilmPoster({ film }) {
         )}
       </figure>
 
-      {film.production_companies.length > 0 && (
-        <div className={`grid grid-cols-2 gap-4`}>
-          {film.production_companies.map(
-            (item) =>
-              item.logo_path !== null && (
-                <img
-                  key={item.id}
-                  src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                  alt={item.name}
-                  title={item.name}
-                  className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                />
-              )
-          )}
-        </div>
-      )}
+      {film.production_companies.length > 0 &&
+        film.production_companies.find((item) => item.logo_path !== null) && (
+          <div className={`grid grid-cols-2 gap-4`}>
+            {film.production_companies.map(
+              (item) =>
+                item.logo_path !== null && (
+                  <img
+                    key={item.id}
+                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                    alt={item.name}
+                    title={item.name}
+                    className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                  />
+                )
+            )}
+          </div>
+        )}
     </div>
   );
 }
