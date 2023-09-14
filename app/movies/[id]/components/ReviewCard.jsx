@@ -126,7 +126,7 @@ export default function ReviewCard({ review }) {
               <span>{`(edited)`}</span>
             )}
             <span
-              className={`z-10 absolute left-full top-1/2 -translate-y-1/2 text-xs bg-base-dark-gray p-2 ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
+              className={`absolute top-full md:left-full left-1/2 -translate-x-1/2 md:translate-x-0 md:top-1/2 md:-translate-y-1/2 text-xs bg-base-dark-gray p-2 mt-3 md:mt-0 md:ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
                 isDateHovered
                   ? `opacity-100 pointer-events-auto`
                   : `opacity-0 pointer-events-none`
@@ -141,7 +141,7 @@ export default function ReviewCard({ review }) {
                 )})`}
               <IonIcon
                 icon={triangle}
-                className={`absolute -left-[0.45rem] top-1/2 -translate-y-1/2 -rotate-90 text-[0.5rem] text-base-dark-gray`}
+                className={`absolute -top-[0.6rem] md:-left-[0.6rem] left-1/2 -translate-x-1/2 md:-translate-x-0 md:top-1/2 md:-translate-y-1/2 md:-rotate-90 text-base-dark-gray`}
               />
             </span>
           </div>
