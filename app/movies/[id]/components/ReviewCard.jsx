@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import RatingStars from "./RatingStars";
+import { IonIcon } from "@ionic/react";
+import { triangle } from "ionicons/icons";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -19,7 +21,7 @@ export default function ReviewCard({ review }) {
   const date = new Date(dateStr);
   const options = {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   };
   const formattedDate = date.toLocaleString("en-US", options);
@@ -116,22 +118,32 @@ export default function ReviewCard({ review }) {
           <div
             onMouseEnter={() => setIsDateHovered(true)}
             onMouseLeave={() => setIsDateHovered(false)}
-            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1`}
+            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
           >
-            <span>
-              {isDateHovered ? formattedDate : timeAgo(review.created_at)}
-            </span>
+            <span>{timeAgo(review.created_at)}</span>
             {new Date(review.updated_at).toLocaleString("en-US", options) !==
               new Date(review.created_at).toLocaleString("en-US", options) && (
-              <span>
-                {isDateHovered
-                  ? `(${new Date(review.updated_at).toLocaleString(
-                      "en-US",
-                      options
-                    )})`
-                  : `(edited)`}
-              </span>
+              <span>{`(edited)`}</span>
             )}
+            <span
+              className={`z-10 absolute left-full top-1/2 -translate-y-1/2 text-xs bg-base-dark-gray p-2 ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
+                isDateHovered
+                  ? `opacity-100 pointer-events-auto`
+                  : `opacity-0 pointer-events-none`
+              }`}
+            >
+              {formattedDate}{" "}
+              {new Date(review.updated_at).toLocaleString("en-US", options) !==
+                new Date(review.created_at).toLocaleString("en-US", options) &&
+                `(${new Date(review.updated_at).toLocaleString(
+                  "en-US",
+                  options
+                )})`}
+              <IonIcon
+                icon={triangle}
+                className={`absolute -left-[0.45rem] top-1/2 -translate-y-1/2 -rotate-90 text-[0.5rem] text-base-dark-gray`}
+              />
+            </span>
           </div>
         </div>
 
