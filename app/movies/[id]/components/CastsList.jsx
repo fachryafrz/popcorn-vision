@@ -48,7 +48,7 @@ export default function CastsList({ credits }) {
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
-            className={`text-primary-blue sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hocus:bg-white hocus:bg-opacity-10 hidden text-sm font-medium mb-2`}
+            className={`text-primary-blue sticky -bottom-1 lg:flex items-center justify-center gap-2 p-3 bg-base-dark-gray bg-opacity-[75%] backdrop-blur hocus:bg-white hocus:bg-opacity-10 hidden text-sm font-medium`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon
