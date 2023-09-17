@@ -49,7 +49,7 @@ export default function TitleLogo({ film }) {
         </figure>
       ) : (
         <div
-          className={`h-[100px] w-[300px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+          className={`h-[100px] w-[300px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
         ></div>
       )}
     </>
