@@ -38,7 +38,7 @@ export default function MainLoading() {
       {[...Array(sectionCount).keys()].map((a) => (
         <section
           key={a}
-          className={`max-w-7xl mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
+          className={`max-w-full xl:max-w-7xl mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
         >
           {/* Section Title */}
           <div className={`h-[28px] w-[100px]`}></div>
