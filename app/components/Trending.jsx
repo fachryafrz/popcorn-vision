@@ -4,9 +4,10 @@
 import { IonIcon } from "@ionic/react";
 import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
+import axios from "axios";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -66,8 +67,14 @@ export default function Trending({ film, genres }) {
           <div className="flex gap-1 items-center font-medium">
             <IonIcon icon={star} className="text-primary-yellow text-xl" />
             <span>{film.vote_average.toFixed(1)}</span>
-            <span>&bull;</span>
-            <time>{date.getFullYear()}</time>
+            {!isTvPage ? (
+              <>
+                <span>&bull;</span>
+                <time>{date.getFullYear()}</time>
+              </>
+            ) : (
+              <FilmSeason film={film} />
+            )}{" "}
             {filmGenres &&
               filmGenres.slice(0, 1).map((genre) => {
                 return (
@@ -97,5 +104,32 @@ export default function Trending({ film, genres }) {
         </div>
       </div>
     </div>
+  );
+}
+
+function FilmSeason({ film }) {
+  const [season, setSeason] = useState();
+
+  useEffect(() => {
+    const fetchFilmSeason = async () => {
+      axios
+        .get(`https://api.themoviedb.org/3/tv/${film.id}`, {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        })
+        .then((res) => setSeason(res.data.number_of_seasons));
+    };
+
+    fetchFilmSeason();
+  }, [film]);
+
+  return (
+    season && (
+      <div className="whitespace-nowrap flex items-center gap-1">
+        <span>&bull;</span>
+        <span>{`${season} Season${season > 1 ? `s` : ``}`} </span>
+      </div>
+    )
   );
 }
