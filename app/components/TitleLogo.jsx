@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 export default function TitleLogo({ film }) {
   const [titleLogo, setTitleLogo] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -25,15 +26,16 @@ export default function TitleLogo({ film }) {
         )
         .then((response) => {
           setTitleLogo(response.data.logos[0]);
+          setLoading(false);
         });
     };
 
     fetchTitleLogo();
   }, [film, isTvPage]);
 
-  return (
+  return titleLogo ? (
     <>
-      {titleLogo ? (
+      {!loading ? (
         <figure className="mb-4 flex justify-center">
           <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
@@ -46,10 +48,14 @@ export default function TitleLogo({ film }) {
           </figcaption>
         </figure>
       ) : (
-        <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
-          {!isTvPage ? film.title : film.name}
-        </h3>
+        <div
+          className={`h-[100px] w-[300px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+        ></div>
       )}
     </>
+  ) : (
+    <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+      {!isTvPage ? film.title : film.name}
+    </h3>
   );
 }

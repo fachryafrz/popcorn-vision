@@ -23,6 +23,7 @@ import axios from "axios";
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+  const [loading, setLoading] = useState(true);
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -105,13 +106,17 @@ export default function HomeSlider({ films, genres }) {
                         {film.vote_average.toFixed(1)}
                       </span>
                     </div>
+                    <span>&bull;</span>
                     {!isTvPage ? (
-                      <div className="whitespace-nowrap flex items-center gap-2">
-                        <span>&bull;</span>
+                      <div className="whitespace-nowrap flex items-center gap-1">
                         <span>{date.getFullYear()}</span>
                       </div>
                     ) : (
-                      <FilmSeason film={film} />
+                      <FilmSeason
+                        film={film}
+                        setLoading={setLoading}
+                        loading={loading}
+                      />
                     )}
                     <span>&bull;</span>
                     {filmGenres &&
@@ -160,7 +165,7 @@ export default function HomeSlider({ films, genres }) {
   );
 }
 
-function FilmSeason({ film }) {
+function FilmSeason({ film, setLoading, loading }) {
   const [season, setSeason] = useState();
 
   useEffect(() => {
@@ -171,18 +176,22 @@ function FilmSeason({ film }) {
             api_key: "84aa2a7d5e4394ded7195035a4745dbd",
           },
         })
-        .then((res) => setSeason(res.data.number_of_seasons));
+        .then((res) => {
+          setSeason(res.data.number_of_seasons);
+          setLoading(false);
+        });
     };
 
     fetchFilmSeason();
-  }, [film]);
+  }, [film, setLoading]);
 
-  return (
-    season && (
-      <div className="whitespace-nowrap flex items-center gap-1">
-        <span>&bull;</span>
-        <span>{`${season} Season${season > 1 ? `s` : ``}`} </span>
-      </div>
-    )
+  return season && !loading ? (
+    <div className="whitespace-nowrap flex items-center gap-1">
+      <span>{`${season} Season${season > 1 ? `s` : ``}`} </span>
+    </div>
+  ) : (
+    <div
+      className={`h-[24px] w-[75px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+    ></div>
   );
 }
