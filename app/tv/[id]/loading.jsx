@@ -1,5 +1,5 @@
-import LoadingDetail from "@/app/movies/[id]/loading";
+import DetailsLoading from "@/app/skeleton/details/page";
 
-export default function page() {
-  return <LoadingDetail />;
+export default function loading() {
+  return <DetailsLoading />;
 }
