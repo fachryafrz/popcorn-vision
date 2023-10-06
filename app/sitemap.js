@@ -126,24 +126,32 @@ export default async function sitemap() {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     nowPlayingMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     upcomingMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     topRatedMovies.forEach((item) => {
       allMovies.push({
         url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
 
@@ -152,24 +160,32 @@ export default async function sitemap() {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     onTheAirSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     upcomingSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
     topRatedSeries.forEach((item) => {
       allSeries.push({
         url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       });
     });
 
@@ -177,14 +193,20 @@ export default async function sitemap() {
       {
         url: `${process.env.APP_URL}`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       },
       {
         url: `${process.env.APP_URL}/search`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       },
       {
         url: `${process.env.APP_URL}/tv/search`,
         lastModified: new Date(),
+        changeFrequency: "hourly",
+        priority: 1,
       },
       ...allMovies,
       ...allSeries,
