@@ -1,3 +1,5 @@
+export const revalidate = 3600; // revalidate this page every 1 hour
+
 import axios from "axios";
 
 async function getFilms(
