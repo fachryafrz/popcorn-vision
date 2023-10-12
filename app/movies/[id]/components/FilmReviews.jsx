@@ -57,12 +57,16 @@ export default function FilmReviews({ reviews, film }) {
       {totalReviewPages > 1 &&
         showAllReviews &&
         currentReviewPage !== totalReviewPages && (
-          <button
-            onClick={() => fetchMoreReviews((currentReviewPage += 1))}
-            className="text-primary-blue py-2 flex justify-center hocus:bg-white hocus:bg-opacity-10 rounded-lg"
+          <div
+            className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
           >
-            Load more reviews
-          </button>
+            <button
+              onClick={() => fetchMoreReviews((currentReviewPage += 1))}
+              className="text-primary-blue p-2 px-12 xl:px-24 flex justify-center bg-white bg-opacity-5 hocus:bg-opacity-10 rounded-full whitespace-nowrap"
+            >
+              Load more
+            </button>
+          </div>
         )}
 
       {/* View all reviews */}

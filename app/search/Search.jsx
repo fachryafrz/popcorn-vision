@@ -231,9 +231,15 @@ export default function Search() {
       const selectedGenreIds = updatedGenres.join(",");
 
       const response = await axios.get(
-        `https://api.themoviedb.org/3/discover/${
-          !isTvPage ? "movie" : "tv"
-        }?api_key=${apiKey}&with_genres=${selectedGenreIds}&include_adult=false`
+        `https://api.themoviedb.org/3/discover/${!isTvPage ? "movie" : "tv"}`,
+        {
+          params: {
+            api_key: apiKey,
+            with_genres: selectedGenreIds,
+            // sort_by: "popularity.desc",
+            include_adult: false,
+          },
+        }
       );
 
       setSelectedGenres(updatedGenres);
@@ -394,12 +400,16 @@ export default function Search() {
               )}
             </div>
             {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
-              <button
-                onClick={() => fetchMoreMovies((currentSearchPage += 1))}
-                className="text-primary-blue py-2 flex justify-center bg-white bg-opacity-10 hocus:bg-opacity-20 rounded-lg"
+              <div
+                className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10 mt-4`}
               >
-                Load more
-              </button>
+                <button
+                  onClick={() => fetchMoreMovies((currentSearchPage += 1))}
+                  className="text-primary-blue p-2 px-12 xl:px-24 flex justify-center bg-white bg-opacity-5 hocus:bg-opacity-10 rounded-full whitespace-nowrap"
+                >
+                  Load more
+                </button>
+              </div>
             )}
 
             <button
