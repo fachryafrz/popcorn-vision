@@ -9,7 +9,7 @@ import providers from "../json/providers.json";
 
 export async function generateMetadata() {
   return {
-    title: "TV",
+    title: "TV Series",
     description: process.env.APP_DESC,
     alternates: {
       canonical: `${process.env.APP_URL}/tv`,
