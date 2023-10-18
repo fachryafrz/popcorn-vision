@@ -76,7 +76,7 @@ export default function HomeSlider({ films, genres }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-dark-gray after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-dark-gray after:via-base-dark-gray after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[600px] aspect-poster sm:aspect-[4/3] md:aspect-auto"
+              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-dark-gray after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-dark-gray after:via-base-dark-gray after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[80vh] aspect-poster sm:aspect-[4/3] md:aspect-auto"
             >
               <figure className="h-full w-full -z-10">
                 <img
