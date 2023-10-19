@@ -510,18 +510,25 @@ export default function FilmOverview({
                   </td>
                 </tr>
               ) : location ? (
-                <div className={`py-4`}>
-                  <span className={`text-gray-400 text-sm italic`}>
-                    Where to watch? <br /> Hold on we&apos;re still finding...
-                  </span>
-                </div>
+                providersIDArray && (
+                  <tr>
+                    <div className={`py-4`}>
+                      <span className={`text-gray-400 text-sm italic`}>
+                        Where to watch? <br /> Hold on we&apos;re still
+                        finding...
+                      </span>
+                    </div>
+                  </tr>
+                )
               ) : (
-                <div className={`py-4`}>
-                  <span className={`text-gray-400 text-sm italic`}>
-                    Where to watch? <br /> Please enable location services to
-                    find out where to watch this film.
-                  </span>
-                </div>
+                <tr>
+                  <div className={`py-4`}>
+                    <span className={`text-gray-400 text-sm italic`}>
+                      Where to watch? <br /> Please enable location services to
+                      find out where to watch this film.
+                    </span>
+                  </div>
+                </tr>
               )}
 
               <tr>
