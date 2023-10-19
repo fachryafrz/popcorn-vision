@@ -24,6 +24,7 @@ import {
   tvOutline,
 } from "ionicons/icons";
 import ShareModal from "./ShareModal";
+import axios from "axios";
 
 export default function FilmOverview({
   film,
@@ -33,6 +34,41 @@ export default function FilmOverview({
   credits,
   providers,
 }) {
+  const [location, setLocation] = useState(null);
+  const [language, setLanguage] = useState("id-ID");
+  const [userLocation, setUserLocation] = useState();
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation(position.coords);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location) {
+      const { latitude, longitude } = location;
+
+      axios
+        .get(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+        )
+        .then((response) => {
+          if (response.data.countryCode !== "ID") {
+            setLanguage("en-US");
+          }
+          setUserLocation(response.data);
+        });
+    }
+  }, [location]);
+
+  let providersArray = Object.entries(providers.results);
+
+  let providersIDArray =
+    userLocation &&
+    providersArray.find((item) => item[0] === userLocation.countryCode);
+
   const [URL, setURL] = useState("");
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -420,19 +456,19 @@ export default function FilmOverview({
                     </tr>
                   )}
 
-              {providers.results && providers.results.ID && (
+              {providers.results && providersIDArray ? (
                 <tr>
                   <th className="text-gray-400 whitespace-nowrap">Providers</th>
 
                   <td>
                     <div className="flex flex-col gap-1 justify-center md:justify-start py-4">
-                      <span className={`text-gray-400 text-sm`}>
-                        Available in
+                      <span className={`text-gray-400 text-sm italic`}>
+                        Where to watch?
                       </span>
 
                       <div className={`flex gap-2 flex-wrap`}>
-                        {providers.results.ID.rent
-                          ? providers.results.ID.rent.map(
+                        {providersIDArray[1].rent
+                          ? providersIDArray[1].rent.map(
                               (item) =>
                                 item.logo_path !== null && (
                                   <img
@@ -444,8 +480,8 @@ export default function FilmOverview({
                                   />
                                 )
                             )
-                          : providers.results.ID.buy
-                          ? providers.results.ID.buy.map(
+                          : providersIDArray[1].buy
+                          ? providersIDArray[1].buy.map(
                               (item) =>
                                 item.logo_path !== null && (
                                   <img
@@ -457,7 +493,7 @@ export default function FilmOverview({
                                   />
                                 )
                             )
-                          : providers.results.ID.flatrate.map(
+                          : providersIDArray[1].flatrate.map(
                               (item) =>
                                 item.logo_path !== null && (
                                   <img
@@ -473,6 +509,19 @@ export default function FilmOverview({
                     </div>
                   </td>
                 </tr>
+              ) : location ? (
+                <div className={`py-4`}>
+                  <span className={`text-gray-400 text-sm italic`}>
+                    Where to watch? <br /> Hold on we&apos;re still finding...
+                  </span>
+                </div>
+              ) : (
+                <div className={`py-4`}>
+                  <span className={`text-gray-400 text-sm italic`}>
+                    Where to watch? <br /> Please enable location services to
+                    find out where to watch this film.
+                  </span>
+                </div>
               )}
 
               <tr>
