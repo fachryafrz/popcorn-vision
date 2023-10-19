@@ -56,9 +56,9 @@ export default function FilmCard({ film, genres, isTvPage }) {
         {film.vote_average > 0 && (
           <div
             className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
-              film.vote_average >= 1 && film.vote_average <= 3
+              film.vote_average > 0 && film.vote_average < 3
                 ? `border-primary-red`
-                : film.vote_average >= 4 && film.vote_average <= 7
+                : film.vote_average >= 3 && film.vote_average < 7
                 ? `border-primary-yellow`
                 : `border-green-500`
             }`}
