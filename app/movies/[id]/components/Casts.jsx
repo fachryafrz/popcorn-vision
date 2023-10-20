@@ -28,7 +28,7 @@ export default function Casts({ actor, showAllActors }) {
         <h3
           title={actor.name}
           className={`font-medium lg:line-clamp-1 ${
-            showAllActors && `!line-clamp-none`
+            showAllActors ? `!line-clamp-none` : ``
           }`}
         >
           {actor.name}
@@ -36,13 +36,13 @@ export default function Casts({ actor, showAllActors }) {
 
         {actor.character !== "" && (
           <>
-            <p
+            <span
               className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
-                showAllActors && `!line-clamp-none`
+                showAllActors ? `!line-clamp-none` : ``
               }`}
             >
               <span title={actor.character}>{actor.character}</span>
-            </p>
+            </span>
           </>
         )}
       </div>

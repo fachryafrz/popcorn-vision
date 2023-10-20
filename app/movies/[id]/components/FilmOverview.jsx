@@ -381,7 +381,7 @@ export default function FilmOverview({
                           ></figure>
                         )}
                         <div className="flex flex-col">
-                          <span className="">
+                          <span className="font-medium h-7">
                             {
                               credits.crew.find(
                                 (person) => person.job === "Director"
@@ -389,19 +389,11 @@ export default function FilmOverview({
                             }
                           </span>
                           <span className="text-sm text-gray-400 ">
-                            {credits.crew.find(
-                              (person) => person.job === "Director"
-                            ).gender === 0
-                              ? `Not Specified`
-                              : credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).gender === 1
-                              ? `Female`
-                              : credits.crew.find(
-                                  (person) => person.job === "Director"
-                                ).gender === 2
-                              ? `Male`
-                              : ``}
+                            {
+                              credits.crew.find(
+                                (person) => person.job === "Director"
+                              ).job
+                            }
                           </span>
                         </div>
                       </td>
@@ -414,15 +406,6 @@ export default function FilmOverview({
                       </th>
                       <td className={`flex flex-wrap items-center gap-2`}>
                         {film.created_by.map((item, index) => {
-                          const gender =
-                            item.gender === 0
-                              ? `Not Specified`
-                              : item.gender === 1
-                              ? `Female`
-                              : item.gender === 2
-                              ? `Male`
-                              : ``;
-
                           return (
                             <div
                               key={index}
@@ -432,22 +415,22 @@ export default function FilmOverview({
                                 <img
                                   src={`/popcorn.png`}
                                   alt={item.name}
-                                  className={`aspect-square w-[40px] rounded-full object-contain`}
+                                  className={`aspect-square w-[50px] rounded-full object-contain`}
                                 />
                               ) : (
                                 <img
                                   src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
                                   alt={item.name}
-                                  className={`aspect-square w-[40px] rounded-full`}
+                                  className={`aspect-square w-[50px] rounded-full`}
                                 />
                               )}
                               <div className={`flex flex-col`}>
-                                <span className="">{item.name}</span>
-                                {item.gender < 3 && (
-                                  <span className="text-sm text-gray-400 ">
-                                    {gender}
-                                  </span>
-                                )}
+                                <span className="font-medium h-7">
+                                  {item.name}
+                                </span>
+                                <span className="text-sm text-gray-400 ">
+                                  {`Creator`}
+                                </span>
                               </div>
                             </div>
                           );

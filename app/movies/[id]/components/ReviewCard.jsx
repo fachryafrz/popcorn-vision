@@ -88,7 +88,7 @@ export default function ReviewCard({ review }) {
 
   return (
     <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
-      <div className="flex gap-2 items-start">
+      <div className="flex gap-2 items-center">
         <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-dark-gray">
           {imgUrlAPI === null ? (
             <figure
@@ -148,7 +148,7 @@ export default function ReviewCard({ review }) {
         </div>
 
         <div
-          className={`ml-auto flex items-start text-primary-yellow whitespace-nowrap`}
+          className={`ml-auto flex items-start text-primary-yellow whitespace-nowrap mb-auto`}
         >
           <RatingStars rating={review.author_details.rating} />
         </div>
