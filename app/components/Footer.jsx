@@ -25,7 +25,7 @@ export default function Footer() {
   // Router variables
   const isTvPage = pathname.startsWith("/tv");
   return (
-    <div className="px-4 mx-auto pt-[2rem] max-w-7xl flex flex-col text-white">
+    <footer className="px-4 mx-auto pt-[2rem] max-w-7xl flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
         <figure
           style={{ background: `url(/popcorn.png)`, backgroundSize: `contain` }}
@@ -111,6 +111,6 @@ export default function Footer() {
           </a>
         </span>
       </div>
-    </div>
+    </footer>
   );
 }
