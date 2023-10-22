@@ -19,8 +19,8 @@ export default function Navbar() {
   let URLSearchQuery = useSearchParams().get("query");
 
   return (
-    <nav className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
-      <div className="mx-auto py-2 px-4 max-w-7xl flex flex-wrap justify-between">
+    <header className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
+      <nav className="mx-auto py-2 px-4 max-w-7xl flex flex-wrap justify-between">
         <Link
           href={!isTvPage ? `/` : `/tv`}
           className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
@@ -80,7 +80,7 @@ export default function Navbar() {
             <span className="hidden sm:block">Search</span>
           </Link>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
 }
