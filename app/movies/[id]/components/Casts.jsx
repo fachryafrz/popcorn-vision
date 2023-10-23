@@ -47,7 +47,7 @@ export default function Casts({ actor, showAllActors }) {
             }`}
             itemProp="character"
             itemScope
-            itemType="http://schema.org/Person"
+            itemType="http://schema.org/CreativeWork"
           >
             <span title={actor.character} itemProp="name">
               {actor.character}
