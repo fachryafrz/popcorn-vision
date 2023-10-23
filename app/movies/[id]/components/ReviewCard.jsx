@@ -87,7 +87,12 @@ export default function ReviewCard({ review }) {
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
+    <div
+      className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
+      itemProp="review"
+      itemScope
+      itemType="http://schema.org/Review"
+    >
       <div className="flex gap-2 items-center">
         <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-dark-gray">
           {imgUrlAPI === null ? (
@@ -111,9 +116,15 @@ export default function ReviewCard({ review }) {
           )}
         </div>
         <div className="flex flex-col justify-center max-w-[45vw]">
-          <span title={review.author} className="font-medium line-clamp-1">
-            {review.author}
-          </span>
+          <div itemProp="author" itemScope itemType="http://schema.org/Person">
+            <span
+              title={review.author}
+              className="font-medium line-clamp-1"
+              itemProp="name"
+            >
+              {review.author}
+            </span>
+          </div>
 
           <div
             onMouseEnter={() => setIsDateHovered(true)}
@@ -154,7 +165,7 @@ export default function ReviewCard({ review }) {
         </div>
       </div>
 
-      <div className={`prose max-w-none !text-gray-400`}>
+      <div className={`prose max-w-none !text-gray-400`} itemProp="reviewBody">
         <ReactMarkdown>
           {readMore || wordCount < maxLength
             ? text

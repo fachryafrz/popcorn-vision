@@ -41,7 +41,22 @@ const RatingStars = ({ rating }) => {
     return stars;
   };
 
-  return <div>{renderStars()}</div>;
+  return (
+    <div>
+      {renderStars()}
+
+      <div
+        className="sr-only"
+        itemProp="reviewRating"
+        itemScope
+        itemType="http://schema.org/Rating"
+      >
+        <meta itemProp="worstRating" content="1" />
+        <span itemProp="ratingValue">{`${rating}`}</span>/
+        <span itemProp="bestRating">10</span>
+      </div>
+    </div>
+  );
 };
 
 export default RatingStars;
