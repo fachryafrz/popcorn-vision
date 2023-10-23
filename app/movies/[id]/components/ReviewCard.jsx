@@ -90,6 +90,7 @@ export default function ReviewCard({ review }) {
     <div
       className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
       itemProp="review"
+      itemScope
       itemType="http://schema.org/Review"
     >
       <div className="flex gap-2 items-center">

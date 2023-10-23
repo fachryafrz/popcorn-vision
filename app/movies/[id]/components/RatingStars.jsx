@@ -45,13 +45,16 @@ const RatingStars = ({ rating }) => {
     <div>
       {renderStars()}
 
-      <meta itemProp="worstRating" content="1" />
-      <span itemProp="ratingValue" className="sr-only">
-        {`${rating}/`}
-      </span>
-      <span itemProp="bestRating" className="sr-only">
-        10
-      </span>
+      <div
+        className="sr-only"
+        itemProp="reviewRating"
+        itemScope
+        itemType="http://schema.org/Rating"
+      >
+        <meta itemProp="worstRating" content="1" />
+        <span itemProp="ratingValue">{`${rating}`}</span>/
+        <span itemProp="bestRating">10</span>
+      </div>
     </div>
   );
 };
