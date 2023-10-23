@@ -41,7 +41,19 @@ const RatingStars = ({ rating }) => {
     return stars;
   };
 
-  return <div>{renderStars()}</div>;
+  return (
+    <div>
+      {renderStars()}
+
+      <meta itemProp="worstRating" content="1" />
+      <span itemProp="ratingValue" className="sr-only">
+        {`${rating}/`}
+      </span>
+      <span itemProp="bestRating" className="sr-only">
+        10
+      </span>
+    </div>
+  );
 };
 
 export default RatingStars;
