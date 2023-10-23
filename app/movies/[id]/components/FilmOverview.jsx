@@ -380,8 +380,8 @@ export default function FilmOverview({
                             className={`aspect-square w-[50px] rounded-full`}
                           ></figure>
                         )}
-                        <div className="flex flex-col">
-                          <span className="font-medium h-7" itemProp="director" itemScope itemType="http://schema.org/Person">
+                        <div className="flex flex-col" itemProp="director" itemScope itemType="http://schema.org/Person">
+                          <span className="font-medium h-7" itemProp="name">
                             {
                               credits.crew.find(
                                 (person) => person.job === "Director"
@@ -424,8 +424,8 @@ export default function FilmOverview({
                                   className={`aspect-square w-[50px] rounded-full`}
                                 />
                               )}
-                              <div className={`flex flex-col`}>
-                                <span className="font-medium h-7" itemProp="director" itemScope itemType="http://schema.org/Person">
+                              <div className={`flex flex-col`} itemProp="director" itemScope itemType="http://schema.org/Person">
+                                <span className="font-medium h-7" itemProp="name">
                                   {item.name}
                                 </span>
                                 <span className="text-sm text-gray-400 ">
