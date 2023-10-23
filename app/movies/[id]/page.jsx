@@ -82,6 +82,8 @@ export async function generateMetadata({ params, type = "movie" }) {
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
+  const isTvPage = type !== "movie" ? true : false;
+
   const film = await getFilm(id, type);
   const credits = await getFilm(id, type, "/credits");
   const videos = await getFilm(id, type, "/videos");
@@ -97,7 +99,13 @@ export default async function FilmDetail({ params, type = "movie" }) {
       <div className="flex flex-col bg-base-dark-gray text-white pb-[2rem] md:pb-[5rem]">
         {/* Movie Background/Backdrop */}
         <FilmBackdrop film={film} />
-        <div className="z-10 -mt-[10vh] md:-mt-[50vh] mb-8" itemScope itemType="http://schema.org/Movie">
+        <div
+          className="z-10 -mt-[10vh] md:-mt-[50vh] mb-8"
+          itemScope
+          itemType={
+            !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
+          }
+        >
           <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4">
             {/* Left */}
             <div className="lg:col-span-6">

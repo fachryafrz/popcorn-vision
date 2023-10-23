@@ -366,6 +366,7 @@ export default function FilmOverview({
                         <span
                           key={item.id}
                           className={`p-1 px-3 bg-base-gray bg-opacity-50 rounded-full`}
+                          itemProp="genre"
                         >
                           {item.name}
                         </span>
