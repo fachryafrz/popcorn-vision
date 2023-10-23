@@ -97,7 +97,22 @@ export default function FilmMedia({ videos, images }) {
             .slice(0, 10)
             .map((vid, index) => {
               return (
-                <SwiperSlide key={index}>
+                <SwiperSlide
+                  key={index}
+                  itemProp="trailer"
+                  itemScope
+                  itemType="http://schema.org/VideoObject"
+                >
+                  <link
+                    itemProp="embedUrl"
+                    href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
+                  />
+                  <meta itemProp="name" content={vid.name} />
+                  <meta
+                    itemProp="thumbnailUrl"
+                    content={`https://i.ytimg.com/vi_webp/${vid.key}/maxresdefault.webp`}
+                  />
+                  <meta itemProp="uploadDate" content={vid.published_at} />
                   <iframe
                     src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
                     title="YouTube video player"
