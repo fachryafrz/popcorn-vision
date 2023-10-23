@@ -300,6 +300,10 @@ export default function FilmOverview({
                         </td>
                       ) : (
                         <td>
+                          <meta
+                            itemProp="duration"
+                            content={`PT${film.runtime}M`}
+                          />
                           <div className={`flex items-center gap-2`}>
                             <IonIcon icon={timeOutline} />
 
@@ -318,6 +322,10 @@ export default function FilmOverview({
 
                       {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
                         <td>
+                          <meta
+                            itemProp="duration"
+                            content={`PT${film.episode_run_time}M`}
+                          />
                           <div className={`flex items-center gap-2`}>
                             <IonIcon icon={timeOutline} />
 
@@ -329,6 +337,10 @@ export default function FilmOverview({
                         </td>
                       ) : (
                         <td>
+                          <meta
+                            itemProp="duration"
+                            content={`PT${film.episode_run_time}M`}
+                          />
                           <div className={`flex items-center gap-2`}>
                             <IonIcon icon={timeOutline} />
 
