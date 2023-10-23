@@ -49,15 +49,25 @@ export default function FilmPoster({ film }) {
         film.production_companies.find((item) => item.logo_path !== null) && (
           <div className={`grid grid-cols-2 gap-4`}>
             {film.production_companies.map(
-              (item) =>
+              (item, i) =>
                 item.logo_path !== null && (
-                  <img
-                    key={item.id}
-                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                    alt={item.name}
-                    title={item.name}
-                    className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                  />
+                  <div
+                    key={i}
+                    itemProp="productionCompany"
+                    itemScope
+                    itemType="http://schema.org/Organization"
+                  >
+                    <img
+                      key={item.id}
+                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                      alt={item.name}
+                      title={item.name}
+                      className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                    />
+                    <span className={`sr-only`} itemProp="name">
+                      {item.name}
+                    </span>
+                  </div>
                 )
             )}
           </div>

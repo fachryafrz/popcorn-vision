@@ -159,6 +159,7 @@ export default function FilmOverview({
                 <h1
                   title={isItTvPage(film.title, film.name)}
                   className="sr-only"
+                  itemProp="name"
                 >
                   {isItTvPage(film.title, film.name)}
                 </h1>
@@ -167,6 +168,7 @@ export default function FilmOverview({
               <h1
                 title={isItTvPage(film.title, film.name)}
                 className="max-w-fit font-bold text-2xl lg:text-5xl line-clamp-2 md:line-clamp-3 md:py-2 !leading-tight text-center md:text-start"
+                itemProp="name"
               >
                 {isItTvPage(film.title, film.name)}
               </h1>
@@ -191,15 +193,25 @@ export default function FilmOverview({
                         className={`flex gap-4 flex-wrap justify-center md:justify-start`}
                       >
                         {film.production_companies.map(
-                          (item) =>
+                          (item, i) =>
                             item.logo_path !== null && (
-                              <img
-                                key={item.id}
-                                src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                                alt={item.name}
-                                title={item.name}
-                                className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                              />
+                              <div
+                                key={i}
+                                itemProp="productionCompany"
+                                itemScope
+                                itemType="http://schema.org/Organization"
+                              >
+                                <img
+                                  key={item.id}
+                                  src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                                  alt={item.name}
+                                  title={item.name}
+                                  className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                                />
+                                <span className={`sr-only`} itemProp="name">
+                                  {item.name}
+                                </span>
+                              </div>
                             )
                         )}
                       </div>
@@ -273,6 +285,10 @@ export default function FilmOverview({
 
                       {Math.floor(film.runtime / 60) >= 1 ? (
                         <td>
+                          <meta
+                            itemProp="duration"
+                            content={`PT${film.runtime}M`}
+                          />
                           <div className={`flex items-center gap-2`}>
                             <IonIcon icon={timeOutline} />
                             <time>{film.runtime} minutes</time>
@@ -380,7 +396,12 @@ export default function FilmOverview({
                             className={`aspect-square w-[50px] rounded-full`}
                           ></figure>
                         )}
-                        <div className="flex flex-col" itemProp="director" itemScope itemType="http://schema.org/Person">
+                        <div
+                          className="flex flex-col"
+                          itemProp="director"
+                          itemScope
+                          itemType="http://schema.org/Person"
+                        >
                           <span className="font-medium h-7" itemProp="name">
                             {
                               credits.crew.find(
@@ -424,8 +445,16 @@ export default function FilmOverview({
                                   className={`aspect-square w-[50px] rounded-full`}
                                 />
                               )}
-                              <div className={`flex flex-col`} itemProp="director" itemScope itemType="http://schema.org/Person">
-                                <span className="font-medium h-7" itemProp="name">
+                              <div
+                                className={`flex flex-col`}
+                                itemProp="director"
+                                itemScope
+                                itemType="http://schema.org/Person"
+                              >
+                                <span
+                                  className="font-medium h-7"
+                                  itemProp="name"
+                                >
                                   {item.name}
                                 </span>
                                 <span className="text-sm text-gray-400 ">

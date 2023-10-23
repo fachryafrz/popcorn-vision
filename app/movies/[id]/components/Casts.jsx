@@ -24,12 +24,13 @@ export default function Casts({ actor, showAllActors }) {
           ></figure>
         )}
       </div>
-      <div className="w-full self-center">
+      <div className="w-full self-center" itemProp="actor" itemScope itemType="http://schema.org/Person">
         <h3
           title={actor.name}
           className={`font-medium lg:line-clamp-1 ${
             showAllActors ? `!line-clamp-none` : ``
           }`}
+          itemProp="name"
         >
           {actor.name}
         </h3>
