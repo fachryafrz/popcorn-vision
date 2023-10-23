@@ -24,7 +24,12 @@ export default function Casts({ actor, showAllActors }) {
           ></figure>
         )}
       </div>
-      <div className="w-full self-center" itemProp="actor" itemScope itemType="http://schema.org/Person">
+      <div
+        className="w-full self-center"
+        itemProp="actor"
+        itemScope
+        itemType="http://schema.org/Person"
+      >
         <h3
           title={actor.name}
           className={`font-medium lg:line-clamp-1 ${
@@ -36,15 +41,18 @@ export default function Casts({ actor, showAllActors }) {
         </h3>
 
         {actor.character !== "" && (
-          <>
-            <span
-              className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
-                showAllActors ? `!line-clamp-none` : ``
-              }`}
-            >
-              <span title={actor.character}>{actor.character}</span>
+          <span
+            className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
+              showAllActors ? `!line-clamp-none` : ``
+            }`}
+            itemProp="character"
+            itemScope
+            itemType="http://schema.org/Person"
+          >
+            <span title={actor.character} itemProp="name">
+              {actor.character}
             </span>
-          </>
+          </span>
         )}
       </div>
     </div>

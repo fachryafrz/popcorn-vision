@@ -226,6 +226,10 @@ export default function FilmOverview({
                   </th>
                   {!isTvPage ? (
                     <td>
+                      <meta
+                        itemProp="datePublished"
+                        content={film.release_date}
+                      />
                       <div className={`flex items-center gap-2`}>
                         <IonIcon icon={calendarOutline} />
 
@@ -236,6 +240,10 @@ export default function FilmOverview({
                     </td>
                   ) : (
                     <td>
+                      <meta
+                        itemProp="datePublished"
+                        content={film.first_air_date}
+                      />
                       <div className={`flex items-center gap-2`}>
                         <IonIcon icon={calendarOutline} />
 
