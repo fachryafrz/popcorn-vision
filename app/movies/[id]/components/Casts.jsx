@@ -45,13 +45,8 @@ export default function Casts({ actor, showAllActors }) {
             className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
               showAllActors ? `!line-clamp-none` : ``
             }`}
-            itemProp="character"
-            itemScope
-            itemType="http://schema.org/CreativeWork"
           >
-            <span title={actor.character} itemProp="name">
-              {actor.character}
-            </span>
+            <span title={actor.character}>{actor.character}</span>
           </span>
         )}
       </div>
