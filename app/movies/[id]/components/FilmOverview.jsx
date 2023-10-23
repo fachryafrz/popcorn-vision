@@ -381,7 +381,7 @@ export default function FilmOverview({
                           ></figure>
                         )}
                         <div className="flex flex-col">
-                          <span className="font-medium h-7">
+                          <span className="font-medium h-7" itemProp="director" itemScope itemType="http://schema.org/Person">
                             {
                               credits.crew.find(
                                 (person) => person.job === "Director"
@@ -425,7 +425,7 @@ export default function FilmOverview({
                                 />
                               )}
                               <div className={`flex flex-col`}>
-                                <span className="font-medium h-7">
+                                <span className="font-medium h-7" itemProp="director" itemScope itemType="http://schema.org/Person">
                                   {item.name}
                                 </span>
                                 <span className="text-sm text-gray-400 ">
