@@ -109,7 +109,13 @@ export default function FilmOverview({
   return (
     <>
       <div className="flex flex-col gap-6 self-start w-full">
-        <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
+        <div
+          className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0"
+          itemScope
+          itemType={
+            !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
+          }
+        >
           <div className="flex flex-col gap-1">
             <div className="sticky top-20 flex flex-col gap-1">
               <figure className="w-[50vw] md:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl relative">

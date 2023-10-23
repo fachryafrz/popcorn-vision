@@ -164,11 +164,7 @@ export default function ReviewCard({ review }) {
         </div>
       </div>
 
-      <p className={`sr-only`} itemProp="reviewBody">
-        {text}
-      </p>
-
-      <div className={`prose max-w-none !text-gray-400`}>
+      <div className={`prose max-w-none !text-gray-400`} itemProp="reviewBody">
         <ReactMarkdown>
           {readMore || wordCount < maxLength
             ? text
