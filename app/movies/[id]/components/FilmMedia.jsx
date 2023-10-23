@@ -107,6 +107,12 @@ export default function FilmMedia({ videos, images }) {
                     itemProp="embedUrl"
                     href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
                   />
+                  <meta itemProp="name" content={vid.name} />
+                  <meta
+                    itemProp="thumbnailUrl"
+                    content={`https://i.ytimg.com/vi_webp/${vid.key}/maxresdefault.webp`}
+                  />
+                  <meta itemProp="uploadDate" content={vid.published_at} />
                   <iframe
                     src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
                     title="YouTube video player"
