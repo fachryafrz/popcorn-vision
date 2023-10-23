@@ -6,27 +6,17 @@ import {
   chevronDownCircleOutline,
   chevronUpCircleOutline,
 } from "ionicons/icons";
-import { usePathname } from "next/navigation";
 
 export default function CastsList({ credits }) {
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
-
-  const pathname = usePathname();
-  const isTvPage = pathname.startsWith("/tv");
 
   const handleShowAllActors = () => {
     setShowAllActors(!showAllActors);
   };
 
   return (
-    <div
-      className={`max-w-full flex flex-col self-start sticky top-20`}
-      itemScope
-      itemType={
-        !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
-      }
-    >
+    <div className={`max-w-full flex flex-col self-start sticky top-20`}>
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-xl">
           Casts & Credits {/* ({credits.cast.length}) */}
