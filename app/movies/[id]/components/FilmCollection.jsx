@@ -75,6 +75,7 @@ export default function FilmCollection({ film }) {
       text
         .toLowerCase()
         .replace(/ /g, "-")
+        .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")
     );
   }

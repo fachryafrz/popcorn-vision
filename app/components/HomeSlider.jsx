@@ -36,6 +36,7 @@ export default function HomeSlider({ films, genres }) {
       text
         .toLowerCase()
         .replace(/ /g, "-")
+        .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")
     );
   }

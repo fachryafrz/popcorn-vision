@@ -20,6 +20,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
       text
         .toLowerCase()
         .replace(/ /g, "-")
+        .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")
     );
   }
