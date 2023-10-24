@@ -84,6 +84,7 @@ export default async function sitemap() {
       text
         .toLowerCase()
         .replace(/ /g, "-")
+        .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")
     );
   };
