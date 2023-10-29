@@ -163,7 +163,7 @@ export default async function Home() {
       </section>
 
       {/* Companies */}
-      {companies.map(async (company) => (
+      {companies.slice(0, 3).map(async (company) => (
         <FilmSlider
           key={company.id}
           films={await getFilms("/discover/movie", null, null, company.id)}
@@ -178,7 +178,7 @@ export default async function Home() {
       </section>
 
       {/* Genres */}
-      {genres.map(async (genre) => (
+      {genres.slice(0, 3).map(async (genre) => (
         <FilmSlider
           key={genre.id}
           films={await getFilms("/discover/movie", null, null, null, genre.id)}
@@ -186,6 +186,11 @@ export default async function Home() {
           genres={genres}
         />
       ))}
+
+      {/* Trending */}
+      <section id="Trending" className="py-[2rem]">
+        <Trending film={await getTrending(8)} genres={genres} />
+      </section>
     </>
   );
 }
