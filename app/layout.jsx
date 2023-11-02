@@ -4,60 +4,64 @@ import Footer from "./components/Footer";
 import Copyright from "./components/Copyright";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 
-export const metadata = {
-  generator: process.env.APP_NAME,
-  applicationName: process.env.APP_NAME,
-  referrer: "origin-when-cross-origin",
-  keywords: process.env.APP_KEYWORDS.split(", "),
-  authors: [
-    { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
-  ],
-  colorScheme: "dark",
-  creator: "Fachry Dwi Afriza",
-  publisher: "Fachry Dwi Afriza",
-
-  viewport: {
+export function generateViewport() {
+  return {
+    colorScheme: "dark",
+    themeColor: "#202735",
     width: "device-width",
     initialScale: 1,
-  },
-  title: {
-    default: process.env.APP_NAME,
-    template: "%s - Popcorn Vision",
-  },
-  description: process.env.APP_DESC,
-  metadataBase: new URL(process.env.APP_URL),
-  alternates: {
-    canonical: "/",
-    languages: "en-US",
-  },
-  openGraph: {
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    url: process.env.APP_URL,
-    siteName: process.env.APP_NAME,
-    images: "/popcorn.png",
-    locale: "en_US",
-    type: "website",
-  },
-  themeColor: "#202735",
-  manifest: "/manifest.json",
-  twitter: {
-    card: "summary_large_image",
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    creator: "@fachryafrz",
-    images: "/popcorn.png",
-  },
-  verification: {
-    google: "google",
-    yandex: "yandex",
-    yahoo: "yahoo",
-    other: {
-      me: ["fachrydwiafriza@gmail.com", "https://fachryafrz.vercel.app"],
+  }
+}
+
+export function generateMetadata() {
+  return {
+    generator: process.env.APP_NAME,
+    applicationName: process.env.APP_NAME,
+    referrer: "origin-when-cross-origin",
+    keywords: process.env.APP_KEYWORDS.split(", "),
+    authors: [
+      { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
+    ],
+    creator: "Fachry Dwi Afriza",
+    publisher: "Fachry Dwi Afriza",
+    title: {
+      default: process.env.APP_NAME,
+      template: "%s - Popcorn Vision",
     },
-  },
-  category: "entertainment",
-};
+    description: process.env.APP_DESC,
+    metadataBase: new URL(process.env.APP_URL),
+    alternates: {
+      canonical: "/",
+      languages: "en-US",
+    },
+    openGraph: {
+      title: process.env.APP_NAME,
+      description: process.env.APP_DESC,
+      url: process.env.APP_URL,
+      siteName: process.env.APP_NAME,
+      images: "/popcorn.png",
+      locale: "en_US",
+      type: "website",
+    },
+    manifest: "/manifest.json",
+    twitter: {
+      card: "summary_large_image",
+      title: process.env.APP_NAME,
+      description: process.env.APP_DESC,
+      creator: "@fachryafrz",
+      images: "/popcorn.png",
+    },
+    verification: {
+      google: "google",
+      yandex: "yandex",
+      yahoo: "yahoo",
+      other: {
+        me: ["fachrydwiafriza@gmail.com", "https://fachryafrz.vercel.app"],
+      },
+    },
+    category: "entertainment",
+  }
+}
 
 export default function RootLayout({ children }) {
   return (
