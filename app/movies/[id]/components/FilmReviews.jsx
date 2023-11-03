@@ -29,8 +29,6 @@ export default function FilmReviews({ reviews, film }) {
       setMoreReviews((prevReviews) => [...prevReviews, ...res.data.results]);
     } catch (error) {
       console.error(`Errornya reviews kedua: ${error}`);
-    } finally {
-      console.log(currentReviewPage);
     }
   };
 
