@@ -3,7 +3,7 @@ export default function DetailsLoading() {
     <div className={`flex flex-col gap-[1rem]`}>
       {/* Backdrop */}
       <div
-        className={`animate-pulse bg-gray-400 bg-opacity-20 max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80vh]`}
+        className={`animate-pulse bg-gray-400 bg-opacity-20 max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80vh]`}
       ></div>
 
       <div className={`z-10 -mt-[10vh] md:-mt-[50vh]`}>

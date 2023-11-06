@@ -64,35 +64,35 @@ export default function Footer() {
             <a
               href="https://facebook.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
             </a>
             <a
               href="https://twitter.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
             </a>
             <a
               href="https://instagram.com/fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
             </a>
             <a
               href="https://youtube.com/@fachryafrz"
               target="_blank"
-              className="bg-base-gray bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
             >
               <IonIcon icon={logoYoutube} className="text-[1.25rem]" />
             </a>
           </div>
         </div>
       </div>
-      <div className="p-4 flex flex-col justify-center border-t border-base-gray border-opacity-25 text-center">
+      <div className="p-4 flex flex-col justify-center border-t border-secondary border-opacity-25 text-center">
         <span>
           Popcorn Vision &copy;{" "}
           {createdYear == currentYear

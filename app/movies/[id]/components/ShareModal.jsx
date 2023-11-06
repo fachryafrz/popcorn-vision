@@ -49,7 +49,7 @@ export default function ShareModal({ isActive, setIsActive }) {
       <div
         id="modal"
         ref={modal}
-        className={`p-4 rounded-2xl max-w-sm bg-base-dark-gray bg-opacity-75 w-full flex flex-col items-center`}
+        className={`p-4 rounded-2xl max-w-sm bg-base-100 bg-opacity-75 w-full flex flex-col items-center`}
       >
         <h2>Share to</h2>
 

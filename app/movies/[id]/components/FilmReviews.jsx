@@ -39,7 +39,7 @@ export default function FilmReviews({ reviews, film }) {
 
   return (
     <div className="flex flex-col gap-2 relative">
-      <div className="flex gap-4 items-center justify-between bg-base-dark-gray backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10">
+      <div className="flex gap-4 items-center justify-between bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10">
         <h2 className="font-bold text-xl text-white m-0">
           {moreReviews.length > 1 ? `Reviews` : `Review`}
         </h2>
@@ -58,19 +58,25 @@ export default function FilmReviews({ reviews, film }) {
           <div
             className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
           >
-            <button
+            {/* <button
               onClick={() => fetchMoreReviews((currentReviewPage += 1))}
               className="text-primary-blue p-2 px-12 xl:px-24 flex justify-center bg-white bg-opacity-5 hocus:bg-opacity-10 rounded-full whitespace-nowrap"
             >
               Load more
-            </button>
+            </button> */}
+            <button
+                  onClick={() => fetchMoreReviews((currentReviewPage += 1))}
+                  className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
+                >
+                  Load more
+                </button>
           </div>
         )}
 
       {/* View all reviews */}
       {moreReviews.length > numReviews && (
         <div
-          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-dark-gray justify-center items-end h-[200px] text-primary-blue ${
+          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
             showAllReviews ? `hidden` : `flex`
           }`}
         >

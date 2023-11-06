@@ -8,15 +8,19 @@
 
 @layer components {
   * {
-    @apply outline-none;
+    @apply !outline-none;
   }
 
   img {
     @apply w-full h-full object-cover;
   }
 
-  .btn {
+  /* .btn {
     @apply w-full text-sm p-4 md:px-8 rounded-lg uppercase font-medium tracking-wider flex justify-center items-center gap-1 transition-all md:max-w-fit hocus:bg-opacity-100 hocus:scale-[1.025] active:scale-100 md:text-base;
+  } */
+
+  .btn {
+    @apply normal-case
   }
 
   .prose * {

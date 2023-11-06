@@ -25,6 +25,14 @@ import {
 } from "ionicons/icons";
 import ShareModal from "./ShareModal";
 import axios from "axios";
+import {
+  FacebookIcon,
+  FacebookShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton,
+} from "react-share";
 
 export default function FilmOverview({
   film,
@@ -37,6 +45,7 @@ export default function FilmOverview({
   const [location, setLocation] = useState(null);
   const [language, setLanguage] = useState("id-ID");
   const [userLocation, setUserLocation] = useState();
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -104,6 +113,16 @@ export default function FilmOverview({
     }
   };
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(URL);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 5000); // Reset copied state after 2 seconds
+    } catch (error) {
+      console.error("Error copying text:", error);
+    }
+  };
+
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -116,7 +135,7 @@ export default function FilmOverview({
                 <div
                   className={
                     film.poster_path === null
-                      ? `w-full h-full bg-base-dark-gray`
+                      ? `w-full h-full bg-base-100`
                       : `hidden`
                   }
                 >
@@ -137,7 +156,7 @@ export default function FilmOverview({
 
                 {film.vote_average > 0 && (
                   <div
-                    className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
+                    className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-100 bg-opacity-50 backdrop-blur-sm ${
                       film.vote_average >= 1 && film.vote_average <= 3
                         ? `border-primary-red`
                         : film.vote_average >= 4 && film.vote_average <= 7
@@ -373,7 +392,7 @@ export default function FilmOverview({
                       return (
                         <span
                           key={item.id}
-                          className={`p-1 px-3 bg-base-gray bg-opacity-50 rounded-full`}
+                          className={`p-1 px-3 bg-secondary bg-opacity-50 rounded-full backdrop-blur-sm`}
                           itemProp="genre"
                         >
                           {item.name}
@@ -574,13 +593,65 @@ export default function FilmOverview({
                     <span>Share</span>
                   </button>
 
-                  <button
+                  {/* <button
                     onClick={() => setIsActive(!isActive)}
                     className={`hidden sm:flex items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
                   >
                     <IonIcon icon={arrowRedoOutline} />
                     <span>Share</span>
+                  </button> */}
+
+                  <button
+                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm"
+                    onClick={() =>
+                      document.getElementById("shareModal").showModal()
+                    }
+                  >
+                    <IonIcon icon={arrowRedoOutline} />
+                    <span>Share</span>
                   </button>
+
+                  <dialog id="shareModal" className="modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur">
+                    <div className="modal-box max-w-sm">
+                      <h2 className={`text-center`}>Share to</h2>
+
+                      <div
+                        className={`mt-2 flex items-center justify-center gap-2 mb-4`}
+                      >
+                        <WhatsappShareButton url={URL}>
+                          <WhatsappIcon size={50} round={true} />
+                        </WhatsappShareButton>
+
+                        <FacebookShareButton url={URL}>
+                          <FacebookIcon size={50} round={true} />
+                        </FacebookShareButton>
+
+                        <TwitterShareButton url={URL}>
+                          <TwitterIcon size={50} round={true} />
+                        </TwitterShareButton>
+                      </div>
+
+                      <div
+                        className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-full bg-black bg-opacity-50 text-sm border border-white border-opacity-50 w-full`}
+                      >
+                        <input
+                          type="text"
+                          value={URL}
+                          readOnly
+                          className={`bg-transparent w-full`}
+                        />
+                        <button
+                          onClick={handleCopy}
+                          className={`text-black font-medium btn btn-primary btn-sm rounded-full`}
+                        >
+                          {copied ? `Copied!` : `Copy`}
+                        </button>
+                      </div>
+                    </div>
+                    <form method="dialog" className="modal-backdrop">
+                      <button>close</button>
+                    </form>
+                  </dialog>
                 </td>
               </tr>
             </table>

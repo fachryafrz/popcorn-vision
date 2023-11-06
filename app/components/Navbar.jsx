@@ -19,7 +19,7 @@ export default function Navbar() {
   let URLSearchQuery = useSearchParams().get("query");
 
   return (
-    <header className="sticky top-0 z-50 bg-base-dark-gray backdrop-blur bg-opacity-[85%]">
+    <header className="sticky top-0 z-50 bg-base-100 backdrop-blur bg-opacity-[85%]">
       <nav className="mx-auto py-2 px-4 max-w-7xl flex flex-wrap justify-between">
         <Link
           href={!isTvPage ? `/` : `/tv`}
@@ -46,9 +46,9 @@ export default function Navbar() {
                     : `/search`
                   : `/`
               }
-              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 flex items-center gap-2 ${
+              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
                 !isTvPage &&
-                `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
               <IonIcon icon={filmOutline} className="text-[1.25rem]" />
@@ -62,9 +62,9 @@ export default function Navbar() {
                     : `/tv/search`
                   : `/tv`
               }
-              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-base-gray hocus:bg-opacity-20 flex items-center gap-2 ${
+              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
                 isTvPage &&
-                `bg-white text-base-dark-gray hocus:!bg-white hocus:!bg-opacity-100`
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
               <IonIcon icon={tvOutline} className="text-[1.25rem]" />
@@ -72,9 +72,17 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* <Link
+            href={!isTvPage ? `/search` : `/tv/search`}
+            className={`flex gap-2 items-center bg-secondary bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hocus:bg-opacity-40 transition-all hocus:scale-105 active:scale-100 ml-auto`}
+          >
+            <IonIcon icon={search} className="text-[1.25rem]" />
+            <span className="hidden sm:block">Search</span>
+          </Link> */}
+
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
-            className={`flex gap-2 items-center bg-base-gray bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hocus:bg-opacity-40 transition-all hocus:scale-105 active:scale-100 ml-auto`}
+          className={`btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20`}
           >
             <IonIcon icon={search} className="text-[1.25rem]" />
             <span className="hidden sm:block">Search</span>

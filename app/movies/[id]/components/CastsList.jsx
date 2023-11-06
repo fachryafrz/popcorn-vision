@@ -25,13 +25,13 @@ export default function CastsList({ credits }) {
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
-            className={`text-primary-blue flex items-center justify-center bg-base-dark-gray bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden`}
+            className={`text-primary-blue flex items-center justify-center bg-base-100 bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto lg:hidden rounded-full`}
           >
             {showAllActors ? "Show Less" : "Show All"}
           </button>
         )}
       </div>
-      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto">
+      <div className="flex lg:flex-col overflow-x-auto lg:!overflow-x-clip gap-4 pt-4 pb-4 lg:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto lg:rounded-bl-3xl">
         {credits &&
           credits.cast &&
           credits.cast
@@ -48,7 +48,9 @@ export default function CastsList({ credits }) {
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
-            className={`text-primary-blue sticky bottom-0 lg:flex items-center justify-center gap-2 p-3 bg-opacity-[75%] backdrop-blur hocus:bg-white hocus:bg-opacity-10 hidden text-sm font-medium rounded-full`}
+            className={`sticky bottom-0 text-primary-blue hidden lg:flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
+              showAllActors ? `bottom-1 mx-1` : `bottom-0`
+            }`}
           >
             {showAllActors ? "Show Less" : "Show All"}
             <IonIcon

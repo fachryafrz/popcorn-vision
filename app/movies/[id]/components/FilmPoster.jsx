@@ -10,7 +10,7 @@ export default function FilmPoster({ film }) {
         <div
           className={
             film.poster_path === null
-              ? `w-full h-full bg-base-dark-gray flex items-center`
+              ? `w-full h-full bg-base-100 flex items-center`
               : `hidden`
           }
         >
@@ -28,9 +28,9 @@ export default function FilmPoster({ film }) {
           alt={film.title}
         />
 
-        {film.vote_average > 0 && (
+        {/* {film.vote_average > 0 && (
           <div
-            className={`absolute top-0 left-0 font-semibold aspect-square grid place-items-center rounded-full border-2 w-11 m-2 bg-base-dark-gray bg-opacity-50 backdrop-blur-sm ${
+            className={`absolute top-0 left-0 font-semibold aspect-square grid place-items-center rounded-full border-2 w-11 m-2 bg-base-100 bg-opacity-50 backdrop-blur-sm ${
               film.vote_average > 0 && film.vote_average < 3
                 ? `border-primary-red`
                 : film.vote_average >= 3 && film.vote_average < 7
@@ -41,6 +41,33 @@ export default function FilmPoster({ film }) {
             {film.vote_average < 9.9
               ? film.vote_average.toFixed(1)
               : film.vote_average}
+          </div>
+        )} */}
+
+        {film.vote_average > 0 && (
+          <div
+            className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
+          >
+            <div
+              className={`radial-progress text-sm font-semibold ${
+                film.vote_average > 0 && film.vote_average < 3
+                  ? `text-primary-red`
+                  : film.vote_average >= 3 && film.vote_average < 7
+                  ? `text-primary-yellow`
+                  : `text-green-500`
+              }`}
+              style={{
+                "--value": film.vote_average * 10,
+                "--size": "2.75rem",
+                "--thickness": "3px",
+              }}
+            >
+              <span className={`text-white`}>
+                {film.vote_average < 9.9
+                  ? film.vote_average.toFixed(1)
+                  : film.vote_average}
+              </span>
+            </div>
           </div>
         )}
       </figure>
