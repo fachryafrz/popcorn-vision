@@ -154,7 +154,7 @@ export default function FilmOverview({
                   className={film.poster_path === null ? `hidden` : `block`}
                 />
 
-                {film.vote_average > 0 && (
+                {/* {film.vote_average > 0 && (
                   <div
                     className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-100 bg-opacity-50 backdrop-blur-sm ${
                       film.vote_average >= 1 && film.vote_average <= 3
@@ -165,6 +165,33 @@ export default function FilmOverview({
                     }`}
                   >
                     {film.vote_average.toFixed(1)}
+                  </div>
+                )} */}
+
+                {film.vote_average > 0 && (
+                  <div
+                    className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
+                  >
+                    <div
+                      className={`radial-progress text-sm font-semibold ${
+                        film.vote_average > 0 && film.vote_average < 3
+                          ? `text-primary-red`
+                          : film.vote_average >= 3 && film.vote_average < 7
+                          ? `text-primary-yellow`
+                          : `text-green-500`
+                      }`}
+                      style={{
+                        "--value": film.vote_average * 10,
+                        "--size": "36px",
+                        "--thickness": "3px",
+                      }}
+                    >
+                      <span className={`text-white`}>
+                        {film.vote_average < 9.9
+                          ? film.vote_average.toFixed(1)
+                          : film.vote_average}
+                      </span>
+                    </div>
                   </div>
                 )}
               </figure>
@@ -611,7 +638,10 @@ export default function FilmOverview({
                     <span>Share</span>
                   </button>
 
-                  <dialog id="shareModal" className="modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur">
+                  <dialog
+                    id="shareModal"
+                    className="modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur"
+                  >
                     <div className="modal-box max-w-sm">
                       <h2 className={`text-center`}>Share to</h2>
 
