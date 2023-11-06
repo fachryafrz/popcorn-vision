@@ -99,7 +99,7 @@ export default function Trending({ film, genres }) {
               `/movies/${film.id}-${slugify(film.title)}`,
               `/tv/${film.id}-${slugify(film.name)}`
             )}
-            className="btn btn-warning mt-4"
+            className="w-full md:w-fit btn btn-warning mt-4"
           >
             <IonIcon
               icon={informationCircleOutline}
