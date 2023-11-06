@@ -13,7 +13,7 @@ export default function MainLoading() {
     >
       {/* HomeSlider */}
       <section
-        className={`h-[532px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray flex items-end`}
+        className={`h-[532px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 flex items-end`}
       >
         <div
           className={`w-full max-w-7xl mx-auto !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[50%]`}

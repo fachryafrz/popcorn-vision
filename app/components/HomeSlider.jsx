@@ -56,7 +56,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`lg:h-[80vh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[25%] after:right-0 after:bg-gradient-to-l after:from-base-dark-gray after:z-50`}
+        className={`lg:h-[80vh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[25%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -77,7 +77,7 @@ export default function HomeSlider({ films, genres }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-dark-gray after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-dark-gray after:via-base-dark-gray after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[80vh] aspect-poster sm:aspect-[4/3] md:aspect-auto"
+              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[80vh] aspect-poster sm:aspect-[4/3] md:aspect-auto"
             >
               <figure className="h-full w-full -z-10">
                 <img
@@ -134,7 +134,7 @@ export default function HomeSlider({ films, genres }) {
                         `/movies/${film.id}-${slugify(film.title)}`,
                         `/tv/${film.id}-${slugify(film.name)}`
                       )}
-                      className="btn bg-primary-blue bg-opacity-60"
+                      className="w-[50%] lg:w-[25%] btn btn-primary bg-opacity-40 border-none"
                     >
                       <IonIcon
                         icon={informationCircleOutline}
@@ -147,7 +147,7 @@ export default function HomeSlider({ films, genres }) {
                         `/movies/${film.id}-${slugify(film.title)}#overview`,
                         `/tv/${film.id}-${slugify(film.name)}#overview`
                       )}
-                      className="btn bg-base-gray bg-opacity-40 hocus:bg-white hocus:text-base-dark-gray"
+                      className="w-[50%] lg:w-[25%] btn btn-ghost bg-secondary bg-opacity-40 hocus:bg-white hocus:text-base-100"
                     >
                       <IonIcon
                         icon={playOutline}

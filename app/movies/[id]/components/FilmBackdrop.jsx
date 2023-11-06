@@ -3,11 +3,11 @@ import React from "react";
 
 export default function FilmBackdrop({ film }) {
   return (
-    <figure className="max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-dark-gray before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80vh]">
+    <figure className="max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80vh]">
       <div
         className={
           film.backdrop_path === null
-            ? `w-full h-full bg-base-dark-gray flex justify-center`
+            ? `w-full h-full bg-base-100 flex justify-center`
             : `hidden`
         }
       >

@@ -94,7 +94,7 @@ export default function ReviewCard({ review }) {
       itemType="http://schema.org/Review"
     >
       <div className="flex gap-2 items-center">
-        <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-dark-gray">
+        <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-100">
           {imgUrlAPI === null ? (
             <figure
               style={{
@@ -126,7 +126,7 @@ export default function ReviewCard({ review }) {
             </span>
           </div>
 
-          <div
+          {/* <div
             onMouseEnter={() => setIsDateHovered(true)}
             onMouseLeave={() => setIsDateHovered(false)}
             className={`max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
@@ -137,7 +137,7 @@ export default function ReviewCard({ review }) {
               <span>{`(edited)`}</span>
             )}
             <span
-              className={`absolute top-full md:left-full left-1/2 -translate-x-1/2 md:translate-x-0 md:top-1/2 md:-translate-y-1/2 text-xs bg-base-dark-gray p-2 mt-3 md:mt-0 md:ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
+              className={`absolute top-full md:left-full left-1/2 -translate-x-1/2 md:translate-x-0 md:top-1/2 md:-translate-y-1/2 text-xs bg-base-100 p-2 mt-3 md:mt-0 md:ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
                 isDateHovered
                   ? `opacity-100 pointer-events-auto`
                   : `opacity-0 pointer-events-none`
@@ -152,9 +152,27 @@ export default function ReviewCard({ review }) {
                 )})`}
               <IonIcon
                 icon={triangle}
-                className={`absolute -top-[0.6rem] md:-left-[0.6rem] left-1/2 -translate-x-1/2 md:-translate-x-0 md:top-1/2 md:-translate-y-1/2 md:-rotate-90 text-base-dark-gray`}
+                className={`absolute -top-[0.6rem] md:-left-[0.6rem] left-1/2 -translate-x-1/2 md:-translate-x-0 md:top-1/2 md:-translate-y-1/2 md:-rotate-90 text-base-100`}
               />
             </span>
+          </div> */}
+
+          <div
+            className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
+            data-tip={`${formattedDate} ${
+              new Date(review.updated_at).toLocaleString("en-US", options) !==
+                new Date(review.created_at).toLocaleString("en-US", options) &&
+              `(${new Date(review.updated_at).toLocaleString(
+                "en-US",
+                options
+              )})`
+            }`}
+          >
+            <span>{timeAgo(review.created_at)}</span>
+            {new Date(review.updated_at).toLocaleString("en-US", options) !==
+              new Date(review.created_at).toLocaleString("en-US", options) && (
+              <span>{`(edited)`}</span>
+            )}
           </div>
         </div>
 

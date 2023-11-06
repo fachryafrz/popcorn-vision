@@ -34,6 +34,7 @@ export default function Search() {
   const searchRef = useRef();
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState({});
+  const [searchTips, setSearchTips] = useState(true)
 
   // Genre related state
   const [genres, setGenres] = useState([]);
@@ -216,6 +217,14 @@ export default function Search() {
     setTotalSearchPages(0);
   };
   useEffect(() => {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "/") {
+        setSearchTips(false)
+        event.preventDefault();
+        searchRef.current.focus();
+      }
+    });
+
     clearSelectedGenres();
   }, [isTvPage]);
 
@@ -281,7 +290,7 @@ export default function Search() {
         </Swiper>
         <div className={`relative z-10`}>
           <div
-            className={`px-4 py-4 -top-8 max-w-xl sm:mx-auto absolute inset-x-0 bg-gray-600 bg-opacity-[90%] backdrop-blur flex items-center gap-4 mx-4 rounded-2xl shadow-xl border-t-4 border-x-4 border-base-dark-gray before:absolute before:w-4 before:h-4 before:bg-transparent before:top-3 before:-left-5 before:rounded-br-xl before:shadow-custom-left after:absolute after:w-4 after:h-4 after:bg-transparent after:top-3 after:-right-5 after:rounded-bl-xl after:shadow-custom-right`}
+            className={`px-4 py-4 -top-8 max-w-xl sm:mx-auto absolute inset-x-0 bg-gray-600 bg-opacity-[90%] backdrop-blur flex items-center gap-4 mx-4 rounded-2xl shadow-xl border-t-4 border-x-4 border-base-100 before:absolute before:w-4 before:h-4 before:bg-transparent before:top-3 before:-left-5 before:rounded-br-xl before:shadow-custom-left after:absolute after:w-4 after:h-4 after:bg-transparent after:top-3 after:-right-5 after:rounded-bl-xl after:shadow-custom-right`}
           >
             <IonIcon icon={Icons.search} className={`text-[1.25rem]`} />
             <form onSubmit={handleSubmit} className={`w-full`}>
@@ -296,6 +305,11 @@ export default function Search() {
               />
               <input type="submit" className="sr-only" />
             </form>
+
+            <div className={`hidden lg:block text-xs absolute right-4 top-[50%] -translate-y-[50%] gap-1 opacity-[50%] pointer-events-none`}>
+              <span>Press </span>
+              <kbd className={`kbd kbd-xs rounded`}>/</kbd>
+            </div>
           </div>
           <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-2">
             <h2 className="font-bold text-xl sm:text-3xl text-center">
@@ -326,8 +340,8 @@ export default function Search() {
                     <SwiperSlide key={item.id} className="max-w-fit">
                       <button
                         onClick={() => handleGenreClick(item.id)}
-                        className={`font-medium py-2 px-4 rounded-lg bg-base-gray bg-opacity-30 hocus:bg-opacity-50 ${
-                          activeGenre && `!bg-white !text-base-dark-gray`
+                        className={`font-medium py-2 px-4 rounded-lg bg-secondary bg-opacity-30 hocus:bg-opacity-50 ${
+                          activeGenre && `!bg-white !text-base-100`
                         }`}
                       >
                         {item.name}
@@ -340,13 +354,13 @@ export default function Search() {
                 <div className="absolute inset-x-0 top-0 h-full z-20 flex justify-between pointer-events-none">
                   <button
                     id="prev"
-                    className="aspect-square h-full flex items-center relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-dark-gray pointer-events-auto cursor-pointer transition-all"
+                    className="aspect-square h-full flex items-center relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 pointer-events-auto cursor-pointer transition-all"
                   >
                     <IonIcon icon={Icons.chevronBack} />
                   </button>
                   <button
                     id="next"
-                    className="aspect-square h-full flex items-center justify-end relative before:absolute before:inset-0 before:bg-gradient-to-l before:from-base-dark-gray pointer-events-auto cursor-pointer transition-all"
+                    className="aspect-square h-full flex items-center justify-end relative before:absolute before:inset-0 before:bg-gradient-to-l before:from-base-100 pointer-events-auto cursor-pointer transition-all"
                   >
                     <IonIcon icon={Icons.chevronForward} />
                   </button>
@@ -403,9 +417,15 @@ export default function Search() {
               <div
                 className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10 mt-4`}
               >
-                <button
+                {/* <button
                   onClick={() => fetchMoreMovies((currentSearchPage += 1))}
                   className="text-primary-blue p-2 px-12 xl:px-24 flex justify-center bg-white bg-opacity-5 hocus:bg-opacity-10 rounded-full whitespace-nowrap"
+                >
+                  Load more
+                </button> */}
+                <button
+                  onClick={() => fetchMoreMovies((currentSearchPage += 1))}
+                  className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
                 >
                   Load more
                 </button>
@@ -414,7 +434,7 @@ export default function Search() {
 
             <button
               onClick={scrollToTop}
-              className={`fixed bottom-4 right-4 lg:right-6 2xl:right-[5.5rem] flex max-w-fit aspect-square p-4 rounded-full bg-base-dark-gray bg-opacity-[50%] backdrop-blur border border-base-gray hocus:bg-white hocus:bg-opacity-100 hocus:text-base-dark-gray hocus:border-white transition-all opacity-0 pointer-events-none ${
+              className={`fixed bottom-4 right-4 lg:right-6 2xl:right-[5.5rem] flex max-w-fit aspect-square p-4 rounded-full bg-base-100 bg-opacity-[50%] backdrop-blur border border-secondary hocus:bg-white hocus:bg-opacity-100 hocus:text-base-100 hocus:border-white transition-all opacity-0 pointer-events-none ${
                 showButton && `opacity-100 pointer-events-auto`
               }`}
             >

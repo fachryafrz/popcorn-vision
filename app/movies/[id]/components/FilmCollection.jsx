@@ -87,7 +87,7 @@ export default function FilmCollection({ film }) {
     <div className={`flex flex-col gap-2`}>
       <div
         id="collections"
-        className="flex flex-col gap-2 bg-base-dark-gray backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10"
+        className="flex flex-col gap-2 bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10"
       >
         <h2 className="font-bold text-xl text-white m-0">
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
@@ -113,8 +113,8 @@ export default function FilmCollection({ film }) {
                   <li key={item.id}>
                     <Link
                       href={`/movies/${item.id}-${slugify(item.title)}`}
-                      className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
-                        film.id === item.id && `bg-primary-blue bg-opacity-30`
+                      className={`flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+                        film.id === item.id && `!bg-primary-blue !bg-opacity-30`
                       }`}
                     >
                       <span
@@ -182,7 +182,7 @@ export default function FilmCollection({ film }) {
           ? apiData && collections.length > numCollection
           : filteredSeasons.length > numCollection) && (
           <div
-            className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-dark-gray justify-center items-end h-[200px] text-primary-blue ${
+            className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
               showAllCollection ? "hidden" : "flex"
             }`}
           >
@@ -221,9 +221,9 @@ function FilmSeason({ film, item, index }) {
         onClick={
           item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
         }
-        className={`flex items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
+        className={`flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
           viewSeason
-            ? `rounded-t-xl bg-primary-blue bg-opacity-30`
+            ? `rounded-t-xl !bg-primary-blue !bg-opacity-30`
             : `rounded-xl`
         }`}
       >
@@ -239,7 +239,7 @@ function FilmSeason({ film, item, index }) {
               className={`object-contain`}
             />
           ) : (
-            <div className={`h-full bg-base-dark-gray flex items-center`}>
+            <div className={`h-full bg-base-100 flex items-center`}>
               <div
                 style={{
                   background: `url(/popcorn.png)`,
@@ -283,7 +283,7 @@ function FilmSeason({ film, item, index }) {
         {item.episode_count > 0 && (
           <IonIcon
             icon={viewSeason ? chevronUpOutline : chevronDownOutline}
-            class={`text-lg min-w-[18px] text-base-gray`}
+            class={`text-lg min-w-[18px] text-secondary`}
           />
         )}
       </button>
@@ -331,7 +331,7 @@ function FilmEpisodes({ id, season }) {
           slidesPerView: 2,
         },
       }}
-      className={`bg-base-gray bg-opacity-10 !p-2 rounded-b-xl relative`}
+      className={`bg-secondary bg-opacity-10 !p-2 rounded-b-xl relative`}
     >
       {episodes &&
         episodes.map((item) => {
@@ -348,7 +348,7 @@ function FilmEpisodes({ id, season }) {
           return (
             <SwiperSlide key={item.id} className={`!h-auto`}>
               <button
-                className={`flex flex-col items-center gap-2 bg-base-gray bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full`}
+                className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full`}
               >
                 <figure className="aspect-video rounded-lg overflow-hidden w-full">
                   {item.still_path ? (
@@ -358,7 +358,7 @@ function FilmEpisodes({ id, season }) {
                     />
                   ) : (
                     <div
-                      className={`bg-base-dark-gray w-full h-full grid place-items-center`}
+                      className={`bg-base-100 w-full h-full grid place-items-center`}
                     >
                       <div
                         style={{

@@ -67,7 +67,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-pt-20">
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
-      <body className="bg-base-dark-gray text-white">
+      <body className="bg-base-100 text-white">
         {/* Navbar */}
         <Navbar />
 
