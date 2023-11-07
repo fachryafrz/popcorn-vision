@@ -17,8 +17,10 @@ import footer from "@/app/json/footer.json";
 
 export default function Footer() {
   // Date variables
+  const createdDate = new Date("2023-02-17");
   const currentYear = new Date().getFullYear();
-  const createdYear = 2023;
+  const createdMonth = createdDate.toLocaleString("en-US", { month: "short" });
+  const createdYear = createdDate.getFullYear();
 
   const pathname = usePathname();
 
@@ -96,8 +98,8 @@ export default function Footer() {
         <span>
           Popcorn Vision &copy;{" "}
           {createdYear == currentYear
-            ? createdYear
-            : `${createdYear}-${currentYear}`}{" "}
+            ? `${createdMonth} ${createdYear}`
+            : `${createdMonth} ${createdYear}-${currentYear}`}{" "}
           all rights reserved
         </span>
         <span className={`flex gap-1 items-center justify-center`}>
