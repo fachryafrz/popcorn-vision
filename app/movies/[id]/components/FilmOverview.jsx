@@ -92,7 +92,7 @@ export default function FilmOverview({
   const date = new Date(dateStr);
   const options = {
     year: "numeric",
-    month: "long",
+    month: "short",
     day: "numeric",
   };
   const formattedDate = date.toLocaleString("en-US", options);
@@ -104,6 +104,19 @@ export default function FilmOverview({
   const secondsLeft = timeLeft.getUTCSeconds();
 
   const isUpcoming = date > new Date();
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const releaseDayIndex = date.getDay();
+  const lastReleaseDayIndex = new Date(film.last_air_date).getDay();
+  const releaseDay = dayNames[releaseDayIndex];
+  const lastReleaseDay = dayNames[lastReleaseDayIndex];
 
   const [countdown, setCountdown] = useState({
     days: daysLeft,
@@ -311,7 +324,7 @@ export default function FilmOverview({
                         <IonIcon icon={calendarOutline} />
 
                         <time dateTime={film.release_date}>
-                          {formattedDate}
+                          {`${releaseDay}, ${formattedDate}`}
                         </time>
                       </div>
                     </td>
@@ -325,11 +338,11 @@ export default function FilmOverview({
                         <IonIcon icon={calendarOutline} />
 
                         <time dateTime={film.first_air_date}>
-                          {formattedDate}{" "}
+                          {`${releaseDay}, ${formattedDate}`}{" "}
                           {film.last_air_date !== null &&
                             film.last_air_date !== film.first_air_date && (
                               <span className="hidden xs:inline">
-                                {`- ${new Date(
+                                {`- ${lastReleaseDay}, ${new Date(
                                   film.last_air_date
                                 ).toLocaleString("en-US", options)}`}
                               </span>
