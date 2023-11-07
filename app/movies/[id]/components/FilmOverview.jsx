@@ -104,7 +104,7 @@ export default function FilmOverview({
   const secondsLeft = timeLeft.getUTCSeconds();
 
   const isUpcoming = date > new Date();
-  
+
   const [countdown, setCountdown] = useState({
     days: daysLeft,
     hours: hoursLeft,
@@ -643,7 +643,9 @@ export default function FilmOverview({
 
               <tr>
                 <td
-                  className={`flex flex-col sm:flex-row items-center justify-between gap-4 mt-4`}
+                  className={`flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                    isUpcoming ? `mt-4` : `mt-0`
+                  }`}
                 >
                   {isUpcoming && (
                     <div className="flex flex-wrap justify-center gap-2 text-center">
