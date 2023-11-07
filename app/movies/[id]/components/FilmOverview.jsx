@@ -98,7 +98,9 @@ export default function FilmOverview({
   const formattedDate = date.toLocaleString("en-US", options);
 
   const timeLeft = new Date(date - new Date());
-  const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const monthsLeft = Math.floor(daysRemaining / 30);
+  const daysLeft = daysRemaining % 30;
   const hoursLeft = timeLeft.getUTCHours();
   const minutesLeft = timeLeft.getUTCMinutes();
   const secondsLeft = timeLeft.getUTCSeconds();
@@ -119,6 +121,7 @@ export default function FilmOverview({
   const lastReleaseDay = dayNames[lastReleaseDayIndex];
 
   const [countdown, setCountdown] = useState({
+    months: monthsLeft,
     days: daysLeft,
     hours: hoursLeft,
     minutes: minutesLeft,
@@ -130,11 +133,14 @@ export default function FilmOverview({
 
     const interval = setInterval(() => {
       const timeLeft = new Date(date - new Date());
-      const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const monthsLeft = Math.floor(daysRemaining / 30);
+      const daysLeft = daysRemaining % 30;
       const hoursLeft = timeLeft.getUTCHours();
       const minutesLeft = timeLeft.getUTCMinutes();
       const secondsLeft = timeLeft.getUTCSeconds();
       setCountdown({
+        months: monthsLeft,
         days: daysLeft,
         hours: hoursLeft,
         minutes: minutesLeft,
@@ -662,17 +668,29 @@ export default function FilmOverview({
                 >
                   {isUpcoming && (
                     <div className="flex flex-wrap justify-center gap-2 text-center">
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
-                        <span className="countdown font-mono text-5xl">
-                          <span style={{ "--value": countdown.days }}></span>
-                        </span>
-                        days
-                      </div>
+                      {countdown.months > 0 && (
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                          <span className="countdown font-mono text-5xl">
+                            <span
+                              style={{ "--value": countdown.months }}
+                            ></span>
+                          </span>
+                          month{countdown.months > 1 ? `s` : ``}
+                        </div>
+                      )}
+                      {countdown.days > 0 && (
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                          <span className="countdown font-mono text-5xl">
+                            <span style={{ "--value": countdown.days }}></span>
+                          </span>
+                          day{countdown.days > 1 ? `s` : ``}
+                        </div>
+                      )}
                       <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
                         <span className="countdown font-mono text-5xl">
                           <span style={{ "--value": countdown.hours }}></span>
                         </span>
-                        hours
+                        hour{countdown.hours > 1 ? `s` : ``}
                       </div>
                       <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
                         <span className="countdown font-mono text-5xl">
