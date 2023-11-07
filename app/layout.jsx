@@ -4,12 +4,7 @@ import Footer from "./components/Footer";
 import Copyright from "./components/Copyright";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 
-export const viewport = {
-  colorScheme: "dark",
-  themeColor: "#202735",
-  width: "device-width",
-  initialScale: 1,
-};
+export const viewport = {};
 
 export const metadata = {
   generator: process.env.APP_NAME,
@@ -19,8 +14,13 @@ export const metadata = {
   authors: [
     { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
   ],
+  colorScheme: "dark",
   creator: "Fachry Dwi Afriza",
   publisher: "Fachry Dwi Afriza",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+  },
   title: {
     default: process.env.APP_NAME,
     template: "%s - Popcorn Vision",
@@ -40,6 +40,7 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
+  themeColor: "#202735",
   manifest: "/manifest.json",
   twitter: {
     card: "summary_large_image",
