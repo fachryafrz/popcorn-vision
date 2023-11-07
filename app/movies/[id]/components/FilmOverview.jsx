@@ -46,6 +46,16 @@ export default function FilmOverview({
   const [language, setLanguage] = useState("id-ID");
   const [userLocation, setUserLocation] = useState();
   const [copied, setCopied] = useState(false);
+  const [URL, setURL] = useState("");
+  const [episodes, setEpisodes] = useState([]);
+
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -70,7 +80,29 @@ export default function FilmOverview({
           setUserLocation(response.data);
         });
     }
-  }, [location]);
+
+    const fetchEpisodes = async () => {
+      try {
+        const res = await axios.get(
+          `https://api.themoviedb.org/3/tv/${film.id}/season/${film.number_of_seasons}`,
+          {
+            params: {
+              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            },
+          }
+        );
+        setEpisodes(res.data.episodes);
+      } catch (error) {
+        console.error(`Errornya collections: ${error}`);
+      }
+    };
+
+    if (isTvPage) {
+      fetchEpisodes();
+    }
+  }, [location, film.id, film.number_of_seasons]);
+
+  const nextEps = episodes.find((item) => new Date(item.air_date) > new Date());
 
   let providersArray = Object.entries(providers.results);
 
@@ -78,18 +110,12 @@ export default function FilmOverview({
     userLocation &&
     providersArray.find((item) => item[0] === userLocation.countryCode);
 
-  const [URL, setURL] = useState("");
-  const pathname = usePathname();
-  const isTvPage = pathname.startsWith("/tv");
-
-  const isItTvPage = (movie, tv) => {
-    const type = !isTvPage ? movie : tv;
-    return type;
-  };
-
   // Release Date
   const dateStr = isItTvPage(film.release_date, film.first_air_date);
-  const date = new Date(dateStr);
+  const date =
+    new Date(dateStr) > new Date()
+      ? new Date(dateStr)
+      : new Date(nextEps?.air_date);
   const options = {
     year: "numeric",
     month: "short",
@@ -590,7 +616,7 @@ export default function FilmOverview({
                   <th className="text-gray-400 whitespace-nowrap">Providers</th>
 
                   <td>
-                    <div className="flex flex-col gap-1 justify-center md:justify-start py-4">
+                    <div className="flex flex-col gap-1 justify-center md:justify-start py-2">
                       <span className={`text-gray-400 text-sm italic`}>
                         Where to watch?
                       </span>
@@ -641,7 +667,7 @@ export default function FilmOverview({
               ) : location ? (
                 providersIDArray && (
                   <tr>
-                    <div className={`py-4`}>
+                    <div className={`py-2`}>
                       <span className={`text-gray-400 text-sm italic`}>
                         Where to watch? <br /> Hold on we&apos;re still
                         finding...
@@ -651,7 +677,7 @@ export default function FilmOverview({
                 )
               ) : (
                 <tr>
-                  <div className={`py-4`}>
+                  <div className={`py-2`}>
                     <span className={`text-gray-400 text-sm italic`}>
                       Where to watch? <br /> Please enable location services to
                       find out where to watch this film.
@@ -662,47 +688,67 @@ export default function FilmOverview({
 
               <tr>
                 <td
-                  className={`flex flex-col sm:flex-row items-center justify-between gap-4 ${
-                    isUpcoming ? `mt-4` : `mt-0`
+                  className={`flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 ${
+                    isUpcoming ? `mt-2` : `mt-0`
                   }`}
                 >
                   {isUpcoming && (
-                    <div className="flex flex-wrap justify-center gap-2 text-center">
-                      {countdown.months > 0 && (
+                    <div>
+                      {!isTvPage ? (
+                        <span>{`Released in`}</span>
+                      ) : (
+                        <span>
+                          {nextEps?.episode_type == `finale`
+                            ? `Final episode: ${nextEps?.name}`
+                            : nextEps?.name ==
+                              `Episode ${nextEps?.episode_number}`
+                            ? nextEps?.name
+                            : `Episode ${nextEps?.episode_number}: ${nextEps?.name}`}
+                        </span>
+                      )}
+                      <div className="flex flex-wrap justify-center gap-2 text-center">
+                        {countdown.months > 0 && (
+                          <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                            <span className="countdown font-mono text-5xl">
+                              <span
+                                style={{ "--value": countdown.months }}
+                              ></span>
+                            </span>
+                            month{countdown.months > 1 ? `s` : ``}
+                          </div>
+                        )}
+                        {countdown.days > 0 && (
+                          <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                            <span className="countdown font-mono text-5xl">
+                              <span
+                                style={{ "--value": countdown.days }}
+                              ></span>
+                            </span>
+                            day{countdown.days > 1 ? `s` : ``}
+                          </div>
+                        )}
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                          <span className="countdown font-mono text-5xl">
+                            <span style={{ "--value": countdown.hours }}></span>
+                          </span>
+                          hour{countdown.hours > 1 ? `s` : ``}
+                        </div>
                         <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
                           <span className="countdown font-mono text-5xl">
                             <span
-                              style={{ "--value": countdown.months }}
+                              style={{ "--value": countdown.minutes }}
                             ></span>
                           </span>
-                          month{countdown.months > 1 ? `s` : ``}
+                          min
                         </div>
-                      )}
-                      {countdown.days > 0 && (
                         <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
                           <span className="countdown font-mono text-5xl">
-                            <span style={{ "--value": countdown.days }}></span>
+                            <span
+                              style={{ "--value": countdown.seconds }}
+                            ></span>
                           </span>
-                          day{countdown.days > 1 ? `s` : ``}
+                          sec
                         </div>
-                      )}
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
-                        <span className="countdown font-mono text-5xl">
-                          <span style={{ "--value": countdown.hours }}></span>
-                        </span>
-                        hour{countdown.hours > 1 ? `s` : ``}
-                      </div>
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
-                        <span className="countdown font-mono text-5xl">
-                          <span style={{ "--value": countdown.minutes }}></span>
-                        </span>
-                        min
-                      </div>
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
-                        <span className="countdown font-mono text-5xl">
-                          <span style={{ "--value": countdown.seconds }}></span>
-                        </span>
-                        sec
                       </div>
                     </div>
                   )}
