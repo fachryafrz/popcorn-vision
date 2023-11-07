@@ -97,9 +97,40 @@ export default function FilmOverview({
   };
   const formattedDate = date.toLocaleString("en-US", options);
 
+  const timeLeft = new Date(date - new Date());
+  const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+  const hoursLeft = timeLeft.getUTCHours();
+  const minutesLeft = timeLeft.getUTCMinutes();
+  const secondsLeft = timeLeft.getUTCSeconds();
+
+  const isUpcoming = date > new Date();
+  
+  const [countdown, setCountdown] = useState({
+    days: daysLeft,
+    hours: hoursLeft,
+    minutes: minutesLeft,
+    seconds: secondsLeft,
+  });
+
   useEffect(() => {
     setURL(window.location.href);
-  }, []);
+
+    const interval = setInterval(() => {
+      const timeLeft = new Date(date - new Date());
+      const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+      const hoursLeft = timeLeft.getUTCHours();
+      const minutesLeft = timeLeft.getUTCMinutes();
+      const secondsLeft = timeLeft.getUTCSeconds();
+      setCountdown({
+        days: daysLeft,
+        hours: hoursLeft,
+        minutes: minutesLeft,
+        seconds: secondsLeft,
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [date]);
 
   const handleShare = async () => {
     try {
@@ -611,10 +642,40 @@ export default function FilmOverview({
               )}
 
               <tr>
-                <td className={`flex items-center justify-end gap-1`}>
+                <td
+                  className={`flex flex-col sm:flex-row items-center justify-between gap-4 mt-4`}
+                >
+                  {isUpcoming && (
+                    <div className="flex flex-wrap justify-center gap-2 text-center">
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.days }}></span>
+                        </span>
+                        days
+                      </div>
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.hours }}></span>
+                        </span>
+                        hours
+                      </div>
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.minutes }}></span>
+                        </span>
+                        min
+                      </div>
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.seconds }}></span>
+                        </span>
+                        sec
+                      </div>
+                    </div>
+                  )}
                   <button
                     onClick={handleShare}
-                    className={`flex sm:hidden items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
+                    className={`flex sm:hidden items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto`}
                   >
                     <IonIcon icon={arrowRedoOutline} />
                     <span>Share</span>
@@ -629,7 +690,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm"
+                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto"
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }
@@ -714,7 +775,7 @@ export default function FilmOverview({
         </div>
       </div>
 
-      <ShareModal isActive={isActive} setIsActive={setIsActive} />
+      {/* <ShareModal isActive={isActive} setIsActive={setIsActive} /> */}
     </>
   );
 }
