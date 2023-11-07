@@ -121,7 +121,7 @@ export default function FilmOverview({
     month: "short",
     day: "numeric",
   };
-  const formattedDate = date.toLocaleString("en-US", options);
+  const formattedDate = new Date(dateStr).toLocaleString("en-US", options);
 
   const timeLeft = new Date(date - new Date());
   const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -141,7 +141,7 @@ export default function FilmOverview({
     "Friday",
     "Saturday",
   ];
-  const releaseDayIndex = date.getDay();
+  const releaseDayIndex = new Date(dateStr).getDay();
   const lastReleaseDayIndex = new Date(film.last_air_date).getDay();
   const releaseDay = dayNames[releaseDayIndex];
   const lastReleaseDay = dayNames[lastReleaseDayIndex];
