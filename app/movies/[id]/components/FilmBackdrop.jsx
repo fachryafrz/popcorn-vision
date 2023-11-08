@@ -21,8 +21,11 @@ export default function FilmBackdrop({ film }) {
 
       <img
         loading="lazy"
-        src={`${process.env.API_IMAGE_1280}${film.backdrop_path}`}
+        src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
         alt={film.title}
+        style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w300${film.backdrop_path})`,
+          }}
         className="object-top"
       />
     </figure>

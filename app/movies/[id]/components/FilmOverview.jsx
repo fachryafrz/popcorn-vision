@@ -228,6 +228,9 @@ export default function FilmOverview({
                   src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
                   alt={isItTvPage(film.title, film.name)}
                   className={film.poster_path === null ? `hidden` : `block`}
+                  style={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/w92${film.poster_path})`,
+                  }}
                 />
 
                 {/* {film.vote_average > 0 && (
@@ -276,7 +279,7 @@ export default function FilmOverview({
           <div className="flex flex-col items-center md:justify-center md:items-start gap-2 md:gap-0 w-full">
             {images.logos.length > 0 ? (
               <>
-                <TitleLogo film={film} />
+                <TitleLogo film={film} images={images} />
 
                 <h1
                   title={isItTvPage(film.title, film.name)}

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
 
-export default function TitleLogo({ film }) {
+export default function TitleLogo({ film, images }) {
   const [titleLogo, setTitleLogo] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -30,8 +30,13 @@ export default function TitleLogo({ film }) {
         });
     };
 
-    fetchTitleLogo();
-  }, [film, isTvPage]);
+    if (images) {
+      setLoading(false);
+      setTitleLogo(images.logos[0]);
+    } else {
+      fetchTitleLogo();
+    }
+  }, [film, isTvPage, images]);
 
   return titleLogo ? (
     <>
@@ -49,7 +54,7 @@ export default function TitleLogo({ film }) {
         </figure>
       ) : (
         <div
-          className={`h-[100px] w-[300px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
+          className={`h-[100px] sm:h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
         ></div>
       )}
     </>

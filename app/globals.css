@@ -12,7 +12,7 @@
   }
 
   img {
-    @apply w-full h-full object-cover;
+    @apply w-full h-full bg-no-repeat bg-cover italic object-cover align-middle;
   }
 
   /* .btn {

@@ -19,7 +19,7 @@ export default function MainLoading() {
           className={`w-full max-w-7xl mx-auto !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[50%]`}
         >
           {/* Title Logo */}
-          <div className={`h-[100px] w-full !max-w-[300px]`}></div>
+          <div className={`h-[100px] sm:h-[150px] w-full !max-w-[350px]`}></div>
           {/* Rating, Release Date, Season, Genre */}
           <div
             className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}

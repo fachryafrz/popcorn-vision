@@ -26,6 +26,9 @@ export default function FilmPoster({ film }) {
           loading="lazy"
           src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
           alt={film.title}
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w92${film.poster_path})`,
+          }}
         />
 
         {/* {film.vote_average > 0 && (
