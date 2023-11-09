@@ -91,6 +91,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const reviews = await getFilm(id, type, "/reviews");
   const providers = await getFilm(id, type, "/watch/providers");
   const recommendations = await getFilm(id, type, "/recommendations");
+  const similar = await getFilm(id, type, "/similar");
+
+  let recommendationsAndSimilar = {
+    results: [...recommendations.results, ...similar.results],
+  };
 
   const genres = await getGenres(type);
 
@@ -130,14 +135,10 @@ export default async function FilmDetail({ params, type = "movie" }) {
         </div>
 
         {/* Recommendations */}
-        {recommendations.results.length > 0 && (
+        {recommendationsAndSimilar.results.length > 0 && (
           <FilmSlider
-            films={recommendations}
-            title={
-              recommendations.results.length > 1
-                ? `Recommendations`
-                : `Recommendation`
-            }
+            films={recommendationsAndSimilar}
+            title={`You might also like`}
             genres={genres}
           />
         )}
