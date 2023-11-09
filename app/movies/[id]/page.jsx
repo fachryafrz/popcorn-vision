@@ -93,6 +93,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const recommendations = await getFilm(id, type, "/recommendations");
   const similar = await getFilm(id, type, "/similar");
 
+  // This can cause double data from recommendation & similar
+  // which means there can be two same movies in the list
   let recommendationsAndSimilar = {
     results: [...recommendations.results, ...similar.results],
   };
@@ -135,10 +137,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
         </div>
 
         {/* Recommendations */}
-        {recommendationsAndSimilar.results.length > 0 && (
+        {recommendations.results.length > 0 && (
           <FilmSlider
-            films={recommendationsAndSimilar}
-            title={`You might also like`}
+            films={recommendations}
+            title={
+              recommendations.results.length > 1
+                ? `Recommendations`
+                : `Recommendation`
+            }
             genres={genres}
           />
         )}
