@@ -726,17 +726,17 @@ export default function FilmOverview({
                 <tr>
                   <td>
                     <div
-                      className={`flex flex-col gap-1 w-full md:w-[70%] mt-2`}
+                      className={`flex flex-col gap-1 w-full xl:w-[70%] mt-2`}
                     >
                       <span>
                         Last Episode: {`Episode ${lastEps.episode_number}`}
                       </span>
                       <div
                         id={`card`}
-                        className={`flex gap-3 p-2 rounded-xl bg-secondary bg-opacity-20`}
+                        className={`flex flex-col sm:flex-row max-w-xs sm:max-w-none gap-3 p-2 rounded-xl bg-secondary bg-opacity-20`}
                       >
                         <figure
-                          className={`aspect-video bg-base-100 rounded-lg w-[150px] overflow-hidden`}
+                          className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
                         >
                           {lastEps.still_path ? (
                             <img
@@ -874,7 +874,7 @@ export default function FilmOverview({
                   )}
                   <button
                     onClick={handleShare}
-                    className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto`}
+                    className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2`}
                   >
                     <IonIcon icon={arrowRedoOutline} />
                     <span>Share</span>
@@ -889,7 +889,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-auto"
+                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 xl:mt-auto"
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }
