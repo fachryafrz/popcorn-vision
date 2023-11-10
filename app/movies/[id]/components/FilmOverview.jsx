@@ -20,14 +20,25 @@ import { IonIcon } from "@ionic/react";
 import {
   arrowRedoOutline,
   calendarOutline,
+  star,
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
 import ShareModal from "./ShareModal";
 import axios from "axios";
 import {
+  EmailIcon,
+  EmailShareButton,
   FacebookIcon,
   FacebookShareButton,
+  LinkedinIcon,
+  LinkedinShareButton,
+  PinterestIcon,
+  PinterestShareButton,
+  RedditIcon,
+  RedditShareButton,
+  TelegramIcon,
+  TelegramShareButton,
   TwitterIcon,
   TwitterShareButton,
   WhatsappIcon,
@@ -57,6 +68,34 @@ export default function FilmOverview({
     return type;
   };
 
+  const formatDate = (dateValue) => {
+    const dateStr = dateValue;
+    const date = new Date(dateStr);
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    const formattedDate = date.toLocaleString("en-US", options);
+    return formattedDate;
+  };
+
+  const fetchEpisodes = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.themoviedb.org/3/tv/${film.id}/season/${film.number_of_seasons}`,
+        {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        }
+      );
+      setEpisodes(res.data.episodes);
+    } catch (error) {
+      console.error(`Errornya collections: ${error}`);
+    }
+  };
+
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -81,28 +120,24 @@ export default function FilmOverview({
         });
     }
 
-    const fetchEpisodes = async () => {
-      try {
-        const res = await axios.get(
-          `https://api.themoviedb.org/3/tv/${film.id}/season/${film.number_of_seasons}`,
-          {
-            params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-            },
-          }
-        );
-        setEpisodes(res.data.episodes);
-      } catch (error) {
-        console.error(`Errornya collections: ${error}`);
-      }
-    };
-
     if (isTvPage) {
       fetchEpisodes();
     }
-  }, [location, film.id, film.number_of_seasons]);
+  }, [location, film, isTvPage]);
 
-  const nextEps = episodes.find((item) => new Date(item.air_date) > new Date());
+  // const nextEps = episodes.find((item) => new Date(item.air_date) > new Date());
+
+  const nextEps = film.next_episode_to_air;
+  const lastEps = film.last_episode_to_air;
+
+  // if (!lastEpisode?.still_path) {
+  //   for (let i = episodes.length - 2; i >= 0; i--) {
+  //     if (episodes[i].still_path) {
+  //       lastEps = episodes[i];
+  //       break;
+  //     }
+  //   }
+  // }
 
   let providersArray = Object.entries(providers.results);
 
@@ -198,8 +233,6 @@ export default function FilmOverview({
       console.error("Error copying text:", error);
     }
   };
-
-  const [isActive, setIsActive] = useState(false);
 
   return (
     <>
@@ -689,6 +722,91 @@ export default function FilmOverview({
                 </tr>
               )}
 
+              {lastEps && (
+                <tr>
+                  <td>
+                    <div
+                      className={`flex flex-col gap-1 w-full md:w-[70%] mt-2`}
+                    >
+                      <span>
+                        Last Episode: {`Episode ${lastEps.episode_number}`}
+                      </span>
+                      <div
+                        id={`card`}
+                        className={`flex gap-3 p-2 rounded-xl bg-secondary bg-opacity-20`}
+                      >
+                        <figure
+                          className={`aspect-video bg-base-100 rounded-lg w-[150px] overflow-hidden`}
+                        >
+                          {lastEps.still_path ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w500${lastEps.still_path}`}
+                              alt={lastEps.name}
+                            />
+                          ) : (
+                            <img
+                              src={`/popcorn.png`}
+                              alt={lastEps.name}
+                              className={`w-[50px] pointer-events-none mx-auto`}
+                            />
+                          )}
+                        </figure>
+                        <div className={`flex flex-col justify-center gap-1`}>
+                          <span
+                            className={`font-medium line-clamp-2 leading-4`}
+                          >
+                            {lastEps.name}
+                          </span>
+
+                          <span
+                            className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1`}
+                          >{`Season ${lastEps.season_number}`}</span>
+
+                          <div
+                            className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                          >
+                            {lastEps.vote_average > 1 && (
+                              <span className={`flex items-center gap-1`}>
+                                <IonIcon
+                                  icon={star}
+                                  className={`text-primary-yellow`}
+                                />
+                                {lastEps.vote_average &&
+                                  lastEps.vote_average.toFixed(1)}
+                              </span>
+                            )}
+
+                            {lastEps.vote_average > 1 && lastEps.air_date && (
+                              <span>&bull;</span>
+                            )}
+
+                            {lastEps.runtime && (
+                              <span>
+                                {Math.floor(lastEps.runtime / 60) >= 1
+                                  ? `${Math.floor(
+                                      lastEps.runtime / 60
+                                    )}h ${Math.floor(lastEps.runtime % 60)}m`
+                                  : `${lastEps.runtime} minute${
+                                      lastEps.runtime % 60 > 1 && `s`
+                                    }`}
+                              </span>
+                            )}
+
+                            {lastEps.air_date && lastEps.runtime && (
+                              <span>&bull;</span>
+                            )}
+
+                            {lastEps.air_date && (
+                              <span>{formatDate(lastEps.air_date)}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+
               <tr>
                 <td
                   className={`flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 ${
@@ -696,17 +814,16 @@ export default function FilmOverview({
                   }`}
                 >
                   {isUpcoming && (
-                    <div>
+                    <div className={`w-full flex flex-col items-start`}>
                       {!isTvPage ? (
                         <span>{`Released in`}</span>
                       ) : (
                         <span>
-                          {nextEps?.episode_type == `finale`
-                            ? `Final episode: ${nextEps?.name}`
-                            : nextEps?.name ==
-                              `Episode ${nextEps?.episode_number}`
-                            ? nextEps?.name
-                            : `Episode ${nextEps?.episode_number}: ${nextEps?.name}`}
+                          {nextEps.episode_type == `finale`
+                            ? `Final episode: ${nextEps.name}`
+                            : nextEps.season_number == nextEps.episode_number
+                            ? `First episode: ${nextEps.name}`
+                            : `Next episode: ${nextEps.name}`}
                         </span>
                       )}
                       <div className="flex flex-wrap justify-center gap-2 text-center">
@@ -757,7 +874,7 @@ export default function FilmOverview({
                   )}
                   <button
                     onClick={handleShare}
-                    className={`flex sm:hidden items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto`}
+                    className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto`}
                   >
                     <IonIcon icon={arrowRedoOutline} />
                     <span>Share</span>
@@ -772,7 +889,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto"
+                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-auto"
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }
@@ -789,7 +906,7 @@ export default function FilmOverview({
                       <h2 className={`text-center`}>Share to</h2>
 
                       <div
-                        className={`mt-2 flex items-center justify-center gap-2 mb-4`}
+                        className={`mt-2 flex flex-wrap justify-center gap-2 mb-4`}
                       >
                         <WhatsappShareButton url={URL}>
                           <WhatsappIcon size={50} round={true} />
@@ -802,7 +919,29 @@ export default function FilmOverview({
                         <TwitterShareButton url={URL}>
                           <TwitterIcon size={50} round={true} />
                         </TwitterShareButton>
+
+                        <LinkedinShareButton url={URL}>
+                          <LinkedinIcon size={50} round={true} />
+                        </LinkedinShareButton>
+
+                        <PinterestShareButton url={URL}>
+                          <PinterestIcon size={50} round={true} />
+                        </PinterestShareButton>
+
+                        <RedditShareButton url={URL}>
+                          <RedditIcon size={50} round={true} />
+                        </RedditShareButton>
+
+                        <TelegramShareButton url={URL}>
+                          <TelegramIcon size={50} round={true} />
+                        </TelegramShareButton>
+
+                        <EmailShareButton url={URL}>
+                          <EmailIcon size={50} round={true} />
+                        </EmailShareButton>
                       </div>
+
+                      <div className="divider">or</div>
 
                       <div
                         className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-full bg-black bg-opacity-50 text-sm border border-white border-opacity-50 w-full`}
