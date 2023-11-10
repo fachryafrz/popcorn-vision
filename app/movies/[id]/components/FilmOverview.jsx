@@ -726,14 +726,14 @@ export default function FilmOverview({
                 <tr>
                   <td>
                     <div
-                      className={`flex flex-col gap-1 w-full xl:w-[70%] mt-2`}
+                      className={`flex flex-col gap-1 mt-2`}
                     >
                       <span>
                         Last Episode: {`Episode ${lastEps.episode_number}`}
                       </span>
                       <div
                         id={`card`}
-                        className={`flex flex-col sm:flex-row max-w-xs sm:max-w-none gap-3 p-2 rounded-xl bg-secondary bg-opacity-20`}
+                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[70%]`}
                       >
                         <figure
                           className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
