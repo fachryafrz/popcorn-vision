@@ -83,6 +83,7 @@ export default async function sitemap() {
       text &&
       text
         .toLowerCase()
+        .replace(/&/g, "")
         .replace(/ /g, "-")
         .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")

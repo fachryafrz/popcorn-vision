@@ -364,7 +364,7 @@ export default function FilmOverview({
                                   src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                   alt={item.name}
                                   title={item.name}
-                                  className={`object-contain w-[120px] aspect-[3/2] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                                  className={`object-contain w-[140px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
                                 />
                                 <span className={`sr-only`} itemProp="name">
                                   {item.name}
@@ -725,15 +725,14 @@ export default function FilmOverview({
               {lastEps && (
                 <tr>
                   <td>
-                    <div
-                      className={`flex flex-col gap-1 mt-2`}
-                    >
+                    <div className={`flex flex-col gap-1 mt-2`}>
                       <span>
-                        Last Episode: {`Episode ${lastEps.episode_number}`}
+                        {nextEps ? `Latest` : `Last`} Episode:{" "}
+                        {`Episode ${lastEps.episode_number}`}
                       </span>
                       <div
                         id={`card`}
-                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[70%]`}
+                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[450px]`}
                       >
                         <figure
                           className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -747,7 +746,7 @@ export default function FilmOverview({
                             <img
                               src={`/popcorn.png`}
                               alt={lastEps.name}
-                              className={`w-[50px] pointer-events-none mx-auto`}
+                              className={`pointer-events-none mx-auto object-contain`}
                             />
                           )}
                         </figure>
@@ -823,9 +822,84 @@ export default function FilmOverview({
                             ? `Final episode: ${nextEps.name}`
                             : nextEps.season_number == nextEps.episode_number
                             ? `First episode: ${nextEps.name}`
-                            : `Next episode: ${nextEps.name}`}
+                            : `Next episode: Episode ${nextEps.episode_number}`}
                         </span>
                       )}
+
+                      {nextEps && (
+                        <div
+                          id={`card`}
+                          className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[450px] mb-2`}
+                        >
+                          <figure
+                            className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
+                          >
+                            {nextEps.still_path ? (
+                              <img
+                                src={`https://image.tmdb.org/t/p/w500${nextEps.still_path}`}
+                                alt={nextEps.name}
+                              />
+                            ) : (
+                              <img
+                                src={`/popcorn.png`}
+                                alt={nextEps.name}
+                                className={`pointer-events-none mx-auto object-contain`}
+                              />
+                            )}
+                          </figure>
+                          <div className={`flex flex-col justify-center gap-1`}>
+                            <span
+                              className={`font-medium line-clamp-2 leading-4`}
+                            >
+                              {nextEps.name}
+                            </span>
+
+                            <span
+                              className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1`}
+                            >{`Season ${nextEps.season_number}`}</span>
+
+                            <div
+                              className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                            >
+                              {nextEps.vote_average > 1 && (
+                                <span className={`flex items-center gap-1`}>
+                                  <IonIcon
+                                    icon={star}
+                                    className={`text-primary-yellow`}
+                                  />
+                                  {nextEps.vote_average &&
+                                    nextEps.vote_average.toFixed(1)}
+                                </span>
+                              )}
+
+                              {nextEps.vote_average > 1 && nextEps.air_date && (
+                                <span>&bull;</span>
+                              )}
+
+                              {nextEps.runtime && (
+                                <span>
+                                  {Math.floor(nextEps.runtime / 60) >= 1
+                                    ? `${Math.floor(
+                                        nextEps.runtime / 60
+                                      )}h ${Math.floor(nextEps.runtime % 60)}m`
+                                    : `${nextEps.runtime} minute${
+                                        nextEps.runtime % 60 > 1 && `s`
+                                      }`}
+                                </span>
+                              )}
+
+                              {nextEps.air_date && nextEps.runtime && (
+                                <span>&bull;</span>
+                              )}
+
+                              {nextEps.air_date && (
+                                <span>{formatDate(nextEps.air_date)}</span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="flex flex-wrap justify-center gap-2 text-center">
                         {countdown.months > 0 && (
                           <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
@@ -889,7 +963,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 xl:mt-auto"
+                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 sm:mt-auto"
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }

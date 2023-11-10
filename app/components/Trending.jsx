@@ -36,6 +36,7 @@ export default function Trending({ film, genres }) {
       text &&
       text
         .toLowerCase()
+        .replace(/&/g, "")
         .replace(/ /g, "-")
         .replace(/-+/g, "-")
         .replace(/[^\w-]+/g, "")
