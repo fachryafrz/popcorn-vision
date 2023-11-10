@@ -150,7 +150,24 @@ export default function FilmCollection({ film }) {
                           {item.title}
                         </h3>
 
-                        <div className="text-sm text-gray-400 font-medium">
+                        <div
+                          className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                        >
+                          {item.vote_average > 1 && (
+                            <span className={`flex items-center gap-1`}>
+                              <IonIcon
+                                icon={star}
+                                className={`text-primary-yellow`}
+                              />
+                              {item.vote_average &&
+                                item.vote_average.toFixed(1)}
+                            </span>
+                          )}
+
+                          {item.vote_average > 1 && item.release_date && (
+                            <span>&bull;</span>
+                          )}
+
                           {item.release_date ? formattedDate : `Coming soon`}
                         </div>
                       </div>
@@ -266,11 +283,24 @@ function FilmSeason({ film, item, index }) {
             }`}
           </span>
 
-          {item.air_date && (
-            <span className="text-xs sm:text-sm text-gray-400 font-medium">
-              {formattedDate}
-            </span>
-          )}
+          <div
+            className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+          >
+            {item.vote_average > 1 && (
+              <span className={`flex items-center gap-1`}>
+                <IonIcon icon={star} className={`text-primary-yellow`} />
+                {item.vote_average && item.vote_average.toFixed(1)}
+              </span>
+            )}
+
+            {item.vote_average > 1 && item.air_date && <span>&bull;</span>}
+
+            {item.air_date && (
+              <span className="text-xs sm:text-sm text-gray-400 font-medium">
+                {formattedDate}
+              </span>
+            )}
+          </div>
         </div>
 
         <p
