@@ -54,7 +54,7 @@ export default function TitleLogo({ film, images }) {
         </figure>
       ) : (
         <div
-          className={`h-[100px] sm:h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
+          className={`h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
         ></div>
       )}
     </>

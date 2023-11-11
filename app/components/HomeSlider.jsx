@@ -129,13 +129,13 @@ export default function HomeSlider({ films, genres }) {
                   <p className="hidden sm:line-clamp-1 md:line-clamp-2 lg:line-clamp-3">
                     {film.overview}
                   </p>
-                  <div className="flex gap-2 mt-4 w-full">
+                  <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
                     <Link
                       href={isItTvPage(
                         `/movies/${film.id}-${slugify(film.title)}`,
                         `/tv/${film.id}-${slugify(film.name)}`
                       )}
-                      className="w-[50%] lg:w-[25%] btn btn-primary bg-opacity-40 border-none"
+                      className="btn btn-primary bg-opacity-40 border-none hocus:bg-opacity-100"
                     >
                       <IonIcon
                         icon={informationCircleOutline}
@@ -143,19 +143,19 @@ export default function HomeSlider({ films, genres }) {
                       />
                       Details
                     </Link>
-                    <Link
+                    {/* <Link
                       href={isItTvPage(
                         `/movies/${film.id}-${slugify(film.title)}#overview`,
                         `/tv/${film.id}-${slugify(film.name)}#overview`
                       )}
-                      className="w-[50%] lg:w-[25%] btn btn-ghost bg-secondary bg-opacity-40 hocus:bg-white hocus:text-base-100"
+                      className="btn btn-ghost bg-secondary bg-opacity-40 backdrop-blur-sm hocus:bg-white hocus:text-base-100"
                     >
                       <IonIcon
                         icon={playOutline}
                         className="!w-5 h-full aspect-square"
                       />
                       Trailer
-                    </Link>
+                    </Link> */}
                   </div>
                 </div>
               </div>

@@ -364,7 +364,7 @@ export default function FilmOverview({
                                   src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                                   alt={item.name}
                                   title={item.name}
-                                  className={`object-contain w-[140px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                                  className={`object-contain w-[140px] aspect-square inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
                                 />
                                 <span className={`sr-only`} itemProp="name">
                                   {item.name}
@@ -727,12 +727,12 @@ export default function FilmOverview({
                   <td>
                     <div className={`flex flex-col gap-1 mt-2`}>
                       <span>
-                        {nextEps ? `Latest` : `Last`} Episode:{" "}
-                        {`Episode ${lastEps.episode_number}`}
+                        {nextEps ? `Latest` : `Last`}
+                        {` Episode: Episode ${lastEps.episode_number}`}
                       </span>
                       <div
                         id={`card`}
-                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[450px]`}
+                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-10 w-full xl`}
                       >
                         <figure
                           className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -808,7 +808,7 @@ export default function FilmOverview({
 
               <tr>
                 <td
-                  className={`flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 ${
+                  className={`relative flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 ${
                     isUpcoming ? `mt-2` : `mt-0`
                   }`}
                 >
@@ -820,8 +820,8 @@ export default function FilmOverview({
                         <span>
                           {nextEps.episode_type == `finale`
                             ? `Final episode: ${nextEps.name}`
-                            : nextEps.season_number == nextEps.episode_number
-                            ? `First episode: ${nextEps.name}`
+                            : nextEps.episode_number == 1
+                            ? `First episode`
                             : `Next episode: Episode ${nextEps.episode_number}`}
                         </span>
                       )}
@@ -829,7 +829,7 @@ export default function FilmOverview({
                       {nextEps && (
                         <div
                           id={`card`}
-                          className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-20 xl:w-[450px] mb-2`}
+                          className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-10 w-full mb-2`}
                         >
                           <figure
                             className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -902,7 +902,7 @@ export default function FilmOverview({
 
                       <div className="flex flex-wrap justify-center gap-2 text-center">
                         {countdown.months > 0 && (
-                          <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                          <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                             <span className="countdown font-mono text-5xl">
                               <span
                                 style={{ "--value": countdown.months }}
@@ -912,7 +912,7 @@ export default function FilmOverview({
                           </div>
                         )}
                         {countdown.days > 0 && (
-                          <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                          <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                             <span className="countdown font-mono text-5xl">
                               <span
                                 style={{ "--value": countdown.days }}
@@ -921,13 +921,13 @@ export default function FilmOverview({
                             day{countdown.days > 1 ? `s` : ``}
                           </div>
                         )}
-                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                           <span className="countdown font-mono text-5xl">
                             <span style={{ "--value": countdown.hours }}></span>
                           </span>
                           hour{countdown.hours > 1 ? `s` : ``}
                         </div>
-                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                           <span className="countdown font-mono text-5xl">
                             <span
                               style={{ "--value": countdown.minutes }}
@@ -935,7 +935,7 @@ export default function FilmOverview({
                           </span>
                           min
                         </div>
-                        <div className="flex flex-col p-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-box text-neutral-content">
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                           <span className="countdown font-mono text-5xl">
                             <span
                               style={{ "--value": countdown.seconds }}
@@ -963,7 +963,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className="hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 sm:mt-auto"
+                    className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 sm:mt-auto absolute right-0 bottom-0`}
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }
