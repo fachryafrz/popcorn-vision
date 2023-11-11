@@ -70,8 +70,13 @@ export default function DetailsLoading() {
               ></div>
               <div
                 id="description"
-                className={`animate-pulse bg-gray-400 bg-opacity-20 h-[120px]`}
-              ></div>
+                className={`flex flex-col gap-1`}
+              >
+                {[...Array(2).keys()].map((i) => (
+                  <div key={i} className={`rounded-lg animate-pulse bg-gray-400 bg-opacity-20 h-[24px]`}></div>
+                ))}
+                  <div className={`rounded-lg animate-pulse bg-gray-400 bg-opacity-20 h-[24px] w-[90%]`}></div>
+              </div>
             </div>
 
             {/* Media */}
@@ -92,7 +97,7 @@ export default function DetailsLoading() {
                     key={i}
                     className={`flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl`}
                   >
-                    <div className={`flex items-center justify-between`}>
+                    <div className={`flex items-start justify-between`}>
                       <div className={`flex items-center gap-2 w-[160px]`}>
                         <figure
                           className={`animate-pulse bg-gray-400 bg-opacity-20 h-[40px] w-[40px] aspect-square rounded-full`}

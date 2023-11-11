@@ -808,7 +808,7 @@ export default function FilmOverview({
 
               <tr>
                 <td
-                  className={`relative flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4 ${
+                  className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0 ${
                     isUpcoming ? `mt-2` : `mt-0`
                   }`}
                 >
@@ -963,7 +963,7 @@ export default function FilmOverview({
                   </button> */}
 
                   <button
-                    className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2 sm:mt-auto absolute right-0 bottom-0`}
+                    className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2`}
                     onClick={() =>
                       document.getElementById("shareModal").showModal()
                     }
