@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import remarkGfm from 'remark-gfm'
 import RatingStars from "./RatingStars";
 import { IonIcon } from "@ionic/react";
 import { triangle } from "ionicons/icons";
@@ -184,7 +185,7 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`} itemProp="reviewBody">
-        <ReactMarkdown>
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {readMore || wordCount < maxLength
             ? text
             : `${words.slice(0, maxLength).join(" ")}...`}

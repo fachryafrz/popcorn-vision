@@ -1,6 +1,6 @@
 {
   "name": "nextjs-popcornvision",
-  "version": "1.21.83",
+  "version": "1.22.83",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -38,6 +38,7 @@
     "react-ga4": "^2.1.0",
     "react-markdown": "^8.0.5",
     "react-share": "^4.4.1",
+    "remark-gfm": "^4.0.0",
     "swiper": "^9.0.5",
     "tailwindcss": "3.3.2"
   },
