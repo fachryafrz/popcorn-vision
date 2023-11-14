@@ -115,11 +115,13 @@ export default async function FilmDetail({ params, type = "movie" }) {
         >
           <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4">
             {/* Left */}
-            <div className="lg:col-span-6">
-              <FilmPoster film={film} />
-            </div>
+            <section className="lg:col-span-6">
+              <div className={`hidden lg:flex h-full`}>
+                <FilmPoster film={film} />
+              </div>
+            </section>
             {/* Middle */}
-            <div className="lg:col-span-13">
+            <section className="lg:col-span-13">
               <FilmOverview
                 film={film}
                 videos={videos}
@@ -128,11 +130,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
                 credits={credits}
                 providers={providers}
               />
-            </div>
+            </section>
             {/* Right */}
-            <div className="lg:col-span-5">
+            <section className="lg:col-span-5">
               {credits.cast.length > 0 && <CastsList credits={credits} />}
-            </div>
+            </section>
           </div>
         </div>
 

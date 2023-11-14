@@ -44,6 +44,7 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
+import FilmPoster from "./FilmPoster";
 
 export default function FilmOverview({
   film,
@@ -238,76 +239,8 @@ export default function FilmOverview({
     <>
       <div className="flex flex-col gap-6 self-start w-full">
         <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
-          <div className="flex flex-col gap-1">
-            <div className="sticky top-20 flex flex-col gap-1">
-              <figure className="w-[50vw] md:w-[25vw] lg:hidden aspect-poster rounded-lg overflow-hidden self-start shadow-xl relative">
-                <div
-                  className={
-                    film.poster_path === null
-                      ? `w-full h-full bg-base-100`
-                      : `hidden`
-                  }
-                >
-                  <img
-                    loading="lazy"
-                    src={`/popcorn.png`}
-                    alt={process.env.APP_NAME}
-                    className="object-contain"
-                  />
-                </div>
-
-                <img
-                  loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
-                  alt={isItTvPage(film.title, film.name)}
-                  className={film.poster_path === null ? `hidden` : `block`}
-                  style={{
-                    backgroundImage: `url(https://image.tmdb.org/t/p/w92${film.poster_path})`,
-                  }}
-                />
-
-                {/* {film.vote_average > 0 && (
-                  <div
-                    className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-100 bg-opacity-50 backdrop-blur-sm ${
-                      film.vote_average >= 1 && film.vote_average <= 3
-                        ? `border-primary-red`
-                        : film.vote_average >= 4 && film.vote_average <= 7
-                        ? `border-primary-yellow`
-                        : `border-green-500`
-                    }`}
-                  >
-                    {film.vote_average.toFixed(1)}
-                  </div>
-                )} */}
-
-                {film.vote_average > 0 && (
-                  <div
-                    className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
-                  >
-                    <div
-                      className={`radial-progress text-sm font-semibold ${
-                        film.vote_average > 0 && film.vote_average < 3
-                          ? `text-primary-red`
-                          : film.vote_average >= 3 && film.vote_average < 7
-                          ? `text-primary-yellow`
-                          : `text-green-500`
-                      }`}
-                      style={{
-                        "--value": film.vote_average * 10,
-                        "--size": "36px",
-                        "--thickness": "3px",
-                      }}
-                    >
-                      <span className={`text-white`}>
-                        {film.vote_average < 9.9
-                          ? film.vote_average.toFixed(1)
-                          : film.vote_average}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </figure>
-            </div>
+          <div className="w-[50vw] md:w-[25vw] lg:hidden">
+            <FilmPoster film={film}/>
           </div>
           <div className="flex flex-col items-center md:justify-center md:items-start gap-2 md:gap-0 w-full">
             {images.logos.length > 0 ? (
@@ -732,7 +665,7 @@ export default function FilmOverview({
                       </span>
                       <div
                         id={`card`}
-                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-10 w-full xl`}
+                        className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl`}
                       >
                         <figure
                           className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -750,15 +683,15 @@ export default function FilmOverview({
                             />
                           )}
                         </figure>
-                        <div className={`flex flex-col justify-center gap-1`}>
+                        <div className={`flex flex-col justify-center`}>
                           <span
-                            className={`font-medium line-clamp-2 leading-4`}
+                            className={`font-medium line-clamp-2`}
                           >
                             {lastEps.name}
                           </span>
 
                           <span
-                            className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1`}
+                            className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
                           >{`Season ${lastEps.season_number}`}</span>
 
                           <div
@@ -829,7 +762,7 @@ export default function FilmOverview({
                       {nextEps && (
                         <div
                           id={`card`}
-                          className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl bg-secondary bg-opacity-10 w-full mb-2`}
+                          className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full mb-2`}
                         >
                           <figure
                             className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -847,15 +780,15 @@ export default function FilmOverview({
                               />
                             )}
                           </figure>
-                          <div className={`flex flex-col justify-center gap-1`}>
+                          <div className={`flex flex-col justify-center`}>
                             <span
-                              className={`font-medium line-clamp-2 leading-4`}
+                              className={`font-medium line-clamp-2`}
                             >
                               {nextEps.name}
                             </span>
 
                             <span
-                              className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1`}
+                              className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
                             >{`Season ${nextEps.season_number}`}</span>
 
                             <div
