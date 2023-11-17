@@ -2,29 +2,14 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { search } from "ionicons/icons";
+import { refresh, search } from "ionicons/icons";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function NotFound() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
-
-  const handleSearchQuery = (e) => {
-    setSearchQuery(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    router.replace(`/search?query=${searchQuery.replace(/\s+/g, "+")}`);
-  };
-
+export default function Error({ error, reset }) {
   return (
-    <div className={`h-[calc(100svh-66px)] grid place-content-center`}>
-      <div
-        className={`flex items-start justify-center p-4 max-w-7xl mx-auto`}
-      >
+    <div className={`min-h-[calc(100svh-66px)] grid place-content-center`}>
+      <div className={`flex items-start justify-center p-4 max-w-7xl mx-auto`}>
         <figure
           style={{
             background: `url(/sad_popcorn_engineer.png)`,
@@ -34,9 +19,9 @@ export default function NotFound() {
         <div className={`prose`}>
           <h1>Oops! Something Went Wrong</h1>
           <p>
-            We&apos;re currently experiencing technical difficulties accessing the
-            film information. We&apos;re working hard to fix this issue. Please
-            bear with us while we sort things out.
+            We&apos;re currently experiencing technical difficulties accessing
+            the film information. We&apos;re working hard to fix this issue.
+            Please bear with us while we sort things out.
           </p>
           <p>In the meantime, here are a few things you can try:</p>
           <ul>
@@ -44,11 +29,19 @@ export default function NotFound() {
               Refresh the page: Sometimes a simple refresh can do the trick.
             </li>
             <li>
-              Come back later: We&apos;re actively working on resolving this and expect
-              to have things up and running smoothly shortly.
+              Come back later: We&apos;re actively working on resolving this and
+              expect to have things up and running smoothly shortly.
             </li>
           </ul>
-          <p>We apologize for any inconvenience caused. Thank you for your patience and understanding!</p>
+          <p>
+            We apologize for any inconvenience caused. Thank you for your
+            patience and understanding!
+          </p>
+
+          <button onClick={() => reset()} className="btn btn-base-100">
+          <IonIcon icon={refresh} />
+            Refresh
+          </button>
         </div>
       </div>
     </div>
