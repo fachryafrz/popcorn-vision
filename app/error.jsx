@@ -34,8 +34,8 @@ export default function NotFound() {
         <div className={`prose`}>
           <h1>Oops! Something Went Wrong</h1>
           <p>
-            We're currently experiencing technical difficulties accessing the
-            film information. We're working hard to fix this issue. Please
+            We&apos;re currently experiencing technical difficulties accessing the
+            film information. We&apos;re working hard to fix this issue. Please
             bear with us while we sort things out.
           </p>
           <p>In the meantime, here are a few things you can try:</p>
@@ -44,7 +44,7 @@ export default function NotFound() {
               Refresh the page: Sometimes a simple refresh can do the trick.
             </li>
             <li>
-              Come back later: We're actively working on resolving this and expect
+              Come back later: We&apos;re actively working on resolving this and expect
               to have things up and running smoothly shortly.
             </li>
           </ul>
