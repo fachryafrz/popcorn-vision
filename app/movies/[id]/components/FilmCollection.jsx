@@ -147,6 +147,7 @@ export default function FilmCollection({ film }) {
                         <h3
                           className="text-start line-clamp-2 font-medium"
                           title={item.title}
+                          style={{ textWrap: 'balance' }}
                         >
                           {item.title}
                         </h3>
