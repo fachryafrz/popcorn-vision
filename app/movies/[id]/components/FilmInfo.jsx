@@ -349,14 +349,14 @@ export default function FilmInfo({ film, credits, providers, isTvPage }) {
           )}
 
       {film.genres && film.genres.length > 0 && (
-        <section id={`Film Genres`} className={`gap-2 flex flex-wrap`}>
+        <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
           {/* <td>{film.genres.map((item) => item.name).join(", ")}</td> */}
 
           {film.genres.map((item) => {
             return (
               <span
                 key={item.id}
-                className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur-sm`}
+                className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
                 itemProp="genre"
               >
                 {item.name}
@@ -722,22 +722,14 @@ export default function FilmInfo({ film, credits, providers, isTvPage }) {
         )}
         <button
           onClick={handleShare}
-          className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2`}
+          className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 text-sm ml-auto mt-2`}
         >
           <IonIcon icon={arrowRedoOutline} />
           <span>Share</span>
         </button>
 
-        {/* <button
-                    onClick={() => setIsActive(!isActive)}
-                    className={`hidden sm:flex items-center gap-2 p-2 px-4 rounded-full bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm`}
-                  >
-                    <IonIcon icon={arrowRedoOutline} />
-                    <span>Share</span>
-                  </button> */}
-
         <button
-          className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-10 hocus:bg-opacity-20 text-sm ml-auto mt-2`}
+          className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 text-sm ml-auto mt-2`}
           onClick={() => document.getElementById("shareModal").showModal()}
         >
           <IonIcon icon={arrowRedoOutline} />
