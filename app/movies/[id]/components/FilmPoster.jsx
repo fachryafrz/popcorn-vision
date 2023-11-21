@@ -7,14 +7,14 @@ import React from "react";
 export default function FilmPoster({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  
+
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
     return type;
   };
-  
+
   return (
-    <div className="sticky top-20 flex flex-col gap-1 h-fit">
+    <div className="sticky top-20 flex flex-col gap-4 h-fit">
       <figure className="aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative">
         <div
           className={
@@ -80,6 +80,24 @@ export default function FilmPoster({ film }) {
           </div>
         )}
       </figure>
+
+      {film.production_companies.length > 0 &&
+        film.production_companies.find((item) => item.logo_path !== null) && (
+          <div className={`hidden lg:grid grid-cols-2 gap-4`}>
+            {film.production_companies.map(
+              (item) =>
+                item.logo_path !== null && (
+                  <img
+                    key={item.id}
+                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                    alt={item.name}
+                    title={item.name}
+                    className={`object-contain h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
+                  />
+                )
+            )}
+          </div>
+        )}
     </div>
   );
 }
