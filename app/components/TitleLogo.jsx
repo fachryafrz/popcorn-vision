@@ -42,12 +42,12 @@ export default function TitleLogo({ film, images }) {
   return titleLogo ? (
     <>
       {!loading ? (
-        <figure className={`mb-4 flex justify-center h-[150px]`}>
+        <figure className={`mb-4 flex justify-center`}>
           <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={!isTvPage ? film.title : film.name}
             title={!isTvPage ? film.title : film.name}
-            className="max-h-[150px] pointer-events-none"
+            className="max-h-[150px] object-contain pointer-events-none"
           />
           {!images && (
             <figcaption className={`sr-only`}>
