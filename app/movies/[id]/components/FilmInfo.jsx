@@ -202,7 +202,7 @@ export default function FilmInfo({ film, credits, providers, isTvPage }) {
       {film.production_companies && film.production_companies.length > 0 && (
         <section
           id={`Production Companies`}
-          className={`flex lg:hidden gap-4 flex-wrap justify-center md:justify-start`}
+          className={`flex gap-4 flex-wrap justify-center md:justify-start md:mb-4`}
         >
           {film.production_companies.map(
             (item, i) =>

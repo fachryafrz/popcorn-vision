@@ -42,18 +42,13 @@ export default function TitleLogo({ film, images }) {
   return titleLogo ? (
     <>
       {!loading ? (
-        <figure className={`mb-4 flex justify-center h-[150px] w-[75%]`} style={{ 
-          backgroundImage: `url(https://image.tmdb.org/t/p/w500${titleLogo.file_path})`,
-          backgroundSize: 'contain',
-          backgroundRepeat: 'no-repeat',
-          backgroundPositionY: isDetailPage ? 'center' : 'bottom',
-         }}>
-          {/* <img
+        <figure className={`mb-4 flex justify-center h-[150px]`}>
+          <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={!isTvPage ? film.title : film.name}
             title={!isTvPage ? film.title : film.name}
             className="max-h-[150px] pointer-events-none"
-          /> */}
+          />
           {!images && (
             <figcaption className={`sr-only`}>
               <h3>{!isTvPage ? film.title : film.name}</h3>
@@ -62,7 +57,7 @@ export default function TitleLogo({ film, images }) {
         </figure>
       ) : (
         <div
-          className={`h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-30 rounded-lg`}
+          className={`h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 rounded-lg`}
         ></div>
       )}
     </>
