@@ -116,7 +116,7 @@ export default function FilmPoster({ film }) {
         )}
       </figure>
 
-      {film.production_companies.length > 0 &&
+      {/* {film.production_companies.length > 0 &&
         film.production_companies.find((item) => item.logo_path !== null) && (
           <div className={`hidden lg:grid grid-cols-2 gap-4`}>
             {film.production_companies.map(
@@ -136,7 +136,7 @@ export default function FilmPoster({ film }) {
                 )
             )}
           </div>
-        )}
+        )} */}
     </div>
   );
 }
