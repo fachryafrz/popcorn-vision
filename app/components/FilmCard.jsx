@@ -37,7 +37,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
         <div
           className={
             film.poster_path === null
-              ? `w-full h-full bg-base-100 grid place-items-center`
+              ? `w-full h-full bg-secondary bg-opacity-10 grid place-items-center`
               : `hidden`
           }
         >
