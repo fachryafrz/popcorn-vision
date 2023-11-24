@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import remarkGfm from 'remark-gfm'
+import remarkGfm from "remark-gfm";
 import RatingStars from "./RatingStars";
 import { IonIcon } from "@ionic/react";
 import { triangle } from "ionicons/icons";
@@ -162,11 +162,12 @@ export default function ReviewCard({ review }) {
             className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
             data-tip={`${formattedDate} ${
               new Date(review.updated_at).toLocaleString("en-US", options) !==
-                new Date(review.created_at).toLocaleString("en-US", options) &&
-              `(${new Date(review.updated_at).toLocaleString(
-                "en-US",
-                options
-              )})`
+              new Date(review.created_at).toLocaleString("en-US", options)
+                ? `(${new Date(review.updated_at).toLocaleString(
+                    "en-US",
+                    options
+                  )})`
+                : ``
             }`}
           >
             <span>{timeAgo(review.created_at)}</span>
@@ -184,7 +185,10 @@ export default function ReviewCard({ review }) {
         </div>
       </div>
 
-      <div className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`} itemProp="reviewBody">
+      <div
+        className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`}
+        itemProp="reviewBody"
+      >
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {readMore || wordCount < maxLength
             ? text

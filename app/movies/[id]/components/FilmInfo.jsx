@@ -213,13 +213,15 @@ export default function FilmInfo({ film, credits, providers, isTvPage }) {
                   itemScope
                   itemType="http://schema.org/Organization"
                 >
-                  <img
-                    key={item.id}
-                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                    alt={item.name}
+                  <figure
                     title={item.name}
-                    className={`object-contain w-[150px] h-[50px] inline grayscale invert hover:grayscale-0 hover:invert-0 transition-all`}
-                  />
+                    className={`w-[150px] h-[50px] grayscale invert hover:grayscale-0 hover:invert-0 transition-all bg-center`}
+                    style={{
+                      backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                      backgroundSize: `contain`,
+                      backgroundRepeat: `no-repeat`,
+                    }}
+                  ></figure>
                   <span className={`sr-only`} itemProp="name">
                     {item.name}
                   </span>
