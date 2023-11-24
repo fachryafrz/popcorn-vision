@@ -103,11 +103,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   return (
     <>
-      <div className="flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem]">
+      <div className="flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] relative">
         {/* Movie Background/Backdrop */}
         <FilmBackdrop film={film} />
         <div
-          className="z-10 -mt-[10vh] md:-mt-[50vh] mb-8"
+          className="z-10 mt-[30%] md:mt-[30dvh]"
           itemScope
           itemType={
             !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"

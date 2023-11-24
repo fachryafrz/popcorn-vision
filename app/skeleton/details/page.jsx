@@ -1,12 +1,12 @@
 export default function DetailsLoading() {
   return (
-    <div className={`flex flex-col gap-[1rem]`}>
+    <div className={`flex flex-col gap-[1rem] relative`}>
       {/* Backdrop */}
       <div
-        className={`animate-pulse bg-gray-400 bg-opacity-20 max-h-[100vh] overflow-hidden z-0 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80vh]`}
+        className={`animate-pulse bg-gray-400 bg-opacity-20 max-h-[100vh] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80dvh]`}
       ></div>
 
-      <div className={`z-10 -mt-[10vh] md:-mt-[50vh]`}>
+      <div className={`z-10 mt-[30%] md:mt-[30dvh]`}>
         <div
           className={`mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4 pb-[2rem] md:pb-[5rem]`}
         >
