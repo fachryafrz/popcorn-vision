@@ -25,7 +25,7 @@ export default function DetailsLoading() {
               <div className={`flex flex-col gap-2 lg:w-full`}>
                 {/* Title Logo */}
                 <div
-                  className={`rounded-lg animate-pulse bg-gray-400 bg-opacity-20 h-[100px] sm:h-[175px] w-full !max-w-[350px] mx-auto md:mx-0`}
+                  className={`rounded-lg animate-pulse bg-gray-400 bg-opacity-20 h-[100px] sm:h-[150px] w-full !max-w-[350px] mx-auto md:mx-0`}
                 ></div>
                 {/* Release Date & Runtime */}
                 {[...Array(2).keys()].map((i) => (
