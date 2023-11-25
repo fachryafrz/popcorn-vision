@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Casts({ actor, showAllActors }) {
   return (
-    <div className="flex flex-col lg:flex-row text-center lg:text-start gap-2 items-center lg:items-start min-w-[120px]">
+    <div className="flex flex-col md:flex-row text-center md:text-start gap-2 items-center md:items-start min-w-[120px]">
       <div className="!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0">
         {actor.profile_path === null ? (
           <figure
@@ -32,7 +32,7 @@ export default function Casts({ actor, showAllActors }) {
       >
         <h3
           title={actor.name}
-          className={`font-medium lg:line-clamp-1 ${
+          className={`font-medium md:line-clamp-1 ${
             showAllActors ? `!line-clamp-none` : ``
           }`}
           itemProp="name"
@@ -42,7 +42,7 @@ export default function Casts({ actor, showAllActors }) {
 
         {actor.character !== "" && (
           <span
-            className={`text-sm text-gray-400 lg:line-clamp-1 max-w-[120px] lg:max-w-none mx-auto lg:mx-0 before:content-['as'] before:mr-1 ${
+            className={`text-sm text-gray-400 md:line-clamp-1 max-w-[120px] md:max-w-none mx-auto md:mx-0 before:content-['as'] before:mr-1 ${
               showAllActors ? `!line-clamp-none` : ``
             }`}
           >

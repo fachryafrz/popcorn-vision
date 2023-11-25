@@ -5,6 +5,7 @@ import FilmPoster from "./components/FilmPoster";
 import FilmOverview from "./components/FilmOverview";
 import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
+import FilmInfo from "./components/FilmInfo";
 
 async function getFilm(id, type, path) {
   const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
@@ -102,55 +103,68 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const genres = await getGenres(type);
 
   return (
-    <>
-      <div className="flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] relative">
-        {/* Movie Background/Backdrop */}
-        <FilmBackdrop film={film} />
+    <div
+      className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] relative`}
+    >
+      {/* Movie Background/Backdrop */}
+      <FilmBackdrop film={film} />
+      <div
+        className={`z-10 mt-[30%] md:mt-[200px]`}
+        itemScope
+        itemType={
+          !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
+        }
+      >
         <div
-          className="z-10 mt-[30%] md:mt-[200px]"
-          itemScope
-          itemType={
-            !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
-          }
+          className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
         >
-          <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-24 gap-4 px-4">
-            {/* Left */}
-            <section className="lg:col-span-6">
-              <div className={`hidden lg:flex h-full`}>
-                <FilmPoster film={film} />
-              </div>
-            </section>
-            {/* Middle */}
-            <section className="lg:col-span-13">
-              <FilmOverview
-                film={film}
-                videos={videos}
-                images={images}
-                reviews={reviews}
-                credits={credits}
-                providers={providers}
-              />
-            </section>
-            {/* Right */}
-            <section className="lg:col-span-5">
-              {credits.cast.length > 0 && <CastsList credits={credits} />}
-            </section>
-          </div>
+          {/* Poster */}
+          <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
+            <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
+              <FilmPoster film={film} />
+            </div>
+          </section>
+          {/* Info */}
+          <section className={`md:col-[4/13] lg:col-[7/20]`}>
+            <FilmInfo
+              film={film}
+              videos={videos}
+              images={images}
+              reviews={reviews}
+              credits={credits}
+              providers={providers}
+            />
+          </section>
+          {/* Overview */}
+          <section className={`md:col-[1/10] lg:col-[7/20]`}>
+            <FilmOverview
+              film={film}
+              videos={videos}
+              images={images}
+              reviews={reviews}
+              credits={credits}
+              providers={providers}
+            />
+          </section>
+          {/* Casts & Credits */}
+          <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
+            {credits.cast.length > 0 && <CastsList credits={credits} />}
+          </section>
         </div>
-
-        {/* Recommendations */}
-        {recommendations.results.length > 0 && (
-          <FilmSlider
-            films={recommendations}
-            title={
-              recommendations.results.length > 1
-                ? `Recommendations`
-                : `Recommendation`
-            }
-            genres={genres}
-          />
-        )}
       </div>
-    </>
+
+      {/* Recommendations */}
+      {recommendations.results.length > 0 && (
+        <FilmSlider
+          films={recommendations}
+          title={
+            recommendations.results.length > 1
+              ? `Recommendations`
+              : `Recommendation`
+          }
+          genres={genres}
+        />
+      )}
+    </div>
   );
 }
