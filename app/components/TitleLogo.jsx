@@ -49,14 +49,14 @@ export default function TitleLogo({ film, images }) {
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
           alt={title}
           title={title}
-          className="h-[150px] object-contain pointer-events-none"
+          className="max-h-[150px] object-contain pointer-events-none"
         />
       ) : (
         <div className="h-[150px] w-full max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 rounded-lg"></div>
       )}
       {!images && (
         <figcaption className="sr-only">
-          <h3>{title}</h3>
+          <h3 style={{ textWrap: `balance` }}>{title}</h3>
         </figcaption>
       )}
     </figure>
