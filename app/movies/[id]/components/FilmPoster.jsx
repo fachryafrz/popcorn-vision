@@ -83,7 +83,7 @@ export default function FilmPoster({ film }) {
         className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full`}
         style={{
           backgroundImage: film.poster_path === null ? popcorn : filmPoster,
-          backgroundSize: `contain`,
+          backgroundSize: `cover`,
           backgroundRepeat: `no-repeat`,
           backgroundPosition: `center`,
         }}
