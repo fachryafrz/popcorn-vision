@@ -109,7 +109,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />
       <div
-        className={`z-10 mt-[30%] md:mt-[200px]`}
+        className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}
         itemScope
         itemType={
           !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
