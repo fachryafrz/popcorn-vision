@@ -12,6 +12,7 @@ export default function TitleLogo({ film, images }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
   const isDetailPage = pathname.startsWith("/movies") || isTvPage;
+  const title = !isTvPage ? film.title : film.name;
 
   useEffect(() => {
     const fetchTitleLogo = async () => {
@@ -33,7 +34,6 @@ export default function TitleLogo({ film, images }) {
         });
     };
 
-    console.log("ANJENG");
     if (images) {
       setLoading(false);
       setTitleLogo(images.logos[0]);
@@ -43,30 +43,26 @@ export default function TitleLogo({ film, images }) {
   }, [film, isTvPage, images]);
 
   return titleLogo ? (
-    <>
+    <figure className="mb-4 flex justify-center">
       {!loading ? (
-        <figure className={`mb-4 flex justify-center`}>
-          <img
-            src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-            alt={!isTvPage ? film.title : film.name}
-            title={!isTvPage ? film.title : film.name}
-            className="max-h-[150px] object-contain pointer-events-none"
-          />
-          {!images && (
-            <figcaption className={`sr-only`}>
-              <h3>{!isTvPage ? film.title : film.name}</h3>
-            </figcaption>
-          )}
-        </figure>
+        <img
+          src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
+          alt={title}
+          title={title}
+          className="h-[150px] object-contain pointer-events-none"
+        />
       ) : (
-        <div
-          className={`h-[150px] w-full !max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 rounded-lg`}
-        ></div>
+        <div className="h-[150px] w-full max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 rounded-lg"></div>
       )}
-    </>
+      {!images && (
+        <figcaption className="sr-only">
+          <h3>{title}</h3>
+        </figcaption>
+      )}
+    </figure>
   ) : (
-    <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
-      {!isTvPage ? film.title : film.name}
+    <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 leading-tight">
+      {title}
     </h3>
   );
 }
