@@ -1,4 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { usePathname } from "next/navigation";
@@ -31,6 +33,7 @@ export default function TitleLogo({ film, images }) {
         });
     };
 
+    console.log("ANJENG");
     if (images) {
       setLoading(false);
       setTitleLogo(images.logos[0]);

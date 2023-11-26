@@ -9,6 +9,9 @@ export default function FilmCard({ film, genres, isTvPage }) {
   const options = { year: "numeric", month: "short" };
   const formattedDate = date.toLocaleString("en-US", options);
 
+  let popcorn = `url(/popcorn.png)`;
+  let filmPoster = `url(https://image.tmdb.org/t/p/w300${film.poster_path})`;
+
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
     return type;
@@ -33,44 +36,15 @@ export default function FilmCard({ film, genres, isTvPage }) {
         `/tv/${film.id}-${slugify(film.name)}`
       )}
     >
-      <figure className="rounded-lg overflow-hidden aspect-poster relative">
-        <div
-          className={
-            film.poster_path === null
-              ? `w-full h-full bg-secondary bg-opacity-10 grid place-items-center`
-              : `hidden`
-          }
-        >
-          <img
-            loading="lazy"
-            src={`/popcorn.png`}
-            alt={isItTvPage(film.title, film.name)}
-            className="w-fit h-fit"
-          />
-        </div>
-
-        <img
-          loading="lazy"
-          src={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
-          alt={isItTvPage(film.title, film.name)}
-        />
-
-        {/* {film.vote_average > 0 && (
-          <div
-            className={`absolute top-0 left-0 text-xs font-semibold aspect-square grid place-items-center rounded-full border-2 w-9 m-2 bg-base-100 bg-opacity-50 backdrop-blur-sm ${
-              film.vote_average > 0 && film.vote_average < 3
-                ? `border-primary-red`
-                : film.vote_average >= 3 && film.vote_average < 7
-                ? `border-primary-yellow`
-                : `border-green-500`
-            }`}
-          >
-            {film.vote_average < 9.9
-              ? film.vote_average.toFixed(1)
-              : film.vote_average}
-          </div>
-        )} */}
-
+      <figure
+        className={`rounded-lg overflow-hidden aspect-poster relative`}
+        style={{
+          backgroundImage: film.poster_path === null ? popcorn : filmPoster,
+          backgroundSize: `cover`,
+          backgroundRepeat: `no-repeat`,
+          backgroundPosition: `center`,
+        }}
+      >
         {film.vote_average > 0 && (
           <div
             className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}

@@ -214,7 +214,7 @@ export default function FilmInfo({
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
-      <div className="flex flex-col items-center md:justify-center md:items-start gap-2 md:gap-0 w-full">
+      <div className="flex flex-col items-center md:justify-center md:items-start gap-4 w-full">
         {images.logos.length > 0 ? (
           <>
             <TitleLogo film={film} images={images} />
@@ -230,11 +230,11 @@ export default function FilmInfo({
         ) : (
           <h1
             title={!isTvPage ? film.titlte : film.name}
-            className="max-w-fit font-bold text-3xl lg:text-5xl line-clamp-3 md:py-2 !leading-tight text-center md:text-start"
+            className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-tight text-center md:text-start"
             itemProp="name"
             style={{ textWrap: `balance` }}
           >
-            {!isTvPage ? film.titlte : film.name}
+            {!isTvPage ? film.title : film.name}
           </h1>
         )}
 
@@ -258,7 +258,7 @@ export default function FilmInfo({
                       >
                         <figure
                           title={item.name}
-                          className={`w-[150px] h-[50px] grayscale invert hover:grayscale-0 hover:invert-0 transition-all bg-center`}
+                          className={`h-[50px] grayscale invert hover:grayscale-0 hover:invert-0 transition-all bg-center aspect-[4/2]`}
                           style={{
                             backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
                             backgroundSize: `contain`,

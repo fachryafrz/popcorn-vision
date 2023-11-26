@@ -110,6 +110,9 @@ export default function FilmCollection({ film }) {
                 };
                 const formattedDate = date.toLocaleString("en-US", options);
 
+                let popcorn = `url(/popcorn.png)`;
+                let filmPoster = `url(https://image.tmdb.org/t/p/w500${item.poster_path})`;
+
                 return (
                   <li key={item.id}>
                     <Link
@@ -124,30 +127,18 @@ export default function FilmCollection({ film }) {
                         {index + 1}
                       </span>
 
-                      <div className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center">
-                        {item.poster_path ? (
-                          <figure className={`w-full`}>
-                            <img
-                              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                              alt={item.title}
-                              className={`object-contain`}
-                            />
-                          </figure>
-                        ) : (
-                          <figure
-                            style={{
-                              background: `url(/popcorn.png)`,
-                              backgroundSize: `contain`,
-                            }}
-                            className={`aspect-square w-[50px]`}
-                          ></figure>
-                        )}
-                      </div>
+                      <figure className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`} style={{ 
+                        backgroundImage: item.poster_path === null ? popcorn : filmPoster,
+                        backgroundSize: "cover",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                       }}>
+                      </figure>
                       <div className="flex flex-col gap-1 items-start w-full">
                         <h3
                           className="text-start line-clamp-2 font-medium"
                           title={item.title}
-                          style={{ textWrap: 'balance' }}
+                          style={{ textWrap: "balance" }}
                         >
                           {item.title}
                         </h3>
