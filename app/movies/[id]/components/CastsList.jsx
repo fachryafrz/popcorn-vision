@@ -43,7 +43,11 @@ export default function CastsList({ credits }) {
                   showAllActors={showAllActors}
                   name={actor.name}
                   role={actor.character}
-                  profile_path={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+                  profile_path={
+                    actor.profile_path === null
+                      ? null
+                      : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                  }
                   before={`as`}
                   itemProp={`actor`}
                 />

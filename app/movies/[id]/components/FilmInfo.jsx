@@ -39,6 +39,7 @@ import FilmPoster from "./FilmPoster";
 import TitleLogo from "@/app/components/TitleLogo";
 import { usePathname } from "next/navigation";
 import Person from "./Person";
+import { EpisodeModal } from "./FilmCollection";
 
 export default function FilmInfo({
   film,
@@ -525,9 +526,14 @@ export default function FilmInfo({
                 {nextEps ? `Latest` : `Last`}
                 {` Episode: Episode ${lastEps.episode_number}`}
               </span>
-              <div
+              <button
                 id={`card`}
-                className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl`}
+                onClick={() =>
+                  document
+                    .getElementById(`episodeModal_${lastEps.id}`)
+                    .showModal()
+                }
+                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
               >
                 <figure
                   className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -545,7 +551,7 @@ export default function FilmInfo({
                     />
                   )}
                 </figure>
-                <div className={`flex flex-col justify-center`}>
+                <div className={`flex flex-col justify-center items-start`}>
                   <span className={`font-medium line-clamp-2`}>
                     {lastEps.name}
                   </span>
@@ -591,7 +597,8 @@ export default function FilmInfo({
                     )}
                   </div>
                 </div>
-              </div>
+              </button>
+              <EpisodeModal episode={lastEps} />
             </section>
           )}
 
@@ -614,75 +621,86 @@ export default function FilmInfo({
                 )}
 
                 {nextEps && (
-                  <div
-                    id={`card`}
-                    className={`flex flex-col sm:flex-row gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full mb-2`}
-                  >
-                    <figure
-                      className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
+                  <>
+                    <button
+                      id={`card`}
+                      onClick={() =>
+                        document
+                          .getElementById(`episodeModal_${nextEps.id}`)
+                          .showModal()
+                      }
+                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
                     >
-                      {nextEps.still_path ? (
-                        <img
-                          src={`https://image.tmdb.org/t/p/w500${nextEps.still_path}`}
-                          alt={nextEps.name}
-                        />
-                      ) : (
-                        <img
-                          src={`/popcorn.png`}
-                          alt={nextEps.name}
-                          className={`pointer-events-none mx-auto object-contain`}
-                        />
-                      )}
-                    </figure>
-                    <div className={`flex flex-col justify-center`}>
-                      <span className={`font-medium line-clamp-2`}>
-                        {nextEps.name}
-                      </span>
-
-                      <span
-                        className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
-                      >{`Season ${nextEps.season_number}`}</span>
-
-                      <div
-                        className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                      <figure
+                        className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
                       >
-                        {nextEps.vote_average > 1 && (
-                          <span className={`flex items-center gap-1`}>
-                            <IonIcon
-                              icon={star}
-                              className={`text-primary-yellow`}
-                            />
-                            {nextEps.vote_average &&
-                              nextEps.vote_average.toFixed(1)}
-                          </span>
+                        {nextEps.still_path ? (
+                          <img
+                            src={`https://image.tmdb.org/t/p/w500${nextEps.still_path}`}
+                            alt={nextEps.name}
+                          />
+                        ) : (
+                          <img
+                            src={`/popcorn.png`}
+                            alt={nextEps.name}
+                            className={`pointer-events-none mx-auto object-contain`}
+                          />
                         )}
+                      </figure>
+                      <div
+                        className={`flex flex-col justify-center items-start`}
+                      >
+                        <span className={`font-medium line-clamp-2`}>
+                          {nextEps.name}
+                        </span>
 
-                        {nextEps.vote_average > 1 && nextEps.air_date && (
-                          <span>&bull;</span>
-                        )}
+                        <span
+                          className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
+                        >{`Season ${nextEps.season_number}`}</span>
 
-                        {nextEps.runtime && (
-                          <span>
-                            {Math.floor(nextEps.runtime / 60) >= 1
-                              ? `${Math.floor(
-                                  nextEps.runtime / 60
-                                )}h ${Math.floor(nextEps.runtime % 60)}m`
-                              : `${nextEps.runtime} minute${
-                                  nextEps.runtime % 60 > 1 && `s`
-                                }`}
-                          </span>
-                        )}
+                        <div
+                          className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                        >
+                          {nextEps.vote_average > 1 && (
+                            <span className={`flex items-center gap-1`}>
+                              <IonIcon
+                                icon={star}
+                                className={`text-primary-yellow`}
+                              />
+                              {nextEps.vote_average &&
+                                nextEps.vote_average.toFixed(1)}
+                            </span>
+                          )}
 
-                        {nextEps.air_date && nextEps.runtime && (
-                          <span>&bull;</span>
-                        )}
+                          {nextEps.vote_average > 1 && nextEps.air_date && (
+                            <span>&bull;</span>
+                          )}
 
-                        {nextEps.air_date && (
-                          <span>{formatDate(nextEps.air_date)}</span>
-                        )}
+                          {nextEps.runtime && (
+                            <span>
+                              {Math.floor(nextEps.runtime / 60) >= 1
+                                ? `${Math.floor(
+                                    nextEps.runtime / 60
+                                  )}h ${Math.floor(nextEps.runtime % 60)}m`
+                                : `${nextEps.runtime} minute${
+                                    nextEps.runtime % 60 > 1 && `s`
+                                  }`}
+                            </span>
+                          )}
+
+                          {nextEps.air_date && nextEps.runtime && (
+                            <span>&bull;</span>
+                          )}
+
+                          {nextEps.air_date && (
+                            <span>{formatDate(nextEps.air_date)}</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </div>
+                    </button>
+
+                    <EpisodeModal episode={nextEps} />
+                  </>
                 )}
 
                 <div className="flex flex-wrap justify-center gap-2 text-center">

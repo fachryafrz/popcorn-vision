@@ -3,11 +3,15 @@
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import {
+  calendarOutline,
   chevronBackCircle,
   chevronDownOutline,
   chevronForwardCircle,
   chevronUpOutline,
+  close,
   star,
+  timeOutline,
+  tvOutline,
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -17,6 +21,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper";
+import FilmBackdrop from "./FilmBackdrop";
+import Person from "./Person";
 
 export default function FilmCollection({ film }) {
   const [apiData, setApiData] = useState();
@@ -367,6 +373,9 @@ function FilmEpisodes({ id, season }) {
           return (
             <SwiperSlide key={item.id} className={`!h-auto`}>
               <button
+                onClick={() =>
+                  document.getElementById(`episodeModal_${item.id}`).showModal()
+                }
                 className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full`}
               >
                 <figure className="aspect-video rounded-lg overflow-hidden w-full">
@@ -440,6 +449,11 @@ function FilmEpisodes({ id, season }) {
           );
         })}
 
+      <div>
+        {episodes &&
+          episodes.map((item) => <EpisodeModal key={item.id} episode={item} />)}
+      </div>
+
       <div
         className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
       >
@@ -457,5 +471,171 @@ function FilmEpisodes({ id, season }) {
         </button>
       </div>
     </Swiper>
+  );
+}
+
+export function EpisodeModal({ episode }) {
+  // Format Date
+  const dateStr = episode.air_date;
+  const date = new Date(dateStr);
+  const options = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  const formattedDate = date.toLocaleString("en-US", options);
+
+  // Release Day
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const releaseDayIndex = new Date(dateStr).getDay();
+  const releaseDay = dayNames[releaseDayIndex];
+
+  useEffect(() => {
+    console.log(episode);
+  }, []);
+
+  return (
+    <dialog
+      id={`episodeModal_${episode.id}`}
+      className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
+    >
+      <div className={`p-4 sm:py-8 relative w-full max-w-xl`}>
+        <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
+          <button
+            onClick={() =>
+              document.getElementById(`episodeModal_${episode.id}`).close()
+            }
+            className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
+          >
+            <IonIcon icon={close} className={`text-3xl`} />
+          </button>
+        </div>
+
+        <div
+          className={`modal-box max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
+        >
+          <figure
+            className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+            style={{
+              backgroundImage: `url(/popcorn.png)`,
+              backgroundSize: `contain`,
+              backgroundRepeat: `no-repeat`,
+              backgroundPosition: `center`,
+            }}
+          >
+            {episode.still_path && (
+              <img
+                src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                alt={episode.name}
+                className={`object-cover`}
+              />
+            )}
+          </figure>
+          <div className={`p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}>
+            <h1
+              title={episode.name}
+              className={`text-3xl text-center font-bold`}
+              style={{ textWrap: `balance` }}
+            >
+              {episode.name}
+            </h1>
+
+            <span
+              className={`bg-primary-blue bg-opacity-[10%] text-primary-blue flex text-center max-w-fit p-2 px-4 rounded-full mx-auto capitalize`}
+            >
+              {episode.episode_type}
+            </span>
+
+            <div className={`flex flex-col gap-2`}>
+              <section id={`Episode Air Date`}>
+                <div className={`flex items-center gap-2`}>
+                  <IonIcon icon={calendarOutline} />
+                  <time dateTime={episode.air_date}>
+                    {`${releaseDay}, ${formattedDate}`}
+                  </time>
+                </div>
+              </section>
+              <section
+                id={`TV Series Chapter`}
+                className={`flex items-center gap-2`}
+              >
+                <IonIcon icon={tvOutline} />
+                <span>
+                  {`Season ${episode.season_number} (Episode ${episode.episode_number})`}
+                </span>
+              </section>
+              <section id={`TV Series Average Episode Runtime`}>
+                {Math.floor(episode.runtime / 60) >= 1 ? (
+                  <>
+                    <div className={`flex items-center gap-2`}>
+                      <IonIcon icon={timeOutline} />
+                      <time>
+                        {Math.floor(episode.runtime / 60)}h{" "}
+                        {episode.runtime % 60}m
+                      </time>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className={`flex items-center gap-2`}>
+                      <IonIcon icon={timeOutline} />
+                      <time>
+                        {episode.runtime % 60} minute
+                        {episode.runtime % 60 > 1 && `s`}
+                      </time>
+                    </div>
+                  </>
+                )}
+              </section>
+            </div>
+
+            {episode.overview != "" && (
+              <section id={`Episode Overview`}>
+                <h2 className={`font-bold text-xl text-white`}>Overview</h2>
+                <p className={`text-gray-400 md:text-lg`}>{episode.overview}</p>
+              </section>
+            )}
+
+            {episode.guest_stars && episode.guest_stars.length > 0 && (
+              <section id={`Guest Stars`}>
+                <h2 className={`font-bold text-xl text-white py-2`}>
+                  Guest Stars
+                </h2>
+
+                <div className={`grid sm:grid-cols-2 gap-4`}>
+                  {episode.guest_stars.map((item) => {
+                    return (
+                      <Person
+                        key={item.id}
+                        id={item.id}
+                        name={item.name}
+                        profile_path={
+                          item.profile_path === null
+                            ? null
+                            : `https://image.tmdb.org/t/p/w185${item.profile_path}`
+                        }
+                        role={item.character}
+                      />
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* <form method={`dialog`} className={`modal-backdrop`}>
+        <button>close</button>
+      </form> */}
+    </dialog>
   );
 }
