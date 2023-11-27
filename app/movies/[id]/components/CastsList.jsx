@@ -1,11 +1,11 @@
 "use client";
 import { IonIcon } from "@ionic/react";
 import React, { useState } from "react";
-import Casts from "./Casts";
 import {
   chevronDownCircleOutline,
   chevronUpCircleOutline,
 } from "ionicons/icons";
+import Person from "./Person";
 
 export default function CastsList({ credits }) {
   const [showAllActors, setShowAllActors] = useState(false);
@@ -38,10 +38,14 @@ export default function CastsList({ credits }) {
             .slice(0, showAllActors ? credits.cast.length : numActors)
             .map((actor) => {
               return (
-                <Casts
+                <Person
                   key={actor.id}
-                  actor={actor}
                   showAllActors={showAllActors}
+                  name={actor.name}
+                  role={actor.character}
+                  profile_path={`https://image.tmdb.org/t/p/w185${actor.profile_path}`}
+                  before={`as`}
+                  itemProp={`actor`}
                 />
               );
             })}

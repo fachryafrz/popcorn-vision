@@ -38,6 +38,7 @@ import {
 import FilmPoster from "./FilmPoster";
 import TitleLogo from "@/app/components/TitleLogo";
 import { usePathname } from "next/navigation";
+import Person from "./Person";
 
 export default function FilmInfo({
   film,
@@ -211,6 +212,8 @@ export default function FilmInfo({
       console.error("Error copying text:", error);
     }
   };
+
+  let director = credits.crew.find((person) => person.job === "Director");
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
@@ -424,53 +427,17 @@ export default function FilmInfo({
           {!isTvPage
             ? credits &&
               credits.crew.length > 0 &&
-              credits.crew.find((person) => person.job === "Director") && (
+              director && (
                 <section
                   id={`Movie Director`}
                   className={`flex items-center gap-2`}
                 >
-                  {credits.crew.find((person) => person.job === "Director")
-                    .profile_path === null ? (
-                    <figure
-                      style={{
-                        background: `url(/popcorn.png)`,
-                        backgroundSize: `contain`,
-                      }}
-                      className={`aspect-square w-[50px]`}
-                    ></figure>
-                  ) : (
-                    <figure
-                      style={{
-                        background: `url(https://image.tmdb.org/t/p/w185${
-                          credits.crew.find(
-                            (person) => person.job === "Director"
-                          ).profile_path
-                        })`,
-                        backgroundSize: `cover`,
-                        backgroundPosition: `center`,
-                      }}
-                      className={`aspect-square w-[50px] rounded-full`}
-                    ></figure>
-                  )}
-                  <div
-                    className="flex flex-col"
-                    itemProp="director"
-                    itemScope
-                    itemType="http://schema.org/Person"
-                  >
-                    <span className="font-medium h-7" itemProp="name">
-                      {
-                        credits.crew.find((person) => person.job === "Director")
-                          .name
-                      }
-                    </span>
-                    <span className="text-sm text-gray-400 ">
-                      {
-                        credits.crew.find((person) => person.job === "Director")
-                          .job
-                      }
-                    </span>
-                  </div>
+                  <Person
+                    name={director.name}
+                    profile_path={`https://image.tmdb.org/t/p/w185${director.profile_path}`}
+                    role={`Director`}
+                    itemProp={`director`}
+                  />
                 </section>
               )
             : film.created_by.length > 0 && (
@@ -478,36 +445,15 @@ export default function FilmInfo({
                   id={`TV Series Creator`}
                   className={`flex flex-wrap items-center gap-2`}
                 >
-                  {film.created_by.map((item, index) => {
+                  {film.created_by.map((item, i) => {
                     return (
-                      <div key={index} className={`flex items-center gap-2`}>
-                        {item.profile_path === null ? (
-                          <img
-                            src={`/popcorn.png`}
-                            alt={item.name}
-                            className={`aspect-square w-[50px] rounded-full object-contain`}
-                          />
-                        ) : (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
-                            alt={item.name}
-                            className={`aspect-square w-[50px] rounded-full`}
-                          />
-                        )}
-                        <div
-                          className={`flex flex-col`}
-                          itemProp="director"
-                          itemScope
-                          itemType="http://schema.org/Person"
-                        >
-                          <span className="font-medium h-7" itemProp="name">
-                            {item.name}
-                          </span>
-                          <span className="text-sm text-gray-400 ">
-                            {`Creator`}
-                          </span>
-                        </div>
-                      </div>
+                      <Person
+                        key={i}
+                        name={item.name}
+                        profile_path={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                        role={`Creator`}
+                        itemProp={`director`}
+                      />
                     );
                   })}
                 </section>

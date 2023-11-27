@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import RatingStars from "./RatingStars";
 import { IonIcon } from "@ionic/react";
 import { triangle } from "ionicons/icons";
+import Person from "./Person";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -26,6 +27,15 @@ export default function ReviewCard({ review }) {
     day: "numeric",
   };
   const formattedDate = date.toLocaleString("en-US", options);
+
+  const createdAt = new Date(review.created_at).toLocaleString(
+    "en-US",
+    options
+  );
+  const updatedAt = new Date(review.updated_at).toLocaleString(
+    "en-US",
+    options
+  );
 
   // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
@@ -95,88 +105,23 @@ export default function ReviewCard({ review }) {
       itemType="http://schema.org/Review"
     >
       <div className="flex gap-2 items-center">
-        <div className="aspect-square !min-w-[50px] !max-w-[50px] rounded-full overflow-hidden bg-base-100">
-          {imgUrlAPI === null ? (
-            <figure
-              style={{
-                background: `url(/popcorn.png)`,
-                backgroundSize: `contain`,
-              }}
-              className={`w-[50px] aspect-square`}
-            ></figure>
-          ) : (
-            imgUrl && (
-              <figure
-                style={{
-                  background: `url(${imgUrl})`,
-                  backgroundSize: `cover`,
-                }}
-                className={`w-[50px] aspect-square`}
-              ></figure>
-            )
-          )}
-        </div>
-        <div className="flex flex-col justify-center max-w-[45vw]">
-          <div itemProp="author" itemScope itemType="http://schema.org/Person">
-            <span
-              title={review.author}
-              className="font-medium line-clamp-1"
-              itemProp="name"
-            >
-              {review.author}
-            </span>
-          </div>
-
-          {/* <div
-            onMouseEnter={() => setIsDateHovered(true)}
-            onMouseLeave={() => setIsDateHovered(false)}
-            className={`max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
-          >
-            <span>{timeAgo(review.created_at)}</span>
-            {new Date(review.updated_at).toLocaleString("en-US", options) !==
-              new Date(review.created_at).toLocaleString("en-US", options) && (
-              <span>{`(edited)`}</span>
-            )}
-            <span
-              className={`absolute top-full md:left-full left-1/2 -translate-x-1/2 md:translate-x-0 md:top-1/2 md:-translate-y-1/2 text-xs bg-base-100 p-2 mt-3 md:mt-0 md:ml-3 rounded-lg whitespace-nowrap w-fit text-center transition-all duration-500 ${
-                isDateHovered
-                  ? `opacity-100 pointer-events-auto`
-                  : `opacity-0 pointer-events-none`
+        <Person
+          name={review.author}
+          profile_path={imgUrlAPI === null ? null : imgUrl}
+          itemProp={`author`}
+          role={timeAgo(review.created_at)}
+          tooltip={
+            <div
+              className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
+              data-tip={`${formattedDate} ${
+                updatedAt !== createdAt ? `(${updatedAt})` : ``
               }`}
             >
-              {formattedDate}{" "}
-              {new Date(review.updated_at).toLocaleString("en-US", options) !==
-                new Date(review.created_at).toLocaleString("en-US", options) &&
-                `(${new Date(review.updated_at).toLocaleString(
-                  "en-US",
-                  options
-                )})`}
-              <IonIcon
-                icon={triangle}
-                className={`absolute -top-[0.6rem] md:-left-[0.6rem] left-1/2 -translate-x-1/2 md:-translate-x-0 md:top-1/2 md:-translate-y-1/2 md:-rotate-90 text-base-100`}
-              />
-            </span>
-          </div> */}
-
-          <div
-            className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
-            data-tip={`${formattedDate} ${
-              new Date(review.updated_at).toLocaleString("en-US", options) !==
-              new Date(review.created_at).toLocaleString("en-US", options)
-                ? `(${new Date(review.updated_at).toLocaleString(
-                    "en-US",
-                    options
-                  )})`
-                : ``
-            }`}
-          >
-            <span>{timeAgo(review.created_at)}</span>
-            {new Date(review.updated_at).toLocaleString("en-US", options) !==
-              new Date(review.created_at).toLocaleString("en-US", options) && (
-              <span>{`(edited)`}</span>
-            )}
-          </div>
-        </div>
+              <span>{timeAgo(review.created_at)}</span>
+              {updatedAt !== createdAt && <span>{`(edited)`}</span>}
+            </div>
+          }
+        />
 
         <div
           className={`ml-auto flex items-start text-primary-yellow whitespace-nowrap mb-auto`}

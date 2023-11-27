@@ -127,13 +127,16 @@ export default function FilmCollection({ film }) {
                         {index + 1}
                       </span>
 
-                      <figure className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`} style={{ 
-                        backgroundImage: item.poster_path === null ? popcorn : filmPoster,
-                        backgroundSize: "cover",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "center",
-                       }}>
-                      </figure>
+                      <figure
+                        className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`}
+                        style={{
+                          backgroundImage:
+                            item.poster_path === null ? popcorn : filmPoster,
+                          backgroundSize: "cover",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                        }}
+                      ></figure>
                       <div className="flex flex-col gap-1 items-start w-full">
                         <h3
                           className="text-start line-clamp-2 font-medium"
@@ -241,25 +244,18 @@ function FilmSeason({ film, item, index }) {
           {index + 1}
         </span>
 
-        <figure className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center">
-          {item.poster_path ? (
-            <img
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt={item.name}
-              className={`object-contain`}
-            />
-          ) : (
-            <div className={`h-full bg-base-100 flex items-center`}>
-              <div
-                style={{
-                  background: `url(/popcorn.png)`,
-                  backgroundSize: `contain`,
-                }}
-                className={`aspect-square w-[50px]`}
-              ></div>
-            </div>
-          )}
-        </figure>
+        <figure
+          className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center"
+          style={{
+            backgroundImage:
+              item.poster_path === null
+                ? `url(/popcorn.png)`
+                : `url(https://image.tmdb.org/t/p/w500${item.poster_path})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+          }}
+        ></figure>
         <div className="flex flex-col gap-1 items-start w-full">
           <h3
             title={`${item.name} (${item.episode_count} Episode${
