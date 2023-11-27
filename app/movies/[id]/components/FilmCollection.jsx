@@ -498,10 +498,6 @@ export function EpisodeModal({ episode }) {
   const releaseDayIndex = new Date(dateStr).getDay();
   const releaseDay = dayNames[releaseDayIndex];
 
-  useEffect(() => {
-    console.log(episode);
-  }, []);
-
   return (
     <dialog
       id={`episodeModal_${episode.id}`}
