@@ -40,7 +40,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
         className={`rounded-lg overflow-hidden aspect-poster relative`}
         style={{
           backgroundImage: film.poster_path === null ? popcorn : filmPoster,
-          backgroundSize: `cover`,
+          backgroundSize: film.poster_path === null ? `contain` : `cover` ,
           backgroundRepeat: `no-repeat`,
           backgroundPosition: `center`,
         }}

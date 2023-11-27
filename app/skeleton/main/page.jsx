@@ -106,7 +106,7 @@ export default function MainLoading() {
             className={`flex-1 !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4`}
           >
             {/* Title Logo */}
-            <div className={`h-[100px] w-full !max-w-[300px]`}></div>
+            <div className={`h-[150px] w-full !max-w-[300px]`}></div>
             {/* Rating, Release Date, Season, Genre */}
             <div
               className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
