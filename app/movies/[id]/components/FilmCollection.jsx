@@ -24,15 +24,38 @@ import { Navigation } from "swiper";
 import FilmBackdrop from "./FilmBackdrop";
 import Person from "./Person";
 
-export default function FilmCollection({ film }) {
+export default function FilmCollection({ film, episode, loading, fetchEpisodeModal }) {
   const [apiData, setApiData] = useState();
   const [collectionTitle, setCollectionTitle] = useState();
   const [collections, setCollections] = useState({});
   const [showAllCollection, setShowAllCollection] = useState(false);
   const [viewSeason, setViewSeason] = useState(false);
+  // const [episode, setEpisode] = useState([]);
+  // const [loading, setLoading] = useState(true);
   const numCollection = 3;
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+
+  // const episodeModalRef = useRef();
+  // const fetchEpisodeModal = async (filmID, season, eps) => {
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await axios.get(
+  //       `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
+  //       {
+  //         params: {
+  //           api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+  //         },
+  //       }
+  //     );
+  //     setLoading(false);
+  //     setEpisode(res.data);
+  //     episodeModalRef.current.showModal();
+  //   } catch (error) {
+  //     console.error(`Errornya episode modal: ${error}`);
+  //   }
+  // };
 
   const handleShowAllCollection = () => {
     setShowAllCollection(true);
@@ -192,7 +215,7 @@ export default function FilmCollection({ film }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <FilmSeason film={film} item={item} index={index} />
+                    <FilmSeason film={film} item={item} index={index} fetchEpisodeModal={fetchEpisodeModal} />
                   </li>
                 );
               })}
@@ -215,7 +238,7 @@ export default function FilmCollection({ film }) {
   );
 }
 
-function FilmSeason({ film, item, index }) {
+function FilmSeason({ film, item, index, fetchEpisodeModal }) {
   const [viewSeason, setViewSeason] = useState(false);
   const dateStr = item.air_date;
   const date = new Date(dateStr);
@@ -313,36 +336,13 @@ function FilmSeason({ film, item, index }) {
         )}
       </button>
 
-      {viewSeason && <FilmEpisodes id={film.id} season={index + 1} />}
+      {viewSeason && <FilmEpisodes id={film.id} season={index + 1} fetchEpisodeModal={fetchEpisodeModal} />}
     </>
   );
 }
 
-function FilmEpisodes({ id, season }) {
+function FilmEpisodes({ id, season, fetchEpisodeModal }) {
   const [episodes, setEpisodes] = useState([]);
-  const [episode, setEpisode] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const episodeModalRef = useRef();
-  const fetchEpisodeModal = async (filmID, season, eps) => {
-    setLoading(true);
-
-    try {
-      const res = await axios.get(
-        `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
-        {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
-        }
-      );
-      setLoading(false);
-      setEpisode(res.data);
-      episodeModalRef.current.showModal();
-    } catch (error) {
-      console.error(`Errornya episode modal: ${error}`);
-    }
-  };
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -473,13 +473,13 @@ function FilmEpisodes({ id, season }) {
           );
         })}
 
-      {episode && (
+      {/* {episode && (
         <EpisodeModal
           episode={episode}
           episodeModalRef={episodeModalRef}
           loading={loading}
         />
-      )}
+      )} */}
 
       <div
         className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
@@ -501,7 +501,7 @@ function FilmEpisodes({ id, season }) {
   );
 }
 
-export function EpisodeModal({ episode, episodeModalRef, loading }) {
+export function EpisodeModal({ episode, loading }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 10;
 
@@ -538,14 +538,13 @@ export function EpisodeModal({ episode, episodeModalRef, loading }) {
 
   return (
     <dialog
-      ref={episodeModalRef}
       id={`episodeModal`}
       className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
     >
       <div className={`p-4 sm:py-8 relative w-full max-w-3xl`}>
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
           <button
-            onClick={() => episodeModalRef.current.close()}
+            onClick={() => document.getElementById(`episodeModal`).close()}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
           >
             <IonIcon icon={close} className={`text-3xl`} />

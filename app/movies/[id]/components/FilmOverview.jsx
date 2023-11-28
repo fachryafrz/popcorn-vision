@@ -29,6 +29,9 @@ export default function FilmOverview({
   reviews,
   credits,
   providers,
+  episode,
+  loading,
+  fetchEpisodeModal,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -55,7 +58,12 @@ export default function FilmOverview({
       {!isTvPage ? (
         film.belongs_to_collection !== null && <FilmCollection film={film} />
       ) : (
-        <FilmCollection film={film} />
+        <FilmCollection
+          film={film}
+          episode={episode}
+          loading={loading}
+          fetchEpisodeModal={fetchEpisodeModal}
+        />
       )}
 
       {reviews.results.length > 0 && (

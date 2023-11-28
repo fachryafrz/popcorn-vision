@@ -49,6 +49,9 @@ export default function FilmInfo({
   reviews,
   credits,
   providers,
+  episode,
+  loading,
+  fetchEpisodeModal,
 }) {
   const [location, setLocation] = useState(null);
   const [language, setLanguage] = useState("id-ID");
@@ -56,8 +59,6 @@ export default function FilmInfo({
   const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
   const [episodes, setEpisodes] = useState([]);
-  const [episode, setEpisode] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -218,26 +219,6 @@ export default function FilmInfo({
   };
 
   let director = credits.crew.find((person) => person.job === "Director");
-
-  const episodeModalRef = useRef(null);
-  const fetchEpisodeModal = async (filmID, season, eps) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(
-        `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
-        {
-          params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-          },
-        }
-      );
-      setLoading(false);
-      setEpisode(res.data);
-      episodeModalRef.current.showModal();
-    } catch (error) {
-      console.error(`Errornya episode modal: ${error}`);
-    }
-  };
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
@@ -859,11 +840,7 @@ export default function FilmInfo({
 
           {isTvPage && (
             <section id={`Episode Modal`}>
-              <EpisodeModal
-                episode={episode}
-                episodeModalRef={episodeModalRef}
-                loading={loading}
-              />
+              <EpisodeModal episode={episode} loading={loading} />
             </section>
           )}
         </div>

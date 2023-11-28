@@ -6,6 +6,7 @@ import FilmOverview from "./components/FilmOverview";
 import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
 import FilmInfo from "./components/FilmInfo";
+import FilmInfoOverview from "./components/FilmInfoOverview";
 
 async function getFilm(id, type, path) {
   const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
@@ -124,28 +125,15 @@ export default async function FilmDetail({ params, type = "movie" }) {
               <FilmPoster film={film} />
             </div>
           </section>
-          {/* Info */}
-          <section className={`md:col-[4/13] lg:col-[7/20]`}>
-            <FilmInfo
-              film={film}
-              videos={videos}
-              images={images}
-              reviews={reviews}
-              credits={credits}
-              providers={providers}
-            />
-          </section>
-          {/* Overview */}
-          <section className={`md:col-[1/10] lg:col-[7/20]`}>
-            <FilmOverview
-              film={film}
-              videos={videos}
-              images={images}
-              reviews={reviews}
-              credits={credits}
-              providers={providers}
-            />
-          </section>
+          {/* Info & Overview */}
+          <FilmInfoOverview
+            film={film}
+            videos={videos}
+            images={images}
+            reviews={reviews}
+            credits={credits}
+            providers={providers}
+          />
           {/* Casts & Credits */}
           <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
             {credits.cast.length > 0 && <CastsList credits={credits} />}
