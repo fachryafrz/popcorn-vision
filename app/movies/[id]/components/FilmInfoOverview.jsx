@@ -31,9 +31,7 @@ export default function FilmInfoOverview({
       );
       setLoading(false);
       setEpisode(res.data);
-      setTimeout(() => {
-        document.getElementById(`episodeModal`).showModal();
-      }, 100);
+      document.getElementById(`episodeModal`).showModal();
     } catch (error) {
       console.error(`Errornya episode modal: ${error}`);
     }
