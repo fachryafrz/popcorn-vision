@@ -57,7 +57,7 @@ export default function FilmInfo({
   const [URL, setURL] = useState("");
   const [episodes, setEpisodes] = useState([]);
   const [episode, setEpisode] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -648,6 +648,13 @@ export default function FilmInfo({
                   <>
                     <button
                       id={`card`}
+                      onClick={() =>
+                        fetchEpisodeModal(
+                          film.id,
+                          nextEps.season_number,
+                          nextEps.episode_number
+                        )
+                      }
                       className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
                     >
                       <figure
