@@ -144,11 +144,11 @@ export default function FilmInfo({
   // Countdown
   const timeLeft = new Date(date - new Date());
   // const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  const monthsLeft = timeLeft.getUTCMonth();
-  const daysLeft = timeLeft.getUTCDay();
-  const hoursLeft = timeLeft.getUTCHours();
-  const minutesLeft = timeLeft.getUTCMinutes();
-  const secondsLeft = timeLeft.getUTCSeconds();
+  let monthsLeft = timeLeft.getUTCMonth();
+  let daysLeft = timeLeft.getUTCDay();
+  let hoursLeft = timeLeft.getUTCHours();
+  let minutesLeft = timeLeft.getUTCMinutes();
+  let secondsLeft = timeLeft.getUTCSeconds();
   const [countdown, setCountdown] = useState({
     months: monthsLeft,
     days: daysLeft,
@@ -177,13 +177,11 @@ export default function FilmInfo({
     setURL(window.location.href);
 
     const interval = setInterval(() => {
-      const timeLeft = new Date(date - new Date());
-      const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-      const monthsLeft = Math.floor(daysRemaining / 30);
-      const daysLeft = daysRemaining % 30;
-      const hoursLeft = timeLeft.getUTCHours();
-      const minutesLeft = timeLeft.getUTCMinutes();
-      const secondsLeft = timeLeft.getUTCSeconds();
+      monthsLeft = timeLeft.getUTCMonth();
+      daysLeft = timeLeft.getUTCDay();
+      hoursLeft = timeLeft.getUTCHours();
+      minutesLeft = timeLeft.getUTCMinutes();
+      secondsLeft = timeLeft.getUTCSeconds();
       setCountdown({
         months: monthsLeft,
         days: daysLeft,
