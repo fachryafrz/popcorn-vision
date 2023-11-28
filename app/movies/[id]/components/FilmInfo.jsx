@@ -458,7 +458,11 @@ export default function FilmInfo({
                 >
                   <Person
                     name={director.name}
-                    profile_path={`https://image.tmdb.org/t/p/w185${director.profile_path}`}
+                    profile_path={
+                      director.profile_path === null
+                        ? null
+                        : `https://image.tmdb.org/t/p/w185${director.profile_path}`
+                    }
                     role={`Director`}
                     itemProp={`director`}
                   />
@@ -474,7 +478,11 @@ export default function FilmInfo({
                       <Person
                         key={i}
                         name={item.name}
-                        profile_path={`https://image.tmdb.org/t/p/w185${item.profile_path}`}
+                        profile_path={
+                          item.profile_path === null
+                            ? null
+                            : `https://image.tmdb.org/t/p/w185${item.profile_path}`
+                        }
                         role={`Creator`}
                         itemProp={`director`}
                       />
