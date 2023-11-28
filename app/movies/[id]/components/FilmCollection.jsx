@@ -406,6 +406,7 @@ function FilmEpisodes({ id, season }) {
                     <img
                       src={`https://image.tmdb.org/t/p/w500${item.still_path}`}
                       alt={item.name}
+                      className={`pointer-events-none`}
                     />
                   ) : (
                     <div
