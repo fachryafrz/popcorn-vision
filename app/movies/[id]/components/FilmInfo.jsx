@@ -3,7 +3,7 @@
 "use client";
 
 // React imports
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 
 // Ionic React icons
@@ -11,6 +11,7 @@ import { IonIcon } from "@ionic/react";
 import {
   arrowRedoOutline,
   calendarOutline,
+  close,
   star,
   timeOutline,
   tvOutline,
@@ -55,6 +56,8 @@ export default function FilmInfo({
   const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
   const [episodes, setEpisodes] = useState([]);
+  const [episode, setEpisode] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -215,6 +218,26 @@ export default function FilmInfo({
   };
 
   let director = credits.crew.find((person) => person.job === "Director");
+
+  const episodeModalRef = useRef(null);
+  const fetchEpisodeModal = async (filmID, season, eps) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
+        {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        }
+      );
+      setLoading(false);
+      setEpisode(res.data);
+      episodeModalRef.current.showModal();
+    } catch (error) {
+      console.error(`Errornya episode modal: ${error}`);
+    }
+  };
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
@@ -529,9 +552,11 @@ export default function FilmInfo({
               <button
                 id={`card`}
                 onClick={() =>
-                  document
-                    .getElementById(`episodeModal_${lastEps.id}`)
-                    .showModal()
+                  fetchEpisodeModal(
+                    film.id,
+                    lastEps.season_number,
+                    lastEps.episode_number
+                  )
                 }
                 className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
               >
@@ -598,7 +623,6 @@ export default function FilmInfo({
                   </div>
                 </div>
               </button>
-              <EpisodeModal episode={lastEps} />
             </section>
           )}
 
@@ -624,11 +648,6 @@ export default function FilmInfo({
                   <>
                     <button
                       id={`card`}
-                      onClick={() =>
-                        document
-                          .getElementById(`episodeModal_${nextEps.id}`)
-                          .showModal()
-                      }
                       className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
                     >
                       <figure
@@ -698,8 +717,6 @@ export default function FilmInfo({
                         </div>
                       </div>
                     </button>
-
-                    <EpisodeModal episode={nextEps} />
                   </>
                 )}
 
@@ -824,6 +841,16 @@ export default function FilmInfo({
               </form>
             </dialog>
           </section>
+
+          {isTvPage && (
+            <section id={`Episode Modal`}>
+              <EpisodeModal
+                episode={episode}
+                episodeModalRef={episodeModalRef}
+                loading={loading}
+              />
+            </section>
+          )}
         </div>
       </div>
     </div>

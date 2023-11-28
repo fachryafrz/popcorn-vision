@@ -15,7 +15,7 @@ import {
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -320,6 +320,29 @@ function FilmSeason({ film, item, index }) {
 
 function FilmEpisodes({ id, season }) {
   const [episodes, setEpisodes] = useState([]);
+  const [episode, setEpisode] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const episodeModalRef = useRef();
+  const fetchEpisodeModal = async (filmID, season, eps) => {
+    setLoading(true);
+
+    try {
+      const res = await axios.get(
+        `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
+        {
+          params: {
+            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+          },
+        }
+      );
+      setLoading(false);
+      setEpisode(res.data);
+      episodeModalRef.current.showModal();
+    } catch (error) {
+      console.error(`Errornya episode modal: ${error}`);
+    }
+  };
 
   useEffect(() => {
     const fetchEpisodes = async () => {
@@ -374,7 +397,7 @@ function FilmEpisodes({ id, season }) {
             <SwiperSlide key={item.id} className={`!h-auto`}>
               <button
                 onClick={() =>
-                  document.getElementById(`episodeModal_${item.id}`).showModal()
+                  fetchEpisodeModal(id, season, item.episode_number)
                 }
                 className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full`}
               >
@@ -449,10 +472,13 @@ function FilmEpisodes({ id, season }) {
           );
         })}
 
-      <div>
-        {episodes &&
-          episodes.map((item) => <EpisodeModal key={item.id} episode={item} />)}
-      </div>
+      {episode && (
+        <EpisodeModal
+          episode={episode}
+          episodeModalRef={episodeModalRef}
+          loading={loading}
+        />
+      )}
 
       <div
         className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
@@ -474,7 +500,7 @@ function FilmEpisodes({ id, season }) {
   );
 }
 
-export function EpisodeModal({ episode }) {
+export function EpisodeModal({ episode, episodeModalRef, loading }) {
   // Format Date
   const dateStr = episode.air_date;
   const date = new Date(dateStr);
@@ -500,15 +526,14 @@ export function EpisodeModal({ episode }) {
 
   return (
     <dialog
-      id={`episodeModal_${episode.id}`}
+      ref={episodeModalRef}
+      id={`episodeModal`}
       className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
     >
-      <div className={`p-4 sm:py-8 relative w-full max-w-xl`}>
+      <div className={`p-4 sm:py-8 relative w-full max-w-3xl`}>
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
           <button
-            onClick={() =>
-              document.getElementById(`episodeModal_${episode.id}`).close()
-            }
+            onClick={() => episodeModalRef.current.close()}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
@@ -518,23 +543,32 @@ export function EpisodeModal({ episode }) {
         <div
           className={`modal-box max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
         >
-          <figure
-            className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
-            style={{
-              backgroundImage: `url(/popcorn.png)`,
-              backgroundSize: `contain`,
-              backgroundRepeat: `no-repeat`,
-              backgroundPosition: `center`,
-            }}
-          >
-            {episode.still_path && (
-              <img
-                src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
-                alt={episode.name}
-                className={`object-cover`}
-              />
-            )}
-          </figure>
+          {loading ? (
+            <div
+              className={`aspect-video animate-pulse bg-gray-400 bg-opacity-20 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100`}
+            ></div>
+          ) : (
+            <figure
+              className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+              style={{
+                backgroundImage:
+                  episode.still_path === null
+                    ? `url(/popcorn.png)`
+                    : `https://image.tmdb.org/t/p/w92${episode.still_path}`,
+                backgroundSize: `contain`,
+                backgroundRepeat: `no-repeat`,
+                backgroundPosition: `center`,
+              }}
+            >
+              {episode.still_path && (
+                <img
+                  src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                  alt={episode.name}
+                  className={`object-cover`}
+                />
+              )}
+            </figure>
+          )}
           <div className={`p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}>
             <h1
               title={episode.name}
@@ -544,11 +578,13 @@ export function EpisodeModal({ episode }) {
               {episode.name}
             </h1>
 
-            <span
-              className={`bg-primary-blue bg-opacity-[10%] text-primary-blue flex text-center max-w-fit p-2 px-4 rounded-full mx-auto capitalize`}
-            >
-              {episode.episode_type}
-            </span>
+            {episode.episode_type && (
+              <span
+                className={`bg-primary-blue bg-opacity-[10%] text-primary-blue flex text-center max-w-fit p-2 px-4 rounded-full mx-auto capitalize`}
+              >
+                {episode.episode_type}
+              </span>
+            )}
 
             <div className={`flex flex-col gap-2`}>
               <section id={`Episode Air Date`}>
