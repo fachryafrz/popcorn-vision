@@ -502,6 +502,13 @@ function FilmEpisodes({ id, season }) {
 }
 
 export function EpisodeModal({ episode, episodeModalRef, loading }) {
+  const [showAllGuestStars, setShowAllGuestStars] = useState(false);
+  const numGuestStars = 10;
+
+  const handleShowAllGuestStars = () => {
+    setShowAllGuestStars(true);
+  };
+
   // Format Date
   const dateStr = episode.air_date;
   const date = new Date(dateStr);
@@ -524,6 +531,10 @@ export function EpisodeModal({ episode, episodeModalRef, loading }) {
   ];
   const releaseDayIndex = new Date(dateStr).getDay();
   const releaseDay = dayNames[releaseDayIndex];
+
+  useEffect(() => {
+    setShowAllGuestStars(false);
+  }, [episode]);
 
   return (
     <dialog
@@ -643,22 +654,41 @@ export function EpisodeModal({ episode, episodeModalRef, loading }) {
                   Guest Stars
                 </h2>
 
-                <div className={`grid sm:grid-cols-2 gap-4`}>
-                  {episode.guest_stars.map((item) => {
-                    return (
-                      <Person
-                        key={item.id}
-                        id={item.id}
-                        name={item.name}
-                        profile_path={
-                          item.profile_path === null
-                            ? null
-                            : `https://image.tmdb.org/t/p/w185${item.profile_path}`
-                        }
-                        role={item.character}
-                      />
-                    );
-                  })}
+                <div className={`grid sm:grid-cols-2 gap-4 relative`}>
+                  {episode.guest_stars
+                    .slice(
+                      0,
+                      showAllGuestStars
+                        ? episode.guest_stars.length
+                        : numGuestStars
+                    )
+                    .map((item) => {
+                      return (
+                        <Person
+                          key={item.id}
+                          id={item.id}
+                          name={item.name}
+                          profile_path={
+                            item.profile_path === null
+                              ? null
+                              : `https://image.tmdb.org/t/p/w185${item.profile_path}`
+                          }
+                          role={item.character}
+                        />
+                      );
+                    })}
+
+                  {episode.guest_stars.length > numGuestStars && (
+                    <div
+                      className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
+                        showAllGuestStars ? `hidden` : `flex`
+                      }`}
+                    >
+                      <button onClick={handleShowAllGuestStars}>
+                        View all
+                      </button>
+                    </div>
+                  )}
                 </div>
               </section>
             )}
