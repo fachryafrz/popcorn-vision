@@ -21,7 +21,7 @@ export default function FilmInfoOverview({
     setLoading(true);
 
     try {
-      const res = await axios.get(
+      const { data } = await axios.get(
         `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
         {
           params: {
@@ -30,8 +30,10 @@ export default function FilmInfoOverview({
         }
       );
       setLoading(false);
-      setEpisode(res.data);
-      document.getElementById(`episodeModal`).showModal();
+      setEpisode(data);
+      setTimeout(() => {
+        document.getElementById(`episodeModal`).showModal();
+      }, 50);
     } catch (error) {
       console.error(`Errornya episode modal: ${error}`);
     }

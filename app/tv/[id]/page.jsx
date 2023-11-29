@@ -21,7 +21,7 @@ export async function generateMetadata({ params, type = "tv" }) {
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
 
-  const filmReleaseDate = date.getFullYear();
+  const filmReleaseDate = film.first_air_date ? date.getFullYear() : `Coming soon`;
   const lastAirDate =
     film.last_air_date !== null &&
     new Date(film.last_air_date).getFullYear() !==

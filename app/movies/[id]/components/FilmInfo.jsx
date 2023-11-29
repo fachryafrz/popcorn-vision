@@ -40,7 +40,7 @@ import FilmPoster from "./FilmPoster";
 import TitleLogo from "@/app/components/TitleLogo";
 import { usePathname } from "next/navigation";
 import Person from "./Person";
-import { EpisodeModal } from "./FilmCollection";
+import { EpisodeModal } from "./EpisodeModal";
 
 export default function FilmInfo({
   film,
