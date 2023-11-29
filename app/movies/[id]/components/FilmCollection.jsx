@@ -35,32 +35,9 @@ export default function FilmCollection({
   const [collections, setCollections] = useState({});
   const [showAllCollection, setShowAllCollection] = useState(false);
   const [viewSeason, setViewSeason] = useState(false);
-  // const [episode, setEpisode] = useState([]);
-  // const [loading, setLoading] = useState(true);
   const numCollection = 3;
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-
-  // const episodeModalRef = useRef();
-  // const fetchEpisodeModal = async (filmID, season, eps) => {
-  //   setLoading(true);
-
-  //   try {
-  //     const res = await axios.get(
-  //       `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
-  //       {
-  //         params: {
-  //           api_key: "84aa2a7d5e4394ded7195035a4745dbd",
-  //         },
-  //       }
-  //     );
-  //     setLoading(false);
-  //     setEpisode(res.data);
-  //     episodeModalRef.current.showModal();
-  //   } catch (error) {
-  //     console.error(`Errornya episode modal: ${error}`);
-  //   }
-  // };
 
   const handleShowAllCollection = () => {
     setShowAllCollection(true);
@@ -306,9 +283,11 @@ function FilmSeason({ film, item, index, fetchEpisodeModal }) {
           </h3>
 
           <span className="text-xs sm:text-sm text-gray-400 font-medium line-clamp-1">
-            {`${item.episode_count} Episode${
-              item.episode_count > 1 ? `s` : ``
-            }`}
+            {item.episode_count > 0
+              ? `${item.episode_count} Episode${
+                  item.episode_count > 1 ? `s` : ``
+                }`
+              : `Coming soon`}
           </span>
 
           <div
