@@ -32,6 +32,7 @@ export default function FilmInfoOverview({
       setLoading(false);
       setEpisode(data);
       setTimeout(() => {
+        document.getElementById(`episodeModal`).scrollTo(0, 0);
         document.getElementById(`episodeModal`).showModal();
       }, 50);
     } catch (error) {

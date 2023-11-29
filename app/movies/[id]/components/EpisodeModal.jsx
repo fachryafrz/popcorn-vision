@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 export function EpisodeModal({ episode, loading }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
-  const numGuestStars = 10;
+  const numGuestStars = 6;
 
   const handleShowAllGuestStars = () => {
     setShowAllGuestStars(true);
@@ -151,7 +151,7 @@ export function EpisodeModal({ episode, loading }) {
             )}
 
             {episode.guest_stars && episode.guest_stars.length > 0 && (
-              <section id={`Guest Stars`}>
+              <section id={`Guest Stars`} className={`flex flex-col gap-4`}>
                 <h2 className={`font-bold text-xl text-white py-2`}>
                   Guest Stars
                 </h2>
@@ -179,19 +179,16 @@ export function EpisodeModal({ episode, loading }) {
                         />
                       );
                     })}
-
-                  {episode.guest_stars.length > numGuestStars && (
-                    <div
-                      className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
-                        showAllGuestStars ? `hidden` : `flex`
-                      }`}
-                    >
-                      <button onClick={handleShowAllGuestStars}>
-                        View all
-                      </button>
-                    </div>
-                  )}
                 </div>
+
+                {episode.guest_stars.length > numGuestStars && (
+                  <button
+                    className={`btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none mx-auto ${showAllGuestStars ? `hidden` : `flex`}`}
+                    onClick={handleShowAllGuestStars}
+                  >
+                    View all
+                  </button>
+                )}
               </section>
             )}
           </div>
