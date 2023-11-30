@@ -6,7 +6,7 @@ import FilmOverview from "./components/FilmOverview";
 import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
 import FilmInfo from "./components/FilmInfo";
-import FilmInfoOverview from "./components/FilmInfoOverview";
+import FilmContent from "./components/FilmContent";
 
 async function getFilm(id, type, path) {
   const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
@@ -109,37 +109,17 @@ export default async function FilmDetail({ params, type = "movie" }) {
     >
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />
-      <div
-        className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}
-        itemScope
-        itemType={
-          !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
-        }
-      >
-        <div
-          className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
-        >
-          {/* Poster */}
-          <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
-            <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
-              <FilmPoster film={film} />
-            </div>
-          </section>
-          {/* Info & Overview */}
-          <FilmInfoOverview
-            film={film}
-            videos={videos}
-            images={images}
-            reviews={reviews}
-            credits={credits}
-            providers={providers}
-          />
-          {/* Casts & Credits */}
-          <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
-            {credits.cast.length > 0 && <CastsList credits={credits} />}
-          </section>
-        </div>
-      </div>
+
+      {/* Film Contents */}
+      <FilmContent
+        film={film}
+        videos={videos}
+        images={images}
+        reviews={reviews}
+        credits={credits}
+        providers={providers}
+        isTvPage={isTvPage}
+      />
 
       {/* Recommendations */}
       {recommendations.results.length > 0 && (

@@ -4,7 +4,7 @@ import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
 import { useEffect, useState } from "react";
 
-export function EpisodeModal({ episode, loading }) {
+export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
@@ -47,7 +47,10 @@ export function EpisodeModal({ episode, loading }) {
       <div className={`p-4 sm:py-8 relative w-full max-w-3xl`}>
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
           <button
-            onClick={() => document.getElementById(`episodeModal`).close()}
+            onClick={() => {
+              setEpisode(null)
+              document.getElementById(`episodeModal`).close()
+              }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
@@ -156,7 +159,7 @@ export function EpisodeModal({ episode, loading }) {
                   Guest Stars
                 </h2>
 
-                <div className={`grid sm:grid-cols-2 gap-4 relative`}>
+                <div className={`grid sm:grid-cols-2 relative`}>
                   {episode.guest_stars
                     .slice(
                       0,
@@ -176,6 +179,7 @@ export function EpisodeModal({ episode, loading }) {
                               : `https://image.tmdb.org/t/p/w185${item.profile_path}`
                           }
                           role={item.character}
+                          fetchPersonModal={fetchPersonModal}
                         />
                       );
                     })}

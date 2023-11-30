@@ -41,6 +41,7 @@ import TitleLogo from "@/app/components/TitleLogo";
 import { usePathname } from "next/navigation";
 import Person from "./Person";
 import { EpisodeModal } from "./EpisodeModal";
+import PersonModal from "./PersonModal";
 
 export default function FilmInfo({
   film,
@@ -50,8 +51,12 @@ export default function FilmInfo({
   credits,
   providers,
   episode,
+  setEpisode,
   loading,
   fetchEpisodeModal,
+  selectedPerson,
+  setSelectedPerson,
+  fetchPersonModal,
 }) {
   const [location, setLocation] = useState(null);
   const [language, setLanguage] = useState("id-ID");
@@ -436,6 +441,7 @@ export default function FilmInfo({
                   className={`flex items-center gap-2`}
                 >
                   <Person
+                    id={director.id}
                     name={director.name}
                     profile_path={
                       director.profile_path === null
@@ -444,6 +450,7 @@ export default function FilmInfo({
                     }
                     role={`Director`}
                     itemProp={`director`}
+                    fetchPersonModal={fetchPersonModal}
                   />
                 </section>
               )
@@ -455,7 +462,8 @@ export default function FilmInfo({
                   {film.created_by.map((item, i) => {
                     return (
                       <Person
-                        key={i}
+                        key={item.id}
+                        id={item.id}
                         name={item.name}
                         profile_path={
                           item.profile_path === null
@@ -464,6 +472,7 @@ export default function FilmInfo({
                         }
                         role={`Creator`}
                         itemProp={`director`}
+                        fetchPersonModal={fetchPersonModal}
                       />
                     );
                   })}
@@ -545,7 +554,7 @@ export default function FilmInfo({
                     lastEps.episode_number
                   )
                 }
-                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
+                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hover:bg-opacity-20 transition-all`}
               >
                 <figure
                   className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -642,7 +651,7 @@ export default function FilmInfo({
                           nextEps.episode_number
                         )
                       }
-                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full xl hover:bg-opacity-20`}
+                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hover:bg-opacity-20 transition-all`}
                     >
                       <figure
                         className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -836,10 +845,22 @@ export default function FilmInfo({
             </dialog>
           </section>
 
-          {isTvPage && (
-            <section id={`Episode Modal`}>
-              <EpisodeModal episode={episode} loading={loading} />
-            </section>
+          {isTvPage && episode && (
+            <EpisodeModal
+              episode={episode}
+              setEpisode={setEpisode}
+              loading={loading}
+              fetchPersonModal={fetchPersonModal}
+            />
+          )}
+
+          {selectedPerson && (
+            <PersonModal
+              person={selectedPerson}
+              setSelectedPerson={setSelectedPerson}
+              loading={loading}
+              episode={episode}
+            />
           )}
         </div>
       </div>

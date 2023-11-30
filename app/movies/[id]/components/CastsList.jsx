@@ -7,7 +7,7 @@ import {
 } from "ionicons/icons";
 import Person from "./Person";
 
-export default function CastsList({ credits }) {
+export default function CastsList({ credits, fetchPersonModal }) {
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
 
@@ -31,7 +31,7 @@ export default function CastsList({ credits }) {
           </button>
         )}
       </div>
-      <div className="flex md:flex-col overflow-x-auto md:!overflow-x-clip gap-4 pt-4 pb-4 md:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto md:rounded-bl-3xl">
+      <div className="flex md:flex-col overflow-x-auto md:!overflow-x-clip pt-4 pb-4 md:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto md:rounded-bl-3xl">
         {credits &&
           credits.cast &&
           credits.cast
@@ -40,6 +40,7 @@ export default function CastsList({ credits }) {
               return (
                 <Person
                   key={actor.id}
+                  id={actor.id}
                   showAllActors={showAllActors}
                   name={actor.name}
                   role={actor.character}
@@ -50,14 +51,16 @@ export default function CastsList({ credits }) {
                   }
                   before={`as`}
                   itemProp={`actor`}
+                  fetchPersonModal={fetchPersonModal}
                 />
               );
             })}
+
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
-            className={`sticky bottom-0 text-primary-blue hidden md:flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
-              showAllActors ? `bottom-1 mx-1` : `bottom-0`
+            className={`sticky mt-2 bottom-0 text-primary-blue hidden md:flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
+              showAllActors ? `mx-1` : ``
             }`}
           >
             {showAllActors ? "Show Less" : "Show All"}

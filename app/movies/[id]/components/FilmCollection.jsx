@@ -126,66 +126,64 @@ export default function FilmCollection({
 
                 return (
                   <li key={item.id}>
-                    <Link
-                      href={`/movies/${item.id}-${slugify(item.title)}`}
-                      className={`flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
-                        film.id === item.id && `!bg-primary-blue !bg-opacity-30`
-                      }`}
-                    >
-                      <span
-                        className={`text-gray-400 text-sm font-medium px-1`}
+                    <article>
+                      <Link
+                        href={`/movies/${item.id}-${slugify(item.title)}`}
+                        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+                          film.id === item.id &&
+                          `!bg-primary-blue !bg-opacity-30`
+                        }`}
                       >
-                        {index + 1}
-                      </span>
-
-                      <figure
-                        className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`}
-                        style={{
-                          backgroundImage:
-                            item.poster_path === null ? popcorn : filmPoster,
-                          backgroundSize: "cover",
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                        }}
-                      ></figure>
-                      <div className="flex flex-col gap-1 items-start w-full">
-                        <h3
-                          className="text-start line-clamp-2 font-medium"
-                          title={item.title}
-                          style={{ textWrap: "balance" }}
+                        <span
+                          className={`text-gray-400 text-sm font-medium px-1`}
                         >
-                          {item.title}
-                        </h3>
-
-                        <div
-                          className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
-                        >
-                          {item.vote_average > 1 && (
-                            <span className={`flex items-center gap-1`}>
-                              <IonIcon
-                                icon={star}
-                                className={`text-primary-yellow`}
-                              />
-                              {item.vote_average &&
-                                item.vote_average.toFixed(1)}
-                            </span>
-                          )}
-
-                          {item.vote_average > 1 && item.release_date && (
-                            <span>&bull;</span>
-                          )}
-
-                          {item.release_date ? formattedDate : `Coming soon`}
+                          {index + 1}
+                        </span>
+                        <figure
+                          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`}
+                          style={{
+                            backgroundImage:
+                              item.poster_path === null ? popcorn : filmPoster,
+                            backgroundSize: "cover",
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "center",
+                          }}
+                        ></figure>
+                        <div className="flex flex-col gap-1 items-start w-full">
+                          <h3
+                            className="text-start line-clamp-2 font-medium"
+                            title={item.title}
+                            style={{ textWrap: "balance" }}
+                          >
+                            {item.title}
+                          </h3>
+                          <div
+                            className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                          >
+                            {item.vote_average > 1 && (
+                              <span className={`flex items-center gap-1`}>
+                                <IonIcon
+                                  icon={star}
+                                  className={`text-primary-yellow`}
+                                />
+                                {item.vote_average &&
+                                  item.vote_average.toFixed(1)}
+                              </span>
+                            )}
+                            {item.vote_average > 1 && item.release_date && (
+                              <span>&bull;</span>
+                            )}
+                            {item.release_date ? formattedDate : `Coming soon`}
+                          </div>
                         </div>
-                      </div>
-
-                      <p
-                        title={item.overview}
-                        className="text-xs text-gray-400 line-clamp-3 w-full"
-                      >
-                        {item.overview}
-                      </p>
-                    </Link>
+                        <p
+                          title={item.overview}
+                          className="text-xs text-gray-400 line-clamp-3 w-full"
+                        >
+                          {item.overview}
+                        </p>
+                      </Link>
+                    </article>
                   </li>
                 );
               })
@@ -250,7 +248,7 @@ function FilmSeason({ film, item, index, fetchEpisodeModal }) {
         onClick={
           item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
         }
-        className={`flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
+        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
           viewSeason
             ? `rounded-t-xl !bg-primary-blue !bg-opacity-30`
             : `rounded-xl`
@@ -319,24 +317,25 @@ function FilmSeason({ film, item, index, fetchEpisodeModal }) {
 
         {item.episode_count > 0 && (
           <IonIcon
-            icon={viewSeason ? chevronUpOutline : chevronDownOutline}
-            class={`text-lg min-w-[18px] text-secondary`}
+            icon={chevronDownOutline}
+            class={`text-lg min-w-[18px] text-secondary transition-all ${
+              viewSeason ? `-rotate-180` : ``
+            }`}
           />
         )}
       </button>
 
-      {viewSeason && (
-        <FilmEpisodes
-          id={film.id}
-          season={index + 1}
-          fetchEpisodeModal={fetchEpisodeModal}
-        />
-      )}
+      <FilmEpisodes
+        id={film.id}
+        season={index + 1}
+        fetchEpisodeModal={fetchEpisodeModal}
+        viewSeason={viewSeason}
+      />
     </>
   );
 }
 
-function FilmEpisodes({ id, season, fetchEpisodeModal }) {
+function FilmEpisodes({ id, season, fetchEpisodeModal, viewSeason }) {
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
@@ -360,115 +359,117 @@ function FilmEpisodes({ id, season, fetchEpisodeModal }) {
   }, [id, season]);
 
   return (
-    <Swiper
-      modules={[Navigation]}
-      navigation={{
-        enabled: true,
-        prevEl: `#prevEps`,
-        nextEl: `#nextEps`,
-      }}
-      slidesPerView={1}
-      spaceBetween={4}
-      breakpoints={{
-        640: {
-          slidesPerView: 2,
-        },
-      }}
-      className={`bg-secondary bg-opacity-10 !p-2 rounded-b-xl relative`}
-    >
-      {episodes &&
-        episodes.map((item) => {
-          // Release Date
-          const dateStr = item.air_date;
-          const date = new Date(dateStr);
-          const options = {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          };
-          const formattedDate = date.toLocaleString("en-US", options);
+    viewSeason &&
+    episodes && (
+      <Swiper
+        modules={[Navigation]}
+        navigation={{
+          enabled: true,
+          prevEl: `#prevEps`,
+          nextEl: `#nextEps`,
+        }}
+        slidesPerView={1}
+        spaceBetween={4}
+        breakpoints={{
+          640: {
+            slidesPerView: 2,
+          },
+        }}
+        className={`bg-secondary bg-opacity-10 !p-2 rounded-b-xl relative`}
+      >
+        {episodes &&
+          episodes.map((item) => {
+            // Release Date
+            const dateStr = item.air_date;
+            const date = new Date(dateStr);
+            const options = {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            };
+            const formattedDate = date.toLocaleString("en-US", options);
 
-          return (
-            <SwiperSlide key={item.id} className={`!h-auto`}>
-              <button
-                onClick={() =>
-                  fetchEpisodeModal(id, season, item.episode_number)
-                }
-                className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full`}
-              >
-                <figure className="aspect-video rounded-lg overflow-hidden w-full">
-                  {item.still_path ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${item.still_path}`}
-                      alt={item.name}
-                      className={`pointer-events-none`}
-                    />
-                  ) : (
-                    <div
-                      className={`bg-base-100 w-full h-full grid place-items-center`}
-                    >
+            return (
+              <SwiperSlide key={item.id} className={`!h-auto`}>
+                <button
+                  onClick={() =>
+                    fetchEpisodeModal(id, season, item.episode_number)
+                  }
+                  className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full transition-all`}
+                >
+                  <figure className="aspect-video rounded-lg overflow-hidden w-full">
+                    {item.still_path ? (
+                      <img
+                        src={`https://image.tmdb.org/t/p/w500${item.still_path}`}
+                        alt={item.name}
+                        className={`pointer-events-none`}
+                      />
+                    ) : (
                       <div
-                        style={{
-                          background: `url(/popcorn.png)`,
-                          backgroundSize: `contain`,
-                        }}
-                        className={`aspect-square h-full`}
-                      ></div>
+                        className={`bg-base-100 w-full h-full grid place-items-center`}
+                      >
+                        <div
+                          style={{
+                            background: `url(/popcorn.png)`,
+                            backgroundSize: `contain`,
+                          }}
+                          className={`aspect-square h-full`}
+                        ></div>
+                      </div>
+                    )}
+                  </figure>
+                  <div className="flex flex-col gap-1 items-start w-full">
+                    <h3
+                      className="text-start line-clamp-2 font-medium"
+                      title={item.name}
+                    >
+                      {item.name}
+                    </h3>
+
+                    <div
+                      className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+                    >
+                      {item.vote_average > 1 && (
+                        <span className={`flex items-center gap-1`}>
+                          <IonIcon
+                            icon={star}
+                            className={`text-primary-yellow`}
+                          />
+                          {item.vote_average && item.vote_average.toFixed(1)}
+                        </span>
+                      )}
+
+                      {item.vote_average > 1 && item.air_date && (
+                        <span>&bull;</span>
+                      )}
+
+                      {item.runtime && (
+                        <span>
+                          {Math.floor(item.runtime / 60) >= 1
+                            ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
+                                item.runtime % 60
+                              )}m`
+                            : `${item.runtime} minute${
+                                item.runtime % 60 > 1 && `s`
+                              }`}
+                        </span>
+                      )}
+
+                      {item.air_date && item.runtime && <span>&bull;</span>}
+
+                      {item.air_date && <span>{formattedDate}</span>}
                     </div>
-                  )}
-                </figure>
-                <div className="flex flex-col gap-1 items-start w-full">
-                  <h3
-                    className="text-start line-clamp-2 font-medium"
-                    title={item.name}
-                  >
-                    {item.name}
-                  </h3>
-
-                  <div
-                    className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
-                  >
-                    {item.vote_average > 1 && (
-                      <span className={`flex items-center gap-1`}>
-                        <IonIcon
-                          icon={star}
-                          className={`text-primary-yellow`}
-                        />
-                        {item.vote_average && item.vote_average.toFixed(1)}
-                      </span>
-                    )}
-
-                    {item.vote_average > 1 && item.air_date && (
-                      <span>&bull;</span>
-                    )}
-
-                    {item.runtime && (
-                      <span>
-                        {Math.floor(item.runtime / 60) >= 1
-                          ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                              item.runtime % 60
-                            )}m`
-                          : `${item.runtime} minute${
-                              item.runtime % 60 > 1 && `s`
-                            }`}
-                      </span>
-                    )}
-
-                    {item.air_date && item.runtime && <span>&bull;</span>}
-
-                    {item.air_date && <span>{formattedDate}</span>}
                   </div>
-                </div>
 
-                {/* <p className="text-xs text-gray-400 w-full text-start">
+                  {/* <p className="text-xs text-gray-400 w-full text-start">
                   {item.overview}
                 </p> */}
-              </button>
-            </SwiperSlide>
-          );
-        })}
+                </button>
+              </SwiperSlide>
+            );
+          })}
 
-      {/* {episode && (
+        {/* {episode && (
         <EpisodeModal
           episode={episode}
           episodeModalRef={episodeModalRef}
@@ -476,22 +477,23 @@ function FilmEpisodes({ id, season, fetchEpisodeModal }) {
         />
       )} */}
 
-      <div
-        className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
-      >
-        <button
-          id={`prevEps`}
-          className={`pointer-events-auto flex items-center p-1`}
+        <div
+          className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
         >
-          <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
-        </button>
-        <button
-          id={`nextEps`}
-          className={`pointer-events-auto flex items-center p-1`}
-        >
-          <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
-        </button>
-      </div>
-    </Swiper>
+          <button
+            id={`prevEps`}
+            className={`pointer-events-auto flex items-center p-1`}
+          >
+            <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
+          </button>
+          <button
+            id={`nextEps`}
+            className={`pointer-events-auto flex items-center p-1`}
+          >
+            <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
+          </button>
+        </div>
+      </Swiper>
+    )
   );
 }
