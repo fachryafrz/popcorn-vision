@@ -154,7 +154,7 @@ export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal })
             )}
 
             {episode.guest_stars && episode.guest_stars.length > 0 && (
-              <section id={`Guest Stars`} className={`flex flex-col gap-4`}>
+              <section id={`Guest Stars`} className={`flex flex-col`}>
                 <h2 className={`font-bold text-xl text-white py-2`}>
                   Guest Stars
                 </h2>
