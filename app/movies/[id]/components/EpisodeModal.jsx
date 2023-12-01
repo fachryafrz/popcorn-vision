@@ -48,8 +48,10 @@ export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal })
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
           <button
             onClick={() => {
-              setEpisode(null)
               document.getElementById(`episodeModal`).close()
+              setTimeout(() => {
+                setEpisode(null)
+              }, 100)
               }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
           >

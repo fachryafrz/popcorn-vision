@@ -149,6 +149,22 @@ export default function PersonModal({
     );
   }
 
+  const calculateAge = (birthdate) => {
+    let today = new Date();
+    let birthDate = new Date(birthdate);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    let monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+
+    return age;
+  };
+
   return (
     <dialog
       id={`personModal`}
@@ -159,10 +175,12 @@ export default function PersonModal({
           <button
             onClick={() => {
               document.getElementById(`personModal`).close();
-              setSelectedPerson(null);
               if (episode) {
                 document.getElementById(`episodeModal`).showModal();
               }
+              setTimeout(() => {
+                setSelectedPerson(null);
+              }, 100);
             }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 mr-4 pointer-events-auto`}
           >
@@ -186,7 +204,7 @@ export default function PersonModal({
                   backgroundImage:
                     person.profile_path === null
                       ? `url(/popcorn.png)`
-                      : `url(https://image.tmdb.org/t/p/original${person.profile_path})`,
+                      : `url(https://image.tmdb.org/t/p/h632${person.profile_path})`,
                   backgroundSize:
                     person.profile_path === null ? `contain` : `cover`,
                   backgroundRepeat: `no-repeat`,
@@ -322,7 +340,7 @@ export default function PersonModal({
                             <figure
                               className={`aspect-poster rounded-xl`}
                               style={{
-                                backgroundImage: `url(https://image.tmdb.org/t/p/original${image.file_path})`,
+                                backgroundImage: `url(https://image.tmdb.org/t/p/h632${image.file_path})`,
                                 backgroundSize: `contain`,
                                 backgroundRepeat: `no-repeat`,
                                 backgroundPosition: `center`,
@@ -374,10 +392,9 @@ export default function PersonModal({
               {/* Stats */}
               <section className={`flex gap-12 flex-wrap`}>
                 <div id={`Age`} className={`flex flex-col gap-1`}>
-                  <span className={`text-xl font-bold`}>{`${
-                    new Date().getFullYear() -
-                    new Date(person.birthday).getFullYear()
-                  } years`}</span>
+                  <span className={`text-xl font-bold`}>
+                    {`${calculateAge(person.birthday)} years`}
+                  </span>
                   <span className={`text-gray-400`}>Age</span>
                 </div>
 
@@ -531,26 +548,31 @@ export default function PersonModal({
 
                     <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-2 max-w-7xl xl:max-w-none flex justify-between items-end">
                       <div className="flex gap-4 items-end">
-                        <button
-                          onClick={() => setCreditsSwitcher(`Movies`)}
-                          className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
-                            creditsSwitcher === `Movies`
-                              ? `text-white hocus:text-white`
-                              : `text-gray-600`
-                          }`}
-                        >
-                          Movies
-                        </button>
-                        <button
-                          onClick={() => setCreditsSwitcher(`TV`)}
-                          className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
-                            creditsSwitcher === `TV`
-                              ? `text-white hocus:text-white`
-                              : `text-gray-600`
-                          }`}
-                        >
-                          TV Series
-                        </button>
+                        {movieCredits?.cast.length > 0 && (
+                          <button
+                            onClick={() => setCreditsSwitcher(`Movies`)}
+                            className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
+                              creditsSwitcher === `Movies`
+                                ? `text-white hocus:text-white`
+                                : `text-gray-600`
+                            }`}
+                          >
+                            Movies
+                          </button>
+                        )}
+
+                        {tvCredits?.cast.length > 0 && (
+                          <button
+                            onClick={() => setCreditsSwitcher(`TV`)}
+                            className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
+                              creditsSwitcher === `TV`
+                                ? `text-white hocus:text-white`
+                                : `text-gray-600`
+                            }`}
+                          >
+                            TV Series
+                          </button>
+                        )}
                       </div>
 
                       <div className={`flex gap-4 items-center`}>

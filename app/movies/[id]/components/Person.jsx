@@ -16,7 +16,7 @@ export default function Person({
 
   return (
     <button
-      onClick={() => fetchPersonModal(id)}
+      onClick={itemProp != `author` ? () => fetchPersonModal(id) : null}
       className={`flex ${
         itemProp == `actor`
           ? `flex-col text-center items-center md:flex-row md:text-start md:items-start`

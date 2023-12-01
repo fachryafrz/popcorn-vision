@@ -80,6 +80,29 @@ export default function FilmInfo({
     return formattedDate;
   };
 
+  const formatDateWithDay = (dateValue) => {
+    const dateStr = dateValue;
+    const date = new Date(dateStr);
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    };
+    const formattedDate = date.toLocaleString("en-US", options);
+    const dayNames = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    const releaseDayIndex = new Date(dateStr).getDay();
+    const releaseDay = dayNames[releaseDayIndex];
+    return `${releaseDay}, ${formattedDate}`;
+  };
+
   const fetchEpisodes = async () => {
     try {
       const res = await axios.get(
@@ -135,10 +158,7 @@ export default function FilmInfo({
 
   // Release Date
   const dateStr = !isTvPage ? film.release_date : film.first_air_date;
-  const date =
-    new Date(dateStr) > new Date()
-      ? new Date(dateStr)
-      : new Date(nextEps?.air_date);
+  const date = new Date(dateStr);
   const options = {
     year: "numeric",
     month: "short",
@@ -146,54 +166,40 @@ export default function FilmInfo({
   };
   const formattedDate = new Date(dateStr).toLocaleString("en-US", options);
 
-  // Countdown
-  const timeLeft = new Date(date - new Date());
-  // const daysRemaining = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-  let monthsLeft = timeLeft.getUTCMonth();
-  let daysLeft = timeLeft.getUTCDay();
-  let hoursLeft = timeLeft.getUTCHours();
-  let minutesLeft = timeLeft.getUTCMinutes();
-  let secondsLeft = timeLeft.getUTCSeconds();
   const [countdown, setCountdown] = useState({
-    months: monthsLeft,
-    days: daysLeft,
-    hours: hoursLeft,
-    minutes: minutesLeft,
-    seconds: secondsLeft,
+    months: 0,
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
   });
 
-  // Next Episode
-  const isUpcoming = date > new Date();
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const releaseDayIndex = new Date(dateStr).getDay();
-  const lastReleaseDayIndex = new Date(film.last_air_date).getDay();
-  const releaseDay = dayNames[releaseDayIndex];
-  const lastReleaseDay = dayNames[lastReleaseDayIndex];
+  const calculateCountdown = (date) => {
+    const timeLeft = new Date(new Date(date) - new Date());
+    let monthsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30));
+    let daysLeft = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+    );
+    let hoursLeft = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    let minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    let secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+    return {
+      months: monthsLeft,
+      days: daysLeft,
+      hours: hoursLeft,
+      minutes: minutesLeft,
+      seconds: secondsLeft,
+    };
+  };
 
   useEffect(() => {
     setURL(window.location.href);
 
     const interval = setInterval(() => {
-      monthsLeft = timeLeft.getUTCMonth();
-      daysLeft = timeLeft.getUTCDay();
-      hoursLeft = timeLeft.getUTCHours();
-      minutesLeft = timeLeft.getUTCMinutes();
-      secondsLeft = timeLeft.getUTCSeconds();
-      setCountdown({
-        months: monthsLeft,
-        days: daysLeft,
-        hours: hoursLeft,
-        minutes: minutesLeft,
-        seconds: secondsLeft,
-      });
+      setCountdown(calculateCountdown(nextEps?.air_date));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -293,7 +299,7 @@ export default function FilmInfo({
                     <IonIcon icon={calendarOutline} />
 
                     <time dateTime={film.release_date}>
-                      {`${releaseDay}, ${formattedDate}`}
+                      {formatDateWithDay(film.release_date)}
                     </time>
                   </div>
                 </section>
@@ -308,13 +314,11 @@ export default function FilmInfo({
                     <IonIcon icon={calendarOutline} />
 
                     <time dateTime={film.first_air_date}>
-                      {`${releaseDay}, ${formattedDate}`}{" "}
+                      {formatDateWithDay(film.first_air_date)}{" "}
                       {film.last_air_date !== null &&
                         film.last_air_date !== film.first_air_date && (
                           <span className="hidden xs:inline">
-                            {`- ${lastReleaseDay}, ${new Date(
-                              film.last_air_date
-                            ).toLocaleString("en-US", options)}`}
+                            {`- ${formatDateWithDay(film.last_air_date)}`}
                           </span>
                         )}
                     </time>
@@ -457,7 +461,7 @@ export default function FilmInfo({
             : film.created_by.length > 0 && (
                 <section
                   id={`TV Series Creator`}
-                  className={`flex flex-wrap items-center gap-2`}
+                  className={`flex flex-wrap items-center`}
                 >
                   {film.created_by.map((item, i) => {
                     return (
@@ -626,7 +630,7 @@ export default function FilmInfo({
             id={`Share`}
             className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
           >
-            {isUpcoming && (
+            {nextEps && (
               <div className={`w-full flex flex-col items-start gap-2`}>
                 {!isTvPage ? (
                   <span>{`Released in`}</span>
