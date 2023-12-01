@@ -630,7 +630,7 @@ export default function FilmInfo({
             id={`Share`}
             className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
           >
-            {nextEps && (
+            {nextEps && new Date(nextEps.air_date) > new Date() && (
               <div className={`w-full flex flex-col items-start gap-2`}>
                 {!isTvPage ? (
                   <span>{`Released in`}</span>
