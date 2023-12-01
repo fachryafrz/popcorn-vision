@@ -4,7 +4,12 @@ import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
 import { useEffect, useState } from "react";
 
-export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal }) {
+export function EpisodeModal({
+  episode,
+  setEpisode,
+  loading,
+  fetchPersonModal,
+}) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
@@ -48,11 +53,11 @@ export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal })
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
           <button
             onClick={() => {
-              document.getElementById(`episodeModal`).close()
+              document.getElementById(`episodeModal`).close();
               setTimeout(() => {
-                setEpisode(null)
-              }, 100)
-              }}
+                setEpisode(null);
+              }, 100);
+            }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
@@ -62,32 +67,26 @@ export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal })
         <div
           className={`modal-box max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
         >
-          {loading ? (
-            <div
-              className={`aspect-video animate-pulse bg-gray-400 bg-opacity-20 relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100`}
-            ></div>
-          ) : (
-            <figure
-              className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
-              style={{
-                backgroundImage:
-                  episode.still_path === null
-                    ? `url(/popcorn.png)`
-                    : `https://image.tmdb.org/t/p/w92${episode.still_path}`,
-                backgroundSize: `contain`,
-                backgroundRepeat: `no-repeat`,
-                backgroundPosition: `center`,
-              }}
-            >
-              {episode.still_path && (
-                <img
-                  src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
-                  alt={episode.name}
-                  className={`object-cover`}
-                />
-              )}
-            </figure>
-          )}
+          <figure
+            className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+            style={{
+              backgroundImage:
+                episode.still_path === null
+                  ? `url(/popcorn.png)`
+                  : `https://image.tmdb.org/t/p/w92${episode.still_path}`,
+              backgroundSize: `contain`,
+              backgroundRepeat: `no-repeat`,
+              backgroundPosition: `center`,
+            }}
+          >
+            {episode.still_path && (
+              <img
+                src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                alt={episode.name}
+                className={`object-cover`}
+              />
+            )}
+          </figure>
           <div className={`p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}>
             <h1
               title={episode.name}
@@ -189,7 +188,9 @@ export function EpisodeModal({ episode, setEpisode, loading, fetchPersonModal })
 
                 {episode.guest_stars.length > numGuestStars && (
                   <button
-                    className={`btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none mx-auto ${showAllGuestStars ? `hidden` : `flex`}`}
+                    className={`btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none mx-auto ${
+                      showAllGuestStars ? `hidden` : `flex`
+                    }`}
                     onClick={handleShowAllGuestStars}
                   >
                     View all
