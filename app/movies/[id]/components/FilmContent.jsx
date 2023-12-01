@@ -115,8 +115,13 @@ export default function FilmContent({
             credits={credits}
             providers={providers}
             episode={episode}
+            setEpisode={setEpisode}
             loading={loading}
+            setLoading={setLoading}
             fetchEpisodeModal={fetchEpisodeModal}
+            selectedPerson={selectedPerson}
+            setSelectedPerson={setSelectedPerson}
+            fetchPersonModal={fetchPersonModal}
           />
         </section>
 

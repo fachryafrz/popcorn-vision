@@ -21,6 +21,9 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
+import { EpisodeModal } from "./EpisodeModal";
+import PersonModal from "./PersonModal";
+import ShareModal from "./ShareModal";
 
 export default function FilmOverview({
   film,
@@ -30,8 +33,12 @@ export default function FilmOverview({
   credits,
   providers,
   episode,
+  setEpisode,
   loading,
   fetchEpisodeModal,
+  selectedPerson,
+  setSelectedPerson,
+  fetchPersonModal,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -68,6 +75,26 @@ export default function FilmOverview({
 
       {reviews.results.length > 0 && (
         <FilmReviews reviews={reviews} film={film} />
+      )}
+
+      <ShareModal />
+
+      {isTvPage && episode && (
+        <EpisodeModal
+          episode={episode}
+          setEpisode={setEpisode}
+          loading={loading}
+          fetchPersonModal={fetchPersonModal}
+        />
+      )}
+
+      {selectedPerson && (
+        <PersonModal
+          person={selectedPerson}
+          setSelectedPerson={setSelectedPerson}
+          loading={loading}
+          episode={episode}
+        />
       )}
     </div>
   );
