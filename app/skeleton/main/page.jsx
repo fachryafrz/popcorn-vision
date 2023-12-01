@@ -94,16 +94,16 @@ export default function MainLoading() {
       {/* Trending */}
       <section className={`px-4 !bg-opacity-0 mx-auto max-w-7xl w-full`}>
         <div
-          className={`relative rounded-[3rem] p-[3rem] w-full overflow-hidden flex items-center gap-8 before:absolute before:inset-0 before:bg-gradient-to-r before:from-black before:via-[40%] !bg-opacity-5`}
+          className={`relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black`}
         >
           {/* Background */}
-          <div className={`absolute inset-0 -z-10 blur-md md:blur-0`}></div>
+          <div className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}></div>
           {/* Poster */}
-          <div className={`aspect-poster min-w-[300px] rounded-2xl`}></div>
+          <div className={`z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}></div>
 
           {/* Details */}
           <div
-            className={`flex-1 !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4`}
+            className={`z-30 flex flex-col items-center text-center gap-2 w-full md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start [&_*]:rounded-lg !bg-opacity-0`}
           >
             {/* Title Logo */}
             <div className={`h-[150px] w-full !max-w-[300px]`}></div>
