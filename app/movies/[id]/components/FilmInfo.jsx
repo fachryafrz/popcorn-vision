@@ -275,7 +275,7 @@ export default function FilmInfo({
                       >
                         <figure
                           title={item.name}
-                          className={`h-[50px] grayscale invert hover:grayscale-0 hover:invert-0 transition-all bg-center aspect-[4/2]`}
+                          className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
                           style={{
                             backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
                             backgroundSize: `contain`,
@@ -558,7 +558,7 @@ export default function FilmInfo({
                     lastEps.episode_number
                   )
                 }
-                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hover:bg-opacity-20 transition-all`}
+                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
               >
                 <figure
                   className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
@@ -655,7 +655,7 @@ export default function FilmInfo({
                           nextEps.episode_number
                         )
                       }
-                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hover:bg-opacity-20 transition-all`}
+                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
                     >
                       <figure
                         className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}

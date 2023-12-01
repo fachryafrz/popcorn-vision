@@ -19,7 +19,7 @@ export default function Person({
       onClick={itemProp != `author` ? () => fetchPersonModal(id) : null}
       className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
         itemProp != `author`
-          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hover:backdrop-blur transition-all rounded-full`
+          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-full`
           : `cursor-default`
       }`}
     >

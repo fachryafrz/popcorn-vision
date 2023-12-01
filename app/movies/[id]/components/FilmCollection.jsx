@@ -422,6 +422,7 @@ function FilmEpisodes({ id, season, fetchEpisodeModal, viewSeason }) {
                     <h3
                       className="text-start line-clamp-2 font-medium"
                       title={item.name}
+                      style={{ textWrap: `balance` }}
                     >
                       {item.name}
                     </h3>
