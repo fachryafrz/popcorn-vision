@@ -166,6 +166,9 @@ export default function FilmInfo({
   };
   const formattedDate = new Date(dateStr).toLocaleString("en-US", options);
 
+  const isUpcoming =
+    new Date(!isTvPage ? film.release_date : nextEps?.air_date) > new Date();
+  const upcomingDate = !isTvPage ? film.release_date : nextEps?.air_date;
   const [countdown, setCountdown] = useState({
     months: 0,
     days: 0,
@@ -174,8 +177,8 @@ export default function FilmInfo({
     seconds: 0,
   });
 
-  const calculateCountdown = (date) => {
-    const timeLeft = new Date(new Date(date) - new Date());
+  const calculateCountdown = () => {
+    const timeLeft = new Date(new Date(upcomingDate) - new Date());
     let monthsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30));
     let daysLeft = Math.floor(
       (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
@@ -199,7 +202,7 @@ export default function FilmInfo({
     setURL(window.location.href);
 
     const interval = setInterval(() => {
-      setCountdown(calculateCountdown(nextEps?.air_date));
+      setCountdown(calculateCountdown());
     }, 1000);
 
     return () => clearInterval(interval);
@@ -630,7 +633,7 @@ export default function FilmInfo({
             id={`Share`}
             className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
           >
-            {nextEps && new Date(nextEps.air_date) > new Date() && (
+            {isUpcoming && (
               <div className={`w-full flex flex-col items-start gap-2`}>
                 {!isTvPage ? (
                   <span>{`Released in`}</span>
