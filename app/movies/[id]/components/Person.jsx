@@ -17,13 +17,9 @@ export default function Person({
   return (
     <button
       onClick={itemProp != `author` ? () => fetchPersonModal(id) : null}
-      className={`flex ${
-        itemProp == `actor`
-          ? `flex-col text-center items-center md:flex-row md:text-start md:items-start`
-          : `flex-row text-start items-start`
-      } gap-2 min-w-[120px] ${
+      className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
         itemProp != `author`
-          ? `p-2 md:pr-8 hocus:bg-secondary hocus:bg-opacity-20 hover:backdrop-blur transition-all rounded-xl md:rounded-full`
+          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hover:backdrop-blur transition-all rounded-full`
           : `cursor-default`
       }`}
     >

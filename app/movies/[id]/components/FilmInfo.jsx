@@ -268,13 +268,13 @@ export default function FilmInfo({
                   (item, i) =>
                     item.logo_path !== null && (
                       <div
-                        key={i}
+                        key={item.id}
                         itemProp="productionCompany"
                         itemScope
                         itemType="http://schema.org/Organization"
                       >
                         <figure
-                          title={item.name}
+                          title={`${item.name}: ${item.id}`}
                           className={`h-[50px] grayscale invert hover:grayscale-0 hover:invert-0 transition-all bg-center aspect-[4/2]`}
                           style={{
                             backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,

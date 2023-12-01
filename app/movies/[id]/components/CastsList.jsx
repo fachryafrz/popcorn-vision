@@ -31,7 +31,7 @@ export default function CastsList({ credits, fetchPersonModal }) {
           </button>
         )}
       </div>
-      <div className="flex md:flex-col overflow-x-auto md:!overflow-x-clip pt-4 pb-4 md:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto md:rounded-bl-3xl">
+      <div className="flex flex-col overflow-x-auto md:!overflow-x-clip pb-4 md:pb-0 max-h-[calc(100dvh-20dvh)] overflow-y-auto md:rounded-bl-3xl">
         {credits &&
           credits.cast &&
           credits.cast
