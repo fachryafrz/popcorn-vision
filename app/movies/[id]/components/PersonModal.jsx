@@ -32,6 +32,7 @@ export default function PersonModal({
   const [movieCredits, setMovieCredits] = useState();
   const [tvCredits, setTVCredits] = useState();
   const [images, setImages] = useState();
+  const [films, setFilms] = useState();
 
   const router = useRouter();
 
@@ -107,7 +108,7 @@ export default function PersonModal({
   return (
     <dialog
       id={`personModal`}
-      className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm overflow-y-auto`}
+      className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm overflow-y-auto`}
     >
       <div className={`pt-16 px-4 sm:pt-24 relative w-full max-w-7xl`}>
         <div className={`pointer-events-none absolute inset-0`}>
@@ -154,7 +155,7 @@ export default function PersonModal({
           </section>
 
           {/* Person Works */}
-          {combinedCredits?.cast.length > 0 && (
+          {films?.cast.length > 0 && (
             <section
               className={`col-span-12 border-t border-t-white border-opacity-10 pt-4`}
             >

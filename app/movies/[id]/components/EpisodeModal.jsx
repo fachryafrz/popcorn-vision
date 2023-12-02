@@ -47,7 +47,7 @@ export function EpisodeModal({
   return (
     <dialog
       id={`episodeModal`}
-      className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
+      className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
     >
       <div className={`p-4 sm:py-8 relative w-full max-w-3xl`}>
         <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
@@ -65,7 +65,7 @@ export function EpisodeModal({
         </div>
 
         <div
-          className={`modal-box max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
+          className={`modal-box rounded-2xl max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
         >
           <figure
             className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
