@@ -85,10 +85,13 @@ export default function ShareModal() {
         <div
           className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-full bg-black bg-opacity-50 text-sm border border-white border-opacity-50 w-full`}
         >
+          <label htmlFor={`copyURL`}></label>
           <input
-            type="text"
+            id={`copyURL`}
+            name={`copyURL`}
+            type={`text`}
             value={URL}
-            readOnly
+            readOnly={true}
             className={`bg-transparent w-full`}
           />
           <button

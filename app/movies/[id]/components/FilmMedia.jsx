@@ -82,12 +82,14 @@ export default function FilmMedia({ videos, images }) {
             <button
               id="next"
               className={`z-40 flex items-center text-white p-2`}
+              aria-labelledby={`next-slide`}
             >
               <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
             </button>
             <button
               id="prev"
               className={`z-40 flex items-center text-white p-2`}
+              aria-labelledby={`previous-slide`}
             >
               <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
             </button>

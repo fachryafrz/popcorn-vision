@@ -6,14 +6,7 @@ import React from "react";
 
 export default function FilmPoster({ film }) {
   const pathname = usePathname();
-
-  const isTvPage = (movie, tv) => {
-    if (pathname.startsWith("/tv")) {
-      return movie;
-    } else {
-      return tv;
-    }
-  };
+  const isTvPage = pathname.startsWith("/tv");
 
   let popcorn = `/popcorn.png`;
   let filmPoster = film.poster_path;
@@ -35,7 +28,7 @@ export default function FilmPoster({ film }) {
         {film.poster_path !== null && (
           <img
             src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-            alt={isTvPage(film.title, film.name)}
+            alt={!isTvPage ? film.title : film.name}
             className={`pointer-events-none object-cover`}
           />
         )}
