@@ -52,20 +52,20 @@ export default function MainLoading() {
           <Swiper
             spaceBetween={8}
             slidesPerView={2}
-            breakpoints={{
-              640: {
-                slidesPerView: 3,
-                slidesPerGroup: 3,
-              },
-              768: {
-                slidesPerView: 4,
-                slidesPerGroup: 4,
-              },
-              1024: {
-                slidesPerView: 5,
-                slidesPerGroup: 5,
-              },
-            }}
+            // breakpoints={{
+            //   640: {
+            //     slidesPerView: 3,
+            //     slidesPerGroup: 3,
+            //   },
+            //   768: {
+            //     slidesPerView: 4,
+            //     slidesPerGroup: 4,
+            //   },
+            //   1024: {
+            //     slidesPerView: 5,
+            //     slidesPerGroup: 5,
+            //   },
+            // }}
             allowSlideNext={false}
             allowSlidePrev={false}
             allowTouchMove={false}
@@ -73,7 +73,10 @@ export default function MainLoading() {
             wrapperClass={`!bg-opacity-0`}
           >
             {[...Array(itemCount).keys()].map((b) => (
-              <SwiperSlide key={b} className={`!bg-opacity-0`}>
+              <SwiperSlide
+                key={b}
+                className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] mr-2`}
+              >
                 {/* Poster */}
                 <div className={`aspect-poster`}></div>
 
@@ -97,9 +100,13 @@ export default function MainLoading() {
           className={`relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black`}
         >
           {/* Background */}
-          <div className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}></div>
+          <div
+            className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}
+          ></div>
           {/* Poster */}
-          <div className={`z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}></div>
+          <div
+            className={`z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}
+          ></div>
 
           {/* Details */}
           <div

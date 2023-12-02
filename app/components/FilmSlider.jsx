@@ -42,21 +42,21 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           prevEl: ".prev",
           clickable: true,
         }}
-        breakpoints={{
-          640: {
-            slidesPerView: 3,
-            slidesPerGroup: 3,
-          },
-          768: {
-            slidesPerView: 4,
-            slidesPerGroup: 4,
-          },
-          1024: {
-            slidesPerView: 5,
-            slidesPerGroup: 5,
-          },
-        }}
-        className={`!px-4 !pb-[2rem] !pt-[2.5rem] max-w-7xl !pr-[3rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[8.35rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[8.35rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:block before:pointer-events-none after:pointer-events-none`}
+        // breakpoints={{
+        //   640: {
+        //     slidesPerView: 3,
+        //     slidesPerGroup: 3,
+        //   },
+        //   768: {
+        //     slidesPerView: 4,
+        //     slidesPerGroup: 4,
+        //   },
+        //   1024: {
+        //     slidesPerView: 5,
+        //     slidesPerGroup: 5,
+        //   },
+        // }}
+        className={`!px-4 !pb-[2rem] !pt-[2.5rem] max-w-7xl relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[8.35rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[8.35rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:block before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
           const filmGenres =
@@ -69,7 +69,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           return (
             <SwiperSlide
               key={film.id}
-              className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`}
+              className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] mr-2`}
             >
               <article>
                 <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />

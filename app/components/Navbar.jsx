@@ -12,7 +12,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isMoviesPage = pathname.startsWith("/movies");
+  const isMoviesPage = pathname.startsWith("/movies") || pathname === "/";
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
@@ -83,7 +83,7 @@ export default function Navbar() {
 
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
-          className={`btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20`}
+            className={`btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20`}
           >
             <IonIcon icon={search} className="text-[1.25rem]" />
             <span className="hidden sm:block">Search</span>
