@@ -419,6 +419,15 @@ export default function FilmInfo({
                 return (
                   <span
                     key={item.id}
+                    onClick={() => {
+                      const alert =
+                        document.getElementById(`featureNotAvailable`);
+                      alert.style.transform = `translateY(0)`;
+
+                      setTimeout(() => {
+                        alert.style.transform = `translateY(calc(100% + 1rem))`;
+                      }, 3000);
+                    }}
                     className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
                     itemProp="genre"
                   >

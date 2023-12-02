@@ -1,4 +1,7 @@
-import React from "react";
+"use client";
+
+import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export default function Person({
   id,
@@ -14,9 +17,29 @@ export default function Person({
   let popcorn = `/popcorn.png`;
   let profilePath = profile_path;
 
+  const router = useRouter();
+
+  function slugify(text) {
+    return (
+      text &&
+      text
+        .toLowerCase()
+        .replace(/&/g, "")
+        .replace(/ /g, "-")
+        .replace(/-+/g, "-")
+        .replace(/[^\w-]+/g, "")
+    );
+  }
+
+  const handleActorClick = () => {
+    window.history.pushState(null, null, `/person/${id}-${slugify(name)}`);
+
+    fetchPersonModal(id);
+  };
+
   return (
     <button
-      onClick={itemProp != `author` ? () => fetchPersonModal(id) : null}
+      onClick={itemProp != `author` ? () => handleActorClick() : null}
       className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
         itemProp != `author`
           ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-full`

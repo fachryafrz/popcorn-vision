@@ -12,6 +12,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const isMoviesPage = pathname.startsWith("/movies");
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
@@ -46,8 +47,8 @@ export default function Navbar() {
                     : `/search`
                   : `/`
               }
-              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
-                !isTvPage &&
+              className={`transition-all font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+                isMoviesPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
@@ -62,7 +63,7 @@ export default function Navbar() {
                     : `/tv/search`
                   : `/tv`
               }
-              className={`font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+              className={`transition-all font-medium py-2 px-2 sm:px-4 rounded-lg hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
                 isTvPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
