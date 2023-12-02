@@ -130,6 +130,12 @@ export default function PersonModal({
   const isTvPage = pathname.startsWith("/tv");
 
   useEffect(() => {
+    if (movieCredits?.cast.length < 1) {
+      setCreditsSwitcher(`TV`);
+    } else if (tvCredits?.cast.length < 1) {
+      setCreditsSwitcher(`Movies`);
+    }
+
     if (creditsSwitcher === `TV`) {
       setFilms(tvCredits);
     } else if (creditsSwitcher === `Movies`) {
