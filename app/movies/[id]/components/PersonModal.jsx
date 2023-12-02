@@ -109,7 +109,7 @@ export default function PersonModal({
       id={`personModal`}
       className={`modal backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm overflow-y-auto`}
     >
-      <div className={`pt-4 px-4 sm:pt-24 relative w-full max-w-7xl`}>
+      <div className={`pt-16 px-4 sm:pt-24 relative w-full max-w-7xl`}>
         <div className={`pointer-events-none absolute inset-0`}>
           <button
             onClick={() => {
