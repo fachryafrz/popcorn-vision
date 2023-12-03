@@ -34,11 +34,12 @@ export default function Search() {
   const searchRef = useRef();
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState({});
-  const [searchTips, setSearchTips] = useState(true)
+  const [searchTips, setSearchTips] = useState(true);
 
   // Genre related state
   const [genres, setGenres] = useState([]);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedGenresName, setSelectedGenresName] = useState([]);
 
   // Loading and UI state
   const [showButton, setShowButton] = useState(false);
@@ -51,22 +52,36 @@ export default function Search() {
   const router = useRouter();
 
   const URLSearchQuery = useSearchParams().get("query");
+  const URLSearchGenres = useSearchParams().get("genres");
 
   // Function to search movies
-  const searchMovies = async (query) => {
-    setSelectedGenres([]);
+  const searchMovies = async ({ query, genres }) => {
+    // setSelectedGenres
+
+    let URL;
+    let params;
+    if (!genres) {
+      URL = `https://api.themoviedb.org/3/search/${!isTvPage ? "movie" : "tv"}`;
+      params = {
+        api_key: apiKey,
+        query: searchQuery.replace(/\s+/g, "+") || query,
+        sort_by: "popularity.desc",
+      };
+    } else {
+      URL = `https://api.themoviedb.org/3/discover/${
+        !isTvPage ? "movie" : "tv"
+      }`;
+      params = {
+        api_key: apiKey,
+        with_genres: genres,
+        sort_by: "popularity.desc",
+      };
+    }
 
     try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/search/${!isTvPage ? "movie" : "tv"}`,
-        {
-          params: {
-            api_key: apiKey,
-            query: searchQuery.replace(/\s+/g, "+") || query,
-            sort_by: "popularity.desc",
-          },
-        }
-      );
+      const response = await axios.get(URL, {
+        params: params,
+      });
       setFilms(response.data.results);
       setTotalSearchPages(response.data.total_pages);
     } catch (error) {
@@ -114,7 +129,7 @@ export default function Search() {
     );
 
     searchRef.current.blur();
-    searchMovies();
+    searchMovies({ query: searchQuery });
   };
 
   // Initial load and URL search query update
@@ -122,11 +137,15 @@ export default function Search() {
     setCurrentSearchPage(1);
 
     const query = URLSearchQuery;
+    const genres = URLSearchGenres;
+
     if (query !== null) {
       setSearchQuery(query || "");
-      searchMovies(query);
+      searchMovies({ query: query });
+    } else if (genres !== null) {
+      searchMovies({ query: query, genres: genres });
     }
-  }, [URLSearchQuery, isTvPage]);
+  }, [URLSearchQuery, URLSearchGenres, isTvPage]);
 
   // Fetch background movies
   useEffect(() => {
@@ -213,13 +232,14 @@ export default function Search() {
   // Reset selected genres when switching between movie and TV pages
   const clearSelectedGenres = () => {
     setSelectedGenres([]);
+    setSelectedGenresName([]);
     setFilms([]);
     setTotalSearchPages(0);
   };
   useEffect(() => {
     document.addEventListener("keydown", (event) => {
       if (event.key === "/") {
-        setSearchTips(false)
+        setSearchTips(false);
         event.preventDefault();
         searchRef.current.focus();
       }
@@ -229,31 +249,41 @@ export default function Search() {
   }, [isTvPage]);
 
   // Event handler for genre selection
-  const handleGenreClick = async (genreId) => {
-    router.replace(!isTvPage ? "/search" : "/tv/search");
+  const handleGenreClick = async (genreId, genre) => {
+    setSearchQuery("");
 
     try {
-      const updatedGenres = selectedGenres.includes(genreId)
+      const isGenreSelected = selectedGenres.includes(genreId);
+      const updatedGenres = isGenreSelected
         ? selectedGenres.filter((id) => id !== genreId)
         : [...selectedGenres, genreId];
 
+      const updatedGenresName = isGenreSelected
+        ? selectedGenresName.filter((name) => name !== genre)
+        : [...selectedGenresName, genre];
+
       const selectedGenreIds = updatedGenres.join(",");
 
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/discover/${!isTvPage ? "movie" : "tv"}`,
-        {
-          params: {
-            api_key: apiKey,
-            with_genres: selectedGenreIds,
-            // sort_by: "popularity.desc",
-            include_adult: false,
-          },
-        }
-      );
+      // const response = await axios.get(
+      //   `https://api.themoviedb.org/3/discover/${!isTvPage ? "movie" : "tv"}`,
+      //   {
+      //     params: {
+      //       api_key: apiKey,
+      //       with_genres: selectedGenreIds,
+      //       include_adult: false,
+      //     },
+      //   }
+      // );
 
+      router.replace(
+        !isTvPage
+          ? `/search?genres=${selectedGenreIds}`
+          : `/tv/search?genres=${selectedGenreIds}`
+      );
       setSelectedGenres(updatedGenres);
-      setFilms(response.data.results);
-      setTotalSearchPages(response.data.total_pages);
+      setSelectedGenresName(updatedGenresName);
+      // setFilms(response.data.results);
+      // setTotalSearchPages(response.data.total_pages);
     } catch (error) {
       console.error("Error fetching movies by genre:", error);
     }
@@ -306,7 +336,9 @@ export default function Search() {
               <input type="submit" className="sr-only" />
             </form>
 
-            <div className={`hidden lg:block text-xs absolute right-4 top-[50%] -translate-y-[50%] gap-1 opacity-[50%] pointer-events-none`}>
+            <div
+              className={`hidden lg:block text-xs absolute right-4 top-[50%] -translate-y-[50%] gap-1 opacity-[50%] pointer-events-none`}
+            >
               <span>Press </span>
               <kbd className={`kbd kbd-xs rounded`}>/</kbd>
             </div>
@@ -334,12 +366,14 @@ export default function Search() {
                 className={`w-full !p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur relative`}
               >
                 {genres.map((item) => {
-                  const activeGenre = selectedGenres.includes(item.id);
+                  const activeGenre =
+                    selectedGenres.includes(item.id) ||
+                    URLSearchGenres?.includes(item.id);
 
                   return (
                     <SwiperSlide key={item.id} className="max-w-fit">
                       <button
-                        onClick={() => handleGenreClick(item.id)}
+                        onClick={() => handleGenreClick(item.id, item.name)}
                         className={`font-medium py-2 px-4 rounded-lg bg-secondary bg-opacity-30 hocus:bg-opacity-50 ${
                           activeGenre && `!bg-white !text-base-100`
                         }`}
@@ -368,9 +402,18 @@ export default function Search() {
               </Swiper>
               <div className="flex justify-end items-center">
                 <button
-                  onClick={clearSelectedGenres}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedGenres([]);
+                    setSelectedGenresName([]);
+                    setFilms([]);
+                    setTotalSearchPages(0);
+                    router.replace(!isTvPage ? `/search` : `/tv/search`);
+                  }}
                   className={`max-w-fit items-center gap-2 bg-[#323946] bg-opacity-50 backdrop-blur p-2 px-4 rounded-xl hocus:bg-opacity-100 ${
-                    selectedGenres.length > 0 ? `flex` : `hidden`
+                    selectedGenres.length > 0 || URLSearchGenres
+                      ? `flex`
+                      : `hidden`
                   }`}
                 >
                   <IonIcon

@@ -38,10 +38,11 @@ import {
 } from "react-share";
 import FilmPoster from "./FilmPoster";
 import TitleLogo from "@/app/components/TitleLogo";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Person from "./Person";
 import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
+import Link from "next/link";
 
 export default function FilmInfo({
   film,
@@ -65,6 +66,7 @@ export default function FilmInfo({
   const [URL, setURL] = useState("");
   const [episodes, setEpisodes] = useState([]);
 
+  const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -417,22 +419,18 @@ export default function FilmInfo({
 
               {film.genres.map((item) => {
                 return (
-                  <span
+                  <Link
                     key={item.id}
-                    onClick={() => {
-                      const alert =
-                        document.getElementById(`featureNotAvailable`);
-                      alert.style.transform = `translateY(0)`;
-
-                      setTimeout(() => {
-                        alert.style.transform = `translateY(calc(100% + 1rem))`;
-                      }, 3000);
-                    }}
+                    href={
+                      !isTvPage
+                        ? `/search?genres=${item.id}`
+                        : `/tv/search?genres=${item.id}`
+                    }
                     className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
                     itemProp="genre"
                   >
                     {item.name}
-                  </span>
+                  </Link>
                 );
               })}
             </section>
