@@ -12,7 +12,10 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const isMoviesPage = pathname.startsWith("/movies") || pathname === "/";
+  const isMoviesPage =
+    pathname.startsWith("/movies") ||
+    pathname === "/" ||
+    pathname.startsWith("/search");
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
