@@ -7,9 +7,28 @@ import React, { useEffect, useState } from "react";
 import { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-export default function PersonWorks({ movieCredits, tvCredits }) {
+export default function PersonWorks({
+  movieCredits,
+  tvCredits,
+  sort = "DESC",
+}) {
   const [creditsSwitcher, setCreditsSwitcher] = useState(`Movies`);
   const [films, setFilms] = useState();
+
+  const isTvPage = creditsSwitcher === `TV` ? true : false;
+
+  const sortedFilms =
+    films &&
+    [...films.cast].sort((a, b) => {
+      const dateA = new Date(!isTvPage ? a.release_date : a.first_air_date);
+      const dateB = new Date(!isTvPage ? b.release_date : b.first_air_date);
+
+      if (sort === "ASC") {
+        return dateA - dateB;
+      } else if (sort === "DESC") {
+        return dateB - dateA;
+      }
+    });
 
   useEffect(() => {
     if (movieCredits?.cast.length < 1) {
@@ -45,7 +64,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
         <Swiper
           modules={[Navigation]}
           spaceBetween={8}
-          slidesPerView={2}
+          slidesPerView={"auto"}
           // loop={true}
           navigation={{
             nextEl: ".next",
@@ -54,22 +73,22 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
           }}
           breakpoints={{
             640: {
-              slidesPerView: 3,
+              // slidesPerView: 3,
               slidesPerGroup: 3,
             },
             768: {
-              slidesPerView: 4,
+              // slidesPerView: 4,
               slidesPerGroup: 4,
             },
             1024: {
-              slidesPerView: 5,
+              // slidesPerView: 5,
               slidesPerGroup: 5,
             },
           }}
-          className={`!pb-4 !pt-[2.5rem] max-w-7xl !-mx-2 !px-2`}
+          className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[1rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[1rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
         >
-          {films?.cast
-            .filter(
+          {sortedFilms
+            ?.filter(
               (item, index, self) =>
                 index === self.findIndex((t) => t.id === item.id)
             )
@@ -80,7 +99,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
               return (
                 <SwiperSlide
                   key={film.id}
-                  className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[20vw]`}
+                  className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
                 >
                   <article>
                     <Link

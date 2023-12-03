@@ -59,7 +59,7 @@ export default function PersonDetails({
                 return (
                   <SwiperSlide
                     key={image.id}
-                    className={`transition-all max-w-[50vw] sm:max-w-[33.3vw] md:max-w-[25vw] lg:max-w-[15vw]`}
+                    className={`transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
                   >
                     <figure
                       className={`aspect-poster rounded-xl`}

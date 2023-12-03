@@ -17,8 +17,8 @@ import footer from "@/app/json/footer.json";
 
 export default function Footer() {
   // Date variables
-  const createdDate = new Date("2023-02-17");
   const currentYear = new Date().getFullYear();
+  const createdDate = new Date("2023-02-17");
   const createdMonth = createdDate.toLocaleString("en-US", { month: "short" });
   const createdYear = createdDate.getFullYear();
 

@@ -58,7 +58,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
       {/* Person Info */}
       <div className={`p-4 pb-6 flex flex-col gap-4`}>
         <h2
-          className={`text-xl md:text-3xl md:text-center font-bold md:mb-2`}
+          className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
           style={{ textWrap: `balance` }}
         >
           {person.name}
@@ -95,7 +95,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
           </div>
         )}
 
-        <div className={`flex flex-col gap-1`}>
+        <div className={`flex flex-col gap-1 [&_ion-icon]:min-w-[16px] [&_ion-icon]:aspect-square`}>
           {!person.deathday && (
             <section id={`Birth Date`}>
               <div className={`flex items-center gap-2`}>

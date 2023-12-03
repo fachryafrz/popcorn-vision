@@ -29,7 +29,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   });
 
   return (
-    <section id={title} className={`px-4 w-full max-w-7xl mx-auto`}>
+    <section id={title} className={`w-full max-w-7xl mx-auto`}>
       <h2 className="sr-only">{title}</h2>
 
       <Swiper
@@ -56,7 +56,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
             slidesPerGroup: 5,
           },
         }}
-        className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[8.35rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[5rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:block before:pointer-events-none after:pointer-events-none`}
+        className={`!pl-4 !pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
           const filmGenres =
@@ -78,7 +78,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           );
         })}
 
-        <div className="z-20 absolute top-0 left-0 right-0 h-[28px] max-w-7xl xl:max-w-none flex justify-between items-end">
+        <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
           <div className="flex gap-4 items-end">
             <p className="font-bold text-lg md:text-2xl">{title}</p>
           </div>
