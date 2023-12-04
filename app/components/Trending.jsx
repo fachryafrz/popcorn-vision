@@ -8,6 +8,7 @@ import React, { useEffect, useState } from "react";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
+import FilmSummary from "./FilmSummary";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -63,7 +64,7 @@ export default function Trending({ film, genres }) {
           />
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
-          <div className="hidden md:flex w-full">
+          {/* <div className="hidden md:flex w-full">
             <TitleLogo film={film} />
           </div>
 
@@ -107,7 +108,14 @@ export default function Trending({ film, genres }) {
               className="!w-5 h-full aspect-square"
             />
             Details
-          </Link>
+          </Link> */}
+
+          <FilmSummary
+            film={film}
+            genres={genres}
+            className={`!max-w-none`}
+            btnClass={`btn-warning bg-opacity-[80%] w-fit`}
+          />
         </div>
       </div>
     </div>
