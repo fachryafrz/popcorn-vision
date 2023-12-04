@@ -241,7 +241,7 @@ export default function Search() {
       if (event.key === "/") {
         setSearchTips(false);
         event.preventDefault();
-        searchRef.current.focus();
+        searchRef?.current.focus();
       }
     });
 

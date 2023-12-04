@@ -28,6 +28,7 @@ export default function Navbar() {
         <Link
           href={!isTvPage ? `/` : `/tv`}
           className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
+          aria-labelledby={`Home`}
         >
           <figure
             style={{
