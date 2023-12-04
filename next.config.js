@@ -3,6 +3,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  swcMinify: true,
 };
 
 module.exports = nextConfig;
