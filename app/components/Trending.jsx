@@ -114,7 +114,7 @@ export default function Trending({ film, genres }) {
             film={film}
             genres={genres}
             className={`!max-w-none`}
-            btnClass={`btn-warning bg-opacity-[80%] w-fit`}
+            btnClass={`btn-warning bg-opacity-[80%] w-full md:w-fit`}
           />
         </div>
       </div>
