@@ -113,12 +113,14 @@ export default function PersonDetails({
 
       {/* Stats */}
       <section className={`flex gap-12 flex-wrap`}>
-        <div id={`Age`} className={`flex flex-col gap-1`}>
-          <span className={`text-xl font-bold`}>
-            {`${calculateAge(person.birthday)} years`}
-          </span>
-          <span className={`text-gray-400`}>Age</span>
-        </div>
+        {person.birthday && (
+          <div id={`Age`} className={`flex flex-col gap-1`}>
+            <span className={`text-xl font-bold`}>
+              {`${calculateAge(person.birthday)} years`}
+            </span>
+            <span className={`text-gray-400`}>Age</span>
+          </div>
+        )}
 
         {movieCredits?.cast.length > 0 && (
           <div id={`Movies`} className={`flex flex-col gap-1`}>

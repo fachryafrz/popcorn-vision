@@ -96,7 +96,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
         )}
 
         <div className={`flex flex-col gap-1 [&_ion-icon]:min-w-[16px] [&_ion-icon]:aspect-square`}>
-          {!person.deathday && (
+          {!person.deathday && person.birthday && (
             <section id={`Birth Date`}>
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={calendarOutline} />
