@@ -9,7 +9,7 @@ import {
   logoYoutube,
 } from "ionicons/icons";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 // JSON import
@@ -26,6 +26,16 @@ export default function Footer() {
 
   // Router variables
   const isTvPage = pathname.startsWith("/tv");
+
+  const [installPrompt, setInstallPrompt] = useState();
+
+  useEffect(() => {
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      setInstallPrompt(event);
+    });
+  }, []);
+
   return (
     <footer className="px-4 mx-auto pt-[2rem] max-w-7xl flex flex-col text-white">
       <div className="flex flex-col items-center justify-center text-center pb-8">
@@ -45,12 +55,25 @@ export default function Footer() {
               {footer.links &&
                 footer.links.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      href={link.url}
-                      className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
-                    >
-                      {link.name}
-                    </Link>
+                    {link.url === `/download` ? (
+                      <button
+                        onClick={async () => {
+                          await installPrompt.prompt();
+
+                          setInstallPrompt(null);
+                        }}
+                        className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
+                      >
+                        {link.name}
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.url}
+                        className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
+                      >
+                        {link.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
             </ul>
