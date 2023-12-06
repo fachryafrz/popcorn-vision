@@ -68,7 +68,7 @@ export function EpisodeModal({
           className={`modal-box rounded-2xl max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
         >
           <figure
-            className={`aspect-video relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+            className={`aspect-video relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
             style={{
               backgroundImage:
                 episode.still_path === null

@@ -73,7 +73,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             `/movies/${film.id}-${slugify(film.title)}`,
             `/tv/${film.id}-${slugify(film.name)}`
           )}
-          className={`btn btn-primary bg-opacity-40 border-none hocus:bg-opacity-100 ${btnClass}`}
+          className={`btn btn-primary bg-opacity-40 border-none hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
         >
           <IonIcon
             icon={informationCircleOutline}
