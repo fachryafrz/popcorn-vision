@@ -21,7 +21,9 @@ export async function generateMetadata({ params, type = "tv" }) {
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
 
-  const filmReleaseDate = film.first_air_date ? date.getFullYear() : `Coming soon`;
+  const filmReleaseDate = film.first_air_date
+    ? date.getFullYear()
+    : `Coming soon`;
   const lastAirDate =
     film.last_air_date !== null &&
     new Date(film.last_air_date).getFullYear() !==
@@ -29,17 +31,27 @@ export async function generateMetadata({ params, type = "tv" }) {
 
   let backdrops;
 
-  if (images.backdrops.length > 0) {
+  // if (images.backdrops.length > 0) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+  //   };
+  // } else if (film.backdrop_path) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+  //   };
+  // } else if (film.poster_path) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+  //   };
+  // }
+
+  let path =
+    images.backdrops.length > 0
+      ? images.backdrops[0].file_path
+      : film.backdrop_path || film.poster_path;
+  if (path) {
     backdrops = {
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
-    };
-  } else if (film.backdrop_path) {
-    backdrops = {
-      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
-    };
-  } else if (film.poster_path) {
-    backdrops = {
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${path}`,
     };
   }
 

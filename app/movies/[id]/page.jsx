@@ -42,17 +42,27 @@ export async function generateMetadata({ params, type = "movie" }) {
 
   let backdrops;
 
-  if (images.backdrops.length > 0) {
+  // if (images.backdrops.length > 0) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+  //   };
+  // } else if (film.backdrop_path) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+  //   };
+  // } else if (film.poster_path) {
+  //   backdrops = {
+  //     images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+  //   };
+  // }
+
+  let path =
+    images.backdrops.length > 0
+      ? images.backdrops[0].file_path
+      : film.backdrop_path || film.poster_path;
+  if (path) {
     backdrops = {
-      images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
-    };
-  } else if (film.backdrop_path) {
-    backdrops = {
-      images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
-    };
-  } else if (film.poster_path) {
-    backdrops = {
-      images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+      images: `${process.env.API_IMAGE_500}${path}`,
     };
   }
 
