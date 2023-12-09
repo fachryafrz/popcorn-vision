@@ -102,9 +102,9 @@ function FilmSeason({ film, setLoading, loading }) {
   useEffect(() => {
     const fetchFilmSeason = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/tv/${film.id}`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}`, {
           params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            api_key: process.env.NEXT_PUBLIC_API_KEY,
           },
         })
         .then((res) => {

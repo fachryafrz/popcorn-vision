@@ -18,12 +18,12 @@ export default function TitleLogo({ film, images }) {
     const fetchTitleLogo = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/${!isTvPage ? `movie` : `tv`}/${
+          `${process.env.NEXT_PUBLIC_API_URL}/${!isTvPage ? `movie` : `tv`}/${
             film.id
           }/images`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
               language: "en",
             },
           }

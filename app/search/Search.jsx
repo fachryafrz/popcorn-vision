@@ -48,7 +48,7 @@ export default function Search() {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
+  const apiKey = process.env.NEXT_PUBLIC_API_KEY;
   const router = useRouter();
 
   const URLSearchQuery = useSearchParams().get("query");
@@ -61,14 +61,14 @@ export default function Search() {
     let URL;
     let params;
     if (!genres) {
-      URL = `https://api.themoviedb.org/3/search/${!isTvPage ? "movie" : "tv"}`;
+      URL = `${process.env.NEXT_PUBLIC_API_URL}/search/${!isTvPage ? "movie" : "tv"}`;
       params = {
         api_key: apiKey,
         query: searchQuery.replace(/\s+/g, "+") || query,
         sort_by: "popularity.desc",
       };
     } else {
-      URL = `https://api.themoviedb.org/3/discover/${
+      URL = `${process.env.NEXT_PUBLIC_API_URL}/discover/${
         !isTvPage ? "movie" : "tv"
       }`;
       params = {
@@ -151,7 +151,7 @@ export default function Search() {
   useEffect(() => {
     const fetchBgMovies = async () => {
       axios
-        .get(`https://api.themoviedb.org/3/movie/now_playing`, {
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/movie/now_playing`, {
           params: {
             api_key: apiKey,
           },
@@ -169,7 +169,7 @@ export default function Search() {
     const fetchGenres = async () => {
       axios
         .get(
-          `https://api.themoviedb.org/3/genre/${
+          `${process.env.NEXT_PUBLIC_API_URL}/genre/${
             !isTvPage ? "movie" : "tv"
           }/list`,
           {
@@ -197,7 +197,7 @@ export default function Search() {
 
       if (searchQuery) {
         response = await axios.get(
-          `https://api.themoviedb.org/3/search/${!isTvPage ? "movie" : "tv"}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/search/${!isTvPage ? "movie" : "tv"}`,
           {
             params: {
               api_key: apiKey,
@@ -210,7 +210,7 @@ export default function Search() {
         );
       } else {
         response = await axios.get(
-          `https://api.themoviedb.org/3/discover/${!isTvPage ? "movie" : "tv"}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/discover/${!isTvPage ? "movie" : "tv"}`,
           {
             params: {
               api_key: apiKey,
@@ -265,7 +265,7 @@ export default function Search() {
       const selectedGenreIds = updatedGenres.join(",");
 
       // const response = await axios.get(
-      //   `https://api.themoviedb.org/3/discover/${!isTvPage ? "movie" : "tv"}`,
+      //   `${process.env.NEXT_PUBLIC_API_URL}/discover/${!isTvPage ? "movie" : "tv"}`,
       //   {
       //     params: {
       //       api_key: apiKey,

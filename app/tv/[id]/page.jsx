@@ -3,9 +3,9 @@ import axios from "axios";
 import React from "react";
 
 async function getFilm(id, type, path) {
-  const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`, {
     params: {
-      api_key: process.env.API_KEY,
+      api_key: process.env.NEXT_PUBLIC_API_KEY,
       language: "en",
     },
   });
@@ -33,15 +33,15 @@ export async function generateMetadata({ params, type = "tv" }) {
 
   // if (images.backdrops.length > 0) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${images.backdrops[0].file_path}`,
   //   };
   // } else if (film.backdrop_path) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.backdrop_path}`,
   //   };
   // } else if (film.poster_path) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.poster_path}`,
   //   };
   // }
 
@@ -51,7 +51,7 @@ export async function generateMetadata({ params, type = "tv" }) {
       : film.backdrop_path || film.poster_path;
   if (path) {
     backdrops = {
-      images: `${process.env.API_IMAGE_500}${path}`,
+      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
     };
   }
 
@@ -70,10 +70,10 @@ export async function generateMetadata({ params, type = "tv" }) {
         lastAirDate
           ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
           : filmReleaseDate
-      }) - ${process.env.APP_NAME}`,
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
-      url: `${process.env.APP_URL}/${`tv`}/${film.id}`,
-      siteName: process.env.APP_NAME,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`tv`}/${film.id}`,
+      siteName: process.env.NEXT_PUBLIC_APP_NAME,
       ...backdrops,
       locale: "en_US",
       type: "website",
@@ -84,7 +84,7 @@ export async function generateMetadata({ params, type = "tv" }) {
         lastAirDate
           ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
           : filmReleaseDate
-      }) - ${process.env.APP_NAME}`,
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
       ...backdrops,

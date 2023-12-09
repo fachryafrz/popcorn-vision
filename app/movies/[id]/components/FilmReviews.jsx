@@ -18,10 +18,10 @@ export default function FilmReviews({ reviews, film }) {
 
     try {
       const res = await axios.get(
-        `https://api.themoviedb.org/3/movie/${film.id}/reviews`,
+        `${process.env.NEXT_PUBLIC_API_URL}/movie/${film.id}/reviews`,
         {
           params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            api_key: process.env.NEXT_PUBLIC_API_KEY,
             page: currentReviewPage,
           },
         }

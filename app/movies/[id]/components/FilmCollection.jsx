@@ -51,11 +51,11 @@ export default function FilmCollection({
     const fetchCollections = async () => {
       try {
         const res = await axios.get(
-          `https://api.themoviedb.org/3/collection/${film.belongs_to_collection.id}
+          `${process.env.NEXT_PUBLIC_API_URL}/collection/${film.belongs_to_collection.id}
           `,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );
@@ -342,10 +342,10 @@ function FilmEpisodes({ id, season, fetchEpisodeModal, viewSeason }) {
     const fetchEpisodes = async () => {
       try {
         const res = await axios.get(
-          `https://api.themoviedb.org/3/tv/${id}/season/${season}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season}`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );

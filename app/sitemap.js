@@ -11,7 +11,7 @@ async function getFilms(
   apiSortBy = "popularity.desc"
 ) {
   let params = {
-    api_key: process.env.API_KEY,
+    api_key: process.env.NEXT_PUBLIC_API_KEY,
     sort_by: apiSortBy,
     region: "US",
     include_adult: false,
@@ -22,7 +22,7 @@ async function getFilms(
     "primary_release_date.lte": date_lte,
   };
 
-  const res = await axios.get(`${process.env.API_URL}${apiUrl}`, {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}${apiUrl}`, {
     params: {
       ...params,
     },
@@ -33,9 +33,9 @@ async function getFilms(
 
 async function getTrending(type) {
   try {
-    const res = await axios.get(`${process.env.API_URL}/trending/${type}/day`, {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/trending/${type}/day`, {
       params: {
-        api_key: process.env.API_KEY,
+        api_key: process.env.NEXT_PUBLIC_API_KEY,
       },
     });
 
@@ -128,7 +128,7 @@ export default async function sitemap() {
     // Push to All Movies Array //
     trendingMovies.forEach((item) => {
       allMovies.push({
-        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -136,7 +136,7 @@ export default async function sitemap() {
     });
     nowPlayingMovies.forEach((item) => {
       allMovies.push({
-        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -144,7 +144,7 @@ export default async function sitemap() {
     });
     upcomingMovies.forEach((item) => {
       allMovies.push({
-        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -152,7 +152,7 @@ export default async function sitemap() {
     });
     topRatedMovies.forEach((item) => {
       allMovies.push({
-        url: `${process.env.APP_URL}/movies/${item.id}-${slugify(item.title)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/movies/${item.id}-${slugify(item.title)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -162,7 +162,7 @@ export default async function sitemap() {
     // Push to All Series Array //
     trendingSeries.forEach((item) => {
       allSeries.push({
-        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -170,7 +170,7 @@ export default async function sitemap() {
     });
     onTheAirSeries.forEach((item) => {
       allSeries.push({
-        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -178,7 +178,7 @@ export default async function sitemap() {
     });
     upcomingSeries.forEach((item) => {
       allSeries.push({
-        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -186,7 +186,7 @@ export default async function sitemap() {
     });
     topRatedSeries.forEach((item) => {
       allSeries.push({
-        url: `${process.env.APP_URL}/tv/${item.id}-${slugify(item.name)}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/${item.id}-${slugify(item.name)}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
@@ -195,19 +195,19 @@ export default async function sitemap() {
 
     return [
       {
-        url: `${process.env.APP_URL}`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
       },
       {
-        url: `${process.env.APP_URL}/search`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/search`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,
       },
       {
-        url: `${process.env.APP_URL}/tv/search`,
+        url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/search`,
         lastModified: new Date(),
         changeFrequency: "hourly",
         priority: 1,

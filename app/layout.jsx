@@ -7,10 +7,10 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 export const viewport = {};
 
 export const metadata = {
-  generator: process.env.APP_NAME,
-  applicationName: process.env.APP_NAME,
+  generator: process.env.NEXT_PUBLIC_APP_NAME,
+  applicationName: process.env.NEXT_PUBLIC_APP_NAME,
   referrer: "origin-when-cross-origin",
-  keywords: process.env.APP_KEYWORDS.split(", "),
+  keywords: process.env.NEXT_PUBLIC_APP_KEYWORDS.split(", "),
   authors: [
     { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
   ],
@@ -22,20 +22,20 @@ export const metadata = {
     initialScale: 1,
   },
   title: {
-    default: process.env.APP_NAME,
+    default: process.env.NEXT_PUBLIC_APP_NAME,
     template: "%s - Popcorn Vision",
   },
-  description: process.env.APP_DESC,
-  metadataBase: new URL(process.env.APP_URL),
+  description: process.env.NEXT_PUBLIC_APP_DESC,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL),
   alternates: {
     canonical: "/",
     languages: "en-US",
   },
   openGraph: {
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
-    url: process.env.APP_URL,
-    siteName: process.env.APP_NAME,
+    title: process.env.NEXT_PUBLIC_APP_NAME,
+    description: process.env.NEXT_PUBLIC_APP_DESC,
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    siteName: process.env.NEXT_PUBLIC_APP_NAME,
     images: "/popcorn.png",
     locale: "en_US",
     type: "website",
@@ -44,8 +44,8 @@ export const metadata = {
   manifest: "/manifest.json",
   twitter: {
     card: "summary_large_image",
-    title: process.env.APP_NAME,
-    description: process.env.APP_DESC,
+    title: process.env.NEXT_PUBLIC_APP_NAME,
+    description: process.env.NEXT_PUBLIC_APP_DESC,
     creator: "@fachryafrz",
     images: "/popcorn.png",
   },

@@ -10,23 +10,23 @@ import providers from "../json/providers.json";
 export async function generateMetadata() {
   return {
     title: "TV Series",
-    description: process.env.APP_DESC,
+    description: process.env.NEXT_PUBLIC_APP_DESC,
     alternates: {
-      canonical: `${process.env.APP_URL}/tv`,
+      canonical: `${process.env.NEXT_PUBLIC_APP_URL}/tv`,
     },
     openGraph: {
-      title: process.env.APP_NAME,
-      description: process.env.APP_DESC,
-      url: `${process.env.APP_URL}/tv`,
-      siteName: process.env.APP_NAME,
+      title: process.env.NEXT_PUBLIC_APP_NAME,
+      description: process.env.NEXT_PUBLIC_APP_DESC,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/tv`,
+      siteName: process.env.NEXT_PUBLIC_APP_NAME,
       images: "/popcorn.png",
       locale: "en_US",
       type: "website",
     },
     twitter: {
       card: "summary_large_image",
-      title: process.env.APP_NAME,
-      description: process.env.APP_DESC,
+      title: process.env.NEXT_PUBLIC_APP_NAME,
+      description: process.env.NEXT_PUBLIC_APP_DESC,
       creator: "@fachryafrz",
       images: "/popcorn.png",
     },
@@ -39,9 +39,9 @@ export async function generateMetadata() {
 }
 
 async function getGenres() {
-  const res = await axios.get(`${process.env.API_URL}/genre/tv/list`, {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/genre/tv/list`, {
     params: {
-      api_key: process.env.API_KEY,
+      api_key: process.env.NEXT_PUBLIC_API_KEY,
     },
   });
 
@@ -57,7 +57,7 @@ async function getFilms(
   apiSortBy = "popularity.desc"
 ) {
   let params = {
-    api_key: process.env.API_KEY,
+    api_key: process.env.NEXT_PUBLIC_API_KEY,
     sort_by: apiSortBy,
     watch_region: "US",
     // with_watch_providers: "8|9|49|337",
@@ -70,7 +70,7 @@ async function getFilms(
     include_null_first_air_dates: false,
   };
 
-  const res = await axios.get(`${process.env.API_URL}${apiUrl}`, {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}${apiUrl}`, {
     params: {
       ...params,
     },
@@ -80,9 +80,9 @@ async function getFilms(
 }
 
 async function getTrending(num) {
-  const res = await axios.get(`${process.env.API_URL}/trending/tv/day`, {
+  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/trending/tv/day`, {
     params: {
-      api_key: process.env.API_KEY,
+      api_key: process.env.NEXT_PUBLIC_API_KEY,
     },
   });
 

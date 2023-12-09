@@ -108,10 +108,10 @@ export default function FilmInfo({
   const fetchEpisodes = async () => {
     try {
       const res = await axios.get(
-        `https://api.themoviedb.org/3/tv/${film.id}/season/${film.number_of_seasons}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}/season/${film.number_of_seasons}`,
         {
           params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            api_key: process.env.NEXT_PUBLIC_API_KEY,
           },
         }
       );

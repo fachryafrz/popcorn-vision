@@ -40,10 +40,10 @@ export default function PersonModal({
     const fetchCombinedCredits = async () => {
       try {
         const { data } = await axios.get(
-          `https://api.themoviedb.org/3/person/${person.id}/combined_credits`,
+          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/combined_credits`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );
@@ -55,10 +55,10 @@ export default function PersonModal({
     const fetchMovieCredits = async () => {
       try {
         const { data } = await axios.get(
-          `https://api.themoviedb.org/3/person/${person.id}/movie_credits`,
+          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/movie_credits`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );
@@ -71,10 +71,10 @@ export default function PersonModal({
     const fetchTVCredits = async () => {
       try {
         const { data } = await axios.get(
-          `https://api.themoviedb.org/3/person/${person.id}/tv_credits`,
+          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/tv_credits`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );
@@ -86,10 +86,10 @@ export default function PersonModal({
     const fetchImages = async () => {
       try {
         const { data } = await axios.get(
-          `https://api.themoviedb.org/3/person/${person.id}/images`,
+          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/images`,
           {
             params: {
-              api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+              api_key: process.env.NEXT_PUBLIC_API_KEY,
             },
           }
         );
@@ -104,6 +104,15 @@ export default function PersonModal({
     fetchTVCredits();
     fetchImages();
   }, [person]);
+
+  useEffect(() => {
+    if (movieCredits && tvCredits) {
+      setFilms({
+        cast: [...movieCredits.cast, ...tvCredits.cast],
+        crew: [...movieCredits.crew, ...tvCredits.crew],
+      });
+    }
+  }, [movieCredits, tvCredits]);
 
   return (
     <dialog

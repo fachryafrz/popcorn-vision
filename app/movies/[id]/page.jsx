@@ -9,22 +9,28 @@ import FilmInfo from "./components/FilmInfo";
 import FilmContent from "./components/FilmContent";
 
 async function getFilm(id, type, path) {
-  const res = await axios.get(`${process.env.API_URL}/${type}/${id}${path}`, {
-    params: {
-      api_key: process.env.API_KEY,
-      language: "en",
-    },
-  });
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`,
+    {
+      params: {
+        api_key: process.env.NEXT_PUBLIC_API_KEY,
+        language: "en",
+      },
+    }
+  );
 
   return res.data;
 }
 
 async function getGenres(type) {
-  const res = await axios.get(`${process.env.API_URL}/genre/${type}/list`, {
-    params: {
-      api_key: process.env.API_KEY,
-    },
-  });
+  const res = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/genre/${type}/list`,
+    {
+      params: {
+        api_key: process.env.NEXT_PUBLIC_API_KEY,
+      },
+    }
+  );
 
   return res.data.genres;
 }
@@ -44,15 +50,15 @@ export async function generateMetadata({ params, type = "movie" }) {
 
   // if (images.backdrops.length > 0) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${images.backdrops[0].file_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${images.backdrops[0].file_path}`,
   //   };
   // } else if (film.backdrop_path) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${film.backdrop_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.backdrop_path}`,
   //   };
   // } else if (film.poster_path) {
   //   backdrops = {
-  //     images: `${process.env.API_IMAGE_500}${film.poster_path}`,
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.poster_path}`,
   //   };
   // }
 
@@ -62,7 +68,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       : film.backdrop_path || film.poster_path;
   if (path) {
     backdrops = {
-      images: `${process.env.API_IMAGE_500}${path}`,
+      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
     };
   }
 
@@ -75,8 +81,8 @@ export async function generateMetadata({ params, type = "movie" }) {
     openGraph: {
       title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
       description: film.overview,
-      url: `${process.env.APP_URL}/${`movies`}/${film.id}`,
-      siteName: process.env.APP_NAME,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`movies`}/${film.id}`,
+      siteName: process.env.NEXT_PUBLIC_APP_NAME,
       ...backdrops,
       locale: "en_US",
       type: "website",

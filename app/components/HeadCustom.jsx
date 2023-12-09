@@ -1,11 +1,11 @@
 import React from "react";
 
 export default function HeadCustom({
-  title = process.env.APP_NAME,
-  description = process.env.APP_DESC,
-  url = process.env.APP_URL,
+  title = process.env.NEXT_PUBLIC_APP_NAME,
+  description = process.env.NEXT_PUBLIC_APP_DESC,
+  url = process.env.NEXT_PUBLIC_APP_URL,
   imgUrl = "/popcorn.png",
-  imgAlt = process.env.APP_NAME,
+  imgAlt = process.env.NEXT_PUBLIC_APP_NAME,
 }) {
   return (
     <head>
@@ -32,14 +32,14 @@ export default function HeadCustom({
       <meta name="robots" content="index, archive" />
       <meta name="title" content={title} />
       <meta name="description" content={description} />
-      <meta name="keywords" content={process.env.APP_KEYWORDS} />
+      <meta name="keywords" content={process.env.NEXT_PUBLIC_APP_KEYWORDS} />
       <link rel="canonical" href={url} />
 
       {/* Page title */}
       <title>{title}</title>
 
       {/* Open Graph tags */}
-      <meta property="og:site_name" content={process.env.APP_NAME} />
+      <meta property="og:site_name" content={process.env.NEXT_PUBLIC_APP_NAME} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={imgUrl} />

@@ -6,10 +6,10 @@ import PersonWorks from "./components/PersonWorks";
 
 async function getPerson({ id, path }) {
   const { data } = await axios.get(
-    `${process.env.API_URL}/person/${id}${path}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/person/${id}${path}`,
     {
       params: {
-        api_key: process.env.API_KEY,
+        api_key: process.env.NEXT_PUBLIC_API_KEY,
         language: "en",
       },
     }

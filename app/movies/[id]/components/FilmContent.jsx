@@ -25,10 +25,10 @@ export default function FilmContent({
 
     try {
       const { data } = await axios.get(
-        `https://api.themoviedb.org/3/tv/${filmID}/season/${season}/episode/${eps}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/tv/${filmID}/season/${season}/episode/${eps}`,
         {
           params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            api_key: process.env.NEXT_PUBLIC_API_KEY,
           },
         }
       );
@@ -48,10 +48,10 @@ export default function FilmContent({
 
     try {
       const { data } = await axios.get(
-        `https://api.themoviedb.org/3/person/${personID}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/person/${personID}`,
         {
           params: {
-            api_key: "84aa2a7d5e4394ded7195035a4745dbd",
+            api_key: process.env.NEXT_PUBLIC_API_KEY,
           },
         }
       );
