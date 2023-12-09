@@ -140,11 +140,12 @@ export default function FilmCollection({
                           {index + 1}
                         </span>
                         <figure
-                          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center`}
+                          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
                           style={{
                             backgroundImage:
                               item.poster_path === null ? popcorn : filmPoster,
-                            backgroundSize: "cover",
+                            backgroundSize:
+                              item.poster_path === null ? "contain" : "cover",
                             backgroundRepeat: "no-repeat",
                             backgroundPosition: "center",
                           }}
