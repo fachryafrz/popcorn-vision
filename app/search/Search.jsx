@@ -48,7 +48,7 @@ export default function Search() {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const apiKey = process.env.API_KEY;
+  const apiKey = "84aa2a7d5e4394ded7195035a4745dbd";
   const router = useRouter();
 
   const URLSearchQuery = useSearchParams().get("query");
@@ -61,7 +61,9 @@ export default function Search() {
     let URL;
     let params;
     if (!genres) {
-      URL = `${process.env.NEXT_PUBLIC_API_URL}/search/${!isTvPage ? "movie" : "tv"}`;
+      URL = `${process.env.NEXT_PUBLIC_API_URL}/search/${
+        !isTvPage ? "movie" : "tv"
+      }`;
       params = {
         api_key: apiKey,
         query: searchQuery.replace(/\s+/g, "+") || query,
@@ -197,7 +199,9 @@ export default function Search() {
 
       if (searchQuery) {
         response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/search/${!isTvPage ? "movie" : "tv"}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/search/${
+            !isTvPage ? "movie" : "tv"
+          }`,
           {
             params: {
               api_key: apiKey,
@@ -210,7 +214,9 @@ export default function Search() {
         );
       } else {
         response = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/discover/${!isTvPage ? "movie" : "tv"}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/discover/${
+            !isTvPage ? "movie" : "tv"
+          }`,
           {
             params: {
               api_key: apiKey,
