@@ -17,55 +17,8 @@ export default function FilmContent({
   isTvPage,
 }) {
   const [loading, setLoading] = useState(true);
-  const [episode, setEpisode] = useState();
-  const [selectedPerson, setSelectedPerson] = useState();
-
-  const fetchEpisodeModal = async (filmID, season, eps) => {
-    setLoading(true);
-
-    try {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/tv/${filmID}/season/${season}/episode/${eps}`,
-        {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-      setLoading(false);
-      setEpisode(data);
-      setTimeout(() => {
-        document.getElementById(`episodeModal`).scrollTo(0, 0);
-        document.getElementById(`episodeModal`).showModal();
-      }, 50);
-    } catch (error) {
-      console.error(`Errornya episode modal: ${error}`);
-    }
-  };
-
-  const fetchPersonModal = async (personID) => {
-    setLoading(true);
-
-    try {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/person/${personID}`,
-        {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-      setLoading(false);
-      setSelectedPerson(data);
-      setTimeout(() => {
-        if (episode) document.getElementById(`episodeModal`).close();
-        document.getElementById(`personModal`).scrollTo(0, 0);
-        document.getElementById(`personModal`).showModal();
-      }, 50);
-    } catch (error) {
-      console.error(`Errornya episode modal: ${error}`);
-    }
-  };
+  const [episodeModal, setEpisodeModal] = useState();
+  const [personModal, setPersonModal] = useState();
 
   return (
     <div
@@ -94,14 +47,12 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
-            episode={episode}
-            setEpisode={setEpisode}
+            episodeModal={episodeModal}
+            setEpisodeModal={setEpisodeModal}
             loading={loading}
             setLoading={setLoading}
-            fetchEpisodeModal={fetchEpisodeModal}
-            selectedPerson={selectedPerson}
-            setSelectedPerson={setSelectedPerson}
-            fetchPersonModal={fetchPersonModal}
+            personModal={personModal}
+            setPersonModal={setPersonModal}
           />
         </section>
 
@@ -114,21 +65,24 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
-            episode={episode}
-            setEpisode={setEpisode}
+            episodeModal={episodeModal}
+            setEpisodeModal={setEpisodeModal}
             loading={loading}
             setLoading={setLoading}
-            fetchEpisodeModal={fetchEpisodeModal}
-            selectedPerson={selectedPerson}
-            setSelectedPerson={setSelectedPerson}
-            fetchPersonModal={fetchPersonModal}
+            personModal={personModal}
+            setPersonModal={setPersonModal}
           />
         </section>
 
         {/* Casts & Credits */}
         <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
           {credits.cast.length > 0 && (
-            <CastsList credits={credits} fetchPersonModal={fetchPersonModal} />
+            <CastsList
+              credits={credits}
+              episodeModal={episodeModal}
+              personModal={personModal}
+              setPersonModal={setPersonModal}
+            />
           )}
         </section>
       </div>

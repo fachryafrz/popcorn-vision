@@ -130,7 +130,7 @@ function FilmSeason({ film, setLoading, loading }) {
       axios
         .get(`${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}`, {
           params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
+            api_key: process.env.API_KEY,
           },
         })
         .then((res) => {

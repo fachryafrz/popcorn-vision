@@ -6,6 +6,7 @@ import HomeSlider from "./components/HomeSlider";
 import FilmSlider from "./components/FilmSlider";
 import Trending from "./components/Trending";
 import companies from "./json/companies.json";
+import { getFilms, getGenres, getTrending } from "./api/route";
 
 export async function generateMetadata() {
   return {
@@ -35,65 +36,6 @@ export async function generateMetadata() {
       apple: "/apple-touch-icon.png",
     },
   };
-}
-
-async function getGenres() {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/genre/movie/list`,
-    {
-      params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
-      },
-    }
-  );
-
-  return res.data.genres;
-}
-
-async function getFilms(
-  endpoint,
-  date_gte,
-  date_lte,
-  apiCompanies,
-  apiGenres,
-  apiSortBy = "popularity.desc"
-) {
-  let params = {
-    api_key: process.env.NEXT_PUBLIC_API_KEY,
-    sort_by: apiSortBy,
-    region: "US",
-    include_adult: false,
-    language: "en-US",
-    with_companies: apiCompanies,
-    with_genres: apiGenres,
-    "primary_release_date.gte": date_gte,
-    "primary_release_date.lte": date_lte,
-  };
-
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
-    params: {
-      ...params,
-    },
-  });
-
-  return res.data;
-}
-
-async function getTrending(num) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/trending/movie/day`,
-    {
-      params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
-      },
-    }
-  );
-
-  if (num) {
-    return res.data.results[num - 1];
-  } else {
-    return res.data;
-  }
 }
 
 export default async function Home() {
@@ -127,23 +69,56 @@ export default async function Home() {
   const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
 
   // API Requests
-  const genres = await getGenres();
+  const genres = await getGenres({ type: `movie` });
 
+  const params = ({
+    date_gte,
+    date_lte,
+    apiCompanies,
+    apiGenres,
+    apiSortBy = "popularity.desc",
+  }) => {
+    return {
+      region: "US",
+      include_adult: false,
+      language: "en-US",
+      sort_by: apiSortBy,
+      with_companies: apiCompanies,
+      with_genres: apiGenres,
+      "primary_release_date.gte": date_gte,
+      "primary_release_date.lte": date_lte,
+    };
+  };
   return (
     <>
       <h1 className="sr-only">{`Popcorn Vision`}</h1>
-      <HomeSlider films={await getTrending()} genres={genres} />
+      <HomeSlider
+        films={await getTrending({ type: "movie" })}
+        genres={genres}
+      />
 
       {/* Now Playing */}
       <FilmSlider
-        films={await getFilms("/discover/movie", thirtyDaysAgo, today)}
+        films={await getFilms({
+          endpoint: "/discover/movie",
+          params: params({
+            date_gte: thirtyDaysAgo,
+            date_lte: today,
+          }),
+        })}
         title={`Now Playing`}
         genres={genres}
       />
 
       {/* Upcoming */}
       <FilmSlider
-        films={await getFilms("/discover/movie", tomorrow, endOfYear)}
+        films={await getFilms({
+          endpoint: "/discover/movie",
+          params: params({
+            date_gte: tomorrow,
+            date_lte: endOfYear,
+          }),
+        })}
         title={`Upcoming`}
         genres={genres}
         sort={"ASC"}
@@ -151,28 +126,34 @@ export default async function Home() {
 
       {/* Top Rated */}
       <FilmSlider
-        films={await getFilms(
-          "/discover/movie",
-          null,
-          null,
-          null,
-          null,
-          "vote_count.desc"
-        )}
+        films={await getFilms({
+          endpoint: "/discover/movie",
+          params: params({
+            apiSortBy: "vote_count.desc",
+          }),
+        })}
         title={`Top Rated`}
         genres={genres}
       />
 
       {/* Trending */}
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(6)} genres={genres} />
+        <Trending
+          film={await getTrending({ num: 6, type: `movie` })}
+          genres={genres}
+        />
       </section>
 
       {/* Companies */}
       {companies.slice(0, 3).map(async (company) => (
         <FilmSlider
           key={company.id}
-          films={await getFilms("/discover/movie", null, null, company.id)}
+          films={await getFilms({
+            endpoint: "/discover/movie",
+            params: params({
+              apiCompanies: company.id,
+            }),
+          })}
           title={company.name}
           genres={genres}
         />
@@ -180,14 +161,22 @@ export default async function Home() {
 
       {/* Trending */}
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(7)} genres={genres} />
+        <Trending
+          film={await getTrending({ num: 7, type: `movie` })}
+          genres={genres}
+        />
       </section>
 
       {/* Genres */}
       {genres.slice(0, 3).map(async (genre) => (
         <FilmSlider
           key={genre.id}
-          films={await getFilms("/discover/movie", null, null, null, genre.id)}
+          films={await getFilms({
+            endpoint: "/discover/movie",
+            params: params({
+              apiGenres: genre.id,
+            }),
+          })}
           title={genre.name}
           genres={genres}
         />
@@ -195,7 +184,10 @@ export default async function Home() {
 
       {/* Trending */}
       <section id="Trending" className="py-[2rem]">
-        <Trending film={await getTrending(8)} genres={genres} />
+        <Trending
+          film={await getTrending({ num: 8, type: `movie` })}
+          genres={genres}
+        />
       </section>
     </>
   );

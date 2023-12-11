@@ -23,12 +23,18 @@ import "swiper/css/navigation";
 import { Navigation } from "swiper";
 import FilmBackdrop from "./FilmBackdrop";
 import Person from "./Person";
+import {
+  getEpisodeModal,
+  getEpisodes,
+  getFilmCollection,
+} from "@/app/api/route";
 
 export default function FilmCollection({
   film,
-  episode,
+  episodeModal,
+  setEpisodeModal,
   loading,
-  fetchEpisodeModal,
+  setLoading,
 }) {
   const [apiData, setApiData] = useState();
   const [collectionTitle, setCollectionTitle] = useState();
@@ -48,33 +54,18 @@ export default function FilmCollection({
   };
 
   useEffect(() => {
-    const fetchCollections = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/collection/${film.belongs_to_collection.id}
-          `,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setApiData(res.data);
-        setCollectionTitle(res.data.name);
-        const sortedCollections = res.data.parts.sort((a, b) => {
+    if (film.belongs_to_collection) {
+      getFilmCollection({ film }).then((res) => {
+        setApiData(res);
+        setCollectionTitle(res.name);
+        const sortedCollections = res.parts.sort((a, b) => {
           const dateA = new Date(a.release_date);
           const dateB = new Date(b.release_date);
 
           return dateA - dateB;
         });
         setCollections(sortedCollections);
-      } catch (error) {
-        console.error(`Errornya collections: ${error}`);
-      }
-    };
-
-    if (film.belongs_to_collection) {
-      fetchCollections();
+      });
     }
 
     setShowAllCollection(false);
@@ -200,7 +191,9 @@ export default function FilmCollection({
                       film={film}
                       item={item}
                       index={index}
-                      fetchEpisodeModal={fetchEpisodeModal}
+                      episodeModal={episodeModal}
+                      setEpisodeModal={setEpisodeModal}
+                      setLoading={setLoading}
                     />
                   </li>
                 );
@@ -224,7 +217,7 @@ export default function FilmCollection({
   );
 }
 
-function FilmSeason({ film, item, index, fetchEpisodeModal }) {
+function FilmSeason({ film, item, index, episodeModal, setEpisodeModal, setLoading }) {
   const [viewSeason, setViewSeason] = useState(false);
   const dateStr = item.air_date;
   const date = new Date(dateStr);
@@ -329,34 +322,29 @@ function FilmSeason({ film, item, index, fetchEpisodeModal }) {
       <FilmEpisodes
         id={film.id}
         season={index + 1}
-        fetchEpisodeModal={fetchEpisodeModal}
+        episodeModal={episodeModal}
+        setEpisodeModal={setEpisodeModal}
+        setLoading={setLoading}
         viewSeason={viewSeason}
       />
     </>
   );
 }
 
-function FilmEpisodes({ id, season, fetchEpisodeModal, viewSeason }) {
+function FilmEpisodes({
+  id,
+  season,
+  episodeModal,
+  setEpisodeModal,
+  setLoading,
+  viewSeason,
+}) {
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    const fetchEpisodes = async () => {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season}`,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setEpisodes(res.data.episodes);
-      } catch (error) {
-        console.error(`Errornya collections: ${error}`);
-      }
-    };
-
-    fetchEpisodes();
+    getEpisodes({ id, season }).then((res) => {
+      setEpisodes(res);
+    });
   }, [id, season]);
 
   return (
@@ -393,9 +381,21 @@ function FilmEpisodes({ id, season, fetchEpisodeModal, viewSeason }) {
             return (
               <SwiperSlide key={item.id} className={`!h-auto`}>
                 <button
-                  onClick={() =>
-                    fetchEpisodeModal(id, season, item.episode_number)
-                  }
+                  onClick={() => {
+                    getEpisodeModal({
+                      filmID: id,
+                      season: item.season_number,
+                      eps: item.episode_number,
+                    }).then((res) => {
+                      setEpisodeModal(res);
+                      setLoading(false);
+
+                      setTimeout(() => {
+                        document.getElementById(`episodeModal`).scrollTo(0, 0);
+                        document.getElementById(`episodeModal`).showModal();
+                      }, 100);
+                    });
+                  }}
                   className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full transition-all`}
                 >
                   <figure className="aspect-video rounded-lg overflow-hidden w-full">

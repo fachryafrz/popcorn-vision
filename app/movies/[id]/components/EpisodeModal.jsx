@@ -4,12 +4,7 @@ import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
 import { useEffect, useState } from "react";
 
-export function EpisodeModal({
-  episode,
-  setEpisode,
-  loading,
-  fetchPersonModal,
-}) {
+export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonModal, loading }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
@@ -55,7 +50,7 @@ export function EpisodeModal({
             onClick={() => {
               document.getElementById(`episodeModal`).close();
               setTimeout(() => {
-                setEpisode(null);
+                setEpisodeModal(null);
               }, 100);
             }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
@@ -160,7 +155,7 @@ export function EpisodeModal({
                   Guest Stars
                 </h2>
 
-                <div className={`grid sm:grid-cols-2 relative`}>
+                <div className={`grid sm:grid-cols-2 relative mb-2`}>
                   {episode.guest_stars
                     .slice(
                       0,
@@ -180,7 +175,9 @@ export function EpisodeModal({
                               : `https://image.tmdb.org/t/p/w185${item.profile_path}`
                           }
                           role={item.character}
-                          fetchPersonModal={fetchPersonModal}
+                          episodeModal={episode}
+                          personModal={personModal}
+                          setPersonModal={setPersonModal}
                         />
                       );
                     })}

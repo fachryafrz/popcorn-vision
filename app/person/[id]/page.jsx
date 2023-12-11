@@ -3,42 +3,62 @@ import React from "react";
 import PersonProfile from "./components/PersonProfile";
 import PersonDetails from "./components/PersonDetails";
 import PersonWorks from "./components/PersonWorks";
-
-async function getPerson({ id, path }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/person/${id}${path}`,
-    {
-      params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
-        language: "en",
-      },
-    }
-  );
-
-  return data;
-}
+import { getPerson } from "@/app/api/route";
 
 export async function generateMetadata({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id: id });
+  const person = await getPerson({ id });
+  const images = await getPerson({ id, path: "/images" });
+
+  let profiles;
+
+  let path =
+    images.profiles.length > 0
+      ? images.profiles[0].file_path
+      : film.backdrop_path || film.poster_path;
+  if (path) {
+    profiles = {
+      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
+    };
+  }
 
   return {
     title: `${person.name}`,
+    description: person.biography,
+    alternates: {
+      canonical: `/${`person`}/${person.id}`,
+    },
+    openGraph: {
+      title: `${person.name} - Popcorn Vision`,
+      description: person.biography,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`person`}/${person.id}`,
+      siteName: process.env.NEXT_PUBLIC_APP_NAME,
+      ...profiles,
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${person.name} - Popcorn Vision`,
+      description: person.biography,
+      creator: "@fachryafrz",
+      ...profiles,
+    },
   };
 }
 
 export default async function Person({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id: id });
+  const person = await getPerson({ id });
   const combinedCredits = await getPerson({
-    id: id,
+    id,
     path: "/combined_credits",
   });
-  const movieCredits = await getPerson({ id: id, path: "/movie_credits" });
-  const tvCredits = await getPerson({ id: id, path: "/tv_credits" });
-  const images = await getPerson({ id: id, path: "/images" });
+  const movieCredits = await getPerson({ id, path: "/movie_credits" });
+  const tvCredits = await getPerson({ id, path: "/tv_credits" });
+  const images = await getPerson({ id, path: "/images" });
 
   return (
     <div

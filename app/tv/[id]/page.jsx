@@ -1,22 +1,12 @@
+import { getFilm } from "@/app/api/route";
 import FilmDetail from "@/app/movies/[id]/page";
 import axios from "axios";
 import React from "react";
 
-async function getFilm(id, type, path) {
-  const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`, {
-    params: {
-      api_key: process.env.NEXT_PUBLIC_API_KEY,
-      language: "en",
-    },
-  });
-
-  return res.data;
-}
-
-export async function generateMetadata({ params, type = "tv" }) {
+export async function generateMetadata({ params, type = `tv` }) {
   const { id } = params;
-  const film = await getFilm(id, type);
-  const images = await getFilm(id, type, "/images");
+  const film = await getFilm({ id, type });
+  const images = await getFilm({ id, type, path: "/images" });
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
@@ -93,5 +83,5 @@ export async function generateMetadata({ params, type = "tv" }) {
 }
 
 export default function page({ params }) {
-  return <FilmDetail params={params} type="tv" />;
+  return <FilmDetail params={params} type={`tv`} />;
 }

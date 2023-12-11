@@ -7,38 +7,12 @@ import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
 import FilmInfo from "./components/FilmInfo";
 import FilmContent from "./components/FilmContent";
-
-async function getFilm(id, type, path) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`,
-    {
-      params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
-        language: "en",
-      },
-    }
-  );
-
-  return res.data;
-}
-
-async function getGenres(type) {
-  const res = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/genre/${type}/list`,
-    {
-      params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
-      },
-    }
-  );
-
-  return res.data.genres;
-}
+import { getFilm, getGenres } from "@/app/api/route";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
-  const film = await getFilm(id, type);
-  const images = await getFilm(id, type, "/images");
+  const film = await getFilm({ id, type });
+  const images = await getFilm({ id, type, path: "/images" });
 
   const isTvPage = type !== "movie" ? true : false;
 
@@ -102,14 +76,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const isTvPage = type !== "movie" ? true : false;
 
-  const film = await getFilm(id, type);
-  const credits = await getFilm(id, type, "/credits");
-  const videos = await getFilm(id, type, "/videos");
-  const images = await getFilm(id, type, "/images");
-  const reviews = await getFilm(id, type, "/reviews");
-  const providers = await getFilm(id, type, "/watch/providers");
-  const recommendations = await getFilm(id, type, "/recommendations");
-  const similar = await getFilm(id, type, "/similar");
+  const film = await getFilm({ id, type });
+  const credits = await getFilm({ id, type, path: "/credits" });
+  const videos = await getFilm({ id, type, path: "/videos" });
+  const images = await getFilm({ id, type, path: "/images" });
+  const reviews = await getFilm({ id, type, path: "/reviews" });
+  const providers = await getFilm({ id, type, path: "/watch/providers" });
+  const recommendations = await getFilm({ id, type, path: "/recommendations" });
+  const similar = await getFilm({ id, type, path: "/similar" });
 
   // This can cause double data from recommendation & similar
   // which means there can be two same movies in the list
@@ -117,7 +91,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     results: [...recommendations.results, ...similar.results],
   };
 
-  const genres = await getGenres(type);
+  const genres = await getGenres({ type });
 
   return (
     <div

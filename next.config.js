@@ -4,6 +4,9 @@ const nextConfig = {
     unoptimized: true,
   },
   swcMinify: true,
+  experimental: {
+    serverActions: true,
+  },
 };
 
 module.exports = nextConfig;

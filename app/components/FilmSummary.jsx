@@ -3,8 +3,8 @@ import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
 import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
-import axios from "axios";
 import { usePathname } from "next/navigation";
+import { getFilmSeason } from "../api/route";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -81,16 +81,6 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           />
           Details
         </Link>
-        {/* <Link
-          href={isItTvPage(
-            `/movies/${film.id}-${slugify(film.title)}#overview`,
-            `/tv/${film.id}-${slugify(film.name)}#overview`
-          )}
-          className="btn btn-ghost bg-secondary bg-opacity-40 backdrop-blur-sm hocus:bg-white hocus:text-base-100"
-        >
-          <IonIcon icon={playOutline} className="!w-5 h-full aspect-square" />
-          Trailer
-        </Link> */}
       </div>
     </div>
   );
@@ -100,20 +90,10 @@ function FilmSeason({ film, setLoading, loading }) {
   const [season, setSeason] = useState();
 
   useEffect(() => {
-    const fetchFilmSeason = async () => {
-      axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}`, {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        })
-        .then((res) => {
-          setSeason(res.data.number_of_seasons);
-          setLoading(false);
-        });
-    };
-
-    fetchFilmSeason();
+    getFilmSeason({ film }).then((res) => {
+      setSeason(res);
+      setLoading(false);
+    });
   }, [film, setLoading]);
 
   return season && !loading ? (

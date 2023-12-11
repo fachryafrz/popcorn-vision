@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+import { getPerson } from "@/app/api/route";
 import FilmSlider from "@/app/components/FilmSlider";
 import PersonDetails from "@/app/person/[id]/components/PersonDetails";
 import PersonProfile from "@/app/person/[id]/components/PersonProfile";
@@ -24,7 +25,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function PersonModal({
   person,
-  setSelectedPerson,
+  setPersonModal,
   loading,
   episode,
 }) {
@@ -37,72 +38,18 @@ export default function PersonModal({
   const router = useRouter();
 
   useEffect(() => {
-    const fetchCombinedCredits = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/combined_credits`,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setCombinedCredits(data);
-      } catch (error) {
-        console.error(`Errornya combined credits: ${error}`);
-      }
-    };
-    const fetchMovieCredits = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/movie_credits`,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setMovieCredits(data);
-        setFilms(data);
-      } catch (error) {
-        console.error(`Errornya movie credits: ${error}`);
-      }
-    };
-    const fetchTVCredits = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/tv_credits`,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setTVCredits(data);
-      } catch (error) {
-        console.error(`Errornya tv credits: ${error}`);
-      }
-    };
-    const fetchImages = async () => {
-      try {
-        const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/person/${person.id}/images`,
-          {
-            params: {
-              api_key: process.env.NEXT_PUBLIC_API_KEY,
-            },
-          }
-        );
-        setImages(data);
-      } catch (error) {
-        console.error(`Errornya person images: ${error}`);
-      }
-    };
-
-    fetchCombinedCredits();
-    fetchMovieCredits();
-    fetchTVCredits();
-    fetchImages();
+    getPerson({ id: person.id, path: `/combined_credits` }).then((res) => {
+      setCombinedCredits(res);
+    });
+    getPerson({ id: person.id, path: `/movie_credits` }).then((res) => {
+      setMovieCredits(res);
+    });
+    getPerson({ id: person.id, path: `/tv_credits` }).then((res) => {
+      setTVCredits(res);
+    });
+    getPerson({ id: person.id, path: `/images` }).then((res) => {
+      setImages(res);
+    });
   }, [person]);
 
   useEffect(() => {
@@ -128,7 +75,7 @@ export default function PersonModal({
                 document.getElementById(`episodeModal`).showModal();
               }
               setTimeout(() => {
-                setSelectedPerson(null);
+                setPersonModal(null);
               }, 100);
 
               router.back();

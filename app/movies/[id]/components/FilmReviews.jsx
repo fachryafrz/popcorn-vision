@@ -1,39 +1,25 @@
 import React, { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import axios from "axios";
+import { usePathname } from "next/navigation";
+import { getMoreReviews } from "@/app/api/route";
 
 export default function FilmReviews({ reviews, film }) {
   const totalReviewPages = reviews.total_pages;
-  let [currentReviewPage, setCurrentReviewPage] = useState(1);
+  let [currentPage, setCurrentPage] = useState(1);
   const [moreReviews, setMoreReviews] = useState(reviews.results);
   const [showAllReviews, setShowAllReviews] = useState(false);
   const numReviews = 2;
+
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
 
   const handleShowAllReviews = () => {
     setShowAllReviews(true);
   };
 
-  const fetchMoreReviews = async () => {
-    setCurrentReviewPage((prevPage) => prevPage + 1);
-
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/movie/${film.id}/reviews`,
-        {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
-            page: currentReviewPage,
-          },
-        }
-      );
-      setMoreReviews((prevReviews) => [...prevReviews, ...res.data.results]);
-    } catch (error) {
-      console.error(`Errornya reviews kedua: ${error}`);
-    }
-  };
-
   useEffect(() => {
-    setCurrentReviewPage(1);
+    setCurrentPage(1);
     setShowAllReviews(false);
   }, [film]);
 
@@ -54,22 +40,28 @@ export default function FilmReviews({ reviews, film }) {
 
       {totalReviewPages > 1 &&
         showAllReviews &&
-        currentReviewPage !== totalReviewPages && (
+        currentPage !== totalReviewPages && (
           <div
             className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
           >
-            {/* <button
-              onClick={() => fetchMoreReviews((currentReviewPage += 1))}
-              className="text-primary-blue p-2 px-12 xl:px-24 flex justify-center bg-white bg-opacity-5 hocus:bg-opacity-10 rounded-full whitespace-nowrap"
+            <button
+              onClick={() =>
+                getMoreReviews({
+                  film,
+                  type: !isTvPage ? `movie` : `tv`,
+                  currentPage,
+                }).then((data) => {
+                  setCurrentPage((prevPage) => prevPage + 1);
+                  setMoreReviews((prevReviews) => [
+                    ...prevReviews,
+                    ...data.results,
+                  ]);
+                })
+              }
+              className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
             >
               Load more
-            </button> */}
-            <button
-                  onClick={() => fetchMoreReviews((currentReviewPage += 1))}
-                  className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
-                >
-                  Load more
-                </button>
+            </button>
           </div>
         )}
 

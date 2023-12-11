@@ -48,7 +48,7 @@ export default function Search() {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+  const apiKey = process.env.API_KEY;
   const router = useRouter();
 
   const URLSearchQuery = useSearchParams().get("query");

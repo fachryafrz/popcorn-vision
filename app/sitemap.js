@@ -11,7 +11,7 @@ async function getFilms(
   apiSortBy = "popularity.desc"
 ) {
   let params = {
-    api_key: process.env.NEXT_PUBLIC_API_KEY,
+    api_key: process.env.API_KEY,
     sort_by: apiSortBy,
     region: "US",
     include_adult: false,
@@ -35,7 +35,7 @@ async function getTrending(type) {
   try {
     const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/trending/${type}/day`, {
       params: {
-        api_key: process.env.NEXT_PUBLIC_API_KEY,
+        api_key: process.env.API_KEY,
       },
     });
 

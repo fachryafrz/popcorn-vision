@@ -43,6 +43,7 @@ import Person from "./Person";
 import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
 import Link from "next/link";
+import { getEpisodeModal, getLocation } from "@/app/api/route";
 
 export default function FilmInfo({
   film,
@@ -51,20 +52,18 @@ export default function FilmInfo({
   reviews,
   credits,
   providers,
-  episode,
-  setEpisode,
+  episodeModal,
+  setEpisodeModal,
   loading,
-  fetchEpisodeModal,
-  selectedPerson,
-  setSelectedPerson,
-  fetchPersonModal,
+  setLoading,
+  personModal,
+  setPersonModal,
 }) {
   const [location, setLocation] = useState(null);
   const [language, setLanguage] = useState("id-ID");
   const [userLocation, setUserLocation] = useState();
   const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
-  const [episodes, setEpisodes] = useState([]);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -105,22 +104,6 @@ export default function FilmInfo({
     return `${releaseDay}, ${formattedDate}`;
   };
 
-  const fetchEpisodes = async () => {
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}/season/${film.number_of_seasons}`,
-        {
-          params: {
-            api_key: process.env.NEXT_PUBLIC_API_KEY,
-          },
-        }
-      );
-      setEpisodes(res.data.episodes);
-    } catch (error) {
-      console.error(`Errornya collections: ${error}`);
-    }
-  };
-
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -133,20 +116,12 @@ export default function FilmInfo({
     if (location) {
       const { latitude, longitude } = location;
 
-      axios
-        .get(
-          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-        )
-        .then((response) => {
-          if (response.data.countryCode !== "ID") {
-            setLanguage("en-US");
-          }
-          setUserLocation(response.data);
-        });
-    }
-
-    if (isTvPage) {
-      fetchEpisodes();
+      getLocation({ latitude, longitude }).then((response) => {
+        if (response.countryCode !== "ID") {
+          setLanguage("en-US");
+        }
+        setUserLocation(response);
+      });
     }
   }, [location, film, isTvPage]);
 
@@ -454,7 +429,8 @@ export default function FilmInfo({
                     }
                     role={`Director`}
                     itemProp={`director`}
-                    fetchPersonModal={fetchPersonModal}
+                    personModal={personModal}
+                    setPersonModal={setPersonModal}
                   />
                 </section>
               )
@@ -476,7 +452,8 @@ export default function FilmInfo({
                         }
                         role={`Creator`}
                         itemProp={`director`}
-                        fetchPersonModal={fetchPersonModal}
+                        personModal={personModal}
+                        setPersonModal={setPersonModal}
                       />
                     );
                   })}
@@ -551,13 +528,21 @@ export default function FilmInfo({
               </span>
               <button
                 id={`card`}
-                onClick={() =>
-                  fetchEpisodeModal(
-                    film.id,
-                    lastEps.season_number,
-                    lastEps.episode_number
-                  )
-                }
+                onClick={() => {
+                  getEpisodeModal({
+                    filmID: film.id,
+                    season: lastEps.season_number,
+                    eps: lastEps.episode_number,
+                  }).then((res) => {
+                    setEpisodeModal(res);
+                    setLoading(false);
+
+                    setTimeout(() => {
+                      document.getElementById(`episodeModal`).scrollTo(0, 0);
+                      document.getElementById(`episodeModal`).showModal();
+                    }, 100);
+                  });
+                }}
                 className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
               >
                 <figure
@@ -648,13 +633,23 @@ export default function FilmInfo({
                   <>
                     <button
                       id={`card`}
-                      onClick={() =>
-                        fetchEpisodeModal(
-                          film.id,
-                          nextEps.season_number,
-                          nextEps.episode_number
-                        )
-                      }
+                      onClick={() => {
+                        getEpisodeModal({
+                          filmID: film.id,
+                          season: nextEps.season_number,
+                          eps: nextEps.episode_number,
+                        }).then((res) => {
+                          setEpisodeModal(res);
+                          setLoading(false);
+
+                          setTimeout(() => {
+                            document
+                              .getElementById(`episodeModal`)
+                              .scrollTo(0, 0);
+                            document.getElementById(`episodeModal`).showModal();
+                          }, 100);
+                        });
+                      }}
                       className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
                     >
                       <figure

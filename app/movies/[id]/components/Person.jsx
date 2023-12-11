@@ -1,5 +1,6 @@
 "use client";
 
+import { getPerson } from "@/app/api/route";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -12,7 +13,9 @@ export default function Person({
   before = false,
   showAllActors,
   tooltip = false,
-  fetchPersonModal,
+  episodeModal,
+  personModal,
+  setPersonModal,
 }) {
   let popcorn = `/popcorn.png`;
   let profilePath = profile_path;
@@ -32,9 +35,17 @@ export default function Person({
   }
 
   const handleActorClick = () => {
-    window.history.pushState(null, null, `/person/${id}-${slugify(name)}`);
+    getPerson({ id }).then((res) => {
+      window.history.pushState(null, null, `/person/${id}-${slugify(name)}`);
 
-    fetchPersonModal(id);
+      setPersonModal(res);
+
+      setTimeout(() => {
+        if (episodeModal) document.getElementById(`episodeModal`).close();
+        document.getElementById(`personModal`).scrollTo(0, 0);
+        document.getElementById(`personModal`).showModal();
+      }, 100);
+    });
   };
 
   return (

@@ -32,13 +32,14 @@ export default function FilmOverview({
   reviews,
   credits,
   providers,
-  episode,
-  setEpisode,
+  episodeModal,
+  setEpisodeModal,
   loading,
-  fetchEpisodeModal,
+  setLoading,
   selectedPerson,
   setSelectedPerson,
-  fetchPersonModal,
+  personModal,
+  setPersonModal,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -67,9 +68,10 @@ export default function FilmOverview({
       ) : (
         <FilmCollection
           film={film}
-          episode={episode}
+          episodeModal={episodeModal}
+          setEpisodeModal={setEpisodeModal}
           loading={loading}
-          fetchEpisodeModal={fetchEpisodeModal}
+          setLoading={setLoading}
         />
       )}
 
@@ -79,21 +81,22 @@ export default function FilmOverview({
 
       <ShareModal />
 
-      {isTvPage && episode && (
+      {isTvPage && episodeModal && (
         <EpisodeModal
-          episode={episode}
-          setEpisode={setEpisode}
+          episode={episodeModal}
+          setEpisodeModal={setEpisodeModal}
+          person={personModal}
+          setPersonModal={setPersonModal}
           loading={loading}
-          fetchPersonModal={fetchPersonModal}
         />
       )}
 
-      {selectedPerson && (
+      {personModal && (
         <PersonModal
-          person={selectedPerson}
-          setSelectedPerson={setSelectedPerson}
+          person={personModal}
+          setPersonModal={setPersonModal}
           loading={loading}
-          episode={episode}
+          episode={episodeModal}
         />
       )}
 
