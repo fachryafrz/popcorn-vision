@@ -1,6 +1,7 @@
 "use client";
 
 import { getPerson } from "@/app/api/route";
+import { slugify } from "@/app/lib/slugify";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 
@@ -21,18 +22,6 @@ export default function Person({
   let profilePath = profile_path;
 
   const router = useRouter();
-
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
 
   const handleActorClick = () => {
     getPerson({ id }).then((res) => {

@@ -1,6 +1,7 @@
 export const revalidate = 3600; // revalidate this page every 1 hour
 
 import axios from "axios";
+import { slugify } from "./lib/slugify";
 
 async function getFilms(
   apiUrl,
@@ -77,18 +78,6 @@ export default async function sitemap() {
     .slice(0, 10);
   const currentYear = currentDate.getFullYear();
   const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
-
-  const slugify = (text) => {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  };
 
   try {
     // Movies

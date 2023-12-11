@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React from "react";
+import { slugify } from "../lib/slugify";
 
 export default function FilmCard({ film, genres, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
@@ -16,18 +17,6 @@ export default function FilmCard({ film, genres, isTvPage }) {
     const type = !isTvPage ? movie : tv;
     return type;
   };
-
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
 
   return (
     <Link

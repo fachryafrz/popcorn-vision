@@ -32,18 +32,6 @@ export default function Trending({ film, genres }) {
   const options = { year: "numeric", month: "short" };
   const formattedDate = date.toLocaleString("en-US", options);
 
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
-
   return (
     <div className="px-4 mx-auto max-w-7xl">
       <h2 className="sr-only">{`Trending Movie`}</h2>

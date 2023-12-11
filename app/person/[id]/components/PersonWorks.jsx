@@ -1,5 +1,6 @@
 "use client";
 
+import { slugify } from "@/app/lib/slugify";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Link from "next/link";
@@ -44,18 +45,6 @@ export default function PersonWorks({
     }
   }, [creditsSwitcher]);
 
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
-
   return (
     <div>
       <section id={`Movies & TV Series`}>
@@ -87,8 +76,8 @@ export default function PersonWorks({
           }}
           className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[1rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[1rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
         >
-          {films
-            ?.cast.filter(
+          {films?.cast
+            .filter(
               (item, index, self) =>
                 index === self.findIndex((t) => t.id === item.id)
             )

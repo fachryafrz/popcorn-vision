@@ -28,6 +28,7 @@ import {
   getEpisodes,
   getFilmCollection,
 } from "@/app/api/route";
+import { slugify } from "@/app/lib/slugify";
 
 export default function FilmCollection({
   film,
@@ -71,17 +72,6 @@ export default function FilmCollection({
     setShowAllCollection(false);
   }, [film]);
 
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
 
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
