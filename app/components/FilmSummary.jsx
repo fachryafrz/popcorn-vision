@@ -5,6 +5,7 @@ import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { getFilmSeason } from "../api/route";
+import { slugify } from "../lib/slugify";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -27,18 +28,6 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           genres.find((genre) => genre.id === genreId)
         )
       : [];
-
-  function slugify(text) {
-    return (
-      text &&
-      text
-        .toLowerCase()
-        .replace(/&/g, "")
-        .replace(/ /g, "-")
-        .replace(/-+/g, "-")
-        .replace(/[^\w-]+/g, "")
-    );
-  }
 
   return (
     <div

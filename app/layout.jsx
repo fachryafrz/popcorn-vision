@@ -69,7 +69,7 @@ export default function RootLayout({ children }) {
         <Navbar />
 
         {/* Main Content */}
-        <main className="pb-8">{children}</main>
+        <main className={`pb-8 mt-[66px]`}>{children}</main>
 
         {/* Footer */}
         <Footer />
