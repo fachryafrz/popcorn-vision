@@ -49,7 +49,12 @@ export default function Navbar() {
               const query = e.target[0].value;
 
               if (!query) return;
-              router.push(`/search?query=${query.replace(/\s+/g, "+")}`);
+              router.push(
+                `${!isTvPage ? `/search` : `/tv/search`}?query=${query.replace(
+                  /\s+/g,
+                  "+"
+                )}`
+              );
             }}
             className={`hidden lg:block form-control w-full justify-self-center relative`}
           >
