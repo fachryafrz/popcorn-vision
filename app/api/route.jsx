@@ -16,13 +16,14 @@ export async function getFilms({ endpoint, params }) {
   return data;
 }
 
-export async function getFilm({ id, type, path }) {
+export async function getFilm({ id, type, path, params }) {
   const { data } = await axios.get(
     `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`,
     {
       params: {
         api_key: process.env.API_KEY,
         language: "en",
+        ...params,
       },
     }
   );
