@@ -53,7 +53,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             return <span key={genre.id}>{genre.name}</span>;
           })}
       </div>
-      <p className="hidden sm:line-clamp-1 md:line-clamp-2 lg:line-clamp-3">
+      <p className="hidden md:line-clamp-2 lg:line-clamp-3">
         {film.overview}
       </p>
       <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
@@ -62,7 +62,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             `/movies/${film.id}-${slugify(film.title)}`,
             `/tv/${film.id}-${slugify(film.name)}`
           )}
-          className={`btn btn-primary bg-opacity-40 border-none hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
+          className={`btn btn-primary bg-opacity-40 border-none rounded-full hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
         >
           <IonIcon
             icon={informationCircleOutline}

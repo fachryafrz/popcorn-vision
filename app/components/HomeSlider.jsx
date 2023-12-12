@@ -20,6 +20,7 @@ import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
+import { getFilm } from "../api/route";
 
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
@@ -46,7 +47,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`lg:h-[80vh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[25%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        className={`h-[calc(100svh-66px)] md:h-auto lg:h-[80svh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -67,36 +68,88 @@ export default function HomeSlider({ films, genres }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% md:after:via-transparent lg:after:opacity-[100%] lg:max-h-[80vh] aspect-poster sm:aspect-[4/3] md:aspect-auto"
+              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%]"
             >
-              <figure className="h-full w-full -z-10">
-                <img
-                  loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
-                  alt={isItTvPage(film.title, film.name)}
-                  className="object-top sm:hidden"
-                />
-
-                <img
-                  loading="lazy"
-                  src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
-                  alt={isItTvPage(film.title, film.name)}
-                  className="object-top hidden sm:block"
-                />
-              </figure>
-              <div className={`mx-auto max-w-7xl z-20 absolute inset-0`}>
-                <FilmSummary
-                  film={film}
-                  genres={genres}
-                  isTvPage={isTvPage}
-                  loading={loading}
-                  setLoading={setLoading}
-                />
-              </div>
+              <HomeFilm
+                film={film}
+                genres={genres}
+                isTvPage={isTvPage}
+                loading={loading}
+                setLoading={setLoading}
+              />
             </SwiperSlide>
           );
         })}
       </Swiper>
     </section>
+  );
+}
+
+function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
+  const [filmPoster, setFilmPoster] = useState("");
+  const [filmBackdrop, setFilmBackdrop] = useState("");
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
+
+  const releaseDate = isItTvPage(film.release_date, film.first_air_date);
+  const date = new Date(releaseDate);
+  const options = { year: "numeric", month: "short" };
+  const formattedDate = date.toLocaleString("en-US", options);
+
+  const filmGenres =
+    film.genre_ids && genres
+      ? film.genre_ids.map((genreId) =>
+          genres.find((genre) => genre.id === genreId)
+        )
+      : [];
+
+  useEffect(() => {
+    getFilm({
+      id: film.id,
+      type: isItTvPage("movie", "tv"),
+      path: "/images",
+      params: {
+        include_image_language: "null",
+      },
+    }).then((res) => {
+      setFilmPoster(res.posters[0].file_path);
+      setFilmBackdrop(res.backdrops[0].file_path);
+    });
+  }, [film]);
+
+  return (
+    <>
+      <figure className={`h-full w-full -z-10`}>
+        {filmPoster && (
+          <img
+            loading={`lazy`}
+            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+            alt={isItTvPage(film.title, film.name)}
+            className={`object-top md:hidden`}
+          />
+        )}
+
+        {filmBackdrop && (
+          <img
+            loading={`lazy`}
+            src={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+            alt={isItTvPage(film.title, film.name)}
+            className={`object-top hidden md:block`}
+          />
+        )}
+      </figure>
+      <div className={`mx-auto max-w-7xl z-20 absolute inset-0`}>
+        <FilmSummary
+          film={film}
+          genres={genres}
+          isTvPage={isTvPage}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      </div>
+    </>
   );
 }
