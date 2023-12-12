@@ -6,6 +6,11 @@ import CastsList from "./CastsList";
 import FilmInfo from "./FilmInfo";
 import FilmOverview from "./FilmOverview";
 import axios from "axios";
+import FilmReviews from "./FilmReviews";
+import FilmCollection from "./FilmCollection";
+import ShareModal from "./ShareModal";
+import { EpisodeModal } from "./EpisodeModal";
+import PersonModal from "./PersonModal";
 
 export default function FilmContent({
   film,
@@ -57,7 +62,7 @@ export default function FilmContent({
         </section>
 
         {/* Overview */}
-        <section className={`md:col-[1/10] lg:col-[7/20]`}>
+        <section className={`md:col-[1/9] lg:col-[7/20]`}>
           <FilmOverview
             film={film}
             videos={videos}
@@ -74,8 +79,85 @@ export default function FilmContent({
           />
         </section>
 
+        {/* Collection */}
+        {film.belongs_to_collection && (
+          <section className={`md:col-[1/9] lg:col-[7/20]`}>
+            <FilmCollection
+              film={film}
+              episodeModal={episodeModal}
+              setEpisodeModal={setEpisodeModal}
+              loading={loading}
+              setLoading={setLoading}
+            />
+          </section>
+        )}
+
+        {/* Reviews */}
+        {reviews.results.length > 0 && (
+          <section className={`md:col-[1/9] lg:col-[7/20]`}>
+            <FilmReviews reviews={reviews} film={film} />
+          </section>
+        )}
+
+        {/* Misc */}
+        <section className={`md:col-[1/9] lg:col-[7/20]`}>
+          <ShareModal />
+
+          {isTvPage && episodeModal && (
+            <EpisodeModal
+              episode={episodeModal}
+              setEpisodeModal={setEpisodeModal}
+              person={personModal}
+              setPersonModal={setPersonModal}
+              loading={loading}
+            />
+          )}
+
+          {personModal && (
+            <PersonModal
+              person={personModal}
+              setPersonModal={setPersonModal}
+              loading={loading}
+              episode={episodeModal}
+            />
+          )}
+
+          <div
+            role={`alert`}
+            id={`featureNotAvailable`}
+            className={`alert alert-error flex fixed w-[calc(100%-2rem)] sm:w-fit z-50 right-4 bottom-4 transition-all`}
+            style={{
+              transform: `translateY(calc(100% + 1rem))`,
+            }}
+          >
+            <button
+              onClick={() => {
+                const alert = document.getElementById(`featureNotAvailable`);
+                alert.style.transform = `translateY(calc(100% + 1rem))`;
+              }}
+            >
+              <svg
+                xmlns={`http://www.w3.org/2000/svg`}
+                className={`stroke-current shrink-0 h-6 w-6`}
+                fill={`none`}
+                viewBox={`0 0 24 24`}
+              >
+                <path
+                  strokeLinecap={`round`}
+                  strokeLinejoin={`round`}
+                  strokeWidth={`2`}
+                  d={`M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z`}
+                />
+              </svg>
+            </button>
+            <span>Sorry! Feature not yet available.</span>
+          </div>
+        </section>
+
         {/* Casts & Credits */}
-        <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
+        <section
+          className={`row-[4/5] md:row-[2/5] md:col-[9/13] lg:col-[20/25] lg:row-[1/3]`}
+        >
           {credits.cast.length > 0 && (
             <CastsList
               credits={credits}

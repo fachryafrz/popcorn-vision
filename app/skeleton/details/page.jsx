@@ -1,6 +1,6 @@
 export default function DetailsLoading() {
-  const loadingPulse = `animate-pulse bg-gray-400 bg-opacity-20`
-  
+  const loadingPulse = `animate-pulse bg-gray-400 bg-opacity-20`;
+
   return (
     <div className={`flex flex-col gap-[1rem] relative`}>
       {/* Backdrop */}
@@ -13,10 +13,10 @@ export default function DetailsLoading() {
           className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
         >
           {/* Poster */}
-          <section
-            className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}
-          >
-            <div className={`${loadingPulse} flex w-[50vw] md:w-full mx-auto md:m-0 sticky top-20 flex-col gap-4 aspect-poster rounded-xl overflow-hidden self-start shadow-xl`}></div>
+          <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
+            <div
+              className={`${loadingPulse} flex w-[50vw] md:w-full mx-auto md:m-0 sticky top-20 flex-col gap-4 aspect-poster rounded-xl overflow-hidden self-start shadow-xl`}
+            ></div>
           </section>
 
           {/* Info */}
@@ -62,7 +62,7 @@ export default function DetailsLoading() {
           </section>
 
           {/* Overview */}
-          <section className={`md:col-[1/10] lg:col-[7/20] flex`}>
+          <section className={`md:col-[1/9] lg:col-[7/20] flex`}>
             <div className={`flex flex-col gap-2 w-full`}>
               {/* Overview */}
               <div className={`[&_*]:rounded-lg`}>
@@ -133,7 +133,7 @@ export default function DetailsLoading() {
             </div>
           </section>
           {/* Casts */}
-          <section className={`md:col-[10/13] lg:col-[20/25] lg:row-[1/3]`}>
+          <section className={`md:col-[9/13] lg:col-[20/25] lg:row-[1/3]`}>
             <div className={`sticky top-20`}>
               <div
                 id="title"

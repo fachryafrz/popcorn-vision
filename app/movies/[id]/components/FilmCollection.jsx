@@ -72,7 +72,6 @@ export default function FilmCollection({
     setShowAllCollection(false);
   }, [film]);
 
-
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
 
@@ -80,7 +79,7 @@ export default function FilmCollection({
     <div className={`flex flex-col gap-2`}>
       <div
         id="collections"
-        className="flex flex-col gap-2 bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[4.125rem] py-2 z-10"
+        className="flex flex-col gap-2 bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10"
       >
         <h2 className="font-bold text-xl text-white m-0">
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
@@ -207,7 +206,14 @@ export default function FilmCollection({
   );
 }
 
-function FilmSeason({ film, item, index, episodeModal, setEpisodeModal, setLoading }) {
+function FilmSeason({
+  film,
+  item,
+  index,
+  episodeModal,
+  setEpisodeModal,
+  setLoading,
+}) {
   const [viewSeason, setViewSeason] = useState(false);
   const dateStr = item.air_date;
   const date = new Date(dateStr);
