@@ -37,7 +37,7 @@ export default function FilmContent({
         className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
       >
         {/* Poster */}
-        <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
+        <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/4]`}>
           <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
             <FilmPoster film={film} />
           </div>
@@ -156,7 +156,7 @@ export default function FilmContent({
 
         {/* Casts & Credits */}
         <section
-          className={`row-[4/5] md:row-[2/5] md:col-[9/13] lg:col-[20/25] lg:row-[1/3]`}
+          className={`row-[4/5] md:row-[2/5] md:col-[9/13] lg:col-[20/25] lg:row-[1/4]`}
         >
           {credits.cast.length > 0 && (
             <CastsList
