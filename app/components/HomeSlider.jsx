@@ -47,7 +47,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`h-[calc(100svh-66px)] md:h-auto lg:h-[80svh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        className={`h-[80svh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -68,7 +68,7 @@ export default function HomeSlider({ films, genres }) {
           return (
             <SwiperSlide
               key={film.id}
-              className="flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%]"
+              className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-poster md:aspect-auto`}
             >
               <HomeFilm
                 film={film}
