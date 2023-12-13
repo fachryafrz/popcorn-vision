@@ -66,17 +66,15 @@ export default function FilmOverview({
       </div>
 
       {/* Collection */}
-      {film.belongs_to_collection && (
-        <section className={`md:col-[1/9] lg:col-[7/20]`}>
-          <FilmCollection
-            film={film}
-            episodeModal={episodeModal}
-            setEpisodeModal={setEpisodeModal}
-            loading={loading}
-            setLoading={setLoading}
-          />
-        </section>
-      )}
+      {isTvPage || film.belongs_to_collection !== null ? (
+        <FilmCollection
+          film={film}
+          episodeModal={episodeModal}
+          setEpisodeModal={setEpisodeModal}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      ) : null}
 
       {/* Reviews */}
       {reviews.results.length > 0 && (
