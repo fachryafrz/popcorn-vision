@@ -47,7 +47,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`h-[80svh] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        className={`h-[80svh] min-h-[500px] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -115,8 +115,19 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         include_image_language: "null",
       },
     }).then((res) => {
-      setFilmPoster(res.posters[0].file_path);
-      setFilmBackdrop(res.backdrops[0].file_path);
+      let { posters, backdrops } = res;
+
+      if (!posters.length) {
+        setFilmPoster(film.poster_path);
+      } else {
+        setFilmPoster(posters[0].file_path);
+      }
+
+      if (!backdrops.length) {
+        setFilmBackdrop(film.backdrop_path);
+      } else {
+        setFilmBackdrop(backdrops[0].file_path);
+      }
     });
   }, [film]);
 

@@ -7,10 +7,10 @@ export default function FilmBackdrop({ film }) {
 
   return (
     <figure
-      className={`max-h-[100dvh] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80dvh]`}
+      className={`max-h-[100dvh] min-h-[500px] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80dvh]`}
       style={{
-        backgroundImage: film.backdrop_path === null ? popcorn : filmBackdrop,
-        backgroundSize: film.backdrop_path === null ? `contain` : `cover` ,
+        backgroundImage: !film.backdrop_path ? popcorn : filmBackdrop,
+        backgroundSize: !film.backdrop_path ? `contain` : `cover`,
         backgroundRepeat: `no-repeat`,
         backgroundPosition: `top`,
       }}
