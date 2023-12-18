@@ -14,7 +14,7 @@ import AsyncSelect from "react-select/async";
 import SelectMUI from "@mui/material/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function page({ type = "movie" }) {
+export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
   const router = useRouter();
   const pathname = usePathname();
@@ -24,21 +24,31 @@ export default function page({ type = "movie" }) {
   const [films, setFilms] = useState();
   const [genresData, setGenresData] = useState();
   const [languagesData, setLanguagesData] = useState();
+  const [castData, setCastData] = useState();
+  const [crewData, setCrewData] = useState();
+  const [keywordData, setKeywordData] = useState();
+  const [companyData, setCompanyData] = useState();
   const [isGrid, setIsGrid] = useState(true);
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [minYear, setMinYear] = useState();
   const [maxYear, setMaxYear] = useState();
 
   // Filters
+  const [searchQuery, setSearchQuery] = useState();
+  const [releaseDateSlider, setReleaseDateSlider] = useState([
+    minYear,
+    maxYear,
+  ]);
   const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [genre, setGenre] = useState();
   const [language, setLanguage] = useState();
-  const [cast, setCast] = useState();
-  const [crew, setCrew] = useState();
-  const [keyword, setKeyword] = useState();
-  const [company, setCompany] = useState();
+  const [cast, setCast] = useState([]);
+  const [crew, setCrew] = useState([]);
+  const [keyword, setKeyword] = useState([]);
+  const [company, setCompany] = useState([]);
+  const [ratingSlider, setRatingSlider] = useState([0, 100]);
+  const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
   const [rating, setRating] = useState([0, 100]);
-  const [ratingMinimum, setRatingMinimum] = useState(0);
   const [runtime, setRuntime] = useState([0, 300]);
 
   // MUI Select
@@ -49,11 +59,11 @@ export default function page({ type = "movie" }) {
   const releaseDateMarks = [
     {
       value: minYear,
-      label: releaseDate[0],
+      label: releaseDateSlider[0],
     },
     {
       value: maxYear,
-      label: releaseDate[1],
+      label: releaseDateSlider[1],
     },
   ];
   const ratingMarks = [
@@ -66,12 +76,6 @@ export default function page({ type = "movie" }) {
       label: rating[1],
     },
   ];
-  const ratingMinimumMarks = [
-    {
-      value: 0,
-      label: ratingMinimum,
-    },
-  ];
   const runtimeMarks = [
     {
       value: 0,
@@ -82,6 +86,33 @@ export default function page({ type = "movie" }) {
       label: runtime[1],
     },
   ];
+
+  // Handle Search Query Change
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSearchQuery = (event) => {
+    event.preventDefault();
+
+    const searchEl = document.getElementById("mainSearchBar");
+
+    setSearchQuery(searchEl.value);
+
+    const value = searchEl.value;
+
+    if (!value) {
+      current.delete("query");
+    } else {
+      current.set("query", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
+  };
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
@@ -106,29 +137,11 @@ export default function page({ type = "movie" }) {
 
     const value = rating ? `${newValue[0]},${newValue[1]}` : "";
 
+    // NOTE: Using vote_count.gte & vote_count.lte
     if (!value) {
-      current.delete("vote_average.gte");
-      current.delete("vote_average.lte");
+      current.delete("vote_count");
     } else {
-      current.set("vote_average.gte", newValue[0]);
-      current.set("vote_average.lte", newValue[1]);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-  const handleRatingMinimumChange = (event, newValue) => {
-    setRatingMinimum(newValue);
-
-    const value = ratingMinimum ? `${newValue}` : "";
-
-    if (!value) {
-      current.delete("vote_count.gte");
-    } else {
-      current.set("vote_count.gte", newValue);
+      current.set("vote_count", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -142,12 +155,11 @@ export default function page({ type = "movie" }) {
 
     const value = runtime ? `${newValue[0]},${newValue[1]}` : "";
 
+    // NOTE: Using with_runtime.gte & with_runtime.lte
     if (!value) {
-      current.delete("with_runtime.gte");
-      current.delete("with_runtime.lte");
+      current.delete("with_runtime");
     } else {
-      current.set("with_runtime.gte", newValue[0]);
-      current.set("with_runtime.lte", newValue[1]);
+      current.set("with_runtime", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -339,35 +351,107 @@ export default function page({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleLanguageChange = (selectedOption) => {
-    console.log(selectedOption);
+    setLanguage(selectedOption);
+
+    const value = selectedOption.map((option) => option.value);
+
+    if (!value) {
+      current.delete("with_original_language");
+    } else {
+      current.set("with_original_language", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
   };
   const handleCastChange = (selectedOption) => {
-    console.log(selectedOption);
+    setCast(selectedOption);
+
+    const value = selectedOption.map((option) => option.value);
+
+    if (!value) {
+      current.delete("with_cast");
+    } else {
+      current.set("with_cast", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
   };
   const handleCrewChange = (selectedOption) => {
-    console.log(selectedOption);
+    setCrew(selectedOption);
+
+    const value = selectedOption.map((option) => option.value);
+
+    if (!value) {
+      current.delete("with_crew");
+    } else {
+      current.set("with_crew", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
   };
   const handleKeywordChange = (selectedOption) => {
-    console.log(selectedOption);
+    setKeyword(selectedOption);
+
+    const value = selectedOption.map((option) => option.value);
+
+    if (!value) {
+      current.delete("with_keywords");
+    } else {
+      current.set("with_keywords", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
   };
   const handleCompanyChange = (selectedOption) => {
-    console.log(selectedOption);
+    setCompany(selectedOption);
+
+    const value = selectedOption.map((option) => option.value);
+
+    if (!value) {
+      current.delete("with_companies");
+    } else {
+      current.set("with_companies", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
   };
 
-  // Use Effect
+  // Use Effect for fetching data
   useEffect(() => {
-    // Get default film list
-    fetchData({ endpoint: `/discover/${type}` }).then((res) =>
-      setFilms(res.results)
-    );
+    if (!current.get("query")) {
+      // Get default film list
+      fetchData({ endpoint: `/discover/${type}` }).then((res) =>
+        setFilms(res.results)
+      );
 
-    // Get default film list page 2
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: {
-        page: 2,
-      },
-    }).then((res) => setFilms((prev) => prev && [...prev, ...res.results]));
+      // Get default film list page 2
+      fetchData({
+        endpoint: `/discover/${type}`,
+        queryParams: {
+          page: 2,
+        },
+      }).then((res) => setFilms((prev) => prev && [...prev, ...res.results]));
+    }
 
     // Get genres list
     fetchData({ endpoint: `/genre/${type}/list` }).then((res) =>
@@ -402,15 +486,19 @@ export default function page({ type = "movie" }) {
       const maxYear = parseInt(new Date(maxReleaseDate).getFullYear());
       setMaxYear(maxYear);
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   // Use Effect for set available Release Dates
   useEffect(() => {
     setReleaseDate([minYear, maxYear]);
+    setReleaseDateSlider([minYear, maxYear]);
   }, [minYear, maxYear]);
 
   // Use Effect for Search Params
   useEffect(() => {
+    // Release date
     if (current.get("release_date")) {
       const releaseDateParams = current.get("release_date").split(".");
       const searchMinYear = parseInt(releaseDateParams[0]);
@@ -418,9 +506,11 @@ export default function page({ type = "movie" }) {
 
       if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
         setReleaseDate([searchMinYear, searchMaxYear]);
+        setReleaseDateSlider([searchMinYear, searchMaxYear]);
       }
     }
 
+    // Genres
     if (current.get("with_genres")) {
       const genresParams = current.get("with_genres").split(",");
       const searchGenres = genresParams.map((genreId) =>
@@ -435,13 +525,285 @@ export default function page({ type = "movie" }) {
       );
       setGenre(searchGenresOptions);
     }
+
+    // Languages
+    if (current.get("with_original_language")) {
+      const languagesParams = current.get("with_original_language").split(",");
+      const searchLanguages = languagesParams.map((languageId) =>
+        languagesData?.find(
+          (language) => language.iso_639_1 === languageId.toLowerCase()
+        )
+      );
+      const searchLanguagesOptions = searchLanguages?.map(
+        (language) =>
+          language && {
+            value: language.iso_639_1,
+            label: language.english_name,
+          }
+      );
+      setLanguage(searchLanguagesOptions);
+    }
+
+    // Cast
+    if (current.get("with_cast")) {
+      const castParams = current.get("with_cast").split(",");
+      const fetchPromises = castParams.map((castId) => {
+        return fetchData({
+          endpoint: `/person/${castId}`,
+        });
+      });
+
+      Promise.all(fetchPromises)
+        .then((responses) => {
+          const uniqueCast = [...new Set(responses)]; // Remove duplicates if any
+          const searchCast = uniqueCast.map((cast) => ({
+            value: cast.id,
+            label: cast.name,
+          }));
+          setCast(searchCast);
+        })
+        .catch((error) => {
+          console.error("Error fetching cast:", error);
+        });
+    }
+
+    // Crew
+    if (current.get("with_crew")) {
+      const crewParams = current.get("with_crew").split(",");
+      const fetchPromises = crewParams.map((crewId) => {
+        return fetchData({
+          endpoint: `/person/${crewId}`,
+        });
+      });
+
+      Promise.all(fetchPromises)
+        .then((responses) => {
+          const uniqueCrew = [...new Set(responses)]; // Remove duplicates if any
+          const searchCrew = uniqueCrew.map((crew) => ({
+            value: crew.id,
+            label: crew.name,
+          }));
+          setCrew(searchCrew);
+        })
+        .catch((error) => {
+          console.error("Error fetching crew:", error);
+        });
+    }
+
+    // Keyword
+    if (current.get("with_keywords")) {
+      const keywordParams = current.get("with_keywords").split(",");
+      const fetchPromises = keywordParams.map((keywordId) => {
+        return fetchData({
+          endpoint: `/keyword/${keywordId}`,
+        });
+      });
+
+      Promise.all(fetchPromises)
+        .then((responses) => {
+          const uniqueKeyword = [...new Set(responses)]; // Remove duplicates if any
+          const searchKeyword = uniqueKeyword.map((keyword) => ({
+            value: keyword.id,
+            label: keyword.name,
+          }));
+          setKeyword(searchKeyword);
+        })
+        .catch((error) => {
+          console.error("Error fetching keyword:", error);
+        });
+    }
+
+    // Company
+    if (current.get("with_companies")) {
+      const companyParams = current.get("with_companies").split(",");
+      const fetchPromises = companyParams.map((companyId) => {
+        return fetchData({
+          endpoint: `/company/${companyId}`,
+        });
+      });
+
+      Promise.all(fetchPromises)
+        .then((responses) => {
+          const uniqueCompany = [...new Set(responses)]; // Remove duplicates if any
+          const searchCompany = uniqueCompany.map((company) => ({
+            value: company.id,
+            label: company.name,
+          }));
+          setCompany(searchCompany);
+        })
+        .catch((error) => {
+          console.error("Error fetching company:", error);
+        });
+    }
+
+    // Rating
+    if (current.get("vote_count")) {
+      const ratingParams = current.get("vote_count").split(".");
+      const searchRating = [
+        parseInt(ratingParams[0]),
+        parseInt(ratingParams[2]),
+      ];
+
+      if (rating[0] !== searchRating[0] || rating[1] !== searchRating[1]) {
+        setRating(searchRating);
+        setRatingSlider(searchRating);
+      }
+    }
+
+    // Runtime
+    if (current.get("with_runtime")) {
+      const runtimeParams = current.get("with_runtime").split(".");
+      const searchRuntime = [
+        parseInt(runtimeParams[0]),
+        parseInt(runtimeParams[2]),
+      ];
+
+      if (runtime[0] !== searchRuntime[0] || runtime[1] !== searchRuntime[1]) {
+        setRuntime(searchRuntime);
+        setRuntimeSlider(searchRuntime);
+      }
+    }
+
+    // Sort by
+    if (current.get("sort_by")) {
+      const sortByParams = current.get("sort_by").split(".");
+      const searchSortByType = sortByParams[0];
+      const searchSortByOrder = sortByParams[1];
+
+      if (sortByType !== searchSortByType) {
+        setSortByType(searchSortByType);
+      }
+
+      if (sortByOrder !== searchSortByOrder) {
+        setSortByOrder(searchSortByOrder);
+      }
+    }
+
+    // Search Query
+    if (current.get("query")) {
+      const searchQuery = current.get("query");
+
+      setSearchQuery(searchQuery);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [genresData]);
+  }, [
+    genresData,
+    languagesData,
+    maxYear,
+    minYear,
+    rating,
+    runtime,
+    searchParams,
+    sortByOrder,
+    sortByType,
+    type,
+  ]);
+
+  // Use Effect for Search
+  useEffect(() => {
+    const performSearch = () => {
+      const minFullYear = `${releaseDate[0]}-01-01`;
+      const maxFullYear = `${releaseDate[1]}-12-31`;
+
+      const searchParams = {
+        include_adult: false,
+        "primary_release_date.gte": minFullYear,
+        "primary_release_date.lte": maxFullYear,
+      };
+
+      if (current.get("with_genres")) {
+        searchParams.with_genres = genre.map((genre) => genre?.value).join(",");
+      }
+      if (current.get("with_original_language")) {
+        searchParams.with_original_language = language
+          .map((language) => language?.value)
+          .join(",");
+      }
+      if (current.get("with_cast")) {
+        searchParams.with_cast = cast.map((cast) => cast?.value).join(",");
+      }
+      if (current.get("with_crew")) {
+        searchParams.with_crew = crew.map((crew) => crew?.value).join(",");
+      }
+      if (current.get("with_keywords")) {
+        searchParams.with_keywords = keyword
+          .map((keyword) => keyword?.value)
+          .join(",");
+      }
+      if (current.get("with_companies")) {
+        searchParams.with_companies = company
+          .map((company) => company?.value)
+          .join(",");
+      }
+      if (current.get("vote_count")) {
+        searchParams["vote_count.gte"] = rating[0];
+        searchParams["vote_count.lte"] = rating[1];
+      }
+      if (current.get("with_runtime")) {
+        searchParams["with_runtime.gte"] = runtime[0];
+        searchParams["with_runtime.lte"] = runtime[1];
+      }
+      if (current.get("sort_by")) {
+        searchParams.sort_by = `${sortByType}.${sortByOrder}`;
+      }
+
+      fetchData({
+        endpoint: `/discover/${type}`,
+        queryParams: searchParams,
+      })
+        .then((res) => {
+          setFilms(res.results);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    const performSearchQuery = () => {
+      fetchData({
+        endpoint: `/search/${type}`,
+        queryParams: {
+          query: searchQuery,
+          include_adult: false,
+          language: "en-US",
+          year: releaseDate[1],
+        },
+      })
+        .then((res) => {
+          setFilms(res.results);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    if (!searchQuery) {
+      performSearch();
+    } else {
+      performSearchQuery();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    cast,
+    company,
+    crew,
+    genre,
+    keyword,
+    language,
+    rating,
+    releaseDate,
+    runtime,
+    sortByOrder,
+    sortByType,
+    searchQuery,
+    type,
+  ]);
 
   return (
     <div className={`flex lg:px-4`}>
       <aside
-        className={`p-4 w-full lg:max-w-[300px] h-[calc(100svh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-20 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-20 transition-all lg:translate-x-0 ${
+        className={`p-4 w-full lg:max-w-[300px] h-[calc(100svh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-10 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-20 transition-all lg:translate-x-0 ${
           isFilterActive ? `translate-x-0` : `-translate-x-full`
         }`}
       >
@@ -462,8 +824,9 @@ export default function page({ type = "movie" }) {
           <div className={`w-full px-3`}>
             <Slider
               getAriaLabel={() => "Release Date"}
-              value={releaseDate}
-              onChange={handleReleaseDateChange}
+              value={releaseDateSlider}
+              onChange={(event, newValue) => setReleaseDateSlider(newValue)}
+              onChangeCommitted={handleReleaseDateChange}
               valueLabelDisplay="off"
               min={minYear}
               max={maxYear}
@@ -492,6 +855,7 @@ export default function page({ type = "movie" }) {
           <Select
             options={languagesData && languagesOptions}
             onChange={handleLanguageChange}
+            value={language}
             styles={inputStyles}
             placeholder={`Select`}
             isMulti
@@ -504,6 +868,7 @@ export default function page({ type = "movie" }) {
           <AsyncSelect
             loadOptions={castsLoadOptions}
             onChange={handleCastChange}
+            value={cast}
             styles={inputStyles}
             placeholder={`Search`}
             isMulti
@@ -516,6 +881,7 @@ export default function page({ type = "movie" }) {
           <AsyncSelect
             loadOptions={crewsLoadOptions}
             onChange={handleCrewChange}
+            value={crew}
             styles={inputStyles}
             placeholder={`Search`}
             isMulti
@@ -528,6 +894,7 @@ export default function page({ type = "movie" }) {
           <AsyncSelect
             loadOptions={keywordsLoadOptions}
             onChange={handleKeywordChange}
+            value={keyword}
             styles={inputStyles}
             placeholder={`Search`}
             isMulti
@@ -540,6 +907,7 @@ export default function page({ type = "movie" }) {
           <AsyncSelect
             loadOptions={companiesLoadOptions}
             onChange={handleCompanyChange}
+            value={company}
             styles={inputStyles}
             placeholder={`Search`}
             isMulti
@@ -552,29 +920,13 @@ export default function page({ type = "movie" }) {
           <div className={`w-full px-3`}>
             <Slider
               getAriaLabel={() => "Rating"}
-              value={rating}
-              onChange={handleRatingChange}
+              value={ratingSlider}
+              onChange={(event, newValue) => setRatingSlider(newValue)}
+              onChangeCommitted={handleRatingChange}
               valueLabelDisplay="off"
               min={0}
               max={100}
               marks={ratingMarks}
-              sx={sliderStyles}
-            />
-          </div>
-        </section>
-
-        {/* Rating Count Minimum */}
-        <section className={`flex flex-col gap-1`}>
-          <span className={`font-medium`}>Rating Count Minimum</span>
-          <div className={`w-full px-3`}>
-            <Slider
-              getAriaLabel={() => "Rating Count Minimum"}
-              value={ratingMinimum}
-              onChange={handleRatingMinimumChange}
-              valueLabelDisplay="off"
-              min={0}
-              max={100}
-              marks={ratingMinimumMarks}
               sx={sliderStyles}
             />
           </div>
@@ -586,8 +938,9 @@ export default function page({ type = "movie" }) {
           <div className={`w-full px-3`}>
             <Slider
               getAriaLabel={() => "Runtime"}
-              value={runtime}
-              onChange={handleRuntimeChange}
+              value={runtimeSlider}
+              onChange={(event, newValue) => setRuntimeSlider(newValue)}
+              onChangeCommitted={handleRuntimeChange}
               valueLabelDisplay="off"
               min={0}
               step={10}
@@ -604,7 +957,8 @@ export default function page({ type = "movie" }) {
           className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4`}
         >
           {/* Search bar */}
-          <div
+          <form
+            onSubmit={handleSearchQuery}
             className={`w-full bg-gray-600 bg-opacity-[90%] backdrop-blur rounded-2xl flex items-center`}
           >
             <span
@@ -614,11 +968,16 @@ export default function page({ type = "movie" }) {
             </span>
 
             <input
-              type="text"
-              placeholder="Search"
-              className="text-white bg-transparent w-full px-4 py-4 pl-10"
+              id={`mainSearchBar`}
+              type={`text`}
+              placeholder={`Search`}
+              className={`text-white bg-transparent w-full px-4 py-4 pl-10`}
+              onChange={handleSearchInputChange}
+              value={searchQuery}
             />
-          </div>
+
+            <input type="submit" className={`sr-only`} />
+          </form>
 
           <div
             className={`flex items-center justify-center gap-1 flex-wrap lg:flex-nowrap`}
@@ -680,6 +1039,211 @@ export default function page({ type = "movie" }) {
           </div>
         </section>
 
+        {/* List of active filters */}
+        <section
+          className={`hidden gap-2 items-center flex-wrap flex-row-reverse`}
+        >
+          {releaseDate[0] !== minYear || releaseDate[1] !== maxYear ? (
+            <ButtonFilter
+              searchParam={"release_date"}
+              defaultValue={[minYear, maxYear]}
+              setVariable={setReleaseDate}
+              title={`Release Date:`}
+              info={`${releaseDate[0]}-${releaseDate[1]}`}
+            />
+          ) : null}
+
+          {genre?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_genres"}
+              defaultValue={null}
+              setVariable={setGenre}
+              title={`Genre:`}
+              info={genre[0].label}
+            />
+          ) : genre?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_genres"}
+              defaultValue={null}
+              setVariable={setGenre}
+              title={`Genre:`}
+              info={`${genre[0].label} and ${genre[1].label}`}
+            />
+          ) : genre?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_genres"}
+              defaultValue={null}
+              setVariable={setGenre}
+              title={`Genre:`}
+              info={`${genre[0].label}, ${genre[1].label} and ${
+                genre.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {language?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_original_language"}
+              defaultValue={null}
+              setVariable={setLanguage}
+              title={`Language:`}
+              info={language[0].label}
+            />
+          ) : language?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_original_language"}
+              defaultValue={null}
+              setVariable={setLanguage}
+              title={`Language:`}
+              info={`${language[0].label} and ${language[1].label}`}
+            />
+          ) : language?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_original_language"}
+              defaultValue={null}
+              setVariable={setLanguage}
+              title={`Language:`}
+              info={`${language[0].label}, ${language[1].label} and ${
+                language.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {cast?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_cast"}
+              defaultValue={null}
+              setVariable={setCast}
+              title={`Cast:`}
+              info={cast[0].label}
+            />
+          ) : cast?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_cast"}
+              defaultValue={null}
+              setVariable={setCast}
+              title={`Cast:`}
+              info={`${cast[0].label} and ${cast[1].label}`}
+            />
+          ) : cast?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_cast"}
+              defaultValue={null}
+              setVariable={setCast}
+              title={`Cast:`}
+              info={`${cast[0].label}, ${cast[1].label} and ${
+                cast.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {crew?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_crew"}
+              defaultValue={null}
+              setVariable={setCrew}
+              title={`Crew:`}
+              info={crew[0].label}
+            />
+          ) : crew?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_crew"}
+              defaultValue={null}
+              setVariable={setCrew}
+              title={`Crew:`}
+              info={`${crew[0].label} and ${crew[1].label}`}
+            />
+          ) : crew?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_crew"}
+              defaultValue={null}
+              setVariable={setCrew}
+              title={`Crew:`}
+              info={`${crew[0].label}, ${crew[1].label} and ${
+                crew.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {keyword?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_keywords"}
+              defaultValue={null}
+              setVariable={setKeyword}
+              title={`Keyword:`}
+              info={keyword[0].label}
+            />
+          ) : keyword?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_keywords"}
+              defaultValue={null}
+              setVariable={setKeyword}
+              title={`Keyword:`}
+              info={`${keyword[0].label} and ${keyword[1].label}`}
+            />
+          ) : keyword?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_keywords"}
+              defaultValue={null}
+              setVariable={setKeyword}
+              title={`Keyword:`}
+              info={`${keyword[0].label}, ${keyword[1].label} and ${
+                keyword.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {company?.length == 1 ? (
+            <ButtonFilter
+              searchParam={"with_companies"}
+              defaultValue={null}
+              setVariable={setCompany}
+              title={`Company:`}
+              info={company[0].label}
+            />
+          ) : company?.length == 2 ? (
+            <ButtonFilter
+              searchParam={"with_companies"}
+              defaultValue={null}
+              setVariable={setCompany}
+              title={`Company:`}
+              info={`${company[0].label} and ${company[1].label}`}
+            />
+          ) : company?.length > 2 ? (
+            <ButtonFilter
+              searchParam={"with_companies"}
+              defaultValue={null}
+              setVariable={setCompany}
+              title={`Company:`}
+              info={`${company[0].label}, ${company[1].label} and ${
+                company.length - 2
+              } more`}
+            />
+          ) : null}
+
+          {rating[0] !== 0 || rating[1] !== 100 ? (
+            <ButtonFilter
+              searchParam={"vote_count"}
+              defaultValue={[0, 100]}
+              setVariable={setRating}
+              setVariableSlider={setRatingSlider}
+              title={`Rating:`}
+              info={`${rating[0]}-${rating[1]}`}
+            />
+          ) : null}
+
+          {runtime[0] !== 0 || runtime[1] !== 300 ? (
+            <ButtonFilter
+              searchParam={"with_runtime"}
+              defaultValue={[0, 300]}
+              setVariable={setRuntime}
+              setVariableSlider={setRuntimeSlider}
+              title={`Runtime:`}
+              info={`${runtime[0]}-${runtime[1]}`}
+            />
+          ) : null}
+        </section>
+
         {/* Films List */}
         <section
           className={`grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
@@ -719,6 +1283,35 @@ function ButtonSwitcher({ icon, onClick, condition }) {
       }`}
     >
       <IonIcon icon={icon} />
+    </button>
+  );
+}
+
+function ButtonFilter({
+  title,
+  info,
+  setVariable,
+  defaultValue,
+  setVariableSlider = null,
+  searchParam,
+}) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
+
+  return (
+    <button
+      onClick={() => {
+        // setVariable(defaultValue);
+        // if (setVariableSlider) setVariableSlider(defaultValue);
+        current.delete(searchParam);
+        const updatedSearchParams = new URLSearchParams(current.toString());
+        router.push(`${pathname}?${updatedSearchParams}`);
+      }}
+      className={`flex gap-1 text-sm items-center bg-gray-900 p-2 px-3 rounded-full hocus:bg-red-700 hocus:line-through`}
+    >
+      <span>{`${title} ${info}`}</span>
     </button>
   );
 }
