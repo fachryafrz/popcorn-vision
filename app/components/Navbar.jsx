@@ -57,15 +57,19 @@ export default function Navbar() {
             }}
             className={`hidden lg:block form-control w-full justify-self-center relative`}
           >
-            <input
-              type={`text`}
-              placeholder={`Search`}
-              className={`input input-bordered bg-opacity-[50%] rounded-full w-full pl-10`}
-            />
-            <IonIcon
-              icon={search}
-              className={`absolute left-3 top-[50%] translate-y-[-50%] text-lg text-gray-400 pointer-events-none`}
-            />
+            <div className={`flex items-center input input-bordered bg-opacity-[50%] rounded-full px-0`}>
+              <div className={`pl-4 absolute h-full flex items-center pointer-events-none`}>
+                <IonIcon
+                  icon={search}
+                  className={`text-lg text-gray-400 pointer-events-none`}
+                />
+              </div>
+              <input
+                type={`text`}
+                placeholder={`Search`}
+                className={`w-full bg-transparent pl-10 h-full pr-4`}
+              />
+            </div>
             <input type={`submit`} className={`sr-only`} />
           </form>
         )}
