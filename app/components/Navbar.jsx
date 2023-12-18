@@ -32,10 +32,9 @@ export default function Navbar() {
         >
           <figure
             style={{
-              background: `url(/popcorn.png)`,
-              backgroundSize: `contain`,
+              background: `url(/apple-touch-icon.png)`,
             }}
-            className={`w-[50px] aspect-square`}
+            className={`w-[50px] aspect-square !bg-contain`}
           ></figure>
           <figcaption
             className={`w-[70px] after:content-["Popcorn_Vision"] after:leading-tight after:h-full after:flex after:items-center`}

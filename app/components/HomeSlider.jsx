@@ -107,6 +107,11 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
       : [];
 
   useEffect(() => {
+    const isItTvPage = (movie, tv) => {
+      const type = !isTvPage ? movie : tv;
+      return type;
+    };
+
     getFilm({
       id: film.id,
       type: isItTvPage("movie", "tv"),
@@ -129,7 +134,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         setFilmBackdrop(backdrops[0].file_path);
       }
     });
-  }, [film]);
+  }, [film, isTvPage]);
 
   return (
     <>
