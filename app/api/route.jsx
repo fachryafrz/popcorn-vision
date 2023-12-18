@@ -2,6 +2,21 @@
 
 import axios from "axios";
 
+export async function fetchData({ endpoint, queryParams = {} }) {
+  try {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
+      {
+        params: { api_key: process.env.API_KEY, ...queryParams },
+      }
+    );
+    return data;
+  } catch (error) {
+    console.error(`Error fetching data: ${error}`);
+    throw error;
+  }
+}
+
 export async function getFilms({ endpoint, params }) {
   const { data } = await axios.get(
     `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,

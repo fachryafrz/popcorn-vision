@@ -88,7 +88,7 @@ export default function PersonWorks({
               return (
                 <SwiperSlide
                   key={film.id}
-                  className={`overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
+                  className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
                 >
                   <article>
                     <Link
@@ -97,6 +97,7 @@ export default function PersonWorks({
                       }/${film.id}-${slugify(
                         creditsSwitcher === `Movies` ? film.title : film.name
                       )}`}
+                      className={`hocus:scale-[1.01] active:scale-100 transition-all`}
                     >
                       <figure
                         className={`rounded-lg overflow-hidden aspect-poster relative`}

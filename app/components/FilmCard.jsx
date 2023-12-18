@@ -24,12 +24,13 @@ export default function FilmCard({ film, genres, isTvPage }) {
         `/movies/${film.id}-${slugify(film.title)}`,
         `/tv/${film.id}-${slugify(film.name)}`
       )}
+      className={`hocus:scale-[1.01] active:scale-100 transition-all`}
     >
       <figure
-        className={`rounded-lg overflow-hidden aspect-poster relative`}
+        className={`rounded-xl overflow-hidden aspect-poster relative`}
         style={{
           backgroundImage: film.poster_path === null ? popcorn : filmPoster,
-          backgroundSize: film.poster_path === null ? `contain` : `cover` ,
+          backgroundSize: film.poster_path === null ? `contain` : `cover`,
           backgroundRepeat: `no-repeat`,
           backgroundPosition: `center`,
         }}
@@ -48,11 +49,11 @@ export default function FilmCard({ film, genres, isTvPage }) {
               }`}
               style={{
                 "--value": film.vote_average * 10,
-                "--size": "36px",
+                "--size": "30px",
                 "--thickness": "3px",
               }}
             >
-              <span className={`text-white`}>
+              <span className={`text-white text-xs`}>
                 {film.vote_average < 9.9
                   ? film.vote_average.toFixed(1)
                   : film.vote_average}
@@ -61,10 +62,10 @@ export default function FilmCard({ film, genres, isTvPage }) {
           </div>
         )}
       </figure>
-      <div className="mt-2">
+      <div className="mt-2 hidden">
         <h3
           title={isItTvPage(film.title, film.name)}
-          className="font-bold text-sm sm:text-lg line-clamp-1"
+          className="font-bold text-sm sm:text-base line-clamp-1"
         >
           {isItTvPage(film.title, film.name)}
         </h3>

@@ -1,6 +1,6 @@
 {
   "name": "nextjs-popcornvision",
-  "version": "1.27.167",
+  "version": "1.28.175",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -23,7 +23,10 @@
     ]
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@ionic/react": "^6.5.4",
+    "@mui/material": "^5.15.0",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.9",
     "autoprefixer": "10.4.14",
@@ -37,6 +40,7 @@
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
     "react-markdown": "^8.0.5",
+    "react-select": "^5.8.0",
     "react-share": "^4.4.1",
     "remark-gfm": "^4.0.0",
     "swiper": "^9.0.5",

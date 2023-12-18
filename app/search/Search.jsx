@@ -444,7 +444,7 @@ export default function Search() {
                 return (
                   <SwiperSlide
                     key={film.id}
-                    className="overflow-hidden hocus:scale-[1.025] active:scale-100 transition-all"
+                    className="overflow-hidden transition-all"
                   >
                     <FilmCard
                       film={film}
