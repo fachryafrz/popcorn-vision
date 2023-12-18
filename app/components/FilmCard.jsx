@@ -62,7 +62,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
           </div>
         )}
       </figure>
-      <div className="mt-2 hidden">
+      <div className="mt-2">
         <h3
           title={isItTvPage(film.title, film.name)}
           className="font-bold text-sm sm:text-base line-clamp-1"

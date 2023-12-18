@@ -1246,7 +1246,7 @@ export default function Search({ type = "movie" }) {
 
         {/* Films List */}
         <section
-          className={`grid gap-2 grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
+          className={`grid gap-3 grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
         >
           {genresData &&
             films?.map((film) => {
