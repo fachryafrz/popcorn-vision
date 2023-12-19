@@ -398,8 +398,8 @@ export default function FilmInfo({
                     key={item.id}
                     href={
                       !isTvPage
-                        ? `/search?genres=${item.id}`
-                        : `/tv/search?genres=${item.id}`
+                        ? `/search?with_genres=${item.id}`
+                        : `/tv/search?with_genres=${item.id}`
                     }
                     className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
                     itemProp="genre"
