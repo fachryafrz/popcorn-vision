@@ -1,4 +1,4 @@
-import Search from "@/app/search/new/page";
+import Search from "@/app/search/Search";
 import React from "react";
 
 export async function generateMetadata() {

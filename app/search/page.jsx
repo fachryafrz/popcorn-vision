@@ -1,5 +1,5 @@
 import React from "react";
-import Search from "./new/page";
+import Search from "./Search";
 
 export async function generateMetadata() {
   return {
