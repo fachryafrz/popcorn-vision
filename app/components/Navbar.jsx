@@ -4,13 +4,16 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Navbar() {
-  const pathname = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [searchInput, setSearchInput] = useState("");
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||
@@ -20,11 +23,17 @@ export default function Navbar() {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
   );
-  let URLSearchQuery = useSearchParams().get("query");
+  let URLSearchQuery = searchParams.get("query");
+
+  useEffect(() => {
+    if (!URLSearchQuery) return;
+
+    setSearchInput(URLSearchQuery);
+  }, [URLSearchQuery]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 bg-base-100 backdrop-blur bg-opacity-[85%]">
-      <nav className="mx-auto py-2 px-4 max-w-7xl grid grid-cols-2 lg:grid-cols-3">
+      <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
         <Link
           href={!isTvPage ? `/` : `/tv`}
           className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
@@ -41,38 +50,10 @@ export default function Navbar() {
           ></figcaption>
         </Link>
 
-        {!isSearchPage && (
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const query = e.target[0].value;
-
-              if (!query) return;
-              router.push(
-                `${!isTvPage ? `/search` : `/tv/search`}?query=${query.replace(
-                  /\s+/g,
-                  "+"
-                )}`
-              );
-            }}
-            className={`hidden lg:block form-control w-full justify-self-center relative`}
-          >
-            <div className={`flex items-center input input-bordered bg-opacity-[50%] rounded-full px-0`}>
-              <div className={`pl-4 absolute h-full flex items-center pointer-events-none`}>
-                <IonIcon
-                  icon={search}
-                  className={`text-lg text-gray-400 pointer-events-none`}
-                />
-              </div>
-              <input
-                type={`text`}
-                placeholder={`Search`}
-                className={`w-full bg-transparent pl-10 h-full pr-4`}
-              />
-            </div>
-            <input type={`submit`} className={`sr-only`} />
-          </form>
-        )}
+        {/* Search bar */}
+        <div className={`hidden lg:block`}>
+          <SearchBar />
+        </div>
 
         <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
           <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%]">
@@ -128,5 +109,65 @@ export default function Navbar() {
         </div>
       </nav>
     </header>
+  );
+}
+
+export function SearchBar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const isTvPage = pathname.startsWith("/tv");
+
+  let URLSearchQuery = searchParams.get("query");
+
+  useEffect(() => {
+    if (!URLSearchQuery) {
+      setSearchInput("");
+    } else {
+      setSearchInput(URLSearchQuery);
+    }
+  }, [URLSearchQuery]);
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const query = e.target[0].value.trim();
+
+        if (!query) return;
+
+        const basePath = isTvPage ? "/tv" : "";
+        const searchPath = `${basePath}/search`;
+        const formattedQuery = query.replace(/\s+/g, "+");
+        const searchQuery = `query=${formattedQuery}`;
+
+        router.push(`${searchPath}?${searchQuery}`);
+      }}
+      className={`block form-control w-full justify-self-center relative`}
+    >
+      <div
+        className={`flex items-center input input-bordered bg-opacity-[50%] rounded-full px-0`}
+      >
+        <div
+          className={`pl-4 absolute h-full flex items-center pointer-events-none`}
+        >
+          <IonIcon
+            icon={search}
+            className={`text-lg text-gray-400 pointer-events-none`}
+          />
+        </div>
+        <input
+          type={`text`}
+          placeholder={`Search`}
+          className={`w-full bg-transparent pl-10 h-full pr-4`}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+        />
+      </div>
+      <input type={`submit`} className={`sr-only`} />
+    </form>
   );
 }

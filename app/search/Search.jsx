@@ -21,6 +21,7 @@ import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import SelectMUI from "@mui/material/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { SearchBar } from "../components/Navbar";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -42,9 +43,12 @@ export default function Search({ type = "movie" }) {
   const [minYear, setMinYear] = useState();
   const [maxYear, setMaxYear] = useState();
 
+  // React-Select Placeholder
+  const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
+  const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
+
   // Filters
-  const [searchInput, setSearchInput] = useState();
-  const [searchQuery, setSearchQuery] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
     maxYear,
@@ -96,30 +100,6 @@ export default function Search({ type = "movie" }) {
       label: runtimeSlider[1],
     },
   ];
-
-  // Handle Search Query Change
-  const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-  };
-  const handleSearchQuery = (event) => {
-    event.preventDefault();
-
-    setSearchQuery(searchInput);
-
-    const value = searchInput;
-
-    if (!value) {
-      current.delete("query");
-    } else {
-      current.set("query", value);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
@@ -202,7 +182,7 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
 
-  // Handle Slider Styles
+  // Handle MUI Slider & Select Styles
   const sliderStyles = {
     color: "#fff",
     "& .MuiSlider-markLabel": {
@@ -218,17 +198,6 @@ export default function Search({ type = "movie" }) {
       },
     },
   };
-
-  // Handle Select Input Styles
-  const inputStyles = {
-    control: (styles) => ({
-      ...styles,
-      color: "#fff",
-    }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return { ...styles, color: "#000" };
-    },
-  };
   const selectStyles = {
     borderRadius: "999px",
     color: "#fff",
@@ -241,6 +210,67 @@ export default function Search({ type = "movie" }) {
     "& .MuiSelect-icon": {
       color: "#fff",
     },
+  };
+
+  // Handle React-Select Input Styles
+  const inputStyles = {
+    placeholder: (styles) => ({
+      ...styles,
+      fontSize: "14px",
+      whiteSpace: "nowrap",
+    }),
+    control: (styles) => ({
+      ...styles,
+      color: "#fff",
+      backgroundColor: "#202735",
+      borderWidth: "1px",
+      borderColor: "#79808B",
+      borderRadius: "9999px",
+    }),
+    input: (styles) => ({
+      ...styles,
+      color: "#fff",
+    }),
+    dropdownIndicator: (styles) => ({
+      ...styles,
+      display: "none",
+    }),
+    indicatorSeparator: (styles) => ({
+      ...styles,
+      display: "none",
+    }),
+    menu: (styles) => ({
+      ...styles,
+      backgroundColor: "#202735",
+    }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      return {
+        ...styles,
+        color: "#fff",
+        backgroundColor: "#202735",
+        cursor: "pointer",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.1)",
+        },
+      };
+    },
+    multiValue: (styles) => ({
+      ...styles,
+      backgroundColor: "rgba(255,255,255,0.1)",
+      borderRadius: "9999px",
+    }),
+    multiValueLabel: (styles) => ({
+      ...styles,
+      color: "#fff",
+    }),
+    multiValueRemove: (styles) => ({
+      ...styles,
+      color: "#fff",
+      borderRadius: "9999px",
+      "&:hover": {
+        backgroundColor: "rgba(255,255,255,0.1)",
+      },
+    }),
   };
 
   // Handle Select Options
@@ -421,27 +451,42 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
 
-  // Load default films
-  const defaultFilms = () => {
-    setLoading(true);
+  // Random options placeholder
+  const getRandomOptionsPlaceholder = (options) => {
+    if (!options) return "Loading...";
 
-    // Get default film list
-    fetchData({ endpoint: `/discover/${type}` }).then((res) => {
-      setFilms(res.results);
-      setLoading(false);
-    });
+    const numberOfOptions = options.length;
+    const randomStart = Math.floor(Math.random() * numberOfOptions);
+    const randomEnd =
+      randomStart + 2 > numberOfOptions ? numberOfOptions : randomStart + 2;
 
-    // Get default film list page 2
-    // fetchData({
-    //   endpoint: `/discover/${type}`,
-    //   queryParams: {
-    //     page: 2,
-    //   },
-    // }).then((res) => {
-    //   setFilms((prev) => prev && [...prev, ...res.results]);
-    //   setLoading(false);
-    // });
+    const selectedOptions = options
+      .slice(randomStart, randomEnd)
+      .map((option) => option?.label)
+      .join(", ");
+
+    return `${selectedOptions}...`;
   };
+
+  // Use Effect for cycling random options placeholder
+  useEffect(() => {
+    const updatePlaceholders = () => {
+      const genresPlaceholder = getRandomOptionsPlaceholder(genresOptions);
+      const languagesPlaceholder =
+        getRandomOptionsPlaceholder(languagesOptions);
+
+      // Set placeholders for your elements here
+      // For example:
+      setGenresInputPlaceholder(genresPlaceholder);
+      setLanguagesInputPlaceholder(languagesPlaceholder);
+    };
+
+    // Set interval to run every 5 seconds
+    const intervalId = setInterval(updatePlaceholders, 5000);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [genresOptions, languagesOptions]); // Add dependencies if needed
 
   // Use Effect for fetching data
   useEffect(() => {
@@ -814,7 +859,6 @@ export default function Search({ type = "movie" }) {
     if (!searchParams.get("query")) {
       performSearch();
     } else {
-      setSearchInput(searchQuery);
       performSearchQuery();
     }
   }, [
@@ -878,8 +922,17 @@ export default function Search({ type = "movie" }) {
             options={genresData && genresOptions}
             onChange={handleGenreChange}
             value={genre}
-            styles={inputStyles}
-            placeholder={`Select`}
+            styles={{
+              ...inputStyles,
+              dropdownIndicator: (styles) => ({
+                ...styles,
+                display: "block",
+                "&:hover": {
+                  color: "#fff",
+                },
+              }),
+            }}
+            placeholder={genresInputPlaceholder}
             isMulti
           />
         </section>
@@ -891,8 +944,17 @@ export default function Search({ type = "movie" }) {
             options={languagesData && languagesOptions}
             onChange={handleLanguageChange}
             value={language}
-            styles={inputStyles}
-            placeholder={`Select`}
+            styles={{
+              ...inputStyles,
+              dropdownIndicator: (styles) => ({
+                ...styles,
+                display: "block",
+                "&:hover": {
+                  color: "#fff",
+                },
+              }),
+            }}
+            placeholder={languagesInputPlaceholder}
             isMulti
           />
         </section>
@@ -902,11 +964,13 @@ export default function Search({ type = "movie" }) {
           <section className={`flex flex-col gap-1`}>
             <span className={`font-medium`}>Cast</span>
             <AsyncSelect
+              noOptionsMessage={() => "Type to search"}
+              loadingMessage={() => "Searching..."}
               loadOptions={castsLoadOptions}
               onChange={handleCastChange}
               value={cast}
               styles={inputStyles}
-              placeholder={`Search`}
+              placeholder={`Search actor...`}
               isMulti
             />
           </section>
@@ -917,11 +981,13 @@ export default function Search({ type = "movie" }) {
           <section className={`flex flex-col gap-1`}>
             <span className={`font-medium`}>Crew</span>
             <AsyncSelect
+              noOptionsMessage={() => "Type to search"}
+              loadingMessage={() => "Searching..."}
               loadOptions={crewsLoadOptions}
               onChange={handleCrewChange}
               value={crew}
               styles={inputStyles}
-              placeholder={`Search`}
+              placeholder={`Search director, creator...`}
               isMulti
             />
           </section>
@@ -931,11 +997,13 @@ export default function Search({ type = "movie" }) {
         <section className={`flex flex-col gap-1`}>
           <span className={`font-medium`}>Keyword</span>
           <AsyncSelect
+            noOptionsMessage={() => "Type to search"}
+            loadingMessage={() => "Searching..."}
             loadOptions={keywordsLoadOptions}
             onChange={handleKeywordChange}
             value={keyword}
             styles={inputStyles}
-            placeholder={`Search`}
+            placeholder={`Search keyword...`}
             isMulti
           />
         </section>
@@ -944,11 +1012,13 @@ export default function Search({ type = "movie" }) {
         <section className={`flex flex-col gap-1`}>
           <span className={`font-medium`}>Company</span>
           <AsyncSelect
+            noOptionsMessage={() => "Type to search"}
+            loadingMessage={() => "Searching..."}
             loadOptions={companiesLoadOptions}
             onChange={handleCompanyChange}
             value={company}
             styles={inputStyles}
-            placeholder={`Search`}
+            placeholder={`Search company...`}
             isMulti
           />
         </section>
@@ -991,39 +1061,82 @@ export default function Search({ type = "movie" }) {
         </section>
       </aside>
 
-      <div className={`p-4 lg:pr-0 lg:pt-0 flex flex-col w-full`}>
+      <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
         {/* Options */}
         <section
-          className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4 lg:sticky top-[66px] z-20 bg-base-100 backdrop-blur bg-opacity-[85%] p-2`}
+          className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4`}
         >
           {/* Search bar */}
-          <form
-            onSubmit={handleSearchQuery}
-            className={`w-full bg-gray-600 bg-opacity-[90%] backdrop-blur rounded-2xl flex items-center`}
-          >
-            <span
-              className={`pointer-events-none absolute inset-y-0 pl-4 flex items-center`}
-            >
-              <IonIcon icon={search} className={`text-gray-400 text-lg`} />
-            </span>
+          <div className={`lg:hidden w-full`}>
+            <SearchBar />
+          </div>
 
-            <input
-              id={`mainSearchBar`}
-              type={`text`}
-              placeholder={`Search`}
-              className={`text-white bg-transparent w-full px-4 py-4 pl-10`}
-              onChange={handleSearchInputChange}
-              value={searchInput}
-            />
-
-            <input type="submit" className={`sr-only`} />
-          </form>
+          <h1 className={`capitalize font-bold text-3xl`}>
+            {!isTvPage ? `Movie` : `TV Series`}
+          </h1>
 
           <div
             className={`flex items-center justify-center w-full lg:w-auto gap-1 flex-wrap lg:flex-nowrap`}
           >
+            {/* Clear all filters */}
+            <div
+              className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
+            >
+              {searchParams.get("query") ||
+              releaseDate[0] !== minYear ||
+              releaseDate[1] !== maxYear ||
+              genre ||
+              language ||
+              cast ||
+              crew ||
+              keyword ||
+              company ||
+              rating[0] !== 0 ||
+              rating[1] !== 100 ||
+              runtime[0] !== 0 ||
+              runtime[1] !== 300 ? (
+                <button
+                  onClick={() => {
+                    setTimeout(() => {
+                      setSearchQuery("");
+                      setReleaseDate([minYear, maxYear]);
+                      setReleaseDateSlider([minYear, maxYear]);
+                      setGenre(null);
+                      setLanguage(null);
+                      setCast(null);
+                      setCrew(null);
+                      setKeyword(null);
+                      setCompany(null);
+                      setRating([0, 100]);
+                      setRatingSlider([0, 100]);
+                      setRuntime([0, 300]);
+                      setRuntimeSlider([0, 300]);
+                      setSortByType("popularity");
+                      setSortByOrder("desc");
+                    }, 500);
+
+                    router.push(`${pathname}`);
+                    // router.refresh();
+                    // defaultFilms();
+                  }}
+                  className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
+                >
+                  <IonIcon icon={closeCircle} className={`text-xl`} />
+                  <span className={`text-sm whitespace-nowrap`}>
+                    Clear all filters
+                  </span>
+                </button>
+              ) : (
+                <span>No filter selected</span>
+              )}
+            </div>
+
             {/* Sort by type */}
-            <FormControl fullWidth className={`w-[100px] sm:w-[200px]`}>
+            <FormControl
+              fullWidth
+              size="small"
+              className={`w-[150px] sm:w-[200px]`}
+            >
               <SelectMUI
                 labelId="sort-by-type-label"
                 id="sort-by-type"
@@ -1040,7 +1153,11 @@ export default function Search({ type = "movie" }) {
             </FormControl>
 
             {/* Sort by order */}
-            <FormControl fullWidth className={`w-[100px] sm:w-[200px]`}>
+            <FormControl
+              fullWidth
+              size="small"
+              className={`w-[150px] sm:w-[200px]`}
+            >
               <SelectMUI
                 labelId="sort-by-order-label"
                 id="sort-by-order"
@@ -1079,95 +1196,10 @@ export default function Search({ type = "movie" }) {
           </div>
         </section>
 
-        {/* Clear all filters */}
-        <section
-          className={`flex gap-2 items-center flex-wrap flex-row-reverse lg:sticky top-[calc(66px+72px)] bg-base-100 backdrop-blur bg-opacity-[85%] z-20 pb-2`}
-        >
-          {searchParams.get("query") ||
-          releaseDate[0] !== minYear ||
-          releaseDate[1] !== maxYear ||
-          genre ||
-          language ||
-          cast ||
-          crew ||
-          keyword ||
-          company ||
-          rating[0] !== 0 ||
-          rating[1] !== 100 ||
-          runtime[0] !== 0 ||
-          runtime[1] !== 300 ? (
-            <button
-              onClick={() => {
-                setTimeout(() => {
-                  setSearchInput("");
-                  setSearchQuery("");
-                  setReleaseDate([minYear, maxYear]);
-                  setReleaseDateSlider([minYear, maxYear]);
-                  setGenre(null);
-                  setLanguage(null);
-                  setCast(null);
-                  setCrew(null);
-                  setKeyword(null);
-                  setCompany(null);
-                  setRating([0, 100]);
-                  setRatingSlider([0, 100]);
-                  setRuntime([0, 300]);
-                  setRuntimeSlider([0, 300]);
-                  setSortByType("popularity");
-                  setSortByOrder("desc");
-                }, 500);
-
-                router.push(`${pathname}`);
-                // router.refresh();
-                // defaultFilms();
-              }}
-              className={`pr-4 flex items-center gap-1 text-gray-400 hocus:text-red-600`}
-            >
-              <span className={`text-sm whitespace-nowrap`}>
-                Clear all filters
-              </span>
-              <IonIcon icon={closeCircle} className={`text-xl`} />
-            </button>
-          ) : (
-            <span>No filter selected</span>
-          )}
-        </section>
-
         {/* List of active filters */}
         {/* <section
           className={`hidden gap-2 items-center flex-wrap flex-row-reverse`}
         >
-          {searchInput.length > 0 ||
-            releaseDate[0] !== minYear ||
-            releaseDate[1] !== maxYear ||
-            genre?.length > 1 ||
-            language?.length > 1 ||
-            cast?.length > 1 ||
-            crew?.length > 1 ||
-            keyword?.length > 1 ||
-            company?.length > 1 ||
-            rating[0] !== 0 ||
-            rating[1] !== 100 ||
-            runtime[0] !== 0 ||
-            runtime[1] !== 300 || (
-              <button
-                type={`button`}
-                onClick={() => {
-                  setSearchInput("");
-                  setSearchQuery("");
-                  router.push(`${pathname}`);
-                  // router.refresh();
-                  // defaultFilms();
-                }}
-                className={`pr-4 flex items-center gap-1 text-gray-400 hocus:text-red-600`}
-              >
-                <span className={`text-sm whitespace-nowrap`}>
-                  Clear all filters
-                </span>
-                <IonIcon icon={closeCircle} className={`text-xl`} />
-              </button>
-            )}
-
           {releaseDate[0] !== minYear || releaseDate[1] !== maxYear ? (
             <ButtonFilter
               searchParam={"release_date"}
