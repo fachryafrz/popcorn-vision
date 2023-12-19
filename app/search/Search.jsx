@@ -838,7 +838,7 @@ export default function Search({ type = "movie" }) {
   return (
     <div className={`flex lg:px-4`}>
       <aside
-        className={`p-4 w-full lg:max-w-[300px] h-[calc(100dvh-66px)] lg:h-[calc(100dvh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-10 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-20 transition-all lg:translate-x-0 ${
+        className={`p-4 w-full lg:max-w-[300px] h-[calc(100dvh-66px)] lg:h-[calc(100dvh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-10 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-30 transition-all lg:translate-x-0 ${
           isFilterActive ? `translate-x-0` : `-translate-x-full`
         }`}
       >
@@ -991,10 +991,10 @@ export default function Search({ type = "movie" }) {
         </section>
       </aside>
 
-      <div className={`p-4 lg:pr-0 flex flex-col gap-4 w-full`}>
+      <div className={`p-4 lg:pr-0 lg:pt-0 flex flex-col w-full`}>
         {/* Options */}
         <section
-          className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4`}
+          className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4 lg:sticky top-[66px] z-20 bg-base-100 backdrop-blur bg-opacity-[85%] p-2`}
         >
           {/* Search bar */}
           <form
@@ -1020,10 +1020,10 @@ export default function Search({ type = "movie" }) {
           </form>
 
           <div
-            className={`flex items-center justify-center gap-1 flex-wrap lg:flex-nowrap`}
+            className={`flex items-center justify-center w-full lg:w-auto gap-1 flex-wrap lg:flex-nowrap`}
           >
             {/* Sort by type */}
-            <FormControl fullWidth className={`w-[150px]`}>
+            <FormControl fullWidth className={`w-[100px] sm:w-[200px]`}>
               <SelectMUI
                 labelId="sort-by-type-label"
                 id="sort-by-type"
@@ -1040,7 +1040,7 @@ export default function Search({ type = "movie" }) {
             </FormControl>
 
             {/* Sort by order */}
-            <FormControl fullWidth className={`w-[150px]`}>
+            <FormControl fullWidth className={`w-[100px] sm:w-[200px]`}>
               <SelectMUI
                 labelId="sort-by-order-label"
                 id="sort-by-order"
@@ -1054,7 +1054,7 @@ export default function Search({ type = "movie" }) {
             </FormControl>
 
             {/* Display */}
-            <div
+            {/* <div
               className={`p-1 rounded-full bg-gray-900 flex items-center gap-1`}
             >
               <ButtonSwitcher
@@ -1067,20 +1067,21 @@ export default function Search({ type = "movie" }) {
                 icon={menu}
                 condition={!isGrid}
               />
-            </div>
+            </div> */}
 
             {/* Filter button */}
             <button
               onClick={() => setIsFilterActive(true)}
-              className={`btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
+              className={`ml-auto btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
             >
               <IonIcon icon={filter} className={`text-2xl`} />
             </button>
           </div>
         </section>
 
+        {/* Clear all filters */}
         <section
-          className={`flex gap-2 items-center flex-wrap flex-row-reverse`}
+          className={`flex gap-2 items-center flex-wrap flex-row-reverse lg:sticky top-[calc(66px+72px)] bg-base-100 backdrop-blur bg-opacity-[85%] z-20 pb-2`}
         >
           {searchParams.get("query") ||
           releaseDate[0] !== minYear ||
