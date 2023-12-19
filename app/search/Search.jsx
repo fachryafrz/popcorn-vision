@@ -1075,124 +1075,112 @@ export default function Search({ type = "movie" }) {
             {!isTvPage ? `Movie` : `TV Series`}
           </h1>
 
-          <div
-            className={`flex items-center justify-center w-full lg:w-auto gap-1 flex-wrap lg:flex-nowrap`}
-          >
-            {/* Clear all filters */}
-            <div
-              className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
-            >
-              {searchParams.get("query") ||
-              releaseDate[0] !== minYear ||
-              releaseDate[1] !== maxYear ||
-              genre ||
-              language ||
-              cast ||
-              crew ||
-              keyword ||
-              company ||
-              rating[0] !== 0 ||
-              rating[1] !== 100 ||
-              runtime[0] !== 0 ||
-              runtime[1] !== 300 ? (
-                <button
-                  onClick={() => {
-                    setTimeout(() => {
-                      setSearchQuery("");
-                      setReleaseDate([minYear, maxYear]);
-                      setReleaseDateSlider([minYear, maxYear]);
-                      setGenre(null);
-                      setLanguage(null);
-                      setCast(null);
-                      setCrew(null);
-                      setKeyword(null);
-                      setCompany(null);
-                      setRating([0, 100]);
-                      setRatingSlider([0, 100]);
-                      setRuntime([0, 300]);
-                      setRuntimeSlider([0, 300]);
-                      setSortByType("popularity");
-                      setSortByOrder("desc");
-                    }, 500);
-
-                    router.push(`${pathname}`);
-                    // router.refresh();
-                    // defaultFilms();
-                  }}
-                  className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
+          <div className={`w-full flex gap-2 items-center justify-between lg:justify-end flex-col sm:flex-row`}>
+            <div className={`flex justify-center gap-1 flex-wrap sm:flex-nowrap`}>
+              {/* Sort by type */}
+              <FormControl
+                fullWidth
+                size="small"
+                className={`w-[150px] md:w-[200px]`}
+              >
+                <SelectMUI
+                  labelId="sort-by-type-label"
+                  id="sort-by-type"
+                  value={sortByType}
+                  onChange={handleSortByTypeChange}
+                  sx={selectStyles}
                 >
-                  <IonIcon icon={closeCircle} className={`text-xl`} />
-                  <span className={`text-sm whitespace-nowrap`}>
-                    Clear all filters
-                  </span>
-                </button>
-              ) : (
-                <span>No filter selected</span>
-              )}
+                  <MenuItem value={`popularity`}>Popularity</MenuItem>
+                  <MenuItem value={`vote_count`}>Rating</MenuItem>
+                  <MenuItem value={`primary_release_date`}>
+                    Release Date
+                  </MenuItem>
+                  <MenuItem value={`revenue`}>Revenue</MenuItem>
+                  <MenuItem value={`budget`}>Budget</MenuItem>
+                </SelectMUI>
+              </FormControl>
+
+              {/* Sort by order */}
+              <FormControl
+                fullWidth
+                size="small"
+                className={`w-[150px] md:w-[200px]`}
+              >
+                <SelectMUI
+                  labelId="sort-by-order-label"
+                  id="sort-by-order"
+                  value={sortByOrder}
+                  onChange={handleSortByOrderChange}
+                  sx={selectStyles}
+                >
+                  <MenuItem value={`asc`}>Ascending</MenuItem>
+                  <MenuItem value={`desc`}>Descending</MenuItem>
+                </SelectMUI>
+              </FormControl>
             </div>
 
-            {/* Sort by type */}
-            <FormControl
-              fullWidth
-              size="small"
-              className={`w-[150px] sm:w-[200px]`}
-            >
-              <SelectMUI
-                labelId="sort-by-type-label"
-                id="sort-by-type"
-                value={sortByType}
-                onChange={handleSortByTypeChange}
-                sx={selectStyles}
+            <div className={`flex items-center gap-1 flex-wrap sm:flex-nowrap`}>
+              {/* Clear all filters */}
+              <div
+                className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
               >
-                <MenuItem value={`popularity`}>Popularity</MenuItem>
-                <MenuItem value={`vote_count`}>Rating</MenuItem>
-                <MenuItem value={`primary_release_date`}>Release Date</MenuItem>
-                <MenuItem value={`revenue`}>Revenue</MenuItem>
-                <MenuItem value={`budget`}>Budget</MenuItem>
-              </SelectMUI>
-            </FormControl>
+                {searchParams.get("query") ||
+                releaseDate[0] !== minYear ||
+                releaseDate[1] !== maxYear ||
+                genre ||
+                language ||
+                cast ||
+                crew ||
+                keyword ||
+                company ||
+                rating[0] !== 0 ||
+                rating[1] !== 100 ||
+                runtime[0] !== 0 ||
+                runtime[1] !== 300 ? (
+                  <button
+                    onClick={() => {
+                      setTimeout(() => {
+                        setSearchQuery("");
+                        setReleaseDate([minYear, maxYear]);
+                        setReleaseDateSlider([minYear, maxYear]);
+                        setGenre(null);
+                        setLanguage(null);
+                        setCast(null);
+                        setCrew(null);
+                        setKeyword(null);
+                        setCompany(null);
+                        setRating([0, 100]);
+                        setRatingSlider([0, 100]);
+                        setRuntime([0, 300]);
+                        setRuntimeSlider([0, 300]);
+                        setSortByType("popularity");
+                        setSortByOrder("desc");
+                      }, 500);
 
-            {/* Sort by order */}
-            <FormControl
-              fullWidth
-              size="small"
-              className={`w-[150px] sm:w-[200px]`}
-            >
-              <SelectMUI
-                labelId="sort-by-order-label"
-                id="sort-by-order"
-                value={sortByOrder}
-                onChange={handleSortByOrderChange}
-                sx={selectStyles}
+                      router.push(`${pathname}`);
+                      // router.refresh();
+                      // defaultFilms();
+                    }}
+                    className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
+                  >
+                    <IonIcon icon={closeCircle} className={`text-xl`} />
+                    <span className={`text-sm whitespace-nowrap`}>
+                      Clear all filters
+                    </span>
+                  </button>
+                ) : (
+                  <span>No filter selected</span>
+                )}
+              </div>
+
+              {/* Filter button */}
+              <button
+                onClick={() => setIsFilterActive(true)}
+                className={`btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
               >
-                <MenuItem value={`asc`}>Ascending</MenuItem>
-                <MenuItem value={`desc`}>Descending</MenuItem>
-              </SelectMUI>
-            </FormControl>
-
-            {/* Display */}
-            {/* <div
-              className={`p-1 rounded-full bg-gray-900 flex items-center gap-1`}
-            >
-              <ButtonSwitcher
-                onClick={() => setIsGrid(true)}
-                icon={grid}
-                condition={isGrid}
-              />
-              <ButtonSwitcher
-                onClick={() => setIsGrid(false)}
-                icon={menu}
-                condition={!isGrid}
-              />
-            </div> */}
-
-            {/* Filter button */}
-            <button
-              onClick={() => setIsFilterActive(true)}
-              className={`ml-auto btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
-            >
-              <IonIcon icon={filter} className={`text-2xl`} />
-            </button>
+                <IonIcon icon={filter} className={`text-2xl`} />
+              </button>
+            </div>
           </div>
         </section>
 
