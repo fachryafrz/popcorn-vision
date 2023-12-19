@@ -6,7 +6,15 @@ import FilmCard from "@/app/components/FilmCard";
 import { slugify } from "@/app/lib/slugify";
 import { IonIcon } from "@ionic/react";
 import { FormControl, InputLabel, MenuItem, Slider } from "@mui/material";
-import { close, filter, grid, menu, search } from "ionicons/icons";
+import {
+  close,
+  closeCircle,
+  closeCircleOutline,
+  filter,
+  grid,
+  menu,
+  search,
+} from "ionicons/icons";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Select from "react-select";
@@ -21,6 +29,7 @@ export default function Search({ type = "movie" }) {
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
+  const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
   const [genresData, setGenresData] = useState();
   const [languagesData, setLanguagesData] = useState();
@@ -34,6 +43,7 @@ export default function Search({ type = "movie" }) {
   const [maxYear, setMaxYear] = useState();
 
   // Filters
+  const [searchInput, setSearchInput] = useState();
   const [searchQuery, setSearchQuery] = useState();
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
@@ -69,37 +79,34 @@ export default function Search({ type = "movie" }) {
   const ratingMarks = [
     {
       value: 0,
-      label: rating[0],
+      label: ratingSlider[0],
     },
     {
       value: 100,
-      label: rating[1],
+      label: ratingSlider[1],
     },
   ];
   const runtimeMarks = [
     {
       value: 0,
-      label: runtime[0],
+      label: runtimeSlider[0],
     },
     {
       value: 300,
-      label: runtime[1],
+      label: runtimeSlider[1],
     },
   ];
 
   // Handle Search Query Change
   const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value);
+    setSearchInput(event.target.value);
   };
-
   const handleSearchQuery = (event) => {
     event.preventDefault();
 
-    const searchEl = document.getElementById("mainSearchBar");
+    setSearchQuery(searchInput);
 
-    setSearchQuery(searchEl.value);
-
-    const value = searchEl.value;
+    const value = searchInput;
 
     if (!value) {
       current.delete("query");
@@ -116,8 +123,6 @@ export default function Search({ type = "movie" }) {
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
-    setReleaseDate(newValue);
-
     const value = releaseDate ? `${newValue[0]},${newValue[1]}` : "";
 
     if (!value) {
@@ -133,8 +138,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleRatingChange = (event, newValue) => {
-    setRating(newValue);
-
     const value = rating ? `${newValue[0]},${newValue[1]}` : "";
 
     // NOTE: Using vote_count.gte & vote_count.lte
@@ -151,8 +154,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleRuntimeChange = (event, newValue) => {
-    setRuntime(newValue);
-
     const value = runtime ? `${newValue[0]},${newValue[1]}` : "";
 
     // NOTE: Using with_runtime.gte & with_runtime.lte
@@ -171,8 +172,6 @@ export default function Search({ type = "movie" }) {
 
   // Handle MUI Select Change
   const handleSortByTypeChange = (event) => {
-    setSortByType(event.target.value);
-
     const value = sortByType.trim();
 
     if (!value) {
@@ -188,8 +187,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleSortByOrderChange = (event) => {
-    setSortByOrder(event.target.value);
-
     const value = sortByOrder.trim();
 
     if (!value) {
@@ -334,8 +331,6 @@ export default function Search({ type = "movie" }) {
 
   // Handle Select Change
   const handleGenreChange = (selectedOption) => {
-    setGenre(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -351,8 +346,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleLanguageChange = (selectedOption) => {
-    setLanguage(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -368,8 +361,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleCastChange = (selectedOption) => {
-    setCast(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -385,8 +376,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleCrewChange = (selectedOption) => {
-    setCrew(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -402,8 +391,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleKeywordChange = (selectedOption) => {
-    setKeyword(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -419,8 +406,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
   const handleCompanyChange = (selectedOption) => {
-    setCompany(selectedOption);
-
     const value = selectedOption.map((option) => option.value);
 
     if (!value) {
@@ -436,21 +421,33 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
 
+  // Load default films
+  const defaultFilms = () => {
+    setLoading(true);
+
+    // Get default film list
+    fetchData({ endpoint: `/discover/${type}` }).then((res) => {
+      setFilms(res.results);
+      setLoading(false);
+    });
+
+    // Get default film list page 2
+    // fetchData({
+    //   endpoint: `/discover/${type}`,
+    //   queryParams: {
+    //     page: 2,
+    //   },
+    // }).then((res) => {
+    //   setFilms((prev) => prev && [...prev, ...res.results]);
+    //   setLoading(false);
+    // });
+  };
+
   // Use Effect for fetching data
   useEffect(() => {
-    if (!current.get("query")) {
+    if (!searchParams.get("query")) {
       // Get default film list
-      fetchData({ endpoint: `/discover/${type}` }).then((res) =>
-        setFilms(res.results)
-      );
-
-      // Get default film list page 2
-      fetchData({
-        endpoint: `/discover/${type}`,
-        queryParams: {
-          page: 2,
-        },
-      }).then((res) => setFilms((prev) => prev && [...prev, ...res.results]));
+      // defaultFilms();
     }
 
     // Get genres list
@@ -470,7 +467,9 @@ export default function Search({ type = "movie" }) {
         sort_by: "primary_release_date.asc",
       },
     }).then((res) => {
-      const minReleaseDate = res.results[0].release_date;
+      const minReleaseDate = !isTvPage
+        ? res.results[0].release_date
+        : res.results[0].first_air_date;
       const minYear = parseInt(new Date(minReleaseDate).getFullYear());
       setMinYear(minYear);
     });
@@ -482,7 +481,9 @@ export default function Search({ type = "movie" }) {
         sort_by: "primary_release_date.desc",
       },
     }).then((res) => {
-      const maxReleaseDate = res.results[0].release_date;
+      const maxReleaseDate = !isTvPage
+        ? res.results[0].release_date
+        : res.results[0].first_air_date;
       const maxYear = parseInt(new Date(maxReleaseDate).getFullYear());
       setMaxYear(maxYear);
     });
@@ -499,20 +500,20 @@ export default function Search({ type = "movie" }) {
   // Use Effect for Search Params
   useEffect(() => {
     // Release date
-    if (current.get("release_date")) {
-      const releaseDateParams = current.get("release_date").split(".");
+    if (searchParams.get("release_date")) {
+      const releaseDateParams = searchParams.get("release_date").split(".");
       const searchMinYear = parseInt(releaseDateParams[0]);
       const searchMaxYear = parseInt(releaseDateParams[2]);
 
-      if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
-        setReleaseDate([searchMinYear, searchMaxYear]);
-        setReleaseDateSlider([searchMinYear, searchMaxYear]);
-      }
+      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
+      setReleaseDate([searchMinYear, searchMaxYear]);
+      setReleaseDateSlider([searchMinYear, searchMaxYear]);
+      // }
     }
 
     // Genres
-    if (current.get("with_genres")) {
-      const genresParams = current.get("with_genres").split(",");
+    if (searchParams.get("with_genres")) {
+      const genresParams = searchParams.get("with_genres").split(",");
       const searchGenres = genresParams.map((genreId) =>
         genresData?.find((genre) => parseInt(genre.id) === parseInt(genreId))
       );
@@ -524,11 +525,15 @@ export default function Search({ type = "movie" }) {
           }
       );
       setGenre(searchGenresOptions);
+    } else if (searchParams.get("with_genres") === "") {
+      setGenre(null);
     }
 
     // Languages
-    if (current.get("with_original_language")) {
-      const languagesParams = current.get("with_original_language").split(",");
+    if (searchParams.get("with_original_language")) {
+      const languagesParams = searchParams
+        .get("with_original_language")
+        .split(",");
       const searchLanguages = languagesParams.map((languageId) =>
         languagesData?.find(
           (language) => language.iso_639_1 === languageId.toLowerCase()
@@ -542,11 +547,13 @@ export default function Search({ type = "movie" }) {
           }
       );
       setLanguage(searchLanguagesOptions);
+    } else if (searchParams.get("with_original_language") === "") {
+      setLanguage(null);
     }
 
     // Cast
-    if (current.get("with_cast")) {
-      const castParams = current.get("with_cast").split(",");
+    if (searchParams.get("with_cast")) {
+      const castParams = searchParams.get("with_cast").split(",");
       const fetchPromises = castParams.map((castId) => {
         return fetchData({
           endpoint: `/person/${castId}`,
@@ -565,11 +572,13 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching cast:", error);
         });
+    } else if (searchParams.get("with_cast") === "") {
+      setCast(null);
     }
 
     // Crew
-    if (current.get("with_crew")) {
-      const crewParams = current.get("with_crew").split(",");
+    if (searchParams.get("with_crew")) {
+      const crewParams = searchParams.get("with_crew").split(",");
       const fetchPromises = crewParams.map((crewId) => {
         return fetchData({
           endpoint: `/person/${crewId}`,
@@ -588,11 +597,13 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching crew:", error);
         });
+    } else if (searchParams.get("with_crew") === "") {
+      setCrew(null);
     }
 
     // Keyword
-    if (current.get("with_keywords")) {
-      const keywordParams = current.get("with_keywords").split(",");
+    if (searchParams.get("with_keywords")) {
+      const keywordParams = searchParams.get("with_keywords").split(",");
       const fetchPromises = keywordParams.map((keywordId) => {
         return fetchData({
           endpoint: `/keyword/${keywordId}`,
@@ -611,11 +622,13 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching keyword:", error);
         });
+    } else if (searchParams.get("with_keywords") === "") {
+      setKeyword(null);
     }
 
     // Company
-    if (current.get("with_companies")) {
-      const companyParams = current.get("with_companies").split(",");
+    if (searchParams.get("with_companies")) {
+      const companyParams = searchParams.get("with_companies").split(",");
       const fetchPromises = companyParams.map((companyId) => {
         return fetchData({
           endpoint: `/company/${companyId}`,
@@ -634,11 +647,13 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching company:", error);
         });
+    } else if (searchParams.get("with_companies") === "") {
+      setCompany(null);
     }
 
     // Rating
-    if (current.get("vote_count")) {
-      const ratingParams = current.get("vote_count").split(".");
+    if (searchParams.get("vote_count")) {
+      const ratingParams = searchParams.get("vote_count").split(".");
       const searchRating = [
         parseInt(ratingParams[0]),
         parseInt(ratingParams[2]),
@@ -651,8 +666,8 @@ export default function Search({ type = "movie" }) {
     }
 
     // Runtime
-    if (current.get("with_runtime")) {
-      const runtimeParams = current.get("with_runtime").split(".");
+    if (searchParams.get("with_runtime")) {
+      const runtimeParams = searchParams.get("with_runtime").split(".");
       const searchRuntime = [
         parseInt(runtimeParams[0]),
         parseInt(runtimeParams[2]),
@@ -665,8 +680,8 @@ export default function Search({ type = "movie" }) {
     }
 
     // Sort by
-    if (current.get("sort_by")) {
-      const sortByParams = current.get("sort_by").split(".");
+    if (searchParams.get("sort_by")) {
+      const sortByParams = searchParams.get("sort_by").split(".");
       const searchSortByType = sortByParams[0];
       const searchSortByOrder = sortByParams[1];
 
@@ -680,80 +695,87 @@ export default function Search({ type = "movie" }) {
     }
 
     // Search Query
-    if (current.get("query")) {
-      const searchQuery = current.get("query");
+    if (searchParams.get("query")) {
+      const searchQuery = searchParams.get("query");
 
       setSearchQuery(searchQuery);
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    router,
+    searchParams,
     genresData,
     languagesData,
     maxYear,
     minYear,
+    sortByType,
+    sortByOrder,
     rating,
     runtime,
-    searchParams,
-    sortByOrder,
-    sortByType,
-    type,
   ]);
 
   // Use Effect for Search
   useEffect(() => {
-    const performSearch = () => {
-      const minFullYear = `${releaseDate[0]}-01-01`;
-      const maxFullYear = `${releaseDate[1]}-12-31`;
+    const minFullYear = `${releaseDate[0]}-01-01`;
+    const maxFullYear = `${releaseDate[1]}-12-31`;
 
-      const searchParams = {
+    const performSearch = () => {
+      setLoading(true);
+
+      const searchAPIParams = {
         include_adult: false,
-        "primary_release_date.gte": minFullYear,
-        "primary_release_date.lte": maxFullYear,
+        sort_by: `${sortByType}.${sortByOrder}`,
       };
 
-      if (current.get("with_genres")) {
-        searchParams.with_genres = genre.map((genre) => genre?.value).join(",");
+      if (!isTvPage) {
+        searchAPIParams["primary_release_date.gte"] = minFullYear;
+        searchAPIParams["primary_release_date.lte"] = maxFullYear;
+      } else {
+        searchAPIParams["first_air_date.gte"] = minFullYear;
+        searchAPIParams["first_air_date.lte"] = maxFullYear;
       }
-      if (current.get("with_original_language")) {
-        searchParams.with_original_language = language
-          .map((language) => language?.value)
+
+      if (searchParams.get("with_genres")) {
+        searchAPIParams.with_genres = genre
+          ?.map((genre) => genre?.value)
           .join(",");
       }
-      if (current.get("with_cast")) {
-        searchParams.with_cast = cast.map((cast) => cast?.value).join(",");
-      }
-      if (current.get("with_crew")) {
-        searchParams.with_crew = crew.map((crew) => crew?.value).join(",");
-      }
-      if (current.get("with_keywords")) {
-        searchParams.with_keywords = keyword
-          .map((keyword) => keyword?.value)
+      if (searchParams.get("with_original_language")) {
+        searchAPIParams.with_original_language = language
+          ?.map((language) => language?.value)
           .join(",");
       }
-      if (current.get("with_companies")) {
-        searchParams.with_companies = company
-          .map((company) => company?.value)
+      if (searchParams.get("with_cast")) {
+        searchAPIParams.with_cast = cast?.map((cast) => cast?.value).join(",");
+      }
+      if (searchParams.get("with_crew")) {
+        searchAPIParams.with_crew = crew?.map((crew) => crew?.value).join(",");
+      }
+      if (searchParams.get("with_keywords")) {
+        searchAPIParams.with_keywords = keyword
+          ?.map((keyword) => keyword?.value)
           .join(",");
       }
-      if (current.get("vote_count")) {
-        searchParams["vote_count.gte"] = rating[0];
-        searchParams["vote_count.lte"] = rating[1];
+      if (searchParams.get("with_companies")) {
+        searchAPIParams.with_companies = company
+          ?.map((company) => company?.value)
+          .join(",");
       }
-      if (current.get("with_runtime")) {
-        searchParams["with_runtime.gte"] = runtime[0];
-        searchParams["with_runtime.lte"] = runtime[1];
+      if (searchParams.get("vote_count") && rating) {
+        searchAPIParams["vote_count.gte"] = rating[0];
+        searchAPIParams["vote_count.lte"] = rating[1];
       }
-      if (current.get("sort_by")) {
-        searchParams.sort_by = `${sortByType}.${sortByOrder}`;
+      if (searchParams.get("with_runtime") && runtime) {
+        searchAPIParams["with_runtime.gte"] = runtime[0];
+        searchAPIParams["with_runtime.lte"] = runtime[1];
       }
 
       fetchData({
         endpoint: `/discover/${type}`,
-        queryParams: searchParams,
+        queryParams: searchAPIParams,
       })
         .then((res) => {
           setFilms(res.results);
+          setLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
@@ -761,30 +783,42 @@ export default function Search({ type = "movie" }) {
     };
 
     const performSearchQuery = () => {
+      setLoading(true);
+
       fetchData({
         endpoint: `/search/${type}`,
         queryParams: {
           query: searchQuery,
           include_adult: false,
           language: "en-US",
-          year: releaseDate[1],
+          page: 1,
         },
       })
         .then((res) => {
-          setFilms(res.results);
+          // Filter movies based on release date
+          const filteredMovies = res.results.filter((film) =>
+            !isTvPage
+              ? film.release_date
+              : film.first_air_date >= `${releaseDate[0]}-01-01` && !isTvPage
+              ? film.release_date
+              : film.first_air_date <= `${releaseDate[1]}-12-31`
+          );
+          setFilms(filteredMovies);
+          setLoading(false);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
         });
     };
 
-    if (!searchQuery) {
+    if (!searchParams.get("query")) {
       performSearch();
     } else {
+      setSearchInput(searchQuery);
       performSearchQuery();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    searchParams,
     cast,
     company,
     crew,
@@ -798,12 +832,13 @@ export default function Search({ type = "movie" }) {
     sortByType,
     searchQuery,
     type,
+    isTvPage,
   ]);
 
   return (
     <div className={`flex lg:px-4`}>
       <aside
-        className={`p-4 w-full lg:max-w-[300px] h-[calc(100dvh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-10 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-20 transition-all lg:translate-x-0 ${
+        className={`p-4 w-full lg:max-w-[300px] h-[calc(100dvh-66px)] lg:h-[calc(100dvh-66px-1rem)] lg:sticky top-[66px] bg-base-100 bg-opacity-[95%] lg:bg-secondary lg:bg-opacity-10 backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-20 transition-all lg:translate-x-0 ${
           isFilterActive ? `translate-x-0` : `-translate-x-full`
         }`}
       >
@@ -863,30 +898,34 @@ export default function Search({ type = "movie" }) {
         </section>
 
         {/* Cast */}
-        <section className={`flex flex-col gap-1`}>
-          <span className={`font-medium`}>Cast</span>
-          <AsyncSelect
-            loadOptions={castsLoadOptions}
-            onChange={handleCastChange}
-            value={cast}
-            styles={inputStyles}
-            placeholder={`Search`}
-            isMulti
-          />
-        </section>
+        {!isTvPage && (
+          <section className={`flex flex-col gap-1`}>
+            <span className={`font-medium`}>Cast</span>
+            <AsyncSelect
+              loadOptions={castsLoadOptions}
+              onChange={handleCastChange}
+              value={cast}
+              styles={inputStyles}
+              placeholder={`Search`}
+              isMulti
+            />
+          </section>
+        )}
 
         {/* Crew */}
-        <section className={`flex flex-col gap-1`}>
-          <span className={`font-medium`}>Crew</span>
-          <AsyncSelect
-            loadOptions={crewsLoadOptions}
-            onChange={handleCrewChange}
-            value={crew}
-            styles={inputStyles}
-            placeholder={`Search`}
-            isMulti
-          />
-        </section>
+        {!isTvPage && (
+          <section className={`flex flex-col gap-1`}>
+            <span className={`font-medium`}>Crew</span>
+            <AsyncSelect
+              loadOptions={crewsLoadOptions}
+              onChange={handleCrewChange}
+              value={crew}
+              styles={inputStyles}
+              placeholder={`Search`}
+              isMulti
+            />
+          </section>
+        )}
 
         {/* Keyword */}
         <section className={`flex flex-col gap-1`}>
@@ -951,6 +990,7 @@ export default function Search({ type = "movie" }) {
           </div>
         </section>
       </aside>
+
       <div className={`p-4 lg:pr-0 flex flex-col gap-4 w-full`}>
         {/* Options */}
         <section
@@ -973,7 +1013,7 @@ export default function Search({ type = "movie" }) {
               placeholder={`Search`}
               className={`text-white bg-transparent w-full px-4 py-4 pl-10`}
               onChange={handleSearchInputChange}
-              value={searchQuery}
+              value={searchInput}
             />
 
             <input type="submit" className={`sr-only`} />
@@ -1039,10 +1079,94 @@ export default function Search({ type = "movie" }) {
           </div>
         </section>
 
-        {/* List of active filters */}
         <section
+          className={`flex gap-2 items-center flex-wrap flex-row-reverse`}
+        >
+          {searchParams.get("query") ||
+          releaseDate[0] !== minYear ||
+          releaseDate[1] !== maxYear ||
+          genre ||
+          language ||
+          cast ||
+          crew ||
+          keyword ||
+          company ||
+          rating[0] !== 0 ||
+          rating[1] !== 100 ||
+          runtime[0] !== 0 ||
+          runtime[1] !== 300 ? (
+            <button
+              onClick={() => {
+                setTimeout(() => {
+                  setSearchInput("");
+                  setSearchQuery("");
+                  setReleaseDate([minYear, maxYear]);
+                  setReleaseDateSlider([minYear, maxYear]);
+                  setGenre(null);
+                  setLanguage(null);
+                  setCast(null);
+                  setCrew(null);
+                  setKeyword(null);
+                  setCompany(null);
+                  setRating([0, 100]);
+                  setRatingSlider([0, 100]);
+                  setRuntime([0, 300]);
+                  setRuntimeSlider([0, 300]);
+                  setSortByType("popularity");
+                  setSortByOrder("desc");
+                }, 500);
+
+                router.push(`${pathname}`);
+                // router.refresh();
+                // defaultFilms();
+              }}
+              className={`pr-4 flex items-center gap-1 text-gray-400 hocus:text-red-600`}
+            >
+              <span className={`text-sm whitespace-nowrap`}>
+                Clear all filters
+              </span>
+              <IonIcon icon={closeCircle} className={`text-xl`} />
+            </button>
+          ) : (
+            <span>No filter selected</span>
+          )}
+        </section>
+
+        {/* List of active filters */}
+        {/* <section
           className={`hidden gap-2 items-center flex-wrap flex-row-reverse`}
         >
+          {searchInput.length > 0 ||
+            releaseDate[0] !== minYear ||
+            releaseDate[1] !== maxYear ||
+            genre?.length > 1 ||
+            language?.length > 1 ||
+            cast?.length > 1 ||
+            crew?.length > 1 ||
+            keyword?.length > 1 ||
+            company?.length > 1 ||
+            rating[0] !== 0 ||
+            rating[1] !== 100 ||
+            runtime[0] !== 0 ||
+            runtime[1] !== 300 || (
+              <button
+                type={`button`}
+                onClick={() => {
+                  setSearchInput("");
+                  setSearchQuery("");
+                  router.push(`${pathname}`);
+                  // router.refresh();
+                  // defaultFilms();
+                }}
+                className={`pr-4 flex items-center gap-1 text-gray-400 hocus:text-red-600`}
+              >
+                <span className={`text-sm whitespace-nowrap`}>
+                  Clear all filters
+                </span>
+                <IonIcon icon={closeCircle} className={`text-xl`} />
+              </button>
+            )}
+
           {releaseDate[0] !== minYear || releaseDate[1] !== maxYear ? (
             <ButtonFilter
               searchParam={"release_date"}
@@ -1242,31 +1366,42 @@ export default function Search({ type = "movie" }) {
               info={`${runtime[0]}-${runtime[1]}`}
             />
           ) : null}
-        </section>
+        </section> */}
 
-        {/* Films List */}
-        <section
-          className={`grid gap-3 grid-cols-3 md:grid-cols-4 lg:grid-cols-5`}
-        >
-          {genresData &&
-            films?.map((film) => {
-              const filmGenres =
-                film.genre_ids && genresData
-                  ? film.genre_ids.map((genreId) =>
-                      genresData.find((genre) => genre.id === genreId)
-                    )
-                  : [];
+        {loading ? (
+          <>
+            {/* Loading films */}
+            <section>
+              <span>Loading...</span>
+            </section>
+          </>
+        ) : (
+          <>
+            {/* Films list */}
+            <section
+              className={`grid gap-2 sm:gap-3 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
+            >
+              {genresData &&
+                films?.map((film) => {
+                  const filmGenres =
+                    film.genre_ids && genresData
+                      ? film.genre_ids.map((genreId) =>
+                          genresData.find((genre) => genre.id === genreId)
+                        )
+                      : [];
 
-              return (
-                <FilmCard
-                  key={film.id}
-                  film={film}
-                  genres={filmGenres}
-                  isTvPage={isTvPage}
-                />
-              );
-            })}
-        </section>
+                  return (
+                    <FilmCard
+                      key={film.id}
+                      film={film}
+                      genres={filmGenres}
+                      isTvPage={isTvPage}
+                    />
+                  );
+                })}
+            </section>
+          </>
+        )}
       </div>
     </div>
   );

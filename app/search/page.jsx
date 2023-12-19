@@ -1,5 +1,5 @@
 import React from "react";
-import Search from "./Search";
+import Search from "./new/page";
 
 export async function generateMetadata() {
   return {
@@ -32,6 +32,6 @@ export async function generateMetadata() {
   };
 }
 
-export default function page({ searchParams }) {
-  return <Search query={searchParams} />;
+export default function page() {
+  return <Search type={`movie`} />;
 }
