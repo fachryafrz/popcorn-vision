@@ -225,7 +225,7 @@ export default function Search({ type = "movie" }) {
       backgroundColor: "#202735",
       borderWidth: "1px",
       borderColor: "#79808B",
-      borderRadius: "9999px",
+      borderRadius: "1.5rem",
     }),
     input: (styles) => ({
       ...styles,
