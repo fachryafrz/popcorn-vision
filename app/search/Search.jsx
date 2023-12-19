@@ -271,6 +271,13 @@ export default function Search({ type = "movie" }) {
         backgroundColor: "rgba(255,255,255,0.1)",
       },
     }),
+    clearIndicator: (styles) => ({
+      ...styles,
+      display: "block",
+      "&:hover": {
+        color: "#fff",
+      },
+    }),
   };
 
   // Handle Select Options
