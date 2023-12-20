@@ -378,7 +378,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_genres");
       } else {
         current.set("with_genres", value);
@@ -396,7 +396,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_original_language");
       } else {
         current.set("with_original_language", value);
@@ -414,7 +414,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_cast");
       } else {
         current.set("with_cast", value);
@@ -432,7 +432,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_crew");
       } else {
         current.set("with_crew", value);
@@ -450,7 +450,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_keywords");
       } else {
         current.set("with_keywords", value);
@@ -468,7 +468,7 @@ export default function Search({ type = "movie" }) {
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
-      if (!value) {
+      if (value.length === 0) {
         current.delete("with_companies");
       } else {
         current.set("with_companies", value);
@@ -638,7 +638,7 @@ export default function Search({ type = "movie" }) {
           }
       );
       setGenre(searchGenresOptions);
-    } else if (searchParams.get("with_genres") === "") {
+    } else {
       setGenre(null);
     }
 
@@ -660,7 +660,7 @@ export default function Search({ type = "movie" }) {
           }
       );
       setLanguage(searchLanguagesOptions);
-    } else if (searchParams.get("with_original_language") === "") {
+    } else {
       setLanguage(null);
     }
 
@@ -685,7 +685,7 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching cast:", error);
         });
-    } else if (searchParams.get("with_cast") === "") {
+    } else {
       setCast(null);
     }
 
@@ -710,7 +710,7 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching crew:", error);
         });
-    } else if (searchParams.get("with_crew") === "") {
+    } else {
       setCrew(null);
     }
 
@@ -735,7 +735,7 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching keyword:", error);
         });
-    } else if (searchParams.get("with_keywords") === "") {
+    } else {
       setKeyword(null);
     }
 
@@ -760,7 +760,7 @@ export default function Search({ type = "movie" }) {
         .catch((error) => {
           console.error("Error fetching company:", error);
         });
-    } else if (searchParams.get("with_companies") === "") {
+    } else {
       setCompany(null);
     }
 
