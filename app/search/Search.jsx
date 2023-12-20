@@ -16,7 +16,7 @@ import {
   search,
 } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import SelectMUI from "@mui/material/Select";
@@ -29,6 +29,7 @@ export default function Search({ type = "movie" }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const isQueryParams = searchParams.get("query") ? true : false;
 
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
@@ -65,9 +66,34 @@ export default function Search({ type = "movie" }) {
   const [rating, setRating] = useState([0, 100]);
   const [runtime, setRuntime] = useState([0, 300]);
 
+  // React-Select Sort By Options
+  const sortByTypeOptions = useMemo(
+    () => [
+      { value: "popularity", label: "Popularity" },
+      { value: "vote_count", label: "Rating" },
+      { value: "primary_release_date", label: "Release Date" },
+      { value: "revenue", label: "Revenue" },
+      { value: "budget", label: "Budget" },
+    ],
+    []
+  );
+  const sortByOrderOptions = useMemo(
+    () => [
+      { value: "asc", label: "Ascending" },
+      { value: "desc", label: "Descending" },
+    ],
+    []
+  );
+
   // MUI Select
-  const [sortByType, setSortByType] = useState(`popularity`);
-  const [sortByOrder, setSortByOrder] = useState(`desc`);
+  const [sortByType, setSortByType] = useState({
+    value: "popularity",
+    label: "Popularity",
+  });
+  const [sortByOrder, setSortByOrder] = useState({
+    value: "desc",
+    label: "Descending",
+  });
 
   // Handle Slider Marks/Labels
   const releaseDateMarks = [
@@ -150,38 +176,6 @@ export default function Search({ type = "movie" }) {
     router.push(`${pathname}${query}`);
   };
 
-  // Handle MUI Select Change
-  const handleSortByTypeChange = (event) => {
-    const value = sortByType.trim();
-
-    if (!value) {
-      current.delete("sort_by");
-    } else {
-      current.set("sort_by", `${event.target.value}.${sortByOrder}`);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-  const handleSortByOrderChange = (event) => {
-    const value = sortByOrder.trim();
-
-    if (!value) {
-      current.delete("sort_by");
-    } else {
-      current.set("sort_by", `${sortByType}.${event.target.value}`);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-
   // Handle MUI Slider & Select Styles
   const sliderStyles = {
     color: "#fff",
@@ -196,19 +190,6 @@ export default function Search({ type = "movie" }) {
       "&[data-index='1']": {
         left: "calc(100% - 0.75rem) !important",
       },
-    },
-  };
-  const selectStyles = {
-    borderRadius: "999px",
-    color: "#fff",
-    "& .MuiOutlinedInput-notchedOutline": {
-      borderColor: "#79808B",
-    },
-    "&:hover .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white",
-    },
-    "& .MuiSelect-icon": {
-      color: "#fff",
     },
   };
 
@@ -226,8 +207,9 @@ export default function Search({ type = "movie" }) {
       borderWidth: "1px",
       borderColor: "#79808B",
       borderRadius: "1.5rem",
+      cursor: "text",
     }),
-    input: (styles) => ({
+    input: (styles, { isDisabled }) => ({
       ...styles,
       color: "#fff",
     }),
@@ -247,10 +229,10 @@ export default function Search({ type = "movie" }) {
       return {
         ...styles,
         color: "#fff",
-        backgroundColor: "#202735",
+        backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#202735",
         cursor: "pointer",
         "&:hover": {
-          backgroundColor: "rgba(255,255,255,0.1)",
+          backgroundColor: "rgba(255,255,255,0.05)",
         },
       };
     },
@@ -277,6 +259,11 @@ export default function Search({ type = "movie" }) {
       "&:hover": {
         color: "#fff",
       },
+      cursor: "pointer",
+    }),
+    singleValue: (styles) => ({
+      ...styles,
+      color: "#fff",
     }),
   };
 
@@ -449,6 +436,36 @@ export default function Search({ type = "movie" }) {
       current.delete("with_companies");
     } else {
       current.set("with_companies", value);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
+  };
+  const handleSortByTypeChange = (selectedOption) => {
+    const value = selectedOption.value;
+
+    if (!value) {
+      current.delete("sort_by");
+    } else {
+      current.set("sort_by", `${value}.${sortByOrder.value}`);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
+  };
+  const handleSortByOrderChange = (selectedOption) => {
+    const value = selectedOption.value;
+
+    if (!value) {
+      current.delete("sort_by");
+    } else {
+      current.set("sort_by", `${sortByType.value}.${value}`);
     }
 
     const search = current.toString();
@@ -734,14 +751,18 @@ export default function Search({ type = "movie" }) {
     // Sort by
     if (searchParams.get("sort_by")) {
       const sortByParams = searchParams.get("sort_by").split(".");
-      const searchSortByType = sortByParams[0];
-      const searchSortByOrder = sortByParams[1];
+      const searchSortByType = sortByParams.map((param) =>
+        sortByTypeOptions.find((option) => option.value === param)
+      )[0];
+      const searchSortByOrder = sortByParams.map((param) =>
+        sortByOrderOptions.find((option) => option.value === param)
+      )[1];
 
-      if (sortByType !== searchSortByType) {
+      if (sortByType.value !== searchSortByType.value) {
         setSortByType(searchSortByType);
       }
 
-      if (sortByOrder !== searchSortByOrder) {
+      if (sortByOrder.value !== searchSortByOrder.value) {
         setSortByOrder(searchSortByOrder);
       }
     }
@@ -763,6 +784,8 @@ export default function Search({ type = "movie" }) {
     sortByOrder,
     rating,
     runtime,
+    sortByTypeOptions,
+    sortByOrderOptions,
   ]);
 
   // Use Effect for Search
@@ -775,7 +798,7 @@ export default function Search({ type = "movie" }) {
 
       const searchAPIParams = {
         include_adult: false,
-        sort_by: `${sortByType}.${sortByOrder}`,
+        sort_by: `${sortByType.value}.${sortByOrder.value}`,
       };
 
       if (!isTvPage) {
@@ -826,7 +849,7 @@ export default function Search({ type = "movie" }) {
         queryParams: searchAPIParams,
       })
         .then((res) => {
-          setFilms(res.results);
+          setFilms(res);
           setLoading(false);
         })
         .catch((error) => {
@@ -855,7 +878,10 @@ export default function Search({ type = "movie" }) {
               ? film.release_date
               : film.first_air_date <= `${releaseDate[1]}-12-31`
           );
-          setFilms(filteredMovies);
+          setFilms({
+            ...res,
+            results: filteredMovies,
+          });
           setLoading(false);
         })
         .catch((error) => {
@@ -918,6 +944,7 @@ export default function Search({ type = "movie" }) {
               max={maxYear}
               marks={releaseDateMarks}
               sx={sliderStyles}
+              disabled={isQueryParams}
             />
           </div>
         </section>
@@ -937,9 +964,11 @@ export default function Search({ type = "movie" }) {
                 "&:hover": {
                   color: "#fff",
                 },
+                cursor: "pointer",
               }),
             }}
             placeholder={genresInputPlaceholder}
+            isDisabled={isQueryParams}
             isMulti
           />
         </section>
@@ -959,9 +988,11 @@ export default function Search({ type = "movie" }) {
                 "&:hover": {
                   color: "#fff",
                 },
+                cursor: "pointer",
               }),
             }}
             placeholder={languagesInputPlaceholder}
+            isDisabled={isQueryParams}
             isMulti
           />
         </section>
@@ -978,6 +1009,7 @@ export default function Search({ type = "movie" }) {
               value={cast}
               styles={inputStyles}
               placeholder={`Search actor...`}
+              isDisabled={isQueryParams}
               isMulti
             />
           </section>
@@ -995,6 +1027,7 @@ export default function Search({ type = "movie" }) {
               value={crew}
               styles={inputStyles}
               placeholder={`Search director, creator...`}
+              isDisabled={isQueryParams}
               isMulti
             />
           </section>
@@ -1011,6 +1044,7 @@ export default function Search({ type = "movie" }) {
             value={keyword}
             styles={inputStyles}
             placeholder={`Search keyword...`}
+            isDisabled={isQueryParams}
             isMulti
           />
         </section>
@@ -1026,6 +1060,7 @@ export default function Search({ type = "movie" }) {
             value={company}
             styles={inputStyles}
             placeholder={`Search company...`}
+            isDisabled={isQueryParams}
             isMulti
           />
         </section>
@@ -1044,6 +1079,7 @@ export default function Search({ type = "movie" }) {
               max={100}
               marks={ratingMarks}
               sx={sliderStyles}
+              disabled={isQueryParams}
             />
           </div>
         </section>
@@ -1063,6 +1099,7 @@ export default function Search({ type = "movie" }) {
               max={300}
               marks={runtimeMarks}
               sx={sliderStyles}
+              disabled={isQueryParams}
             />
           </div>
         </section>
@@ -1078,9 +1115,11 @@ export default function Search({ type = "movie" }) {
             <SearchBar />
           </div>
 
-          <h1 className={`capitalize font-bold text-3xl`}>
-            {!isTvPage ? `Movie` : `TV Series`}
-          </h1>
+          <div className={`lg:w-full`}>
+            <h1 className={`capitalize font-bold text-3xl`}>
+              {!isTvPage ? `Movie` : `TV Series`}
+            </h1>
+          </div>
 
           <div
             className={`w-full flex gap-2 items-center justify-between lg:justify-end flex-col sm:flex-row`}
@@ -1089,45 +1128,64 @@ export default function Search({ type = "movie" }) {
               className={`flex justify-center gap-1 flex-wrap sm:flex-nowrap`}
             >
               {/* Sort by type */}
-              <FormControl
-                fullWidth
-                size="small"
-                className={`w-[150px] md:w-[200px]`}
-              >
-                <SelectMUI
-                  labelId="sort-by-type-label"
-                  id="sort-by-type"
-                  value={sortByType}
-                  onChange={handleSortByTypeChange}
-                  sx={selectStyles}
-                >
-                  <MenuItem value={`popularity`}>Popularity</MenuItem>
-                  <MenuItem value={`vote_count`}>Rating</MenuItem>
-                  <MenuItem value={`primary_release_date`}>
-                    Release Date
-                  </MenuItem>
-                  <MenuItem value={`revenue`}>Revenue</MenuItem>
-                  <MenuItem value={`budget`}>Budget</MenuItem>
-                </SelectMUI>
-              </FormControl>
+              <Select
+                options={sortByTypeOptions}
+                onChange={handleSortByTypeChange}
+                value={sortByType}
+                styles={{
+                  ...inputStyles,
+                  dropdownIndicator: (styles) => ({
+                    ...styles,
+                    display: "block",
+                    "&:hover": {
+                      color: "#fff",
+                    },
+                    cursor: "pointer",
+                  }),
+                  control: (styles) => ({
+                    ...styles,
+                    color: "#fff",
+                    backgroundColor: "#202735",
+                    borderWidth: "1px",
+                    borderColor: "#79808B",
+                    borderRadius: "1.5rem",
+                    cursor: "pointer",
+                  }),
+                }}
+                isDisabled={isQueryParams}
+                isSearchable={false}
+                className={`w-[145px]`}
+              />
 
               {/* Sort by order */}
-              <FormControl
-                fullWidth
-                size="small"
-                className={`w-[150px] md:w-[200px]`}
-              >
-                <SelectMUI
-                  labelId="sort-by-order-label"
-                  id="sort-by-order"
-                  value={sortByOrder}
-                  onChange={handleSortByOrderChange}
-                  sx={selectStyles}
-                >
-                  <MenuItem value={`asc`}>Ascending</MenuItem>
-                  <MenuItem value={`desc`}>Descending</MenuItem>
-                </SelectMUI>
-              </FormControl>
+              <Select
+                options={sortByOrderOptions}
+                onChange={handleSortByOrderChange}
+                value={sortByOrder}
+                styles={{
+                  ...inputStyles,
+                  dropdownIndicator: (styles) => ({
+                    ...styles,
+                    display: "block",
+                    "&:hover": {
+                      color: "#fff",
+                    },
+                    cursor: "pointer",
+                  }),
+                  control: (styles) => ({
+                    ...styles,
+                    color: "#fff",
+                    backgroundColor: "#202735",
+                    borderWidth: "1px",
+                    borderColor: "#79808B",
+                    borderRadius: "1.5rem",
+                    cursor: "pointer",
+                  }),
+                }}
+                isDisabled={isQueryParams}
+                isSearchable={false}
+                className={`w-[145px]`}
+              />
             </div>
 
             <div className={`flex items-center gap-1 flex-wrap sm:flex-nowrap`}>
@@ -1164,8 +1222,8 @@ export default function Search({ type = "movie" }) {
                         setRatingSlider([0, 100]);
                         setRuntime([0, 300]);
                         setRuntimeSlider([0, 300]);
-                        setSortByType("popularity");
-                        setSortByOrder("desc");
+                        setSortByType(sortByTypeOptions[0]);
+                        setSortByOrder(sortByOrderOptions[1]);
                       }, 500);
 
                       router.push(`${pathname}`);
@@ -1407,14 +1465,14 @@ export default function Search({ type = "movie" }) {
               <span>Loading...</span>
             </section>
           </>
-        ) : (
+        ) : films?.results.length > 0 ? (
           <>
             {/* Films list */}
             <section
               className={`grid gap-2 sm:gap-3 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
             >
               {genresData &&
-                films?.map((film) => {
+                films?.results.map((film) => {
                   const filmGenres =
                     film.genre_ids && genresData
                       ? film.genre_ids.map((genreId) =>
@@ -1431,6 +1489,13 @@ export default function Search({ type = "movie" }) {
                     />
                   );
                 })}
+            </section>
+          </>
+        ) : (
+          <>
+            {/* No film */}
+            <section>
+              <span>No film</span>
             </section>
           </>
         )}
