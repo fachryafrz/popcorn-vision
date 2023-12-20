@@ -15,15 +15,17 @@ export default function PersonDetails({
   tvCredits,
   isModal = false,
 }) {
-  const calculateAge = (birthdate) => {
-    let today = new Date();
-    let birthDate = new Date(birthdate);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    let monthDifference = today.getMonth() - birthDate.getMonth();
+  const calculateAge = (birthdate, deathdate) => {
+    const today = new Date();
+    const birthDate = new Date(birthdate);
+    const endDate = deathdate ? new Date(deathdate) : today;
+
+    let age = endDate.getFullYear() - birthDate.getFullYear();
+    const monthDifference = endDate.getMonth() - birthDate.getMonth();
 
     if (
       monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+      (monthDifference === 0 && endDate.getDate() < birthDate.getDate())
     ) {
       age--;
     }
@@ -116,7 +118,7 @@ export default function PersonDetails({
         {person.birthday && (
           <div id={`Age`} className={`flex flex-col gap-1`}>
             <span className={`text-xl font-bold`}>
-              {`${calculateAge(person.birthday)} years`}
+              {`${calculateAge(person.birthday, person.deathday)} years`}
             </span>
             <span className={`text-gray-400`}>Age</span>
           </div>
