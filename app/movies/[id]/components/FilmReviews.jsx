@@ -25,10 +25,11 @@ export default function FilmReviews({ reviews, film }) {
 
   return (
     <div className="flex flex-col gap-2 relative">
-      <div className="flex gap-4 items-center justify-between bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10">
+      <div className="flex gap-1 items-center bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10">
         <h2 className="font-bold text-xl text-white m-0">
           {moreReviews.length > 1 ? `Reviews` : `Review`}
         </h2>
+        <span className={`text-sm text-gray-400`}>({moreReviews.length})</span>
       </div>
       <div className="flex flex-col gap-2">
         {moreReviews
