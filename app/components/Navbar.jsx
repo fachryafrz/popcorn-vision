@@ -34,9 +34,9 @@ export default function Navbar() {
 
   useEffect(() => {
     window.addEventListener("scroll", function () {
-      if (window.scrollY >= 25) {
+      if (window.scrollY >= 1) {
         setIsScrolled(true);
-      } else if (window.scrollY < 25) {
+      } else if (window.scrollY < 1) {
         setIsScrolled(false);
       }
     });
@@ -44,8 +44,8 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all ${
-        isScrolled && `bg-base-100 backdrop-blur bg-opacity-[85%]`
+      className={`fixed inset-x-0 top-0 z-50 transition-all bg-base-100 ${
+        isScrolled ? `backdrop-blur bg-opacity-[85%]` : `bg-opacity-0`
       }`}
     >
       <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
