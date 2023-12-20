@@ -50,7 +50,7 @@ export default function FilmOverview({
   };
 
   return (
-    <>
+    <div className={`flex flex-col gap-4`}>
       <div className="text-white flex flex-col gap-6">
         {film.overview && (
           <div id="overview" className="flex flex-col gap-2 ">
@@ -137,6 +137,6 @@ export default function FilmOverview({
           <span>Sorry! Feature not yet available.</span>
         </div>
       </section>
-    </>
+    </div>
   );
 }
