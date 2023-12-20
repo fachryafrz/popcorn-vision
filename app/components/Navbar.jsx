@@ -14,6 +14,7 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const [searchInput, setSearchInput] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||
@@ -31,8 +32,22 @@ export default function Navbar() {
     setSearchInput(URLSearchQuery);
   }, [URLSearchQuery]);
 
+  useEffect(() => {
+    window.addEventListener("scroll", function () {
+      if (window.scrollY >= 25) {
+        setIsScrolled(true);
+      } else if (window.scrollY < 25) {
+        setIsScrolled(false);
+      }
+    });
+  }, []);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-base-100 backdrop-blur bg-opacity-[85%]">
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all ${
+        isScrolled && `bg-base-100 backdrop-blur bg-opacity-[85%]`
+      }`}
+    >
       <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
         <Link
           href={!isTvPage ? `/` : `/tv`}
@@ -149,7 +164,7 @@ export function SearchBar() {
       className={`block form-control w-full justify-self-center relative`}
     >
       <div
-        className={`flex items-center input input-bordered bg-opacity-[50%] rounded-full px-0`}
+        className={`flex items-center input input-bordered bg-opacity-[0%] rounded-full px-0`}
       >
         <div
           className={`pl-4 absolute h-full flex items-center pointer-events-none`}

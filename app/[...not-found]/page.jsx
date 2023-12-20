@@ -21,7 +21,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center h-[90svh] p-4`}>
+    <div className={`flex flex-col items-center justify-center h-[90dvh] p-4`}>
       <h2 className={`sr-only`}>Not Found</h2>
       <figure
         style={{

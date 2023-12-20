@@ -33,7 +33,7 @@ export default function HomeSlider({ films, genres }) {
   };
 
   return (
-    <section name="Home Slider" className="pb-[2rem]">
+    <section name="Home Slider" className={`pb-[2rem] -mt-[66px]`}>
       <h2 className="sr-only">Discover Movies</h2>
       <Swiper
         modules={[Pagination, Autoplay, EffectFade, Keyboard]}
@@ -47,7 +47,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`h-[80svh] min-h-[500px] 2xl:max-w-7xl relative after:hidden 2xl:after:block after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        className={`h-[80dvh] lg:h-[120dvh] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.results.slice(0, 5).map((film) => {
           const releaseDate = isItTvPage(
@@ -68,7 +68,7 @@ export default function HomeSlider({ films, genres }) {
           return (
             <SwiperSlide
               key={film.id}
-              className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-25% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-poster md:aspect-auto`}
+              className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-40% after:h-[100%] md:after:via-transparent lg:after:opacity-[100%] aspect-poster md:aspect-auto`}
             >
               <HomeFilm
                 film={film}
@@ -157,7 +157,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
           />
         )}
       </figure>
-      <div className={`mx-auto max-w-7xl z-20 absolute inset-0`}>
+      <div className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100dvh] pb-[2rem]`}>
         <FilmSummary
           film={film}
           genres={genres}

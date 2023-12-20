@@ -29,7 +29,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   });
 
   return (
-    <section id={title} className={`w-full max-w-7xl mx-auto`}>
+    <section id={title} className={`w-full max-w-none mx-auto`}>
       <h2 className="sr-only">{title}</h2>
 
       <Swiper
@@ -56,7 +56,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
             slidesPerGroup: 5,
           },
         }}
-        className={`!pl-4 !pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
+        className={`!px-4 !pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:hidden before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
           const filmGenres =
@@ -69,7 +69,7 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
           return (
             <SwiperSlide
               key={film.id}
-              className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
+              className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)]`}
             >
               <article>
                 <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />

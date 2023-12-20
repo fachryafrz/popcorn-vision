@@ -95,99 +95,100 @@ export default async function Home() {
     <>
       <h1 className="sr-only">{`Popcorn Vision - TV Series`}</h1>
       <HomeSlider films={await getTrending({ type: `tv` })} genres={genres} />
-
-      {/* On The Air */}
-      <FilmSlider
-        films={await getFilms({
-          endpoint: "/discover/tv",
-          params: params({
-            date_gte: thirtyDaysAgo,
-            date_lte: today,
-          }),
-        })}
-        title={`On The Air`}
-        genres={genres}
-      />
-
-      {/* Upcoming */}
-      <FilmSlider
-        films={await getFilms({
-          endpoint: "/discover/tv",
-          params: params({
-            date_gte: tomorrow,
-            date_lte: endOfYear,
-          }),
-        })}
-        title={`Upcoming`}
-        genres={genres}
-        sort={"ASC"}
-      />
-
-      {/* Top Rated */}
-      <FilmSlider
-        films={await getFilms({
-          endpoint: "/discover/tv",
-          params: params({
-            apiSortBy: "vote_count.desc",
-          }),
-        })}
-        title={`Top Rated`}
-        genres={genres}
-      />
-
-      {/* Trending */}
-      <section id="Trending" className="py-[2rem]">
-        <Trending
-          film={await getTrending({ num: 6, type: `tv` })}
-          genres={genres}
-        />
-      </section>
-
-      {/* Providers */}
-      {providers.slice(0, 3).map(async (provider) => (
+      <div className={`lg:-mt-[6rem]`}>
+        {/* On The Air */}
         <FilmSlider
-          key={provider.id}
           films={await getFilms({
             endpoint: "/discover/tv",
             params: params({
-              apiCompanies: provider.id,
+              date_gte: thirtyDaysAgo,
+              date_lte: today,
             }),
           })}
-          title={provider.name}
+          title={`On The Air`}
           genres={genres}
         />
-      ))}
 
-      {/* Trending */}
-      <section id="Trending" className="py-[2rem]">
-        <Trending
-          film={await getTrending({ num: 7, type: `tv` })}
-          genres={genres}
-        />
-      </section>
-
-      {/* Genres */}
-      {genres.slice(0, 3).map(async (genre) => (
+        {/* Upcoming */}
         <FilmSlider
-          key={genre.id}
           films={await getFilms({
             endpoint: "/discover/tv",
             params: params({
-              apiGenres: genre.id,
+              date_gte: tomorrow,
+              date_lte: endOfYear,
             }),
           })}
-          title={genre.name}
+          title={`Upcoming`}
           genres={genres}
+          sort={"ASC"}
         />
-      ))}
 
-      {/* Trending */}
-      <section id="Trending" className="py-[2rem]">
-        <Trending
-          film={await getTrending({ num: 8, type: `tv` })}
+        {/* Top Rated */}
+        <FilmSlider
+          films={await getFilms({
+            endpoint: "/discover/tv",
+            params: params({
+              apiSortBy: "vote_count.desc",
+            }),
+          })}
+          title={`Top Rated`}
           genres={genres}
         />
-      </section>
+
+        {/* Trending */}
+        <section id="Trending" className="py-[2rem]">
+          <Trending
+            film={await getTrending({ num: 6, type: `tv` })}
+            genres={genres}
+          />
+        </section>
+
+        {/* Providers */}
+        {providers.slice(0, 3).map(async (provider) => (
+          <FilmSlider
+            key={provider.id}
+            films={await getFilms({
+              endpoint: "/discover/tv",
+              params: params({
+                apiCompanies: provider.id,
+              }),
+            })}
+            title={provider.name}
+            genres={genres}
+          />
+        ))}
+
+        {/* Trending */}
+        <section id="Trending" className="py-[2rem]">
+          <Trending
+            film={await getTrending({ num: 7, type: `tv` })}
+            genres={genres}
+          />
+        </section>
+
+        {/* Genres */}
+        {genres.slice(0, 3).map(async (genre) => (
+          <FilmSlider
+            key={genre.id}
+            films={await getFilms({
+              endpoint: "/discover/tv",
+              params: params({
+                apiGenres: genre.id,
+              }),
+            })}
+            title={genre.name}
+            genres={genres}
+          />
+        ))}
+
+        {/* Trending */}
+        <section id="Trending" className="py-[2rem]">
+          <Trending
+            film={await getTrending({ num: 8, type: `tv` })}
+            genres={genres}
+          />
+        </section>
+      </div>{" "}
     </>
   );
 }
