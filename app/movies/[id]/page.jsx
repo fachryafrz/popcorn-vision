@@ -95,7 +95,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   return (
     <div
-      className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] relative`}
+      className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] -mt-[66px] relative`}
     >
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />
