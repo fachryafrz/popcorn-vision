@@ -16,7 +16,7 @@ import {
   search,
 } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import SelectMUI from "@mui/material/Select";
@@ -28,7 +28,10 @@ export default function Search({ type = "movie" }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const current = useMemo(
+    () => new URLSearchParams(Array.from(searchParams.entries())),
+    [searchParams]
+  );
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [loading, setLoading] = useState(true);
@@ -96,36 +99,45 @@ export default function Search({ type = "movie" }) {
   });
 
   // Handle Slider Marks/Labels
-  const releaseDateMarks = [
-    {
-      value: minYear,
-      label: releaseDateSlider[0],
-    },
-    {
-      value: maxYear,
-      label: releaseDateSlider[1],
-    },
-  ];
-  const ratingMarks = [
-    {
-      value: 0,
-      label: ratingSlider[0],
-    },
-    {
-      value: 100,
-      label: ratingSlider[1],
-    },
-  ];
-  const runtimeMarks = [
-    {
-      value: 0,
-      label: runtimeSlider[0],
-    },
-    {
-      value: 300,
-      label: runtimeSlider[1],
-    },
-  ];
+  const releaseDateMarks = useMemo(
+    () => [
+      {
+        value: minYear,
+        label: releaseDateSlider[0],
+      },
+      {
+        value: maxYear,
+        label: releaseDateSlider[1],
+      },
+    ],
+    [releaseDateSlider, minYear, maxYear]
+  );
+  const ratingMarks = useMemo(
+    () => [
+      {
+        value: 0,
+        label: ratingSlider[0],
+      },
+      {
+        value: 100,
+        label: ratingSlider[1],
+      },
+    ],
+    [ratingSlider]
+  );
+  const runtimeMarks = useMemo(
+    () => [
+      {
+        value: 0,
+        label: runtimeSlider[0],
+      },
+      {
+        value: 300,
+        label: runtimeSlider[1],
+      },
+    ],
+    [runtimeSlider]
+  );
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
@@ -177,105 +189,113 @@ export default function Search({ type = "movie" }) {
   };
 
   // Handle MUI Slider & Select Styles
-  const sliderStyles = {
-    color: "#fff",
-    "& .MuiSlider-markLabel": {
+  const sliderStyles = useMemo(() => {
+    return {
       color: "#fff",
-      backgroundColor: "#202735",
-      padding: "0.25rem 0.5rem",
-      borderRadius: "999px",
-      "&[data-index='0']": {
-        left: "calc(0% + 0.75rem) !important",
+      "& .MuiSlider-markLabel": {
+        color: "#fff",
+        backgroundColor: "#202735",
+        padding: "0.25rem 0.5rem",
+        borderRadius: "999px",
+        "&[data-index='0']": {
+          left: "calc(0% + 0.75rem) !important",
+        },
+        "&[data-index='1']": {
+          left: "calc(100% - 0.75rem) !important",
+        },
       },
-      "&[data-index='1']": {
-        left: "calc(100% - 0.75rem) !important",
-      },
-    },
-  };
+    };
+  }, []);
 
   // Handle React-Select Input Styles
-  const inputStyles = {
-    placeholder: (styles) => ({
-      ...styles,
-      fontSize: "14px",
-      whiteSpace: "nowrap",
-    }),
-    control: (styles) => ({
-      ...styles,
-      color: "#fff",
-      backgroundColor: "#202735",
-      borderWidth: "1px",
-      borderColor: "#79808B",
-      borderRadius: "1.5rem",
-      cursor: "text",
-    }),
-    input: (styles, { isDisabled }) => ({
-      ...styles,
-      color: "#fff",
-    }),
-    dropdownIndicator: (styles) => ({
-      ...styles,
-      display: "none",
-    }),
-    indicatorSeparator: (styles) => ({
-      ...styles,
-      display: "none",
-    }),
-    menu: (styles) => ({
-      ...styles,
-      backgroundColor: "#202735",
-    }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      return {
+  const inputStyles = useMemo(() => {
+    return {
+      placeholder: (styles) => ({
+        ...styles,
+        fontSize: "14px",
+        whiteSpace: "nowrap",
+      }),
+      control: (styles) => ({
         ...styles,
         color: "#fff",
-        backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#202735",
-        cursor: "pointer",
-        "&:hover": {
-          backgroundColor: "rgba(255,255,255,0.05)",
-        },
-      };
-    },
-    multiValue: (styles) => ({
-      ...styles,
-      backgroundColor: "rgba(255,255,255,0.1)",
-      borderRadius: "9999px",
-    }),
-    multiValueLabel: (styles) => ({
-      ...styles,
-      color: "#fff",
-    }),
-    multiValueRemove: (styles) => ({
-      ...styles,
-      color: "#fff",
-      borderRadius: "9999px",
-      "&:hover": {
-        backgroundColor: "rgba(255,255,255,0.1)",
-      },
-    }),
-    clearIndicator: (styles) => ({
-      ...styles,
-      display: "block",
-      "&:hover": {
+        backgroundColor: "#202735",
+        borderWidth: "1px",
+        borderColor: "#79808B",
+        borderRadius: "1.5rem",
+        cursor: "text",
+      }),
+      input: (styles, { isDisabled }) => ({
+        ...styles,
         color: "#fff",
+      }),
+      dropdownIndicator: (styles) => ({
+        ...styles,
+        display: "none",
+      }),
+      indicatorSeparator: (styles) => ({
+        ...styles,
+        display: "none",
+      }),
+      menu: (styles) => ({
+        ...styles,
+        backgroundColor: "#202735",
+      }),
+      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        return {
+          ...styles,
+          color: "#fff",
+          backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#202735",
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "rgba(255,255,255,0.05)",
+          },
+        };
       },
-      cursor: "pointer",
-    }),
-    singleValue: (styles) => ({
-      ...styles,
-      color: "#fff",
-    }),
-  };
+      multiValue: (styles) => ({
+        ...styles,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        borderRadius: "9999px",
+      }),
+      multiValueLabel: (styles) => ({
+        ...styles,
+        color: "#fff",
+      }),
+      multiValueRemove: (styles) => ({
+        ...styles,
+        color: "#fff",
+        borderRadius: "9999px",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.1)",
+        },
+      }),
+      clearIndicator: (styles) => ({
+        ...styles,
+        display: "block",
+        "&:hover": {
+          color: "#fff",
+        },
+        cursor: "pointer",
+      }),
+      singleValue: (styles) => ({
+        ...styles,
+        color: "#fff",
+      }),
+    };
+  }, []);
 
   // Handle Select Options
-  const genresOptions = genresData?.map((genre) => ({
-    value: genre.id,
-    label: genre.name,
-  }));
-  const languagesOptions = languagesData?.map((language) => ({
-    value: language.iso_639_1,
-    label: language.english_name,
-  }));
+  const genresOptions = useMemo(() => {
+    return genresData?.map((genre) => ({
+      value: genre.id,
+      label: genre.name,
+    }));
+  }, [genresData]);
+  const languagesOptions = useMemo(() => {
+    return languagesData?.map((language) => ({
+      value: language.iso_639_1,
+      label: language.english_name,
+    }));
+  }, [languagesData]);
   const castsLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
       fetchData({
@@ -354,126 +374,150 @@ export default function Search({ type = "movie" }) {
   };
 
   // Handle Select Change
-  const handleGenreChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+  const handleGenreChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_genres");
-    } else {
-      current.set("with_genres", value);
-    }
+      if (!value) {
+        current.delete("with_genres");
+      } else {
+        current.set("with_genres", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleLanguageChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleLanguageChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_original_language");
-    } else {
-      current.set("with_original_language", value);
-    }
+      if (!value) {
+        current.delete("with_original_language");
+      } else {
+        current.set("with_original_language", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleCastChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleCastChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_cast");
-    } else {
-      current.set("with_cast", value);
-    }
+      if (!value) {
+        current.delete("with_cast");
+      } else {
+        current.set("with_cast", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleCrewChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleCrewChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_crew");
-    } else {
-      current.set("with_crew", value);
-    }
+      if (!value) {
+        current.delete("with_crew");
+      } else {
+        current.set("with_crew", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleKeywordChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleKeywordChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_keywords");
-    } else {
-      current.set("with_keywords", value);
-    }
+      if (!value) {
+        current.delete("with_keywords");
+      } else {
+        current.set("with_keywords", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleCompanyChange = (selectedOption) => {
-    const value = selectedOption.map((option) => option.value);
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleCompanyChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
 
-    if (!value) {
-      current.delete("with_companies");
-    } else {
-      current.set("with_companies", value);
-    }
+      if (!value) {
+        current.delete("with_companies");
+      } else {
+        current.set("with_companies", value);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleSortByTypeChange = (selectedOption) => {
-    const value = selectedOption.value;
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleSortByTypeChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.value;
 
-    if (!value) {
-      current.delete("sort_by");
-    } else {
-      current.set("sort_by", `${value}.${sortByOrder.value}`);
-    }
+      if (!value) {
+        current.delete("sort_by");
+      } else {
+        current.set("sort_by", `${value}.${sortByOrder.value}`);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
-  const handleSortByOrderChange = (selectedOption) => {
-    const value = selectedOption.value;
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router, sortByOrder]
+  );
+  const handleSortByOrderChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.value;
 
-    if (!value) {
-      current.delete("sort_by");
-    } else {
-      current.set("sort_by", `${sortByType.value}.${value}`);
-    }
+      if (!value) {
+        current.delete("sort_by");
+      } else {
+        current.set("sort_by", `${sortByType.value}.${value}`);
+      }
 
-    const search = current.toString();
+      const search = current.toString();
 
-    const query = search ? `?${search}` : "";
+      const query = search ? `?${search}` : "";
 
-    router.push(`${pathname}${query}`);
-  };
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router, sortByType]
+  );
 
   // Random options placeholder
   const getRandomOptionsPlaceholder = (options) => {
@@ -790,12 +834,12 @@ export default function Search({ type = "movie" }) {
 
   // Use Effect for Search
   useEffect(() => {
+    setLoading(true);
+
     const minFullYear = `${releaseDate[0]}-01-01`;
     const maxFullYear = `${releaseDate[1]}-12-31`;
 
     const performSearch = () => {
-      setLoading(true);
-
       const searchAPIParams = {
         include_adult: false,
         sort_by: `${sortByType.value}.${sortByOrder.value}`,
@@ -858,8 +902,6 @@ export default function Search({ type = "movie" }) {
     };
 
     const performSearchQuery = () => {
-      setLoading(true);
-
       fetchData({
         endpoint: `/search/${type}`,
         queryParams: {
