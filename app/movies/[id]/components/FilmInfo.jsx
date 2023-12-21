@@ -620,7 +620,7 @@ export default function FilmInfo({
             id={`Share`}
             className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
           >
-            {isUpcoming && (
+            {nextEps && (
               <div className={`w-full flex flex-col items-start gap-2`}>
                 {!isTvPage ? (
                   <span>{`Released in`}</span>
@@ -731,42 +731,44 @@ export default function FilmInfo({
                   </>
                 )}
 
-                <div className="flex flex-wrap justify-center gap-2 text-center">
-                  {countdown.months > 0 && (
+                {isUpcoming && (
+                  <div className="flex flex-wrap justify-center gap-2 text-center">
+                    {countdown.months > 0 && (
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.months }}></span>
+                        </span>
+                        month{countdown.months > 1 ? `s` : ``}
+                      </div>
+                    )}
+                    {countdown.days > 0 && (
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                        <span className="countdown font-mono text-5xl">
+                          <span style={{ "--value": countdown.days }}></span>
+                        </span>
+                        day{countdown.days > 1 ? `s` : ``}
+                      </div>
+                    )}
                     <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                       <span className="countdown font-mono text-5xl">
-                        <span style={{ "--value": countdown.months }}></span>
+                        <span style={{ "--value": countdown.hours }}></span>
                       </span>
-                      month{countdown.months > 1 ? `s` : ``}
+                      hour{countdown.hours > 1 ? `s` : ``}
                     </div>
-                  )}
-                  {countdown.days > 0 && (
                     <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                       <span className="countdown font-mono text-5xl">
-                        <span style={{ "--value": countdown.days }}></span>
+                        <span style={{ "--value": countdown.minutes }}></span>
                       </span>
-                      day{countdown.days > 1 ? `s` : ``}
+                      min
                     </div>
-                  )}
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.hours }}></span>
-                    </span>
-                    hour{countdown.hours > 1 ? `s` : ``}
+                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                      <span className="countdown font-mono text-5xl">
+                        <span style={{ "--value": countdown.seconds }}></span>
+                      </span>
+                      sec
+                    </div>
                   </div>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.minutes }}></span>
-                    </span>
-                    min
-                  </div>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.seconds }}></span>
-                    </span>
-                    sec
-                  </div>
-                </div>
+                )}
               </div>
             )}
             <button
