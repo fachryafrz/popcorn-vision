@@ -57,14 +57,14 @@ export default async function sitemap() {
 
   const moviesInSitemap = movies.map((movie) => ({
     url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
-    lastModified: new Date(movie.release_date),
+    lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,
   }));
 
   const tvShowsInSitemap = tvShows.map((show) => ({
     url: `${appUrl}/tv/${show.id}-${slugify(show.name)}`,
-    lastModified: new Date(show.first_air_date),
+    lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,
   }));
