@@ -4,8 +4,8 @@ import { usePathname } from "next/navigation";
 import { getTitleLogo } from "../api/route";
 
 export default function TitleLogo({ film, images }) {
-  const [titleLogo, setTitleLogo] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [titleLogo, setTitleLogo] = useState(images);
+  const [loading, setLoading] = useState(!images ? true : false);
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -13,11 +13,13 @@ export default function TitleLogo({ film, images }) {
   const title = !isTvPage ? film.title : film.name;
 
   useEffect(() => {
-    getTitleLogo({ film, isTvPage }).then((res) => {
-      setTitleLogo(res);
-      setLoading(false);
-    });
-  }, [film, isTvPage]);
+    if (!images) {
+      getTitleLogo({ film, isTvPage }).then((res) => {
+        setTitleLogo(res);
+        setLoading(false);
+      });
+    }
+  }, [film, isTvPage, images]);
 
   return !loading ? (
     titleLogo ? (
@@ -36,7 +38,7 @@ export default function TitleLogo({ film, images }) {
         )}
       </figure>
     ) : (
-      <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 leading-tight">
+      <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
         {title}
       </h3>
     )
