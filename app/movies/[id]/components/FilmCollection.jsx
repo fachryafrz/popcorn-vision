@@ -29,6 +29,7 @@ import {
   getFilmCollection,
 } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
+import EpisodeCard from "./EpisodeCard";
 
 export default function FilmCollection({
   film,
@@ -376,57 +377,15 @@ function FilmEpisodes({
 
             return (
               <SwiperSlide key={item.id} className={`!h-auto`}>
-                <button
-                  onClick={() => {
-                    getEpisodeModal({
-                      filmID: id,
-                      season: item.season_number,
-                      eps: item.episode_number,
-                    }).then((res) => {
-                      setEpisodeModal(res);
-                      setLoading(false);
-
-                      setTimeout(() => {
-                        document.getElementById(`episodeModal`).scrollTo(0, 0);
-                        document.getElementById(`episodeModal`).showModal();
-                      }, 100);
-                    });
-                  }}
-                  className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full transition-all`}
-                >
-                  <figure className="aspect-video rounded-lg overflow-hidden w-full">
-                    {item.still_path ? (
-                      <img
-                        src={`https://image.tmdb.org/t/p/w500${item.still_path}`}
-                        alt={item.name}
-                        className={`pointer-events-none`}
-                      />
-                    ) : (
-                      <div
-                        className={`bg-base-100 w-full h-full grid place-items-center`}
-                      >
-                        <div
-                          style={{
-                            background: `url(/popcorn.png)`,
-                            backgroundSize: `contain`,
-                          }}
-                          className={`aspect-square h-full`}
-                        ></div>
-                      </div>
-                    )}
-                  </figure>
-                  <div className="flex flex-col gap-1 items-start w-full">
-                    <h3
-                      className="text-start line-clamp-1 lg:line-clamp-2 font-medium"
-                      title={item.name}
-                      style={{ textWrap: `balance` }}
-                    >
-                      {item.name}
-                    </h3>
-
-                    <div
-                      className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
-                    >
+                <EpisodeCard
+                  filmID={id}
+                  setEpisodeModal={setEpisodeModal}
+                  setLoading={setLoading}
+                  episode={item}
+                  imgPath={item.still_path}
+                  title={item.name}
+                  secondaryInfo={
+                    <>
                       {item.vote_average > 1 && (
                         <span className={`flex items-center gap-1`}>
                           <IonIcon
@@ -456,13 +415,9 @@ function FilmEpisodes({
                       {item.air_date && item.runtime && <span>&bull;</span>}
 
                       {item.air_date && <span>{formattedDate}</span>}
-                    </div>
-                  </div>
-
-                  {/* <p className="text-xs text-gray-400 w-full text-start">
-                  {item.overview}
-                </p> */}
-                </button>
+                    </>
+                  }
+                />
               </SwiperSlide>
             );
           })}

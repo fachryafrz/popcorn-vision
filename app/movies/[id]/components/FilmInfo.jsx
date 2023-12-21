@@ -44,6 +44,7 @@ import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
 import Link from "next/link";
 import { getEpisodeModal, getLocation } from "@/app/api/route";
+import EpisodeCard from "./EpisodeCard";
 
 export default function FilmInfo({
   film,
@@ -527,57 +528,17 @@ export default function FilmInfo({
                 {` Episode: ${lastEps.episode_number}`}
               </span>
 
-              <button
-                id={`card`}
-                onClick={() => {
-                  getEpisodeModal({
-                    filmID: film.id,
-                    season: lastEps.season_number,
-                    eps: lastEps.episode_number,
-                  }).then((res) => {
-                    setEpisodeModal(res);
-                    setLoading(false);
-
-                    setTimeout(() => {
-                      document.getElementById(`episodeModal`).scrollTo(0, 0);
-                      document.getElementById(`episodeModal`).showModal();
-                    }, 100);
-                  });
-                }}
-                className={`flex flex-col gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all lg:max-w-[70%] xl:max-w-[50%]`}
-              >
-                <figure
-                  className={`aspect-video bg-base-100 rounded-lg w-full overflow-hidden`}
-                >
-                  {lastEps.still_path ? (
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${lastEps.still_path}`}
-                      alt={lastEps.name}
-                    />
-                  ) : (
-                    <img
-                      src={`/popcorn.png`}
-                      alt={lastEps.name}
-                      className={`pointer-events-none mx-auto object-contain`}
-                    />
-                  )}
-                </figure>
-                <div className={`flex flex-col justify-center items-start`}>
-                  <span
-                    className={`font-medium text-base line-clamp-2 text-left`}
-                    title={lastEps.name}
-                    style={{ textWrap: `balance` }}
-                  >
-                    {lastEps.name}
-                  </span>
-
-                  <span
-                    className={`text-xs text-gray-400 font-medium line-clamp-1 mb-1`}
-                  >{`Season ${lastEps.season_number}`}</span>
-
-                  <div
-                    className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
-                  >
+              <EpisodeCard
+                className={`lg:max-w-[70%] xl:max-w-[50%]`}
+                filmID={film.id}
+                setEpisodeModal={setEpisodeModal}
+                setLoading={setLoading}
+                episode={lastEps}
+                imgPath={lastEps.still_path}
+                title={lastEps.name}
+                secondaryInfo={`Season ${lastEps.season_number}`}
+                thirdInfo={
+                  <>
                     {lastEps.vote_average > 1 && (
                       <span className={`flex items-center gap-1`}>
                         <IonIcon
@@ -610,9 +571,9 @@ export default function FilmInfo({
                     {lastEps.air_date && (
                       <span>{formatDate(lastEps.air_date)}</span>
                     )}
-                  </div>
-                </div>
-              </button>
+                  </>
+                }
+              />
             </section>
           )}
 
@@ -636,61 +597,17 @@ export default function FilmInfo({
 
                 {nextEps && (
                   <>
-                    <button
-                      id={`card`}
-                      onClick={() => {
-                        getEpisodeModal({
-                          filmID: film.id,
-                          season: nextEps.season_number,
-                          eps: nextEps.episode_number,
-                        }).then((res) => {
-                          setEpisodeModal(res);
-                          setLoading(false);
-
-                          setTimeout(() => {
-                            document
-                              .getElementById(`episodeModal`)
-                              .scrollTo(0, 0);
-                            document.getElementById(`episodeModal`).showModal();
-                          }, 100);
-                        });
-                      }}
-                      className={`flex flex-col gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all lg:max-w-[70%] xl:max-w-[50%]`}
-                    >
-                      <figure
-                        className={`aspect-video bg-base-100 rounded-lg w-full overflow-hidden`}
-                      >
-                        {nextEps.still_path ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w500${nextEps.still_path}`}
-                            alt={nextEps.name}
-                          />
-                        ) : (
-                          <img
-                            src={`/popcorn.png`}
-                            alt={nextEps.name}
-                            className={`pointer-events-none mx-auto object-contain`}
-                          />
-                        )}
-                      </figure>
-                      <div
-                        className={`flex flex-col justify-center items-start`}
-                      >
-                        <span
-                          className={`font-medium text-base line-clamp-2 text-left`}
-                          title={nextEps.name}
-                          style={{ textWrap: `balance` }}
-                        >
-                          {nextEps.name}
-                        </span>
-
-                        <span
-                          className={`text-xs text-gray-400 font-medium line-clamp-1 mb-1`}
-                        >{`Season ${nextEps.season_number}`}</span>
-
-                        <div
-                          className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
-                        >
+                    <EpisodeCard
+                      className={`lg:max-w-[70%] xl:max-w-[50%]`}
+                      filmID={film.id}
+                      setEpisodeModal={setEpisodeModal}
+                      setLoading={setLoading}
+                      episode={nextEps}
+                      imgPath={nextEps.still_path}
+                      title={nextEps.name}
+                      secondaryInfo={`Season ${nextEps.season_number}`}
+                      thirdInfo={
+                        <>
                           {nextEps.vote_average > 1 && (
                             <span className={`flex items-center gap-1`}>
                               <IonIcon
@@ -725,9 +642,9 @@ export default function FilmInfo({
                           {nextEps.air_date && (
                             <span>{formatDate(nextEps.air_date)}</span>
                           )}
-                        </div>
-                      </div>
-                    </button>
+                        </>
+                      }
+                    />
                   </>
                 )}
 
