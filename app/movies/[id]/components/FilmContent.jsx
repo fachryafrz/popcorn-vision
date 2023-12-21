@@ -34,20 +34,20 @@ export default function FilmContent({
       }
     >
       <div
-        className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
+        className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
         style={{
           gridTemplateRows: `auto [lastline]`,
         }}
       >
         {/* Poster */}
-        <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
+        <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
           <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
             <FilmPoster film={film} />
           </div>
         </section>
 
         {/* Info */}
-        <section className={`md:col-[4/13] lg:col-[7/20]`}>
+        <section className={`md:col-[4/13] lg:col-[6/20]`}>
           <FilmInfo
             film={film}
             videos={videos}
@@ -65,7 +65,7 @@ export default function FilmContent({
         </section>
 
         {/* Overview */}
-        <section className={`md:col-[1/9] lg:col-[7/20]`}>
+        <section className={`md:col-[1/9] lg:col-[6/20]`}>
           <FilmOverview
             film={film}
             videos={videos}

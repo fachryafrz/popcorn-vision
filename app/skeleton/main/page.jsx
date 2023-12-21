@@ -5,36 +5,44 @@ import "swiper/css";
 
 export default function MainLoading() {
   const sectionCount = 3;
-  const itemCount = 7;
+  const itemCount = 10;
 
   return (
     <div
-      className={`[&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20 flex flex-col gap-[1rem]`}
+      className={`[&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20 flex flex-col gap-[1rem] -mt-[5rem]`}
     >
       {/* HomeSlider */}
       <section
-        className={`h-[532px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 flex items-end`}
+        className={`h-[100dvh] lg:h-[120dvh] min-h-[500px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 flex items-start`}
       >
         <div
-          className={`w-full max-w-7xl mx-auto !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[50%]`}
+          className={`h-full max-h-[100dvh] pb-[2rem] w-full !bg-opacity-0 flex items-end`}
         >
-          {/* Title Logo */}
-          <div className={`h-[100px] sm:h-[150px] w-full !max-w-[350px]`}></div>
-          {/* Rating, Release Date, Season, Genre */}
           <div
-            className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
+            className={`w-full max-w-none mx-auto !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[40%]`}
           >
-            <div className={`h-[24px] w-full`}></div>
-            <div className={`h-[24px] w-full`}></div>
-            <div className={`h-[24px] w-full`}></div>
-          </div>
-          {/* Overview */}
-          <div
-            className={`h-[100px] w-full !bg-opacity-0 flex flex-col gap-2 items-center md:items-start [&_*]:!max-w-none`}
-          >
-            <div className={`h-[24px] w-full`}></div>
-            <div className={`h-[24px] w-full`}></div>
-            <div className={`h-[24px] w-[80%]`}></div>
+            {/* Title Logo */}
+            <div className={`h-[150px] w-full !max-w-[350px]`}></div>
+            {/* Rating, Release Date, Season, Genre */}
+            <div
+              className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
+            >
+              <div className={`h-[24px] w-full`}></div>
+              <div className={`h-[24px] w-full`}></div>
+              <div className={`h-[24px] w-full`}></div>
+            </div>
+            {/* Overview */}
+            <div
+              className={`h-[100px] w-full !bg-opacity-0 hidden md:flex flex-col gap-2 items-center md:items-start [&_*]:!max-w-none`}
+            >
+              <div className={`h-[24px] w-full`}></div>
+              <div className={`h-[24px] w-full`}></div>
+              <div className={`h-[24px] w-[80%]`}></div>
+            </div>
+            {/* Details Button */}
+            <div
+              className={`h-[48px] w-full md:!max-w-[25%] lg:!max-w-[300px] bg-opacity-40 border-none !rounded-full hocus:bg-opacity-100 backdrop-blur`}
+            ></div>
           </div>
         </div>
       </section>
@@ -43,7 +51,7 @@ export default function MainLoading() {
       {[...Array(sectionCount).keys()].map((a) => (
         <section
           key={a}
-          className={`w-full max-w-7xl mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
+          className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
         >
           {/* Section Title */}
           <div className={`h-[28px] w-[100px]`}></div>
@@ -75,7 +83,7 @@ export default function MainLoading() {
             {[...Array(itemCount).keys()].map((b) => (
               <SwiperSlide
                 key={b}
-                className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] mr-2`}
+                className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)] mr-2`}
               >
                 {/* Poster */}
                 <div className={`aspect-poster`}></div>

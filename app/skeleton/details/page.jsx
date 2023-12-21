@@ -10,17 +10,17 @@ export default function DetailsLoading() {
 
       <div className={`z-10 mt-[30%] md:mt-[200px]`}>
         <div
-          className={`mx-auto max-w-7xl grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
+          className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
         >
           {/* Poster */}
-          <section className={`md:col-[1/4] lg:col-[1/7] lg:row-[1/3]`}>
+          <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
             <div
               className={`${loadingPulse} flex w-[50vw] md:w-full mx-auto md:m-0 sticky top-20 flex-col gap-4 aspect-poster rounded-xl overflow-hidden self-start shadow-xl`}
             ></div>
           </section>
 
           {/* Info */}
-          <section className={`md:col-[4/13] lg:col-[7/20]`}>
+          <section className={`md:col-[4/13] lg:col-[6/20]`}>
             <div className={`flex flex-col gap-2 lg:w-full`}>
               {/* Title Logo */}
               <div
@@ -62,7 +62,7 @@ export default function DetailsLoading() {
           </section>
 
           {/* Overview */}
-          <section className={`md:col-[1/9] lg:col-[7/20] flex`}>
+          <section className={`md:col-[1/9] lg:col-[6/20] flex`}>
             <div className={`flex flex-col gap-2 w-full`}>
               {/* Overview */}
               <div className={`[&_*]:rounded-lg`}>
