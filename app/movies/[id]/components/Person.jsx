@@ -25,8 +25,6 @@ export default function Person({
 
   const handleActorClick = () => {
     getPerson({ id }).then((res) => {
-      window.history.pushState(null, null, `/person/${id}-${slugify(name)}`);
-
       setPersonModal(res);
 
       setTimeout(() => {

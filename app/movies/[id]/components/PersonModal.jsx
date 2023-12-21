@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { getPerson } from "@/app/api/route";
+import { fetchData, getPerson } from "@/app/api/route";
 import FilmSlider from "@/app/components/FilmSlider";
+import { slugify } from "@/app/lib/slugify";
 import PersonDetails from "@/app/person/[id]/components/PersonDetails";
 import PersonProfile from "@/app/person/[id]/components/PersonProfile";
 import PersonWorks from "@/app/person/[id]/components/PersonWorks";
@@ -17,7 +18,7 @@ import {
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Navigation } from "swiper";
@@ -37,18 +38,35 @@ export default function PersonModal({
 
   const router = useRouter();
 
+  const handleCloseModal = () => {
+    document.getElementById(`personModal`).close();
+    if (episode) {
+      document.getElementById(`episodeModal`).showModal();
+    }
+    setTimeout(() => {
+      setPersonModal(null);
+    }, 100);
+
+    // router.back();
+  };
+
   useEffect(() => {
-    getPerson({ id: person.id, path: `/combined_credits` }).then((res) => {
-      setCombinedCredits(res);
-    });
-    getPerson({ id: person.id, path: `/movie_credits` }).then((res) => {
-      setMovieCredits(res);
-    });
-    getPerson({ id: person.id, path: `/tv_credits` }).then((res) => {
-      setTVCredits(res);
-    });
-    getPerson({ id: person.id, path: `/images` }).then((res) => {
-      setImages(res);
+    // window.history.pushState(
+    //   null,
+    //   null,
+    //   `/person/${person.id}-${slugify(person.name)}`
+    // );
+
+    fetchData({
+      endpoint: `/person/${person.id}`,
+      queryParams: {
+        append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+      },
+    }).then((res) => {
+      setCombinedCredits(res.combined_credits);
+      setMovieCredits(res.movie_credits);
+      setTVCredits(res.tv_credits);
+      setImages(res.images);
     });
   }, [person]);
 
@@ -59,7 +77,7 @@ export default function PersonModal({
         crew: [...movieCredits.crew, ...tvCredits.crew],
       });
     }
-  }, [movieCredits, tvCredits]);
+  }, [movieCredits, tvCredits, person]);
 
   return (
     <dialog
@@ -69,17 +87,7 @@ export default function PersonModal({
       <div className={`pt-16 px-4 sm:pt-24 relative w-full max-w-7xl`}>
         <div className={`pointer-events-none absolute inset-0`}>
           <button
-            onClick={() => {
-              document.getElementById(`personModal`).close();
-              if (episode) {
-                document.getElementById(`episodeModal`).showModal();
-              }
-              setTimeout(() => {
-                setPersonModal(null);
-              }, 100);
-
-              router.back();
-            }}
+            onClick={handleCloseModal}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 mr-4 pointer-events-auto`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
