@@ -9,7 +9,7 @@ export default function MainLoading() {
 
   return (
     <div
-      className={`[&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20 flex flex-col gap-[1rem] -mt-[5rem]`}
+      className={`[&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20 flex flex-col gap-[1rem] -mt-[66px]`}
     >
       {/* HomeSlider */}
       <section
@@ -51,7 +51,7 @@ export default function MainLoading() {
       {[...Array(sectionCount).keys()].map((a) => (
         <section
           key={a}
-          className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
+          className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4 -mt-[5rem]`}
         >
           {/* Section Title */}
           <div className={`h-[28px] w-[100px]`}></div>
