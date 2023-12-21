@@ -80,7 +80,7 @@ export default function FilmCollection({
     <div className={`flex flex-col gap-2`}>
       <div
         id="collections"
-        className="flex flex-col gap-2 bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10"
+        className="flex flex-col gap-2 py-2 z-10"
       >
         <h2 className="font-bold text-xl text-white m-0">
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
@@ -110,7 +110,7 @@ export default function FilmCollection({
                     <article>
                       <Link
                         href={`/movies/${item.id}-${slugify(item.title)}`}
-                        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+                        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
                           film.id === item.id &&
                           `!bg-primary-blue !bg-opacity-30`
                         }`}
