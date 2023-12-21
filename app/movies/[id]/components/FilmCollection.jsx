@@ -356,7 +356,7 @@ function FilmEpisodes({
         slidesPerView={1}
         spaceBetween={4}
         breakpoints={{
-          640: {
+          1024: {
             slidesPerView: 2,
           },
         }}
@@ -417,7 +417,7 @@ function FilmEpisodes({
                   </figure>
                   <div className="flex flex-col gap-1 items-start w-full">
                     <h3
-                      className="text-start line-clamp-2 font-medium"
+                      className="text-start line-clamp-1 lg:line-clamp-2 font-medium"
                       title={item.name}
                       style={{ textWrap: `balance` }}
                     >

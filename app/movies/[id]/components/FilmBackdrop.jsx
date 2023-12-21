@@ -3,7 +3,7 @@ import React from "react";
 
 export default function FilmBackdrop({ film }) {
   let popcorn = `url(/popcorn.png)`;
-  let filmBackdrop = `url(https://image.tmdb.org/t/p/w1280${film.backdrop_path})`;
+  let filmBackdrop = `url(https://image.tmdb.org/t/p/original${film.backdrop_path})`;
 
   return (
     <figure

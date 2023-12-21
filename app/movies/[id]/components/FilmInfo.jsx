@@ -524,8 +524,9 @@ export default function FilmInfo({
             >
               <span>
                 {nextEps ? `Latest` : `Last`}
-                {` Episode: Episode ${lastEps.episode_number}`}
+                {` Episode: ${lastEps.episode_number}`}
               </span>
+
               <button
                 id={`card`}
                 onClick={() => {
@@ -543,10 +544,10 @@ export default function FilmInfo({
                     }, 100);
                   });
                 }}
-                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
+                className={`flex flex-col gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all lg:max-w-[70%] xl:max-w-[50%]`}
               >
                 <figure
-                  className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
+                  className={`aspect-video bg-base-100 rounded-lg w-full overflow-hidden`}
                 >
                   {lastEps.still_path ? (
                     <img
@@ -562,16 +563,20 @@ export default function FilmInfo({
                   )}
                 </figure>
                 <div className={`flex flex-col justify-center items-start`}>
-                  <span className={`font-medium line-clamp-2`}>
+                  <span
+                    className={`font-medium text-base line-clamp-2 text-left`}
+                    title={lastEps.name}
+                    style={{ textWrap: `balance` }}
+                  >
                     {lastEps.name}
                   </span>
 
                   <span
-                    className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
+                    className={`text-xs text-gray-400 font-medium line-clamp-1 mb-1`}
                   >{`Season ${lastEps.season_number}`}</span>
 
                   <div
-                    className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                    className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
                   >
                     {lastEps.vote_average > 1 && (
                       <span className={`flex items-center gap-1`}>
@@ -622,10 +627,10 @@ export default function FilmInfo({
                 ) : (
                   <span>
                     {nextEps.episode_type == `finale`
-                      ? `Final episode: ${nextEps.name}`
+                      ? `Final Episode: ${nextEps.name}`
                       : nextEps.episode_number == 1
-                      ? `First episode`
-                      : `Next episode: Episode ${nextEps.episode_number}`}
+                      ? `First Episode`
+                      : `Next Episode: ${nextEps.episode_number}`}
                   </span>
                 )}
 
@@ -650,10 +655,10 @@ export default function FilmInfo({
                           }, 100);
                         });
                       }}
-                      className={`flex flex-col sm:flex-row sm:items-center gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all`}
+                      className={`flex flex-col gap-3 p-2 rounded-xl backdrop-blur bg-secondary bg-opacity-10 w-full hocus:bg-opacity-20 transition-all lg:max-w-[70%] xl:max-w-[50%]`}
                     >
                       <figure
-                        className={`aspect-video bg-base-100 rounded-lg w-full sm:w-[150px] overflow-hidden`}
+                        className={`aspect-video bg-base-100 rounded-lg w-full overflow-hidden`}
                       >
                         {nextEps.still_path ? (
                           <img
@@ -671,16 +676,20 @@ export default function FilmInfo({
                       <div
                         className={`flex flex-col justify-center items-start`}
                       >
-                        <span className={`font-medium line-clamp-2`}>
+                        <span
+                          className={`font-medium text-base line-clamp-2 text-left`}
+                          title={nextEps.name}
+                          style={{ textWrap: `balance` }}
+                        >
                           {nextEps.name}
                         </span>
 
                         <span
-                          className={`text-xs sm:text-sm text-gray-400 font-medium line-clamp-1 mb-1`}
+                          className={`text-xs text-gray-400 font-medium line-clamp-1 mb-1`}
                         >{`Season ${nextEps.season_number}`}</span>
 
                         <div
-                          className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                          className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
                         >
                           {nextEps.vote_average > 1 && (
                             <span className={`flex items-center gap-1`}>

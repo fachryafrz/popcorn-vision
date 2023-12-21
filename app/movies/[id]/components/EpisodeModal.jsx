@@ -76,9 +76,9 @@ export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonM
           >
             {episode.still_path && (
               <img
-                src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                src={`https://image.tmdb.org/t/p/original${episode.still_path}`}
                 alt={episode.name}
-                className={`object-cover`}
+                className={`object-cover pointer-events-none`}
               />
             )}
           </figure>
