@@ -253,7 +253,7 @@ function FilmSeason({
               item.poster_path === null
                 ? `url(/popcorn.png)`
                 : `url(https://image.tmdb.org/t/p/w500${item.poster_path})`,
-            backgroundSize: "contain",
+            backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}

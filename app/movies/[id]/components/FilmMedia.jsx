@@ -73,7 +73,7 @@ export default function FilmMedia({ videos, images }) {
             "--swiper-navigation-color": "#fff",
             "--swiper-pagination-color": "#fff",
           }}
-          className="relative aspect-video rounded-lg overflow-hidden"
+          className="relative aspect-video rounded-xl overflow-hidden"
         >
           <div
             id="navigation"

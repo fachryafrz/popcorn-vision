@@ -211,17 +211,17 @@ export default function FilmInfo({
             />
 
             <h1
-              title={!isTvPage ? film.titlte : film.name}
+              title={!isTvPage ? film.title : film.name}
               className="sr-only"
               itemProp="name"
             >
-              {!isTvPage ? film.titlte : film.name}
+              {!isTvPage ? film.title : film.name}
             </h1>
           </>
         ) : (
           <h1
-            title={!isTvPage ? film.titlte : film.name}
-            className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-tight text-center md:text-start"
+            title={!isTvPage ? film.title : film.name}
+            className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-normal text-center md:text-start"
             itemProp="name"
             style={{ textWrap: `balance` }}
           >
