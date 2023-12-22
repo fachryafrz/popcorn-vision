@@ -524,177 +524,173 @@ export default function FilmInfo({
             </section>
           )}
 
-          {isTvPage && (
-            <section
-              id={`TV Series Episode`}
-              className={`flex flex-col xl:flex-row gap-2 mt-2`}
-            >
-              {lastEps && (
-                <div
-                  id={`TV Series Last Episode`}
-                  className={`flex flex-col gap-2`}
-                >
-                  <EpisodeCard
-                    className={`w-full`}
-                    filmID={film.id}
-                    setEpisodeModal={setEpisodeModal}
-                    setLoading={setLoading}
-                    episode={lastEps}
-                    imgPath={lastEps.still_path}
-                    title={lastEps.name}
-                    overlay={
-                      nextEps
-                        ? `Latest Episode: ${lastEps.episode_number}`
-                        : `Last Episode: ${lastEps.episode_number}`
-                    }
-                    secondaryInfo={`Season ${lastEps.season_number}`}
-                    thirdInfo={
-                      <>
-                        {lastEps.vote_average > 1 && (
-                          <span className={`flex items-center gap-1`}>
-                            <IonIcon
-                              icon={star}
-                              className={`text-primary-yellow`}
-                            />
-                            {lastEps.vote_average &&
-                              lastEps.vote_average.toFixed(1)}
-                          </span>
-                        )}
-
-                        {lastEps.vote_average > 1 && lastEps.air_date && (
-                          <span>&bull;</span>
-                        )}
-
-                        {lastEps.runtime && (
-                          <span>
-                            {Math.floor(lastEps.runtime / 60) >= 1
-                              ? `${Math.floor(
-                                  lastEps.runtime / 60
-                                )}h ${Math.floor(lastEps.runtime % 60)}m`
-                              : `${lastEps.runtime} minute${
-                                  lastEps.runtime % 60 > 1 && `s`
-                                }`}
-                          </span>
-                        )}
-
-                        {lastEps.air_date && lastEps.runtime && (
-                          <span>&bull;</span>
-                        )}
-
-                        {lastEps.air_date && (
-                          <span>{formatDate(lastEps.air_date)}</span>
-                        )}
-                      </>
-                    }
-                  />
-                </div>
-              )}
-
-              {nextEps && (
-                <div
-                  id={`TV Series Next Episode`}
-                  className={`flex flex-col gap-2`}
-                >
-                  <EpisodeCard
-                    className={`w-full`}
-                    filmID={film.id}
-                    setEpisodeModal={setEpisodeModal}
-                    setLoading={setLoading}
-                    episode={nextEps}
-                    imgPath={nextEps.still_path}
-                    title={nextEps.name}
-                    overlay={
-                      nextEps.episode_type == `finale`
-                        ? `Final Episode: ${nextEps.episode_number}`
-                        : nextEps.episode_number == 1
-                        ? `First Episode`
-                        : `Next Episode: ${nextEps.episode_number}`
-                    }
-                    secondaryInfo={`Season ${nextEps.season_number}`}
-                    thirdInfo={
-                      <>
-                        {nextEps.vote_average > 1 && (
-                          <span className={`flex items-center gap-1`}>
-                            <IonIcon
-                              icon={star}
-                              className={`text-primary-yellow`}
-                            />
-                            {nextEps.vote_average &&
-                              nextEps.vote_average.toFixed(1)}
-                          </span>
-                        )}
-
-                        {nextEps.vote_average > 1 && nextEps.air_date && (
-                          <span>&bull;</span>
-                        )}
-
-                        {nextEps.runtime && (
-                          <span>
-                            {Math.floor(nextEps.runtime / 60) >= 1
-                              ? `${Math.floor(
-                                  nextEps.runtime / 60
-                                )}h ${Math.floor(nextEps.runtime % 60)}m`
-                              : `${nextEps.runtime} minute${
-                                  nextEps.runtime % 60 > 1 && `s`
-                                }`}
-                          </span>
-                        )}
-
-                        {nextEps.air_date && nextEps.runtime && (
-                          <span>&bull;</span>
-                        )}
-
-                        {nextEps.air_date && (
-                          <span>{formatDate(nextEps.air_date)}</span>
-                        )}
-                      </>
-                    }
-                  />
-
-                  {isUpcoming && (
-                    <div className="flex flex-wrap justify-center gap-2 text-center">
-                      {countdown.months > 0 && (
-                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                          <span className="countdown font-mono text-4xl sm:text-5xl">
-                            <span
-                              style={{ "--value": countdown.months }}
-                            ></span>
-                          </span>
-                          month{countdown.months > 1 ? `s` : ``}
-                        </div>
+          <section
+            id={`TV Series Episode`}
+            className={`grid xl:grid-cols-2 gap-2 mt-2`}
+          >
+            {lastEps && (
+              <div
+                id={`TV Series Last Episode`}
+                className={`flex flex-col gap-2`}
+              >
+                <EpisodeCard
+                  className={`w-full`}
+                  filmID={film.id}
+                  setEpisodeModal={setEpisodeModal}
+                  setLoading={setLoading}
+                  episode={lastEps}
+                  imgPath={lastEps.still_path}
+                  title={lastEps.name}
+                  overlay={
+                    nextEps
+                      ? `Latest Episode: ${lastEps.episode_number}`
+                      : `Last Episode: ${lastEps.episode_number}`
+                  }
+                  secondaryInfo={`Season ${lastEps.season_number}`}
+                  thirdInfo={
+                    <>
+                      {lastEps.vote_average > 1 && (
+                        <span className={`flex items-center gap-1`}>
+                          <IonIcon
+                            icon={star}
+                            className={`text-primary-yellow`}
+                          />
+                          {lastEps.vote_average &&
+                            lastEps.vote_average.toFixed(1)}
+                        </span>
                       )}
-                      {countdown.days > 0 && (
-                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                          <span className="countdown font-mono text-4xl sm:text-5xl">
-                            <span style={{ "--value": countdown.days }}></span>
-                          </span>
-                          day{countdown.days > 1 ? `s` : ``}
-                        </div>
+
+                      {lastEps.vote_average > 1 && lastEps.air_date && (
+                        <span>&bull;</span>
                       )}
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.hours }}></span>
+
+                      {lastEps.runtime && (
+                        <span>
+                          {Math.floor(lastEps.runtime / 60) >= 1
+                            ? `${Math.floor(
+                                lastEps.runtime / 60
+                              )}h ${Math.floor(lastEps.runtime % 60)}m`
+                            : `${lastEps.runtime} minute${
+                                lastEps.runtime % 60 > 1 && `s`
+                              }`}
                         </span>
-                        hour{countdown.hours > 1 ? `s` : ``}
-                      </div>
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.minutes }}></span>
+                      )}
+
+                      {lastEps.air_date && lastEps.runtime && (
+                        <span>&bull;</span>
+                      )}
+
+                      {lastEps.air_date && (
+                        <span>{formatDate(lastEps.air_date)}</span>
+                      )}
+                    </>
+                  }
+                />
+              </div>
+            )}
+
+            {nextEps && (
+              <div
+                id={`TV Series Next Episode`}
+                className={`flex flex-col gap-2`}
+              >
+                <EpisodeCard
+                  className={`w-full`}
+                  filmID={film.id}
+                  setEpisodeModal={setEpisodeModal}
+                  setLoading={setLoading}
+                  episode={nextEps}
+                  imgPath={nextEps.still_path}
+                  title={nextEps.name}
+                  overlay={
+                    nextEps.episode_type == `finale`
+                      ? `Final Episode: ${nextEps.episode_number}`
+                      : nextEps.episode_number == 1
+                      ? `First Episode`
+                      : `Next Episode: ${nextEps.episode_number}`
+                  }
+                  secondaryInfo={`Season ${nextEps.season_number}`}
+                  thirdInfo={
+                    <>
+                      {nextEps.vote_average > 1 && (
+                        <span className={`flex items-center gap-1`}>
+                          <IonIcon
+                            icon={star}
+                            className={`text-primary-yellow`}
+                          />
+                          {nextEps.vote_average &&
+                            nextEps.vote_average.toFixed(1)}
                         </span>
-                        min
-                      </div>
-                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.seconds }}></span>
+                      )}
+
+                      {nextEps.vote_average > 1 && nextEps.air_date && (
+                        <span>&bull;</span>
+                      )}
+
+                      {nextEps.runtime && (
+                        <span>
+                          {Math.floor(nextEps.runtime / 60) >= 1
+                            ? `${Math.floor(
+                                nextEps.runtime / 60
+                              )}h ${Math.floor(nextEps.runtime % 60)}m`
+                            : `${nextEps.runtime} minute${
+                                nextEps.runtime % 60 > 1 && `s`
+                              }`}
                         </span>
-                        sec
-                      </div>
-                    </div>
-                  )}
+                      )}
+
+                      {nextEps.air_date && nextEps.runtime && (
+                        <span>&bull;</span>
+                      )}
+
+                      {nextEps.air_date && (
+                        <span>{formatDate(nextEps.air_date)}</span>
+                      )}
+                    </>
+                  }
+                />
+              </div>
+            )}
+
+            {isUpcoming && (
+              <div className="flex flex-wrap justify-start gap-2 text-center col-span-full">
+                {countdown.months > 0 && (
+                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.months }}></span>
+                    </span>
+                    month{countdown.months > 1 ? `s` : ``}
+                  </div>
+                )}
+                {countdown.days > 0 && (
+                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.days }}></span>
+                    </span>
+                    day{countdown.days > 1 ? `s` : ``}
+                  </div>
+                )}
+                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                  <span className="countdown font-mono text-4xl sm:text-5xl">
+                    <span style={{ "--value": countdown.hours }}></span>
+                  </span>
+                  hour{countdown.hours > 1 ? `s` : ``}
                 </div>
-              )}
-            </section>
-          )}
+                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                  <span className="countdown font-mono text-4xl sm:text-5xl">
+                    <span style={{ "--value": countdown.minutes }}></span>
+                  </span>
+                  min
+                </div>
+                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                  <span className="countdown font-mono text-4xl sm:text-5xl">
+                    <span style={{ "--value": countdown.seconds }}></span>
+                  </span>
+                  sec
+                </div>
+              </div>
+            )}
+          </section>
 
           <section
             id={`Share`}
