@@ -1,12 +1,13 @@
 export const revalidate = 3600; // revalidate this page every 1 hour
 
-import axios from "axios";
 import React from "react";
 import HomeSlider from "./components/HomeSlider";
 import FilmSlider from "./components/FilmSlider";
 import Trending from "./components/Trending";
 import companies from "./json/companies.json";
-import { getFilms, getGenres, getTrending } from "./api/route";
+import providers from "./json/providers.json";
+import { fetchData, getTrending } from "./api/route";
+import { calculateDate } from "./lib/formatDate";
 
 export async function generateMetadata() {
   return {
@@ -38,157 +39,157 @@ export async function generateMetadata() {
   };
 }
 
-export default async function Home() {
+export default async function Home({ type = "movie" }) {
+  const isTvPage = type === "tv";
+
   // Get current date and other date-related variables
   const currentDate = new Date();
-  const today = currentDate.toISOString().slice(0, 10);
-
-  const tomorrow = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    currentDate.getDate() + 2
-  )
-    .toISOString()
-    .slice(0, 10);
-
-  const firstDate = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    2
-  )
-    .toISOString()
-    .slice(0, 10);
-  const thirtyDaysAgo = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() - 1,
-    2
-  )
-    .toISOString()
-    .slice(0, 10);
-  const currentYear = currentDate.getFullYear();
-  const endOfYear = new Date(currentYear, 11, 32).toISOString().slice(0, 10);
+  const today = calculateDate({ date: currentDate });
+  const tomorrow = calculateDate({ date: currentDate, days: 1 });
+  const monthsAgo = calculateDate({ date: currentDate, months: -3 });
+  const monthsLater = calculateDate({ date: currentDate, months: 3 });
 
   // API Requests
-  const genres = await getGenres({ type: `movie` });
+  const { genres } = await fetchData({
+    endpoint: `/genre/${type}/list`,
+  });
+  const { results: trending } = await getTrending({ type });
 
-  const params = ({
-    date_gte,
-    date_lte,
-    apiCompanies,
-    apiGenres,
-    apiSortBy = "popularity.desc",
-  }) => {
-    return {
-      region: "US",
-      include_adult: false,
-      language: "en-US",
-      sort_by: apiSortBy,
-      with_companies: apiCompanies,
-      with_genres: apiGenres,
-      "primary_release_date.gte": date_gte,
-      "primary_release_date.lte": date_lte,
-    };
-  };
+  const defaultParams = !isTvPage
+    ? {
+        region: "US",
+        include_adult: false,
+        language: "en-US",
+        sort_by: "popularity.desc",
+      }
+    : {
+        region: "US",
+        include_adult: false,
+        include_null_first_air_dates: false,
+        language: "en-US",
+        sort_by: "popularity.desc",
+      };
+
   return (
     <>
-      <h1 className="sr-only">{`Popcorn Vision`}</h1>
-      <HomeSlider
-        films={await getTrending({ type: "movie" })}
-        genres={genres}
-      />
+      <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
+      <HomeSlider films={trending.slice(0, 5)} genres={genres} />
 
       <div className={`lg:-mt-[5rem]`}>
         {/* Now Playing */}
         <FilmSlider
-          films={await getFilms({
-            endpoint: "/discover/movie",
-            params: params({
-              date_gte: thirtyDaysAgo,
-              date_lte: today,
-            }),
+          films={await fetchData({
+            endpoint: `/discover/${type}`,
+            queryParams: !isTvPage
+              ? {
+                  ...defaultParams,
+                  "primary_release_date.gte": monthsAgo,
+                  "primary_release_date.lte": today,
+                }
+              : {
+                  ...defaultParams,
+                  "first_air_date.gte": monthsAgo,
+                  "first_air_date.lte": today,
+                },
           })}
-          title={`Now Playing`}
+          title={!isTvPage ? `Now Playing` : `On The Air`}
           genres={genres}
         />
-  
+
         {/* Upcoming */}
         <FilmSlider
-          films={await getFilms({
-            endpoint: "/discover/movie",
-            params: params({
-              date_gte: tomorrow,
-              date_lte: endOfYear,
-            }),
+          films={await fetchData({
+            endpoint: `/discover/${type}`,
+            queryParams: !isTvPage
+              ? {
+                  ...defaultParams,
+                  "primary_release_date.gte": tomorrow,
+                  "primary_release_date.lte": monthsLater,
+                }
+              : {
+                  ...defaultParams,
+                  "first_air_date.gte": tomorrow,
+                  "first_air_date.lte": monthsLater,
+                },
           })}
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
         />
-  
+
         {/* Top Rated */}
         <FilmSlider
-          films={await getFilms({
-            endpoint: "/discover/movie",
-            params: params({
-              apiSortBy: "vote_count.desc",
-            }),
+          films={await fetchData({
+            endpoint: `/discover/${type}`,
+            queryParams: {
+              ...defaultParams,
+              sort_by: "vote_count.desc",
+            },
           })}
           title={`Top Rated`}
           genres={genres}
         />
-  
+
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
-          <Trending
-            film={await getTrending({ num: 6, type: `movie` })}
-            genres={genres}
-          />
+          <Trending film={trending[5]} genres={genres} />
         </section>
-  
-        {/* Companies */}
-        {companies.slice(0, 3).map(async (company) => (
-          <FilmSlider
-            key={company.id}
-            films={await getFilms({
-              endpoint: "/discover/movie",
-              params: params({
-                apiCompanies: company.id,
-              }),
-            })}
-            title={company.name}
-            genres={genres}
-          />
-        ))}
-  
+
+        {/* Companies / Providers */}
+        {!isTvPage
+          ? companies.slice(0, 3).map(async (company) => (
+              <FilmSlider
+                key={company.id}
+                films={await fetchData({
+                  endpoint: `/discover/${type}`,
+                  queryParams: {
+                    ...defaultParams,
+                    with_companies: company.id,
+                  },
+                })}
+                title={company.name}
+                genres={genres}
+              />
+            ))
+          : providers.slice(0, 3).map(async (provider) => (
+              <FilmSlider
+                key={provider.id}
+                films={await fetchData({
+                  endpoint: `/discover/${type}`,
+                  queryParams: {
+                    ...defaultParams,
+                    with_networks: provider.id,
+                  },
+                })}
+                title={provider.name}
+                genres={genres}
+              />
+            ))}
+
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
-          <Trending
-            film={await getTrending({ num: 7, type: `movie` })}
-            genres={genres}
-          />
+          <Trending film={trending[6]} genres={genres} />
         </section>
-  
+
         {/* Genres */}
         {genres.slice(0, 3).map(async (genre) => (
           <FilmSlider
             key={genre.id}
-            films={await getFilms({
-              endpoint: "/discover/movie",
-              params: params({
-                apiGenres: genre.id,
-              }),
+            films={await fetchData({
+              endpoint: `/discover/${type}`,
+              queryParams: {
+                ...defaultParams,
+                with_genres: genre.id,
+              },
             })}
             title={genre.name}
             genres={genres}
           />
         ))}
-  
+
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
-          <Trending
-            film={await getTrending({ num: 8, type: `movie` })}
-            genres={genres}
-          />
+          <Trending film={trending[7]} genres={genres} />
         </section>
       </div>
     </>

@@ -49,7 +49,7 @@ export default function HomeSlider({ films, genres }) {
         slidesPerView={1}
         className={`h-[100dvh] lg:h-[120dvh] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
-        {films.results.slice(0, 5).map((film) => {
+        {films.map((film) => {
           const releaseDate = isItTvPage(
             film.release_date,
             film.first_air_date

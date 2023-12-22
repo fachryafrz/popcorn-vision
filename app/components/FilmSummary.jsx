@@ -48,14 +48,11 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           <FilmSeason film={film} setLoading={setLoading} loading={loading} />
         )}
         <span>&bull;</span>
-        {filmGenres &&
-          filmGenres.slice(0, 1).map((genre) => {
-            return <span key={genre.id}>{genre.name}</span>;
-          })}
+        {filmGenres
+          ?.slice(0, 1)
+          .map((genre) => genre && <span key={genre.id}>{genre.name}</span>)}
       </div>
-      <p className="hidden md:line-clamp-2 lg:line-clamp-3">
-        {film.overview}
-      </p>
+      <p className="hidden md:line-clamp-2 lg:line-clamp-3">{film.overview}</p>
       <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
         <Link
           href={isItTvPage(
