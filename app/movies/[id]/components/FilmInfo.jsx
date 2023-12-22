@@ -527,7 +527,7 @@ export default function FilmInfo({
           {isTvPage && (
             <section
               id={`TV Series Episode`}
-              className={`flex flex-col xl:flex-row gap-2`}
+              className={`flex flex-col xl:flex-row gap-2 mt-2`}
             >
               {lastEps && (
                 <div
