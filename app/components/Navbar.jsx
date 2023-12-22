@@ -4,7 +4,7 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search, close } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -128,10 +128,11 @@ export default function Navbar() {
   );
 }
 
-export function SearchBar() {
+export function SearchBar({ placeholder = `Search or press "/"` }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const searchRef = useRef(null);
 
   const [searchInput, setSearchInput] = useState("");
 
@@ -152,7 +153,7 @@ export function SearchBar() {
 
   useEffect(() => {
     if (isSearchPage) {
-      document.querySelector("input").focus();
+      searchRef?.current.focus();
     }
 
     document.addEventListener("keydown", (e) => {
@@ -180,7 +181,7 @@ export function SearchBar() {
           router.push(`${searchPath}?${searchQuery}`);
         }
 
-        document.querySelector("input").blur();
+        searchRef?.current.blur();
       }}
       className={`block form-control w-full justify-self-center relative`}
     >
@@ -198,7 +199,8 @@ export function SearchBar() {
 
         <input
           type={`text`}
-          placeholder={`Search or press "/"`}
+          ref={searchRef}
+          placeholder={placeholder}
           className={`w-full bg-transparent pl-10 h-full pr-4`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}

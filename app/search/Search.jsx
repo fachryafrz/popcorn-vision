@@ -1171,7 +1171,7 @@ export default function Search({ type = "movie" }) {
         >
           {/* Search bar */}
           <div className={`lg:hidden w-full`}>
-            <SearchBar />
+            <SearchBar placeholder={`Tap to search`} />
           </div>
 
           <div className={`lg:w-full`}>
