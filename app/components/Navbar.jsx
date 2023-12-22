@@ -136,6 +136,9 @@ export function SearchBar() {
   const [searchInput, setSearchInput] = useState("");
 
   const isTvPage = pathname.startsWith("/tv");
+  const isSearchPage = pathname.startsWith(
+    !isTvPage ? `/search` : `/tv/search`
+  );
 
   let URLSearchQuery = searchParams.get("query");
 
@@ -146,6 +149,19 @@ export function SearchBar() {
       setSearchInput(URLSearchQuery);
     }
   }, [URLSearchQuery]);
+
+  useEffect(() => {
+    if (isSearchPage) {
+      document.querySelector("input").focus();
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        router.push(`${isTvPage ? "/tv" : ""}/search`);
+      }
+    });
+  }, [isTvPage, router, isSearchPage]);
 
   return (
     <form
@@ -163,6 +179,8 @@ export function SearchBar() {
         } else {
           router.push(`${searchPath}?${searchQuery}`);
         }
+
+        document.querySelector("input").blur();
       }}
       className={`block form-control w-full justify-self-center relative`}
     >
@@ -179,7 +197,7 @@ export function SearchBar() {
         </div>
         <input
           type={`text`}
-          placeholder={`Search`}
+          placeholder={`Search or press "/"`}
           className={`w-full bg-transparent pl-10 h-full pr-4`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
