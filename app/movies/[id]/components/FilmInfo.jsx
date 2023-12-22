@@ -230,7 +230,10 @@ export default function FilmInfo({
           className={`w-full text-sm lg:text-base flex flex-col gap-4 md:gap-2`}
         >
           {film.production_companies &&
-            film.production_companies.length > 0 && (
+            film.production_companies.length > 0 &&
+            film.production_companies.find(
+              (company) => company.logo_path !== null
+            ) && (
               <section
                 id={`Production Companies`}
                 className={`flex gap-4 flex-wrap justify-center md:justify-start md:mb-4`}
