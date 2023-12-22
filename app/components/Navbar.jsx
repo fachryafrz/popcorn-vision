@@ -153,14 +153,16 @@ export function SearchBar() {
         e.preventDefault();
         const query = e.target[0].value.trim();
 
-        if (!query) return;
-
         const basePath = isTvPage ? "/tv" : "";
         const searchPath = `${basePath}/search`;
         const formattedQuery = query.replace(/\s+/g, "+");
         const searchQuery = `query=${formattedQuery}`;
 
-        router.push(`${searchPath}?${searchQuery}`);
+        if (!query) {
+          router.push(`${searchPath}`);
+        } else {
+          router.push(`${searchPath}?${searchQuery}`);
+        }
       }}
       className={`block form-control w-full justify-self-center relative`}
     >
