@@ -205,7 +205,10 @@ export default function FilmInfo({
       <div className="flex flex-col items-center md:justify-center md:items-start gap-4 w-full">
         {images.logos.length > 0 ? (
           <>
-            <TitleLogo film={film} images={images.logos[0]} />
+            <TitleLogo
+              film={film}
+              images={images.logos.find((img) => img.iso_639_1 === "en")}
+            />
 
             <h1
               title={!isTvPage ? film.titlte : film.name}
