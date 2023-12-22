@@ -7,7 +7,7 @@ import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
 import FilmInfo from "./components/FilmInfo";
 import FilmContent from "./components/FilmContent";
-import { getFilm, getGenres } from "@/app/api/route";
+import { fetchData, getFilm, getGenres } from "@/app/api/route";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -76,14 +76,23 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const isTvPage = type !== "movie" ? true : false;
 
-  const film = await getFilm({ id, type });
-  const credits = await getFilm({ id, type, path: "/credits" });
-  const videos = await getFilm({ id, type, path: "/videos" });
-  const images = await getFilm({ id, type, path: "/images" });
-  const reviews = await getFilm({ id, type, path: "/reviews" });
-  const providers = await getFilm({ id, type, path: "/watch/providers" });
-  const recommendations = await getFilm({ id, type, path: "/recommendations" });
-  const similar = await getFilm({ id, type, path: "/similar" });
+  const film = await fetchData({
+    endpoint: `/${type}/${id}`,
+    queryParams: {
+      append_to_response:
+        "credits,videos,images,reviews,watch/providers,recommendations,similar",
+    },
+  });
+
+  const {
+    credits,
+    videos,
+    images,
+    reviews,
+    "watch/providers": providers,
+    recommendations,
+    similar,
+  } = film;
 
   // This can cause double data from recommendation & similar
   // which means there can be two same movies in the list
