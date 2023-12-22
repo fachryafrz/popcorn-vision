@@ -46,6 +46,7 @@ export default function Search({ type = "movie" }) {
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [minYear, setMinYear] = useState();
   const [maxYear, setMaxYear] = useState();
+  const [notFoundMessage, setNotFoundMessage] = useState("");
 
   // React-Select Placeholder
   const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
@@ -895,6 +896,10 @@ export default function Search({ type = "movie" }) {
         .then((res) => {
           setFilms(res);
           setLoading(false);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 3000);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
@@ -925,6 +930,10 @@ export default function Search({ type = "movie" }) {
             results: filteredMovies,
           });
           setLoading(false);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 3000);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
@@ -976,18 +985,26 @@ export default function Search({ type = "movie" }) {
         <section className={`flex flex-col gap-1`}>
           <span className={`font-medium`}>Release Date</span>
           <div className={`w-full px-3`}>
-            <Slider
-              getAriaLabel={() => "Release Date"}
-              value={releaseDateSlider}
-              onChange={(event, newValue) => setReleaseDateSlider(newValue)}
-              onChangeCommitted={handleReleaseDateChange}
-              valueLabelDisplay="off"
-              min={minYear}
-              max={maxYear}
-              marks={releaseDateMarks}
-              sx={sliderStyles}
-              disabled={isQueryParams}
-            />
+            {minYear && maxYear ? (
+              <Slider
+                getAriaLabel={() => "Release Date"}
+                value={releaseDateSlider}
+                onChange={(event, newValue) => setReleaseDateSlider(newValue)}
+                onChangeCommitted={handleReleaseDateChange}
+                valueLabelDisplay="off"
+                min={minYear}
+                max={maxYear}
+                marks={releaseDateMarks}
+                sx={sliderStyles}
+                disabled={isQueryParams}
+              />
+            ) : (
+              <span
+                className={`text-center text-xs w-full block italic text-gray-400`}
+              >
+                Finding oldest & newest...
+              </span>
+            )}
           </div>
         </section>
 
@@ -1235,19 +1252,16 @@ export default function Search({ type = "movie" }) {
               <div
                 className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
               >
-                {searchParams.get("query") ||
-                releaseDate[0] !== minYear ||
-                releaseDate[1] !== maxYear ||
-                genre ||
-                language ||
-                cast ||
-                crew ||
-                keyword ||
-                company ||
-                rating[0] !== 0 ||
-                rating[1] !== 100 ||
-                runtime[0] !== 0 ||
-                runtime[1] !== 300 ? (
+                {searchParams.get("release_date") ||
+                searchParams.get("with_genres") ||
+                searchParams.get("with_original_language") ||
+                searchParams.get("with_cast") ||
+                searchParams.get("with_crew") ||
+                searchParams.get("with_keywords") ||
+                searchParams.get("with_companies") ||
+                searchParams.get("vote_count") ||
+                searchParams.get("with_runtime") ||
+                searchParams.get("sort_by") ? (
                   <button
                     onClick={() => {
                       setTimeout(() => {
@@ -1295,211 +1309,6 @@ export default function Search({ type = "movie" }) {
           </div>
         </section>
 
-        {/* List of active filters */}
-        {/* <section
-          className={`hidden gap-2 items-center flex-wrap flex-row-reverse`}
-        >
-          {releaseDate[0] !== minYear || releaseDate[1] !== maxYear ? (
-            <ButtonFilter
-              searchParam={"release_date"}
-              defaultValue={[minYear, maxYear]}
-              setVariable={setReleaseDate}
-              title={`Release Date:`}
-              info={`${releaseDate[0]}-${releaseDate[1]}`}
-            />
-          ) : null}
-
-          {genre?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_genres"}
-              defaultValue={null}
-              setVariable={setGenre}
-              title={`Genre:`}
-              info={genre[0].label}
-            />
-          ) : genre?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_genres"}
-              defaultValue={null}
-              setVariable={setGenre}
-              title={`Genre:`}
-              info={`${genre[0].label} and ${genre[1].label}`}
-            />
-          ) : genre?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_genres"}
-              defaultValue={null}
-              setVariable={setGenre}
-              title={`Genre:`}
-              info={`${genre[0].label}, ${genre[1].label} and ${
-                genre.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {language?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_original_language"}
-              defaultValue={null}
-              setVariable={setLanguage}
-              title={`Language:`}
-              info={language[0].label}
-            />
-          ) : language?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_original_language"}
-              defaultValue={null}
-              setVariable={setLanguage}
-              title={`Language:`}
-              info={`${language[0].label} and ${language[1].label}`}
-            />
-          ) : language?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_original_language"}
-              defaultValue={null}
-              setVariable={setLanguage}
-              title={`Language:`}
-              info={`${language[0].label}, ${language[1].label} and ${
-                language.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {cast?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_cast"}
-              defaultValue={null}
-              setVariable={setCast}
-              title={`Cast:`}
-              info={cast[0].label}
-            />
-          ) : cast?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_cast"}
-              defaultValue={null}
-              setVariable={setCast}
-              title={`Cast:`}
-              info={`${cast[0].label} and ${cast[1].label}`}
-            />
-          ) : cast?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_cast"}
-              defaultValue={null}
-              setVariable={setCast}
-              title={`Cast:`}
-              info={`${cast[0].label}, ${cast[1].label} and ${
-                cast.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {crew?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_crew"}
-              defaultValue={null}
-              setVariable={setCrew}
-              title={`Crew:`}
-              info={crew[0].label}
-            />
-          ) : crew?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_crew"}
-              defaultValue={null}
-              setVariable={setCrew}
-              title={`Crew:`}
-              info={`${crew[0].label} and ${crew[1].label}`}
-            />
-          ) : crew?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_crew"}
-              defaultValue={null}
-              setVariable={setCrew}
-              title={`Crew:`}
-              info={`${crew[0].label}, ${crew[1].label} and ${
-                crew.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {keyword?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_keywords"}
-              defaultValue={null}
-              setVariable={setKeyword}
-              title={`Keyword:`}
-              info={keyword[0].label}
-            />
-          ) : keyword?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_keywords"}
-              defaultValue={null}
-              setVariable={setKeyword}
-              title={`Keyword:`}
-              info={`${keyword[0].label} and ${keyword[1].label}`}
-            />
-          ) : keyword?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_keywords"}
-              defaultValue={null}
-              setVariable={setKeyword}
-              title={`Keyword:`}
-              info={`${keyword[0].label}, ${keyword[1].label} and ${
-                keyword.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {company?.length == 1 ? (
-            <ButtonFilter
-              searchParam={"with_companies"}
-              defaultValue={null}
-              setVariable={setCompany}
-              title={`Company:`}
-              info={company[0].label}
-            />
-          ) : company?.length == 2 ? (
-            <ButtonFilter
-              searchParam={"with_companies"}
-              defaultValue={null}
-              setVariable={setCompany}
-              title={`Company:`}
-              info={`${company[0].label} and ${company[1].label}`}
-            />
-          ) : company?.length > 2 ? (
-            <ButtonFilter
-              searchParam={"with_companies"}
-              defaultValue={null}
-              setVariable={setCompany}
-              title={`Company:`}
-              info={`${company[0].label}, ${company[1].label} and ${
-                company.length - 2
-              } more`}
-            />
-          ) : null}
-
-          {rating[0] !== 0 || rating[1] !== 100 ? (
-            <ButtonFilter
-              searchParam={"vote_count"}
-              defaultValue={[0, 100]}
-              setVariable={setRating}
-              setVariableSlider={setRatingSlider}
-              title={`Rating:`}
-              info={`${rating[0]}-${rating[1]}`}
-            />
-          ) : null}
-
-          {runtime[0] !== 0 || runtime[1] !== 300 ? (
-            <ButtonFilter
-              searchParam={"with_runtime"}
-              defaultValue={[0, 300]}
-              setVariable={setRuntime}
-              setVariableSlider={setRuntimeSlider}
-              title={`Runtime:`}
-              info={`${runtime[0]}-${runtime[1]}`}
-            />
-          ) : null}
-        </section> */}
-
         {loading ? (
           <>
             {/* Loading films */}
@@ -1537,7 +1346,7 @@ export default function Search({ type = "movie" }) {
           <>
             {/* No film */}
             <section>
-              <span>No film</span>
+              <span>{notFoundMessage}</span>
             </section>
           </>
         )}

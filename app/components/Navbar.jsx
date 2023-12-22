@@ -2,7 +2,7 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { filmOutline, tvOutline, search } from "ionicons/icons";
+import { filmOutline, tvOutline, search, close } from "ionicons/icons";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
@@ -195,6 +195,7 @@ export function SearchBar() {
             className={`text-lg text-gray-400 pointer-events-none`}
           />
         </div>
+
         <input
           type={`text`}
           placeholder={`Search or press "/"`}
@@ -202,6 +203,22 @@ export function SearchBar() {
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
+
+        {URLSearchQuery && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearchInput("");
+              router.push(`${isTvPage ? "/tv" : ""}/search`);
+            }}
+            className={`pl-4 absolute h-full flex items-center right-4`}
+          >
+            <IonIcon
+              icon={close}
+              className={`text-2xl text-gray-400 pointer-events-none`}
+            />
+          </button>
+        )}
       </div>
       <input type={`submit`} className={`sr-only`} />
     </form>
