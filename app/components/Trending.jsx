@@ -52,52 +52,6 @@ export default function Trending({ film, genres }) {
           />
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
-          {/* <div className="hidden md:flex w-full">
-            <TitleLogo film={film} />
-          </div>
-
-          <div className="flex gap-1 items-center font-medium">
-            <IonIcon icon={star} className="text-primary-yellow text-xl" />
-            <span>{film.vote_average.toFixed(1)}</span>
-            <span>&bull;</span>
-            {!isTvPage ? (
-              <>
-                <time>{date.getFullYear()}</time>
-              </>
-            ) : (
-              <FilmSeason
-                film={film}
-                setLoading={setLoading}
-                loading={loading}
-              />
-            )}{" "}
-            {filmGenres &&
-              filmGenres.slice(0, 1).map((genre) => {
-                return (
-                  <>
-                    <span>&bull;</span>
-                    <span key={genre.id}>{genre.name}</span>
-                  </>
-                );
-              })}
-          </div>
-
-          <p className="line-clamp-3">{film.overview}</p>
-
-          <Link
-            href={isItTvPage(
-              `/movies/${film.id}-${slugify(film.title)}`,
-              `/tv/${film.id}-${slugify(film.name)}`
-            )}
-            className="w-full md:w-fit btn btn-warning mt-4"
-          >
-            <IonIcon
-              icon={informationCircleOutline}
-              className="!w-5 h-full aspect-square"
-            />
-            Details
-          </Link> */}
-
           <FilmSummary
             film={film}
             genres={genres}
@@ -107,36 +61,5 @@ export default function Trending({ film, genres }) {
         </div>
       </div>
     </div>
-  );
-}
-
-function FilmSeason({ film, setLoading, loading }) {
-  const [season, setSeason] = useState();
-
-  useEffect(() => {
-    const fetchFilmSeason = async () => {
-      axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}`, {
-          params: {
-            api_key: process.env.API_KEY,
-          },
-        })
-        .then((res) => {
-          setSeason(res.data.number_of_seasons);
-          setLoading(false);
-        });
-    };
-
-    fetchFilmSeason();
-  }, [film, setLoading]);
-
-  return season && !loading ? (
-    <div className="whitespace-nowrap flex items-center gap-1">
-      <span>{`${season} Season${season > 1 ? `s` : ``}`} </span>
-    </div>
-  ) : (
-    <div
-      className={`h-[24px] w-[100px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
-    ></div>
   );
 }
