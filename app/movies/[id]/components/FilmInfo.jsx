@@ -524,12 +524,12 @@ export default function FilmInfo({
           {isTvPage && (
             <section
               id={`TV Series Episode`}
-              className={`grid xl:grid-cols-2 gap-2`}
+              className={`flex flex-col xl:flex-row gap-2`}
             >
               {lastEps && (
                 <div
                   id={`TV Series Last Episode`}
-                  className={`flex flex-col gap-1 mt-2`}
+                  className={`flex flex-col gap-2`}
                 >
                   <EpisodeCard
                     className={`w-full`}
@@ -590,7 +590,7 @@ export default function FilmInfo({
               {nextEps && (
                 <div
                   id={`TV Series Next Episode`}
-                  className={`flex flex-col gap-1 mt-2`}
+                  className={`flex flex-col gap-2`}
                 >
                   <EpisodeCard
                     className={`w-full`}
@@ -647,45 +647,47 @@ export default function FilmInfo({
                       </>
                     }
                   />
-                </div>
-              )}
 
-              {isUpcoming && (
-                <div className="flex flex-wrap justify-start gap-2 text-center xl:col-[2/3]">
-                  {countdown.months > 0 && (
-                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                      <span className="countdown font-mono text-5xl">
-                        <span style={{ "--value": countdown.months }}></span>
-                      </span>
-                      month{countdown.months > 1 ? `s` : ``}
+                  {isUpcoming && (
+                    <div className="flex flex-wrap justify-center gap-2 text-center">
+                      {countdown.months > 0 && (
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                          <span className="countdown font-mono text-4xl sm:text-5xl">
+                            <span
+                              style={{ "--value": countdown.months }}
+                            ></span>
+                          </span>
+                          month{countdown.months > 1 ? `s` : ``}
+                        </div>
+                      )}
+                      {countdown.days > 0 && (
+                        <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                          <span className="countdown font-mono text-4xl sm:text-5xl">
+                            <span style={{ "--value": countdown.days }}></span>
+                          </span>
+                          day{countdown.days > 1 ? `s` : ``}
+                        </div>
+                      )}
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                        <span className="countdown font-mono text-4xl sm:text-5xl">
+                          <span style={{ "--value": countdown.hours }}></span>
+                        </span>
+                        hour{countdown.hours > 1 ? `s` : ``}
+                      </div>
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                        <span className="countdown font-mono text-4xl sm:text-5xl">
+                          <span style={{ "--value": countdown.minutes }}></span>
+                        </span>
+                        min
+                      </div>
+                      <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
+                        <span className="countdown font-mono text-4xl sm:text-5xl">
+                          <span style={{ "--value": countdown.seconds }}></span>
+                        </span>
+                        sec
+                      </div>
                     </div>
                   )}
-                  {countdown.days > 0 && (
-                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                      <span className="countdown font-mono text-5xl">
-                        <span style={{ "--value": countdown.days }}></span>
-                      </span>
-                      day{countdown.days > 1 ? `s` : ``}
-                    </div>
-                  )}
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.hours }}></span>
-                    </span>
-                    hour{countdown.hours > 1 ? `s` : ``}
-                  </div>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.minutes }}></span>
-                    </span>
-                    min
-                  </div>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-5xl">
-                      <span style={{ "--value": countdown.seconds }}></span>
-                    </span>
-                    sec
-                  </div>
                 </div>
               )}
             </section>

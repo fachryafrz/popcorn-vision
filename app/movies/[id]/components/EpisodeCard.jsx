@@ -33,7 +33,7 @@ export default function EpisodeCard({
           }, 100);
         });
       }}
-      className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full transition-all ${className}`}
+      className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full h-fit transition-all ${className}`}
     >
       <figure className="aspect-video rounded-lg overflow-hidden w-full relative">
         {imgPath ? (
