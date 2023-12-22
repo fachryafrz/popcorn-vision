@@ -526,10 +526,10 @@ export default function FilmInfo({
               id={`TV Series Last Episode`}
               className={`flex flex-col gap-1 mt-2`}
             >
-              <span>
+              {/* <span>
                 {nextEps ? `Latest` : `Last`}
                 {` Episode: ${lastEps.episode_number}`}
-              </span>
+              </span> */}
 
               <EpisodeCard
                 className={`lg:max-w-[70%] xl:max-w-[50%]`}
@@ -539,6 +539,11 @@ export default function FilmInfo({
                 episode={lastEps}
                 imgPath={lastEps.still_path}
                 title={lastEps.name}
+                overlay={
+                  nextEps
+                    ? `Latest Episode: ${lastEps.episode_number}`
+                    : `Last Episode: ${lastEps.episode_number}`
+                }
                 secondaryInfo={`Season ${lastEps.season_number}`}
                 thirdInfo={
                   <>
@@ -586,71 +591,61 @@ export default function FilmInfo({
           >
             {nextEps && (
               <div className={`w-full flex flex-col items-start gap-2`}>
-                {!isTvPage ? (
-                  <span>{`Released in`}</span>
-                ) : (
-                  <span>
-                    {nextEps.episode_type == `finale`
-                      ? `Final Episode: ${nextEps.name}`
+                <EpisodeCard
+                  className={`lg:max-w-[70%] xl:max-w-[50%]`}
+                  filmID={film.id}
+                  setEpisodeModal={setEpisodeModal}
+                  setLoading={setLoading}
+                  episode={nextEps}
+                  imgPath={nextEps.still_path}
+                  title={nextEps.name}
+                  overlay={
+                    nextEps.episode_type == `finale`
+                      ? `Final Episode: ${nextEps.episode_number}`
                       : nextEps.episode_number == 1
                       ? `First Episode`
-                      : `Next Episode: ${nextEps.episode_number}`}
-                  </span>
-                )}
+                      : `Next Episode: ${nextEps.episode_number}`
+                  }
+                  secondaryInfo={`Season ${nextEps.season_number}`}
+                  thirdInfo={
+                    <>
+                      {nextEps.vote_average > 1 && (
+                        <span className={`flex items-center gap-1`}>
+                          <IonIcon
+                            icon={star}
+                            className={`text-primary-yellow`}
+                          />
+                          {nextEps.vote_average &&
+                            nextEps.vote_average.toFixed(1)}
+                        </span>
+                      )}
 
-                {nextEps && (
-                  <>
-                    <EpisodeCard
-                      className={`lg:max-w-[70%] xl:max-w-[50%]`}
-                      filmID={film.id}
-                      setEpisodeModal={setEpisodeModal}
-                      setLoading={setLoading}
-                      episode={nextEps}
-                      imgPath={nextEps.still_path}
-                      title={nextEps.name}
-                      secondaryInfo={`Season ${nextEps.season_number}`}
-                      thirdInfo={
-                        <>
-                          {nextEps.vote_average > 1 && (
-                            <span className={`flex items-center gap-1`}>
-                              <IonIcon
-                                icon={star}
-                                className={`text-primary-yellow`}
-                              />
-                              {nextEps.vote_average &&
-                                nextEps.vote_average.toFixed(1)}
-                            </span>
-                          )}
+                      {nextEps.vote_average > 1 && nextEps.air_date && (
+                        <span>&bull;</span>
+                      )}
 
-                          {nextEps.vote_average > 1 && nextEps.air_date && (
-                            <span>&bull;</span>
-                          )}
+                      {nextEps.runtime && (
+                        <span>
+                          {Math.floor(nextEps.runtime / 60) >= 1
+                            ? `${Math.floor(
+                                nextEps.runtime / 60
+                              )}h ${Math.floor(nextEps.runtime % 60)}m`
+                            : `${nextEps.runtime} minute${
+                                nextEps.runtime % 60 > 1 && `s`
+                              }`}
+                        </span>
+                      )}
 
-                          {nextEps.runtime && (
-                            <span>
-                              {Math.floor(nextEps.runtime / 60) >= 1
-                                ? `${Math.floor(
-                                    nextEps.runtime / 60
-                                  )}h ${Math.floor(nextEps.runtime % 60)}m`
-                                : `${nextEps.runtime} minute${
-                                    nextEps.runtime % 60 > 1 && `s`
-                                  }`}
-                            </span>
-                          )}
+                      {nextEps.air_date && nextEps.runtime && (
+                        <span>&bull;</span>
+                      )}
 
-                          {nextEps.air_date && nextEps.runtime && (
-                            <span>&bull;</span>
-                          )}
-
-                          {nextEps.air_date && (
-                            <span>{formatDate(nextEps.air_date)}</span>
-                          )}
-                        </>
-                      }
-                    />
-                  </>
-                )}
-
+                      {nextEps.air_date && (
+                        <span>{formatDate(nextEps.air_date)}</span>
+                      )}
+                    </>
+                  }
+                />
                 {isUpcoming && (
                   <div className="flex flex-wrap justify-center gap-2 text-center">
                     {countdown.months > 0 && (

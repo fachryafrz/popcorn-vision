@@ -14,6 +14,7 @@ export default function EpisodeCard({
   setEpisodeModal,
   setLoading,
   filmID,
+  overlay,
 }) {
   return (
     <button
@@ -34,7 +35,7 @@ export default function EpisodeCard({
       }}
       className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 rounded-xl w-full h-full transition-all ${className}`}
     >
-      <figure className="aspect-video rounded-lg overflow-hidden w-full">
+      <figure className="aspect-video rounded-lg overflow-hidden w-full relative">
         {imgPath ? (
           <img
             src={`https://image.tmdb.org/t/p/w500${imgPath}`}
@@ -51,6 +52,14 @@ export default function EpisodeCard({
               className={`aspect-square h-full`}
             ></div>
           </div>
+        )}
+
+        {overlay && (
+          <span
+            className={`absolute top-0 left-0 m-2 p-1 px-2 text-sm font-medium bg-base-100 bg-opacity-[75%] backdrop-blur-sm rounded-full`}
+          >
+            {overlay}
+          </span>
         )}
       </figure>
       <div className="flex flex-col gap-1 items-start w-full">

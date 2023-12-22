@@ -78,10 +78,7 @@ export default function FilmCollection({
 
   return (
     <div className={`flex flex-col gap-2`}>
-      <div
-        id="collections"
-        className="flex flex-col gap-2 py-2 z-10"
-      >
+      <div id="collections" className="flex flex-col gap-2 py-2 z-10">
         <h2 className="font-bold text-xl text-white m-0">
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
         </h2>
@@ -384,6 +381,7 @@ function FilmEpisodes({
                   episode={item}
                   imgPath={item.still_path}
                   title={item.name}
+                  overlay={`Episode ${item.episode_number}`}
                   secondaryInfo={
                     <>
                       {item.vote_average > 1 && (
