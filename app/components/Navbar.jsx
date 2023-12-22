@@ -70,8 +70,9 @@ export default function Navbar() {
           <SearchBar />
         </div>
 
+        {/* Movie & TV Series Switcher */}
         <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
-          <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%]">
+          <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm">
             <Link
               href={
                 isSearchPage
