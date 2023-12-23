@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { fetchData, getFilmSeason } from "../api/route";
 import { slugify } from "../lib/slugify";
+import { formatRuntime } from "../lib/formatRuntime";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -90,11 +91,15 @@ function FilmSeason({ film, setLoading, loading }) {
 
   return season && !loading ? (
     <div className="whitespace-nowrap flex items-center gap-1">
-      <span className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}>{`${season} Season${season > 1 ? `s` : ``}`} </span>
+      <span
+        className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+      >
+        {`${season} Season${season > 1 ? `s` : ``}`}{" "}
+      </span>
     </div>
   ) : (
     <div
-      className={`h-[24px] w-[75px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-lg`}
     ></div>
   );
 }
@@ -102,17 +107,6 @@ function FilmSeason({ film, setLoading, loading }) {
 function FilmRuntime({ film }) {
   const [loading, setLoading] = useState(true);
   const [runtime, setRuntime] = useState();
-
-  const formatRuntime = (runtime) => {
-    const hours = Math.floor(runtime / 60);
-    const minutes = runtime % 60;
-
-    if (hours === 0) {
-      return `${minutes} minute${minutes > 1 ? `s` : ``}`;
-    } else {
-      return `${hours}h ${minutes}m`;
-    }
-  };
 
   useEffect(() => {
     fetchData({
@@ -133,7 +127,7 @@ function FilmRuntime({ film }) {
     </div>
   ) : (
     <div
-      className={`h-[24px] w-[75px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-lg`}
     ></div>
   );
 }

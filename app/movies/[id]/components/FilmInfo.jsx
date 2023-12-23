@@ -45,6 +45,7 @@ import PersonModal from "./PersonModal";
 import Link from "next/link";
 import { getEpisodeModal, getLocation } from "@/app/api/route";
 import EpisodeCard from "./EpisodeCard";
+import { formatRuntime } from "@/app/lib/formatRuntime";
 
 export default function FilmInfo({
   film,
@@ -199,6 +200,9 @@ export default function FilmInfo({
   };
 
   let director = credits.crew.find((person) => person.job === "Director");
+  const filmRuntime = !isTvPage
+    ? film.runtime
+    : film.episode_run_time.length > 0 && film.episode_run_time[0];
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
@@ -323,77 +327,20 @@ export default function FilmInfo({
               </section>
             )}
 
-          {!isTvPage
-            ? film.runtime > 0 && (
-                <section id={`Movie Runtime`}>
-                  {Math.floor(film.runtime / 60) >= 1 ? (
-                    <>
-                      <meta
-                        itemProp="duration"
-                        content={`PT${film.runtime}M`}
-                      />
-                      <div className={`flex items-center gap-2`}>
-                        <IonIcon icon={timeOutline} />
-                        <time>{film.runtime} minutes</time>
-                        <time>
-                          ({Math.floor(film.runtime / 60)}h {film.runtime % 60}
-                          m)
-                        </time>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <meta
-                        itemProp="duration"
-                        content={`PT${film.runtime}M`}
-                      />
-                      <div className={`flex items-center gap-2`}>
-                        <IonIcon icon={timeOutline} />
-
-                        <time>
-                          {film.runtime % 60} minute
-                          {film.runtime % 60 > 1 && `s`}
-                        </time>
-                      </div>
-                    </>
-                  )}
-                </section>
-              )
-            : film.episode_run_time.length > 0 && (
-                <section id={`TV Series Average Episode Runtime`}>
-                  {Math.floor(film.episode_run_time[0] / 60) >= 1 ? (
-                    <>
-                      <meta
-                        itemProp="duration"
-                        content={`PT${film.episode_run_time}M`}
-                      />
-                      <div className={`flex items-center gap-2`}>
-                        <IonIcon icon={timeOutline} />
-
-                        <time>
-                          {Math.floor(film.episode_run_time[0] / 60)}h{" "}
-                          {film.episode_run_time[0] % 60}m
-                        </time>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <meta
-                        itemProp="duration"
-                        content={`PT${film.episode_run_time}M`}
-                      />
-                      <div className={`flex items-center gap-2`}>
-                        <IonIcon icon={timeOutline} />
-
-                        <time>
-                          {film.episode_run_time[0] % 60} minute
-                          {film.episode_run_time[0] % 60 > 1 && `s`}
-                        </time>
-                      </div>
-                    </>
-                  )}
-                </section>
-              )}
+          {filmRuntime && (
+            <section id={`Movie Runtime`}>
+              <meta itemProp="duration" content={`PT${filmRuntime}M`} />
+              <div className={`flex items-center gap-2`}>
+                <IonIcon icon={timeOutline} />
+                <time>
+                  {filmRuntime} minute{filmRuntime % 60 > 1 ? `s` : ``}
+                </time>
+                {Math.floor(filmRuntime / 60) >= 1 && (
+                  <time>{`(${formatRuntime(filmRuntime)})`}</time>
+                )}
+              </div>
+            </section>
+          )}
 
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
