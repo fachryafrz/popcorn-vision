@@ -54,9 +54,6 @@ export default function HomeSlider({ films, genres }) {
             film.release_date,
             film.first_air_date
           );
-          const date = new Date(releaseDate);
-          const options = { year: "numeric", month: "short" };
-          const formattedDate = date.toLocaleString("en-US", options);
 
           const filmGenres =
             film.genre_ids && genres
@@ -95,9 +92,6 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
   };
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
-  const date = new Date(releaseDate);
-  const options = { year: "numeric", month: "short" };
-  const formattedDate = date.toLocaleString("en-US", options);
 
   const filmGenres =
     film.genre_ids && genres

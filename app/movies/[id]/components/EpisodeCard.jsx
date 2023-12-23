@@ -72,14 +72,14 @@ export default function EpisodeCard({
         </h3>
 
         <div
-          className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+          className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
         >
           {secondaryInfo}
         </div>
 
         {thirdInfo && (
           <div
-            className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
           >
             {thirdInfo}
           </div>

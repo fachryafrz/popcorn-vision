@@ -30,6 +30,7 @@ import {
 } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
+import { formatDate } from "@/app/lib/formatDate";
 
 export default function FilmCollection({
   film,
@@ -89,16 +90,6 @@ export default function FilmCollection({
             collections
               .slice(0, showAllCollection ? collections.length : numCollection)
               .map((item, index) => {
-                // Release Date
-                const dateStr = item.release_date;
-                const date = new Date(dateStr);
-                const options = {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                };
-                const formattedDate = date.toLocaleString("en-US", options);
-
                 let popcorn = `url(/popcorn.png)`;
                 let filmPoster = `url(https://image.tmdb.org/t/p/w500${item.poster_path})`;
 
@@ -137,10 +128,12 @@ export default function FilmCollection({
                             {item.title}
                           </h3>
                           <div
-                            className={`flex items-center gap-1 text-xs sm:text-sm text-gray-400 font-medium`}
+                            className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
                           >
                             {item.vote_average > 1 && (
-                              <span className={`flex items-center gap-1`}>
+                              <span
+                                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                              >
                                 <IonIcon
                                   icon={star}
                                   className={`text-primary-yellow`}
@@ -149,10 +142,17 @@ export default function FilmCollection({
                                   item.vote_average.toFixed(1)}
                               </span>
                             )}
-                            {item.vote_average > 1 && item.release_date && (
-                              <span>&bull;</span>
+
+                            {item.release_date && (
+                              <span
+                                className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                              >
+                                {formatDate({
+                                  date: item.release_date,
+                                  showDay: false,
+                                })}
+                              </span>
                             )}
-                            {item.release_date ? formattedDate : `Coming soon`}
                           </div>
                         </div>
                         <p
@@ -213,14 +213,6 @@ function FilmSeason({
   setLoading,
 }) {
   const [viewSeason, setViewSeason] = useState(false);
-  const dateStr = item.air_date;
-  const date = new Date(dateStr);
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  const formattedDate = date.toLocaleString("en-US", options);
 
   const handleViewSeason = () => {
     setViewSeason(!viewSeason);
@@ -268,29 +260,29 @@ function FilmSeason({
             {item.name}
           </h3>
 
-          <span className="text-xs sm:text-sm text-gray-400 font-medium line-clamp-1">
-            {item.episode_count > 0
-              ? `${item.episode_count} Episode${
-                  item.episode_count > 1 ? `s` : ``
-                }`
-              : `Coming soon`}
-          </span>
+          {item.episode_count > 0 && (
+            <span className="text-xs text-gray-400 font-medium line-clamp-1">
+              {`${item.episode_count} Episode${
+                item.episode_count > 1 ? `s` : ``
+              }`}
+            </span>
+          )}
 
           <div
             className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
           >
             {item.vote_average > 1 && (
-              <span className={`flex items-center gap-1`}>
+              <span
+                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-full`}
+              >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
                 {item.vote_average && item.vote_average.toFixed(1)}
               </span>
             )}
 
-            {item.vote_average > 1 && item.air_date && <span>&bull;</span>}
-
             {item.air_date && (
-              <span className="text-xs sm:text-sm text-gray-400 font-medium">
-                {formattedDate}
+              <span className="text-xs text-gray-400 font-medium flex p-1 px-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-full">
+                {formatDate({ date: item.air_date, showDay: false })}
               </span>
             )}
           </div>
@@ -362,16 +354,6 @@ function FilmEpisodes({
       >
         {episodes &&
           episodes.map((item) => {
-            // Release Date
-            const dateStr = item.air_date;
-            const date = new Date(dateStr);
-            const options = {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            };
-            const formattedDate = date.toLocaleString("en-US", options);
-
             return (
               <SwiperSlide key={item.id} className={`!h-auto`}>
                 <EpisodeCard
@@ -385,7 +367,9 @@ function FilmEpisodes({
                   secondaryInfo={
                     <>
                       {item.vote_average > 1 && (
-                        <span className={`flex items-center gap-1`}>
+                        <span
+                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           <IonIcon
                             icon={star}
                             className={`text-primary-yellow`}
@@ -394,12 +378,10 @@ function FilmEpisodes({
                         </span>
                       )}
 
-                      {item.vote_average > 1 && item.air_date && (
-                        <span>&bull;</span>
-                      )}
-
                       {item.runtime && (
-                        <span>
+                        <span
+                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           {Math.floor(item.runtime / 60) >= 1
                             ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
                                 item.runtime % 60
@@ -410,9 +392,13 @@ function FilmEpisodes({
                         </span>
                       )}
 
-                      {item.air_date && item.runtime && <span>&bull;</span>}
-
-                      {item.air_date && <span>{formattedDate}</span>}
+                      {item.air_date && (
+                        <span
+                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
+                          {formatDate({ date: item.air_date })}
+                        </span>
+                      )}
                     </>
                   }
                 />

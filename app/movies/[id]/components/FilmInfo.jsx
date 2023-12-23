@@ -104,12 +104,6 @@ export default function FilmInfo({
   // Release Date
   const dateStr = !isTvPage ? film.release_date : film.first_air_date;
   const date = new Date(dateStr);
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  const formattedDate = new Date(dateStr).toLocaleString("en-US", options);
 
   const isUpcoming =
     new Date(!isTvPage ? film.release_date : nextEps?.air_date) > new Date();
@@ -460,7 +454,9 @@ export default function FilmInfo({
                   thirdInfo={
                     <>
                       {lastEps.vote_average > 1 && (
-                        <span className={`flex items-center gap-1`}>
+                        <span
+                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           <IonIcon
                             icon={star}
                             className={`text-primary-yellow`}
@@ -470,12 +466,10 @@ export default function FilmInfo({
                         </span>
                       )}
 
-                      {lastEps.vote_average > 1 && lastEps.air_date && (
-                        <span>&bull;</span>
-                      )}
-
                       {lastEps.runtime && (
-                        <span>
+                        <span
+                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           {Math.floor(lastEps.runtime / 60) >= 1
                             ? `${Math.floor(
                                 lastEps.runtime / 60
@@ -486,12 +480,10 @@ export default function FilmInfo({
                         </span>
                       )}
 
-                      {lastEps.air_date && lastEps.runtime && (
-                        <span>&bull;</span>
-                      )}
-
                       {lastEps.air_date && (
-                        <span>
+                        <span
+                          className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           {formatDate({
                             date: lastEps.air_date,
                             showDay: false,
@@ -528,7 +520,9 @@ export default function FilmInfo({
                   thirdInfo={
                     <>
                       {nextEps.vote_average > 1 && (
-                        <span className={`flex items-center gap-1`}>
+                        <span
+                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           <IonIcon
                             icon={star}
                             className={`text-primary-yellow`}
@@ -538,12 +532,10 @@ export default function FilmInfo({
                         </span>
                       )}
 
-                      {nextEps.vote_average > 1 && nextEps.air_date && (
-                        <span>&bull;</span>
-                      )}
-
                       {nextEps.runtime && (
-                        <span>
+                        <span
+                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           {Math.floor(nextEps.runtime / 60) >= 1
                             ? `${Math.floor(
                                 nextEps.runtime / 60
@@ -554,12 +546,10 @@ export default function FilmInfo({
                         </span>
                       )}
 
-                      {nextEps.air_date && nextEps.runtime && (
-                        <span>&bull;</span>
-                      )}
-
                       {nextEps.air_date && (
-                        <span>
+                        <span
+                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                        >
                           {formatDate({
                             date: nextEps.air_date,
                             showDay: false,

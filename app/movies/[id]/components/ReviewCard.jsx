@@ -6,6 +6,7 @@ import RatingStars from "./RatingStars";
 import { IonIcon } from "@ionic/react";
 import { triangle } from "ionicons/icons";
 import Person from "./Person";
+import { formatDate } from "@/app/lib/formatDate";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -19,23 +20,8 @@ export default function ReviewCard({ review }) {
   const maxLength = 30;
 
   // Review date variables
-  const dateStr = review && review.created_at;
-  const date = new Date(dateStr);
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
-  const formattedDate = date.toLocaleString("en-US", options);
-
-  const createdAt = new Date(review.created_at).toLocaleString(
-    "en-US",
-    options
-  );
-  const updatedAt = new Date(review.updated_at).toLocaleString(
-    "en-US",
-    options
-  );
+  const createdAt = formatDate({ date: review.created_at, showDay: false });
+  const updatedAt = formatDate({ date: review.updated_at, showDay: false });
 
   // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
@@ -113,9 +99,10 @@ export default function ReviewCard({ review }) {
           tooltip={
             <div
               className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
-              data-tip={`${formattedDate} ${
-                updatedAt !== createdAt ? `(${updatedAt})` : ``
-              }`}
+              data-tip={`${formatDate({
+                date: review?.created_at,
+                showDay: false,
+              })} ${updatedAt !== createdAt ? `(${updatedAt})` : ``}`}
             >
               <span>{timeAgo(review.created_at)}</span>
               {updatedAt !== createdAt && <span>{`(edited)`}</span>}

@@ -28,9 +28,6 @@ export default function Trending({ film, genres }) {
       : [];
 
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
-  const date = new Date(releaseDate);
-  const options = { year: "numeric", month: "short" };
-  const formattedDate = date.toLocaleString("en-US", options);
 
   return (
     <div className="px-4 mx-auto max-w-7xl">

@@ -3,12 +3,11 @@
 import Link from "next/link";
 import React from "react";
 import { slugify } from "../lib/slugify";
+import { formatDate } from "../lib/formatDate";
 
 export default function FilmCard({ film, genres, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
-  const date = new Date(releaseDate);
   const options = { year: "numeric", month: "short" };
-  const formattedDate = date.toLocaleString("en-US", options);
 
   let popcorn = `url(/popcorn.png)`;
   let filmPoster = `url(https://image.tmdb.org/t/p/w300${film.poster_path})`;
@@ -72,10 +71,14 @@ export default function FilmCard({ film, genres, isTvPage }) {
 
         <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
           <span className="text-gray-400 whitespace-nowrap">
-            {releaseDate !== "" ? formattedDate : `Coming soon`}
+            {formatDate({
+              date: releaseDate,
+              showDay: false,
+              options,
+            })}
           </span>
 
-          {formattedDate !== "NaN" && genres.length > 0 && (
+          {releaseDate !== null && genres.length > 0 && (
             <span className="text-gray-400 whitespace-nowrap">&bull;</span>
           )}
 

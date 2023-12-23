@@ -16,13 +16,15 @@ export function calculateDate({ date, years = 0, months = 0, days = 0 }) {
   return formatYYYYMMDD({ date: newDate });
 }
 
-export function formatDate({ date, showDay = true }) {
+export function formatDate({ date, showDay = true, options }) {
   const newDate = new Date(date);
-  const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  };
+  const newOptions = options
+    ? options
+    : {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      };
 
   const dayNames = [
     "Sunday",
@@ -36,7 +38,7 @@ export function formatDate({ date, showDay = true }) {
   const releaseDayIndex = newDate.getDay();
   const releaseDay = dayNames[releaseDayIndex];
 
-  const formattedDate = newDate.toLocaleString("en-US", options);
+  const formattedDate = newDate.toLocaleString("en-US", newOptions);
 
   if (showDay) {
     return `${releaseDay}, ${formattedDate}`;

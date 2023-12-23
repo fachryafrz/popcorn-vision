@@ -31,7 +31,6 @@ export default function Navbar() {
     const isTvType = type === "tv";
 
     setFilmType(type);
-    localStorage.setItem("film-type", type);
 
     if (isSearchPage) {
       if (URLSearchQuery) {

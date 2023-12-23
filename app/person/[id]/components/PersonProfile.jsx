@@ -1,5 +1,6 @@
 "use client";
 
+import { formatDate } from "@/app/lib/formatDate";
 import { IonIcon } from "@ionic/react";
 import {
   briefcaseOutline,
@@ -11,29 +12,13 @@ import React from "react";
 
 export default function PersonProfile({ person, combinedCredits, isModal }) {
   // Format Date
-  const dateStr = person.birthday;
-  const date = new Date(dateStr);
   const options = {
     year: "numeric",
     month: "long",
     day: "numeric",
   };
-  const formattedDate = date.toLocaleString("en-US", options);
-
-  // Release Day
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const birthdayIndex = new Date(dateStr).getDay();
-  const deathdayIndex = new Date(person.deathday).getDay();
-  const birthday = dayNames[birthdayIndex];
-  const deathday = dayNames[deathdayIndex];
+  const birthday = formatDate({ date: person.birthday, options });
+  const deathday = formatDate({ date: person.deathday, options });
 
   return (
     <div
@@ -72,9 +57,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
                   Born:
                 </span>
 
-                <time dateTime={person.birthday}>
-                  {`${birthday}, ${formattedDate}`}
-                </time>
+                <time dateTime={person.birthday}>{birthday}</time>
               </div>
             </section>
 
@@ -84,26 +67,21 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
                   Death:
                 </span>
 
-                <time dateTime={person.deathday}>
-                  {`${deathday}, ${new Date(person.deathday).toLocaleString(
-                    "en-US",
-                    options
-                  )}`}
-                </time>
+                <time dateTime={person.deathday}>{deathday}</time>
               </div>
             </section>
           </div>
         )}
 
-        <div className={`flex flex-col gap-1 [&_ion-icon]:min-w-[16px] [&_ion-icon]:aspect-square`}>
+        <div
+          className={`flex flex-col gap-1 [&_ion-icon]:min-w-[16px] [&_ion-icon]:aspect-square`}
+        >
           {!person.deathday && person.birthday && (
             <section id={`Birth Date`}>
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={calendarOutline} />
 
-                <time dateTime={person.birthday}>
-                  {`${birthday}, ${formattedDate}`}
-                </time>
+                <time dateTime={person.birthday}>{birthday}</time>
               </div>
             </section>
           )}
