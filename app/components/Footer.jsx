@@ -16,6 +16,8 @@ import { usePathname } from "next/navigation";
 import footer from "@/app/json/footer.json";
 
 export default function Footer() {
+  const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;
+
   // Date variables
   const currentYear = new Date().getFullYear();
   const createdDate = new Date("2023-02-17");
@@ -127,12 +129,20 @@ export default function Footer() {
         </span>
         <span className={`flex gap-1 items-center justify-center`}>
           <span>Powered by</span>
-          <a href="https://themoviedb.org" target="_blank" className={`h-6 p-1.5 pl-0 pt-2`}>
-            <img
-              src={`https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`}
-              alt={`The Movie DB`}
-              className={`object-contain`}
-            />
+          <a
+            href="https://themoviedb.org"
+            target="_blank"
+            className={`h-6 p-1.5 pl-0 pt-2`}
+          >
+            <figure
+              className={`h-[10px] w-[77px]`}
+              title={`The Movie Database`}
+              style={{
+                backgroundImage: `url(${tmdbImg})`,
+                backgroundRepeat: `no-repeat`,
+                backgroundSize: `contain`,
+              }}
+            ></figure>
           </a>
         </span>
       </div>

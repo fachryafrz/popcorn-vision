@@ -4,7 +4,7 @@ import { IonIcon } from "@ionic/react";
 import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getFilmSeason } from "../api/route";
+import { fetchData, getFilmSeason } from "../api/route";
 import { slugify } from "../lib/slugify";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
@@ -35,22 +35,28 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
     >
       <TitleLogo film={film} />
       <div className="flex items-center justify-center flex-wrap gap-1 font-medium text-white">
-        <div className="flex items-center gap-1 text-primary-yellow">
+        <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm">
           <IonIcon icon={star} className="!w-5 h-full aspect-square" />
           <span className="!text-white">{film.vote_average.toFixed(1)}</span>
         </div>
-        <span>&bull;</span>
+
         {!isTvPage ? (
-          <div className="whitespace-nowrap flex items-center gap-1">
-            <span>{date.getFullYear()}</span>
-          </div>
+          <FilmRuntime film={film} />
         ) : (
           <FilmSeason film={film} setLoading={setLoading} loading={loading} />
         )}
-        <span>&bull;</span>
-        {filmGenres
-          ?.slice(0, 1)
-          .map((genre) => genre && <span key={genre.id}>{genre.name}</span>)}
+
+        {filmGenres?.slice(0, 1).map(
+          (genre) =>
+            genre && (
+              <span
+                key={genre.id}
+                className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+              >
+                {genre.name}
+              </span>
+            )
+        )}
       </div>
       <p className="hidden md:line-clamp-2 lg:line-clamp-3">{film.overview}</p>
       <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
@@ -84,7 +90,46 @@ function FilmSeason({ film, setLoading, loading }) {
 
   return season && !loading ? (
     <div className="whitespace-nowrap flex items-center gap-1">
-      <span>{`${season} Season${season > 1 ? `s` : ``}`} </span>
+      <span className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}>{`${season} Season${season > 1 ? `s` : ``}`} </span>
+    </div>
+  ) : (
+    <div
+      className={`h-[24px] w-[75px] animate-pulse bg-gray-400 bg-opacity-50 rounded-lg`}
+    ></div>
+  );
+}
+
+function FilmRuntime({ film }) {
+  const [loading, setLoading] = useState(true);
+  const [runtime, setRuntime] = useState();
+
+  const formatRuntime = (runtime) => {
+    const hours = Math.floor(runtime / 60);
+    const minutes = runtime % 60;
+
+    if (hours === 0) {
+      return `${minutes} minute${minutes > 1 ? `s` : ``}`;
+    } else {
+      return `${hours}h ${minutes}m`;
+    }
+  };
+
+  useEffect(() => {
+    fetchData({
+      endpoint: `/movie/${film.id}`,
+    }).then((res) => {
+      setRuntime(res.runtime);
+      setLoading(false);
+    });
+  }, [film]);
+
+  return runtime && !loading ? (
+    <div className="flex items-center gap-1">
+      <span
+        className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+      >
+        {`${formatRuntime(runtime)}`}{" "}
+      </span>
     </div>
   ) : (
     <div
