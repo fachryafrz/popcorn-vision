@@ -36,7 +36,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
     >
       <TitleLogo film={film} />
       <div className="flex items-center justify-center flex-wrap gap-1 font-medium text-white">
-        <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm">
+        <div className="flex items-center gap-1 text-primary-yellow p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
           <IonIcon icon={star} className="!w-5 h-full aspect-square" />
           <span className="!text-white">{film.vote_average.toFixed(1)}</span>
         </div>
@@ -52,7 +52,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             genre && (
               <span
                 key={genre.id}
-                className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+                className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
               >
                 {genre.name}
               </span>
@@ -92,14 +92,14 @@ function FilmSeason({ film, setLoading, loading }) {
   return season && !loading ? (
     <div className="whitespace-nowrap flex items-center gap-1">
       <span
-        className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+        className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
       >
         {`${season} Season${season > 1 ? `s` : ``}`}{" "}
       </span>
     </div>
   ) : (
     <div
-      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-lg`}
+      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-full`}
     ></div>
   );
 }
@@ -120,14 +120,14 @@ function FilmRuntime({ film }) {
   return runtime && !loading ? (
     <div className="flex items-center gap-1">
       <span
-        className={`block p-1 px-2 rounded-lg bg-secondary bg-opacity-20 backdrop-blur-sm`}
+        className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
       >
         {`${formatRuntime(runtime)}`}{" "}
       </span>
     </div>
   ) : (
     <div
-      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-lg`}
+      className={`h-[32px] w-[75px] animate-pulse bg-secondary bg-opacity-20 rounded-full`}
     ></div>
   );
 }

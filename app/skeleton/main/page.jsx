@@ -23,13 +23,13 @@ export default function MainLoading() {
           >
             {/* Title Logo */}
             <div className={`h-[150px] w-full !max-w-[350px]`}></div>
-            {/* Rating, Release Date, Season, Genre */}
+            {/* Rating, Runtime, Season, Genre */}
             <div
-              className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
+              className={`flex items-center justify-center md:justify-start gap-1 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
             >
-              <div className={`h-[24px] w-full`}></div>
-              <div className={`h-[24px] w-full`}></div>
-              <div className={`h-[24px] w-full`}></div>
+              <div className={`h-[32px] w-full !rounded-full`}></div>
+              <div className={`h-[32px] w-full !rounded-full`}></div>
+              <div className={`h-[32px] w-full !rounded-full`}></div>
             </div>
             {/* Overview */}
             <div
