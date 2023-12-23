@@ -41,7 +41,7 @@ export default function MainLoading() {
             </div>
             {/* Details Button */}
             <div
-              className={`h-[48px] w-full md:!max-w-[25%] lg:!max-w-[300px] bg-opacity-40 border-none !rounded-full hocus:bg-opacity-100 backdrop-blur`}
+              className={`h-[48px] w-full md:!max-w-[25%] lg:!max-w-[300px] bg-opacity-40 border-none !rounded-full backdrop-blur`}
             ></div>
           </div>
         </div>

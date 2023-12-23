@@ -15,6 +15,7 @@ export default function Navbar() {
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [filmType, setFilmType] = useState("movie");
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||
@@ -25,6 +26,25 @@ export default function Navbar() {
     !isTvPage ? `/search` : `/tv/search`
   );
   let URLSearchQuery = searchParams.get("query");
+
+  const handleFilmTypeChange = (type) => {
+    const isTvType = type === "tv";
+
+    setFilmType(type);
+    localStorage.setItem("film-type", type);
+
+    if (isSearchPage) {
+      if (URLSearchQuery) {
+        router.push(
+          `${!isTvType ? `/search` : `/tv/search`}?query=${URLSearchQuery}`
+        );
+      } else {
+        router.push(`${!isTvType ? `/search` : `/tv/search`}`);
+      }
+    } else {
+      router.push(!isTvType ? `/` : `/tv`);
+    }
+  };
 
   useEffect(() => {
     if (!URLSearchQuery) return;
@@ -73,14 +93,9 @@ export default function Navbar() {
         {/* Movie & TV Series Switcher */}
         <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
           <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm">
-            <Link
-              href={
-                isSearchPage
-                  ? URLSearchQuery
-                    ? `/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-                    : `/search`
-                  : `/`
-              }
+            <button
+              onClick={() => handleFilmTypeChange("movie")}
+              type={`button`}
               className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
                 isMoviesPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
@@ -88,15 +103,10 @@ export default function Navbar() {
             >
               <IonIcon icon={filmOutline} className="text-[1.25rem]" />
               <span className="hidden md:block">Movies</span>
-            </Link>
-            <Link
-              href={
-                isSearchPage
-                  ? URLSearchQuery
-                    ? `/tv/search?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-                    : `/tv/search`
-                  : `/tv`
-              }
+            </button>
+            <button
+              onClick={() => handleFilmTypeChange("tv")}
+              type={`button`}
               className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
                 isTvPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
@@ -104,16 +114,8 @@ export default function Navbar() {
             >
               <IonIcon icon={tvOutline} className="text-[1.25rem]" />
               <span className="hidden md:block">TV Series</span>
-            </Link>
+            </button>
           </div>
-
-          {/* <Link
-            href={!isTvPage ? `/search` : `/tv/search`}
-            className={`flex gap-2 items-center bg-secondary bg-opacity-20 self-center p-2 sm:px-4 rounded-lg hocus:bg-opacity-40 transition-all hocus:scale-105 active:scale-100 ml-auto`}
-          >
-            <IonIcon icon={search} className="text-[1.25rem]" />
-            <span className="hidden sm:block">Search</span>
-          </Link> */}
 
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
