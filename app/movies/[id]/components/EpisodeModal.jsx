@@ -3,37 +3,21 @@ import { IonIcon } from "@ionic/react";
 import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
 import { useEffect, useState } from "react";
+import { formatDate } from "@/app/lib/formatDate";
 
-export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonModal, loading }) {
+export function EpisodeModal({
+  episode,
+  setEpisodeModal,
+  personModal,
+  setPersonModal,
+  loading,
+}) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
   const handleShowAllGuestStars = () => {
     setShowAllGuestStars(true);
   };
-
-  // Format Date
-  const dateStr = episode.air_date;
-  const date = new Date(dateStr);
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const formattedDate = date.toLocaleString("en-US", options);
-
-  // Release Day
-  const dayNames = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const releaseDayIndex = new Date(dateStr).getDay();
-  const releaseDay = dayNames[releaseDayIndex];
 
   useEffect(() => {
     setShowAllGuestStars(false);
@@ -100,14 +84,19 @@ export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonM
             )}
 
             <div className={`flex flex-col gap-2`}>
+              {/* Episode Air Date */}
               <section id={`Episode Air Date`}>
                 <div className={`flex items-center gap-2`}>
                   <IonIcon icon={calendarOutline} />
                   <time dateTime={episode.air_date}>
-                    {`${releaseDay}, ${formattedDate}`}
+                    {formatDate({
+                      date: episode.air_date,
+                    })}
                   </time>
                 </div>
               </section>
+
+              {/* TV Series Chapter */}
               <section
                 id={`TV Series Chapter`}
                 className={`flex items-center gap-2`}
@@ -117,28 +106,19 @@ export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonM
                   {`Season ${episode.season_number} (Episode ${episode.episode_number})`}
                 </span>
               </section>
+
+              {/* TV Series Average Episode Runtime */}
               <section id={`TV Series Average Episode Runtime`}>
-                {Math.floor(episode.runtime / 60) >= 1 ? (
-                  <>
-                    <div className={`flex items-center gap-2`}>
-                      <IonIcon icon={timeOutline} />
-                      <time>
-                        {Math.floor(episode.runtime / 60)}h{" "}
-                        {episode.runtime % 60}m
-                      </time>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className={`flex items-center gap-2`}>
-                      <IonIcon icon={timeOutline} />
-                      <time>
-                        {episode.runtime % 60} minute
-                        {episode.runtime % 60 > 1 && `s`}
-                      </time>
-                    </div>
-                  </>
-                )}
+                <div className={`flex items-center gap-2`}>
+                  <IonIcon icon={timeOutline} />
+                  <time>
+                    {episode.runtime} minute
+                    {episode.runtime % 60 > 1 ? `s` : ``}
+                  </time>
+                  {Math.floor(episode.runtime / 60) >= 1 && (
+                    <span>{`(${formatRuntime(episode.runtime)})`}</span>
+                  )}
+                </div>
               </section>
             </div>
 
@@ -149,7 +129,7 @@ export function EpisodeModal({ episode, setEpisodeModal, personModal, setPersonM
               </section>
             )}
 
-            {episode.guest_stars && episode.guest_stars.length > 0 && (
+            {episode.guest_stars?.length > 0 && (
               <section id={`Guest Stars`} className={`flex flex-col`}>
                 <h2 className={`font-bold text-xl text-white py-2`}>
                   Guest Stars

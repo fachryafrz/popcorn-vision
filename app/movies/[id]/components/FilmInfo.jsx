@@ -46,6 +46,7 @@ import Link from "next/link";
 import { getEpisodeModal, getLocation } from "@/app/api/route";
 import EpisodeCard from "./EpisodeCard";
 import { formatRuntime } from "@/app/lib/formatRuntime";
+import { formatDate } from "@/app/lib/formatDate";
 
 export default function FilmInfo({
   film,
@@ -70,41 +71,6 @@ export default function FilmInfo({
   const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-
-  const formatDate = (dateValue) => {
-    const dateStr = dateValue;
-    const date = new Date(dateStr);
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    const formattedDate = date.toLocaleString("en-US", options);
-    return formattedDate;
-  };
-
-  const formatDateWithDay = (dateValue) => {
-    const dateStr = dateValue;
-    const date = new Date(dateStr);
-    const options = {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    };
-    const formattedDate = date.toLocaleString("en-US", options);
-    const dayNames = [
-      "Sunday",
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-    ];
-    const releaseDayIndex = new Date(dateStr).getDay();
-    const releaseDay = dayNames[releaseDayIndex];
-    return `${releaseDay}, ${formattedDate}`;
-  };
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -207,6 +173,7 @@ export default function FilmInfo({
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
       <div className="flex flex-col items-center md:justify-center md:items-start gap-4 w-full">
+        {/* Film Title Logo */}
         {images.logos.length > 0 ? (
           <>
             <TitleLogo
@@ -233,6 +200,7 @@ export default function FilmInfo({
           </h1>
         )}
 
+        {/* Film Production Company */}
         <div
           className={`w-full text-sm lg:text-base flex flex-col gap-4 md:gap-2`}
         >
@@ -272,6 +240,7 @@ export default function FilmInfo({
               </section>
             )}
 
+          {/* Film Release Date */}
           {!isTvPage
             ? film.release_date && (
                 <section id={`Movie Release Date`}>
@@ -280,7 +249,7 @@ export default function FilmInfo({
                     <IonIcon icon={calendarOutline} />
 
                     <time dateTime={film.release_date}>
-                      {formatDateWithDay(film.release_date)}
+                      {formatDate({ date: film.release_date })}
                     </time>
                   </div>
                 </section>
@@ -295,11 +264,11 @@ export default function FilmInfo({
                     <IonIcon icon={calendarOutline} />
 
                     <time dateTime={film.first_air_date}>
-                      {formatDateWithDay(film.first_air_date)}{" "}
+                      {formatDate({ date: film.first_air_date })}{" "}
                       {film.last_air_date !== null &&
                         film.last_air_date !== film.first_air_date && (
                           <span className="hidden xs:inline">
-                            {`- ${formatDateWithDay(film.last_air_date)}`}
+                            {`- ${formatDate({ date: film.last_air_date })}`}
                           </span>
                         )}
                     </time>
@@ -307,6 +276,7 @@ export default function FilmInfo({
                 </section>
               )}
 
+          {/* TV Series Number of Season */}
           {isTvPage &&
             film.number_of_seasons > 0 &&
             film.number_of_episodes > 0 && (
@@ -327,6 +297,7 @@ export default function FilmInfo({
               </section>
             )}
 
+          {/* Film Runtime */}
           {filmRuntime && (
             <section id={`Movie Runtime`}>
               <meta itemProp="duration" content={`PT${filmRuntime}M`} />
@@ -336,16 +307,15 @@ export default function FilmInfo({
                   {filmRuntime} minute{filmRuntime % 60 > 1 ? `s` : ``}
                 </time>
                 {Math.floor(filmRuntime / 60) >= 1 && (
-                  <time>{`(${formatRuntime(filmRuntime)})`}</time>
+                  <span>{`(${formatRuntime(filmRuntime)})`}</span>
                 )}
               </div>
             </section>
           )}
 
+          {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
-              {/* <td>{film.genres.map((item) => item.name).join(", ")}</td> */}
-
               {film.genres.map((item) => {
                 return (
                   <Link
@@ -365,6 +335,7 @@ export default function FilmInfo({
             </section>
           )}
 
+          {/* Film Director / Creator */}
           {!isTvPage
             ? credits &&
               credits.crew.length > 0 &&
@@ -414,6 +385,7 @@ export default function FilmInfo({
                 </section>
               )}
 
+          {/* Film Watch Provider */}
           {providers.results && providersIDArray ? (
             <section
               id={`Film Providers`}
@@ -430,26 +402,16 @@ export default function FilmInfo({
                 ).map(
                   (item) =>
                     item.logo_path !== null && (
-                      <>
-                        {/* <img
-                    key={item.provider_id}
-                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
-                    alt={item.provider_name}
-                    title={item.provider_name}
-                    className={`object-contain w-[40px] aspect-square inline rounded-xl`}
-                  /> */}
-
-                        <figure
-                          key={item.provider_id}
-                          title={item.provider_name}
-                          style={{
-                            background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                            backgroundSize: `contain`,
-                            backgroundRepeat: `no-repeat`,
-                          }}
-                          className={`aspect-square w-[40px] rounded-xl`}
-                        ></figure>
-                      </>
+                      <figure
+                        key={item.provider_id}
+                        title={item.provider_name}
+                        style={{
+                          background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                          backgroundSize: `contain`,
+                          backgroundRepeat: `no-repeat`,
+                        }}
+                        className={`aspect-square w-[40px] rounded-xl`}
+                      ></figure>
                     )
                 )}
               </div>
@@ -471,6 +433,7 @@ export default function FilmInfo({
             </section>
           )}
 
+          {/* TV Series Episode */}
           <section
             id={`TV Series Episode`}
             className={`grid xl:grid-cols-2 gap-2 mt-2`}
@@ -528,7 +491,12 @@ export default function FilmInfo({
                       )}
 
                       {lastEps.air_date && (
-                        <span>{formatDate(lastEps.air_date)}</span>
+                        <span>
+                          {formatDate({
+                            date: lastEps.air_date,
+                            showDay: false,
+                          })}
+                        </span>
                       )}
                     </>
                   }
@@ -591,7 +559,12 @@ export default function FilmInfo({
                       )}
 
                       {nextEps.air_date && (
-                        <span>{formatDate(nextEps.air_date)}</span>
+                        <span>
+                          {formatDate({
+                            date: nextEps.air_date,
+                            showDay: false,
+                          })}
+                        </span>
                       )}
                     </>
                   }
@@ -639,6 +612,7 @@ export default function FilmInfo({
             )}
           </section>
 
+          {/* Share this page */}
           <section
             id={`Share`}
             className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
