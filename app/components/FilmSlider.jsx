@@ -12,21 +12,13 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { sortFilms } from "../lib/sortFilms";
 
 export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const sortedFilms = [...films.results].sort((a, b) => {
-    const dateA = new Date(!isTvPage ? a.release_date : a.first_air_date);
-    const dateB = new Date(!isTvPage ? b.release_date : b.first_air_date);
-
-    if (sort === "ASC") {
-      return dateA - dateB;
-    } else if (sort === "DESC") {
-      return dateB - dateA;
-    }
-  });
+  const sortedFilms = sortFilms({ films: films.results, sort, isTvPage });
 
   return (
     <section id={title} className={`w-full max-w-none mx-auto`}>
