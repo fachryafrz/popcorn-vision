@@ -128,7 +128,7 @@ export default function FilmCollection({
                             {item.title}
                           </h3>
                           <div
-                            className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+                            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
                           >
                             {item.vote_average > 1 && (
                               <span
@@ -269,7 +269,7 @@ function FilmSeason({
           )}
 
           <div
-            className={`flex items-center gap-1 text-xs text-gray-400 font-medium`}
+            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
           >
             {item.vote_average > 1 && (
               <span
