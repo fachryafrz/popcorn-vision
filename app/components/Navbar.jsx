@@ -35,7 +35,9 @@ export default function Navbar() {
     if (isSearchPage) {
       if (URLSearchQuery) {
         router.push(
-          `${!isTvType ? `/search` : `/tv/search`}?query=${URLSearchQuery}`
+          `${
+            !isTvType ? `/search` : `/tv/search`
+          }?query=${URLSearchQuery.replace(/\s+/g, "+")}`
         );
       } else {
         router.push(`${!isTvType ? `/search` : `/tv/search`}`);

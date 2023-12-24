@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getTitleLogo } from "../api/route";
+import { fetchData, getTitleLogo } from "../api/route";
 
 export default function TitleLogo({ film, images }) {
   const [titleLogo, setTitleLogo] = useState(images);
@@ -13,13 +13,18 @@ export default function TitleLogo({ film, images }) {
   const title = !isTvPage ? film.title : film.name;
 
   useEffect(() => {
-    if (!images) {
-      getTitleLogo({ film, isTvPage }).then((res) => {
-        setTitleLogo(res);
+    if (!titleLogo) {
+      fetchData({
+        endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}/images`,
+        queryParams: {
+          include_image_language: "en",
+        },
+      }).then((res) => {
+        setTitleLogo(res.logos.find((img) => img.iso_639_1 === "en"));
         setLoading(false);
       });
     }
-  }, [film, isTvPage, images]);
+  }, [film, isTvPage, titleLogo]);
 
   return !loading ? (
     titleLogo ? (
@@ -38,9 +43,12 @@ export default function TitleLogo({ film, images }) {
         )}
       </figure>
     ) : (
-      <h3 className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-tight">
+      <h1
+        className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-normal"
+        style={{ textWrap: `balance` }}
+      >
         {title}
-      </h3>
+      </h1>
     )
   ) : (
     <div className="h-[150px] w-full max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>

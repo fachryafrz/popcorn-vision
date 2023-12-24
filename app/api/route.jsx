@@ -84,7 +84,7 @@ export async function getTitleLogo({ film, isTvPage }) {
     {
       params: {
         api_key: process.env.API_KEY,
-        language: "en",
+        include_image_language: "en",
       },
     }
   );

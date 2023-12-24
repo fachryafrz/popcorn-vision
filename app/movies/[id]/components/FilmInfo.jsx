@@ -169,20 +169,10 @@ export default function FilmInfo({
       <div className="flex flex-col items-center md:justify-center md:items-start gap-4 w-full">
         {/* Film Title Logo */}
         {images.logos.length > 0 ? (
-          <>
-            <TitleLogo
-              film={film}
-              images={images.logos.find((img) => img.iso_639_1 === "en")}
-            />
-
-            <h1
-              title={!isTvPage ? film.title : film.name}
-              className="sr-only"
-              itemProp="name"
-            >
-              {!isTvPage ? film.title : film.name}
-            </h1>
-          </>
+          <TitleLogo
+            film={film}
+            images={images.logos.find((img) => img.iso_639_1 === "en")}
+          />
         ) : (
           <h1
             title={!isTvPage ? film.title : film.name}
@@ -292,7 +282,7 @@ export default function FilmInfo({
             )}
 
           {/* Film Runtime */}
-          {filmRuntime && (
+          {filmRuntime > 0 && (
             <section id={`Movie Runtime`}>
               <meta itemProp="duration" content={`PT${filmRuntime}M`} />
               <div className={`flex items-center gap-2`}>
