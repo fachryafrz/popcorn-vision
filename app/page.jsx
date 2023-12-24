@@ -46,8 +46,8 @@ export default async function Home({ type = "movie" }) {
   const currentDate = new Date();
   const today = calculateDate({ date: currentDate });
   const tomorrow = calculateDate({ date: currentDate, days: 1 });
-  const monthsAgo = calculateDate({ date: currentDate, months: -3 });
-  const monthsLater = calculateDate({ date: currentDate, months: 3 });
+  const monthsAgo = calculateDate({ date: currentDate, months: -1 });
+  const monthsLater = calculateDate({ date: currentDate, months: 1 });
 
   // API Requests
   const { genres } = await fetchData({

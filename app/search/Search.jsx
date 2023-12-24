@@ -1320,7 +1320,7 @@ export default function Search({ type = "movie" }) {
           <>
             {/* Films list */}
             <section
-              className={`grid gap-2 sm:gap-3 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
+              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
             >
               {genresData &&
                 films?.results.map((film) => {

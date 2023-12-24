@@ -1,12 +1,6 @@
 export const revalidate = 3600; // revalidate this page every 1 hour
 
-import axios from "axios";
 import React from "react";
-import HomeSlider from "../components/HomeSlider";
-import FilmSlider from "../components/FilmSlider";
-import Trending from "../components/Trending";
-import providers from "../json/providers.json";
-import { getFilms, getGenres, getTrending } from "../api/route";
 import Home from "../page";
 
 export async function generateMetadata() {

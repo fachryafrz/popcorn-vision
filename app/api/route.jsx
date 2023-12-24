@@ -2,14 +2,23 @@
 
 import axios from "axios";
 
-export async function fetchData({ endpoint, queryParams = {} }) {
+export async function fetchData({
+  endpoint,
+  queryParams = {},
+  method = "GET",
+}) {
   try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-      {
-        params: { api_key: process.env.API_KEY, ...queryParams },
-      }
-    );
+    const { data } = await axios.request({
+      method: method,
+      baseURL: process.env.NEXT_PUBLIC_API_URL,
+      url: endpoint,
+      params: { api_key: process.env.API_KEY, ...queryParams },
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
     return data;
   } catch (error) {
     console.error(`Error fetching data: ${error}`);
@@ -17,118 +26,71 @@ export async function fetchData({ endpoint, queryParams = {} }) {
   }
 }
 
-export async function getFilms({ endpoint, params }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        ...params,
-      },
-    }
-  );
-
-  return data;
-}
-
 export async function getFilm({ id, type, path, params }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}${path}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        language: "en",
-        ...params,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/${type}/${id}${path}`,
+    queryParams: {
+      language: "en",
+      ...params,
+    },
+  });
 
-  return data;
+  return res;
 }
 
 export async function getTrending({ num, type }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/trending/${type}/day`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/trending/${type}/day`,
+  });
 
   if (num) {
-    return data.results[num - 1];
+    return res.results[num - 1];
   } else {
-    return data;
+    return res;
   }
 }
 
 export async function getGenres({ type }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/genre/${type}/list`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/genre/${type}/list`,
+  });
 
-  return data.genres;
+  return res.genres;
 }
 
 export async function getTitleLogo({ film, isTvPage }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/${!isTvPage ? `movie` : `tv`}/${
-      film.id
-    }/images`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        include_image_language: "en",
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}/images`,
+    queryParams: {
+      include_image_language: "en",
+    },
+  });
 
-  return data.logos[0];
+  return res.logos[0];
 }
 
 export async function getFilmSeason({ film }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/tv/${film.id}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/tv/${film.id}`,
+  });
 
-  return data.number_of_seasons;
+  return res.number_of_seasons;
 }
 
 export async function getFilmCollection({ film }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/collection/${film.belongs_to_collection.id}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/collection/${film.belongs_to_collection.id}`,
+  });
 
-  return data;
+  return res;
 }
 
 export async function getEpisodes({ id, season }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/tv/${id}/season/${season}`,
+  });
 
-  return data.episodes;
+  return res.episodes;
 }
 
 export async function getLocation({ latitude, longitude }) {
@@ -140,47 +102,33 @@ export async function getLocation({ latitude, longitude }) {
 }
 
 export async function getPerson({ id, path }) {
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/person/${id}${path}`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        language: "en",
-      },
-    }
-  );
+  const res = await fetchData({
+    endpoint: `/person/${id}${path}`,
+    queryParams: {
+      language: "en",
+    },
+  });
 
-  return data;
+  return res;
 }
 
 export async function getMoreReviews({ film, type, currentPage }) {
   const nextPage = currentPage + 1;
-  const { data } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/${type}/${film.id}/reviews`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        page: nextPage,
-      },
-    }
-  );
 
-  return data;
+  const res = await fetchData({
+    endpoint: `/${type}/${film.id}/reviews`,
+    queryParams: {
+      page: nextPage,
+    },
+  });
+
+  return res;
 }
 
 export async function getEpisodeModal({ filmID, season, eps }) {
-  try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/tv/${filmID}/season/${season}/episode/${eps}`,
-      {
-        params: {
-          api_key: process.env.API_KEY,
-        },
-      }
-    );
+  const res = await fetchData({
+    endpoint: `/tv/${filmID}/season/${season}/episode/${eps}`,
+  });
 
-    return data;
-  } catch (error) {
-    console.error(`Errornya episode modal: ${error}`);
-  }
+  return res;
 }

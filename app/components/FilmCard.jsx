@@ -23,7 +23,6 @@ export default function FilmCard({ film, genres, isTvPage }) {
         `/movies/${film.id}-${slugify(film.title)}`,
         `/tv/${film.id}-${slugify(film.name)}`
       )}
-      className={`hocus:scale-[1.01] active:scale-100 transition-all`}
     >
       <figure
         className={`rounded-xl overflow-hidden aspect-poster relative`}
