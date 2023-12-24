@@ -599,14 +599,14 @@ export default function FilmInfo({
           >
             <button
               onClick={handleShare}
-              className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 text-sm ml-auto mt-2`}
+              className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm text-sm ml-auto mt-2`}
             >
               <IonIcon icon={arrowRedoOutline} />
               <span>Share</span>
             </button>
 
             <button
-              className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 hocus:bg-opacity-10 text-sm ml-auto mt-2`}
+              className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm hocus:bg-opacity-10 text-sm ml-auto mt-2`}
               onClick={() => document.getElementById("shareModal").showModal()}
             >
               <IonIcon icon={arrowRedoOutline} />
