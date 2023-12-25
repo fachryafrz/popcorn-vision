@@ -79,7 +79,9 @@ export default function FilmInfo({
   let providersArray = Object.entries(providers.results);
   let providersIDArray =
     userLocation &&
-    providersArray.find((item) => item[0] === JSON.parse(userLocation).countryCode);
+    providersArray.find(
+      (item) => item[0] === JSON.parse(userLocation).countryCode
+    );
 
   // Release Date
   const dateStr = !isTvPage ? film.release_date : film.first_air_date;
@@ -366,16 +368,22 @@ export default function FilmInfo({
                 ).map(
                   (item) =>
                     item.logo_path !== null && (
-                      <figure
+                      <Link
                         key={item.provider_id}
-                        title={item.provider_name}
-                        style={{
-                          background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                          backgroundSize: `contain`,
-                          backgroundRepeat: `no-repeat`,
-                        }}
-                        className={`aspect-square w-[40px] rounded-xl`}
-                      ></figure>
+                        href={`${
+                          !isTvPage ? `/search` : `/tv/search`
+                        }?watch_providers=${item.provider_id}`}
+                      >
+                        <figure
+                          title={item.provider_name}
+                          style={{
+                            background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                            backgroundSize: `contain`,
+                            backgroundRepeat: `no-repeat`,
+                          }}
+                          className={`aspect-square w-[40px] rounded-xl`}
+                        ></figure>
+                      </Link>
                     )
                 )}
               </div>
