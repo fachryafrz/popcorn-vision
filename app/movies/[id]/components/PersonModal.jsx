@@ -30,10 +30,12 @@ export default function PersonModal({
   loading,
   episode,
 }) {
-  const [combinedCredits, setCombinedCredits] = useState();
-  const [movieCredits, setMovieCredits] = useState();
-  const [tvCredits, setTVCredits] = useState();
-  const [images, setImages] = useState();
+  const [combinedCredits, setCombinedCredits] = useState(
+    person.combined_credits
+  );
+  const [movieCredits, setMovieCredits] = useState(person.movie_credits);
+  const [tvCredits, setTVCredits] = useState(person.tv_credits);
+  const [images, setImages] = useState(person.images);
   const [films, setFilms] = useState();
 
   const router = useRouter();
@@ -49,26 +51,6 @@ export default function PersonModal({
 
     // router.back();
   };
-
-  useEffect(() => {
-    // window.history.pushState(
-    //   null,
-    //   null,
-    //   `/person/${person.id}-${slugify(person.name)}`
-    // );
-
-    fetchData({
-      endpoint: `/person/${person.id}`,
-      queryParams: {
-        append_to_response: `combined_credits,movie_credits,tv_credits,images`,
-      },
-    }).then((res) => {
-      setCombinedCredits(res.combined_credits);
-      setMovieCredits(res.movie_credits);
-      setTVCredits(res.tv_credits);
-      setImages(res.images);
-    });
-  }, [person]);
 
   useEffect(() => {
     if (movieCredits && tvCredits) {

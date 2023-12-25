@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
-import { informationCircleOutline, star } from "ionicons/icons";
+import { chevronForward, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { fetchData, getFilmSeason } from "../api/route";
@@ -65,11 +65,8 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           )}
           className={`btn btn-primary bg-opacity-40 border-none rounded-full hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
         >
-          <IonIcon
-            icon={informationCircleOutline}
-            className="!w-5 h-full aspect-square"
-          />
           Details
+          <IonIcon icon={chevronForward} className="aspect-square text-base" />
         </Link>
       </div>
     </div>

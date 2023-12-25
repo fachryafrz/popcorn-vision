@@ -106,6 +106,7 @@ export async function getPerson({ id, path }) {
     endpoint: `/person/${id}${path}`,
     queryParams: {
       language: "en",
+      append_to_response: `combined_credits,movie_credits,tv_credits,images`,
     },
   });
 
