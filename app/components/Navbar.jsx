@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { getLocation } from "../api/route";
 
 export default function Navbar() {
   const router = useRouter();
@@ -16,6 +17,32 @@ export default function Navbar() {
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [filmType, setFilmType] = useState("movie");
+
+  // For user location
+  const [location, setLocation] = useState(null);
+  const userLocation = localStorage.getItem("user-location");
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        setLocation(position.coords);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (location) {
+      const { latitude, longitude } = location;
+
+      if (!userLocation)
+        getLocation({ latitude, longitude }).then((response) => {
+          if (response.countryCode !== "ID") {
+            setLanguage("en-US");
+          }
+          localStorage.setItem("user-location", JSON.stringify(response));
+        });
+    }
+  }, [location, userLocation]);
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||

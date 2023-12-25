@@ -33,11 +33,13 @@ export default function Search({ type = "movie" }) {
     [searchParams]
   );
   const isQueryParams = searchParams.get("query") ? true : false;
+  const userLocation = localStorage.getItem("user-location");
 
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
   const [genresData, setGenresData] = useState();
   const [languagesData, setLanguagesData] = useState();
+  const [providersData, setProvidersData] = useState();
   const [castData, setCastData] = useState();
   const [crewData, setCrewData] = useState();
   const [keywordData, setKeywordData] = useState();
@@ -51,6 +53,7 @@ export default function Search({ type = "movie" }) {
   // React-Select Placeholder
   const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
   const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
+  const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,6 +64,7 @@ export default function Search({ type = "movie" }) {
   const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [genre, setGenre] = useState();
   const [language, setLanguage] = useState();
+  const [provider, setProvider] = useState();
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
   const [keyword, setKeyword] = useState([]);
@@ -297,6 +301,12 @@ export default function Search({ type = "movie" }) {
       label: language.english_name,
     }));
   }, [languagesData]);
+  const providersOptions = useMemo(() => {
+    return providersData?.map((provider) => ({
+      value: provider.provider_id,
+      label: provider.provider_name,
+    }));
+  }, [providersData]);
   const castsLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
       fetchData({
@@ -401,6 +411,24 @@ export default function Search({ type = "movie" }) {
         current.delete("with_original_language");
       } else {
         current.set("with_original_language", value);
+      }
+
+      const search = current.toString();
+
+      const query = search ? `?${search}` : "";
+
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleProviderChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
+
+      if (value.length === 0) {
+        current.delete("watch_providers");
+      } else {
+        current.set("watch_providers", value);
       }
 
       const search = current.toString();
@@ -543,11 +571,14 @@ export default function Search({ type = "movie" }) {
       const genresPlaceholder = getRandomOptionsPlaceholder(genresOptions);
       const languagesPlaceholder =
         getRandomOptionsPlaceholder(languagesOptions);
+      const providersPlaceholder =
+        getRandomOptionsPlaceholder(providersOptions);
 
       // Set placeholders for your elements here
       // For example:
       setGenresInputPlaceholder(genresPlaceholder);
       setLanguagesInputPlaceholder(languagesPlaceholder);
+      setProvidersInputPlaceholder(providersPlaceholder);
     };
 
     // Set interval to run every 5 seconds
@@ -555,7 +586,7 @@ export default function Search({ type = "movie" }) {
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [genresOptions, languagesOptions]); // Add dependencies if needed
+  }, [genresOptions, languagesOptions, providersOptions]);
 
   // Use Effect for fetching data
   useEffect(() => {
@@ -602,8 +633,20 @@ export default function Search({ type = "movie" }) {
       setMaxYear(maxYear);
     });
 
+    // Fetch watch providers by user country code
+    if (userLocation) {
+      fetchData({
+        endpoint: `/watch/providers/movie`,
+        queryParams: {
+          watch_region: JSON.parse(userLocation).countryCode,
+        },
+      }).then((res) => {
+        setProvidersData(res.results);
+      });
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [type, userLocation]);
 
   // Use Effect for set available Release Dates
   useEffect(() => {
@@ -663,6 +706,26 @@ export default function Search({ type = "movie" }) {
       setLanguage(searchLanguagesOptions);
     } else {
       setLanguage(null);
+    }
+
+    // Providers
+    if (searchParams.get("watch_providers")) {
+      const providersParams = searchParams.get("watch_providers").split(",");
+      const searchProviders = providersParams.map((providerId) =>
+        providersData?.find(
+          (provider) => parseInt(provider.provider_id) === parseInt(providerId)
+        )
+      );
+      const searchProvidersOptions = searchProviders?.map(
+        (provider) =>
+          provider && {
+            value: provider.provider_id,
+            label: provider.provider_name,
+          }
+      );
+      setProvider(searchProvidersOptions);
+    } else {
+      setProvider(null);
     }
 
     // Cast
@@ -823,6 +886,7 @@ export default function Search({ type = "movie" }) {
     searchParams,
     genresData,
     languagesData,
+    providersData,
     maxYear,
     minYear,
     sortByType,
@@ -857,6 +921,12 @@ export default function Search({ type = "movie" }) {
       if (searchParams.get("with_genres")) {
         searchAPIParams.with_genres = genre
           ?.map((genre) => genre?.value)
+          .join(",");
+      }
+      if (searchParams.get("watch_providers")) {
+        searchAPIParams.watch_region = JSON.parse(userLocation).countryCode;
+        searchAPIParams.with_watch_providers = provider
+          ?.map((provider) => provider?.value)
           .join(",");
       }
       if (searchParams.get("with_original_language")) {
@@ -951,6 +1021,7 @@ export default function Search({ type = "movie" }) {
     company,
     crew,
     genre,
+    provider,
     keyword,
     language,
     rating,
@@ -961,6 +1032,7 @@ export default function Search({ type = "movie" }) {
     searchQuery,
     type,
     isTvPage,
+    userLocation,
   ]);
 
   return (
@@ -1006,6 +1078,38 @@ export default function Search({ type = "movie" }) {
               </span>
             )}
           </div>
+        </section>
+
+        {/* Watch Providers */}
+        <section className={`flex flex-col gap-1`}>
+          <span className={`font-medium`}>Streaming</span>
+          {localStorage.getItem("user-location") ? (
+            <Select
+              options={providersData && providersOptions}
+              onChange={handleProviderChange}
+              value={provider}
+              styles={{
+                ...inputStyles,
+                dropdownIndicator: (styles) => ({
+                  ...styles,
+                  display: "block",
+                  "&:hover": {
+                    color: "#fff",
+                  },
+                  cursor: "pointer",
+                }),
+              }}
+              placeholder={providersInputPlaceholder}
+              isDisabled={isQueryParams}
+              isMulti
+            />
+          ) : (
+            <span
+              className={`text-center text-xs w-full block italic text-gray-400`}
+            >
+              Please enable location
+            </span>
+          )}
         </section>
 
         {/* Genre */}
@@ -1255,6 +1359,7 @@ export default function Search({ type = "movie" }) {
                 {searchParams.get("release_date") ||
                 searchParams.get("with_genres") ||
                 searchParams.get("with_original_language") ||
+                searchParams.get("watch_providers") ||
                 searchParams.get("with_cast") ||
                 searchParams.get("with_crew") ||
                 searchParams.get("with_keywords") ||

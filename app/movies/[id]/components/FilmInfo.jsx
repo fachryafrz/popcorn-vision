@@ -62,36 +62,16 @@ export default function FilmInfo({
   personModal,
   setPersonModal,
 }) {
-  const [location, setLocation] = useState(null);
-  const [language, setLanguage] = useState("id-ID");
-  const [userLocation, setUserLocation] = useState();
+  // const [location, setLocation] = useState(null);
+  // const [language, setLanguage] = useState("id-ID");
+  // const [userLocation, setUserLocation] = useState();
   const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
+  const userLocation = localStorage.getItem("user-location");
 
   const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-
-  useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation(position.coords);
-      });
-    }
-  }, []);
-
-  useEffect(() => {
-    if (location) {
-      const { latitude, longitude } = location;
-
-      getLocation({ latitude, longitude }).then((response) => {
-        if (response.countryCode !== "ID") {
-          setLanguage("en-US");
-        }
-        setUserLocation(response);
-      });
-    }
-  }, [location, film, isTvPage]);
 
   const nextEps = film.next_episode_to_air;
   const lastEps = film.last_episode_to_air;
@@ -99,7 +79,7 @@ export default function FilmInfo({
   let providersArray = Object.entries(providers.results);
   let providersIDArray =
     userLocation &&
-    providersArray.find((item) => item[0] === userLocation.countryCode);
+    providersArray.find((item) => item[0] === JSON.parse(userLocation).countryCode);
 
   // Release Date
   const dateStr = !isTvPage ? film.release_date : film.first_air_date;
@@ -400,7 +380,7 @@ export default function FilmInfo({
                 )}
               </div>
             </section>
-          ) : location ? (
+          ) : userLocation ? (
             providersIDArray && (
               <section id={`Film Providers`}>
                 <span className={`text-gray-400 text-sm italic`}>
