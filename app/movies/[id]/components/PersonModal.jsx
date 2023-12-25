@@ -105,7 +105,7 @@ export default function PersonModal({
             <section
               className={`col-span-12 border-t border-t-white border-opacity-10 pt-4`}
             >
-              <PersonWorks movieCredits={movieCredits} tvCredits={tvCredits} />
+              <PersonWorks person={person} movieCredits={movieCredits} tvCredits={tvCredits} />
             </section>
           )}
         </div>

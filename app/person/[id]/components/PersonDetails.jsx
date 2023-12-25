@@ -15,6 +15,11 @@ export default function PersonDetails({
   tvCredits,
   isModal = false,
 }) {
+  const personJob = person.known_for_department;
+  const personMovies =
+    personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
+  const personTV = personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew;
+
   const calculateAge = (birthdate, deathdate) => {
     const today = new Date();
     const birthDate = new Date(birthdate);
@@ -124,20 +129,16 @@ export default function PersonDetails({
           </div>
         )}
 
-        {movieCredits?.cast.length > 0 && (
+        {personMovies.length > 0 && (
           <div id={`Movies`} className={`flex flex-col gap-1`}>
-            <span className={`text-xl font-bold`}>
-              {movieCredits?.cast.length}
-            </span>
+            <span className={`text-xl font-bold`}>{personMovies.length}</span>
             <span className={`text-gray-400`}>Movies</span>
           </div>
         )}
 
-        {tvCredits?.cast.length > 0 && (
+        {personTV.length > 0 && (
           <div id={`TV Series`} className={`flex flex-col gap-1`}>
-            <span className={`text-xl font-bold`}>
-              {tvCredits?.cast.length}
-            </span>
+            <span className={`text-xl font-bold`}>{personTV.length}</span>
             <span className={`text-gray-400`}>TV Series</span>
           </div>
         )}

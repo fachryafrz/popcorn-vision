@@ -9,18 +9,32 @@ import React, { useEffect, useState } from "react";
 import { Navigation } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-export default function PersonWorks({ movieCredits, tvCredits }) {
+export default function PersonWorks({ person, movieCredits, tvCredits }) {
   const [creditsSwitcher, setCreditsSwitcher] = useState(`Movies`);
   const [films, setFilms] = useState();
 
   const isTvPage = creditsSwitcher === `TV` ? true : false;
+  const personJob = person.known_for_department;
+  const personMovies =
+    personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
+  const personTV = personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew;
 
-  const sortedFilms = films && sortFilms({ films: films?.cast, isTvPage });
+  const sortedFilms =
+    films &&
+    sortFilms({
+      films: personJob === "Acting" ? films?.cast : films?.crew,
+      isTvPage,
+    });
+
+  const isItTvPage = (movie, tv) => {
+    const type = !isTvPage ? movie : tv;
+    return type;
+  };
 
   useEffect(() => {
-    if (movieCredits?.cast.length < 1) {
+    if (personMovies.length < 1) {
       setCreditsSwitcher(`TV`);
-    } else if (tvCredits?.cast.length < 1) {
+    } else if (personTV.length < 1) {
       setCreditsSwitcher(`Movies`);
     }
 
@@ -29,7 +43,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
     } else if (creditsSwitcher === `Movies`) {
       setFilms(movieCredits);
     }
-  }, [creditsSwitcher, movieCredits, tvCredits]);
+  }, [creditsSwitcher, movieCredits, personMovies, personTV, tvCredits]);
 
   return (
     <div>
@@ -60,7 +74,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
               slidesPerGroup: 5,
             },
           }}
-          className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[1rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[1rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:block xl:after:block before:pointer-events-none after:pointer-events-none`}
+          className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[1rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[1rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
         >
           {films &&
             sortedFilms
@@ -79,11 +93,9 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
                   >
                     <article>
                       <Link
-                        href={`/${
-                          creditsSwitcher === `Movies` ? `movies` : `tv`
-                        }/${film.id}-${slugify(
-                          creditsSwitcher === `Movies` ? film.title : film.name
-                        )}`}
+                        href={`/${isItTvPage(`movies`, `tv`)}/${
+                          film.id
+                        }-${slugify(isItTvPage(film.title, film.name))}`}
                         className={`hocus:scale-[1.01] active:scale-100 transition-all`}
                       >
                         <figure
@@ -125,6 +137,23 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
                             </div>
                           )}
                         </figure>
+                        <div className="mt-2">
+                          <h3
+                            title={isItTvPage(film.title, film.name)}
+                            className="font-bold text-sm sm:text-base line-clamp-2"
+                            style={{ textWrap: `balance` }}
+                          >
+                            {isItTvPage(film.title, film.name)}
+                          </h3>
+
+                          {film.character && film.character !== "Self" && (
+                            <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
+                              <span className="text-gray-400 whitespace-nowrap">
+                                {film.character}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </Link>
                     </article>
                   </SwiperSlide>
@@ -133,7 +162,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
 
           <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-2 max-w-7xl xl:max-w-none flex justify-between items-end">
             <div className="flex gap-4 items-end">
-              {movieCredits?.cast.length > 0 && (
+              {personMovies.length > 0 && (
                 <button
                   onClick={() => setCreditsSwitcher(`Movies`)}
                   className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
@@ -146,7 +175,7 @@ export default function PersonWorks({ movieCredits, tvCredits }) {
                 </button>
               )}
 
-              {tvCredits?.cast.length > 0 && (
+              {personTV.length > 0 && (
                 <button
                   onClick={() => setCreditsSwitcher(`TV`)}
                   className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${

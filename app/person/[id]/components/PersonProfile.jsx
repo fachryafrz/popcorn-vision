@@ -19,6 +19,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
   };
   const birthday = formatDate({ date: person.birthday, options });
   const deathday = formatDate({ date: person.deathday, options });
+  const personJob = person.known_for_department;
+  const personWorks = personJob === "Acting" ? combinedCredits?.cast : combinedCredits?.crew;
 
   return (
     <div
@@ -106,12 +108,12 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
             </section>
           )}
 
-          {combinedCredits?.cast.length > 0 && (
+          {personWorks.length > 0 && (
             <section id={`Films`}>
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={filmOutline} />
-                <span>{`${combinedCredits?.cast.length} Film${
-                  combinedCredits?.cast.length > 1 ? `s` : ``
+                <span>{`${personWorks.length} Film${
+                  personWorks.length > 1 ? `s` : ``
                 }`}</span>
               </div>
             </section>
