@@ -588,7 +588,6 @@ export default function Search({ type = "movie" }) {
           },
         });
 
-        console.log(searchAPIParams)
       } else {
         response = await fetchData({
           endpoint: `/search/${type}`,
@@ -963,43 +962,66 @@ export default function Search({ type = "movie" }) {
         searchAPIParams.with_genres = genre
           ?.map((genre) => genre?.value)
           .join(",");
+      } else {
+        delete searchAPIParams.with_genres;
       }
       if (searchParams.get("watch_providers")) {
         searchAPIParams.watch_region = JSON.parse(userLocation).countryCode;
         searchAPIParams.with_watch_providers = provider
           ?.map((provider) => provider?.value)
           .join(",");
+      } else {
+        delete searchAPIParams.watch_region;
+        delete searchAPIParams.with_watch_providers;
       }
       if (searchParams.get("with_original_language")) {
         searchAPIParams.with_original_language = language
           ?.map((language) => language?.value)
           .join(",");
+      } else {
+        delete searchAPIParams.with_original_language;
       }
       if (searchParams.get("with_cast")) {
         searchAPIParams.with_cast = cast?.map((cast) => cast?.value).join(",");
+      } else {
+        delete searchAPIParams.with_cast;
       }
       if (searchParams.get("with_crew")) {
         searchAPIParams.with_crew = crew?.map((crew) => crew?.value).join(",");
+      } else {
+        delete searchAPIParams.with_crew;
       }
       if (searchParams.get("with_keywords")) {
         searchAPIParams.with_keywords = keyword
           ?.map((keyword) => keyword?.value)
           .join(",");
+      } else {
+        delete searchAPIParams.with_keywords;
       }
       if (searchParams.get("with_companies")) {
         searchAPIParams.with_companies = company
           ?.map((company) => company?.value)
           .join(",");
+      } else {
+        searchAPIParams.with_companies
       }
       if (searchParams.get("vote_count") && rating) {
         searchAPIParams["vote_count.gte"] = rating[0];
         searchAPIParams["vote_count.lte"] = rating[1];
+      } else {
+        delete searchAPIParams["vote_count.gte"];
+        delete searchAPIParams["vote_count.lte"];
       }
       if (searchParams.get("with_runtime") && runtime) {
         searchAPIParams["with_runtime.gte"] = runtime[0];
         searchAPIParams["with_runtime.lte"] = runtime[1];
+      } else {
+        delete searchAPIParams["with_runtime.gte"];
+        delete searchAPIParams["with_runtime.lte"];
       }
 
+      console.log(searchAPIParams)
+      
       fetchData({
         endpoint: `/discover/${type}`,
         queryParams: searchAPIParams,
