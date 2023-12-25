@@ -49,6 +49,8 @@ export default function Search({ type = "movie" }) {
   const [minYear, setMinYear] = useState();
   const [maxYear, setMaxYear] = useState();
   const [notFoundMessage, setNotFoundMessage] = useState("");
+  let [currentSearchPage, setCurrentSearchPage] = useState(1);
+  const [totalSearchPages, setTotalSearchPages] = useState({});
 
   // React-Select Placeholder
   const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
@@ -92,6 +94,11 @@ export default function Search({ type = "movie" }) {
     ],
     []
   );
+  const searchAPIParams = useMemo(() => {
+    return {
+      include_adult: false,
+    };
+  }, []);
 
   // MUI Select
   const [sortByType, setSortByType] = useState({
@@ -565,6 +572,45 @@ export default function Search({ type = "movie" }) {
     return `${selectedOptions}...`;
   };
 
+  // Fetch more films based on search or selected genres
+  const fetchMoreFilms = async () => {
+    setCurrentSearchPage((prevPage) => prevPage + 1);
+
+    try {
+      let response;
+
+      if (!searchParams.get("query")) {
+        response = await fetchData({
+          endpoint: `/discover/${type}`,
+          queryParams: {
+            ...searchAPIParams,
+            page: currentSearchPage,
+          },
+        });
+
+        console.log(searchAPIParams)
+      } else {
+        response = await fetchData({
+          endpoint: `/search/${type}`,
+          queryParams: {
+            query: searchQuery,
+            language: "en-US",
+            page: currentSearchPage,
+          },
+        });
+      }
+
+      setLoading(false);
+      setFilms((prevMovies) => [...prevMovies, ...response.results]);
+
+      setTimeout(() => {
+        setNotFoundMessage("No film found");
+      }, 3000);
+    } catch (error) {
+      console.log(`Error fetching more films:`, error);
+    }
+  };
+
   // Use Effect for cycling random options placeholder
   useEffect(() => {
     const updatePlaceholders = () => {
@@ -905,11 +951,7 @@ export default function Search({ type = "movie" }) {
     const maxFullYear = `${releaseDate[1]}-12-31`;
 
     const performSearch = () => {
-      const searchAPIParams = {
-        include_adult: false,
-        sort_by: `${sortByType.value}.${sortByOrder.value}`,
-      };
-
+      searchAPIParams.sort_by = `${sortByType.value}.${sortByOrder.value}`;
       if (!isTvPage) {
         searchAPIParams["primary_release_date.gte"] = minFullYear;
         searchAPIParams["primary_release_date.lte"] = maxFullYear;
@@ -917,7 +959,6 @@ export default function Search({ type = "movie" }) {
         searchAPIParams["first_air_date.gte"] = minFullYear;
         searchAPIParams["first_air_date.lte"] = maxFullYear;
       }
-
       if (searchParams.get("with_genres")) {
         searchAPIParams.with_genres = genre
           ?.map((genre) => genre?.value)
@@ -964,8 +1005,10 @@ export default function Search({ type = "movie" }) {
         queryParams: searchAPIParams,
       })
         .then((res) => {
-          setFilms(res);
+          setFilms(res.results);
           setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -995,11 +1038,10 @@ export default function Search({ type = "movie" }) {
               ? film.release_date
               : film.first_air_date <= `${releaseDate[1]}-12-31`
           );
-          setFilms({
-            ...res,
-            results: filteredMovies,
-          });
+          setFilms(filteredMovies);
           setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1033,6 +1075,7 @@ export default function Search({ type = "movie" }) {
     type,
     isTvPage,
     userLocation,
+    searchAPIParams,
   ]);
 
   return (
@@ -1421,14 +1464,14 @@ export default function Search({ type = "movie" }) {
               <span>Loading...</span>
             </section>
           </>
-        ) : films?.results.length > 0 ? (
+        ) : films?.length > 0 ? (
           <>
             {/* Films list */}
             <section
               className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
             >
               {genresData &&
-                films?.results.map((film) => {
+                films?.map((film) => {
                   const filmGenres =
                     film.genre_ids && genresData
                       ? film.genre_ids.map((genreId) =>
@@ -1454,6 +1497,19 @@ export default function Search({ type = "movie" }) {
               <span>{notFoundMessage}</span>
             </section>
           </>
+        )}
+
+        {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
+          <div
+            className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10 mt-4`}
+          >
+            <button
+              onClick={() => fetchMoreFilms((currentSearchPage += 1))}
+              className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
+            >
+              Load more
+            </button>
+          </div>
         )}
       </div>
     </div>
