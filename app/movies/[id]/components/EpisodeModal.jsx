@@ -4,6 +4,7 @@ import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/app/lib/formatDate";
+import { formatRuntime } from "@/app/lib/formatRuntime";
 
 export function EpisodeModal({
   episode,
