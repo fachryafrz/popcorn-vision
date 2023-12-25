@@ -1019,8 +1019,6 @@ export default function Search({ type = "movie" }) {
         delete searchAPIParams["with_runtime.gte"];
         delete searchAPIParams["with_runtime.lte"];
       }
-
-      console.log(searchAPIParams)
       
       fetchData({
         endpoint: `/discover/${type}`,
