@@ -29,8 +29,8 @@ export function EpisodeModal({
       id={`episodeModal`}
       className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
     >
-      <div className={`p-4 sm:py-8 relative w-full max-w-3xl`}>
-        <div className={`pointer-events-none absolute inset-0 p-4 sm:py-8`}>
+      <div className={`p-4 pt-24 sm:py-8 relative w-full max-w-3xl`}>
+        <div className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}>
           <button
             onClick={() => {
               document.getElementById(`episodeModal`).close();

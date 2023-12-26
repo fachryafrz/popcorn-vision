@@ -66,7 +66,7 @@ export default function PersonModal({
       id={`personModal`}
       className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm overflow-y-auto`}
     >
-      <div className={`pt-16 px-4 sm:pt-24 relative w-full max-w-7xl`}>
+      <div className={`pt-16 p-4 relative w-full max-w-7xl`}>
         <div className={`pointer-events-none absolute inset-0`}>
           <button
             onClick={handleCloseModal}
@@ -77,7 +77,7 @@ export default function PersonModal({
         </div>
 
         <div
-          className={`modal-box max-w-none w-full p-4 max-h-none grid grid-cols-12 gap-4 rounded-t-[2rem] rounded-b-none`}
+          className={`modal-box max-w-none w-full p-4 max-h-none grid grid-cols-12 gap-4 rounded-[2rem]`}
           style={{ overflowY: `unset` }}
         >
           {/* Person Profile */}
