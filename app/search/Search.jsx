@@ -613,7 +613,7 @@ export default function Search({ type = "movie" }) {
 
       setTimeout(() => {
         setNotFoundMessage("No film found");
-      }, 3000);
+      }, 10000);
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
@@ -779,10 +779,10 @@ export default function Search({ type = "movie" }) {
       const searchMinYear = parseInt(releaseDateParams[0]);
       const searchMaxYear = parseInt(releaseDateParams[2]);
 
-      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
-      setReleaseDate([searchMinYear, searchMaxYear]);
-      setReleaseDateSlider([searchMinYear, searchMaxYear]);
-      // }
+      if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
+        setReleaseDate([searchMinYear, searchMaxYear]);
+        setReleaseDateSlider([searchMinYear, searchMaxYear]);
+      }
     }
 
     // Cast
@@ -946,6 +946,8 @@ export default function Search({ type = "movie" }) {
     sortByOrderOptions,
     sortByType.value,
     sortByTypeOptions,
+    minYear,
+    maxYear,
   ]);
 
   // Use Effect for Search
@@ -1038,7 +1040,7 @@ export default function Search({ type = "movie" }) {
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
-          }, 3000);
+          }, 10000);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
@@ -1071,7 +1073,7 @@ export default function Search({ type = "movie" }) {
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
-          }, 3000);
+          }, 10000);
         })
         .catch((error) => {
           console.error("Error fetching films:", error);
