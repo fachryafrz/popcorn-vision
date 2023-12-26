@@ -36,9 +36,9 @@ export default function Navbar() {
 
       if (!userLocation)
         getLocation({ latitude, longitude }).then((response) => {
-          if (response.countryCode !== "ID") {
-            setLanguage("en-US");
-          }
+          // if (response.countryCode !== "ID") {
+          //   setLanguage("en-US");
+          // }
           localStorage.setItem("user-location", JSON.stringify(response));
         });
     }
