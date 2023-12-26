@@ -11,9 +11,16 @@ import { fetchData, getFilm, getGenres } from "@/app/api/route";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
-  const film = await getFilm({ id, type });
-  const images = await getFilm({ id, type, path: "/images" });
 
+  const film = await fetchData({
+    endpoint: `/${type}/${id}`,
+  });
+  const images = await fetchData({
+    endpoint: `/${type}/${id}/images`,
+    queryParams: {
+      include_image_language: "en",
+    },
+  });
   const isTvPage = type !== "movie" ? true : false;
 
   const filmReleaseDate = film.release_date
@@ -80,14 +87,19 @@ export default async function FilmDetail({ params, type = "movie" }) {
     endpoint: `/${type}/${id}`,
     queryParams: {
       append_to_response:
-        "credits,videos,images,reviews,watch/providers,recommendations,similar",
+        "credits,videos,reviews,watch/providers,recommendations,similar",
+    },
+  });
+  const images = await fetchData({
+    endpoint: `/${type}/${id}/images`,
+    queryParams: {
+      include_image_language: "en",
     },
   });
 
   const {
     credits,
     videos,
-    images,
     reviews,
     "watch/providers": providers,
     recommendations,
