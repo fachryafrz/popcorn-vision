@@ -136,7 +136,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         {filmPoster && (
           <img
             loading={`lazy`}
-            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+            src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
             alt={isItTvPage(film.title, film.name)}
             className={`object-top md:hidden`}
           />
