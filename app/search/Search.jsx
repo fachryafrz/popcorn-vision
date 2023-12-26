@@ -708,20 +708,8 @@ export default function Search({ type = "movie" }) {
     setReleaseDateSlider([minYear, maxYear]);
   }, [minYear, maxYear]);
 
-  // Use Effect for Search Params
+  // Use Effect for Select with preloaded data
   useEffect(() => {
-    // Release date
-    if (searchParams.get("release_date")) {
-      const releaseDateParams = searchParams.get("release_date").split(".");
-      const searchMinYear = parseInt(releaseDateParams[0]);
-      const searchMaxYear = parseInt(releaseDateParams[2]);
-
-      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
-      setReleaseDate([searchMinYear, searchMaxYear]);
-      setReleaseDateSlider([searchMinYear, searchMaxYear]);
-      // }
-    }
-
     // Genres
     if (searchParams.get("with_genres")) {
       const genresParams = searchParams.get("with_genres").split(",");
@@ -780,6 +768,21 @@ export default function Search({ type = "movie" }) {
       setProvider(searchProvidersOptions);
     } else {
       setProvider(null);
+    }
+  }, [genresData, languagesData, providersData, searchParams]);
+
+  // Use Effect for Search Params
+  useEffect(() => {
+    // Release date
+    if (searchParams.get("release_date")) {
+      const releaseDateParams = searchParams.get("release_date").split(".");
+      const searchMinYear = parseInt(releaseDateParams[0]);
+      const searchMaxYear = parseInt(releaseDateParams[2]);
+
+      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
+      setReleaseDate([searchMinYear, searchMaxYear]);
+      setReleaseDateSlider([searchMinYear, searchMaxYear]);
+      // }
     }
 
     // Cast
@@ -936,19 +939,13 @@ export default function Search({ type = "movie" }) {
       setSearchQuery(searchQuery);
     }
   }, [
-    router,
-    searchParams,
-    genresData,
-    languagesData,
-    providersData,
-    maxYear,
-    minYear,
-    sortByType,
-    sortByOrder,
     rating,
     runtime,
-    sortByTypeOptions,
+    searchParams,
+    sortByOrder.value,
     sortByOrderOptions,
+    sortByType.value,
+    sortByTypeOptions,
   ]);
 
   // Use Effect for Search
@@ -1081,30 +1078,30 @@ export default function Search({ type = "movie" }) {
         });
     };
 
-    if (!searchParams.get("query")) {
+    if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
       performSearch();
     } else {
       performSearchQuery();
     }
   }, [
-    searchParams,
     cast,
     company,
     crew,
     genre,
-    provider,
+    isTvPage,
     keyword,
     language,
+    provider,
     rating,
     releaseDate,
     runtime,
-    sortByOrder,
-    sortByType,
-    searchQuery,
-    type,
-    isTvPage,
-    userLocation,
     searchAPIParams,
+    searchParams,
+    searchQuery,
+    sortByOrder.value,
+    sortByType.value,
+    type,
+    userLocation,
   ]);
 
   useEffect(() => {
@@ -1540,17 +1537,19 @@ export default function Search({ type = "movie" }) {
           </>
         )}
 
-        {!loading && films?.length > 0 && currentSearchPage !== totalSearchPages && (
-          <section className={`flex items-center justify-center mt-4`}>
-            <button
-              ref={loadMoreBtn}
-              onClick={() => fetchMoreFilms((currentSearchPage += 1))}
-              className="text-white aspect-square w-[30px] pointer-events-none"
-            >
-              <span class="loading loading-spinner loading-md"></span>
-            </button>
-          </section>
-        )}
+        {!loading &&
+          films?.length > 0 &&
+          currentSearchPage !== totalSearchPages && (
+            <section className={`flex items-center justify-center mt-4`}>
+              <button
+                ref={loadMoreBtn}
+                onClick={() => fetchMoreFilms((currentSearchPage += 1))}
+                className="text-white aspect-square w-[30px] pointer-events-none"
+              >
+                <span class="loading loading-spinner loading-md"></span>
+              </button>
+            </section>
+          )}
       </div>
     </div>
   );
