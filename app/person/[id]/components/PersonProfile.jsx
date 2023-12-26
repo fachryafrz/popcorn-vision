@@ -8,9 +8,15 @@ import {
   filmOutline,
   locationOutline,
 } from "ionicons/icons";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 export default function PersonProfile({ person, combinedCredits, isModal }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith(`/tv`);
+
   // Format Date
   const options = {
     year: "numeric",
@@ -20,7 +26,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
   const birthday = formatDate({ date: person.birthday, options });
   const deathday = formatDate({ date: person.deathday, options });
   const personJob = person.known_for_department;
-  const personWorks = personJob === "Acting" ? combinedCredits?.cast : combinedCredits?.crew;
+  const isActing = personJob === "Acting";
+  const personWorks = isActing ? combinedCredits?.cast : combinedCredits?.crew;
 
   return (
     <div
@@ -44,12 +51,22 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
       {/* Person Info */}
       <div className={`p-4 pb-6 flex flex-col gap-4`}>
-        <h2
-          className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
-          style={{ textWrap: `balance` }}
+        <Link
+          href={
+            !isTvPage
+              ? `/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`
+              : `/tv/search?${isActing ? `with_cast` : `with_crew`}=${
+                  person.id
+                }`
+          }
         >
-          {person.name}
-        </h2>
+          <h2
+            className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
+            style={{ textWrap: `balance` }}
+          >
+            {person.name}
+          </h2>
+        </Link>
 
         {person.deathday && (
           <div className={`flex flex-col`}>

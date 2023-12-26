@@ -1241,7 +1241,7 @@ export default function Search({ type = "movie" }) {
         {/* Cast */}
         {!isTvPage && (
           <section className={`flex flex-col gap-1`}>
-            <span className={`font-medium`}>Cast</span>
+            <span className={`font-medium`}>Actor</span>
             <AsyncSelect
               noOptionsMessage={() => "Type to search"}
               loadingMessage={() => "Searching..."}

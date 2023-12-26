@@ -188,15 +188,23 @@ export default function FilmInfo({
                         itemScope
                         itemType="http://schema.org/Organization"
                       >
-                        <figure
-                          title={item.name}
-                          className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
-                          style={{
-                            backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                            backgroundSize: `contain`,
-                            backgroundRepeat: `no-repeat`,
-                          }}
-                        ></figure>
+                        <Link
+                          href={
+                            !isTvPage
+                              ? `/search?with_companies=${item.id}`
+                              : `/tv/search?with_companies=${item.id}`
+                          }
+                        >
+                          <figure
+                            title={item.name}
+                            className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
+                            style={{
+                              backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                              backgroundSize: `contain`,
+                              backgroundRepeat: `no-repeat`,
+                            }}
+                          ></figure>
+                        </Link>
                         <span className={`sr-only`} itemProp="name">
                           {item.name}
                         </span>
