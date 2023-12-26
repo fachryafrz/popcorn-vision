@@ -16,12 +16,13 @@ import {
   search,
 } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import SelectMUI from "@mui/material/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "../components/Navbar";
+import { IsInViewport } from "../lib/IsInViewport";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -35,6 +36,15 @@ export default function Search({ type = "movie" }) {
   const isQueryParams = searchParams.get("query") ? true : false;
   const userLocation = localStorage.getItem("user-location");
 
+  // Ref
+  const loadMoreBtn = useRef(null);
+
+  // Is in viewport?
+  const isLoadMoreBtnInViewport = IsInViewport({
+    targetRef: loadMoreBtn.current,
+  });
+
+  // State
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
   const [genresData, setGenresData] = useState();
@@ -587,7 +597,6 @@ export default function Search({ type = "movie" }) {
             page: currentSearchPage,
           },
         });
-
       } else {
         response = await fetchData({
           endpoint: `/search/${type}`,
@@ -1003,7 +1012,7 @@ export default function Search({ type = "movie" }) {
           ?.map((company) => company?.value)
           .join(",");
       } else {
-        searchAPIParams.with_companies
+        searchAPIParams.with_companies;
       }
       if (searchParams.get("vote_count") && rating) {
         searchAPIParams["vote_count.gte"] = rating[0];
@@ -1019,7 +1028,7 @@ export default function Search({ type = "movie" }) {
         delete searchAPIParams["with_runtime.gte"];
         delete searchAPIParams["with_runtime.lte"];
       }
-      
+
       fetchData({
         endpoint: `/discover/${type}`,
         queryParams: searchAPIParams,
@@ -1097,6 +1106,12 @@ export default function Search({ type = "movie" }) {
     userLocation,
     searchAPIParams,
   ]);
+
+  useEffect(() => {
+    if (isLoadMoreBtnInViewport) {
+      loadMoreBtn.current.click();
+    }
+  }, [isLoadMoreBtnInViewport]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -1480,8 +1495,14 @@ export default function Search({ type = "movie" }) {
         {loading ? (
           <>
             {/* Loading films */}
-            <section>
-              <span>Loading...</span>
+            <section className={`flex items-center justify-center mt-4`}>
+              <button
+                ref={loadMoreBtn}
+                onClick={() => fetchMoreFilms((currentSearchPage += 1))}
+                className="text-white aspect-square w-[30px] pointer-events-none"
+              >
+                <span class="loading loading-spinner loading-md"></span>
+              </button>
             </section>
           </>
         ) : films?.length > 0 ? (
@@ -1519,17 +1540,16 @@ export default function Search({ type = "movie" }) {
           </>
         )}
 
-        {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
-          <div
-            className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10 mt-4`}
-          >
+        {!loading && films?.length > 0 && currentSearchPage !== totalSearchPages && (
+          <section className={`flex items-center justify-center mt-4`}>
             <button
+              ref={loadMoreBtn}
               onClick={() => fetchMoreFilms((currentSearchPage += 1))}
-              className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
+              className="text-white aspect-square w-[30px] pointer-events-none"
             >
-              Load more
+              <span class="loading loading-spinner loading-md"></span>
             </button>
-          </div>
+          </section>
         )}
       </div>
     </div>
