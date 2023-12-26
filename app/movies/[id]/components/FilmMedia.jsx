@@ -134,7 +134,7 @@ export default function FilmMedia({ videos, images }) {
                   <img
                     loading="lazy"
                     itemProp="image"
-                    src={`https://image.tmdb.org/t/p/w780${img.file_path}`}
+                    src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                     alt={``}
                     className={`w-full h-full object-cover`}
                   />
