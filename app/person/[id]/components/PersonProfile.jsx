@@ -51,22 +51,16 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
       {/* Person Info */}
       <div className={`p-4 pb-6 flex flex-col gap-4`}>
-        {/* <Link
-          href={
-            !isTvPage
-              ? `/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`
-              : `/tv/search?${isActing ? `with_cast` : `with_crew`}=${
-                  person.id
-                }`
-          }
-        > */}
-        <h2
-          className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
-          style={{ textWrap: `balance` }}
+        <Link
+          href={`/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`}
         >
-          {person.name}
-        </h2>
-        {/* </Link> */}
+          <h2
+            className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
+            style={{ textWrap: `balance` }}
+          >
+            {person.name}
+          </h2>
+        </Link>
 
         {person.deathday && (
           <div className={`flex flex-col`}>
