@@ -26,12 +26,6 @@ export default function Person({
   const handleActorClick = () => {
     getPerson({ id }).then((res) => {
       setPersonModal(res);
-
-      setTimeout(() => {
-        if (episodeModal) document.getElementById(`episodeModal`).close();
-        document.getElementById(`personModal`).scrollTo(0, 0);
-        document.getElementById(`personModal`).showModal();
-      }, 100);
     });
   };
 

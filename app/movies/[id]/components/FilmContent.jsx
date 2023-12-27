@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilmPoster from "./FilmPoster";
 import CastsList from "./CastsList";
 import FilmInfo from "./FilmInfo";
@@ -25,6 +25,19 @@ export default function FilmContent({
   const [episodeModal, setEpisodeModal] = useState();
   const [personModal, setPersonModal] = useState();
   const [activeSeasonPoster, setActiveSeasonPoster] = useState();
+
+  useEffect(() => {
+    if (episodeModal) {
+      document.getElementById(`episodeModal`).scrollTo(0, 0);
+      document.getElementById(`episodeModal`).showModal();
+    }
+
+    if (personModal) {
+      if (episodeModal) document.getElementById(`episodeModal`).close();
+      document.getElementById(`personModal`).scrollTo(0, 0);
+      document.getElementById(`personModal`).showModal();
+    }
+  }, [personModal, episodeModal]);
 
   return (
     <div

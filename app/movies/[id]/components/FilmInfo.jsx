@@ -172,10 +172,10 @@ export default function FilmInfo({
           </h1>
         )}
 
-        {/* Film Production Company */}
         <div
           className={`w-full text-sm lg:text-base flex flex-col gap-4 md:gap-2`}
         >
+          {/* Film Production Company */}
           {film.production_companies &&
             film.production_companies.length > 0 &&
             film.production_companies.find(

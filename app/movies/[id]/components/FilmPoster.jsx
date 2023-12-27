@@ -11,7 +11,7 @@ export default function FilmPoster({ film, activeSeasonPoster }) {
   let popcorn = `/popcorn.png`;
   // let filmPoster = film.poster_path;
 
-  const [filmPoster, setFilmPoster] = useState();
+  const [filmPoster, setFilmPoster] = useState(film.poster_path);
 
   useEffect(() => {
     if (activeSeasonPoster) {

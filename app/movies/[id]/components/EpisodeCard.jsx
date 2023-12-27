@@ -26,11 +26,6 @@ export default function EpisodeCard({
         }).then((res) => {
           setEpisodeModal(res);
           setLoading(false);
-
-          setTimeout(() => {
-            document.getElementById(`episodeModal`).scrollTo(0, 0);
-            document.getElementById(`episodeModal`).showModal();
-          }, 100);
         });
       }}
       className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full h-fit transition-all ${className}`}
