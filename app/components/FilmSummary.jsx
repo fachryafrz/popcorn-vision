@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { fetchData, getFilmSeason } from "../api/route";
 import { slugify } from "../lib/slugify";
 import { formatRuntime } from "../lib/formatRuntime";
+import { isPlural } from "../lib/isPlural";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -88,7 +89,7 @@ function FilmSeason({ film, setLoading, loading }) {
       <span
         className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
       >
-        {`${season} Season${season > 1 ? `s` : ``}`}{" "}
+        {`${season} ${isPlural({ text: "Season", number: season })}`}{" "}
       </span>
     </div>
   ) : (

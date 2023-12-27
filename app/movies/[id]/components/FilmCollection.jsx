@@ -31,6 +31,7 @@ import {
 import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/app/lib/formatDate";
+import { isPlural } from "@/app/lib/isPlural";
 
 export default function FilmCollection({
   film,
@@ -252,21 +253,23 @@ function FilmSeason({
         ></figure>
         <div className="flex flex-col gap-1 items-start w-full">
           <h3
-            title={`${item.name} (${item.episode_count} Episode${
-              item.episode_count > 1 ? `s` : ``
-            })`}
+            title={`${item.name} (${item.episode_count} ${isPlural({
+              text: "Episode",
+              number: item.episode_count,
+            })})`}
             className="text-start line-clamp-1 md:line-clamp-2 font-medium"
           >
             {item.name}
           </h3>
 
-          {item.episode_count > 0 && (
-            <span className="text-xs text-gray-400 font-medium line-clamp-1">
-              {`${item.episode_count} Episode${
-                item.episode_count > 1 ? `s` : ``
-              }`}
-            </span>
-          )}
+          {/* {item.episode_count > 0 && ( */}
+          <span className="text-xs text-gray-400 font-medium line-clamp-1">
+            {`${item.episode_count} ${isPlural({
+              text: "Episode",
+              number: item.episode_count,
+            })}`}
+          </span>
+          {/* )} */}
 
           <div
             className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
@@ -386,9 +389,10 @@ function FilmEpisodes({
                             ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
                                 item.runtime % 60
                               )}m`
-                            : `${item.runtime} minute${
-                                item.runtime % 60 > 1 && `s`
-                              }`}
+                            : `${item.runtime} ${isPlural({
+                                text: "minute",
+                                number: item.runtime % 60,
+                              })}`}
                         </span>
                       )}
 

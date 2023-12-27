@@ -1,6 +1,7 @@
 "use client";
 
 import { formatDate } from "@/app/lib/formatDate";
+import { isPlural } from "@/app/lib/isPlural";
 import { IonIcon } from "@ionic/react";
 import {
   briefcaseOutline,
@@ -123,9 +124,10 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
             <section id={`Films`}>
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={filmOutline} />
-                <span>{`${personWorks.length} Film${
-                  personWorks.length > 1 ? `s` : ``
-                }`}</span>
+                <span>{`${personWorks.length} ${isPlural({
+                  text: "Film",
+                  number: personWorks.length,
+                })}`}</span>
               </div>
             </section>
           )}

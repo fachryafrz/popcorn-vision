@@ -5,6 +5,7 @@ import Person from "./Person";
 import { useEffect, useState } from "react";
 import { formatDate } from "@/app/lib/formatDate";
 import { formatRuntime } from "@/app/lib/formatRuntime";
+import { isPlural } from "@/app/lib/isPlural";
 
 export function EpisodeModal({
   episode,
@@ -30,7 +31,9 @@ export function EpisodeModal({
       className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur overflow-y-auto`}
     >
       <div className={`p-4 pt-24 sm:py-8 relative w-full max-w-3xl`}>
-        <div className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}>
+        <div
+          className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}
+        >
           <button
             onClick={() => {
               document.getElementById(`episodeModal`).close();
@@ -113,8 +116,8 @@ export function EpisodeModal({
                 <div className={`flex items-center gap-2`}>
                   <IonIcon icon={timeOutline} />
                   <time>
-                    {episode.runtime} minute
-                    {episode.runtime % 60 > 1 ? `s` : ``}
+                    {episode.runtime}{" "}
+                    {isPlural({ text: "minute", number: episode.runtime % 60 })}
                   </time>
                   {Math.floor(episode.runtime / 60) >= 1 && (
                     <span>{`(${formatRuntime(episode.runtime)})`}</span>

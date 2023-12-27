@@ -7,6 +7,7 @@ import { IonIcon } from "@ionic/react";
 import { triangle } from "ionicons/icons";
 import Person from "./Person";
 import { formatDate } from "@/app/lib/formatDate";
+import { isPlural } from "@/app/lib/isPlural";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -45,42 +46,49 @@ export default function ReviewCard({ review }) {
     var interval = seconds / 31536000;
     if (interval > 1) {
       return (
-        Math.floor(interval) + ` year${Math.floor(interval) > 1 ? `s` : ``} ago`
+        Math.floor(interval) +
+        ` ${isPlural({ text: "year", number: Math.floor(interval) })} ago`
       );
     }
     interval = seconds / 2592000;
     if (interval > 1) {
       return (
         Math.floor(interval) +
-        ` month${Math.floor(interval) > 1 ? `s` : ``} ago`
+        ` ${isPlural({ text: "month", number: Math.floor(interval) })} ago`
       );
     }
     interval = seconds / 604800;
     if (interval > 1) {
       return (
-        Math.floor(interval) + ` week${Math.floor(interval) > 1 ? `s` : ``} ago`
+        Math.floor(interval) +
+        ` ${isPlural({ text: "week", number: Math.floor(interval) })} ago`
       );
     }
     interval = seconds / 86400;
     if (interval > 1) {
       return (
-        Math.floor(interval) + ` day${Math.floor(interval) > 1 ? `s` : ``} ago`
+        Math.floor(interval) +
+        ` ${isPlural({ text: "day", number: Math.floor(interval) })} ago`
       );
     }
     interval = seconds / 3600;
     if (interval > 1) {
       return (
-        Math.floor(interval) + ` hour${Math.floor(interval) > 1 ? `s` : ``} ago`
+        Math.floor(interval) +
+        ` ${isPlural({ text: "hour", number: Math.floor(interval) })} ago`
       );
     }
     interval = seconds / 60;
     if (interval > 1) {
       return (
         Math.floor(interval) +
-        ` minute${Math.floor(interval) > 1 ? `s` : ``} ago`
+        ` ${isPlural({ text: "minute", number: Math.floor(interval) })} ago`
       );
     }
-    return Math.floor(seconds) + ` second${intervalFloored > 1 ? `s` : ``} ago`;
+    return (
+      Math.floor(seconds) +
+      ` ${isPlural({ text: "second", number: Math.floor(interval) })} ago`
+    );
   };
 
   return (

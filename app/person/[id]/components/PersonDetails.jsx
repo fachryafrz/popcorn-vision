@@ -1,5 +1,6 @@
 "use client";
 
+import { isPlural } from "@/app/lib/isPlural";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import React from "react";
@@ -86,9 +87,10 @@ export default function PersonDetails({
                 <h3 className={`text-2xl font-bold`}>Images</h3>
                 <span className={`block text-base font-normal text-gray-400`}>
                   (
-                  {`${images?.profiles.length - 1} photo${
-                    images?.profiles.length - 1 > 1 ? `s` : ``
-                  }`}
+                  {`${images?.profiles.length - 1} ${isPlural({
+                    text: "photo",
+                    number: images?.profiles.length - 1,
+                  })}`}
                   )
                 </span>
               </div>

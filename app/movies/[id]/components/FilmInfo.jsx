@@ -47,6 +47,7 @@ import { getEpisodeModal, getLocation } from "@/app/api/route";
 import EpisodeCard from "./EpisodeCard";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { formatDate } from "@/app/lib/formatDate";
+import { isPlural } from "@/app/lib/isPlural";
 
 export default function FilmInfo({
   film,
@@ -261,12 +262,14 @@ export default function FilmInfo({
                 <IonIcon icon={tvOutline} />
 
                 <span>
-                  {`${film.number_of_seasons} Season${
-                    film.number_of_seasons > 1 ? `s` : ``
-                  }`}{" "}
-                  {`(${film.number_of_episodes} Episode${
-                    film.number_of_episodes > 1 ? `s` : ``
-                  })`}
+                  {`${film.number_of_seasons} ${isPlural({
+                    text: "Season",
+                    number: film.number_of_seasons,
+                  })}`}{" "}
+                  {`(${film.number_of_episodes} ${isPlural({
+                    text: "Episode",
+                    number: film.number_of_episodes,
+                  })})`}
                 </span>
               </section>
             )}
@@ -278,7 +281,8 @@ export default function FilmInfo({
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={timeOutline} />
                 <time>
-                  {filmRuntime} minute{filmRuntime % 60 > 1 ? `s` : ``}
+                  {filmRuntime}{" "}
+                  {isPlural({ text: "minute", number: filmRuntime % 60 })}
                 </time>
                 {Math.floor(filmRuntime / 60) >= 1 && (
                   <span>{`(${formatRuntime(filmRuntime)})`}</span>
@@ -460,9 +464,10 @@ export default function FilmInfo({
                             ? `${Math.floor(
                                 lastEps.runtime / 60
                               )}h ${Math.floor(lastEps.runtime % 60)}m`
-                            : `${lastEps.runtime} minute${
-                                lastEps.runtime % 60 > 1 && `s`
-                              }`}
+                            : `${lastEps.runtime} ${isPlural({
+                                text: "minute",
+                                number: lastEps.runtime % 60,
+                              })}`}
                         </span>
                       )}
 
@@ -526,9 +531,10 @@ export default function FilmInfo({
                             ? `${Math.floor(
                                 nextEps.runtime / 60
                               )}h ${Math.floor(nextEps.runtime % 60)}m`
-                            : `${nextEps.runtime} minute${
-                                nextEps.runtime % 60 > 1 && `s`
-                              }`}
+                            : `${nextEps.runtime} ${isPlural({
+                                text: "minute",
+                                number: nextEps.runtime % 60,
+                              })}`}
                         </span>
                       )}
 
@@ -555,7 +561,7 @@ export default function FilmInfo({
                     <span className="countdown font-mono text-4xl sm:text-5xl">
                       <span style={{ "--value": countdown.months }}></span>
                     </span>
-                    month{countdown.months > 1 ? `s` : ``}
+                    {isPlural({ text: "month", number: countdown.months })}
                   </div>
                 )}
                 {countdown.days > 0 && (
@@ -563,14 +569,14 @@ export default function FilmInfo({
                     <span className="countdown font-mono text-4xl sm:text-5xl">
                       <span style={{ "--value": countdown.days }}></span>
                     </span>
-                    day{countdown.days > 1 ? `s` : ``}
+                    {isPlural({ text: "day", number: countdown.days })}
                   </div>
                 )}
                 <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                   <span className="countdown font-mono text-4xl sm:text-5xl">
                     <span style={{ "--value": countdown.hours }}></span>
                   </span>
-                  hour{countdown.hours > 1 ? `s` : ``}
+                  {isPlural({ text: "hour", number: countdown.hours })}
                 </div>
                 <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
                   <span className="countdown font-mono text-4xl sm:text-5xl">
