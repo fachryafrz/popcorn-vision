@@ -1,4 +1,5 @@
 import { getFilm } from "@/app/api/route";
+import { releaseStatus } from "@/app/lib/releaseStatus";
 import FilmDetail from "@/app/movies/[id]/page";
 import axios from "axios";
 import React from "react";
@@ -13,7 +14,7 @@ export async function generateMetadata({ params, type = `tv` }) {
 
   const filmReleaseDate = film.first_air_date
     ? date.getFullYear()
-    : `Coming soon`;
+    : releaseStatus(film.status);
   const lastAirDate =
     film.last_air_date !== null &&
     new Date(film.last_air_date).getFullYear() !==

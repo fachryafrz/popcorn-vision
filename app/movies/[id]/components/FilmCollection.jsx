@@ -32,6 +32,7 @@ import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
+import { releaseStatus } from "@/app/lib/releaseStatus";
 
 export default function FilmCollection({
   film,
@@ -240,13 +241,13 @@ function FilmSeason({
         </span>
 
         <figure
-          className="aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center"
+          className="aspect-poster min-w-[50px] bg-base-100 max-w-[50px] rounded-lg overflow-hidden flex items-center"
           style={{
             backgroundImage:
               item.poster_path === null
                 ? `url(/popcorn.png)`
                 : `url(https://image.tmdb.org/t/p/w500${item.poster_path})`,
-            backgroundSize: "cover",
+            backgroundSize: "contain",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
           }}
@@ -262,14 +263,18 @@ function FilmSeason({
             {item.name}
           </h3>
 
-          {/* {item.episode_count > 0 && ( */}
-          <span className="text-xs text-gray-400 font-medium line-clamp-1">
-            {`${item.episode_count} ${isPlural({
-              text: "Episode",
-              number: item.episode_count,
-            })}`}
-          </span>
-          {/* )} */}
+          {item.episode_count > 0 ? (
+            <span className="text-xs text-gray-400 font-medium line-clamp-1">
+              {`${item.episode_count} ${isPlural({
+                text: "Episode",
+                number: item.episode_count,
+              })}`}
+            </span>
+          ) : (
+            <span className="text-xs text-gray-400 font-medium line-clamp-1">
+              {releaseStatus(film.status)}
+            </span>
+          )}
 
           <div
             className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}

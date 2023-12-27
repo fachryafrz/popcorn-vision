@@ -8,6 +8,7 @@ import FilmSlider from "@/app/components/FilmSlider";
 import FilmInfo from "./components/FilmInfo";
 import FilmContent from "./components/FilmContent";
 import { fetchData, getFilm, getGenres } from "@/app/api/route";
+import { releaseStatus } from "@/app/lib/releaseStatus";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -25,7 +26,7 @@ export async function generateMetadata({ params, type = "movie" }) {
 
   const filmReleaseDate = film.release_date
     ? new Date(film.release_date).getFullYear()
-    : `Coming soon`;
+    : releaseStatus(film.status);
 
   let backdrops;
 
