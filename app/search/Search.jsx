@@ -23,6 +23,7 @@ import SelectMUI from "@mui/material/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "../components/Navbar";
 import { IsInViewport } from "../lib/IsInViewport";
+import tmdbNetworks from "@/app/json/tv_network_ids_12_26_2023.json";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -50,6 +51,7 @@ export default function Search({ type = "movie" }) {
   const [genresData, setGenresData] = useState();
   const [languagesData, setLanguagesData] = useState();
   const [providersData, setProvidersData] = useState();
+  const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [castData, setCastData] = useState();
   const [crewData, setCrewData] = useState();
   const [keywordData, setKeywordData] = useState();
@@ -78,6 +80,7 @@ export default function Search({ type = "movie" }) {
   const [genre, setGenre] = useState();
   const [language, setLanguage] = useState();
   const [provider, setProvider] = useState();
+  const [network, setNetwork] = useState([]);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
   const [keyword, setKeyword] = useState([]);
@@ -337,6 +340,18 @@ export default function Search({ type = "movie" }) {
       label: provider.provider_name,
     }));
   }, [providersData]);
+  const networksLoadOptions = (inputValue, callback) => {
+    setTimeout(() => {
+      const options = networksData.map((network) => ({
+        value: network.id,
+        label: network.name,
+      }));
+      const filteredOptions = options.filter((option) =>
+        option.label.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      callback(filteredOptions);
+    }, 2000);
+  };
   const castsLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
       fetchData({
@@ -459,6 +474,24 @@ export default function Search({ type = "movie" }) {
         current.delete("watch_providers");
       } else {
         current.set("watch_providers", value);
+      }
+
+      const search = current.toString();
+
+      const query = search ? `?${search}` : "";
+
+      router.push(`${pathname}${query}`);
+    },
+    [current, pathname, router]
+  );
+  const handleNetworkChange = useCallback(
+    (selectedOption) => {
+      const value = selectedOption.map((option) => option.value);
+
+      if (value.length === 0) {
+        current.delete("with_networks");
+      } else {
+        current.set("with_networks", value);
       }
 
       const search = current.toString();
@@ -826,7 +859,28 @@ export default function Search({ type = "movie" }) {
     } else {
       setProvider(null);
     }
-  }, [genresData, languagesData, providersData, searchParams]);
+
+    // Network
+    if (searchParams.get("with_networks")) {
+      const networksParams = searchParams.get("with_networks").split(",");
+      const searchNetworks = networksParams.map((networkId) =>
+        networksData?.find(
+          (network) => parseInt(network.id) === parseInt(networkId)
+        )
+      );
+
+      const searchNetworksOptions = searchNetworks?.map(
+        (network) =>
+          network && {
+            value: network.id,
+            label: network.name,
+          }
+      );
+      setNetwork(searchNetworksOptions);
+    } else {
+      setNetwork(null);
+    }
+  }, [genresData, languagesData, providersData, networksData, searchParams]);
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -1052,6 +1106,13 @@ export default function Search({ type = "movie" }) {
         delete searchAPIParams.watch_region;
         delete searchAPIParams.with_watch_providers;
       }
+      if (searchParams.get("with_networks")) {
+        searchAPIParams.with_networks = network
+          ?.map((network) => network?.value)
+          .join(",");
+      } else {
+        delete searchAPIParams.with_networks;
+      }
       if (searchParams.get("with_original_language")) {
         searchAPIParams.with_original_language = language
           ?.map((language) => language?.value)
@@ -1165,6 +1226,7 @@ export default function Search({ type = "movie" }) {
     keyword,
     language,
     provider,
+    network,
     rating,
     releaseDate,
     runtime,
@@ -1345,6 +1407,24 @@ export default function Search({ type = "movie" }) {
             isMulti
           />
         </section>
+
+        {/* Networks */}
+        {isTvPage && (
+          <section className={`flex flex-col gap-1`}>
+            <span className={`font-medium`}>Networks</span>
+            <AsyncSelect
+              noOptionsMessage={() => "Type to search"}
+              loadingMessage={() => "Searching..."}
+              loadOptions={networksLoadOptions}
+              onChange={handleNetworkChange}
+              value={network}
+              styles={inputStyles}
+              placeholder={`Search TV networks...`}
+              isDisabled={isQueryParams}
+              isMulti
+            />
+          </section>
+        )}
 
         {/* Cast */}
         {!isTvPage && (
