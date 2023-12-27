@@ -72,6 +72,7 @@ export default function Search({ type = "movie" }) {
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState([]);
+  const [tvType, setTvType] = useState([]);
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
     maxYear,
@@ -122,6 +123,19 @@ export default function Search({ type = "movie" }) {
       "Ended",
       "Canceled",
       "Pilot",
+    ],
+    []
+  );
+  const tvSeriesType = useMemo(
+    () => [
+      "All",
+      "Documentary",
+      "News",
+      "Miniseries",
+      "Reality",
+      "Scripted",
+      "Talk Show",
+      "Video",
     ],
     []
   );
@@ -616,29 +630,60 @@ export default function Search({ type = "movie" }) {
     const isChecked = event.target.checked;
     const inputValue = parseInt(event.target.value);
 
-    let updatedStatus = [...status]; // Salin status sebelumnya
+    let updatedValue = [...status]; // Salin status sebelumnya
 
     if (inputValue === -1) {
       // Jika yang dipilih adalah "All", bersihkan semua status
-      updatedStatus = [];
+      updatedValue = [];
     } else {
-      if (isChecked && !updatedStatus.includes(inputValue.toString())) {
+      if (isChecked && !updatedValue.includes(inputValue.toString())) {
         // Tambahkan status yang dipilih jika belum ada
-        updatedStatus.push(inputValue.toString());
+        updatedValue.push(inputValue.toString());
       } else {
         // Hapus status yang tidak dipilih lagi
-        updatedStatus = updatedStatus.filter(
-          (s) => s !== inputValue.toString()
-        );
+        updatedValue = updatedValue.filter((s) => s !== inputValue.toString());
       }
     }
 
     // Lakukan pengaturan URL
-    if (updatedStatus.length === 0) {
-      setStatus(updatedStatus);
+    if (updatedValue.length === 0) {
+      setStatus(updatedValue);
       current.delete("status");
     } else {
-      current.set("status", updatedStatus.join(","));
+      current.set("status", updatedValue.join(","));
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
+  };
+  const handleTypeChange = (event) => {
+    const isChecked = event.target.checked;
+    const inputValue = parseInt(event.target.value);
+
+    let updatedValue = [...tvType]; // Salin status sebelumnya
+
+    if (inputValue === -1) {
+      // Jika yang dipilih adalah "All", bersihkan semua status
+      updatedValue = [];
+    } else {
+      if (isChecked && !updatedValue.includes(inputValue.toString())) {
+        // Tambahkan status yang dipilih jika belum ada
+        updatedValue.push(inputValue.toString());
+      } else {
+        // Hapus status yang tidak dipilih lagi
+        updatedValue = updatedValue.filter((s) => s !== inputValue.toString());
+      }
+    }
+
+    // Lakukan pengaturan URL
+    if (updatedValue.length === 0) {
+      setTvType(updatedValue);
+      current.delete("type");
+    } else {
+      current.set("type", updatedValue.join(","));
     }
 
     const search = current.toString();
@@ -890,6 +935,12 @@ export default function Search({ type = "movie" }) {
       setStatus(statusParams);
     }
 
+    // TV Series Type
+    if (searchParams.get("type")) {
+      const typeParams = searchParams.get("type").split(",");
+      setTvType(typeParams);
+    }
+
     // Release date
     if (searchParams.get("release_date")) {
       const releaseDateParams = searchParams.get("release_date").split(".");
@@ -1089,6 +1140,11 @@ export default function Search({ type = "movie" }) {
         } else {
           delete searchAPIParams.with_status;
         }
+        if (searchParams.get("type")) {
+          searchAPIParams.with_type = tvType.join("|");
+        } else {
+          delete searchAPIParams.with_type;
+        }
       }
       if (searchParams.get("with_genres")) {
         searchAPIParams.with_genres = genre
@@ -1218,6 +1274,7 @@ export default function Search({ type = "movie" }) {
     }
   }, [
     status,
+    tvType,
     cast,
     company,
     crew,
@@ -1263,6 +1320,7 @@ export default function Search({ type = "movie" }) {
         {/* Title */}
         {/* <span className={`font-bold text-2xl`}>Filters</span> */}
 
+        {/* Tv Series Status */}
         {isTvPage && (
           <section>
             <span className={`font-medium`}>Status</span>
@@ -1494,6 +1552,45 @@ export default function Search({ type = "movie" }) {
           />
         </section>
 
+        {/* Tv Series Type */}
+        {isTvPage && (
+          <section>
+            <span className={`font-medium`}>Types</span>
+            <ul className={`mt-2`}>
+              {tvSeriesType.map((typeName, i) => {
+                const index = i - 1;
+                const isChecked = tvType.length === 0 && i === 0;
+
+                return (
+                  <li key={index}>
+                    <div className={`flex items-center`}>
+                      <input
+                        type={`checkbox`}
+                        id={`type_${index}`}
+                        name={`type`}
+                        className={`checkbox checkbox-md`}
+                        value={index}
+                        checked={isChecked || tvType.includes(index.toString())}
+                        onChange={handleTypeChange}
+                        disabled={isQueryParams}
+                      />
+
+                      <label
+                        htmlFor={`type_${index}`}
+                        className={`${
+                          isQueryParams ? `cursor-default` : `cursor-pointer`
+                        } flex w-full py-2 pl-2`}
+                      >
+                        {typeName}
+                      </label>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
         {/* Rating */}
         <section className={`flex flex-col gap-1`}>
           <span className={`font-medium`}>Rating</span>
@@ -1623,10 +1720,12 @@ export default function Search({ type = "movie" }) {
                 className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
               >
                 {searchParams.get("status") ||
+                searchParams.get("type") ||
                 searchParams.get("release_date") ||
                 searchParams.get("with_genres") ||
                 searchParams.get("with_original_language") ||
                 searchParams.get("watch_providers") ||
+                searchParams.get("with_networks") ||
                 searchParams.get("with_cast") ||
                 searchParams.get("with_crew") ||
                 searchParams.get("with_keywords") ||
@@ -1639,6 +1738,7 @@ export default function Search({ type = "movie" }) {
                       setTimeout(() => {
                         setSearchQuery("");
                         setStatus([]);
+                        setTvType([]);
                         setReleaseDate([minYear, maxYear]);
                         setReleaseDateSlider([minYear, maxYear]);
                         setGenre(null);
