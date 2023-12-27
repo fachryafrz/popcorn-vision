@@ -48,59 +48,61 @@ export default function MainLoading() {
       </section>
 
       {/* FilmSlider */}
-      {[...Array(sectionCount).keys()].map((a) => (
-        <section
-          key={a}
-          className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4 lg:-mt-[5rem]`}
-        >
-          {/* Section Title */}
-          <div className={`h-[28px] w-[100px]`}></div>
-
-          {/* Films */}
-          <Swiper
-            spaceBetween={8}
-            slidesPerView={2}
-            // breakpoints={{
-            //   640: {
-            //     slidesPerView: 3,
-            //     slidesPerGroup: 3,
-            //   },
-            //   768: {
-            //     slidesPerView: 4,
-            //     slidesPerGroup: 4,
-            //   },
-            //   1024: {
-            //     slidesPerView: 5,
-            //     slidesPerGroup: 5,
-            //   },
-            // }}
-            allowSlideNext={false}
-            allowSlidePrev={false}
-            allowTouchMove={false}
-            className={`!bg-opacity-0 w-full !pr-[3rem]`}
-            wrapperClass={`!bg-opacity-0`}
+      <div className={`lg:-mt-[5rem] !bg-opacity-0`}>
+        {[...Array(sectionCount).keys()].map((a) => (
+          <section
+            key={a}
+            className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
           >
-            {[...Array(itemCount).keys()].map((b) => (
-              <SwiperSlide
-                key={b}
-                className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)] mr-2`}
-              >
-                {/* Poster */}
-                <div className={`aspect-poster`}></div>
+            {/* Section Title */}
+            <div className={`h-[28px] w-[100px]`}></div>
 
-                {/* Title */}
-                <div className={`h-[28px] mt-2`}></div>
+            {/* Films */}
+            <Swiper
+              spaceBetween={8}
+              slidesPerView={2}
+              // breakpoints={{
+              //   640: {
+              //     slidesPerView: 3,
+              //     slidesPerGroup: 3,
+              //   },
+              //   768: {
+              //     slidesPerView: 4,
+              //     slidesPerGroup: 4,
+              //   },
+              //   1024: {
+              //     slidesPerView: 5,
+              //     slidesPerGroup: 5,
+              //   },
+              // }}
+              allowSlideNext={false}
+              allowSlidePrev={false}
+              allowTouchMove={false}
+              className={`!bg-opacity-0 w-full !pr-[3rem]`}
+              wrapperClass={`!bg-opacity-0`}
+            >
+              {[...Array(itemCount).keys()].map((b) => (
+                <SwiperSlide
+                  key={b}
+                  className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)] mr-2`}
+                >
+                  {/* Poster */}
+                  <div className={`aspect-poster`}></div>
 
-                {/* Release Date & Genres */}
-                <div className={`h-[20px] mt-1 flex gap-1 !bg-opacity-0`}>
-                  <div className={`w-[30%]`}></div>
-                  <div className={`w-[70%]`}></div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </section>
-      ))}
+                  {/* Title */}
+                  <div className={`h-[28px] mt-2`}></div>
+
+                  {/* Release Date & Genres */}
+                  <div className={`h-[20px] mt-1 flex gap-1 !bg-opacity-0`}>
+                    <div className={`w-[30%]`}></div>
+                    <div className={`w-[70%]`}></div>
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </section>
+        ))}
+      </div>
 
       {/* Trending */}
       <section className={`px-4 !bg-opacity-0 mx-auto max-w-7xl w-full`}>
