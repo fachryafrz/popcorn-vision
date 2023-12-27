@@ -56,7 +56,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
           href={`/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`}
         >
           <h2
-            className={`text-xl md:text-3xl text-center font-bold md:mb-2`}
+            className={`text-2xl md:text-3xl text-center font-bold md:mb-2`}
             style={{ textWrap: `balance` }}
           >
             {person.name}
