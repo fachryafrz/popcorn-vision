@@ -1226,11 +1226,14 @@ export default function Search({ type = "movie" }) {
                         value={index}
                         checked={isChecked || status.includes(index.toString())}
                         onChange={handleStatusChange}
+                        disabled={isQueryParams}
                       />
 
                       <label
                         htmlFor={`status_${index}`}
-                        className={`cursor-pointer flex w-full py-2 pl-2`}
+                        className={`${
+                          isQueryParams ? `cursor-default` : `cursor-pointer`
+                        } flex w-full py-2 pl-2`}
                       >
                         {statusName}
                       </label>
