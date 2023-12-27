@@ -68,7 +68,7 @@ export default function FilmInfo({
   // const [userLocation, setUserLocation] = useState();
   const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
-  const userLocation = localStorage.getItem("user-location");
+  const [userLocation, setUserLocation] = useState(null);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -146,6 +146,11 @@ export default function FilmInfo({
   const filmRuntime = !isTvPage
     ? film.runtime
     : film.episode_run_time.length > 0 && film.episode_run_time[0];
+
+  // Use Effect for getting user location
+  useEffect(() => {
+    setUserLocation(localStorage.getItem("user-location"));
+  }, []);
 
   return (
     <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">

@@ -20,12 +20,13 @@ export default function Navbar() {
 
   // For user location
   const [location, setLocation] = useState(null);
-  const userLocation = localStorage.getItem("user-location");
+  const [userLocation, setUserLocation] = useState(null);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         setLocation(position.coords);
+        setUserLocation(localStorage.getItem("user-location"));
       });
     }
   }, []);
