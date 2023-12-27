@@ -24,6 +24,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "../components/Navbar";
 import { IsInViewport } from "../lib/IsInViewport";
 import tmdbNetworks from "@/app/json/tv_network_ids_12_26_2023.json";
+import { calculateDate } from "../lib/formatDate";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -1146,6 +1147,36 @@ export default function Search({ type = "movie" }) {
           delete searchAPIParams.with_type;
         }
       }
+      if (searchParams.get("o")) {
+        const currentDate = new Date();
+        const today = calculateDate({ date: currentDate });
+        const tomorrow = calculateDate({ date: currentDate, days: 1 });
+        const monthsAgo = calculateDate({ date: currentDate, months: -1 });
+        const monthsLater = calculateDate({ date: currentDate, months: 1 });
+
+        if (
+          searchParams.get("o") === "now_playing" ||
+          searchParams.get("o") === "on_the_air"
+        ) {
+          if (!isTvPage) {
+            searchAPIParams["primary_release_date.gte"] = monthsAgo;
+            searchAPIParams["primary_release_date.lte"] = today;
+          } else {
+            searchAPIParams["first_air_date.gte"] = monthsAgo;
+            searchAPIParams["first_air_date.lte"] = today;
+          }
+        }
+
+        if (searchParams.get("o") === "upcoming") {
+          if (!isTvPage) {
+            searchAPIParams["primary_release_date.gte"] = tomorrow;
+            searchAPIParams["primary_release_date.lte"] = monthsLater;
+          } else {
+            searchAPIParams["first_air_date.gte"] = tomorrow;
+            searchAPIParams["first_air_date.lte"] = monthsLater;
+          }
+        }
+      }
       if (searchParams.get("with_genres")) {
         searchAPIParams.with_genres = genre
           ?.map((genre) => genre?.value)
@@ -1296,6 +1327,7 @@ export default function Search({ type = "movie" }) {
     userLocation,
   ]);
 
+  // Use Effect for load more button is in viewport
   useEffect(() => {
     if (isLoadMoreBtnInViewport) {
       loadMoreBtn.current.click();

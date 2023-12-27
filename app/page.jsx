@@ -94,6 +94,9 @@ export default async function Home({ type = "movie" }) {
           })}
           title={!isTvPage ? `Now Playing` : `On The Air`}
           genres={genres}
+          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?o=${
+            !isTvPage ? `now_playing` : `on_the_air`
+          }`}
         />
 
         {/* Upcoming */}
@@ -115,6 +118,7 @@ export default async function Home({ type = "movie" }) {
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
+          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?o=upcoming`}
         />
 
         {/* Top Rated */}
@@ -128,6 +132,9 @@ export default async function Home({ type = "movie" }) {
           })}
           title={`Top Rated`}
           genres={genres}
+          viewAll={`${
+            !isTvPage ? `/search` : `/tv/search`
+          }?sort_by=vote_count.desc`}
         />
 
         {/* Trending */}
@@ -149,6 +156,9 @@ export default async function Home({ type = "movie" }) {
                 })}
                 title={company.name}
                 genres={genres}
+                viewAll={`${
+                  !isTvPage ? `/search` : `/tv/search`
+                }?with_companies=${company.id}`}
               />
             ))
           : providers.slice(0, 3).map(async (provider) => (
@@ -184,6 +194,9 @@ export default async function Home({ type = "movie" }) {
             })}
             title={genre.name}
             genres={genres}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
+              genre.id
+            }`}
           />
         ))}
 

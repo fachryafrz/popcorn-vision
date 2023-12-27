@@ -14,7 +14,13 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { sortFilms } from "../lib/sortFilms";
 
-export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
+export default function FilmSlider({
+  films,
+  title,
+  genres,
+  sort = "DESC",
+  viewAll = "",
+}) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -73,6 +79,15 @@ export default function FilmSlider({ films, title, genres, sort = "DESC" }) {
         <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
           <div className="flex gap-4 items-end">
             <p className="font-bold text-lg md:text-2xl">{title}</p>
+
+            {viewAll !== "" && (
+              <Link
+                href={viewAll}
+                className={`text-primary-blue font-medium text-sm mb-[0.25rem]`}
+              >
+                View all
+              </Link>
+            )}
           </div>
 
           <div className={`flex gap-4 items-center`}>
