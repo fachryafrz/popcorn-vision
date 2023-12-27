@@ -589,7 +589,7 @@ export default function Search({ type = "movie" }) {
     try {
       let response;
 
-      if (!searchParams.get("query")) {
+      if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
         response = await fetchData({
           endpoint: `/discover/${type}`,
           queryParams: {
@@ -597,7 +597,9 @@ export default function Search({ type = "movie" }) {
             page: currentSearchPage,
           },
         });
-      } else {
+      }
+
+      if (searchParams.get("query") && searchQuery) {
         response = await fetchData({
           endpoint: `/search/${type}`,
           queryParams: {
@@ -953,6 +955,7 @@ export default function Search({ type = "movie" }) {
   // Use Effect for Search
   useEffect(() => {
     setLoading(true);
+    setCurrentSearchPage(1);
 
     const minFullYear = `${releaseDate[0]}-01-01`;
     const maxFullYear = `${releaseDate[1]}-12-31`;
@@ -1036,7 +1039,6 @@ export default function Search({ type = "movie" }) {
           setFilms(res.results);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1069,7 +1071,6 @@ export default function Search({ type = "movie" }) {
           setFilms(filteredMovies);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1082,7 +1083,9 @@ export default function Search({ type = "movie" }) {
 
     if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
       performSearch();
-    } else {
+    }
+
+    if (searchParams.get("query") && searchQuery) {
       performSearchQuery();
     }
   }, [
@@ -1495,11 +1498,7 @@ export default function Search({ type = "movie" }) {
           <>
             {/* Loading films */}
             <section className={`flex items-center justify-center mt-4`}>
-              <button
-                ref={loadMoreBtn}
-                onClick={() => fetchMoreFilms((currentSearchPage += 1))}
-                className="text-white aspect-square w-[30px] pointer-events-none"
-              >
+              <button className="text-white aspect-square w-[30px] pointer-events-none">
                 <span class="loading loading-spinner loading-md"></span>
               </button>
             </section>
@@ -1539,19 +1538,17 @@ export default function Search({ type = "movie" }) {
           </>
         )}
 
-        {!loading &&
-          films?.length > 0 &&
-          currentSearchPage !== totalSearchPages && (
-            <section className={`flex items-center justify-center mt-4`}>
-              <button
-                ref={loadMoreBtn}
-                onClick={() => fetchMoreFilms((currentSearchPage += 1))}
-                className="text-white aspect-square w-[30px] pointer-events-none"
-              >
-                <span class="loading loading-spinner loading-md"></span>
-              </button>
-            </section>
-          )}
+        {!loading && totalSearchPages > currentSearchPage && (
+          <section className={`flex items-center justify-center mt-4`}>
+            <button
+              ref={loadMoreBtn}
+              onClick={() => fetchMoreFilms((currentSearchPage += 1))}
+              className="text-white aspect-square w-[30px] pointer-events-none"
+            >
+              <span class="loading loading-spinner loading-md"></span>
+            </button>
+          </section>
+        )}
       </div>
     </div>
   );
