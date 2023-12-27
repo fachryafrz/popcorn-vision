@@ -40,6 +40,7 @@ export default function FilmOverview({
   setSelectedPerson,
   personModal,
   setPersonModal,
+  setActiveSeasonPoster,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -73,6 +74,7 @@ export default function FilmOverview({
           setEpisodeModal={setEpisodeModal}
           loading={loading}
           setLoading={setLoading}
+          setActiveSeasonPoster={setActiveSeasonPoster}
         />
       ) : null}
 

@@ -24,6 +24,7 @@ export default function FilmContent({
   const [loading, setLoading] = useState(true);
   const [episodeModal, setEpisodeModal] = useState();
   const [personModal, setPersonModal] = useState();
+  const [activeSeasonPoster, setActiveSeasonPoster] = useState();
 
   return (
     <div
@@ -42,7 +43,7 @@ export default function FilmContent({
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
           <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
-            <FilmPoster film={film} />
+            <FilmPoster film={film} activeSeasonPoster={activeSeasonPoster} />
           </div>
         </section>
 
@@ -79,6 +80,7 @@ export default function FilmContent({
             setLoading={setLoading}
             personModal={personModal}
             setPersonModal={setPersonModal}
+            setActiveSeasonPoster={setActiveSeasonPoster}
           />
         </section>
 

@@ -24,6 +24,7 @@ import { Navigation } from "swiper";
 import FilmBackdrop from "./FilmBackdrop";
 import Person from "./Person";
 import {
+  fetchData,
   getEpisodeModal,
   getEpisodes,
   getFilmCollection,
@@ -40,6 +41,7 @@ export default function FilmCollection({
   setEpisodeModal,
   loading,
   setLoading,
+  setActiveSeasonPoster,
 }) {
   const [apiData, setApiData] = useState();
   const [collectionTitle, setCollectionTitle] = useState();
@@ -183,6 +185,7 @@ export default function FilmCollection({
                       episodeModal={episodeModal}
                       setEpisodeModal={setEpisodeModal}
                       setLoading={setLoading}
+                      setActiveSeasonPoster={setActiveSeasonPoster}
                     />
                   </li>
                 );
@@ -213,11 +216,18 @@ function FilmSeason({
   episodeModal,
   setEpisodeModal,
   setLoading,
+  setActiveSeasonPoster,
 }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const handleViewSeason = () => {
+  const handleViewSeason = async () => {
     setViewSeason(!viewSeason);
+
+    if (!viewSeason) {
+      setActiveSeasonPoster(item);
+    } else {
+      setActiveSeasonPoster(null);
+    }
   };
 
   useEffect(() => {

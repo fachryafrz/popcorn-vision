@@ -2,14 +2,24 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-export default function FilmPoster({ film }) {
+export default function FilmPoster({ film, activeSeasonPoster }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
   let popcorn = `/popcorn.png`;
-  let filmPoster = film.poster_path;
+  // let filmPoster = film.poster_path;
+
+  const [filmPoster, setFilmPoster] = useState();
+
+  useEffect(() => {
+    if (activeSeasonPoster) {
+      setFilmPoster(activeSeasonPoster.poster_path);
+    } else {
+      setFilmPoster(film.poster_path);
+    }
+  }, [activeSeasonPoster, film.poster_path]);
 
   return (
     <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
@@ -29,7 +39,7 @@ export default function FilmPoster({ film }) {
           <img
             src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
             alt={!isTvPage ? film.title : film.name}
-            className={`pointer-events-none object-cover`}
+            className={`pointer-events-none object-cover transition-all`}
           />
         )}
 
