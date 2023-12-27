@@ -585,12 +585,6 @@ export default function Search({ type = "movie" }) {
 
     let updatedStatus = [...status]; // Salin status sebelumnya
 
-    // if (isChecked) {
-    //   updatedStatus.push(inputValue); // Tambahkan status yang dipilih
-    // } else {
-    //   updatedStatus = updatedStatus.filter((s) => s !== inputValue); // Hapus status yang tidak dipilih lagi
-    // }
-
     if (inputValue === -1) {
       // Jika yang dipilih adalah "All", bersihkan semua status
       updatedStatus = [];
