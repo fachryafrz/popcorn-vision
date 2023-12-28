@@ -72,5 +72,23 @@ export default async function sitemap() {
   sitemap.push(...moviesInSitemap);
   sitemap.push(...tvShowsInSitemap);
 
+  for (let i = 1; i <= 500; i++) {
+    sitemap.push({
+      url: `${appUrl}/movies/sitemap/${i}.xml`,
+      lastModified: new Date(),
+      changeFrequency: "hourly",
+      priority: 0.7,
+    });
+  }
+
+  for (let i = 1; i <= 500; i++) {
+    sitemap.push({
+      url: `${appUrl}/tv/sitemap/${i}.xml`,
+      lastModified: new Date(),
+      changeFrequency: "hourly",
+      priority: 0.7,
+    });
+  }
+
   return sitemap;
 }
