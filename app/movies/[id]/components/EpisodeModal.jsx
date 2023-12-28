@@ -70,7 +70,7 @@ export function EpisodeModal({
               />
             )}
           </figure>
-          <div className={`p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}>
+          <div className={`p-4 sm:p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}>
             <h1
               title={episode.name}
               className={`text-3xl sm:text-4xl text-center font-bold`}

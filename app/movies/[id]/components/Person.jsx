@@ -34,7 +34,7 @@ export default function Person({
       onClick={itemProp != `author` ? () => handleActorClick() : null}
       className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
         itemProp != `author`
-          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-full`
+          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-[2rem]`
           : `cursor-default`
       }`}
     >
@@ -67,7 +67,7 @@ export default function Person({
 
         {!tooltip && role !== "" ? (
           <span
-            className={`text-sm text-gray-400 max-w-[120px] line-clamp-1 md:max-w-none`}
+            className={`text-sm text-gray-400 line-clamp-2`}
           >
             <span title={role}>{role}</span>
           </span>
