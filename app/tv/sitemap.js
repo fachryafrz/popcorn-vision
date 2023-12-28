@@ -11,7 +11,7 @@ export async function generateSitemaps() {
     },
   });
 
-  for (let i = 1; i <= totalPages; i++) {
+  for (let i = 1; i <= 500; i++) {
     sitemap.push({
       id: i,
     });
