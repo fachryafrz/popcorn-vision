@@ -69,8 +69,8 @@ export default async function sitemap() {
     priority: 0.8,
   }));
 
-  sitemap.push(...moviesInSitemap);
-  sitemap.push(...tvShowsInSitemap);
+  // sitemap.push(...moviesInSitemap);
+  // sitemap.push(...tvShowsInSitemap);
 
   for (let i = 1; i <= 500; i++) {
     sitemap.push({
