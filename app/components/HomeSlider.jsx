@@ -47,7 +47,7 @@ export default function HomeSlider({ films, genres }) {
         keyboard={true}
         spaceBetween={0}
         slidesPerView={1}
-        className={`h-[100dvh] lg:h-[120dvh] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        className={`h-[100svh] lg:h-[120svh] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
       >
         {films.map((film) => {
           const releaseDate = isItTvPage(
@@ -151,7 +151,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
           />
         )}
       </figure>
-      <div className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100dvh] pb-[2rem]`}>
+      <div className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100svh] pb-[2rem]`}>
         <FilmSummary
           film={film}
           genres={genres}

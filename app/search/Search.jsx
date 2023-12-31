@@ -1337,7 +1337,7 @@ export default function Search({ type = "movie" }) {
   return (
     <div className={`flex lg:px-4`}>
       <aside
-        className={`p-4 w-full lg:max-w-[300px] h-[calc(100dvh-66px)] lg:h-[calc(100dvh-66px-1rem)] lg:sticky top-[66px] bg-[#2A313E] bg-opacity-[95%] backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-30 transition-all lg:translate-x-0 ${
+        className={`p-4 w-full lg:max-w-[300px] h-[calc(100svh-66px)] lg:h-[calc(100svh-66px-1rem)] lg:sticky top-[66px] bg-[#2A313E] bg-opacity-[95%] backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-30 transition-all lg:translate-x-0 ${
           isFilterActive ? `translate-x-0` : `-translate-x-full`
         }`}
       >

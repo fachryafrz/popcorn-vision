@@ -7,7 +7,7 @@ export default function FilmBackdrop({ film }) {
 
   return (
     <figure
-      className={`max-h-[100dvh] md:min-h-[500px] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[50%] lg:max-h-[120dvh]`}
+      className={`max-h-[100svh] md:min-h-[500px] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[50%] lg:max-h-[120svh]`}
       style={{
         backgroundImage: !film.backdrop_path ? popcorn : filmBackdrop,
         backgroundSize: !film.backdrop_path ? `contain` : `cover`,

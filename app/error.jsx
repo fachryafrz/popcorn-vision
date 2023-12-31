@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function Error({ error, reset }) {
   return (
-    <div className={`min-h-[calc(100dvh-66px)] grid place-content-center`}>
+    <div className={`min-h-[calc(100svh-66px)] grid place-content-center`}>
       <div className={`flex flex-col items-center xl:flex-row xl:items-start justify-center p-4 max-w-7xl mx-auto`}>
         <figure
           style={{
