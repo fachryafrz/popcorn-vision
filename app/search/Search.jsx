@@ -948,10 +948,10 @@ export default function Search({ type = "movie" }) {
       const searchMinYear = parseInt(releaseDateParams[0]);
       const searchMaxYear = parseInt(releaseDateParams[2]);
 
-      if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
+      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
         setReleaseDate([searchMinYear, searchMaxYear]);
         setReleaseDateSlider([searchMinYear, searchMaxYear]);
-      }
+      // }
     }
 
     // Cast
