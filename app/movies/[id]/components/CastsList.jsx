@@ -7,12 +7,7 @@ import {
 } from "ionicons/icons";
 import Person from "./Person";
 
-export default function CastsList({
-  credits,
-  episodeModal,
-  personModal,
-  setPersonModal,
-}) {
+export default function CastsList({ credits }) {
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
 
@@ -56,9 +51,6 @@ export default function CastsList({
                   }
                   before={`as`}
                   itemProp={`actor`}
-                  episodeModal={episodeModal}
-                  personModal={personModal}
-                  setPersonModal={setPersonModal}
                 />
               );
             })}

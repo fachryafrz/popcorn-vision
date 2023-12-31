@@ -1,48 +1,27 @@
 /* eslint-disable @next/next/no-img-element */
-import { fetchData, getPerson } from "@/app/api/route";
-import FilmSlider from "@/app/components/FilmSlider";
-import { slugify } from "@/app/lib/slugify";
 import PersonDetails from "@/app/person/[id]/components/PersonDetails";
 import PersonProfile from "@/app/person/[id]/components/PersonProfile";
 import PersonWorks from "@/app/person/[id]/components/PersonWorks";
 import { IonIcon } from "@ionic/react";
-import axios from "axios";
-import {
-  briefcaseOutline,
-  calendarOutline,
-  chevronBack,
-  chevronForward,
-  close,
-  filmOutline,
-  locationOutline,
-} from "ionicons/icons";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { Navigation } from "swiper";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { close } from "ionicons/icons";
+import { useRouter } from "next/navigation";
+import React, { useContext, useEffect, useState } from "react";
+import { DetailsContext } from "../context";
 
-export default function PersonModal({
-  person,
-  setPersonModal,
-  loading,
-  episode,
-}) {
-  const [combinedCredits, setCombinedCredits] = useState(
-    person.combined_credits
-  );
-  const [movieCredits, setMovieCredits] = useState(person.movie_credits);
-  const [tvCredits, setTVCredits] = useState(person.tv_credits);
-  const [images, setImages] = useState(person.images);
+export default function PersonModal({ person }) {
+  const combinedCredits = person.combined_credits;
+  const movieCredits = person.movie_credits;
+  const tvCredits = person.tv_credits;
+  const images = person.images;
+
   const [films, setFilms] = useState();
 
   const router = useRouter();
+  const { setPersonModal, episodeModal } = useContext(DetailsContext);
 
   const handleCloseModal = () => {
     document.getElementById(`personModal`).close();
-    if (episode) {
+    if (episodeModal) {
       document.getElementById(`episodeModal`).showModal();
     }
     setTimeout(() => {
@@ -105,7 +84,11 @@ export default function PersonModal({
             <section
               className={`col-span-12 border-t border-t-white border-opacity-10 pt-4`}
             >
-              <PersonWorks person={person} movieCredits={movieCredits} tvCredits={tvCredits} />
+              <PersonWorks
+                person={person}
+                movieCredits={movieCredits}
+                tvCredits={tvCredits}
+              />
             </section>
           )}
         </div>

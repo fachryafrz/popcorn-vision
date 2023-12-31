@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import RatingStars from "./RatingStars";
-import { IonIcon } from "@ionic/react";
-import { triangle } from "ionicons/icons";
 import Person from "./Person";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";

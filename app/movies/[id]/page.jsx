@@ -1,14 +1,9 @@
-import axios from "axios";
 import React from "react";
 import FilmBackdrop from "./components/FilmBackdrop";
-import FilmPoster from "./components/FilmPoster";
-import FilmOverview from "./components/FilmOverview";
-import CastsList from "./components/CastsList";
 import FilmSlider from "@/app/components/FilmSlider";
-import FilmInfo from "./components/FilmInfo";
-import FilmContent from "./components/FilmContent";
 import { fetchData, getFilm, getGenres } from "@/app/api/route";
 import { releaseStatus } from "@/app/lib/releaseStatus";
+import FilmDetailsProvider from "./components/FilmDetailsProvider";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -123,7 +118,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       <FilmBackdrop film={film} />
 
       {/* Film Contents */}
-      <FilmContent
+      <FilmDetailsProvider
         film={film}
         videos={videos}
         images={images}

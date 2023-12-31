@@ -1,16 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import FilmPoster from "./FilmPoster";
 import CastsList from "./CastsList";
 import FilmInfo from "./FilmInfo";
 import FilmOverview from "./FilmOverview";
-import axios from "axios";
-import FilmReviews from "./FilmReviews";
-import FilmCollection from "./FilmCollection";
 import ShareModal from "./ShareModal";
 import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
+import { DetailsContext } from "../context";
 
 export default function FilmContent({
   film,
@@ -22,13 +20,12 @@ export default function FilmContent({
   isTvPage,
 }) {
   const [loading, setLoading] = useState(true);
-  const [episodeModal, setEpisodeModal] = useState();
-  const [personModal, setPersonModal] = useState();
-  const [activeSeasonPoster, setActiveSeasonPoster] = useState();
+
+  const { episodeModal, personModal } = useContext(DetailsContext);
 
   useEffect(() => {
     if (episodeModal) {
-      document.getElementById(`episodeModal`).scrollTo(0, 0);
+      // document.getElementById(`episodeModal`).scrollTo(0, 0);
       document.getElementById(`episodeModal`).showModal();
     }
 
@@ -56,7 +53,7 @@ export default function FilmContent({
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
           <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
-            <FilmPoster film={film} activeSeasonPoster={activeSeasonPoster} />
+            <FilmPoster film={film} />
           </div>
         </section>
 
@@ -69,12 +66,8 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
-            episodeModal={episodeModal}
-            setEpisodeModal={setEpisodeModal}
             loading={loading}
             setLoading={setLoading}
-            personModal={personModal}
-            setPersonModal={setPersonModal}
           />
         </section>
 
@@ -87,13 +80,8 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
-            episodeModal={episodeModal}
-            setEpisodeModal={setEpisodeModal}
             loading={loading}
             setLoading={setLoading}
-            personModal={personModal}
-            setPersonModal={setPersonModal}
-            setActiveSeasonPoster={setActiveSeasonPoster}
           />
         </section>
 
@@ -101,14 +89,7 @@ export default function FilmContent({
         <section
           className={`md:row-[2/5] md:col-[9/13] lg:col-[20/25] lg:row-[1/3]`}
         >
-          {credits.cast.length > 0 && (
-            <CastsList
-              credits={credits}
-              episodeModal={episodeModal}
-              personModal={personModal}
-              setPersonModal={setPersonModal}
-            />
-          )}
+          {credits.cast.length > 0 && <CastsList credits={credits} />}
         </section>
 
         {/* Misc */}
@@ -118,9 +99,7 @@ export default function FilmContent({
           {isTvPage && episodeModal && (
             <EpisodeModal
               episode={episodeModal}
-              setEpisodeModal={setEpisodeModal}
               person={personModal}
-              setPersonModal={setPersonModal}
               loading={loading}
             />
           )}
@@ -128,7 +107,6 @@ export default function FilmContent({
           {personModal && (
             <PersonModal
               person={personModal}
-              setPersonModal={setPersonModal}
               loading={loading}
               episode={episodeModal}
             />

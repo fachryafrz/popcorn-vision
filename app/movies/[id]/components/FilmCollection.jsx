@@ -1,48 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { IonIcon } from "@ionic/react";
-import axios from "axios";
 import {
-  calendarOutline,
   chevronBackCircle,
   chevronDownOutline,
   chevronForwardCircle,
-  chevronUpOutline,
-  close,
   star,
-  timeOutline,
-  tvOutline,
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper";
-import FilmBackdrop from "./FilmBackdrop";
-import Person from "./Person";
-import {
-  fetchData,
-  getEpisodeModal,
-  getEpisodes,
-  getFilmCollection,
-} from "@/app/api/route";
+import { getEpisodes, getFilmCollection } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
 import { releaseStatus } from "@/app/lib/releaseStatus";
+import { DetailsContext } from "../context";
 
-export default function FilmCollection({
-  film,
-  episodeModal,
-  setEpisodeModal,
-  loading,
-  setLoading,
-  setActiveSeasonPoster,
-}) {
+export default function FilmCollection({ film, setLoading }) {
   const [apiData, setApiData] = useState();
   const [collectionTitle, setCollectionTitle] = useState();
   const [collections, setCollections] = useState({});
@@ -182,10 +163,7 @@ export default function FilmCollection({
                       film={film}
                       item={item}
                       index={index}
-                      episodeModal={episodeModal}
-                      setEpisodeModal={setEpisodeModal}
                       setLoading={setLoading}
-                      setActiveSeasonPoster={setActiveSeasonPoster}
                     />
                   </li>
                 );
@@ -209,16 +187,10 @@ export default function FilmCollection({
   );
 }
 
-function FilmSeason({
-  film,
-  item,
-  index,
-  episodeModal,
-  setEpisodeModal,
-  setLoading,
-  setActiveSeasonPoster,
-}) {
+function FilmSeason({ film, item, index, setLoading }) {
   const [viewSeason, setViewSeason] = useState(false);
+
+  const { setActiveSeasonPoster } = useContext(DetailsContext);
 
   const handleViewSeason = async () => {
     setViewSeason(!viewSeason);
@@ -326,8 +298,6 @@ function FilmSeason({
       <FilmEpisodes
         id={film.id}
         season={index + 1}
-        episodeModal={episodeModal}
-        setEpisodeModal={setEpisodeModal}
         setLoading={setLoading}
         viewSeason={viewSeason}
       />
@@ -335,14 +305,7 @@ function FilmSeason({
   );
 }
 
-function FilmEpisodes({
-  id,
-  season,
-  episodeModal,
-  setEpisodeModal,
-  setLoading,
-  viewSeason,
-}) {
+function FilmEpisodes({ id, season, setLoading, viewSeason }) {
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
@@ -376,7 +339,6 @@ function FilmEpisodes({
               <SwiperSlide key={item.id} className={`!h-auto`}>
                 <EpisodeCard
                   filmID={id}
-                  setEpisodeModal={setEpisodeModal}
                   setLoading={setLoading}
                   episode={item}
                   imgPath={item.still_path}

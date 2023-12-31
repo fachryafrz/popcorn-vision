@@ -1,8 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { getEpisodeModal } from "@/app/api/route";
-import { IonIcon } from "@ionic/react";
-import { star } from "ionicons/icons";
-import React from "react";
+import React, { useContext } from "react";
+import { DetailsContext } from "../context";
 
 export default function EpisodeCard({
   className,
@@ -11,11 +10,12 @@ export default function EpisodeCard({
   title,
   secondaryInfo,
   thirdInfo,
-  setEpisodeModal,
   setLoading,
   filmID,
   overlay,
 }) {
+  const { setEpisodeModal } = useContext(DetailsContext);
+
   return (
     <button
       onClick={() => {

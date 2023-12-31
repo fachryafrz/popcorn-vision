@@ -2,20 +2,17 @@
 import { IonIcon } from "@ionic/react";
 import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { formatDate } from "@/app/lib/formatDate";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { isPlural } from "@/app/lib/isPlural";
+import { DetailsContext } from "../context";
 
-export function EpisodeModal({
-  episode,
-  setEpisodeModal,
-  personModal,
-  setPersonModal,
-  loading,
-}) {
+export function EpisodeModal({ episode }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
+
+  const { setEpisodeModal } = useContext(DetailsContext);
 
   const handleShowAllGuestStars = () => {
     setShowAllGuestStars(true);
@@ -161,9 +158,6 @@ export function EpisodeModal({
                               : `https://image.tmdb.org/t/p/w185${item.profile_path}`
                           }
                           role={item.character}
-                          episodeModal={episode}
-                          personModal={personModal}
-                          setPersonModal={setPersonModal}
                         />
                       );
                     })}

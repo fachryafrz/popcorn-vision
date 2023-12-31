@@ -3,7 +3,8 @@
 import { getPerson } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { DetailsContext } from "../context";
 
 export default function Person({
   id,
@@ -11,17 +12,14 @@ export default function Person({
   role,
   profile_path,
   itemProp,
-  before = false,
-  showAllActors,
   tooltip = false,
-  episodeModal,
-  personModal,
-  setPersonModal,
 }) {
   let popcorn = `/popcorn.png`;
   let profilePath = profile_path;
 
   const router = useRouter();
+
+  const { setPersonModal } = useContext(DetailsContext);
 
   const handleActorClick = () => {
     getPerson({ id }).then((res) => {
@@ -66,9 +64,7 @@ export default function Person({
         </h3>
 
         {!tooltip && role !== "" ? (
-          <span
-            className={`text-xs font-medium text-gray-400 line-clamp-2`}
-          >
+          <span className={`text-xs font-medium text-gray-400 line-clamp-2`}>
             <span title={role}>{role}</span>
           </span>
         ) : (

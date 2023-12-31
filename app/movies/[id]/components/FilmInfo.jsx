@@ -3,47 +3,22 @@
 "use client";
 
 // React imports
-import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 
 // Ionic React icons
 import { IonIcon } from "@ionic/react";
 import {
   arrowRedoOutline,
   calendarOutline,
-  close,
   star,
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
 
-// Social media sharing components
-import {
-  EmailIcon,
-  EmailShareButton,
-  FacebookIcon,
-  FacebookShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
-  PinterestIcon,
-  PinterestShareButton,
-  RedditIcon,
-  RedditShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
-} from "react-share";
-import FilmPoster from "./FilmPoster";
 import TitleLogo from "@/app/components/TitleLogo";
 import { usePathname, useRouter } from "next/navigation";
 import Person from "./Person";
-import { EpisodeModal } from "./EpisodeModal";
-import PersonModal from "./PersonModal";
 import Link from "next/link";
-import { getEpisodeModal, getLocation } from "@/app/api/route";
 import EpisodeCard from "./EpisodeCard";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { formatDate } from "@/app/lib/formatDate";
@@ -51,22 +26,11 @@ import { isPlural } from "@/app/lib/isPlural";
 
 export default function FilmInfo({
   film,
-  videos,
   images,
-  reviews,
   credits,
   providers,
-  episodeModal,
-  setEpisodeModal,
-  loading,
   setLoading,
-  personModal,
-  setPersonModal,
 }) {
-  // const [location, setLocation] = useState(null);
-  // const [language, setLanguage] = useState("id-ID");
-  // const [userLocation, setUserLocation] = useState();
-  const [copied, setCopied] = useState(false);
   const [URL, setURL] = useState("");
   const [userLocation, setUserLocation] = useState(null);
 
@@ -337,8 +301,6 @@ export default function FilmInfo({
                     }
                     role={`Director`}
                     itemProp={`director`}
-                    personModal={personModal}
-                    setPersonModal={setPersonModal}
                   />
                 </section>
               )
@@ -360,8 +322,6 @@ export default function FilmInfo({
                         }
                         role={`Creator`}
                         itemProp={`director`}
-                        personModal={personModal}
-                        setPersonModal={setPersonModal}
                       />
                     );
                   })}
@@ -435,7 +395,6 @@ export default function FilmInfo({
                 <EpisodeCard
                   className={`w-full`}
                   filmID={film.id}
-                  setEpisodeModal={setEpisodeModal}
                   setLoading={setLoading}
                   episode={lastEps}
                   imgPath={lastEps.still_path}
@@ -500,7 +459,6 @@ export default function FilmInfo({
                 <EpisodeCard
                   className={`w-full`}
                   filmID={film.id}
-                  setEpisodeModal={setEpisodeModal}
                   setLoading={setLoading}
                   episode={nextEps}
                   imgPath={nextEps.still_path}

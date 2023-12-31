@@ -2,11 +2,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { DetailsContext } from "../context";
 
-export default function FilmPoster({ film, activeSeasonPoster }) {
+export default function FilmPoster({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+  const { activeSeasonPoster } = useContext(DetailsContext);
 
   let popcorn = `/popcorn.png`;
   // let filmPoster = film.poster_path;

@@ -6,12 +6,9 @@ import React from "react";
 import { usePathname } from "next/navigation";
 
 // Components
-import TitleLogo from "@/app/components/TitleLogo";
 import FilmMedia from "./FilmMedia";
 import FilmCollection from "./FilmCollection";
 import FilmReviews from "./FilmReviews";
-import FilmPoster from "./FilmPoster";
-import FilmInfo from "./FilmInfo";
 
 // Swiper
 import "swiper/css";
@@ -21,26 +18,14 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
-import { EpisodeModal } from "./EpisodeModal";
-import PersonModal from "./PersonModal";
-import ShareModal from "./ShareModal";
 
 export default function FilmOverview({
   film,
   videos,
   images,
   reviews,
-  credits,
-  providers,
-  episodeModal,
-  setEpisodeModal,
   loading,
   setLoading,
-  selectedPerson,
-  setSelectedPerson,
-  personModal,
-  setPersonModal,
-  setActiveSeasonPoster,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -68,14 +53,7 @@ export default function FilmOverview({
 
       {/* Collection */}
       {isTvPage || film.belongs_to_collection !== null ? (
-        <FilmCollection
-          film={film}
-          episodeModal={episodeModal}
-          setEpisodeModal={setEpisodeModal}
-          loading={loading}
-          setLoading={setLoading}
-          setActiveSeasonPoster={setActiveSeasonPoster}
-        />
+        <FilmCollection film={film} loading={loading} setLoading={setLoading} />
       ) : null}
 
       {/* Reviews */}

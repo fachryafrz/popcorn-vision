@@ -1,11 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
-import {
-  chevronBack,
-  chevronBackCircle,
-  chevronForward,
-  chevronForwardCircle,
-} from "ionicons/icons";
+import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
 import React from "react";
 
 // Swiper
