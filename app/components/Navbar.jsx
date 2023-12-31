@@ -196,11 +196,11 @@ export default function Navbar() {
         </div>
 
         {/* Movie & TV Series Switcher */}
-        <div
-          id={`FilmSwitcher`}
-          className="flex items-center gap-2 lg:col-[3/4] justify-self-end"
-        >
-          <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm">
+        <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
+          <div
+            id={`FilmSwitcher`}
+            className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm"
+          >
             <button
               onClick={() => handleFilmTypeChange("movie")}
               type={`button`}
