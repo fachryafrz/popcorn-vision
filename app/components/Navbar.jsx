@@ -9,6 +9,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getLocation } from "../api/route";
 
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
@@ -28,6 +31,78 @@ export default function Navbar() {
         setLocation(position.coords);
         setUserLocation(localStorage.getItem("user-location"));
       });
+    }
+
+    let steps;
+    let desktop = window.matchMedia("(min-width: 1024px)");
+
+    if (desktop.matches) {
+      steps = [
+        {
+          element: "#Home",
+          popover: {
+            title: "Navigate to Home",
+            description: `Takes you back to the main page of ${process.env.NEXT_PUBLIC_APP_NAME}. Click to return to the homepage and start navigation from the beginning.`,
+          },
+        },
+        {
+          element: "#SearchBar",
+          popover: {
+            title: "Find any films!",
+            description:
+              "Allows you to quickly find your favorite Movies or TV Series. Type any titles to discover the content you're looking for.",
+          },
+        },
+        {
+          element: "#FilmSwitcher",
+          popover: {
+            title: "Movies / TV Series?",
+            description:
+              "This film switcher enables you to toggle view between Movies and TV Series. Use it to filter and display content based on your viewing preferences.",
+          },
+        },
+      ];
+    } else {
+      steps = [
+        {
+          element: "#Home",
+          popover: {
+            title: "Navigate to Home",
+            description: `Takes you back to the main page of ${process.env.NEXT_PUBLIC_APP_NAME}. Click to return to the homepage and start navigation from the beginning.`,
+          },
+        },
+        {
+          element: "#FilmSwitcher",
+          popover: {
+            title: "Movies / TV Series?",
+            description:
+              "This film switcher enables you to toggle view between Movies and TV Series. Use it to filter and display content based on your viewing preferences.",
+          },
+        },
+        {
+          element: "#SearchBarMobile",
+          popover: {
+            title: "Find any films!",
+            description:
+              "Allows you to quickly find your favorite Movies or TV Series. Type in titles, genres, or names to discover the content you're looking for.",
+          },
+        },
+      ];
+    }
+
+    // Driver JS
+    const driverObj = driver({
+      popoverClass: "bg-base-100 backdrop-blur bg-opacity-[85%] text-white",
+      allowClose: false,
+      showProgress: false,
+      onDestroyed: () => {
+        localStorage.setItem("is-driver-shown", true);
+      },
+      steps: steps,
+    });
+
+    if (!localStorage.getItem("is-driver-shown")) {
+      driverObj.drive();
     }
   }, []);
 
@@ -99,6 +174,7 @@ export default function Navbar() {
     >
       <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
         <Link
+          id={`Home`}
           href={!isTvPage ? `/` : `/tv`}
           className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
           aria-labelledby={`Home`}
@@ -120,7 +196,10 @@ export default function Navbar() {
         </div>
 
         {/* Movie & TV Series Switcher */}
-        <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
+        <div
+          id={`FilmSwitcher`}
+          className="flex items-center gap-2 lg:col-[3/4] justify-self-end"
+        >
           <div className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm">
             <button
               onClick={() => handleFilmTypeChange("movie")}
@@ -147,6 +226,7 @@ export default function Navbar() {
           </div>
 
           <Link
+            id={`SearchBarMobile`}
             href={!isTvPage ? `/search` : `/tv/search`}
             className={`lg:hidden btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20 rounded-full !px-0 aspect-square md:aspect-auto md:!px-3`}
           >
@@ -214,6 +294,7 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
 
         searchRef?.current.blur();
       }}
+      id={`SearchBar`}
       className={`block form-control w-full justify-self-center relative`}
     >
       <div

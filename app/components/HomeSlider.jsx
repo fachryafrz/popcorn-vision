@@ -40,7 +40,7 @@ export default function HomeSlider({ films, genres }) {
         effect="fade"
         loop={true}
         autoplay={{
-          delay: 5000,
+          delay: 10000,
           disableOnInteraction: true,
           pauseOnMouseEnter: true,
         }}
@@ -151,7 +151,9 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
           />
         )}
       </figure>
-      <div className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100svh] pb-[2rem]`}>
+      <div
+        className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100svh] pb-[2rem]`}
+      >
         <FilmSummary
           film={film}
           genres={genres}
