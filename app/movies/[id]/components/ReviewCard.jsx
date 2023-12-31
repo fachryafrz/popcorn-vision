@@ -106,7 +106,7 @@ export default function ReviewCard({ review }) {
           role={timeAgo(review.created_at)}
           tooltip={
             <div
-              className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs sm:text-sm text-gray-400 flex flex-wrap gap-1 relative`}
+              className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs font-medium text-gray-400 flex flex-wrap gap-1 relative`}
               data-tip={`${formatDate({
                 date: review?.created_at,
                 showDay: false,

@@ -28,7 +28,7 @@ export default function TitleLogo({ film, images }) {
 
   return !loading ? (
     titleLogo ? (
-      <figure className="mb-4 flex justify-center">
+      <figure className="mb-4 flex justify-start lg:max-w-[75%]">
         <img
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
           alt={title}

@@ -67,7 +67,7 @@ export default function Person({
 
         {!tooltip && role !== "" ? (
           <span
-            className={`text-sm text-gray-400 line-clamp-2`}
+            className={`text-xs font-medium text-gray-400 line-clamp-2`}
           >
             <span title={role}>{role}</span>
           </span>
