@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import RatingStars from "./RatingStars";
 import Person from "./Person";
 import { formatDate } from "@/app/lib/formatDate";
@@ -127,7 +128,7 @@ export default function ReviewCard({ review }) {
         className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`}
         itemProp="reviewBody"
       >
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {readMore || wordCount < maxLength
             ? text
             : `${words.slice(0, maxLength).join(" ")}...`}
