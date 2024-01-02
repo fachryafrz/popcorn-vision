@@ -170,7 +170,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       uploadDate: video.published_at,
     });
   });
-  reviews.results.map((review) => {
+  reviews.results.slice(0, 4).map((review) => {
     reviewsArray.push({
       "@type": "Review",
       author: {
@@ -210,7 +210,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     },
   };
 
-  console.log(jsonLd.aggregateRating);
+  console.log(jsonLd.review);
 
   return (
     <div
