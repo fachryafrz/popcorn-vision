@@ -138,7 +138,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let imagesArray = [];
   let trailerArray = [];
   let reviewsArray = [];
-  let duration;
 
   // Director / Creator
   !isTvPage
@@ -210,12 +209,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": !isTvPage ? "Movie" : "TVSeries",
+    // "@type": !isTvPage ? "Movie" : "TVSeries", // Kalo TVSeries, ga bisa di test di Google Rich Results
+    "@type": "Movie",
     name: !isTvPage ? film.title : film.name,
     description: film.overview,
     genre: genresArray,
     productionCompany: productionCompaniesArray,
     datePublished: !isTvPage ? film.release_date : film.first_air_date,
+    duration: `PT${filmRuntime}M`,
     director: directorsArray,
     actor: actorsArray,
     image: imagesArray,
@@ -228,11 +229,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
       ratingCount: film.vote_count,
     },
   };
-
-  // Duration
-  !isTvPage
-    ? (jsonLd.duration = `PT${filmRuntime}M`)
-    : (jsonLd.timeRequired = `PT${filmRuntime}M`);
 
   // console.log(jsonLd.timeRequired);
 
