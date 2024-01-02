@@ -157,6 +157,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     imagesArray.push({
       "@type": "ImageObject",
       contentUrl: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
+      url: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
     });
   });
   filteredVideos.map((video) => {
@@ -179,10 +180,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
       reviewRating: {
         "@type": "Rating",
         ratingValue: review.author_details.rating,
-        bestRating: 10,
-        worstRating: 1,
       },
-      reviewBody: review.content,
+      // reviewBody: review.content,
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: parseInt(film.vote_average.toFixed(0)),
+        bestRating: 10,
+        ratingCount: film.vote_count,
+      },
     });
   });
 
@@ -204,6 +209,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
     trailer: trailerArray,
     review: reviewsArray,
   };
+
+  console.log(jsonLd.review[1].aggregateRating);
 
   return (
     <div
