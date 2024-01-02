@@ -156,10 +156,16 @@ export default async function FilmDetail({ params, type = "movie" }) {
       "@type": "Person",
       name: director.name,
     },
-    actor: {
-      "@type": "Person",
-      name: credits.cast[0].name,
-    },
+    actor: [
+      {
+        "@type": "Person",
+        name: credits.cast[0].name,
+      },
+      {
+        "@type": "Person",
+        name: credits.cast[1].name,
+      },
+    ],
     image: image,
     trailer: {
       "@type": "VideoObject",
@@ -184,6 +190,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
       reviewBody: reviews.results[0].content,
     },
   };
+
+  console.log(jsonLd)
 
   return (
     <div
