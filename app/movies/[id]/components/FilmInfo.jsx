@@ -129,7 +129,6 @@ export default function FilmInfo({
           <h1
             title={!isTvPage ? film.title : film.name}
             className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-normal text-center md:text-start"
-            itemProp="name"
             style={{ textWrap: `balance` }}
           >
             {!isTvPage ? film.title : film.name}
@@ -152,12 +151,7 @@ export default function FilmInfo({
                 {film.production_companies.map(
                   (item, i) =>
                     item.logo_path !== null && (
-                      <div
-                        key={item.id}
-                        itemProp="productionCompany"
-                        itemScope
-                        itemType="http://schema.org/Organization"
-                      >
+                      <div key={item.id}>
                         <Link
                           href={
                             !isTvPage
@@ -175,9 +169,7 @@ export default function FilmInfo({
                             }}
                           ></figure>
                         </Link>
-                        <span className={`sr-only`} itemProp="name">
-                          {item.name}
-                        </span>
+                        <span className={`sr-only`}>{item.name}</span>
                       </div>
                     )
                 )}
@@ -188,7 +180,6 @@ export default function FilmInfo({
           {!isTvPage
             ? film.release_date && (
                 <section id={`Movie Release Date`}>
-                  <meta itemProp="datePublished" content={film.release_date} />
                   <div className={`flex items-center gap-2`}>
                     <IonIcon icon={calendarOutline} />
 
@@ -200,10 +191,6 @@ export default function FilmInfo({
               )
             : film.first_air_date && (
                 <section id={`TV Series Air Date`}>
-                  <meta
-                    itemProp="datePublished"
-                    content={film.first_air_date}
-                  />
                   <div className={`flex items-center gap-2`}>
                     <IonIcon icon={calendarOutline} />
 
@@ -246,7 +233,6 @@ export default function FilmInfo({
           {/* Film Runtime */}
           {filmRuntime > 0 && (
             <section id={`Movie Runtime`}>
-              <meta itemProp="duration" content={`PT${filmRuntime}M`} />
               <div className={`flex items-center gap-2`}>
                 <IonIcon icon={timeOutline} />
                 <time>
@@ -273,7 +259,6 @@ export default function FilmInfo({
                         : `/tv/search?with_genres=${item.id}`
                     }
                     className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
-                    itemProp="genre"
                   >
                     {item.name}
                   </Link>
@@ -300,7 +285,6 @@ export default function FilmInfo({
                         : `https://image.tmdb.org/t/p/w185${director.profile_path}`
                     }
                     role={`Director`}
-                    itemProp={`director`}
                   />
                 </section>
               )
@@ -321,7 +305,6 @@ export default function FilmInfo({
                             : `https://image.tmdb.org/t/p/w185${item.profile_path}`
                         }
                         role={`Creator`}
-                        itemProp={`director`}
                       />
                     );
                   })}

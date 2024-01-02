@@ -155,7 +155,6 @@ export default function PersonDetails({
 
           <div
             className={`prose max-w-none [&_*]:!text-gray-400 text-sm sm:text-base`}
-            itemProp="reviewBody"
           >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {person.biography}

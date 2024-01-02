@@ -91,17 +91,11 @@ export default function ReviewCard({ review }) {
   };
 
   return (
-    <div
-      className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
-      itemProp="review"
-      itemScope
-      itemType="http://schema.org/Review"
-    >
+    <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
       <div className="flex gap-2 items-center">
         <Person
           name={review.author}
           profile_path={imgUrlAPI === null ? null : imgUrl}
-          itemProp={`author`}
           role={timeAgo(review.created_at)}
           tooltip={
             <div
@@ -126,7 +120,6 @@ export default function ReviewCard({ review }) {
 
       <div
         className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`}
-        itemProp="reviewBody"
       >
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {readMore || wordCount < maxLength

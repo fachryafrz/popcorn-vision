@@ -50,7 +50,7 @@ export default function CastsList({ credits }) {
                       : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
                   }
                   before={`as`}
-                  itemProp={`actor`}
+                  personRole={`actor`}
                 />
               );
             })}

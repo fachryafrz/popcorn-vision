@@ -39,10 +39,7 @@ export default function FilmContent({
   return (
     <div
       className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}
-      itemScope
-      itemType={
-        !isTvPage ? "http://schema.org/Movie" : "http://schema.org/TVSeries"
-      }
+      
     >
       <div
         className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
