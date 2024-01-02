@@ -17,7 +17,7 @@ export default function ReviewCard({ review }) {
   const text = review.content;
   const words = text.split(" ");
   const wordCount = words.length;
-  const maxLength = 30;
+  const maxLength = 50;
 
   // Review date variables
   const createdAt = formatDate({ date: review.created_at, showDay: false });
@@ -91,17 +91,11 @@ export default function ReviewCard({ review }) {
   };
 
   return (
-    <div
-      className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl"
-      itemProp="review"
-      itemScope
-      itemType="http://schema.org/Review"
-    >
+    <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
       <div className="flex gap-2 items-center">
         <Person
           name={review.author}
           profile_path={imgUrlAPI === null ? null : imgUrl}
-          itemProp={`author`}
           role={timeAgo(review.created_at)}
           tooltip={
             <div
@@ -126,7 +120,6 @@ export default function ReviewCard({ review }) {
 
       <div
         className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`}
-        itemProp="reviewBody"
       >
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {readMore || wordCount < maxLength
@@ -136,13 +129,13 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div
-        className={`${
-          words.length > maxLength ? `flex` : `hidden`
+        className={`${words.length > maxLength ? `flex` : `hidden`} ${
+          readMore ? `sticky bottom-0` : ``
         } items-center`}
       >
         <button
           onClick={handleReadMore}
-          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium`}
+          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium bg-[#2e3542] pt-1 pr-1`}
         >
           {readMore ? `Show less` : `Read more`}
         </button>

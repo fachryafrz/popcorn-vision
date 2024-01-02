@@ -2,3 +2,5 @@
 User-agent: *
 Disallow: /skeleton
 Disallow: /welcome
+
+Sitemap: https://www.popcorn.vision/sitemap.xml

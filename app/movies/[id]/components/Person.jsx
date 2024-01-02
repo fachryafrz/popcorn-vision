@@ -11,7 +11,7 @@ export default function Person({
   name,
   role,
   profile_path,
-  itemProp,
+  personRole,
   tooltip = false,
 }) {
   let popcorn = `/popcorn.png`;
@@ -29,9 +29,9 @@ export default function Person({
 
   return (
     <button
-      onClick={itemProp != `author` ? () => handleActorClick() : null}
+      onClick={personRole != `author` ? () => handleActorClick() : null}
       className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
-        itemProp != `author`
+        personRole != `author`
           ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-[2rem]`
           : `cursor-default`
       }`}
@@ -51,14 +51,10 @@ export default function Person({
       </div>
       <div
         className="w-full self-center"
-        itemProp={itemProp}
-        itemScope
-        itemType="http://schema.org/Person"
       >
         <h3
           title={name}
           className={`font-medium md:line-clamp-1`}
-          itemProp="name"
         >
           {name}
         </h3>

@@ -77,7 +77,7 @@ export async function generateMetadata({ params, type = "movie" }) {
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
-  const isTvPage = type !== "movie" ? true : false;
+  const isTvPage = type === "tv" ? true : false;
 
   const film = await fetchData({
     endpoint: `/${type}/${id}`,
@@ -110,6 +110,108 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const genres = await getGenres({ type });
 
+  // Schema.org JSON-LD
+  let director = credits.crew.find((person) => person.job === "Director");
+
+  const filmRuntime = !isTvPage
+    ? film.runtime
+    : film.episode_run_time.length > 0 && film.episode_run_time[0];
+
+  const filteredVideos =
+    videos &&
+    videos.results
+      .reverse()
+      .filter(
+        (result) =>
+          (result.site === "YouTube" &&
+            result.official === true &&
+            result.iso_639_1 === "en" &&
+            result.type === "Trailer") ||
+          result.type === "Teaser" ||
+          result.type === "Clip"
+      );
+
+  let actorsArray = [];
+  let genresArray = [];
+  let productionCompaniesArray = [];
+  let imagesArray = [];
+  let trailerArray = [];
+  let reviewsArray = [];
+
+  credits.cast.slice(0, 2).map((actor) => {
+    actorsArray.push({
+      "@type": "Person",
+      name: actor.name,
+    });
+  });
+  film.genres.map((genre) => {
+    genresArray.push(genre.name);
+  });
+  film.production_companies.map((company) => {
+    productionCompaniesArray.push({
+      "@type": "Organization",
+      name: company.name,
+    });
+  });
+  images.backdrops.slice(0, 2).map((image) => {
+    imagesArray.push({
+      "@type": "ImageObject",
+      contentUrl: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
+      url: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
+    });
+  });
+  filteredVideos.map((video) => {
+    trailerArray.push({
+      "@type": "VideoObject",
+      name: video.name,
+      description: video.type,
+      thumbnailUrl: `https://i.ytimg.com/vi_webp/${video.key}/maxresdefault.webp`,
+      embedUrl: `https://www.youtube.com/embed/${video.key}`,
+      uploadDate: video.published_at,
+    });
+  });
+  reviews.results.slice(0, 4).map((review) => {
+    reviewsArray.push({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: review.author,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.author_details.rating,
+      },
+      reviewBody: review.content,
+    });
+  });
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": !isTvPage ? "Movie" : "TVSeries",
+    name: !isTvPage ? film.title : film.name,
+    description: film.overview,
+    genre: genresArray,
+    productionCompany: productionCompaniesArray,
+    datePublished: !isTvPage ? film.release_date : film.first_air_date,
+    duration: `PT${filmRuntime}M`,
+    director: {
+      "@type": "Person",
+      name: director.name,
+    },
+    actor: actorsArray,
+    image: imagesArray,
+    trailer: trailerArray,
+    review: reviewsArray,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: parseInt(film.vote_average.toFixed(0)),
+      bestRating: 10,
+      ratingCount: film.vote_count,
+    },
+  };
+
+  console.log(jsonLd.review);
+
   return (
     <div
       className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] md:-mt-[66px] relative`}
@@ -140,6 +242,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
           genres={genres}
         />
       )}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }
