@@ -181,13 +181,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
         "@type": "Rating",
         ratingValue: review.author_details.rating,
       },
-      // reviewBody: review.content,
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: parseInt(film.vote_average.toFixed(0)),
-        bestRating: 10,
-        ratingCount: film.vote_count,
-      },
+      reviewBody: review.content,
     });
   });
 
@@ -208,9 +202,15 @@ export default async function FilmDetail({ params, type = "movie" }) {
     image: imagesArray,
     trailer: trailerArray,
     review: reviewsArray,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: parseInt(film.vote_average.toFixed(0)),
+      bestRating: 10,
+      ratingCount: film.vote_count,
+    },
   };
 
-  console.log(jsonLd.review[1].aggregateRating);
+  console.log(jsonLd.aggregateRating);
 
   return (
     <div
