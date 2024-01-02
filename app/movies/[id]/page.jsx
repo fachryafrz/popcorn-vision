@@ -111,15 +111,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const genres = await getGenres({ type });
 
   // Schema.org JSON-LD
-  let image;
-  let path =
-    images.backdrops.length > 0
-      ? images.backdrops[0].file_path
-      : film.backdrop_path || film.poster_path;
-  if (path) {
-    image = `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`;
-  }
-
   let director = credits.crew.find((person) => person.job === "Director");
 
   const filmRuntime = !isTvPage
@@ -140,58 +131,79 @@ export default async function FilmDetail({ params, type = "movie" }) {
           result.type === "Clip"
       );
 
+  let actorsArray = [];
+  let genresArray = [];
+  let productionCompaniesArray = [];
+  let imagesArray = [];
+  let trailerArray = [];
+  let reviewsArray = [];
+
+  credits.cast.slice(0, 2).map((actor) => {
+    actorsArray.push({
+      "@type": "Person",
+      name: actor.name,
+    });
+  });
+  film.genres.map((genre) => {
+    genresArray.push(genre.name);
+  });
+  film.production_companies.map((company) => {
+    productionCompaniesArray.push({
+      "@type": "Organization",
+      name: company.name,
+    });
+  });
+  images.backdrops.slice(0, 2).map((image) => {
+    imagesArray.push({
+      "@type": "ImageObject",
+      contentUrl: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
+    });
+  });
+  filteredVideos.map((video) => {
+    trailerArray.push({
+      "@type": "VideoObject",
+      name: video.name,
+      description: video.type,
+      thumbnailUrl: `https://i.ytimg.com/vi_webp/${video.key}/maxresdefault.webp`,
+      embedUrl: `https://www.youtube.com/embed/${video.key}`,
+      uploadDate: video.published_at,
+    });
+  });
+  reviews.results.map((review) => {
+    reviewsArray.push({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: review.author,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.author_details.rating,
+        bestRating: 10,
+        worstRating: 1,
+      },
+      reviewBody: review.content,
+    });
+  });
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": !isTvPage ? "Movie" : "TVSeries",
     name: !isTvPage ? film.title : film.name,
     description: film.overview,
-    genre: film.genres.map((genre) => genre.name).join(", "),
-    productionCompany: {
-      "@type": "Organization",
-      name: film.production_companies[0].name,
-    },
+    genre: genresArray,
+    productionCompany: productionCompaniesArray,
     datePublished: !isTvPage ? film.release_date : film.first_air_date,
     duration: `PT${filmRuntime}M`,
     director: {
       "@type": "Person",
       name: director.name,
     },
-    actor: [
-      {
-        "@type": "Person",
-        name: credits.cast[0].name,
-      },
-      {
-        "@type": "Person",
-        name: credits.cast[1].name,
-      },
-    ],
-    image: image,
-    trailer: {
-      "@type": "VideoObject",
-      name: filteredVideos[0].name,
-      description: filteredVideos[0].type,
-      thumbnailUrl: `https://i.ytimg.com/vi_webp/${filteredVideos[0].key}/maxresdefault.webp`,
-      embedUrl: `https://www.youtube.com/embed/${filteredVideos[0].key}`,
-      uploadDate: filteredVideos[0].published_at,
-    },
-    review: {
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: reviews.results[0].author,
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: reviews.results[0].author_details.rating,
-        bestRating: 10,
-        worstRating: 1,
-      },
-      reviewBody: reviews.results[0].content,
-    },
+    actor: actorsArray,
+    image: imagesArray,
+    trailer: trailerArray,
+    review: reviewsArray,
   };
-
-  console.log(jsonLd)
 
   return (
     <div
