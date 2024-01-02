@@ -97,6 +97,7 @@ export default function ReviewCard({ review }) {
           name={review.author}
           profile_path={imgUrlAPI === null ? null : imgUrl}
           role={timeAgo(review.created_at)}
+          personRole={`author`}
           tooltip={
             <div
               className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs font-medium text-gray-400 flex flex-wrap gap-1 relative`}
