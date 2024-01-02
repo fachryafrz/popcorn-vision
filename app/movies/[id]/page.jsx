@@ -138,6 +138,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let imagesArray = [];
   let trailerArray = [];
   let reviewsArray = [];
+  let duration;
 
   // Director / Creator
   !isTvPage
@@ -190,19 +191,21 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   // Reviews
   reviews.results.map((review) => {
-    reviewsArray.push({
-      "@type": "Review",
-      author: {
-        "@type": "Person",
-        name: review.author,
-      },
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: review.author_details.rating,
-        bestRating: 10,
-      },
-      reviewBody: review.content,
-    });
+    if (review.author_details.rating) {
+      reviewsArray.push({
+        "@type": "Review",
+        author: {
+          "@type": "Person",
+          name: review.author,
+        },
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: review.author_details.rating,
+          bestRating: 10,
+        },
+        reviewBody: review.content,
+      });
+    }
   });
 
   const jsonLd = {
@@ -213,7 +216,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
     genre: genresArray,
     productionCompany: productionCompaniesArray,
     datePublished: !isTvPage ? film.release_date : film.first_air_date,
-    duration: `PT${filmRuntime}M`,
     director: directorsArray,
     actor: actorsArray,
     image: imagesArray,
@@ -227,7 +229,12 @@ export default async function FilmDetail({ params, type = "movie" }) {
     },
   };
 
-  console.log(jsonLd.director);
+  // Duration
+  !isTvPage
+    ? (jsonLd.duration = `PT${filmRuntime}M`)
+    : (jsonLd.timeRequired = `PT${filmRuntime}M`);
+
+  // console.log(jsonLd.timeRequired);
 
   return (
     <div
