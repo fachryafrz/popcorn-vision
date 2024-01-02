@@ -17,7 +17,7 @@ export default function ReviewCard({ review }) {
   const text = review.content;
   const words = text.split(" ");
   const wordCount = words.length;
-  const maxLength = 30;
+  const maxLength = 50;
 
   // Review date variables
   const createdAt = formatDate({ date: review.created_at, showDay: false });
@@ -136,13 +136,13 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div
-        className={`${
-          words.length > maxLength ? `flex` : `hidden`
+        className={`${words.length > maxLength ? `flex` : `hidden`} ${
+          readMore ? `sticky bottom-0` : ``
         } items-center`}
       >
         <button
           onClick={handleReadMore}
-          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium`}
+          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium bg-[#2e3542] pt-1 pr-1`}
         >
           {readMore ? `Show less` : `Read more`}
         </button>

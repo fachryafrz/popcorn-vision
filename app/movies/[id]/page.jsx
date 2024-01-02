@@ -77,7 +77,7 @@ export async function generateMetadata({ params, type = "movie" }) {
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
-  const isTvPage = type !== "movie" ? true : false;
+  const isTvPage = type === "tv" ? true : false;
 
   const film = await fetchData({
     endpoint: `/${type}/${id}`,
@@ -109,6 +109,83 @@ export default async function FilmDetail({ params, type = "movie" }) {
   };
 
   const genres = await getGenres({ type });
+
+  // Schema.org JSON-LD
+  let image;
+  let path =
+    images.backdrops.length > 0
+      ? images.backdrops[0].file_path
+      : film.backdrop_path || film.poster_path;
+  if (path) {
+    image = `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`;
+  }
+
+  let director = credits.crew.find((person) => person.job === "Director");
+
+  const filmRuntime = !isTvPage
+    ? film.runtime
+    : film.episode_run_time.length > 0 && film.episode_run_time[0];
+
+  const filteredVideos =
+    videos &&
+    videos.results
+      .reverse()
+      .filter(
+        (result) =>
+          (result.site === "YouTube" &&
+            result.official === true &&
+            result.iso_639_1 === "en" &&
+            result.type === "Trailer") ||
+          result.type === "Teaser" ||
+          result.type === "Clip"
+      );
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": !isTvPage ? "Movie" : "TVSeries",
+    name: !isTvPage ? film.title : film.name,
+    description: film.overview,
+    genre: film.genres.map((genre) => genre.name).join(", "),
+    productionCompany: {
+      "@type": "Organization",
+      name: film.production_companies[0].name,
+    },
+    datePublished: !isTvPage ? film.release_date : film.first_air_date,
+    duration: `PT${filmRuntime}M`,
+    director: {
+      "@type": "Person",
+      name: director.name,
+    },
+    actor: {
+      "@type": "Person",
+      name: credits.cast[0].name,
+    },
+    image: image,
+    trailer: {
+      "@type": "VideoObject",
+      name: filteredVideos[0].name,
+      description: filteredVideos[0].type,
+      thumbnailUrl: `https://i.ytimg.com/vi_webp/${filteredVideos[0].key}/maxresdefault.webp`,
+      embedUrl: `https://www.youtube.com/embed/${filteredVideos[0].key}`,
+      uploadDate: filteredVideos[0].published_at,
+    },
+    review: {
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: reviews.results[0].author,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: reviews.results[0].author_details.rating,
+        bestRating: 10,
+        worstRating: 1,
+      },
+      reviewBody: reviews.results[0].content,
+    },
+  };
+
+  console.log(jsonLd);
 
   return (
     <div
