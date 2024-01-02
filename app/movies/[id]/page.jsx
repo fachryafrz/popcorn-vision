@@ -131,6 +131,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
           result.type === "Clip"
       );
 
+  let directorsArray = [];
   let actorsArray = [];
   let genresArray = [];
   let productionCompaniesArray = [];
@@ -138,21 +139,35 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let trailerArray = [];
   let reviewsArray = [];
 
+  // Director / Creator
+  !isTvPage
+    ? directorsArray.push({ "@type": "Person", name: director.name })
+    : film.created_by.map((creator) => {
+        directorsArray.push({ "@type": "Person", name: creator.name });
+      });
+
+  // Actors
   credits.cast.slice(0, 2).map((actor) => {
     actorsArray.push({
       "@type": "Person",
       name: actor.name,
     });
   });
+
+  // Genres
   film.genres.map((genre) => {
     genresArray.push(genre.name);
   });
+
+  // Production Companies
   film.production_companies.map((company) => {
     productionCompaniesArray.push({
       "@type": "Organization",
       name: company.name,
     });
   });
+
+  // Images
   images.backdrops.slice(0, 2).map((image) => {
     imagesArray.push({
       "@type": "ImageObject",
@@ -160,6 +175,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
       url: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
     });
   });
+
+  // Trailer
   filteredVideos.map((video) => {
     trailerArray.push({
       "@type": "VideoObject",
@@ -170,7 +187,9 @@ export default async function FilmDetail({ params, type = "movie" }) {
       uploadDate: video.published_at,
     });
   });
-  reviews.results.slice(0, 4).map((review) => {
+
+  // Reviews
+  reviews.results.map((review) => {
     reviewsArray.push({
       "@type": "Review",
       author: {
@@ -180,6 +199,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       reviewRating: {
         "@type": "Rating",
         ratingValue: review.author_details.rating,
+        bestRating: 10,
       },
       reviewBody: review.content,
     });
@@ -194,10 +214,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     productionCompany: productionCompaniesArray,
     datePublished: !isTvPage ? film.release_date : film.first_air_date,
     duration: `PT${filmRuntime}M`,
-    director: {
-      "@type": "Person",
-      name: director.name,
-    },
+    director: directorsArray,
     actor: actorsArray,
     image: imagesArray,
     trailer: trailerArray,
@@ -210,7 +227,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     },
   };
 
-  console.log(jsonLd.review);
+  console.log(jsonLd.director);
 
   return (
     <div
