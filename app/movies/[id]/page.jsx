@@ -111,6 +111,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const genres = await getGenres({ type });
 
   // Schema.org JSON-LD
+  const dataCount = 2;
+
   let director = credits.crew.find((person) => person.job === "Director");
 
   const filmRuntime = !isTvPage
@@ -147,7 +149,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       });
 
   // Actors
-  credits.cast.slice(0, 2).map((actor) => {
+  credits.cast.slice(0, dataCount).map((actor) => {
     actorsArray.push({
       "@type": "Person",
       name: actor.name,
@@ -168,7 +170,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   });
 
   // Images
-  images.backdrops.slice(0, 2).map((image) => {
+  images.backdrops.slice(0, dataCount).map((image) => {
     imagesArray.push({
       "@type": "ImageObject",
       contentUrl: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
@@ -189,7 +191,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   });
 
   // Reviews
-  reviews.results.map((review) => {
+  reviews.results.slice(0, dataCount).map((review) => {
     if (review.author_details.rating) {
       reviewsArray.push({
         "@type": "Review",
