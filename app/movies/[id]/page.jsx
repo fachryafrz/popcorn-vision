@@ -185,8 +185,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
     },
   };
 
-  console.log(jsonLd);
-
   return (
     <div
       className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] md:-mt-[66px] relative`}
@@ -217,6 +215,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
           genres={genres}
         />
       )}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </div>
   );
 }
