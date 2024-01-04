@@ -88,34 +88,34 @@ export default function Footer() {
             explore more with us
           </p>
           <div className="flex gap-2 flex-wrap">
-            <a
+            <Link
               href="https://facebook.com/fachryafrz"
               target="_blank"
-              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
             >
               <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://twitter.com/fachryafrz"
               target="_blank"
-              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
             >
               <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://instagram.com/fachryafrz"
               target="_blank"
-              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
             >
               <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="https://youtube.com/@fachryafrz"
               target="_blank"
-              className="bg-secondary bg-opacity-10 p-3 rounded-xl text-primary-blue grid place-items-center hocus:bg-opacity-25 hocus:scale-105 transition-all active:scale-100"
+              className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
             >
               <IonIcon icon={logoYoutube} className="text-[1.25rem]" />
-            </a>
+            </Link>
           </div>
         </div>
       </div>
