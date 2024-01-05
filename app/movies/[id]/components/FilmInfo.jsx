@@ -324,7 +324,8 @@ export default function FilmInfo({
                 {(
                   providersIDArray[1].rent ||
                   providersIDArray[1].buy ||
-                  providersIDArray[1].flatrate
+                  providersIDArray[1].flatrate ||
+                  providersIDArray[1].ads
                 ).map(
                   (item) =>
                     item.logo_path !== null && (
