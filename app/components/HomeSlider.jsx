@@ -10,7 +10,14 @@ import { star, informationCircleOutline, playOutline } from "ionicons/icons";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Autoplay, EffectFade, Keyboard } from "swiper";
+import {
+  Pagination,
+  Autoplay,
+  EffectFade,
+  Keyboard,
+  FreeMode,
+  Thumbs,
+} from "swiper";
 import "swiper/css";
 import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
@@ -25,7 +32,9 @@ import { getFilm } from "../api/route";
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+
   const [loading, setLoading] = useState(true);
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -33,51 +42,93 @@ export default function HomeSlider({ films, genres }) {
   };
 
   return (
-    <section name="Home Slider" className={`pb-[2rem] -mt-[66px]`}>
+    <section name="Home Slider" className={`pb-[2rem] -mt-[66px] relative`}>
       <h2 className="sr-only">Discover Movies</h2>
-      <Swiper
-        modules={[Pagination, Autoplay, EffectFade, Keyboard]}
-        effect="fade"
-        loop={true}
-        autoplay={{
-          delay: 10000,
-          disableOnInteraction: true,
-          pauseOnMouseEnter: true,
-        }}
-        keyboard={true}
-        spaceBetween={0}
-        slidesPerView={1}
-        className={`h-[100svh] lg:h-[120svh] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+      <div>
+        <Swiper
+          modules={[
+            Pagination,
+            Autoplay,
+            EffectFade,
+            Keyboard,
+            FreeMode,
+            Thumbs,
+          ]}
+          thumbs={{
+            swiper:
+              thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+          }}
+          effect="fade"
+          loop={true}
+          autoplay={{
+            delay: 10000,
+            disableOnInteraction: true,
+            pauseOnMouseEnter: true,
+          }}
+          keyboard={true}
+          spaceBetween={0}
+          slidesPerView={1}
+          className={`h-[100svh] lg:h-[calc(100svh+5rem)] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+        >
+          {films.map((film) => {
+            const releaseDate = isItTvPage(
+              film.release_date,
+              film.first_air_date
+            );
+
+            const filmGenres =
+              film.genre_ids && genres
+                ? film.genre_ids.map((genreId) =>
+                    genres.find((genre) => genre.id === genreId)
+                  )
+                : [];
+
+            return (
+              <SwiperSlide
+                key={film.id}
+                className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:after:via-40% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-auto md:aspect-auto`}
+              >
+                <HomeFilm
+                  film={film}
+                  genres={genres}
+                  isTvPage={isTvPage}
+                  loading={loading}
+                  setLoading={setLoading}
+                />
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
+
+      <div
+        className={`hidden lg:block absolute right-4 bottom-[calc(5rem+4rem)] w-fit`}
       >
-        {films.map((film) => {
-          const releaseDate = isItTvPage(
-            film.release_date,
-            film.first_air_date
-          );
-
-          const filmGenres =
-            film.genre_ids && genres
-              ? film.genre_ids.map((genreId) =>
-                  genres.find((genre) => genre.id === genreId)
-                )
-              : [];
-
-          return (
-            <SwiperSlide
-              key={film.id}
-              className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:after:via-40% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-auto md:aspect-auto`}
-            >
-              <HomeFilm
-                film={film}
-                genres={genres}
-                isTvPage={isTvPage}
-                loading={loading}
-                setLoading={setLoading}
-              />
-            </SwiperSlide>
-          );
-        })}
-      </Swiper>
+        <Swiper
+          onSwiper={setThumbsSwiper}
+          watchSlidesProgress={true}
+          modules={[Thumbs]}
+          slidesPerView={`auto`}
+          spaceBetween={0}
+        >
+          {films.map((film) => {
+            return (
+              <SwiperSlide
+                key={film.id}
+                className={`aspect-video !w-[100px] !mr-2 overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all`}
+              >
+                <figure
+                  className={`aspect-video`}
+                  style={{
+                    backgroundImage: `url(https://image.tmdb.org/t/p/w185${film.backdrop_path})`,
+                    backgroundSize: `cover`,
+                  }}
+                ></figure>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </section>
   );
 }
@@ -163,5 +214,44 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         />
       </div>
     </>
+  );
+}
+
+// NOTE: This is for the backdrop with the film title
+function SliderThumbs({ film, isTvPage }) {
+  const [filmBackdrop, setFilmBackdrop] = useState("");
+
+  useEffect(() => {
+    const isItTvPage = (movie, tv) => {
+      const type = !isTvPage ? movie : tv;
+      return type;
+    };
+
+    getFilm({
+      id: film.id,
+      type: isItTvPage(`movie`, `tv`),
+      path: "/images",
+      params: {
+        include_image_language: "en",
+      },
+    }).then((res) => {
+      let { backdrops } = res;
+
+      if (!backdrops.length) {
+        setFilmBackdrop(film.backdrop_path);
+      } else {
+        setFilmBackdrop(backdrops[0].file_path);
+      }
+    });
+  }, [film, isTvPage]);
+
+  return (
+    <figure
+      className={`aspect-video`}
+      style={{
+        backgroundImage: `url(https://image.tmdb.org/t/p/w185${filmBackdrop})`,
+        backgroundSize: `cover`,
+      }}
+    ></figure>
   );
 }
