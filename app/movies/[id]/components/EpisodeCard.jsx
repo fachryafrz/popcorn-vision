@@ -2,6 +2,7 @@
 import { getEpisodeModal } from "@/app/api/route";
 import React, { useContext } from "react";
 import { DetailsContext } from "../context";
+import ImagePovi from "@/app/components/ImagePovi";
 
 export default function EpisodeCard({
   className,
@@ -30,25 +31,10 @@ export default function EpisodeCard({
       }}
       className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full h-fit transition-all ${className}`}
     >
-      <figure className="aspect-video rounded-lg overflow-hidden w-full relative">
-        {imgPath ? (
-          <img
-            src={`https://image.tmdb.org/t/p/w500${imgPath}`}
-            alt={title}
-            className={`pointer-events-none`}
-          />
-        ) : (
-          <div className={`bg-base-100 w-full h-full grid place-items-center`}>
-            <div
-              style={{
-                background: `url(/popcorn.png)`,
-                backgroundSize: `contain`,
-              }}
-              className={`aspect-square h-full`}
-            ></div>
-          </div>
-        )}
-
+      <ImagePovi
+        imgPath={imgPath && `https://image.tmdb.org/t/p/w500${imgPath}`}
+        className={`aspect-video rounded-lg overflow-hidden w-full relative`}
+      >
         {overlay && (
           <span
             className={`absolute top-0 left-0 m-2 p-1 px-2 text-sm font-medium bg-base-100 bg-opacity-[75%] backdrop-blur-sm rounded-full`}
@@ -56,7 +42,8 @@ export default function EpisodeCard({
             {overlay}
           </span>
         )}
-      </figure>
+      </ImagePovi>
+
       <div className="flex flex-col gap-1 items-start w-full">
         <h3
           className="text-start line-clamp-1 lg:line-clamp-2 font-medium"

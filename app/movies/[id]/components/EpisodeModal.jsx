@@ -7,6 +7,7 @@ import { formatDate } from "@/app/lib/formatDate";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { isPlural } from "@/app/lib/isPlural";
 import { DetailsContext } from "../context";
+import ImagePovi from "@/app/components/ImagePovi";
 
 export function EpisodeModal({ episode }) {
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
@@ -47,17 +48,12 @@ export function EpisodeModal({ episode }) {
         <div
           className={`modal-box rounded-2xl max-w-none w-full p-0 relative max-h-none overflow-y-hidden`}
         >
-          <figure
+          <ImagePovi
+            imgPath={
+              episode.still_path &&
+              `https://image.tmdb.org/t/p/w92${episode.still_path}`
+            }
             className={`aspect-video relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
-            style={{
-              backgroundImage:
-                episode.still_path === null
-                  ? `url(/popcorn.png)`
-                  : `https://image.tmdb.org/t/p/w92${episode.still_path}`,
-              backgroundSize: `contain`,
-              backgroundRepeat: `no-repeat`,
-              backgroundPosition: `center`,
-            }}
           >
             {episode.still_path && (
               <img
@@ -66,7 +62,8 @@ export function EpisodeModal({ episode }) {
                 className={`object-cover pointer-events-none`}
               />
             )}
-          </figure>
+          </ImagePovi>
+
           <div
             className={`p-4 sm:p-8 -mt-[75px] z-10 relative flex flex-col gap-6`}
           >

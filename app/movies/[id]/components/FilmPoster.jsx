@@ -4,6 +4,7 @@
 import { usePathname } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { DetailsContext } from "../context";
+import ImagePovi from "@/app/components/ImagePovi";
 
 export default function FilmPoster({ film }) {
   const pathname = usePathname();
@@ -25,17 +26,9 @@ export default function FilmPoster({ film }) {
 
   return (
     <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
-      <figure
+      <ImagePovi
+        imgPath={`https://image.tmdb.org/t/p/w45${filmPoster}`}
         className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
-        style={{
-          backgroundImage:
-            film.poster_path === null
-              ? `url(${popcorn})`
-              : `url(https://image.tmdb.org/t/p/w45${filmPoster})`,
-          backgroundSize: film.poster_path === null ? `contain` : `cover`,
-          backgroundRepeat: `no-repeat`,
-          backgroundPosition: `center`,
-        }}
       >
         {film.poster_path !== null && (
           <img
@@ -71,7 +64,7 @@ export default function FilmPoster({ film }) {
             </div>
           </div>
         )}
-      </figure>
+      </ImagePovi>
     </div>
   );
 }

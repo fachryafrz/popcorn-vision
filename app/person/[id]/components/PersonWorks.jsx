@@ -1,5 +1,6 @@
 "use client";
 
+import ImagePovi from "@/app/components/ImagePovi";
 import { slugify } from "@/app/lib/slugify";
 import { sortFilms } from "@/app/lib/sortFilms";
 import { IonIcon } from "@ionic/react";
@@ -98,16 +99,12 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                         }-${slugify(isItTvPage(film.title, film.name))}`}
                         className={`hocus:scale-[1.01] active:scale-100 transition-all`}
                       >
-                        <figure
+                        <ImagePovi
+                          imgPath={
+                            film.poster_path &&
+                            `https://image.tmdb.org/t/p/w300${film.poster_path}`
+                          }
                           className={`rounded-lg overflow-hidden aspect-poster relative`}
-                          style={{
-                            backgroundImage:
-                              film.poster_path === null ? popcorn : filmPoster,
-                            backgroundSize:
-                              film.poster_path === null ? `contain` : `cover`,
-                            backgroundRepeat: `no-repeat`,
-                            backgroundPosition: `center`,
-                          }}
                         >
                           {film.vote_average > 0 && (
                             <div
@@ -136,7 +133,8 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                               </div>
                             </div>
                           )}
-                        </figure>
+                        </ImagePovi>
+
                         <div className="mt-2">
                           <h3
                             title={isItTvPage(film.title, film.name)}

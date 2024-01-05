@@ -1,16 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { slugify } from "../lib/slugify";
 import { formatDate } from "../lib/formatDate";
+import ImagePovi from "./ImagePovi";
 
 export default function FilmCard({ film, genres, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
   const options = { year: "numeric", month: "short" };
-
-  let popcorn = `url(/popcorn.png)`;
-  let filmPoster = `url(https://image.tmdb.org/t/p/w300${film.poster_path})`;
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -24,14 +22,12 @@ export default function FilmCard({ film, genres, isTvPage }) {
         `/tv/${film.id}-${slugify(film.name)}`
       )}
     >
-      <figure
+      <ImagePovi
+        imgPath={
+          film.poster_path &&
+          `https://image.tmdb.org/t/p/w300${film.poster_path}`
+        }
         className={`rounded-xl overflow-hidden aspect-poster relative`}
-        style={{
-          backgroundImage: film.poster_path === null ? popcorn : filmPoster,
-          backgroundSize: film.poster_path === null ? `contain` : `cover`,
-          backgroundRepeat: `no-repeat`,
-          backgroundPosition: `center`,
-        }}
       >
         {film.vote_average > 0 && (
           <div
@@ -59,7 +55,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
             </div>
           </div>
         )}
-      </figure>
+      </ImagePovi>
       <div className="mt-2">
         <h3
           title={isItTvPage(film.title, film.name)}

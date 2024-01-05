@@ -1,5 +1,6 @@
 "use client";
 
+import ImagePovi from "@/app/components/ImagePovi";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
 import { IonIcon } from "@ionic/react";
@@ -37,18 +38,13 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
       }`}
     >
       {/* Profile Picture */}
-      <figure
+      <ImagePovi
+        imgPath={
+          person.profile_path &&
+          `https://image.tmdb.org/t/p/h632${person.profile_path}`
+        }
         className={`aspect-poster sm:flex-1`}
-        style={{
-          backgroundImage:
-            person.profile_path === null
-              ? `url(/popcorn.png)`
-              : `url(https://image.tmdb.org/t/p/h632${person.profile_path})`,
-          backgroundSize: person.profile_path === null ? `contain` : `cover`,
-          backgroundRepeat: `no-repeat`,
-          backgroundPosition: `center`,
-        }}
-      ></figure>
+      />
 
       {/* Person Info */}
       <div className={`p-4 pb-6 flex flex-col gap-4`}>

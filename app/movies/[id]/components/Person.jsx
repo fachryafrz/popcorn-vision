@@ -5,6 +5,7 @@ import { slugify } from "@/app/lib/slugify";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 import { DetailsContext } from "../context";
+import ImagePovi from "@/app/components/ImagePovi";
 
 export default function Person({
   id,
@@ -39,23 +40,11 @@ export default function Person({
       <div
         className={`!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0 bg-base-100`}
       >
-        <figure
-          style={{
-            backgroundImage:
-              profile_path === null ? `url(${popcorn})` : `url(${profilePath})`,
-            backgroundSize: profile_path === null ? `contain` : `cover`,
-            backgroundPosition: `center`,
-          }}
-          className={`w-[50px] aspect-square`}
-        ></figure>
+        <ImagePovi imgPath={profilePath} className={`w-[50px] aspect-square`} />
       </div>
-      <div
-        className="w-full self-center"
-      >
-        <h3
-          title={name}
-          className={`font-medium md:line-clamp-1`}
-        >
+
+      <div className="w-full self-center">
+        <h3 title={name} className={`font-medium md:line-clamp-1`}>
           {name}
         </h3>
 

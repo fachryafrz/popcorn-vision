@@ -22,6 +22,7 @@ import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
 import { releaseStatus } from "@/app/lib/releaseStatus";
 import { DetailsContext } from "../context";
+import ImagePovi from "@/app/components/ImagePovi";
 
 export default function FilmCollection({ film, setLoading }) {
   const [apiData, setApiData] = useState();
@@ -93,17 +94,13 @@ export default function FilmCollection({ film, setLoading }) {
                         >
                           {index + 1}
                         </span>
-                        <figure
+                        <ImagePovi
+                          imgPath={
+                            item.poster_path &&
+                            `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                          }
                           className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
-                          style={{
-                            backgroundImage:
-                              item.poster_path === null ? popcorn : filmPoster,
-                            backgroundSize:
-                              item.poster_path === null ? "contain" : "cover",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center",
-                          }}
-                        ></figure>
+                        />
                         <div className="flex flex-col gap-1 items-start w-full">
                           <h3
                             className="text-start line-clamp-2 font-medium"
@@ -222,18 +219,13 @@ function FilmSeason({ film, item, index, setLoading }) {
           {index + 1}
         </span>
 
-        <figure
-          className="aspect-poster min-w-[50px] bg-base-100 max-w-[50px] rounded-lg overflow-hidden flex items-center"
-          style={{
-            backgroundImage:
-              item.poster_path === null
-                ? `url(/popcorn.png)`
-                : `url(https://image.tmdb.org/t/p/w500${item.poster_path})`,
-            backgroundSize: "contain",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        ></figure>
+        <ImagePovi
+          imgPath={
+            item.poster_path &&
+            `https://image.tmdb.org/t/p/w92${item.poster_path}`
+          }
+          className={`aspect-poster min-w-[50px] bg-base-100 max-w-[50px] rounded-lg overflow-hidden flex items-center`}
+        />
         <div className="flex flex-col gap-1 items-start w-full">
           <h3
             title={`${item.name} (${item.episode_count} ${isPlural({
