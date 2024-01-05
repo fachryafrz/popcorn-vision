@@ -9,11 +9,13 @@ import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
+import { getFilm } from "../api/route";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
   const [loading, setLoading] = useState(true);
+  const [filmPoster, setFilmPoster] = useState(film.poster_path);
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -28,6 +30,25 @@ export default function Trending({ film, genres }) {
       : [];
 
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
+
+  useEffect(() => {
+    getFilm({
+      id: film.id,
+      type: !isTvPage ? `movie` : `tv`,
+      path: "/images",
+      params: {
+        include_image_language: "null",
+      },
+    }).then((res) => {
+      let { posters } = res;
+
+      if (!posters.length) {
+        setFilmPoster(film.poster_path);
+      } else {
+        setFilmPoster(posters[0].file_path);
+      }
+    });
+  }, [film, isTvPage]);
 
   return (
     <div className="px-4 mx-auto max-w-7xl">
@@ -44,7 +65,7 @@ export default function Trending({ film, genres }) {
         <figure className="z-30 sm:w-[300px] aspect-poster rounded-2xl overflow-hidden">
           <img
             loading="lazy"
-            src={`https://image.tmdb.org/t/p/w780${film.poster_path}`}
+            src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
             alt={film.title}
           />
         </figure>
