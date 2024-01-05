@@ -110,12 +110,13 @@ export default function HomeSlider({ films, genres }) {
           modules={[Thumbs]}
           slidesPerView={`auto`}
           spaceBetween={0}
+          wrapperClass={`gap-2`}
         >
           {films.map((film) => {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`aspect-video !w-[100px] !mr-2 overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all`}
+                className={`aspect-video !w-[100px] overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all`}
               >
                 <figure
                   className={`aspect-video`}
@@ -203,7 +204,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         )}
       </figure>
       <div
-        className={`mx-auto max-w-none z-20 absolute inset-0 max-h-[100svh] pb-[2rem]`}
+        className={`mx-auto max-w-none z-20 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
       >
         <FilmSummary
           film={film}
