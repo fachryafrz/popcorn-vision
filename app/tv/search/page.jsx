@@ -1,4 +1,5 @@
 import Search from "@/app/search/Search";
+import { redirect } from "next/navigation";
 import React from "react";
 
 export async function generateMetadata() {
@@ -33,5 +34,5 @@ export async function generateMetadata() {
 }
 
 export default function page() {
-  return <Search type={`tv`} />;
+  return redirect("/search");
 }

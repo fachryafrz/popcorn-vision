@@ -64,6 +64,7 @@ export default function Search({ type = "movie" }) {
   const [notFoundMessage, setNotFoundMessage] = useState("");
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [totalSearchPages, setTotalSearchPages] = useState({});
+  const [notAvailable, setNotAvailable] = useState("");
 
   // React-Select Placeholder
   const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
@@ -750,6 +751,13 @@ export default function Search({ type = "movie" }) {
     }
   };
 
+  // Handle not available
+  const handleNotAvailable = () => {
+    setNotAvailable(
+      "Filters cannot be applied, please clear the search input."
+    );
+  };
+
   // Use Effect for getting user location
   useEffect(() => {
     setUserLocation(localStorage.getItem("user-location"));
@@ -786,9 +794,9 @@ export default function Search({ type = "movie" }) {
     }
 
     // Get genres list
-    fetchData({ endpoint: `/genre/${type}/list` }).then((res) =>
-      setGenresData(res.genres)
-    );
+    fetchData({ endpoint: `/genre/movie/list` }).then((res) => {
+      setGenresData(res.genres);
+    });
 
     // Get languages list
     fetchData({ endpoint: `/configuration/languages` }).then((res) =>
@@ -949,8 +957,8 @@ export default function Search({ type = "movie" }) {
       const searchMaxYear = parseInt(releaseDateParams[2]);
 
       // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
-        setReleaseDate([searchMinYear, searchMaxYear]);
-        setReleaseDateSlider([searchMinYear, searchMaxYear]);
+      setReleaseDate([searchMinYear, searchMaxYear]);
+      setReleaseDateSlider([searchMinYear, searchMaxYear]);
       // }
     }
 
@@ -1266,7 +1274,7 @@ export default function Search({ type = "movie" }) {
 
     const performSearchQuery = () => {
       fetchData({
-        endpoint: `/search/${type}`,
+        endpoint: `/search/multi`,
         queryParams: {
           query: searchQuery,
           include_adult: false,
@@ -1276,12 +1284,8 @@ export default function Search({ type = "movie" }) {
       })
         .then((res) => {
           // Filter movies based on release date
-          const filteredMovies = res.results.filter((film) =>
-            !isTvPage
-              ? film.release_date
-              : film.first_air_date >= `${releaseDate[0]}-01-01` && !isTvPage
-              ? film.release_date
-              : film.first_air_date <= `${releaseDate[1]}-12-31`
+          const filteredMovies = res.results.filter(
+            (film) => film.media_type === "movie" || film.media_type === "tv"
           );
           setFilms(filteredMovies);
           setLoading(false);
@@ -1334,9 +1338,18 @@ export default function Search({ type = "movie" }) {
     }
   }, [isLoadMoreBtnInViewport]);
 
+  // Use Effect for tv series genres
+  useEffect(() =>{
+    fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
+      setGenresData((prev) => [...prev, ...res.genres])
+    );
+  },[genresData])
+
   return (
     <div className={`flex lg:px-4`}>
       <aside
+        onMouseOver={() => isQueryParams && handleNotAvailable()}
+        onMouseLeave={() => setNotAvailable("")}
         className={`p-4 w-full lg:max-w-[300px] h-[calc(100svh-66px)] lg:h-[calc(100svh-66px-1rem)] lg:sticky top-[66px] bg-[#2A313E] bg-opacity-[95%] backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-30 transition-all lg:translate-x-0 ${
           isFilterActive ? `translate-x-0` : `-translate-x-full`
         }`}
@@ -1675,7 +1688,7 @@ export default function Search({ type = "movie" }) {
 
           <div className={`lg:w-full`}>
             <h1 className={`capitalize font-bold text-3xl`}>
-              {!isTvPage ? `Movie` : `TV Series`}
+              {`Search`}
             </h1>
           </div>
 
@@ -1683,6 +1696,8 @@ export default function Search({ type = "movie" }) {
             className={`w-full flex gap-2 items-center justify-between lg:justify-end flex-col sm:flex-row`}
           >
             <div
+              onMouseOver={() => isQueryParams && handleNotAvailable()}
+              onMouseLeave={() => setNotAvailable("")}
               className={`flex justify-center gap-1 flex-wrap sm:flex-nowrap`}
             >
               {/* Sort by type */}
@@ -1805,7 +1820,10 @@ export default function Search({ type = "movie" }) {
 
               {/* Filter button */}
               <button
-                onClick={() => setIsFilterActive(true)}
+                onClick={() =>
+                  isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
+                }
+                onMouseLeave={() => setNotAvailable("")}
                 className={`btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
               >
                 <IonIcon icon={filter} className={`text-2xl`} />
@@ -1843,7 +1861,7 @@ export default function Search({ type = "movie" }) {
                       key={film.id}
                       film={film}
                       genres={filmGenres}
-                      isTvPage={isTvPage}
+                      isTvPage={film.media_type === "tv"}
                     />
                   );
                 })}
@@ -1865,9 +1883,17 @@ export default function Search({ type = "movie" }) {
               onClick={() => fetchMoreFilms((currentSearchPage += 1))}
               className="text-white aspect-square w-[30px] pointer-events-none"
             >
-              <span class="loading loading-spinner loading-md"></span>
+              <span className="loading loading-spinner loading-md"></span>
             </button>
           </section>
+        )}
+
+        {notAvailable && (
+          <div className="toast min-w-0 max-w-full whitespace-normal">
+            <div className="alert alert-error">
+              <span>{notAvailable}</span>
+            </div>
+          </div>
         )}
       </div>
     </div>
