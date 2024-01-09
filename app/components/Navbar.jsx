@@ -120,7 +120,8 @@ export default function Navbar() {
     }
   }, [location, userLocation]);
 
-  const isMoviesPage = pathname.startsWith("/movies") || pathname === "/";
+  const isMoviesPage = pathname.startsWith("/movies") || pathname === "/" ||
+  pathname.startsWith("/search");
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
@@ -132,19 +133,19 @@ export default function Navbar() {
 
     setFilmType(type);
 
-    // if (isSearchPage) {
-    //   if (URLSearchQuery) {
-    //     router.push(
-    //       `${
-    //         !isTvType ? `/search` : `/tv/search`
-    //       }?query=${URLSearchQuery.replace(/\s+/g, "+")}`
-    //     );
-    //   } else {
-    //     router.push(`${!isTvType ? `/search` : `/tv/search`}`);
-    //   }
-    // } else {
+    if (isSearchPage) {
+      if (URLSearchQuery) {
+        router.push(
+          `${
+            !isTvType ? `/search` : `/tv/search`
+          }?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+        );
+      } else {
+        router.push(`${!isTvType ? `/search` : `/tv/search`}`);
+      }
+    } else {
       router.push(!isTvType ? `/` : `/tv`);
-    // }
+    }
   };
 
   useEffect(() => {
@@ -278,9 +279,8 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
         e.preventDefault();
         const query = e.target[0].value.trim();
 
-        // const basePath = isTvPage ? "/tv" : "";
-        // const searchPath = `${basePath}/search`;
-        const searchPath = `/search`;
+        const basePath = isTvPage ? "/tv" : "";
+        const searchPath = `${basePath}/search`;
         const formattedQuery = query.replace(/\s+/g, "+");
         const searchQuery = `query=${formattedQuery}`;
 
@@ -321,7 +321,7 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
             type="button"
             onClick={() => {
               setSearchInput("");
-              router.push(`/search`);
+              router.push(`${isTvPage ? "/tv" : ""}/search`);
             }}
             className={`pl-4 absolute h-full flex items-center right-4`}
           >

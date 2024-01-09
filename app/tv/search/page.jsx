@@ -34,5 +34,5 @@ export async function generateMetadata() {
 }
 
 export default function page() {
-  return redirect("/search");
+  return <Search type={`tv`} />;
 }

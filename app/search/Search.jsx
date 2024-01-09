@@ -49,9 +49,9 @@ export default function Search({ type = "movie" }) {
   // State
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
-  const [genresData, setGenresData] = useState();
-  const [languagesData, setLanguagesData] = useState();
-  const [providersData, setProvidersData] = useState();
+  const [genresData, setGenresData] = useState([]);
+  const [languagesData, setLanguagesData] = useState([]);
+  const [providersData, setProvidersData] = useState([]);
   const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [castData, setCastData] = useState();
   const [crewData, setCrewData] = useState();
@@ -793,10 +793,15 @@ export default function Search({ type = "movie" }) {
       // defaultFilms();
     }
 
-    // Get genres list
-    fetchData({ endpoint: `/genre/movie/list` }).then((res) => {
-      setGenresData(res.genres);
-    });
+    // Get movie genres list
+    fetchData({ endpoint: `/genre/movie/list` }).then((res) =>
+      setGenresData((prev) => [...prev, ...res.genres])
+    );
+
+    // Get tv genres list
+    fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
+      setGenresData((prev) => [...prev, ...res.genres])
+    );
 
     // Get languages list
     fetchData({ endpoint: `/configuration/languages` }).then((res) =>
@@ -1338,13 +1343,6 @@ export default function Search({ type = "movie" }) {
     }
   }, [isLoadMoreBtnInViewport]);
 
-  // Use Effect for tv series genres
-  useEffect(() =>{
-    fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
-      setGenresData((prev) => [...prev, ...res.genres])
-    );
-  },[genresData])
-
   return (
     <div className={`flex lg:px-4`}>
       <aside
@@ -1837,7 +1835,7 @@ export default function Search({ type = "movie" }) {
             {/* Loading films */}
             <section className={`flex items-center justify-center mt-4`}>
               <button className="text-white aspect-square w-[30px] pointer-events-none">
-                <span class="loading loading-spinner loading-md"></span>
+                <span className="loading loading-spinner loading-md"></span>
               </button>
             </section>
           </>
@@ -1889,9 +1887,9 @@ export default function Search({ type = "movie" }) {
         )}
 
         {notAvailable && (
-          <div className="toast min-w-0 max-w-full whitespace-normal">
+          <div className="toast toast-start z-40 min-w-0 max-w-full whitespace-normal">
             <div className="alert alert-error">
-              <span>{notAvailable}</span>
+              <span style={{textWrap:`balance`}}>{notAvailable}</span>
             </div>
           </div>
         )}
