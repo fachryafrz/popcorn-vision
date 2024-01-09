@@ -4,6 +4,8 @@ import FilmSlider from "@/app/components/FilmSlider";
 import { fetchData, getFilm, getGenres } from "@/app/api/route";
 import { releaseStatus } from "@/app/lib/releaseStatus";
 import FilmDetailsProvider from "./components/FilmDetailsProvider";
+import { isPlural } from "@/app/lib/isPlural";
+import FilmGrid from "@/app/components/FilmGrid";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -255,14 +257,26 @@ export default async function FilmDetail({ params, type = "movie" }) {
       />
 
       {/* Recommendations */}
-      {recommendations.results.length > 0 && (
+      {/* {recommendations.results.length > 0 && (
         <FilmSlider
           films={recommendations}
-          title={
-            recommendations.results.length > 1
-              ? `Recommendations`
-              : `Recommendation`
-          }
+          title={isPlural({
+            text: "Recommendation",
+            number: recommendations.results.length,
+          })}
+          genres={genres}
+        />
+      )} */}
+
+      {/* Recommendations */}
+      {recommendations.results.length > 0 && (
+        <FilmGrid
+          id={id}
+          films={recommendations}
+          title={isPlural({
+            text: "Recommendation",
+            number: recommendations.results.length,
+          })}
           genres={genres}
         />
       )}
