@@ -65,15 +65,17 @@ export default function FilmCard({ film, genres, isTvPage }) {
         </h3>
 
         <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
-          <span className="text-gray-400 whitespace-nowrap">
-            {formatDate({
-              date: releaseDate,
-              showDay: false,
-              options,
-            })}
-          </span>
+          {releaseDate && (
+            <span className="text-gray-400 whitespace-nowrap">
+              {formatDate({
+                date: releaseDate,
+                showDay: false,
+                options,
+              })}
+            </span>
+          )}
 
-          {releaseDate !== null && genres.length > 0 && (
+          {releaseDate && genres.length > 0 && (
             <span className="text-gray-400 whitespace-nowrap">&bull;</span>
           )}
 
