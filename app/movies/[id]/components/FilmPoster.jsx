@@ -27,7 +27,7 @@ export default function FilmPoster({ film }) {
   return (
     <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
       <ImagePovi
-        imgPath={`https://image.tmdb.org/t/p/w45${filmPoster}`}
+        imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
         className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
       >
         {film.poster_path !== null && (
