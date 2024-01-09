@@ -1859,7 +1859,7 @@ export default function Search({ type = "movie" }) {
                       key={film.id}
                       film={film}
                       genres={filmGenres}
-                      isTvPage={film.media_type === "tv"}
+                      isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
                     />
                   );
                 })}
