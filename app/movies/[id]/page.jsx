@@ -143,8 +143,10 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   // Director / Creator
   !isTvPage
-    ? directorsArray.push({ "@type": "Person", name: director.name })
-    : film.created_by.map((creator) => {
+    ? director &&
+      directorsArray.push({ "@type": "Person", name: director.name })
+    : film.created_by.length &&
+      film.created_by.map((creator) => {
         directorsArray.push({ "@type": "Person", name: creator.name });
       });
 
