@@ -30,6 +30,10 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         )
       : [];
 
+  useEffect(() => {
+    setIsTitleReady(false);
+  }, []);
+
   return (
     <div
       className={`flex flex-col items-center md:items-start gap-2 lg:gap-2 md:max-w-[50%] lg:max-w-[40%] h-full justify-end [&_*]:z-10 text-white ${className}`}
