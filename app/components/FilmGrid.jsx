@@ -30,7 +30,12 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
         },
       });
 
-      const filteredFilms = response.results.slice(1, response.results.length);
+      const isDuplicate = (film) =>
+        filmsData.some((prevFilm) => prevFilm.id === film.id);
+
+      const filteredFilms = response.results.filter(
+        (film) => !isDuplicate(film)
+      );
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
     } catch (error) {
@@ -90,19 +95,23 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   );
 }
 
-function useIsInViewport(ref) {
+export function useIsInViewport(ref) {
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) =>
-      setIsIntersecting(entry.isIntersecting)
-    );
+    const intersectionObserverSupported = "IntersectionObserver" in window;
 
-    observer.observe(ref.current);
+    if (intersectionObserverSupported && ref.current) {
+      const observer = new IntersectionObserver(([entry]) =>
+        setIsIntersecting(entry.isIntersecting)
+      );
 
-    return () => {
-      observer.disconnect();
-    };
+      observer.observe(ref.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
   }, [ref]);
 
   return isIntersecting;

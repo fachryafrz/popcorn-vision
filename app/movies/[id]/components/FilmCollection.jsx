@@ -66,7 +66,7 @@ export default function FilmCollection({ film, setLoading }) {
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="flex flex-col gap-2 py-2 z-10">
-        <h2 className="font-bold text-xl text-white m-0">
+        <h2 className="font-bold text-xl text-white m-0" style={{ textWrap: `balance` }}>
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
         </h2>
       </div>
