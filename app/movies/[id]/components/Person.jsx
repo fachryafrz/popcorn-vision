@@ -31,7 +31,7 @@ export default function Person({
   return (
     <button
       onClick={personRole != `author` ? () => handleActorClick() : null}
-      className={`flex flex-row text-start items-start gap-2 min-w-[120px] ${
+      className={`flex flex-row text-start items-center gap-2 min-w-[120px] ${
         personRole != `author`
           ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-[2rem]`
           : `cursor-default`
