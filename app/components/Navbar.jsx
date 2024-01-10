@@ -101,9 +101,10 @@ export default function Navbar() {
       steps: steps,
     });
 
-    if (!localStorage.getItem("is-driver-shown")) {
-      driverObj.drive();
-    }
+    // NOTE: Uncomment this to show driver.js
+    // if (!localStorage.getItem("is-driver-shown")) {
+    //   driverObj.drive();
+    // }
   }, []);
 
   useEffect(() => {

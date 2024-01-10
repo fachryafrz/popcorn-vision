@@ -102,7 +102,7 @@ export default function HomeSlider({ films, genres }) {
       </div>
 
       <div
-        className={`hidden lg:block absolute right-4 bottom-[calc(5rem+4rem)] w-fit`}
+        className={`hidden lg:block absolute right-4 bottom-[calc(5rem+4rem-1rem)] w-fit`}
       >
         <Swiper
           onSwiper={setThumbsSwiper}
@@ -110,21 +110,25 @@ export default function HomeSlider({ films, genres }) {
           modules={[Thumbs]}
           slidesPerView={`auto`}
           spaceBetween={0}
-          wrapperClass={`gap-2`}
+          wrapperClass={`gap-2 items-end p-4`}
         >
           {films.map((film) => {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`aspect-video !w-[100px] overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all`}
+                className={`aspect-video !w-[100px] !h-fit overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all hocus:!w-[110px] origin-bottom`}
               >
-                <figure
+                {/* NOTE: This is film backdrop without logo */}
+                {/* <figure
                   className={`aspect-video`}
                   style={{
                     backgroundImage: `url(https://image.tmdb.org/t/p/w185${film.backdrop_path})`,
                     backgroundSize: `cover`,
                   }}
-                ></figure>
+                ></figure> */}
+
+                {/* NOTE: This is film backdrop with logo */}
+                <SliderThumbs film={film} isTvPage={isTvPage} />
               </SwiperSlide>
             );
           })}
