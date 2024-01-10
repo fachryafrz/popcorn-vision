@@ -8,6 +8,7 @@ import { fetchData, getFilmSeason } from "../api/route";
 import { slugify } from "../lib/slugify";
 import { formatRuntime } from "../lib/formatRuntime";
 import { isPlural } from "../lib/isPlural";
+import Reveal from "../lib/Reveal";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -34,41 +35,57 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
     >
       <TitleLogo film={film} />
       <div className="flex items-center justify-center flex-wrap gap-1 font-medium text-white">
-        <div className="flex items-center gap-1 text-primary-yellow p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-          <IonIcon icon={star} className="!w-5 h-full aspect-square" />
-          <span className="!text-white">{film.vote_average.toFixed(1)}</span>
-        </div>
+        <Reveal delay={0.1}>
+          <div className="flex items-center gap-1 text-primary-yellow p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+            <IonIcon icon={star} className="!w-5 h-full aspect-square" />
+            <span className="!text-white">{film.vote_average.toFixed(1)}</span>
+          </div>
+        </Reveal>
 
         {!isTvPage ? (
-          <FilmRuntime film={film} />
+          <Reveal delay={0.2}>
+            <FilmRuntime film={film} />
+          </Reveal>
         ) : (
-          <FilmSeason film={film} setLoading={setLoading} loading={loading} />
+          <Reveal delay={0.2}>
+            <FilmSeason film={film} setLoading={setLoading} loading={loading} />
+          </Reveal>
         )}
 
         {filmGenres?.slice(0, 1).map(
           (genre) =>
             genre && (
-              <span
-                key={genre.id}
-                className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
-              >
-                {genre.name}
-              </span>
+              <Reveal key={genre.id} delay={0.3}>
+                <span
+                  className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
+                >
+                  {genre.name}
+                </span>
+              </Reveal>
             )
         )}
       </div>
-      <p className="hidden md:line-clamp-2 lg:line-clamp-3">{film.overview}</p>
+      <Reveal delay={0.1}>
+        <p className="hidden md:line-clamp-2 lg:line-clamp-3">
+          {film.overview}
+        </p>
+      </Reveal>
       <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
-        <Link
-          href={isItTvPage(
-            `/movies/${film.id}-${slugify(film.title)}`,
-            `/tv/${film.id}-${slugify(film.name)}`
-          )}
-          className={`btn btn-primary bg-opacity-40 border-none rounded-full hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
-        >
-          Details
-          <IonIcon icon={chevronForward} className="aspect-square text-base" />
-        </Link>
+        <Reveal delay={0.2} className={`[&_a]:w-full`}>
+          <Link
+            href={isItTvPage(
+              `/movies/${film.id}-${slugify(film.title)}`,
+              `/tv/${film.id}-${slugify(film.name)}`
+            )}
+            className={`btn btn-primary bg-opacity-40 border-none rounded-full hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
+          >
+            Details
+            <IonIcon
+              icon={chevronForward}
+              className="aspect-square text-base"
+            />
+          </Link>
+        </Reveal>
       </div>
     </div>
   );

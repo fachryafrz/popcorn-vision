@@ -397,62 +397,64 @@ export default function FilmInfo({
                 id={`TV Series Last Episode`}
                 className={`flex flex-col gap-2`}
               >
-                <EpisodeCard
-                  className={`w-full`}
-                  filmID={film.id}
-                  setLoading={setLoading}
-                  episode={lastEps}
-                  imgPath={lastEps.still_path}
-                  title={lastEps.name}
-                  overlay={
-                    nextEps
-                      ? `Latest Episode: ${lastEps.episode_number}`
-                      : `Last Episode: ${lastEps.episode_number}`
-                  }
-                  secondaryInfo={`Season ${lastEps.season_number}`}
-                  thirdInfo={
-                    <>
-                      {lastEps.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {lastEps.vote_average &&
-                            lastEps.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={lastEps}
+                    imgPath={lastEps.still_path}
+                    title={lastEps.name}
+                    overlay={
+                      nextEps
+                        ? `Latest Episode: ${lastEps.episode_number}`
+                        : `Last Episode: ${lastEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${lastEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {lastEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {lastEps.vote_average &&
+                              lastEps.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {lastEps.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(lastEps.runtime / 60) >= 1
-                            ? `${Math.floor(
-                                lastEps.runtime / 60
-                              )}h ${Math.floor(lastEps.runtime % 60)}m`
-                            : `${lastEps.runtime} ${isPlural({
-                                text: "minute",
-                                number: lastEps.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {lastEps.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(lastEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  lastEps.runtime / 60
+                                )}h ${Math.floor(lastEps.runtime % 60)}m`
+                              : `${lastEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: lastEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {lastEps.air_date && (
-                        <span
-                          className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({
-                            date: lastEps.air_date,
-                            showDay: false,
-                          })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {lastEps.air_date && (
+                          <span
+                            className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({
+                              date: lastEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </div>
             )}
 
@@ -461,64 +463,66 @@ export default function FilmInfo({
                 id={`TV Series Next Episode`}
                 className={`flex flex-col gap-2`}
               >
-                <EpisodeCard
-                  className={`w-full`}
-                  filmID={film.id}
-                  setLoading={setLoading}
-                  episode={nextEps}
-                  imgPath={nextEps.still_path}
-                  title={nextEps.name}
-                  overlay={
-                    nextEps.episode_type == `finale`
-                      ? `Final Episode: ${nextEps.episode_number}`
-                      : nextEps.episode_number == 1
-                      ? `First Episode`
-                      : `Next Episode: ${nextEps.episode_number}`
-                  }
-                  secondaryInfo={`Season ${nextEps.season_number}`}
-                  thirdInfo={
-                    <>
-                      {nextEps.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {nextEps.vote_average &&
-                            nextEps.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={nextEps}
+                    imgPath={nextEps.still_path}
+                    title={nextEps.name}
+                    overlay={
+                      nextEps.episode_type == `finale`
+                        ? `Final Episode: ${nextEps.episode_number}`
+                        : nextEps.episode_number == 1
+                        ? `First Episode`
+                        : `Next Episode: ${nextEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${nextEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {nextEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {nextEps.vote_average &&
+                              nextEps.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {nextEps.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(nextEps.runtime / 60) >= 1
-                            ? `${Math.floor(
-                                nextEps.runtime / 60
-                              )}h ${Math.floor(nextEps.runtime % 60)}m`
-                            : `${nextEps.runtime} ${isPlural({
-                                text: "minute",
-                                number: nextEps.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {nextEps.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(nextEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  nextEps.runtime / 60
+                                )}h ${Math.floor(nextEps.runtime % 60)}m`
+                              : `${nextEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: nextEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {nextEps.air_date && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({
-                            date: nextEps.air_date,
-                            showDay: false,
-                          })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {nextEps.air_date && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({
+                              date: nextEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </div>
             )}
 

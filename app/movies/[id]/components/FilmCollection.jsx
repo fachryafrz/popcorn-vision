@@ -164,12 +164,14 @@ export default function FilmCollection({ film, setLoading }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <FilmSeason
-                      film={film}
-                      item={item}
-                      index={index}
-                      setLoading={setLoading}
-                    />
+                    <Reveal delay={showAllCollection ? 0 : 0.1 * index}>
+                      <FilmSeason
+                        film={film}
+                        item={item}
+                        index={index}
+                        setLoading={setLoading}
+                      />
+                    </Reveal>
                   </li>
                 );
               })}
@@ -337,52 +339,54 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
           episodes.map((item) => {
             return (
               <SwiperSlide key={item.id} className={`!h-auto`}>
-                <EpisodeCard
-                  filmID={id}
-                  setLoading={setLoading}
-                  episode={item}
-                  imgPath={item.still_path}
-                  title={item.name}
-                  overlay={`Episode ${item.episode_number}`}
-                  secondaryInfo={
-                    <>
-                      {item.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {item.vote_average && item.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal delay={0.25} y={-20}>
+                  <EpisodeCard
+                    filmID={id}
+                    setLoading={setLoading}
+                    episode={item}
+                    imgPath={item.still_path}
+                    title={item.name}
+                    overlay={`Episode ${item.episode_number}`}
+                    secondaryInfo={
+                      <>
+                        {item.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {item.vote_average && item.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {item.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(item.runtime / 60) >= 1
-                            ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                                item.runtime % 60
-                              )}m`
-                            : `${item.runtime} ${isPlural({
-                                text: "minute",
-                                number: item.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {item.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(item.runtime / 60) >= 1
+                              ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
+                                  item.runtime % 60
+                                )}m`
+                              : `${item.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: item.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {item.air_date && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({ date: item.air_date })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {item.air_date && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({ date: item.air_date })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </SwiperSlide>
             );
           })}

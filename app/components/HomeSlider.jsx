@@ -28,6 +28,7 @@ import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
 import { getFilm } from "../api/route";
+import Reveal from "../lib/Reveal";
 
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
@@ -112,11 +113,11 @@ export default function HomeSlider({ films, genres }) {
           spaceBetween={0}
           wrapperClass={`gap-2 items-end p-4`}
         >
-          {films.map((film) => {
+          {films.map((film, i) => {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`aspect-video !w-[100px] !h-fit overflow-hidden rounded-lg opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all hocus:!w-[110px] origin-bottom`}
+                className={`aspect-video !w-[100px] !h-fit opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all hocus:!w-[110px] origin-bottom`}
               >
                 {/* NOTE: This is film backdrop without logo */}
                 {/* <figure
@@ -128,7 +129,9 @@ export default function HomeSlider({ films, genres }) {
                 ></figure> */}
 
                 {/* NOTE: This is film backdrop with logo */}
-                <SliderThumbs film={film} isTvPage={isTvPage} />
+                <Reveal>
+                  <SliderThumbs film={film} index={i} isTvPage={isTvPage} />
+                </Reveal>
               </SwiperSlide>
             );
           })}
@@ -223,7 +226,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
 }
 
 // NOTE: This is for the backdrop with the film title
-function SliderThumbs({ film, isTvPage }) {
+function SliderThumbs({ film, isTvPage, index }) {
   const [filmBackdrop, setFilmBackdrop] = useState("");
 
   useEffect(() => {
@@ -251,12 +254,16 @@ function SliderThumbs({ film, isTvPage }) {
   }, [film, isTvPage]);
 
   return (
-    <figure
-      className={`aspect-video`}
-      style={{
-        backgroundImage: `url(https://image.tmdb.org/t/p/w185${filmBackdrop})`,
-        backgroundSize: `cover`,
-      }}
-    ></figure>
+    filmBackdrop && (
+      <Reveal>
+        <figure
+          className={`aspect-video rounded-lg`}
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w185${filmBackdrop})`,
+            backgroundSize: `cover`,
+          }}
+        ></figure>
+      </Reveal>
+    )
   );
 }

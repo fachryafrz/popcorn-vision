@@ -29,22 +29,22 @@ export default function TitleLogo({ film, images }) {
 
   return !loading ? (
     titleLogo ? (
-      <figure className="mb-4 flex justify-start lg:max-w-[75%]">
-        <Reveal delay={0.05}>
+      <Reveal delay={0.05}>
+        <figure className="mb-4 flex justify-start lg:max-w-[75%]">
           <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={title}
             title={title}
             className="max-h-[150px] object-contain pointer-events-none"
           />
-        </Reveal>
 
-        {!images && (
-          <figcaption className="sr-only">
-            <h3 style={{ textWrap: `balance` }}>{title}</h3>
-          </figcaption>
-        )}
-      </figure>
+          {!images && (
+            <figcaption className="sr-only">
+              <h3 style={{ textWrap: `balance` }}>{title}</h3>
+            </figcaption>
+          )}
+        </figure>
+      </Reveal>
     ) : (
       <h1
         className="font-bold text-4xl lg:text-5xl line-clamp-1 lg:line-clamp-2 !leading-normal"
@@ -54,6 +54,8 @@ export default function TitleLogo({ film, images }) {
       </h1>
     )
   ) : (
-    <div className="h-[150px] w-full max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
+    <Reveal delay={0.05}>
+      <div className="h-[150px] w-full max-w-[350px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
+    </Reveal>
   );
 }

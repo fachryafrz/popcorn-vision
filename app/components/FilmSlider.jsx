@@ -13,6 +13,7 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { sortFilms } from "../lib/sortFilms";
+import Reveal from "../lib/Reveal";
 
 export default function FilmSlider({
   films,
@@ -70,13 +71,16 @@ export default function FilmSlider({
               className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)]`}
             >
               <article>
+                {/* <Reveal> */}
                 <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
+                {/* </Reveal> */}
               </article>
             </SwiperSlide>
           );
         })}
 
         <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
+          {/* <Reveal> */}
           <div className="flex gap-4 items-end">
             <p className="font-bold text-lg md:text-2xl">{title}</p>
 
@@ -89,7 +93,9 @@ export default function FilmSlider({
               </Link>
             )}
           </div>
+          {/* </Reveal> */}
 
+          {/* <Reveal> */}
           <div className={`flex gap-4 items-center`}>
             <button className="prev h-[1.5rem]" aria-label="Move slider left">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
@@ -101,6 +107,7 @@ export default function FilmSlider({
               ></IonIcon>
             </button>
           </div>
+          {/* </Reveal> */}
         </div>
       </Swiper>
     </section>
