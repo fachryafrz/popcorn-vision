@@ -87,7 +87,7 @@ export default function HomeSlider({ films, genres }) {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`flex items-end relative before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:after:via-40% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-auto md:aspect-auto`}
+                className={`flex items-end relative before:z-50 before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:after:via-40% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-auto md:aspect-auto`}
               >
                 <HomeFilm
                   film={film}
@@ -193,25 +193,29 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
     <>
       <figure className={`h-full w-full -z-10`}>
         {filmPoster && (
-          <img
-            loading={`lazy`}
-            src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
-            alt={isItTvPage(film.title, film.name)}
-            className={`object-top md:hidden`}
-          />
+          <Reveal y={0} delay={0.2}>
+            <img
+              loading={`lazy`}
+              src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
+              alt={isItTvPage(film.title, film.name)}
+              className={`object-top md:hidden`}
+            />
+          </Reveal>
         )}
 
         {filmBackdrop && (
-          <img
-            loading={`lazy`}
-            src={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
-            alt={isItTvPage(film.title, film.name)}
-            className={`object-top hidden md:block`}
-          />
+          <Reveal y={0} delay={0.2}>
+            <img
+              loading={`lazy`}
+              src={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+              alt={isItTvPage(film.title, film.name)}
+              className={`object-top hidden md:block`}
+            />
+          </Reveal>
         )}
       </figure>
       <div
-        className={`mx-auto max-w-none z-20 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
+        className={`mx-auto max-w-none z-50 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
       >
         <FilmSummary
           film={film}
