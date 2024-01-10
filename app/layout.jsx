@@ -75,7 +75,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-pt-20">
+    <html lang="en" className="scroll-pt-20 scroll-smooth">
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-100 text-white">
         {/* Navbar */}

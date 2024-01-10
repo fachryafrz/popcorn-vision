@@ -5,16 +5,16 @@ import { usePathname } from "next/navigation";
 import React, { useContext, useEffect, useState } from "react";
 import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
+import Link from "next/link";
+import { slugify } from "@/app/lib/slugify";
 
-export default function FilmPoster({ film }) {
+export default function FilmPoster({ film, videos, images, reviews }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
   const { activeSeasonPoster } = useContext(DetailsContext);
 
-  let popcorn = `/popcorn.png`;
-  // let filmPoster = film.poster_path;
-
   const [filmPoster, setFilmPoster] = useState(film.poster_path);
+  const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
     if (activeSeasonPoster) {
@@ -23,6 +23,55 @@ export default function FilmPoster({ film }) {
       setFilmPoster(film.poster_path);
     }
   }, [activeSeasonPoster, film.poster_path]);
+
+  useEffect(() => {
+    const isWindowAvailable = typeof window !== "undefined";
+    if (!isWindowAvailable) return;
+
+    // NOTE: Can't use window.location.href
+    const currentURL = `/${!isTvPage ? `movies` : `tv`}/${film.id}-${slugify(
+      !isTvPage ? film.title : film.name
+    )}`;
+
+    if (film.overview) {
+      setQuickNav([
+        {
+          name: "Overview",
+          href: `${currentURL}#overview`,
+        },
+      ]);
+    }
+
+    if (videos.results.length || images.backdrops.length) {
+      setQuickNav((prev) => [
+        ...prev,
+        {
+          name: "Media",
+          href: `${currentURL}#media`,
+        },
+      ]);
+    }
+
+    if (film.belongs_to_collection) {
+      setQuickNav((prev) => [
+        ...prev,
+        {
+          name: "Collection",
+          href: `${currentURL}#collections`,
+        },
+      ]);
+    }
+
+    if (reviews.results.length) {
+      setQuickNav((prev) => [
+        ...prev,
+        {
+          name: "Reviews",
+          href: `${currentURL}#reviews`,
+        },
+      ]);
+    }
+  }, [film, images, isTvPage, reviews, videos]);
 
   return (
     <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
@@ -65,6 +114,18 @@ export default function FilmPoster({ film }) {
           </div>
         )}
       </ImagePovi>
+
+      {/* {quickNav.length && (
+        <ul className={`hidden lg:flex gap-1 flex-wrap`}>
+          {quickNav.map((link, i) => {
+            return (
+              <li key={i}>
+                <Link href={link.href} className={`btn btn-sm`}>{link.name}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      )} */}
     </div>
   );
 }

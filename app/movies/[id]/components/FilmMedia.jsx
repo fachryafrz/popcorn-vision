@@ -38,7 +38,7 @@ export default function FilmMedia({ videos, images }) {
     );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div id="media" className="flex flex-col gap-2">
       <div className="max-w-full">
         <Swiper
           modules={[

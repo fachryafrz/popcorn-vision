@@ -37,10 +37,7 @@ export default function FilmContent({
   }, [personModal, episodeModal]);
 
   return (
-    <div
-      className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}
-      
-    >
+    <div className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}>
       <div
         className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
         style={{
@@ -50,7 +47,12 @@ export default function FilmContent({
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
           <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
-            <FilmPoster film={film} />
+            <FilmPoster
+              film={film}
+              videos={videos}
+              images={images}
+              reviews={reviews}
+            />
           </div>
         </section>
 
