@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { fetchData, getTitleLogo } from "../api/route";
+import Reveal from "../lib/Reveal";
 
 export default function TitleLogo({ film, images }) {
   const [titleLogo, setTitleLogo] = useState(images);
@@ -29,12 +30,14 @@ export default function TitleLogo({ film, images }) {
   return !loading ? (
     titleLogo ? (
       <figure className="mb-4 flex justify-start lg:max-w-[75%]">
-        <img
-          src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-          alt={title}
-          title={title}
-          className="max-h-[150px] object-contain pointer-events-none"
-        />
+        <Reveal delay={0.05}>
+          <img
+            src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
+            alt={title}
+            title={title}
+            className="max-h-[150px] object-contain pointer-events-none"
+          />
+        </Reveal>
 
         {!images && (
           <figcaption className="sr-only">

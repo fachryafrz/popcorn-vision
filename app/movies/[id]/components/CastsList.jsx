@@ -6,6 +6,7 @@ import {
   chevronUpCircleOutline,
 } from "ionicons/icons";
 import Person from "./Person";
+import Reveal from "@/app/lib/Reveal";
 
 export default function CastsList({ credits }) {
   const [showAllActors, setShowAllActors] = useState(false);
@@ -18,9 +19,11 @@ export default function CastsList({ credits }) {
   return (
     <div className={`max-w-full flex flex-col self-start sticky top-20`}>
       <div className="flex items-center justify-between">
-        <h2 className="font-bold text-xl">
-          Casts & Credits {/* ({credits.cast.length}) */}
-        </h2>
+        <Reveal>
+          <h2 className="font-bold text-xl">
+            Casts & Credits {/* ({credits.cast.length}) */}
+          </h2>{" "}
+        </Reveal>
 
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
@@ -36,42 +39,49 @@ export default function CastsList({ credits }) {
           credits.cast &&
           credits.cast
             .slice(0, showAllActors ? credits.cast.length : numActors)
-            .map((actor) => {
+            .map((actor, i) => {
               return (
-                <Person
+                <Reveal
                   key={actor.id}
-                  id={actor.id}
-                  showAllActors={showAllActors}
-                  name={actor.name}
-                  role={actor.character}
-                  profile_path={
-                    actor.profile_path === null
-                      ? null
-                      : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                  }
-                  before={`as`}
-                  personRole={`actor`}
-                />
+                  delay={showAllActors ? 0 : 0.1 * i}
+                  className={`[&_button]:w-full`}
+                >
+                  <Person
+                    id={actor.id}
+                    showAllActors={showAllActors}
+                    name={actor.name}
+                    role={actor.character}
+                    profile_path={
+                      actor.profile_path === null
+                        ? null
+                        : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                    }
+                    before={`as`}
+                    personRole={`actor`}
+                  />{" "}
+                </Reveal>
               );
             })}
 
         {credits && credits.cast && credits.cast.length > numActors && (
-          <button
-            onClick={handleShowAllActors}
-            className={`sticky mt-2 bottom-0 text-primary-blue hidden md:flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
-              showAllActors ? `mx-1` : ``
-            }`}
-          >
-            {showAllActors ? "Show Less" : "Show All"}
-            <IonIcon
-              icon={
-                showAllActors
-                  ? chevronUpCircleOutline
-                  : chevronDownCircleOutline
-              }
-              className="text-[1.25rem]"
-            />
-          </button>
+          <Reveal className={`sticky mt-2 bottom-0 hidden md:block`} y={0}>
+            <button
+              onClick={handleShowAllActors}
+              className={`text-primary-blue w-full flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
+                showAllActors ? `mx-1` : ``
+              }`}
+            >
+              {showAllActors ? "Show Less" : "Show All"}
+              <IonIcon
+                icon={
+                  showAllActors
+                    ? chevronUpCircleOutline
+                    : chevronDownCircleOutline
+                }
+                className="text-[1.25rem]"
+              />
+            </button>{" "}
+          </Reveal>
         )}
       </div>
     </div>
