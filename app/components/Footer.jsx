@@ -99,7 +99,7 @@ export default function Footer() {
               and explore more with us
             </p>
             <div className="flex gap-2 flex-wrap">
-              <Reveal delay={0.5}>
+              <Reveal delay={0.1}>
                 <Link
                   href="https://facebook.com/fachryafrz"
                   target="_blank"
@@ -108,7 +108,7 @@ export default function Footer() {
                   <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.6}>
+              <Reveal delay={0.2}>
                 <Link
                   href="https://twitter.com/fachryafrz"
                   target="_blank"
@@ -117,7 +117,7 @@ export default function Footer() {
                   <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.7}>
+              <Reveal delay={0.3}>
                 <Link
                   href="https://instagram.com/fachryafrz"
                   target="_blank"
@@ -126,7 +126,7 @@ export default function Footer() {
                   <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.8}>
+              <Reveal delay={0.4}>
                 <Link
                   href="https://youtube.com/@fachryafrz"
                   target="_blank"
