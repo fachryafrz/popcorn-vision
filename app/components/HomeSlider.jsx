@@ -193,23 +193,23 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
     <>
       <figure className={`h-full w-full -z-10`}>
         {filmPoster && (
-          <Reveal y={0} delay={0.2}>
+          <Reveal y={0} delay={0.2} className={`md:hidden h-full`}>
             <img
               loading={`lazy`}
               src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
               alt={isItTvPage(film.title, film.name)}
-              className={`object-top md:hidden`}
+              className={`object-top`}
             />
           </Reveal>
         )}
 
         {filmBackdrop && (
-          <Reveal y={0} delay={0.2}>
+          <Reveal y={0} delay={0.2} className={`hidden md:block h-full`}>
             <img
               loading={`lazy`}
               src={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
               alt={isItTvPage(film.title, film.name)}
-              className={`object-top hidden md:block`}
+              className={`object-top`}
             />
           </Reveal>
         )}
