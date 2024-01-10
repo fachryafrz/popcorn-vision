@@ -30,7 +30,7 @@ export default function FilmPoster({ film }) {
         imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
         className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
       >
-        {film.poster_path !== null && (
+        {filmPoster && (
           <img
             src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
             alt={!isTvPage ? film.title : film.name}
