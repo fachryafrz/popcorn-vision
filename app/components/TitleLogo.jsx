@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { fetchData, getTitleLogo } from "../api/route";
 import Reveal from "../lib/Reveal";
 
-export default function TitleLogo({ film, images }) {
+export default function TitleLogo({ film, images, setIsTitleReady }) {
   const [titleLogo, setTitleLogo] = useState(images);
   const [loading, setLoading] = useState(!images ? true : false);
 
@@ -23,9 +23,10 @@ export default function TitleLogo({ film, images }) {
       }).then((res) => {
         setTitleLogo(res.logos.find((img) => img.iso_639_1 === "en"));
         setLoading(false);
+        setIsTitleReady(true);
       });
     }
-  }, [film, isTvPage, titleLogo]);
+  }, [film, isTvPage, setIsTitleReady, titleLogo]);
 
   return !loading ? (
     titleLogo ? (
