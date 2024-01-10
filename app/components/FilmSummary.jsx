@@ -41,7 +41,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       <TitleLogo film={film} setIsTitleReady={setIsTitleReady} />
       <div className="flex items-center justify-center flex-wrap gap-1 font-medium text-white">
         {isTitleReady && (
-          <Reveal delay={0.1}>
+          <Reveal delay={0.05}>
             <div className="flex items-center gap-1 text-primary-yellow p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
               <IonIcon icon={star} className="!w-5 h-full aspect-square" />
               <span className="!text-white">
@@ -53,12 +53,12 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
 
         {!isTvPage
           ? isTitleReady && (
-              <Reveal delay={0.2}>
+              <Reveal delay={0.1}>
                 <FilmRuntime film={film} />
               </Reveal>
             )
           : isTitleReady && (
-              <Reveal delay={0.2}>
+              <Reveal delay={0.1}>
                 <FilmSeason
                   film={film}
                   setLoading={setLoading}
@@ -71,7 +71,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           (genre) =>
             genre &&
             isTitleReady && (
-              <Reveal key={genre.id} delay={0.3}>
+              <Reveal key={genre.id} delay={0.15}>
                 <span
                   className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
                 >
@@ -82,7 +82,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         )}
       </div>
       {isTitleReady && (
-        <Reveal delay={0.1}>
+        <Reveal delay={0.05}>
           <p className="hidden md:line-clamp-2 lg:line-clamp-3">
             {film.overview}
           </p>
@@ -90,7 +90,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       )}
       <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
         {isTitleReady && (
-          <Reveal delay={0.2} className={`[&_a]:w-full`}>
+          <Reveal delay={0.1} className={`[&_a]:w-full`}>
             <Link
               href={isItTvPage(
                 `/movies/${film.id}-${slugify(film.title)}`,

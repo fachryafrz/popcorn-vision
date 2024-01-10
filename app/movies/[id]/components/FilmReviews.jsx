@@ -40,7 +40,7 @@ export default function FilmReviews({ reviews, film }) {
           .slice(0, showAllReviews ? moreReviews.length : numReviews)
           .map((review, index) => {
             return (
-              <Reveal key={index} delay={showAllReviews ? 0 : 0.1 * index}>
+              <Reveal key={index} delay={showAllReviews ? 0 : 0.05 * index}>
                 <ReviewCard review={review} />{" "}
               </Reveal>
             );
@@ -76,13 +76,15 @@ export default function FilmReviews({ reviews, film }) {
 
       {/* View all reviews */}
       {moreReviews.length > numReviews && (
-        <div
-          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
-            showAllReviews ? `hidden` : `flex`
-          }`}
-        >
-          <button onClick={handleShowAllReviews}>View all reviews</button>
-        </div>
+        <Reveal>
+          <div
+            className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
+              showAllReviews ? `hidden` : `flex`
+            }`}
+          >
+            <button onClick={handleShowAllReviews}>View all reviews</button>
+          </div>
+        </Reveal>
       )}
     </div>
   );

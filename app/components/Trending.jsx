@@ -66,7 +66,7 @@ export default function Trending({ film, genres }) {
         </figure>
         <figure className="z-30 sm:w-[300px] aspect-poster rounded-2xl overflow-hidden">
           {film.poster_path && (
-            <Reveal>
+            <Reveal y={0}>
               <img
                 // loading="lazy"
                 src={`https://image.tmdb.org/t/p/w780${filmPoster}`}

@@ -58,7 +58,7 @@ export default function Footer() {
       <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
         {footer.map((footer, i) => (
           <div key={footer.id}>
-            <Reveal delay={0.1 * i}>
+            <Reveal delay={0.05 * i}>
               <h2 className="font-bold text-xl mb-2 xl:mb-4">
                 {footer.section}
               </h2>
@@ -92,14 +92,14 @@ export default function Footer() {
           </div>
         ))}
         <div>
-          <Reveal delay={0.4}>
+          <Reveal delay={0.2}>
             <h2 className="font-bold text-xl mb-2 xl:mb-4">Get in Touch</h2>
             <p className="font-light tracking-wide mb-2 xl:mb-4">
               Stay connected with us to discover more stories about new movies
               and explore more with us
             </p>
             <div className="flex gap-2 flex-wrap">
-              <Reveal delay={0.1}>
+              <Reveal delay={0.05}>
                 <Link
                   href="https://facebook.com/fachryafrz"
                   target="_blank"
@@ -108,7 +108,7 @@ export default function Footer() {
                   <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.2}>
+              <Reveal delay={0.1}>
                 <Link
                   href="https://twitter.com/fachryafrz"
                   target="_blank"
@@ -117,7 +117,7 @@ export default function Footer() {
                   <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.3}>
+              <Reveal delay={0.15}>
                 <Link
                   href="https://instagram.com/fachryafrz"
                   target="_blank"
@@ -126,7 +126,7 @@ export default function Footer() {
                   <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
-              <Reveal delay={0.4}>
+              <Reveal delay={0.2}>
                 <Link
                   href="https://youtube.com/@fachryafrz"
                   target="_blank"

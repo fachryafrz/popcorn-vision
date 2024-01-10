@@ -87,7 +87,7 @@ export default function FilmCollection({ film, setLoading }) {
 
                 return (
                   <li key={item.id}>
-                    <Reveal delay={0.1 * index}>
+                    <Reveal delay={0.05 * index}>
                       <article>
                         <Link
                           href={`/movies/${item.id}-${slugify(item.title)}`}
@@ -164,7 +164,7 @@ export default function FilmCollection({ film, setLoading }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <Reveal delay={showAllCollection ? 0 : 0.1 * index}>
+                    <Reveal delay={showAllCollection ? 0 : 0.05 * index}>
                       <FilmSeason
                         film={film}
                         item={item}
@@ -179,15 +179,17 @@ export default function FilmCollection({ film, setLoading }) {
         {(!isTvPage
           ? apiData && collections.length > numCollection
           : filteredSeasons.length > numCollection) && (
-          <div
-            className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
-              showAllCollection ? "hidden" : "flex"
-            }`}
-          >
-            <button onClick={handleShowAllCollection}>
-              View all collection
-            </button>
-          </div>
+          <Reveal>
+            <div
+              className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
+                showAllCollection ? "hidden" : "flex"
+              }`}
+            >
+              <button onClick={handleShowAllCollection}>
+                View all collection
+              </button>
+            </div>
+          </Reveal>
         )}
       </ul>
     </div>
