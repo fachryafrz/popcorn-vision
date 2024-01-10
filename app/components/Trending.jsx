@@ -65,13 +65,15 @@ export default function Trending({ film, genres }) {
           />
         </figure>
         <figure className="z-30 sm:w-[300px] aspect-poster rounded-2xl overflow-hidden">
-          <Reveal delay={0.05}>
-            <img
-              loading="lazy"
-              src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
-              alt={film.title}
-            />
-          </Reveal>
+          {film.poster_path && (
+            <Reveal>
+              <img
+                // loading="lazy"
+                src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
+                alt={film.title}
+              />
+            </Reveal>
+          )}
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
           <FilmSummary
