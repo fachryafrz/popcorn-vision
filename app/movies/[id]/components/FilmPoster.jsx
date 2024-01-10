@@ -7,6 +7,7 @@ import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
 import Link from "next/link";
 import { slugify } from "@/app/lib/slugify";
+import Reveal from "@/app/lib/Reveal";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
   const pathname = usePathname();
@@ -74,58 +75,60 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   }, [film, images, isTvPage, reviews, videos]);
 
   return (
-    <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
-      <ImagePovi
-        imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
-        className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
-      >
-        {filmPoster && (
-          <img
-            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-            alt={!isTvPage ? film.title : film.name}
-            className={`pointer-events-none object-cover transition-all`}
-          />
-        )}
+    <Reveal>
+      <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
+        <ImagePovi
+          imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
+          className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
+        >
+          {filmPoster && (
+            <img
+              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+              alt={!isTvPage ? film.title : film.name}
+              className={`pointer-events-none object-cover transition-all`}
+            />
+          )}
 
-        {film.vote_average > 0 && (
-          <div
-            className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
-          >
+          {film.vote_average > 0 && (
             <div
-              className={`radial-progress text-sm font-semibold ${
-                film.vote_average > 0 && film.vote_average < 3
-                  ? `text-primary-red`
-                  : film.vote_average >= 3 && film.vote_average < 7
-                  ? `text-primary-yellow`
-                  : `text-green-500`
-              }`}
-              style={{
-                "--value": film.vote_average * 10,
-                "--size": "36px",
-                "--thickness": "3px",
-              }}
+              className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
             >
-              <span className={`text-white`}>
-                {film.vote_average < 9.9
-                  ? film.vote_average.toFixed(1)
-                  : film.vote_average}
-              </span>
+              <div
+                className={`radial-progress text-sm font-semibold ${
+                  film.vote_average > 0 && film.vote_average < 3
+                    ? `text-primary-red`
+                    : film.vote_average >= 3 && film.vote_average < 7
+                    ? `text-primary-yellow`
+                    : `text-green-500`
+                }`}
+                style={{
+                  "--value": film.vote_average * 10,
+                  "--size": "36px",
+                  "--thickness": "3px",
+                }}
+              >
+                <span className={`text-white`}>
+                  {film.vote_average < 9.9
+                    ? film.vote_average.toFixed(1)
+                    : film.vote_average}
+                </span>
+              </div>
             </div>
-          </div>
-        )}
-      </ImagePovi>
+          )}
+        </ImagePovi>
 
-      {/* {quickNav.length && (
-        <ul className={`hidden lg:flex gap-1 flex-wrap`}>
-          {quickNav.map((link, i) => {
-            return (
-              <li key={i}>
-                <Link href={link.href} className={`btn btn-sm`}>{link.name}</Link>
-              </li>
-            );
-          })}
-        </ul>
-      )} */}
-    </div>
+        {/* {quickNav.length && (
+          <ul className={`hidden lg:flex gap-1 flex-wrap`}>
+            {quickNav.map((link, i) => {
+              return (
+                <li key={i}>
+                  <Link href={link.href} className={`btn btn-sm`}>{link.name}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        )} */}
+      </div>
+    </Reveal>
   );
 }

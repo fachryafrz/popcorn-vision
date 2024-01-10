@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
 import { getFilm } from "../api/route";
+import Reveal from "../lib/Reveal";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -53,6 +54,7 @@ export default function Trending({ film, genres }) {
   return (
     <div className="px-4 mx-auto max-w-7xl">
       <h2 className="sr-only">{`Trending Movie`}</h2>
+      {/* <Reveal> */}
       <div className="relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black">
         <figure className="absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0">
           <img
@@ -63,11 +65,15 @@ export default function Trending({ film, genres }) {
           />
         </figure>
         <figure className="z-30 sm:w-[300px] aspect-poster rounded-2xl overflow-hidden">
-          <img
-            loading="lazy"
-            src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
-            alt={film.title}
-          />
+          {film.poster_path && (
+            <Reveal>
+              <img
+                // loading="lazy"
+                src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
+                alt={film.title}
+              />
+            </Reveal>
+          )}
         </figure>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
           <FilmSummary
@@ -78,6 +84,7 @@ export default function Trending({ film, genres }) {
           />
         </div>
       </div>
+      {/* </Reveal> */}
     </div>
   );
 }

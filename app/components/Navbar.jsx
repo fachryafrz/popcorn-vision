@@ -11,6 +11,7 @@ import { getLocation } from "../api/route";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import Reveal from "../lib/Reveal";
 
 export default function Navbar() {
   const router = useRouter();
@@ -121,8 +122,10 @@ export default function Navbar() {
     }
   }, [location, userLocation]);
 
-  const isMoviesPage = pathname.startsWith("/movies") || pathname === "/" ||
-  pathname.startsWith("/search");
+  const isMoviesPage =
+    pathname.startsWith("/movies") ||
+    pathname === "/" ||
+    pathname.startsWith("/search");
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`
@@ -172,66 +175,74 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
-        <Link
-          id={`Home`}
-          href={!isTvPage ? `/` : `/tv`}
-          className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
-          aria-labelledby={`Home`}
-        >
-          <figure
-            style={{
-              background: `url(/apple-touch-icon.png)`,
-            }}
-            className={`w-[50px] aspect-square !bg-contain`}
-          ></figure>
-          <figcaption
-            className={`w-[70px] after:content-["Popcorn_Vision"] after:leading-tight after:h-full after:flex after:items-center`}
-          ></figcaption>
-        </Link>
+        <Reveal y={-20}>
+          <Link
+            id={`Home`}
+            href={!isTvPage ? `/` : `/tv`}
+            className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
+            aria-labelledby={`Home`}
+          >
+            <figure
+              style={{
+                background: `url(/apple-touch-icon.png)`,
+              }}
+              className={`w-[50px] aspect-square !bg-contain`}
+            ></figure>
+            <figcaption
+              className={`w-[70px] after:content-["Popcorn_Vision"] after:leading-tight after:h-full after:flex after:items-center`}
+            ></figcaption>
+          </Link>
+        </Reveal>
 
         {/* Search bar */}
         <div className={`hidden lg:block`}>
-          <SearchBar />
+          <Reveal y={-20} delay={0.2}>
+            <SearchBar />
+          </Reveal>
         </div>
 
         {/* Movie & TV Series Switcher */}
         <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
-          <div
-            id={`FilmSwitcher`}
-            className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm"
-          >
-            <button
-              onClick={() => handleFilmTypeChange("movie")}
-              type={`button`}
-              className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
-                isMoviesPage &&
-                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-              }`}
+          <Reveal y={-20} delay={0.4}>
+            <div
+              id={`FilmSwitcher`}
+              className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm"
             >
-              <IonIcon icon={filmOutline} className="text-[1.25rem]" />
-              <span className="hidden md:block">Movies</span>
-            </button>
-            <button
-              onClick={() => handleFilmTypeChange("tv")}
-              type={`button`}
-              className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
-                isTvPage &&
-                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-              }`}
-            >
-              <IonIcon icon={tvOutline} className="text-[1.25rem]" />
-              <span className="hidden md:block">TV Series</span>
-            </button>
-          </div>
+              <button
+                onClick={() => handleFilmTypeChange("movie")}
+                type={`button`}
+                className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+                  isMoviesPage &&
+                  `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+                }`}
+              >
+                <IonIcon icon={filmOutline} className="text-[1.25rem]" />
+                <span className="hidden md:block">Movies</span>
+              </button>
+              <button
+                onClick={() => handleFilmTypeChange("tv")}
+                type={`button`}
+                className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+                  isTvPage &&
+                  `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+                }`}
+              >
+                <IonIcon icon={tvOutline} className="text-[1.25rem]" />
+                <span className="hidden md:block">TV Series</span>
+              </button>
+            </div>
+          </Reveal>
 
-          <Link
-            id={`SearchBarMobile`}
-            href={!isTvPage ? `/search` : `/tv/search`}
-            className={`lg:hidden btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20 rounded-full !px-0 aspect-square md:aspect-auto md:!px-3`}
-          >
-            <IonIcon icon={search} className="text-[1.25rem]" />
-            <span className="hidden md:block">Search</span>
-          </Link>
+          <Reveal y={-20} delay={0.6}>
+            <Link
+              id={`SearchBarMobile`}
+              href={!isTvPage ? `/search` : `/tv/search`}
+              className={`lg:hidden btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20 rounded-full !px-0 aspect-square md:aspect-auto md:!px-3`}
+            >
+              <IonIcon icon={search} className="text-[1.25rem]" />
+              <span className="hidden md:block">Search</span>
+            </Link>
+          </Reveal>
         </div>
       </nav>
     </header>

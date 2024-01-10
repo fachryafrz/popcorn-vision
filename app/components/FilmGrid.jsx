@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import FilmCard from "./FilmCard";
 import { IsInViewport } from "@/app/lib/IsInViewport";
 import { fetchData } from "../api/route";
+import Reveal from "../lib/Reveal";
 
 export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();
@@ -57,10 +58,10 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
       id={title}
       className={`w-full max-w-none mx-auto p-4 flex flex-col gap-2`}
     >
-      <h2 className="sr-only">{title}</h2>
-
       <div className="flex gap-4 items-end">
-        <p className="font-bold text-lg md:text-2xl">{title}</p>
+        <Reveal>
+          <h2 className="font-bold text-lg md:text-2xl">{title}</h2>{" "}
+        </Reveal>
       </div>
 
       <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
@@ -74,7 +75,9 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
 
           return (
             <article key={film.id}>
-              <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
+              <Reveal>
+                <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />{" "}
+              </Reveal>
             </article>
           );
         })}

@@ -23,6 +23,7 @@ import EpisodeCard from "./EpisodeCard";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
+import Reveal from "@/app/lib/Reveal";
 
 export default function FilmInfo({
   film,
@@ -159,15 +160,17 @@ export default function FilmInfo({
                               : `/tv/search?with_companies=${item.id}`
                           }
                         >
-                          <figure
-                            title={item.name}
-                            className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
-                            style={{
-                              backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                              backgroundSize: `contain`,
-                              backgroundRepeat: `no-repeat`,
-                            }}
-                          ></figure>
+                          <Reveal delay={0.1 * i}>
+                            <figure
+                              title={item.name}
+                              className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
+                              style={{
+                                backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                                backgroundSize: `contain`,
+                                backgroundRepeat: `no-repeat`,
+                              }}
+                            ></figure>
+                          </Reveal>
                         </Link>
                         <span className={`sr-only`}>{item.name}</span>
                       </div>
@@ -180,30 +183,34 @@ export default function FilmInfo({
           {!isTvPage
             ? film.release_date && (
                 <section id={`Movie Release Date`}>
-                  <div className={`flex items-center gap-2`}>
-                    <IonIcon icon={calendarOutline} />
+                  <Reveal>
+                    <div className={`flex items-center gap-2`}>
+                      <IonIcon icon={calendarOutline} />
 
-                    <time dateTime={film.release_date}>
-                      {formatDate({ date: film.release_date })}
-                    </time>
-                  </div>
+                      <time dateTime={film.release_date}>
+                        {formatDate({ date: film.release_date })}
+                      </time>
+                    </div>
+                  </Reveal>
                 </section>
               )
             : film.first_air_date && (
                 <section id={`TV Series Air Date`}>
-                  <div className={`flex items-center gap-2`}>
-                    <IonIcon icon={calendarOutline} />
+                  <Reveal>
+                    <div className={`flex items-center gap-2`}>
+                      <IonIcon icon={calendarOutline} />
 
-                    <time dateTime={film.first_air_date}>
-                      {formatDate({ date: film.first_air_date })}{" "}
-                      {film.last_air_date !== null &&
-                        film.last_air_date !== film.first_air_date && (
-                          <span className="hidden xs:inline">
-                            {`- ${formatDate({ date: film.last_air_date })}`}
-                          </span>
-                        )}
-                    </time>
-                  </div>
+                      <time dateTime={film.first_air_date}>
+                        {formatDate({ date: film.first_air_date })}{" "}
+                        {film.last_air_date !== null &&
+                          film.last_air_date !== film.first_air_date && (
+                            <span className="hidden xs:inline">
+                              {`- ${formatDate({ date: film.last_air_date })}`}
+                            </span>
+                          )}
+                      </time>
+                    </div>{" "}
+                  </Reveal>
                 </section>
               )}
 
@@ -211,57 +218,61 @@ export default function FilmInfo({
           {isTvPage &&
             film.number_of_seasons > 0 &&
             film.number_of_episodes > 0 && (
-              <section
-                id={`TV Series Chapter`}
-                className={`flex items-center gap-2`}
-              >
-                <IonIcon icon={tvOutline} />
+              <section id={`TV Series Chapter`}>
+                <Reveal>
+                  <div className={`flex items-center gap-2`}>
+                    <IonIcon icon={tvOutline} />
 
-                <span>
-                  {`${film.number_of_seasons} ${isPlural({
-                    text: "Season",
-                    number: film.number_of_seasons,
-                  })}`}{" "}
-                  {`(${film.number_of_episodes} ${isPlural({
-                    text: "Episode",
-                    number: film.number_of_episodes,
-                  })})`}
-                </span>
+                    <span>
+                      {`${film.number_of_seasons} ${isPlural({
+                        text: "Season",
+                        number: film.number_of_seasons,
+                      })}`}{" "}
+                      {`(${film.number_of_episodes} ${isPlural({
+                        text: "Episode",
+                        number: film.number_of_episodes,
+                      })})`}
+                    </span>
+                  </div>{" "}
+                </Reveal>
               </section>
             )}
 
           {/* Film Runtime */}
           {filmRuntime > 0 && (
             <section id={`Movie Runtime`}>
-              <div className={`flex items-center gap-2`}>
-                <IonIcon icon={timeOutline} />
-                <time>
-                  {filmRuntime}{" "}
-                  {isPlural({ text: "minute", number: filmRuntime % 60 })}
-                </time>
-                {Math.floor(filmRuntime / 60) >= 1 && (
-                  <span>{`(${formatRuntime(filmRuntime)})`}</span>
-                )}
-              </div>
+              <Reveal>
+                <div className={`flex items-center gap-2`}>
+                  <IonIcon icon={timeOutline} />
+                  <time>
+                    {filmRuntime}{" "}
+                    {isPlural({ text: "minute", number: filmRuntime % 60 })}
+                  </time>
+                  {Math.floor(filmRuntime / 60) >= 1 && (
+                    <span>{`(${formatRuntime(filmRuntime)})`}</span>
+                  )}
+                </div>{" "}
+              </Reveal>
             </section>
           )}
 
           {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
-              {film.genres.map((item) => {
+              {film.genres.map((item, i) => {
                 return (
-                  <Link
-                    key={item.id}
-                    href={
-                      !isTvPage
-                        ? `/search?with_genres=${item.id}`
-                        : `/tv/search?with_genres=${item.id}`
-                    }
-                    className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
-                  >
-                    {item.name}
-                  </Link>
+                  <Reveal delay={0.1 * i} key={item.id}>
+                    <Link
+                      href={
+                        !isTvPage
+                          ? `/search?with_genres=${item.id}`
+                          : `/tv/search?with_genres=${item.id}`
+                      }
+                      className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
+                    >
+                      {item.name}
+                    </Link>{" "}
+                  </Reveal>
                 );
               })}
             </section>
@@ -276,16 +287,18 @@ export default function FilmInfo({
                   id={`Movie Director`}
                   className={`flex items-center gap-2`}
                 >
-                  <Person
-                    id={director.id}
-                    name={director.name}
-                    profile_path={
-                      director.profile_path === null
-                        ? null
-                        : `https://image.tmdb.org/t/p/w185${director.profile_path}`
-                    }
-                    role={`Director`}
-                  />
+                  <Reveal>
+                    <Person
+                      id={director.id}
+                      name={director.name}
+                      profile_path={
+                        director.profile_path === null
+                          ? null
+                          : `https://image.tmdb.org/t/p/w185${director.profile_path}`
+                      }
+                      role={`Director`}
+                    />{" "}
+                  </Reveal>
                 </section>
               )
             : film.created_by.length > 0 && (
@@ -295,17 +308,18 @@ export default function FilmInfo({
                 >
                   {film.created_by.map((item, i) => {
                     return (
-                      <Person
-                        key={item.id}
-                        id={item.id}
-                        name={item.name}
-                        profile_path={
-                          item.profile_path === null
-                            ? null
-                            : `https://image.tmdb.org/t/p/w185${item.profile_path}`
-                        }
-                        role={`Creator`}
-                      />
+                      <Reveal key={item.id}>
+                        <Person
+                          id={item.id}
+                          name={item.name}
+                          profile_path={
+                            item.profile_path === null
+                              ? null
+                              : `https://image.tmdb.org/t/p/w185${item.profile_path}`
+                          }
+                          role={`Creator`}
+                        />{" "}
+                      </Reveal>
                     );
                   })}
                 </section>
@@ -317,9 +331,11 @@ export default function FilmInfo({
               id={`Film Providers`}
               className="flex flex-col gap-1 justify-center md:justify-start"
             >
-              <span className={`text-gray-400 text-sm italic`}>
-                Where to watch?
-              </span>
+              <Reveal>
+                <span className={`text-gray-400 text-sm italic`}>
+                  Where to watch?
+                </span>{" "}
+              </Reveal>
               <div className={`flex gap-2 flex-wrap`}>
                 {(
                   providersIDArray[1].rent ||
@@ -327,43 +343,48 @@ export default function FilmInfo({
                   providersIDArray[1].flatrate ||
                   providersIDArray[1].ads
                 ).map(
-                  (item) =>
+                  (item, i) =>
                     item.logo_path !== null && (
-                      <Link
-                        key={item.provider_id}
-                        href={`${
-                          !isTvPage ? `/search` : `/tv/search`
-                        }?watch_providers=${item.provider_id}`}
-                      >
-                        <figure
-                          title={item.provider_name}
-                          style={{
-                            background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                            backgroundSize: `contain`,
-                            backgroundRepeat: `no-repeat`,
-                          }}
-                          className={`aspect-square w-[40px] rounded-xl`}
-                        ></figure>
-                      </Link>
+                      <Reveal delay={0.1 * i} key={item.provider_id}>
+                        <Link
+                          href={`${
+                            !isTvPage ? `/search` : `/tv/search`
+                          }?watch_providers=${item.provider_id}`}
+                        >
+                          <figure
+                            title={item.provider_name}
+                            style={{
+                              background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                              backgroundSize: `contain`,
+                              backgroundRepeat: `no-repeat`,
+                            }}
+                            className={`aspect-square w-[40px] rounded-xl`}
+                          ></figure>
+                        </Link>{" "}
+                      </Reveal>
                     )
                 )}
               </div>
             </section>
           ) : userLocation ? (
             providersIDArray && (
-              <section id={`Film Providers`}>
-                <span className={`text-gray-400 text-sm italic`}>
-                  Where to watch? <br /> Hold on we&apos;re still finding...
-                </span>
-              </section>
+              <Reveal>
+                <section id={`Film Providers`}>
+                  <span className={`text-gray-400 text-sm italic`}>
+                    Where to watch? <br /> Hold on we&apos;re still finding...
+                  </span>
+                </section>{" "}
+              </Reveal>
             )
           ) : (
-            <section id={`Film Providers`}>
-              <span className={`text-gray-400 text-sm italic`}>
-                Where to watch? <br /> Please enable location services to find
-                out where to watch this film.
-              </span>
-            </section>
+            <Reveal>
+              <section id={`Film Providers`}>
+                <span className={`text-gray-400 text-sm italic`}>
+                  Where to watch? <br /> Please enable location services to find
+                  out where to watch this film.
+                </span>
+              </section>{" "}
+            </Reveal>
           )}
 
           {/* TV Series Episode */}
@@ -376,62 +397,64 @@ export default function FilmInfo({
                 id={`TV Series Last Episode`}
                 className={`flex flex-col gap-2`}
               >
-                <EpisodeCard
-                  className={`w-full`}
-                  filmID={film.id}
-                  setLoading={setLoading}
-                  episode={lastEps}
-                  imgPath={lastEps.still_path}
-                  title={lastEps.name}
-                  overlay={
-                    nextEps
-                      ? `Latest Episode: ${lastEps.episode_number}`
-                      : `Last Episode: ${lastEps.episode_number}`
-                  }
-                  secondaryInfo={`Season ${lastEps.season_number}`}
-                  thirdInfo={
-                    <>
-                      {lastEps.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {lastEps.vote_average &&
-                            lastEps.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={lastEps}
+                    imgPath={lastEps.still_path}
+                    title={lastEps.name}
+                    overlay={
+                      nextEps
+                        ? `Latest Episode: ${lastEps.episode_number}`
+                        : `Last Episode: ${lastEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${lastEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {lastEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {lastEps.vote_average &&
+                              lastEps.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {lastEps.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(lastEps.runtime / 60) >= 1
-                            ? `${Math.floor(
-                                lastEps.runtime / 60
-                              )}h ${Math.floor(lastEps.runtime % 60)}m`
-                            : `${lastEps.runtime} ${isPlural({
-                                text: "minute",
-                                number: lastEps.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {lastEps.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(lastEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  lastEps.runtime / 60
+                                )}h ${Math.floor(lastEps.runtime % 60)}m`
+                              : `${lastEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: lastEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {lastEps.air_date && (
-                        <span
-                          className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({
-                            date: lastEps.air_date,
-                            showDay: false,
-                          })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {lastEps.air_date && (
+                          <span
+                            className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({
+                              date: lastEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </div>
             )}
 
@@ -440,64 +463,66 @@ export default function FilmInfo({
                 id={`TV Series Next Episode`}
                 className={`flex flex-col gap-2`}
               >
-                <EpisodeCard
-                  className={`w-full`}
-                  filmID={film.id}
-                  setLoading={setLoading}
-                  episode={nextEps}
-                  imgPath={nextEps.still_path}
-                  title={nextEps.name}
-                  overlay={
-                    nextEps.episode_type == `finale`
-                      ? `Final Episode: ${nextEps.episode_number}`
-                      : nextEps.episode_number == 1
-                      ? `First Episode`
-                      : `Next Episode: ${nextEps.episode_number}`
-                  }
-                  secondaryInfo={`Season ${nextEps.season_number}`}
-                  thirdInfo={
-                    <>
-                      {nextEps.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {nextEps.vote_average &&
-                            nextEps.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={nextEps}
+                    imgPath={nextEps.still_path}
+                    title={nextEps.name}
+                    overlay={
+                      nextEps.episode_type == `finale`
+                        ? `Final Episode: ${nextEps.episode_number}`
+                        : nextEps.episode_number == 1
+                        ? `First Episode`
+                        : `Next Episode: ${nextEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${nextEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {nextEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {nextEps.vote_average &&
+                              nextEps.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {nextEps.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(nextEps.runtime / 60) >= 1
-                            ? `${Math.floor(
-                                nextEps.runtime / 60
-                              )}h ${Math.floor(nextEps.runtime % 60)}m`
-                            : `${nextEps.runtime} ${isPlural({
-                                text: "minute",
-                                number: nextEps.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {nextEps.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(nextEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  nextEps.runtime / 60
+                                )}h ${Math.floor(nextEps.runtime % 60)}m`
+                              : `${nextEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: nextEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {nextEps.air_date && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({
-                            date: nextEps.air_date,
-                            showDay: false,
-                          })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {nextEps.air_date && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({
+                              date: nextEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </div>
             )}
 
@@ -544,23 +569,29 @@ export default function FilmInfo({
           {/* Share this page */}
           <section
             id={`Share`}
-            className={`relative flex flex-col items-center sm:items-start justify-between gap-4 sm:gap-0`}
+            className={`relative flex items-center justify-end gap-4 sm:gap-0`}
           >
-            <button
-              onClick={handleShare}
-              className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm text-sm ml-auto mt-2`}
-            >
-              <IonIcon icon={arrowRedoOutline} />
-              <span>Share</span>
-            </button>
+            <Reveal>
+              <button
+                onClick={handleShare}
+                className={`sm:hidden flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm text-sm ml-auto mt-2`}
+              >
+                <IonIcon icon={arrowRedoOutline} />
+                <span>Share</span>
+              </button>
+            </Reveal>
 
-            <button
-              className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm hocus:bg-opacity-10 text-sm ml-auto mt-2`}
-              onClick={() => document.getElementById("shareModal").showModal()}
-            >
-              <IonIcon icon={arrowRedoOutline} />
-              <span>Share</span>
-            </button>
+            <Reveal>
+              <button
+                className={`hidden sm:flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm hocus:bg-opacity-10 text-sm ml-auto mt-2`}
+                onClick={() =>
+                  document.getElementById("shareModal").showModal()
+                }
+              >
+                <IonIcon icon={arrowRedoOutline} />
+                <span>Share</span>
+              </button>
+            </Reveal>
           </section>
         </div>
       </div>

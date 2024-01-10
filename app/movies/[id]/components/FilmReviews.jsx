@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { usePathname } from "next/navigation";
 import { getMoreReviews } from "@/app/api/route";
+import Reveal from "@/app/lib/Reveal";
 
 export default function FilmReviews({ reviews, film }) {
   const totalReviewPages = reviews.total_pages;
@@ -24,19 +25,25 @@ export default function FilmReviews({ reviews, film }) {
 
   return (
     <div id="reviews" className="flex flex-col gap-2 relative">
-      <div className="flex gap-1 items-center bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10">
-        <h2 className="font-bold text-xl text-white m-0">
-          {moreReviews.length > 1 ? `Reviews` : `Review`}
-        </h2>
-        <span className={`text-sm text-gray-400`}>
-          ({reviews.total_results})
-        </span>
-      </div>
+      <Reveal>
+        <div className="flex gap-1 items-center bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10">
+          <h2 className="font-bold text-xl text-white m-0">
+            {moreReviews.length > 1 ? `Reviews` : `Review`}
+          </h2>{" "}
+          <span className={`text-sm text-gray-400`}>
+            ({reviews.total_results})
+          </span>
+        </div>
+      </Reveal>
       <div className="flex flex-col gap-2">
         {moreReviews
           .slice(0, showAllReviews ? moreReviews.length : numReviews)
           .map((review, index) => {
-            return <ReviewCard key={index} review={review} />;
+            return (
+              <Reveal key={index} delay={showAllReviews ? 0 : 0.1 * index}>
+                <ReviewCard review={review} />{" "}
+              </Reveal>
+            );
           })}
       </div>
 

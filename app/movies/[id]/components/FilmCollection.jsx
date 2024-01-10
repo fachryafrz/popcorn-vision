@@ -23,6 +23,7 @@ import { isPlural } from "@/app/lib/isPlural";
 import { releaseStatus } from "@/app/lib/releaseStatus";
 import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
+import Reveal from "@/app/lib/Reveal";
 
 export default function FilmCollection({ film, setLoading }) {
   const [apiData, setApiData] = useState();
@@ -66,9 +67,14 @@ export default function FilmCollection({ film, setLoading }) {
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="flex flex-col gap-2 py-2 z-10">
-        <h2 className="font-bold text-xl text-white m-0" style={{ textWrap: `balance` }}>
-          {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
-        </h2>
+        <Reveal>
+          <h2
+            className="font-bold text-xl text-white m-0"
+            style={{ textWrap: `balance` }}
+          >
+            {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
+          </h2>{" "}
+        </Reveal>
       </div>
       <ul className="flex flex-col gap-1 relative">
         {!isTvPage
@@ -81,70 +87,72 @@ export default function FilmCollection({ film, setLoading }) {
 
                 return (
                   <li key={item.id}>
-                    <article>
-                      <Link
-                        href={`/movies/${item.id}-${slugify(item.title)}`}
-                        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
-                          film.id === item.id &&
-                          `!bg-primary-blue !bg-opacity-30`
-                        }`}
-                      >
-                        <span
-                          className={`text-gray-400 text-sm font-medium px-1`}
+                    <Reveal delay={0.1 * index}>
+                      <article>
+                        <Link
+                          href={`/movies/${item.id}-${slugify(item.title)}`}
+                          className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+                            film.id === item.id &&
+                            `!bg-primary-blue !bg-opacity-30`
+                          }`}
                         >
-                          {index + 1}
-                        </span>
-                        <ImagePovi
-                          imgPath={
-                            item.poster_path &&
-                            `https://image.tmdb.org/t/p/w92${item.poster_path}`
-                          }
-                          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
-                        />
-                        <div className="flex flex-col gap-1 items-start w-full">
-                          <h3
-                            className="text-start line-clamp-2 font-medium"
-                            title={item.title}
-                            style={{ textWrap: "balance" }}
+                          <span
+                            className={`text-gray-400 text-sm font-medium px-1`}
                           >
-                            {item.title}
-                          </h3>
-                          <div
-                            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
-                          >
-                            {item.vote_average > 1 && (
-                              <span
-                                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                              >
-                                <IonIcon
-                                  icon={star}
-                                  className={`text-primary-yellow`}
-                                />
-                                {item.vote_average &&
-                                  item.vote_average.toFixed(1)}
-                              </span>
-                            )}
+                            {index + 1}
+                          </span>
+                          <ImagePovi
+                            imgPath={
+                              item.poster_path &&
+                              `https://image.tmdb.org/t/p/w92${item.poster_path}`
+                            }
+                            className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
+                          />
+                          <div className="flex flex-col gap-1 items-start w-full">
+                            <h3
+                              className="text-start line-clamp-2 font-medium"
+                              title={item.title}
+                              style={{ textWrap: "balance" }}
+                            >
+                              {item.title}
+                            </h3>
+                            <div
+                              className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+                            >
+                              {item.vote_average > 1 && (
+                                <span
+                                  className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                                >
+                                  <IonIcon
+                                    icon={star}
+                                    className={`text-primary-yellow`}
+                                  />
+                                  {item.vote_average &&
+                                    item.vote_average.toFixed(1)}
+                                </span>
+                              )}
 
-                            {item.release_date && (
-                              <span
-                                className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                              >
-                                {formatDate({
-                                  date: item.release_date,
-                                  showDay: false,
-                                })}
-                              </span>
-                            )}
+                              {item.release_date && (
+                                <span
+                                  className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                                >
+                                  {formatDate({
+                                    date: item.release_date,
+                                    showDay: false,
+                                  })}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <p
-                          title={item.overview}
-                          className="text-xs text-gray-400 line-clamp-3 w-full"
-                        >
-                          {item.overview}
-                        </p>
-                      </Link>
-                    </article>
+                          <p
+                            title={item.overview}
+                            className="text-xs text-gray-400 line-clamp-3 w-full"
+                          >
+                            {item.overview}
+                          </p>
+                        </Link>
+                      </article>{" "}
+                    </Reveal>
                   </li>
                 );
               })
@@ -156,12 +164,14 @@ export default function FilmCollection({ film, setLoading }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <FilmSeason
-                      film={film}
-                      item={item}
-                      index={index}
-                      setLoading={setLoading}
-                    />
+                    <Reveal delay={showAllCollection ? 0 : 0.1 * index}>
+                      <FilmSeason
+                        film={film}
+                        item={item}
+                        index={index}
+                        setLoading={setLoading}
+                      />
+                    </Reveal>
                   </li>
                 );
               })}
@@ -329,52 +339,54 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
           episodes.map((item) => {
             return (
               <SwiperSlide key={item.id} className={`!h-auto`}>
-                <EpisodeCard
-                  filmID={id}
-                  setLoading={setLoading}
-                  episode={item}
-                  imgPath={item.still_path}
-                  title={item.name}
-                  overlay={`Episode ${item.episode_number}`}
-                  secondaryInfo={
-                    <>
-                      {item.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {item.vote_average && item.vote_average.toFixed(1)}
-                        </span>
-                      )}
+                <Reveal delay={0.25} y={-20}>
+                  <EpisodeCard
+                    filmID={id}
+                    setLoading={setLoading}
+                    episode={item}
+                    imgPath={item.still_path}
+                    title={item.name}
+                    overlay={`Episode ${item.episode_number}`}
+                    secondaryInfo={
+                      <>
+                        {item.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {item.vote_average && item.vote_average.toFixed(1)}
+                          </span>
+                        )}
 
-                      {item.runtime && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {Math.floor(item.runtime / 60) >= 1
-                            ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                                item.runtime % 60
-                              )}m`
-                            : `${item.runtime} ${isPlural({
-                                text: "minute",
-                                number: item.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+                        {item.runtime && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {Math.floor(item.runtime / 60) >= 1
+                              ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
+                                  item.runtime % 60
+                                )}m`
+                              : `${item.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: item.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
 
-                      {item.air_date && (
-                        <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                        >
-                          {formatDate({ date: item.air_date })}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
+                        {item.air_date && (
+                          <span
+                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          >
+                            {formatDate({ date: item.air_date })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
               </SwiperSlide>
             );
           })}
