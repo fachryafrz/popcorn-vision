@@ -40,100 +40,98 @@ export default function FilmMedia({ videos, images }) {
 
   return (
     <div id="media" className="flex flex-col gap-2">
-      <Reveal>
-        <div className="max-w-full">
-          <Swiper
-            modules={[
-              FreeMode,
-              Navigation,
-              Thumbs,
-              Autoplay,
-              EffectFade,
-              Mousewheel,
-              Zoom,
-            ]}
-            // zoom={true}
-            effect="fade"
-            spaceBetween={16}
-            // mousewheel={true}
-            navigation={{
-              enabled: true,
-              nextEl: "#next",
-              prevEl: "#prev",
-            }}
-            // autoplay={{
-            //   delay: 3000,
-            //   disableOnInteraction: true,
-            //   pauseOnMouseEnter: true,
-            // }}
-            style={{
-              "--swiper-navigation-color": "#fff",
-              "--swiper-pagination-color": "#fff",
-            }}
-            className="relative aspect-video rounded-xl overflow-hidden"
+      <div className="max-w-full">
+        <Swiper
+          modules={[
+            FreeMode,
+            Navigation,
+            Thumbs,
+            Autoplay,
+            EffectFade,
+            Mousewheel,
+            Zoom,
+          ]}
+          // zoom={true}
+          effect="fade"
+          spaceBetween={16}
+          // mousewheel={true}
+          navigation={{
+            enabled: true,
+            nextEl: "#next",
+            prevEl: "#prev",
+          }}
+          // autoplay={{
+          //   delay: 3000,
+          //   disableOnInteraction: true,
+          //   pauseOnMouseEnter: true,
+          // }}
+          style={{
+            "--swiper-navigation-color": "#fff",
+            "--swiper-pagination-color": "#fff",
+          }}
+          className="relative aspect-video rounded-xl overflow-hidden"
+        >
+          <div
+            id="navigation"
+            className={`flex justify-between absolute inset-0 items-center flex-row-reverse`}
           >
-            <div
-              id="navigation"
-              className={`flex justify-between absolute inset-0 items-center flex-row-reverse`}
+            <button
+              id="next"
+              className={`z-40 flex items-center text-white p-2`}
+              aria-labelledby={`next-slide`}
             >
-              <button
-                id="next"
-                className={`z-40 flex items-center text-white p-2`}
-                aria-labelledby={`next-slide`}
-              >
-                <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
-              </button>
-              <button
-                id="prev"
-                className={`z-40 flex items-center text-white p-2`}
-                aria-labelledby={`previous-slide`}
-              >
-                <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
-              </button>
-            </div>
-            {filteredVideos
-              .reverse()
-              .slice(0, 10)
-              .map((vid, index) => {
-                return (
-                  <SwiperSlide key={index}>
-                    <link
-                      href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                    />
-                    <meta content={vid.name} />
-                    <meta
-                      content={`https://i.ytimg.com/vi_webp/${vid.key}/maxresdefault.webp`}
-                    />
-                    <meta content={vid.published_at} />
-                    <iframe
-                      src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                      title="YouTube video player"
-                      loading="lazy"
-                      frameBorder="0"
-                      allowFullScreen
-                      className={`w-full h-full`}
-                    ></iframe>
-                  </SwiperSlide>
-                );
-              })}
-
-            {images.slice(0, 10).map((img, index) => {
+              <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
+            </button>
+            <button
+              id="prev"
+              className={`z-40 flex items-center text-white p-2`}
+              aria-labelledby={`previous-slide`}
+            >
+              <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
+            </button>
+          </div>
+          {filteredVideos
+            .reverse()
+            .slice(0, 10)
+            .map((vid, index) => {
               return (
                 <SwiperSlide key={index}>
-                  <figure className="swiper-zoom-container">
-                    <img
-                      loading="lazy"
-                      src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
-                      alt={``}
-                      className={`w-full h-full object-cover`}
-                    />
-                  </figure>
+                  <link
+                    href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
+                  />
+                  <meta content={vid.name} />
+                  <meta
+                    content={`https://i.ytimg.com/vi_webp/${vid.key}/maxresdefault.webp`}
+                  />
+                  <meta content={vid.published_at} />
+                  <iframe
+                    src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
+                    title="YouTube video player"
+                    loading="lazy"
+                    frameBorder="0"
+                    allowFullScreen
+                    className={`w-full h-full`}
+                  ></iframe>
                 </SwiperSlide>
               );
             })}
-          </Swiper>
-        </div>{" "}
-      </Reveal>
+
+          {images.slice(0, 10).map((img, index) => {
+            return (
+              <SwiperSlide key={index}>
+                <figure className="swiper-zoom-container">
+                  <img
+                    loading="lazy"
+                    src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
+                    alt={``}
+                    className={`w-full h-full object-cover`}
+                  />
+                </figure>
+              </SwiperSlide>
+            );
+          })}
+        </Swiper>
+      </div>
     </div>
   );
 }

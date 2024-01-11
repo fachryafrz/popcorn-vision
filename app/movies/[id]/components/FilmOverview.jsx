@@ -41,13 +41,8 @@ export default function FilmOverview({
       <div className="text-white flex flex-col gap-6">
         {film.overview && (
           <div id="overview" className="flex flex-col gap-2 ">
-            <Reveal>
-              <h2 className="font-bold text-xl text-white m-0">Overview</h2>{" "}
-            </Reveal>
-
-            <Reveal>
-              <p className="text-gray-400 md:text-lg">{film.overview}</p>{" "}
-            </Reveal>
+            <h2 className="font-bold text-xl text-white m-0">Overview</h2>{" "}
+            <p className="text-gray-400 md:text-lg">{film.overview}</p>{" "}
           </div>
         )}
 
