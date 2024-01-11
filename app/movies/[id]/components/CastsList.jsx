@@ -43,7 +43,7 @@ export default function CastsList({ credits }) {
               return (
                 <Reveal
                   key={actor.id}
-                  delay={showAllActors ? 0 : 0.05 * i}
+                  delay={showAllActors ? 0 : 0.1 * i}
                   className={`[&_button]:w-full`}
                 >
                   <Person

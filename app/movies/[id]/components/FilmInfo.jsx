@@ -160,7 +160,7 @@ export default function FilmInfo({
                               : `/tv/search?with_companies=${item.id}`
                           }
                         >
-                          <Reveal delay={0.05 * i}>
+                          <Reveal delay={0.2 * i}>
                             <figure
                               title={item.name}
                               className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
@@ -261,7 +261,7 @@ export default function FilmInfo({
             <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
               {film.genres.map((item, i) => {
                 return (
-                  <Reveal delay={0.05 * i} key={item.id}>
+                  <Reveal delay={0.2 * i} key={item.id}>
                     <Link
                       href={
                         !isTvPage
@@ -345,7 +345,7 @@ export default function FilmInfo({
                 ).map(
                   (item, i) =>
                     item.logo_path !== null && (
-                      <Reveal delay={0.05 * i} key={item.provider_id}>
+                      <Reveal delay={0.2 * i} key={item.provider_id}>
                         <Link
                           href={`${
                             !isTvPage ? `/search` : `/tv/search`
