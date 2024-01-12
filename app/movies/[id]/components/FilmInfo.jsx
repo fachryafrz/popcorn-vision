@@ -56,27 +56,27 @@ export default function FilmInfo({
   const isUpcoming =
     new Date(!isTvPage ? film.release_date : nextEps?.air_date) > new Date();
   const upcomingDate = !isTvPage ? film.release_date : nextEps?.air_date;
+
+  const timeLeft = new Date(new Date(upcomingDate) - new Date());
   const [countdown, setCountdown] = useState({
-    months: 0,
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
+    years: timeLeft.getUTCFullYear() - 1970,
+    months: timeLeft.getUTCMonth(),
+    days: timeLeft.getDate(),
+    hours: timeLeft.getUTCHours(),
+    minutes: timeLeft.getUTCMinutes(),
+    seconds: timeLeft.getUTCSeconds(),
   });
 
   const calculateCountdown = () => {
-    const timeLeft = new Date(new Date(upcomingDate) - new Date());
-    let monthsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30));
-    let daysLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
-    );
-    let hoursLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    let minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    let secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
+    let yearsLeft = timeLeft.getUTCFullYear() - 1970;
+    let monthsLeft = timeLeft.getUTCMonth();
+    let daysLeft = timeLeft.getDate();
+    let hoursLeft = timeLeft.getUTCHours();
+    let minutesLeft = timeLeft.getUTCMinutes();
+    let secondsLeft = timeLeft.getUTCSeconds();
 
     return {
+      years: yearsLeft,
       months: monthsLeft,
       days: daysLeft,
       hours: hoursLeft,
@@ -127,13 +127,15 @@ export default function FilmInfo({
             images={images.logos.find((img) => img.iso_639_1 === "en")}
           />
         ) : (
-          <h1
-            title={!isTvPage ? film.title : film.name}
-            className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-normal text-center md:text-start"
-            style={{ textWrap: `balance` }}
-          >
-            {!isTvPage ? film.title : film.name}
-          </h1>
+          <Reveal>
+            <h1
+              title={!isTvPage ? film.title : film.name}
+              className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-normal text-center md:text-start"
+              style={{ textWrap: `balance` }}
+            >
+              {!isTvPage ? film.title : film.name}
+            </h1>
+          </Reveal>
         )}
 
         <div
@@ -528,40 +530,61 @@ export default function FilmInfo({
 
             {isUpcoming && (
               <div className="flex flex-wrap justify-start gap-2 text-center col-span-full">
+                {countdown.years > 0 && (
+                  <Reveal>
+                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                      <span className="countdown font-mono text-4xl sm:text-5xl">
+                        <span style={{ "--value": countdown.years }}></span>
+                      </span>
+                      {isPlural({ text: "year", number: countdown.years })}
+                    </div>
+                  </Reveal>
+                )}
                 {countdown.months > 0 && (
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-4xl sm:text-5xl">
-                      <span style={{ "--value": countdown.months }}></span>
-                    </span>
-                    {isPlural({ text: "month", number: countdown.months })}
-                  </div>
+                  <Reveal delay={0.1}>
+                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                      <span className="countdown font-mono text-4xl sm:text-5xl">
+                        <span style={{ "--value": countdown.months }}></span>
+                      </span>
+                      {isPlural({ text: "month", number: countdown.months })}
+                    </div>
+                  </Reveal>
                 )}
                 {countdown.days > 0 && (
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                    <span className="countdown font-mono text-4xl sm:text-5xl">
-                      <span style={{ "--value": countdown.days }}></span>
-                    </span>
-                    {isPlural({ text: "day", number: countdown.days })}
-                  </div>
+                  <Reveal delay={0.2}>
+                    {" "}
+                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                      <span className="countdown font-mono text-4xl sm:text-5xl">
+                        <span style={{ "--value": countdown.days }}></span>
+                      </span>
+                      {isPlural({ text: "day", number: countdown.days })}
+                    </div>
+                  </Reveal>
                 )}
-                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                  <span className="countdown font-mono text-4xl sm:text-5xl">
-                    <span style={{ "--value": countdown.hours }}></span>
-                  </span>
-                  {isPlural({ text: "hour", number: countdown.hours })}
-                </div>
-                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                  <span className="countdown font-mono text-4xl sm:text-5xl">
-                    <span style={{ "--value": countdown.minutes }}></span>
-                  </span>
-                  min
-                </div>
-                <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-xl text-neutral-content">
-                  <span className="countdown font-mono text-4xl sm:text-5xl">
-                    <span style={{ "--value": countdown.seconds }}></span>
-                  </span>
-                  sec
-                </div>
+                <Reveal delay={0.3}>
+                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.hours }}></span>
+                    </span>
+                    {isPlural({ text: "hour", number: countdown.hours })}
+                  </div>
+                </Reveal>
+                <Reveal delay={0.4}>
+                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.minutes }}></span>
+                    </span>
+                    min
+                  </div>
+                </Reveal>
+                <Reveal delay={0.5}>
+                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.seconds }}></span>
+                    </span>
+                    sec
+                  </div>
+                </Reveal>
               </div>
             )}
           </section>

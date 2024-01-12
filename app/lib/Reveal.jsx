@@ -10,10 +10,26 @@ export default function Reveal({
   className,
   y = 20,
 }) {
+  const isMobile = window.innerWidth < 780;
+
+  const revealVariants = !isMobile
+    ? {
+        initial: {
+          opacity: 0,
+          y: y,
+        },
+        animate: {
+          opacity: opacity,
+          y: 0,
+        },
+      }
+    : {};
+
   return (
     <m.div
-      initial={{ opacity: 0, y: y }}
-      whileInView={{ opacity: opacity, y: 0 }}
+      variants={revealVariants}
+      initial={`initial`}
+      whileInView={`animate`}
       transition={{ duration: 0.5, type: "tween", delay: delay }}
       viewport={{ once: once }}
       className={className}

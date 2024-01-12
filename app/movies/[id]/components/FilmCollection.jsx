@@ -14,7 +14,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
 import "swiper/css/navigation";
-import { Navigation } from "swiper";
+import { Keyboard, Navigation } from "swiper";
 import { getEpisodes, getFilmCollection } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
@@ -313,7 +313,8 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
     viewSeason &&
     episodes && (
       <Swiper
-        modules={[Navigation]}
+        modules={[Navigation, Keyboard]}
+        keyboard={true}
         navigation={{
           enabled: true,
           prevEl: `#prevEps`,
