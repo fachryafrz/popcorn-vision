@@ -1,6 +1,7 @@
 "use client";
 
 import { motion as m } from "framer-motion";
+import { useEffect, useState } from "react";
 
 export default function Reveal({
   children,
@@ -10,7 +11,7 @@ export default function Reveal({
   className,
   y = 20,
 }) {
-  const isMobile = window.innerWidth < 780;
+  const [isMobile, setIsMobile] = useState();
 
   const revealVariants = !isMobile
     ? {
@@ -24,6 +25,10 @@ export default function Reveal({
         },
       }
     : {};
+
+  useEffect(() => {
+    if (typeof window !== "undefined") setIsMobile(window.innerWidth < 768);
+  }, []);
 
   return (
     <m.div

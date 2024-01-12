@@ -25,6 +25,7 @@ import { SearchBar } from "../components/Navbar";
 import { IsInViewport } from "../lib/IsInViewport";
 import tmdbNetworks from "@/app/json/tv_network_ids_12_26_2023.json";
 import { calculateDate } from "../lib/formatDate";
+import Reveal from "../lib/Reveal";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -1855,12 +1856,13 @@ export default function Search({ type = "movie" }) {
                       : [];
 
                   return (
-                    <FilmCard
-                      key={film.id}
-                      film={film}
-                      genres={filmGenres}
-                      isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
-                    />
+                    <Reveal key={film.id}>
+                      <FilmCard
+                        film={film}
+                        genres={filmGenres}
+                        isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
+                      />
+                    </Reveal>
                   );
                 })}
             </section>
