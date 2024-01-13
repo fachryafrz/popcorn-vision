@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
 // Ionic React imports
@@ -233,13 +233,16 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
 function SliderThumbs({ film, isTvPage, index }) {
   const [filmBackdrop, setFilmBackdrop] = useState("");
 
-  useEffect(() => {
-    const isItTvPage = (movie, tv) => {
+  const isItTvPage = useCallback(
+    (movie, tv) => {
       const type = !isTvPage ? movie : tv;
       return type;
-    };
+    },
+    [isTvPage]
+  );
 
-    getFilm({
+  const fetchBackdrop = useCallback(async () => {
+    await getFilm({
       id: film.id,
       type: isItTvPage(`movie`, `tv`),
       path: "/images",
@@ -255,7 +258,11 @@ function SliderThumbs({ film, isTvPage, index }) {
         setFilmBackdrop(backdrops[0].file_path);
       }
     });
-  }, [film, isTvPage]);
+  }, [film.backdrop_path, film.id, isItTvPage]);
+
+  useEffect(() => {
+    fetchBackdrop();
+  }, [fetchBackdrop]);
 
   return (
     filmBackdrop && (

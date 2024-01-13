@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, star } from "ionicons/icons";
@@ -13,7 +13,6 @@ import Reveal from "../lib/Reveal";
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  const [loading, setLoading] = useState(true);
   const [isTitleReady, setIsTitleReady] = useState(false);
 
   const isItTvPage = (movie, tv) => {
@@ -59,11 +58,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             )
           : isTitleReady && (
               <Reveal delay={0.1}>
-                <FilmSeason
-                  film={film}
-                  setLoading={setLoading}
-                  loading={loading}
-                />
+                <FilmSeason film={film} />
               </Reveal>
             )}
 
@@ -111,15 +106,20 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
   );
 }
 
-function FilmSeason({ film, setLoading, loading }) {
+function FilmSeason({ film }) {
+  const [loading, setLoading] = useState(true);
   const [season, setSeason] = useState();
 
-  useEffect(() => {
+  const fetchSeason = useCallback(async () => {
     getFilmSeason({ film }).then((res) => {
       setSeason(res);
       setLoading(false);
     });
   }, [film, setLoading]);
+
+  useEffect(() => {
+    fetchSeason();
+  }, [fetchSeason]);
 
   return season && !loading ? (
     <div className="whitespace-nowrap flex items-center gap-1">
@@ -140,14 +140,18 @@ function FilmRuntime({ film }) {
   const [loading, setLoading] = useState(true);
   const [runtime, setRuntime] = useState();
 
-  useEffect(() => {
-    fetchData({
+  const fetchRuntime = useCallback(async () => {
+    await fetchData({
       endpoint: `/movie/${film.id}`,
     }).then((res) => {
       setRuntime(res.runtime);
       setLoading(false);
     });
-  }, [film]);
+  }, [film.id]);
+
+  useEffect(() => {
+    fetchRuntime();
+  }, [fetchRuntime]);
 
   return runtime && !loading ? (
     <div className="flex items-center gap-1">
