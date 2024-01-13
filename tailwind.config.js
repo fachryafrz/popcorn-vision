@@ -67,6 +67,10 @@ module.exports = {
     require("@tailwindcss/typography"),
     plugin(function ({ addVariant }) {
       addVariant("hocus", ["&:hover", "&:focus"]);
+      addVariant("fifth", "&:nth-child(5n)");
+      addVariant("sixth", "&:nth-child(6n)");
+      addVariant("seventh", "&:nth-child(7n)");
+      addVariant("eighth", "&:nth-child(8n)");
     }),
   ],
 };

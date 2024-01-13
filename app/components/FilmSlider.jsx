@@ -33,7 +33,7 @@ export default function FilmSlider({
 
       <Swiper
         modules={[Navigation]}
-        spaceBetween={8}
+        // spaceBetween={8}
         slidesPerView={`auto`}
         // loop={true}
         navigation={{
@@ -43,19 +43,22 @@ export default function FilmSlider({
         }}
         breakpoints={{
           640: {
-            // slidesPerView: 3,
             slidesPerGroup: 3,
           },
           768: {
-            // slidesPerView: 4,
             slidesPerGroup: 4,
           },
           1024: {
-            // slidesPerView: 5,
             slidesPerGroup: 5,
           },
+          1280: {
+            slidesPerGroup: 6,
+          },
+          1536: {
+            slidesPerGroup: 7,
+          },
         }}
-        className={`!px-4 !pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
+        className={`!px-4 !pb-[2rem] lg:!pb-[3rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
           const filmGenres =
@@ -65,21 +68,32 @@ export default function FilmSlider({
                 )
               : [];
 
+          const first = `[&_>_a_#FilmPreview]:first:!left-0 [&_>_a_#FilmPreview]:first:!translate-x-0`;
+          const last = `[&_>_a_#FilmPreview]:last:!left-auto [&_>_a_#FilmPreview]:last:!translate-x-0 [&_>_a_#FilmPreview]:last:!right-0`;
+          const fifth = `lg:[&_>_a_#FilmPreview]:fifth:!left-auto lg:[&_>_a_#FilmPreview]:fifth:!translate-x-0 lg:[&_>_a_#FilmPreview]:fifth:!right-0 xl:[&_>_a_#FilmPreview]:fifth:!left-1/2 xl:[&_>_a_#FilmPreview]:fifth:!-translate-x-1/2`;
+          const sixth = `lg:[&_>_a_#FilmPreview]:sixth:!left-0 lg:[&_>_a_#FilmPreview]:sixth:!translate-x-0 xl:[&_>_a_#FilmPreview]:sixth:!left-auto xl:[&_>_a_#FilmPreview]:sixth:!translate-x-0 xl:[&_>_a_#FilmPreview]:sixth:!right-0 2xl:[&_>_a_#FilmPreview]:sixth:!left-1/2 2xl:[&_>_a_#FilmPreview]:sixth:!-translate-x-1/2`;
+          const seventh = `xl:[&_>_a_#FilmPreview]:seventh:!left-0 xl:[&_>_a_#FilmPreview]:seventh:!translate-x-0
+          2xl:[&_>_a_#FilmPreview]:seventh:!left-auto 2xl:[&_>_a_#FilmPreview]:seventh:!translate-x-0 2xl:[&_>_a_#FilmPreview]:seventh:!right-0`;
+          const eighth = `2xl:[&_>_a_#FilmPreview]:eighth:!left-0 2xl:[&_>_a_#FilmPreview]:eighth:!translate-x-0`;
+
           return (
             <SwiperSlide
               key={film.id}
-              className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)]`}
+              className={`transition-all pr-2 max-w-[calc(100%/2.1)] sm:max-w-[calc(100%/3.1)] md:max-w-[calc(100%/4.1)] lg:max-w-[calc(100%/5.1)] xl:max-w-[calc(100%/6.1)] 2xl:max-w-[calc(100%/7.1)] ${first} ${last} ${fifth} ${sixth} ${seventh} ${eighth}`}
             >
-              <article>
-                {/* <Reveal> */}
-                <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
-                {/* </Reveal> */}
-              </article>
+              {/* <Reveal> */}
+              <FilmCard
+                film={film}
+                genres={filmGenres}
+                isTvPage={isTvPage}
+                enablePreview={true}
+              />
+              {/* </Reveal> */}
             </SwiperSlide>
           );
         })}
 
-        <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
+        <div className="absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
           {/* <Reveal> */}
           <div className="flex gap-4 items-end">
             <p className="font-bold text-lg md:text-2xl">{title}</p>

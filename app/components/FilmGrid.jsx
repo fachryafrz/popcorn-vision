@@ -73,12 +73,20 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
                 )
               : [];
 
+          {
+            /* NOTE: Harus atur posisi yg disebelah kiri juga */
+          }
+          const first = `[&_#FilmPreview]:first:!left-0 [&_#FilmPreview]:first:!translate-x-0`;
+          const fifth = `lg:[&_#FilmPreview]:fifth:!left-auto lg:[&_#FilmPreview]:fifth:!translate-x-0 lg:[&_#FilmPreview]:fifth:!right-0 xl:[&_#FilmPreview]:fifth:!left-1/2 xl:[&_#FilmPreview]:fifth:!-translate-x-1/2 xl:[&_#FilmPreview]:fifth:!right-auto`;
+          const seventh = `xl:[&_#FilmPreview]:seventh:!left-auto xl:[&_#FilmPreview]:seventh:!translate-x-0 xl:[&_#FilmPreview]:seventh:!right-0`;
+
           return (
-            <article key={film.id}>
-              <Reveal>
-                <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />{" "}
-              </Reveal>
-            </article>
+            <Reveal
+              key={film.id}
+              // className={`${first} ${fifth} ${seventh}`}
+            >
+              <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />{" "}
+            </Reveal>
           );
         })}
       </div>
