@@ -11,35 +11,36 @@ export default function Reveal({
   className,
   y = 20,
 }) {
-  const [isMobile, setIsMobile] = useState();
-
-  const revealVariants = !isMobile
-    ? {
-        initial: {
-          opacity: 0,
-          y: y,
-        },
-        animate: {
-          opacity: opacity,
-          y: 0,
-        },
-      }
-    : {};
+  const [revealVariants, setRevealVariants] = useState();
 
   useEffect(() => {
-    if (typeof window !== "undefined") setIsMobile(window.innerWidth < 768);
-  }, []);
+    const isMobile = window.innerWidth < 768;
+
+    if (!isMobile) {
+      setRevealVariants({
+        initial: { opacity: 0, y: y },
+        animate: { opacity: opacity, y: 0 },
+      });
+    } else {
+      setRevealVariants({
+        initial: { opacity: 1, y: 0 },
+        animate: { opacity: 1, y: 0 },
+      });
+    }
+  }, [opacity, y]);
 
   return (
-    <m.div
-      variants={revealVariants}
-      initial={`initial`}
-      whileInView={`animate`}
-      transition={{ duration: 0.5, type: "tween", delay: delay }}
-      viewport={{ once: once }}
-      className={className}
-    >
-      {children}
-    </m.div>
+    revealVariants && (
+      <m.div
+        variants={revealVariants}
+        initial={`initial`}
+        whileInView={`animate`}
+        transition={{ duration: 0.5, type: "tween", delay: delay }}
+        viewport={{ once: once }}
+        className={className}
+      >
+        {children}
+      </m.div>
+    )
   );
 }
