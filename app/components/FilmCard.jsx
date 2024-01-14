@@ -106,7 +106,7 @@ export default function FilmCard({
         </div>
       </div> */}
 
-      {enablePreview && (
+      {enablePreview && isHovering && (
         <FilmPreview
           film={film}
           genres={genres}
