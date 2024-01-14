@@ -11,12 +11,19 @@ import { motion as m } from "framer-motion";
 import { formatRuntime } from "../lib/formatRuntime";
 import Reveal from "../lib/Reveal";
 import { isPlural } from "../lib/isPlural";
+import debounce from "debounce";
 
 export default function FilmCard({ film, genres, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
   const options = { year: "numeric", month: "short" };
 
   const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseOver = debounce(() => setIsHovering(true), 500);
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    handleMouseOver.clear();
+  };
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -34,8 +41,8 @@ export default function FilmCard({ film, genres, isTvPage }) {
         `/movies/${film.id}-${slugify(film.title)}`,
         `/tv/${film.id}-${slugify(film.name)}`
       )}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={handleMouseOver}
+      onMouseLeave={handleMouseLeave}
       className={`relative`}
     >
       <ImagePovi
