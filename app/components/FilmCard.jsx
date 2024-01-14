@@ -155,7 +155,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
       // transition={{ delay: isHovering ? 0.5 : 0 }}
       exit={{ opacity: 0 }}
       id="FilmPreview"
-      className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-50 rounded-2xl overflow-hidden bg-base-100 shadow-xl ${
+      className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-50 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
         isHovering ? `pointer-events-auto` : `pointer-events-none`
       }`}
     >
@@ -206,6 +206,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
         {/* Info */}
         <section className="flex items-center gap-0.5 text-sm font-medium">
+          {/* Rating */}
           {film.vote_average > 0 && (
             <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
               <IonIcon icon={star} className="" />
@@ -214,6 +215,8 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
               </span>
             </div>
           )}
+
+          {/* Release Year */}
           {releaseDate && (
             <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
               <span className="!text-white">
@@ -221,7 +224,9 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
               </span>
             </div>
           )}
-          {genres && (
+
+          {/* Genres */}
+          {genres.length > 0 && (
             <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
               <span className="!text-white">{genres[0]?.name}</span>
             </div>
