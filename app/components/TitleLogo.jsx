@@ -30,13 +30,13 @@ export default function TitleLogo({ film, images, setIsTitleReady }) {
 
   return !loading ? (
     titleLogo ? (
-      <Reveal delay={0.1}>
-        <figure className="mb-4 flex justify-start lg:max-w-[75%]">
+      <Reveal delay={0.1} className={`w-full`}>
+        <figure className="mb-4 flex justify-center md:justify-start lg:max-w-[75%]">
           <img
             src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
             alt={title}
             title={title}
-            className="max-h-[150px] object-contain pointer-events-none"
+            className="max-h-[180px] max-w-fit object-contain bg-contain pointer-events-none"
           />
 
           {!images && (
