@@ -68,65 +68,49 @@ export default function FilmSlider({
                 )
               : [];
 
-          const first = `[&_>_a_#FilmPreview]:first:!left-0 [&_>_a_#FilmPreview]:first:!translate-x-0`;
-          const last = `[&_>_a_#FilmPreview]:last:!left-auto [&_>_a_#FilmPreview]:last:!translate-x-0 [&_>_a_#FilmPreview]:last:!right-0`;
-
           {
             /* 1024px */
           }
-          const lg = `
-          lg:[&_>_a_#FilmPreview]:child-5:!left-auto lg:[&_>_a_#FilmPreview]:child-5:!translate-x-0 lg:[&_>_a_#FilmPreview]:child-5:!right-0 
-          lg:[&_>_a_#FilmPreview]:child-10:!left-auto lg:[&_>_a_#FilmPreview]:child-10:!translate-x-0 lg:[&_>_a_#FilmPreview]:child-10:!right-0
-          lg:[&_>_a_#FilmPreview]:child-15:!left-auto lg:[&_>_a_#FilmPreview]:child-15:!translate-x-0 lg:[&_>_a_#FilmPreview]:child-15:!right-0
-          
-          lg:[&_>_a_#FilmPreview]:child-6:!left-0 lg:[&_>_a_#FilmPreview]:child-6:!translate-x-0
-          lg:[&_>_a_#FilmPreview]:child-11:!left-0 lg:[&_>_a_#FilmPreview]:child-11:!translate-x-0
-          lg:[&_>_a_#FilmPreview]:child-16:!left-0 lg:[&_>_a_#FilmPreview]:child-16:!translate-x-0
+          const lg = `          
+          lg-max:[&_>_a_#FilmPreview]:child-5n+1:left-0 lg-max:[&_>_a_#FilmPreview]:child-5n+1:translate-x-0
+
+          lg-max:[&_>_a_#FilmPreview]:child-5n:left-auto lg-max:[&_>_a_#FilmPreview]:child-5n:translate-x-0 lg-max:[&_>_a_#FilmPreview]:child-5n:right-0
           `;
 
           {
             /* 1280px */
           }
           const xl = `
-          xl:[&_>_a_#FilmPreview]:child-5:!left-1/2 xl:[&_>_a_#FilmPreview]:child-5:!-translate-x-1/2 
-          xl:[&_>_a_#FilmPreview]:child-10:!left-1/2 xl:[&_>_a_#FilmPreview]:child-10:!-translate-x-1/2 
-          xl:[&_>_a_#FilmPreview]:child-11:!left-1/2 xl:[&_>_a_#FilmPreview]:child-11:!-translate-x-1/2 
-          xl:[&_>_a_#FilmPreview]:child-15:!left-1/2 xl:[&_>_a_#FilmPreview]:child-15:!-translate-x-1/2 
-          xl:[&_>_a_#FilmPreview]:child-16:!left-1/2 xl:[&_>_a_#FilmPreview]:child-16:!-translate-x-1/2 
-          
-          xl:[&_>_a_#FilmPreview]:child-6:!left-auto xl:[&_>_a_#FilmPreview]:child-6:!translate-x-0 xl:[&_>_a_#FilmPreview]:child-6:!right-0 
-          xl:[&_>_a_#FilmPreview]:child-12:!left-auto xl:[&_>_a_#FilmPreview]:child-12:!translate-x-0 xl:[&_>_a_#FilmPreview]:child-12:!right-0
-          
-          xl:[&_>_a_#FilmPreview]:child-7:!left-0 xl:[&_>_a_#FilmPreview]:child-7:!translate-x-0
-          xl:[&_>_a_#FilmPreview]:child-13:!left-0 xl:[&_>_a_#FilmPreview]:child-13:!translate-x-0
+          xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-auto xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
+          xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
+
+          xl-max:[&_>_a_#FilmPreview]:child-18:!left-1/2 xl-max:[&_>_a_#FilmPreview]:child-18:!-translate-x-1/2
+          xl-max:[&_>_a_#FilmPreview]:child-19:!left-1/2 xl-max:[&_>_a_#FilmPreview]:child-19:!-translate-x-1/2
+        
+          xl:[&_>_a_#FilmPreview]:last:!left-auto xl:[&_>_a_#FilmPreview]:last:!translate-x-0 xl:[&_>_a_#FilmPreview]:last:!right-0
           `;
 
           {
             /* 1536px */
           }
           const xl2 = `
-          2xl:[&_>_a_#FilmPreview]:child-6:!left-1/2 2xl:[&_>_a_#FilmPreview]:child-6:!-translate-x-1/2
-          2xl:[&_>_a_#FilmPreview]:child-12:!left-1/2 2xl:[&_>_a_#FilmPreview]:child-12:!-translate-x-1/2
-          2xl:[&_>_a_#FilmPreview]:child-13:!left-1/2 2xl:[&_>_a_#FilmPreview]:child-13:!-translate-x-1/2
-          
-          2xl:[&_>_a_#FilmPreview]:child-7:!left-auto 2xl:[&_>_a_#FilmPreview]:child-7:!translate-x-0 2xl:[&_>_a_#FilmPreview]:child-7:!right-0 
-          2xl:[&_>_a_#FilmPreview]:child-14:!left-auto 2xl:[&_>_a_#FilmPreview]:child-14:!translate-x-0 2xl:[&_>_a_#FilmPreview]:child-14:!right-0 
-          
-          2xl:[&_>_a_#FilmPreview]:child-8:!left-0 2xl:[&_>_a_#FilmPreview]:child-8:!translate-x-0
-          2xl:[&_>_a_#FilmPreview]:child-15:!left-0 2xl:[&_>_a_#FilmPreview]:child-15:!translate-x-0
+          2xl:[&_>_a_#FilmPreview]:child-7n+1:left-auto 2xl:[&_>_a_#FilmPreview]:child-7n+1:translate-x-0
+          2xl:[&_>_a_#FilmPreview]:child-7n:left-auto 2xl:[&_>_a_#FilmPreview]:child-7n:translate-x-0 2xl:[&_>_a_#FilmPreview]:child-7n:right-0
+
+          2xl:[&_>_a_#FilmPreview]:child-14:!left-1/2 2xl:[&_>_a_#FilmPreview]:child-14:!-translate-x-1/2
+          2xl:[&_>_a_#FilmPreview]:child-15:!left-1/2 2xl:[&_>_a_#FilmPreview]:child-15:!-translate-x-1/2
           `;
 
           return (
             <SwiperSlide
               key={film.id}
-              className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${first} ${last} ${lg} ${xl} ${xl2}`}
+              className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${lg} ${xl} ${xl2}`}
             >
               {/* <Reveal> */}
               <FilmCard
                 film={film}
                 genres={filmGenres}
                 isTvPage={isTvPage}
-                enablePreview={true}
               />
               {/* </Reveal> */}
             </SwiperSlide>

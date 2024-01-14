@@ -12,12 +12,7 @@ import { formatRuntime } from "../lib/formatRuntime";
 import Reveal from "../lib/Reveal";
 import { isPlural } from "../lib/isPlural";
 
-export default function FilmCard({
-  film,
-  genres,
-  isTvPage,
-  enablePreview = false,
-}) {
+export default function FilmCard({ film, genres, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
   const options = { year: "numeric", month: "short" };
 
@@ -106,15 +101,13 @@ export default function FilmCard({
         </div>
       </div> */}
 
-      {enablePreview && isHovering && (
-        <FilmPreview
-          film={film}
-          genres={genres}
-          isHovering={isHovering}
-          setIsHovering={setIsHovering}
-          isTvPage={isTvPage}
-        />
-      )}
+      <FilmPreview
+        film={film}
+        genres={genres}
+        isHovering={isHovering}
+        setIsHovering={setIsHovering}
+        isTvPage={isTvPage}
+      />
     </Link>
   );
 }
@@ -157,150 +150,160 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
   }, [fetchTitleLogo, isHovering]);
 
   return (
-    <m.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: isHovering ? 1 : 0 }}
-      // transition={{ delay: isHovering ? 0.5 : 0 }}
-      exit={{ opacity: 0 }}
-      id="FilmPreview"
-      className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] min-h-[335px] z-50 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
-        isHovering ? `pointer-events-auto` : `pointer-events-none`
-      }`}
-    >
-      {/* Backdrop */}
-      <ImagePovi
-        imgPath={
-          film.backdrop_path &&
-          `https://image.tmdb.org/t/p/w92${film.backdrop_path}`
-        }
-        className={`aspect-[3/2] relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+    !loading && (
+      <m.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovering ? 1 : 0 }}
+        // transition={{ delay: isHovering ? 0.5 : 0 }}
+        exit={{ opacity: 0 }}
+        id="FilmPreview"
+        className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] min-h-[335px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
+          isHovering ? `pointer-events-auto` : `pointer-events-none`
+        }`}
       >
-        {film.backdrop_path && (
-          <img
-            src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
-            alt={isItTvPage(film.title, film.name)}
-            className={`object-cover pointer-events-none`}
-          />
-        )}
-      </ImagePovi>
-
-      <div className={`p-3 pb-4 -mt-[75px] z-10 relative flex flex-col gap-2`}>
-        {/* Logo */}
-        <section id="Logo" className={`h-[75px] flex items-end`}>
-          {/* Loading */}
-          {loading && (
-            <div className="h-[75px] w-[200px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
+        {/* Backdrop */}
+        <ImagePovi
+          imgPath={
+            film.backdrop_path &&
+            `https://image.tmdb.org/t/p/w92${film.backdrop_path}`
+          }
+          className={`aspect-[3/2] relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+        >
+          {film.backdrop_path && (
+            <img
+              src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
+              alt={isItTvPage(film.title, film.name)}
+              className={`object-cover pointer-events-none`}
+            />
           )}
+        </ImagePovi>
 
-          {/* Logo Image */}
-          {!loading && titleLogo && (
-            <Reveal className={`h-full`} delay={0.1}>
-              <figure className={`h-full`}>
-                <img
-                  src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
-                  alt={isItTvPage(film.title, film.name)}
-                  title={isItTvPage(film.title, film.name)}
-                  className={`object-contain max-w-[200px]`}
-                />
-              </figure>
-            </Reveal>
-          )}
+        <div
+          className={`p-3 pb-4 -mt-[75px] z-10 relative flex flex-col gap-2`}
+        >
+          {/* Logo */}
+          <section id="Logo" className={`h-[75px] flex items-end`}>
+            {/* Loading */}
+            {/* {loading && (
+              <div className="h-[75px] w-[200px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
+            )} */}
 
-          {/* Logo Text */}
-          {!loading && !titleLogo && (
-            <Reveal>
-              <h4
-                className={`text-xl font-bold line-clamp-2`}
-                style={{ textWrap: `balance` }}
-              >
-                {isItTvPage(film.title, film.name)}
-              </h4>
-            </Reveal>
-          )}
-        </section>
+            {/* Logo Image */}
+            {!loading && titleLogo && (
+              <Reveal className={`h-full`} delay={0.1}>
+                <figure className={`h-full`}>
+                  <img
+                    src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
+                    alt={isItTvPage(film.title, film.name)}
+                    title={isItTvPage(film.title, film.name)}
+                    className={`object-contain max-w-[200px]`}
+                  />
+                </figure>
+              </Reveal>
+            )}
 
-        {/* Info */}
-        <section className="flex flex-wrap items-center gap-0.5 text-xs font-medium">
-          {/* Loading */}
-          {loading &&
-            [...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="h-[24px] w-[50px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-full"
-              ></div>
-            ))}
+            {/* Logo Text */}
+            {!loading && !titleLogo && (
+              <Reveal>
+                <h4
+                  className={`text-xl font-bold line-clamp-2`}
+                  style={{ textWrap: `balance` }}
+                >
+                  {isItTvPage(film.title, film.name)}
+                </h4>
+              </Reveal>
+            )}
+          </section>
 
-          {/* Rating */}
-          {film.vote_average > 0 && !loading && (
-            <Reveal delay={0.1}>
-              <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-                <IonIcon icon={star} className="" />
-                <span className="!text-white">
-                  {film.vote_average.toFixed(1)}
-                </span>
-              </div>
-            </Reveal>
-          )}
-
-          {/* Runtime */}
-          {!isTvPage && filmRuntime > 0 && !loading && (
-            <Reveal delay={0.15}>
-              <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-                <span className="!text-white">
-                  {formatRuntime(filmRuntime)}
-                </span>
-              </div>
-            </Reveal>
-          )}
-
-          {/* Seasons */}
-          {isTvPage && filmDetails?.number_of_seasons > 0 && !loading && (
-            <Reveal delay={0.2}>
-              <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-                <span className="!text-white">
-                  {`${filmDetails.number_of_seasons} ${isPlural({
-                    text: `Season`,
-                    number: filmDetails.number_of_seasons,
-                  })}`}
-                </span>
-              </div>
-            </Reveal>
-          )}
-
-          {/* Genres */}
-          {genres.length > 0 && !loading && (
-            <Reveal delay={0.25}>
-              <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-                <span className="!text-white">{genres[0]?.name}</span>
-              </div>
-            </Reveal>
-          )}
-        </section>
-
-        {/* Overview */}
-        <section id="Overview">
-          {loading && (
-            <div className={`flex flex-col gap-1`}>
-              {[...Array(4)].map((_, i, arr) => (
+          {/* Info */}
+          <section className="flex flex-wrap items-center gap-0.5 text-xs font-medium">
+            {/* Loading */}
+            {/* {loading &&
+              [...Array(3)].map((_, i) => (
                 <div
                   key={i}
-                  className={`${
-                    i === arr.length - 1 ? `w-[80%]` : `w-full`
-                  } h-[16px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg`}
+                  className="h-[24px] w-[50px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-full"
                 ></div>
-              ))}
-            </div>
-          )}
+              ))} */}
 
-          {!loading && (
-            <Reveal delay={0.1}>
-              <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
-                {film.overview}
-              </p>
-            </Reveal>
-          )}
-        </section>
-      </div>
-    </m.div>
+            {/* Rating */}
+            {film.vote_average > 0 && !loading && (
+              <Reveal delay={0.1}>
+                <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                  <IonIcon icon={star} className="" />
+                  <span className="!text-white">
+                    {film.vote_average.toFixed(1)}
+                  </span>
+                </div>
+              </Reveal>
+            )}
+
+            {/* Runtime */}
+            {!isTvPage && filmRuntime > 0 && !loading && (
+              <Reveal delay={0.15}>
+                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                  <span className="!text-white">
+                    {formatRuntime(filmRuntime)}
+                  </span>
+                </div>
+              </Reveal>
+            )}
+
+            {/* Seasons */}
+            {isTvPage && filmDetails?.number_of_seasons > 0 && !loading && (
+              <Reveal delay={0.2}>
+                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                  <span className="!text-white">
+                    {`${filmDetails.number_of_seasons} ${isPlural({
+                      text: `Season`,
+                      number: filmDetails.number_of_seasons,
+                    })}`}
+                  </span>
+                </div>
+              </Reveal>
+            )}
+
+            {/* Genres */}
+            {genres.length > 0 && !loading && (
+              <Reveal delay={0.25}>
+                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                  <span className="!text-white">{genres[0]?.name}</span>
+                </div>
+              </Reveal>
+            )}
+          </section>
+
+          {/* Overview */}
+          <section id="Overview">
+            {/* {loading && (
+              <div className={`flex flex-col gap-1`}>
+                {[...Array(4)].map((_, i, arr) => (
+                  <div
+                    key={i}
+                    className={`${
+                      i === arr.length - 1 ? `w-[80%]` : `w-full`
+                    } h-[16px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg`}
+                  ></div>
+                ))}
+              </div>
+            )} */}
+
+            {!loading && film.overview ? (
+              <Reveal delay={0.1}>
+                <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
+                  {film.overview}
+                </p>
+              </Reveal>
+            ) : (
+              <Reveal delay={0.1}>
+                <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
+                  No info.
+                </p>
+              </Reveal>
+            )}
+          </section>
+        </div>
+      </m.div>
+    )
   );
 }

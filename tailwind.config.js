@@ -34,6 +34,13 @@ module.exports = {
       },
       screens: {
         xs: "375px",
+        "xs-max": { max: "375px" },
+        "sm-max": { max: "640px" },
+        "md-max": { max: "768px" },
+        "lg-max": { max: "1024px" },
+        "xl-max": { max: "1280px" },
+        "2xl-max": { max: "1536px" },
+        "3xl-max": { max: "1920px" },
       },
       gridTemplateColumns: {
         24: "repeat(24, minmax(0, 1fr))",
@@ -69,6 +76,12 @@ module.exports = {
       addVariant("hocus", ["&:hover", "&:focus"]);
       [...Array(24).keys()].forEach((i) => {
         addVariant(`child-${i + 1}`, `&:nth-child(${i + 1})`);
+      });
+      [...Array(24).keys()].forEach((i) => {
+        addVariant(`child-${i + 1}n`, `&:nth-child(${i + 1}n)`);
+      });
+      [...Array(24).keys()].forEach((i) => {
+        addVariant(`child-${i + 1}n+1`, `&:nth-child(${i + 1}n+1)`);
       });
     }),
   ],

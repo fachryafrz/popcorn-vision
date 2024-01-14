@@ -1844,7 +1844,7 @@ export default function Search({ type = "movie" }) {
           <>
             {/* Films list */}
             <section
-              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-5`}
+              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6`}
             >
               {genresData &&
                 films?.map((film) => {
@@ -1855,8 +1855,31 @@ export default function Search({ type = "movie" }) {
                         )
                       : [];
 
+                      {
+            /* 1024px */
+          }
+          const lg = `          
+          lg-max:[&_>_a_#FilmPreview]:child-4n+1:left-0 lg-max:[&_>_a_#FilmPreview]:child-4n+1:translate-x-0
+
+          lg-max:[&_>_a_#FilmPreview]:child-4n:left-auto lg-max:[&_>_a_#FilmPreview]:child-4n:translate-x-0 lg-max:[&_>_a_#FilmPreview]:child-4n:right-0
+          `;
+
+          {/* 1280px */}
+          const xl = `
+          xl-max:[&_>_a_#FilmPreview]:child-5n+1:left-0 xl-max:[&_>_a_#FilmPreview]:child-5n+1:translate-x-0
+
+          xl-max:[&_>_a_#FilmPreview]:child-5n:left-auto xl-max:[&_>_a_#FilmPreview]:child-5n:translate-x-0 xl-max:[&_>_a_#FilmPreview]:child-5n:right-0
+          `;
+
+          {/* 1536px */}
+          const xl2 = `
+          2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
+
+          2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
+          `;
+
                   return (
-                    <Reveal key={film.id}>
+                    <Reveal key={film.id} className={`${lg} ${xl} ${xl2}`}>
                       <FilmCard
                         film={film}
                         genres={filmGenres}

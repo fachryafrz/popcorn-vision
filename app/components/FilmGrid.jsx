@@ -1,9 +1,8 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import FilmCard from "./FilmCard";
-import { IsInViewport } from "@/app/lib/IsInViewport";
 import { fetchData } from "../api/route";
 import Reveal from "../lib/Reveal";
 
@@ -64,7 +63,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
         </Reveal>
       </div>
 
-      <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7">
+      <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7">
         {filmsData.map((film) => {
           const filmGenres =
             film.genre_ids && genres
@@ -74,18 +73,35 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
               : [];
 
           {
-            /* NOTE: Harus atur posisi yg disebelah kiri juga */
+            /* 1024px */
           }
-          const first = `[&_#FilmPreview]:first:!left-0 [&_#FilmPreview]:first:!translate-x-0`;
-          const fifth = `lg:[&_#FilmPreview]:fifth:!left-auto lg:[&_#FilmPreview]:fifth:!translate-x-0 lg:[&_#FilmPreview]:fifth:!right-0 xl:[&_#FilmPreview]:fifth:!left-1/2 xl:[&_#FilmPreview]:fifth:!-translate-x-1/2 xl:[&_#FilmPreview]:fifth:!right-auto`;
-          const seventh = `xl:[&_#FilmPreview]:seventh:!left-auto xl:[&_#FilmPreview]:seventh:!translate-x-0 xl:[&_#FilmPreview]:seventh:!right-0`;
+          const lg = `          
+          lg-max:[&_>_a_#FilmPreview]:child-5n+1:left-0 lg-max:[&_>_a_#FilmPreview]:child-5n+1:translate-x-0
+
+          lg-max:[&_>_a_#FilmPreview]:child-5n:left-auto lg-max:[&_>_a_#FilmPreview]:child-5n:translate-x-0 lg-max:[&_>_a_#FilmPreview]:child-5n:right-0
+          `;
+
+          {
+            /* 1280px */
+          }
+          const xl = `
+          xl:[&_>_a_#FilmPreview]:child-7n+1:left-0 xl:[&_>_a_#FilmPreview]:child-7n+1:translate-x-0
+
+          xl:[&_>_a_#FilmPreview]:child-7n:left-auto xl:[&_>_a_#FilmPreview]:child-7n:translate-x-0 xl:[&_>_a_#FilmPreview]:child-7n:right-0
+          `;
+
+          {
+            /* 1536px */
+          }
+          {/* const xl2 = `
+          2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
+
+          2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
+          `; */}
 
           return (
-            <Reveal
-              key={film.id}
-              // className={`${first} ${fifth} ${seventh}`}
-            >
-              <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />{" "}
+            <Reveal key={film.id} className={`${lg} ${xl}`}>
+              <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
             </Reveal>
           );
         })}
