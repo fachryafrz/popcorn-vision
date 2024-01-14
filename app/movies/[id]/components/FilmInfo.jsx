@@ -59,21 +59,31 @@ export default function FilmInfo({
 
   const timeLeft = new Date(new Date(upcomingDate) - new Date());
   const [countdown, setCountdown] = useState({
-    years: timeLeft.getUTCFullYear() - 1970,
-    months: timeLeft.getUTCMonth(),
-    days: timeLeft.getDate(),
-    hours: timeLeft.getUTCHours(),
-    minutes: timeLeft.getUTCMinutes(),
-    seconds: timeLeft.getUTCSeconds(),
+    years: Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365)),
+    months: Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+    ),
+    days: Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+    ),
+    hours: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    minutes: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+    seconds: Math.floor((timeLeft % (1000 * 60)) / 1000),
   });
 
-  const calculateCountdown = () => {
-    let yearsLeft = timeLeft.getUTCFullYear() - 1970;
-    let monthsLeft = timeLeft.getUTCMonth();
-    let daysLeft = timeLeft.getDate();
-    let hoursLeft = timeLeft.getUTCHours();
-    let minutesLeft = timeLeft.getUTCMinutes();
-    let secondsLeft = timeLeft.getUTCSeconds();
+  const calculateCountdown = (timeLeft) => {
+    let yearsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365));
+    let monthsLeft = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+    );
+    let daysLeft = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+    );
+    let hoursLeft = Math.floor(
+      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    let minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    let secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
     return {
       years: yearsLeft,
@@ -89,7 +99,7 @@ export default function FilmInfo({
     setURL(window.location.href);
 
     const interval = setInterval(() => {
-      setCountdown(calculateCountdown());
+      setCountdown(calculateCountdown(timeLeft));
     }, 1000);
 
     return () => clearInterval(interval);
