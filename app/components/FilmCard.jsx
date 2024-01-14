@@ -194,7 +194,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Logo Image */}
           {!loading && titleLogo && (
-            <Reveal className={`h-full`} delay={0.2}>
+            <Reveal className={`h-full`} delay={0.1}>
               <figure className={`h-full`}>
                 <img
                   src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
@@ -232,7 +232,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Rating */}
           {film.vote_average > 0 && !loading && (
-            <Reveal delay={0.2}>
+            <Reveal delay={0.1}>
               <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
                 <IonIcon icon={star} className="" />
                 <span className="!text-white">
@@ -244,7 +244,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Runtime */}
           {!isTvPage && filmRuntime > 0 && !loading && (
-            <Reveal delay={0.25}>
+            <Reveal delay={0.15}>
               <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
                 <span className="!text-white">
                   {formatRuntime(filmRuntime)}
@@ -255,7 +255,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Seasons */}
           {isTvPage && filmDetails?.number_of_seasons > 0 && !loading && (
-            <Reveal delay={0.3}>
+            <Reveal delay={0.2}>
               <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
                 <span className="!text-white">
                   {`${filmDetails.number_of_seasons} ${isPlural({
@@ -269,7 +269,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Genres */}
           {genres.length > 0 && !loading && (
-            <Reveal delay={0.35}>
+            <Reveal delay={0.25}>
               <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
                 <span className="!text-white">{genres[0]?.name}</span>
               </div>
@@ -293,7 +293,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
           )}
 
           {!loading && (
-            <Reveal delay={0.2}>
+            <Reveal delay={0.1}>
               <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
                 {film.overview}
               </p>
