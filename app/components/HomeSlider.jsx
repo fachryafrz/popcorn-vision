@@ -29,6 +29,7 @@ import axios from "axios";
 import FilmSummary from "./FilmSummary";
 import { getFilm } from "../api/route";
 import Reveal from "../lib/Reveal";
+import ImagePovi from "./ImagePovi";
 
 export default function HomeSlider({ films, genres }) {
   const pathname = usePathname();
@@ -191,29 +192,29 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
 
   return (
     <>
-      <figure className={`h-full w-full -z-10`}>
-        {filmPoster && (
-          <Reveal y={0} delay={0.2} className={`md:hidden h-full`}>
-            <img
-              loading={`lazy`}
-              src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
-              alt={isItTvPage(film.title, film.name)}
-              className={`object-top`}
-            />
-          </Reveal>
-        )}
+      <div className={`h-full w-full -z-10`}>
+        {/* Poster */}
+        <Reveal y={0} delay={0.2} className={`md:hidden h-full`}>
+          <ImagePovi
+            imgPath={
+              filmPoster && `https://image.tmdb.org/t/p/w780${filmPoster}`
+            }
+            position={`top`}
+            className={`h-full`}
+          />
+        </Reveal>
 
-        {filmBackdrop && (
-          <Reveal y={0} delay={0.2} className={`hidden md:block h-full`}>
-            <img
-              loading={`lazy`}
-              src={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
-              alt={isItTvPage(film.title, film.name)}
-              className={`object-top`}
-            />
-          </Reveal>
-        )}
-      </figure>
+        {/* Backdrop */}
+        <Reveal y={0} delay={0.2} className={`hidden md:block h-full`}>
+          <ImagePovi
+            imgPath={
+              filmBackdrop && `https://image.tmdb.org/t/p/w1280${filmBackdrop}`
+            }
+            position={`top`}
+            className={`h-full`}
+          />
+        </Reveal>
+      </div>
       <div
         className={`mx-auto max-w-none z-50 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
       >

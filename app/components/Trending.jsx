@@ -11,6 +11,7 @@ import axios from "axios";
 import FilmSummary from "./FilmSummary";
 import { getFilm } from "../api/route";
 import Reveal from "../lib/Reveal";
+import ImagePovi from "./ImagePovi";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -30,25 +31,30 @@ export default function Trending({ film, genres }) {
         )
       : [];
 
+  const filmTitle = !isTvPage ? film.title : film.name;
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
 
   useEffect(() => {
-    getFilm({
-      id: film.id,
-      type: !isTvPage ? `movie` : `tv`,
-      path: "/images",
-      params: {
-        include_image_language: "null",
-      },
-    }).then((res) => {
-      let { posters } = res;
+    const fetchFilmPoster = async () => {
+      await getFilm({
+        id: film.id,
+        type: !isTvPage ? `movie` : `tv`,
+        path: "/images",
+        params: {
+          include_image_language: "null",
+        },
+      }).then((res) => {
+        let { posters } = res;
 
-      if (!posters.length) {
-        setFilmPoster(film.poster_path);
-      } else {
-        setFilmPoster(posters[0].file_path);
-      }
-    });
+        if (!posters.length) {
+          setFilmPoster(film.poster_path);
+        } else {
+          setFilmPoster(posters[0].file_path);
+        }
+      });
+    };
+
+    // fetchFilmPoster();
   }, [film, isTvPage]);
 
   return (
@@ -56,25 +62,25 @@ export default function Trending({ film, genres }) {
       <h2 className="sr-only">{`Trending Movie`}</h2>
       {/* <Reveal> */}
       <div className="relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black">
-        <figure className="absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0">
-          <img
-            loading="lazy"
-            src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
-            alt={film.title}
-            className={`object-top`}
+        {/* Backdrop */}
+        <ImagePovi
+          imgPath={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
+          className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}
+        />
+
+        {/* Poster */}
+        <Reveal
+          y={0}
+          className={`h-full z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}
+        >
+          <ImagePovi
+            imgPath={
+              film.poster_path &&
+              `https://image.tmdb.org/t/p/w780${film.poster_path}`
+            }
+            className={`h-full`}
           />
-        </figure>
-        <figure className="z-30 sm:w-[300px] aspect-poster rounded-2xl overflow-hidden">
-          {film.poster_path && (
-            <Reveal y={0} className={`h-full`}>
-              <img
-                // loading="lazy"
-                src={`https://image.tmdb.org/t/p/w780${filmPoster}`}
-                alt={film.title}
-              />
-            </Reveal>
-          )}
-        </figure>
+        </Reveal>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
           <FilmSummary
             film={film}
