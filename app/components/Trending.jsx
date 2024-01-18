@@ -4,25 +4,27 @@
 import { IonIcon } from "@ionic/react";
 import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
-import { getFilm } from "../api/route";
+import { fetchData, getFilm } from "../api/route";
 import Reveal from "../lib/Reveal";
 import ImagePovi from "./ImagePovi";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  const [loading, setLoading] = useState(true);
-  const [filmPoster, setFilmPoster] = useState(film.poster_path);
+  const [filmDetails, setFilmDetails] = useState();
 
-  const isItTvPage = (movie, tv) => {
-    const type = !isTvPage ? movie : tv;
-    return type;
-  };
+  const isItTvPage = useCallback(
+    (movie, tv) => {
+      const type = !isTvPage ? movie : tv;
+      return type;
+    },
+    [isTvPage]
+  );
 
   const filmGenres =
     film.genre_ids && genres
@@ -34,28 +36,20 @@ export default function Trending({ film, genres }) {
   const filmTitle = !isTvPage ? film.title : film.name;
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
 
+  const fetchFilmDetails = useCallback(async () => {
+    await fetchData({
+      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
+      queryParams: {
+        append_to_response: `images`,
+      },
+    }).then((res) => {
+      setFilmDetails(res);
+    });
+  }, [film, isItTvPage]);
+
   useEffect(() => {
-    const fetchFilmPoster = async () => {
-      await getFilm({
-        id: film.id,
-        type: !isTvPage ? `movie` : `tv`,
-        path: "/images",
-        params: {
-          include_image_language: "null",
-        },
-      }).then((res) => {
-        let { posters } = res;
-
-        if (!posters.length) {
-          setFilmPoster(film.poster_path);
-        } else {
-          setFilmPoster(posters[0].file_path);
-        }
-      });
-    };
-
-    // fetchFilmPoster();
-  }, [film, isTvPage]);
+    fetchFilmDetails();
+  }, [fetchFilmDetails]);
 
   return (
     <div className="px-4 mx-auto max-w-7xl">
@@ -82,12 +76,14 @@ export default function Trending({ film, genres }) {
           />
         </Reveal>
         <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
-          <FilmSummary
-            film={film}
-            genres={genres}
-            className={`!max-w-none`}
-            btnClass={`btn-warning bg-opacity-[80%]`}
-          />
+          {filmDetails && (
+            <FilmSummary
+              film={filmDetails}
+              genres={genres}
+              className={`!max-w-none`}
+              btnClass={`btn-warning bg-opacity-[80%]`}
+            />
+          )}
         </div>
       </div>
       {/* </Reveal> */}

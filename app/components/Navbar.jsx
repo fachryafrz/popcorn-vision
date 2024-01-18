@@ -233,7 +233,7 @@ export default function Navbar() {
             </div>
           </Reveal>
 
-          <Reveal y={-20} delay={0.6}>
+          <Reveal y={-20} delay={0.6} className={`lg:hidden`}>
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}

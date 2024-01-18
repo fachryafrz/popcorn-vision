@@ -27,7 +27,7 @@ import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
-import { getFilm } from "../api/route";
+import { fetchData, getFilm } from "../api/route";
 import Reveal from "../lib/Reveal";
 import ImagePovi from "./ImagePovi";
 
@@ -36,6 +36,8 @@ export default function HomeSlider({ films, genres }) {
   const isTvPage = pathname.startsWith("/tv");
 
   const [loading, setLoading] = useState(true);
+  const [mainSwiper, setMainSwiper] = useState(null);
+  const [activeSlide, setActiveSlide] = useState(0);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const isItTvPage = (movie, tv) => {
@@ -48,6 +50,12 @@ export default function HomeSlider({ films, genres }) {
       <h2 className="sr-only">Discover Movies</h2>
       <div>
         <Swiper
+          onSwiper={(swiper) => setMainSwiper(swiper)}
+          onSlideChange={() => {
+            if (mainSwiper) {
+              setActiveSlide(mainSwiper.activeIndex);
+            }
+          }}
           modules={[
             Pagination,
             Autoplay,
@@ -61,7 +69,7 @@ export default function HomeSlider({ films, genres }) {
               thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
           }}
           effect="fade"
-          loop={true}
+          // loop={true} // NOTE: If this is enabled, the activeSlide will not work
           autoplay={{
             delay: 10000,
             disableOnInteraction: true,
@@ -72,7 +80,7 @@ export default function HomeSlider({ films, genres }) {
           slidesPerView={1}
           className={`h-[100svh] lg:h-[calc(100svh+5rem)] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
         >
-          {films.map((film) => {
+          {films.map((film, i) => {
             const releaseDate = isItTvPage(
               film.release_date,
               film.first_air_date
@@ -92,6 +100,8 @@ export default function HomeSlider({ films, genres }) {
               >
                 <HomeFilm
                   film={film}
+                  index={i}
+                  activeSlide={activeSlide}
                   genres={genres}
                   isTvPage={isTvPage}
                   loading={loading}
@@ -142,14 +152,26 @@ export default function HomeSlider({ films, genres }) {
   );
 }
 
-function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
+function HomeFilm({
+  film,
+  index,
+  activeSlide,
+  genres,
+  isTvPage,
+  loading,
+  setLoading,
+}) {
+  const [filmDetails, setFilmDetails] = useState();
   const [filmPoster, setFilmPoster] = useState("");
   const [filmBackdrop, setFilmBackdrop] = useState("");
 
-  const isItTvPage = (movie, tv) => {
-    const type = !isTvPage ? movie : tv;
-    return type;
-  };
+  const isItTvPage = useCallback(
+    (movie, tv) => {
+      const type = !isTvPage ? movie : tv;
+      return type;
+    },
+    [isTvPage]
+  );
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
 
@@ -160,41 +182,43 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         )
       : [];
 
-  useEffect(() => {
-    const isItTvPage = (movie, tv) => {
-      const type = !isTvPage ? movie : tv;
-      return type;
-    };
-
-    getFilm({
-      id: film.id,
-      type: isItTvPage("movie", "tv"),
-      path: "/images",
-      params: {
-        include_image_language: "null",
+  const fetchFilmDetails = useCallback(async () => {
+    await fetchData({
+      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
+      queryParams: {
+        append_to_response: `images`,
       },
     }).then((res) => {
-      let { posters, backdrops } = res;
+      const { images } = res;
+      const { posters, backdrops } = images;
+
+      setFilmDetails(res);
 
       if (!posters.length) {
         setFilmPoster(film.poster_path);
       } else {
-        setFilmPoster(posters[0].file_path);
+        setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
       }
 
       if (!backdrops.length) {
         setFilmBackdrop(film.backdrop_path);
       } else {
-        setFilmBackdrop(backdrops[0].file_path);
+        setFilmBackdrop(
+          backdrops.find((img) => img.iso_639_1 === null)?.file_path
+        );
       }
     });
-  }, [film, isTvPage]);
+  }, [film, isItTvPage]);
+
+  useEffect(() => {
+    fetchFilmDetails();
+  }, [fetchFilmDetails]);
 
   return (
     <>
       <div className={`h-full w-full -z-10`}>
         {/* Poster */}
-        <Reveal y={0} delay={0.2} className={`md:hidden h-full`}>
+        <Reveal y={0} className={`md:hidden h-full`}>
           <ImagePovi
             imgPath={
               filmPoster && `https://image.tmdb.org/t/p/w780${filmPoster}`
@@ -205,7 +229,7 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
         </Reveal>
 
         {/* Backdrop */}
-        <Reveal y={0} delay={0.2} className={`hidden md:block h-full`}>
+        <Reveal y={0} className={`hidden md:block h-full`}>
           <ImagePovi
             imgPath={
               filmBackdrop && `https://image.tmdb.org/t/p/w1280${filmBackdrop}`
@@ -218,13 +242,15 @@ function HomeFilm({ film, genres, isTvPage, loading, setLoading }) {
       <div
         className={`mx-auto max-w-none z-50 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
       >
-        <FilmSummary
-          film={film}
-          genres={genres}
-          isTvPage={isTvPage}
-          loading={loading}
-          setLoading={setLoading}
-        />
+        {filmDetails && activeSlide === index && (
+          <FilmSummary
+            film={filmDetails}
+            genres={genres}
+            isTvPage={isTvPage}
+            loading={loading}
+            setLoading={setLoading}
+          />
+        )}
       </div>
     </>
   );

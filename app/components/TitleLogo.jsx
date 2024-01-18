@@ -30,11 +30,13 @@ export default function TitleLogo({ film, images, setLoading }) {
       </figure>
     </Reveal>
   ) : (
-    <h1
-      className="font-bold text-3xl lg:text-5xl line-clamp-2 !leading-normal"
-      style={{ textWrap: `balance` }}
-    >
-      {title}
-    </h1>
+    <Reveal delay={0.1} className={`w-full`}>
+      <h1
+        className="font-bold text-3xl lg:text-5xl line-clamp-2 !leading-normal"
+        style={{ textWrap: `balance` }}
+      >
+        {title}
+      </h1>
+    </Reveal>
   );
 }
