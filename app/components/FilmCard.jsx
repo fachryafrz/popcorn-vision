@@ -164,7 +164,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         // transition={{ delay: isHovering ? 0.5 : 0 }}
         exit={{ opacity: 0 }}
         id="FilmPreview"
-        className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] min-h-[335px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
+        className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
           isHovering ? `pointer-events-auto` : `pointer-events-none`
         }`}
       >
@@ -174,7 +174,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             film.backdrop_path &&
             `https://image.tmdb.org/t/p/w92${film.backdrop_path}`
           }
-          className={`aspect-[3/2] relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+          className={`aspect-[4/3] relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
         >
           {film.backdrop_path && (
             <img
