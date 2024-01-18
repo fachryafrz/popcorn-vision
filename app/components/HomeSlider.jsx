@@ -128,7 +128,7 @@ export default function HomeSlider({ films, genres }) {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`aspect-video !w-[100px] !h-fit opacity-[50%] cursor-pointer hocus:opacity-[75%] !transition-all hocus:!w-[110px] origin-bottom`}
+                className={`aspect-video swiper-slide-thumb !h-fit opacity-[60%] cursor-pointer hocus:opacity-[75%] !transition-all origin-bottom`}
               >
                 {/* NOTE: This is film backdrop without logo */}
                 {/* <figure
