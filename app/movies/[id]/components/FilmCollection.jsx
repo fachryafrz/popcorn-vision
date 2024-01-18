@@ -236,6 +236,7 @@ function FilmSeason({ film, item, index, setLoading }) {
               number: item.episode_count,
             })})`}
             className="text-start line-clamp-1 md:line-clamp-2 font-medium"
+            style={{ textWrap: `balance` }}
           >
             {item.name}
           </h3>
