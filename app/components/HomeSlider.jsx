@@ -194,13 +194,16 @@ function HomeFilm({
 
       setFilmDetails(res);
 
-      if (!posters.length) {
+      if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
         setFilmPoster(film.poster_path);
       } else {
         setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
       }
 
-      if (!backdrops.length) {
+      if (
+        !backdrops.length ||
+        !backdrops.find((img) => img.iso_639_1 === null)
+      ) {
         setFilmBackdrop(film.backdrop_path);
       } else {
         setFilmBackdrop(
