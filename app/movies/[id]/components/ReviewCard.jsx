@@ -15,9 +15,9 @@ export default function ReviewCard({ review }) {
 
   // Review content variables
   const text = review.content;
-  const words = text.split(" ");
+  const words = text.split("");
   const wordCount = words.length;
-  const maxLength = 50;
+  const maxLength = 300;
 
   // Review date variables
   const createdAt = formatDate({ date: review.created_at, showDay: false });
@@ -125,7 +125,7 @@ export default function ReviewCard({ review }) {
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {readMore || wordCount < maxLength
             ? text
-            : `${words.slice(0, maxLength).join(" ")}...`}
+            : `${words.slice(0, maxLength).join("")}...`}
         </ReactMarkdown>
       </div>
 
