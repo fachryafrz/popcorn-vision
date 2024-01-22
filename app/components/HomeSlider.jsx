@@ -114,7 +114,7 @@ export default function HomeSlider({ films, genres }) {
       </div>
 
       <div
-        className={`hidden lg:block absolute right-4 bottom-[calc(5rem+4rem-1rem)] w-fit`}
+        className={`hidden lg:block absolute right-0 bottom-[calc(5rem+4rem-1rem)] w-fit`}
       >
         <Swiper
           onSwiper={setThumbsSwiper}
@@ -122,7 +122,7 @@ export default function HomeSlider({ films, genres }) {
           modules={[Thumbs]}
           slidesPerView={`auto`}
           spaceBetween={0}
-          wrapperClass={`gap-2 items-end p-4`}
+          wrapperClass={`items-end gap-2 justify-end p-4 !w-fit`}
         >
           {films.map((film, i) => {
             return (
