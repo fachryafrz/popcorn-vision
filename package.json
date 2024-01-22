@@ -45,6 +45,7 @@
     "react-markdown": "^8.0.5",
     "react-select": "^5.8.0",
     "react-share": "^4.4.1",
+    "react-youtube": "^10.1.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
     "swiper": "^9.0.5",

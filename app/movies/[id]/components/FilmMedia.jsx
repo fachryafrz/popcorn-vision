@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -24,8 +24,16 @@ import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
 import Reveal from "@/app/lib/Reveal";
+import YouTube from "react-youtube";
 
 export default function FilmMedia({ videos, images }) {
+  const [mediaSwiper, setMediaSwiper] = useState();
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [activeVideo, setActiveVideo] = useState({
+    index: null,
+    video: null,
+  });
+
   const filteredVideos =
     videos &&
     videos.results.filter(
@@ -38,10 +46,24 @@ export default function FilmMedia({ videos, images }) {
         result.type === "Clip"
     );
 
+  useEffect(() => {
+    if (activeVideo.index !== activeSlide) {
+      activeVideo.video?.pauseVideo();
+    } else {
+      activeVideo.video?.playVideo();
+    }
+  }, [activeSlide, activeVideo]);
+
   return (
     <div id="media" className="flex flex-col gap-2">
       <div className="max-w-full">
         <Swiper
+          onSwiper={(swiper) => setMediaSwiper(swiper)}
+          onSlideChange={() => {
+            if (mediaSwiper) {
+              setActiveSlide(mediaSwiper.activeIndex);
+            }
+          }}
           modules={[
             FreeMode,
             Navigation,
@@ -95,8 +117,8 @@ export default function FilmMedia({ videos, images }) {
             .slice(0, 10)
             .map((vid, index) => {
               return (
-                <SwiperSlide key={index}>
-                  <link
+                <SwiperSlide key={vid.key}>
+                  {/* <link
                     href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
                   />
                   <meta content={vid.name} />
@@ -111,7 +133,22 @@ export default function FilmMedia({ videos, images }) {
                     frameBorder="0"
                     allowFullScreen
                     className={`w-full h-full`}
-                  ></iframe>
+                  ></iframe> */}
+
+                  <YouTube
+                    videoId={vid.key}
+                    className={`w-full h-full`}
+                    iframeClassName={`w-full h-full`}
+                    // onReady={(e) => console.log(`Ready`, e)}
+                    onPlay={(e) => setActiveVideo({ index, video: e.target })}
+                    // onPause={(e) => console.log(`Pause`, e)}
+                    opts={{
+                      playerVars: {
+                        rel: 0,
+                        start: 0,
+                      },
+                    }}
+                  />
                 </SwiperSlide>
               );
             })}
