@@ -4,8 +4,6 @@ import Footer from "./components/Footer";
 import Copyright from "./components/Copyright";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 
-export const viewport = {};
-
 export const metadata = {
   generator: process.env.NEXT_PUBLIC_APP_NAME,
   applicationName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -23,7 +21,7 @@ export const metadata = {
   },
   title: {
     default: process.env.NEXT_PUBLIC_APP_NAME,
-    template: "%s - Popcorn Vision",
+    template: "%s - " + process.env.NEXT_PUBLIC_APP_NAME,
   },
   description: process.env.NEXT_PUBLIC_APP_DESC,
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL),
@@ -61,7 +59,7 @@ export const metadata = {
   robots: {
     index: true,
     follow: true,
-    nocache: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
