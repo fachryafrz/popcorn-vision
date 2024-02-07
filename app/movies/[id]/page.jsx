@@ -104,6 +104,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
     similar,
   } = film;
 
+  let collection;
+
+  if (film.belongs_to_collection) {
+    collection = await fetchData({
+      endpoint: `/collection/${film.belongs_to_collection.id}`,
+    });
+  }
+
   // This can cause double data from recommendation & similar
   // which means there can be two same movies in the list
   let recommendationsAndSimilar = {
@@ -253,6 +261,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
         reviews={reviews}
         credits={credits}
         providers={providers}
+        collection={collection}
         isTvPage={isTvPage}
       />
 

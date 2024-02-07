@@ -11,6 +11,7 @@ export default function FilmDetailsProvider({
   reviews,
   credits,
   providers,
+  collection,
   isTvPage,
 }) {
   return (
@@ -22,6 +23,7 @@ export default function FilmDetailsProvider({
         reviews={reviews}
         credits={credits}
         providers={providers}
+        collection={collection}
         isTvPage={isTvPage}
       />
     </DetailsProvider>

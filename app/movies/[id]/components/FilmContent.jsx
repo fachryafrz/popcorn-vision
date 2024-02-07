@@ -17,6 +17,7 @@ export default function FilmContent({
   reviews,
   credits,
   providers,
+  collection,
   isTvPage,
 }) {
   const [loading, setLoading] = useState(true);
@@ -79,6 +80,7 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
+            collection={collection}
             loading={loading}
             setLoading={setLoading}
           />
