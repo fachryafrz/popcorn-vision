@@ -136,7 +136,7 @@ export default function ReviewCard({ review }) {
       >
         <button
           onClick={handleReadMore}
-          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium bg-[#2e3542] pt-1 pr-1`}
+          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium pt-1 pr-1`}
         >
           {readMore ? `Show less` : `Read more`}
         </button>
