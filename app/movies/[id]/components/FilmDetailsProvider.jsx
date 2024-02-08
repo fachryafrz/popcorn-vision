@@ -13,6 +13,7 @@ export default function FilmDetailsProvider({
   providers,
   collection,
   isTvPage,
+  releaseDates,
 }) {
   return (
     <DetailsProvider>
@@ -25,6 +26,7 @@ export default function FilmDetailsProvider({
         providers={providers}
         collection={collection}
         isTvPage={isTvPage}
+        releaseDates={releaseDates}
       />
     </DetailsProvider>
   );

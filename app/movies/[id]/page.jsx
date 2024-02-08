@@ -85,7 +85,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     endpoint: `/${type}/${id}`,
     queryParams: {
       append_to_response:
-        "credits,videos,reviews,watch/providers,recommendations,similar",
+        "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
     },
   });
   const images = await fetchData({
@@ -102,6 +102,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     "watch/providers": providers,
     recommendations,
     similar,
+    release_dates: releaseDates,
   } = film;
 
   let collection;
@@ -263,6 +264,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
         providers={providers}
         collection={collection}
         isTvPage={isTvPage}
+        releaseDates={releaseDates}
       />
 
       {/* Recommendations */}

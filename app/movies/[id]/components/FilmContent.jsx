@@ -19,6 +19,7 @@ export default function FilmContent({
   providers,
   collection,
   isTvPage,
+  releaseDates,
 }) {
   const [loading, setLoading] = useState(true);
 
@@ -68,6 +69,7 @@ export default function FilmContent({
             providers={providers}
             loading={loading}
             setLoading={setLoading}
+            releaseDates={releaseDates}
           />
         </section>
 

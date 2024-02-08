@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -31,9 +30,12 @@ export default function FilmInfo({
   credits,
   providers,
   setLoading,
+  releaseDates,
 }) {
   const [URL, setURL] = useState("");
   const [userLocation, setUserLocation] = useState(null);
+  const countryCode = userLocation && JSON.parse(userLocation).countryCode;
+  const countryName = userLocation && JSON.parse(userLocation).countryName;
 
   const router = useRouter();
   const pathname = usePathname();
@@ -50,12 +52,19 @@ export default function FilmInfo({
     );
 
   // Release Date
-  const dateStr = !isTvPage ? film.release_date : film.first_air_date;
+  const releaseDateByCountry = releaseDates?.results.find(
+    (item) => item.iso_3166_1 === countryCode
+  );
+  const filmReleaseDate = releaseDateByCountry
+    ? releaseDateByCountry.release_dates[0].release_date
+    : film.release_date;
+
+  const dateStr = !isTvPage ? filmReleaseDate : film.first_air_date;
   const date = new Date(dateStr);
 
   const isUpcoming =
-    new Date(!isTvPage ? film.release_date : nextEps?.air_date) > new Date();
-  const upcomingDate = !isTvPage ? film.release_date : nextEps?.air_date;
+    new Date(!isTvPage ? filmReleaseDate : nextEps?.air_date) > new Date();
+  const upcomingDate = !isTvPage ? filmReleaseDate : nextEps?.air_date;
 
   const timeLeft = new Date(new Date(upcomingDate) - new Date());
   const [countdown, setCountdown] = useState({
@@ -103,6 +112,7 @@ export default function FilmInfo({
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   const handleShare = async () => {
@@ -193,15 +203,19 @@ export default function FilmInfo({
 
           {/* Film Release Date */}
           {!isTvPage
-            ? film.release_date && (
+            ? filmReleaseDate && (
                 <section id={`Movie Release Date`}>
                   <Reveal>
                     <div className={`flex items-center gap-2`}>
                       <IonIcon icon={calendarOutline} />
 
-                      <time dateTime={film.release_date}>
-                        {formatDate({ date: film.release_date })}
+                      <time dateTime={filmReleaseDate}>
+                        {formatDate({ date: filmReleaseDate })}
                       </time>
+
+                      {releaseDateByCountry && (
+                        <span>{`(${countryName})`}</span>
+                      )}
                     </div>
                   </Reveal>
                 </section>
@@ -221,7 +235,7 @@ export default function FilmInfo({
                             </span>
                           )}
                       </time>
-                    </div>{" "}
+                    </div>
                   </Reveal>
                 </section>
               )}
