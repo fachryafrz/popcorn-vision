@@ -15,7 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper";
-import { getEpisodes, getFilmCollection } from "@/app/api/route";
+import { fetchData, getEpisodes, getFilmCollection } from "@/app/api/route";
 import { slugify } from "@/app/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/app/lib/formatDate";
@@ -23,6 +23,7 @@ import { isPlural } from "@/app/lib/isPlural";
 import { releaseStatus } from "@/app/lib/releaseStatus";
 import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
+import { formatRuntime } from "@/app/lib/formatRuntime";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -91,70 +92,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
 
                 return (
                   <li key={item.id}>
-                    <article>
-                      <Link
-                        href={`/movies/${item.id}-${slugify(item.title)}`}
-                        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
-                          film.id === item.id &&
-                          `!bg-primary-blue !bg-opacity-30`
-                        }`}
-                      >
-                        <span
-                          className={`text-gray-400 text-sm font-medium px-1`}
-                        >
-                          {index + 1}
-                        </span>
-                        <ImagePovi
-                          imgPath={
-                            item.poster_path &&
-                            `https://image.tmdb.org/t/p/w92${item.poster_path}`
-                          }
-                          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
-                        />
-                        <div className="flex flex-col gap-1 items-start w-full">
-                          <h3
-                            className="text-start line-clamp-2 font-medium"
-                            title={item.title}
-                            style={{ textWrap: "balance" }}
-                          >
-                            {item.title}
-                          </h3>
-                          <div
-                            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
-                          >
-                            {item.vote_average > 1 && (
-                              <span
-                                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                              >
-                                <IonIcon
-                                  icon={star}
-                                  className={`text-primary-yellow`}
-                                />
-                                {item.vote_average &&
-                                  item.vote_average.toFixed(1)}
-                              </span>
-                            )}
-
-                            {item.release_date && (
-                              <span
-                                className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
-                              >
-                                {formatDate({
-                                  date: item.release_date,
-                                  showDay: false,
-                                })}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <p
-                          title={item.overview}
-                          className="text-xs text-gray-400 line-clamp-3 w-full"
-                        >
-                          {item.overview}
-                        </p>
-                      </Link>
-                    </article>{" "}
+                    <CollectionItem film={film} item={item} index={index} />
                   </li>
                 );
               })
@@ -191,6 +129,79 @@ export default function FilmCollection({ film, setLoading, collection }) {
         )}
       </ul>
     </div>
+  );
+}
+
+function CollectionItem({ film, item, index }) {
+  const [filmDetails, setFilmDetails] = useState();
+
+  useEffect(() => {
+    const fetchFilmDetails = async () => {
+      await fetchData({
+        endpoint: `/movie/${item.id}`,
+      }).then((res) => {
+        setFilmDetails(res);
+      });
+    };
+
+    fetchFilmDetails();
+  }, [item]);
+
+  return (
+    <article>
+      <Link
+        href={`/movies/${item.id}-${slugify(item.title)}`}
+        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+          film.id === item.id && `!bg-primary-blue !bg-opacity-30`
+        }`}
+      >
+        <span className={`text-gray-400 text-sm font-medium px-1`}>
+          {index + 1}
+        </span>
+        <ImagePovi
+          imgPath={
+            item.poster_path &&
+            `https://image.tmdb.org/t/p/w92${item.poster_path}`
+          }
+          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
+        />
+        <div className="flex flex-col gap-1 items-start w-full">
+          <h3
+            className="text-start line-clamp-2 font-medium"
+            title={item.title}
+            style={{ textWrap: "balance" }}
+          >
+            {item.title}
+          </h3>
+          <div
+            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+          >
+            {item.vote_average > 1 && (
+              <span
+                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+              >
+                <IonIcon icon={star} className={`text-primary-yellow`} />
+                {item.vote_average && item.vote_average.toFixed(1)}
+              </span>
+            )}
+
+            {filmDetails && (
+              <span
+                className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+              >
+                {formatRuntime(filmDetails.runtime)}
+              </span>
+            )}
+          </div>
+        </div>
+        <p
+          title={item.overview}
+          className="text-xs text-gray-400 line-clamp-3 w-full"
+        >
+          {item.overview}
+        </p>
+      </Link>
+    </article>
   );
 }
 
