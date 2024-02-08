@@ -25,17 +25,15 @@ import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
 
 export default function FilmCollection({ film, setLoading, collection }) {
-  const sortedCollections = collection.parts.sort((a, b) => {
+  const sortedCollections = collection?.parts.sort((a, b) => {
     const dateA = new Date(a.release_date);
     const dateB = new Date(b.release_date);
 
     return dateA - dateB;
   });
 
-  console.log(sortedCollections);
-
   const [apiData, setApiData] = useState(collection);
-  const [collectionTitle, setCollectionTitle] = useState(collection.name);
+  const [collectionTitle, setCollectionTitle] = useState(collection?.name);
   const [collections, setCollections] = useState(sortedCollections);
   const [showAllCollection, setShowAllCollection] = useState(false);
   const [viewSeason, setViewSeason] = useState(false);
