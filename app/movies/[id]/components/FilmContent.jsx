@@ -47,7 +47,7 @@ export default function FilmContent({
       >
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
-          <div className={`flex h-full w-[50vw] md:w-auto mx-auto md:m-0`}>
+          <div className={`flex h-full w-[60svw] md:w-auto mx-auto md:m-0`}>
             <FilmPoster
               film={film}
               videos={videos}
