@@ -186,6 +186,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         </ImagePovi>
 
         <div
+          key={isHovering}
           className={`p-3 pb-4 -mt-[75px] z-10 relative flex flex-col gap-2`}
         >
           {/* Logo */}
