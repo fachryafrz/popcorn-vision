@@ -2,18 +2,21 @@
 import { IonIcon } from "@ionic/react";
 import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
 import Person from "./Person";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDate } from "@/app/lib/formatDate";
 import { formatRuntime } from "@/app/lib/formatRuntime";
 import { isPlural } from "@/app/lib/isPlural";
-import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
 
+// Redux Toolkit
+import { useSelector, useDispatch } from "react-redux";
+import { setEpisode } from "@/app/redux/episodeSlice";
+
 export function EpisodeModal({ episode }) {
+  const dispatch = useDispatch();
+
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
-
-  const { setEpisodeModal } = useContext(DetailsContext);
 
   const handleShowAllGuestStars = () => {
     setShowAllGuestStars(true);
@@ -36,7 +39,8 @@ export function EpisodeModal({ episode }) {
             onClick={() => {
               document.getElementById(`episodeModal`).close();
               setTimeout(() => {
-                setEpisodeModal(null);
+                // Redux Toolkit
+                dispatch(setEpisode(null));
               }, 100);
             }}
             className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 pointer-events-auto`}
@@ -77,7 +81,7 @@ export function EpisodeModal({ episode }) {
 
             {episode.episode_type && (
               <span
-                className={`bg-primary-blue bg-opacity-[10%] text-primary-blue flex text-center max-w-fit p-2 px-4 rounded-full mx-auto capitalize`}
+                className={`bg-primary-blue bg-opacity-[10%] text-primary-blue flex text-center max-w-fit p-2 px-4 rounded-full mx-auto capitalize font-medium`}
               >
                 {episode.episode_type}
               </span>

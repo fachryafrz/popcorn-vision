@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FilmPoster from "./FilmPoster";
 import CastsList from "./CastsList";
 import FilmInfo from "./FilmInfo";
@@ -8,7 +8,8 @@ import FilmOverview from "./FilmOverview";
 import ShareModal from "./ShareModal";
 import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
-import { DetailsContext } from "../context";
+
+import { useSelector } from "react-redux";
 
 export default function FilmContent({
   film,
@@ -21,22 +22,23 @@ export default function FilmContent({
   isTvPage,
   releaseDates,
 }) {
+  const episodeForModal = useSelector((state) => state.episode.value);
+  const personForModal = useSelector((state) => state.person.value);
+
   const [loading, setLoading] = useState(true);
 
-  const { episodeModal, personModal } = useContext(DetailsContext);
-
   useEffect(() => {
-    if (episodeModal) {
+    if (episodeForModal) {
       // document.getElementById(`episodeModal`).scrollTo(0, 0);
       document.getElementById(`episodeModal`).showModal();
     }
 
-    if (personModal) {
-      if (episodeModal) document.getElementById(`episodeModal`).close();
+    if (personForModal) {
+      if (episodeForModal) document.getElementById(`episodeModal`).close();
       document.getElementById(`personModal`).scrollTo(0, 0);
       document.getElementById(`personModal`).showModal();
     }
-  }, [personModal, episodeModal]);
+  }, [episodeForModal, personForModal]);
 
   return (
     <div className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}>
@@ -99,19 +101,19 @@ export default function FilmContent({
         <section className={`col-span-full`}>
           <ShareModal />
 
-          {isTvPage && episodeModal && (
+          {isTvPage && episodeForModal && (
             <EpisodeModal
-              episode={episodeModal}
-              person={personModal}
+              episode={episodeForModal}
+              person={personForModal}
               loading={loading}
             />
           )}
 
-          {personModal && (
+          {personForModal && (
             <PersonModal
-              person={personModal}
+              person={personForModal}
               loading={loading}
-              episode={episodeModal}
+              episode={episodeForModal}
             />
           )}
 

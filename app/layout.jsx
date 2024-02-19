@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Copyright from "./components/Copyright";
 import GoogleAnalytics from "./components/GoogleAnalytics";
+import StoreProvider from "./redux/StoreProvider";
 
 export const metadata = {
   generator: process.env.NEXT_PUBLIC_APP_NAME,
@@ -76,14 +77,16 @@ export default function RootLayout({ children }) {
     <html lang="en" className="scroll-pt-20">
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-100 text-white">
-        {/* Navbar */}
-        <Navbar />
+        <StoreProvider>
+          {/* Navbar */}
+          <Navbar />
 
-        {/* Main Content */}
-        <main className={`pb-8 mt-[66px]`}>{children}</main>
+          {/* Main Content */}
+          <main className={`pb-8 mt-[66px]`}>{children}</main>
 
-        {/* Footer */}
-        <Footer />
+          {/* Footer */}
+          <Footer />
+        </StoreProvider>
       </body>
     </html>
   );

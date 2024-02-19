@@ -2,28 +2,38 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
-import { DetailsContext } from "../context";
+import React, { useEffect, useState } from "react";
 import ImagePovi from "@/app/components/ImagePovi";
-import Link from "next/link";
 import { slugify } from "@/app/lib/slugify";
 import Reveal from "@/app/lib/Reveal";
 
+// Redux Toolkit
+import { useSelector, useDispatch } from "react-redux";
+import { setSeasonPoster } from "@/app/redux/seasonPosterSlice";
+
 export default function FilmPoster({ film, videos, images, reviews }) {
+  const dispatch = useDispatch();
+
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  const { activeSeasonPoster } = useContext(DetailsContext);
+
+  const seasonPoster = useSelector((state) => state.seasonPoster.value);
 
   const [filmPoster, setFilmPoster] = useState(film.poster_path);
   const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
-    if (activeSeasonPoster) {
-      setFilmPoster(activeSeasonPoster.poster_path);
+    dispatch(setSeasonPoster(null));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (seasonPoster) {
+      setFilmPoster(seasonPoster.poster_path);
     } else {
       setFilmPoster(film.poster_path);
     }
-  }, [activeSeasonPoster, film.poster_path]);
+  }, [film, seasonPoster]);
 
   useEffect(() => {
     const isWindowAvailable = typeof window !== "undefined";

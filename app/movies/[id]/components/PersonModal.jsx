@@ -5,10 +5,17 @@ import PersonWorks from "@/app/person/[id]/components/PersonWorks";
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
-import { DetailsContext } from "../context";
+import React, { useEffect, useState } from "react";
+
+// Redux Toolkit
+import { useSelector, useDispatch } from "react-redux";
+import { setPerson } from "@/app/redux/personSlice";
 
 export default function PersonModal({ person }) {
+  const dispatch = useDispatch();
+
+  const episodeForModal = useSelector((state) => state.episode.value);
+
   const combinedCredits = person.combined_credits;
   const movieCredits = person.movie_credits;
   const tvCredits = person.tv_credits;
@@ -16,16 +23,14 @@ export default function PersonModal({ person }) {
 
   const [films, setFilms] = useState();
 
-  const router = useRouter();
-  const { setPersonModal, episodeModal } = useContext(DetailsContext);
-
   const handleCloseModal = () => {
     document.getElementById(`personModal`).close();
-    if (episodeModal) {
+    if (episodeForModal) {
       document.getElementById(`episodeModal`).showModal();
     }
     setTimeout(() => {
-      setPersonModal(null);
+      // Redux Toolkit
+      dispatch(setPerson(null));
     }, 100);
 
     // router.back();

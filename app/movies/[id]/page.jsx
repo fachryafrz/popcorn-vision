@@ -3,9 +3,9 @@ import FilmBackdrop from "./components/FilmBackdrop";
 import FilmSlider from "@/app/components/FilmSlider";
 import { fetchData, getFilm, getGenres } from "@/app/api/route";
 import { releaseStatus } from "@/app/lib/releaseStatus";
-import FilmDetailsProvider from "./components/FilmDetailsProvider";
 import { isPlural } from "@/app/lib/isPlural";
 import FilmGrid from "@/app/components/FilmGrid";
+import FilmContent from "./components/FilmContent";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -255,7 +255,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       <FilmBackdrop film={film} />
 
       {/* Film Contents */}
-      <FilmDetailsProvider
+      <FilmContent
         film={film}
         videos={videos}
         images={images}

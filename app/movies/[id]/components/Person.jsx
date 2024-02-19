@@ -1,11 +1,12 @@
 "use client";
 
 import { getPerson } from "@/app/api/route";
-import { slugify } from "@/app/lib/slugify";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useContext, useState } from "react";
-import { DetailsContext } from "../context";
+import React from "react";
 import ImagePovi from "@/app/components/ImagePovi";
+
+// Redux Toolkit
+import { useDispatch } from "react-redux";
+import { setPerson } from "@/app/redux/personSlice";
 
 export default function Person({
   id,
@@ -15,16 +16,14 @@ export default function Person({
   personRole,
   tooltip = false,
 }) {
-  let popcorn = `/popcorn.png`;
+  const dispatch = useDispatch();
+
   let profilePath = profile_path;
-
-  const router = useRouter();
-
-  const { setPersonModal } = useContext(DetailsContext);
 
   const handleActorClick = () => {
     getPerson({ id }).then((res) => {
-      setPersonModal(res);
+      // Redux Toolkit
+      dispatch(setPerson(res));
     });
   };
 

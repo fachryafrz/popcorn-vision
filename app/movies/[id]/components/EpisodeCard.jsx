@@ -1,8 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { getEpisodeModal } from "@/app/api/route";
-import React, { useContext } from "react";
-import { DetailsContext } from "../context";
+import React from "react";
 import ImagePovi from "@/app/components/ImagePovi";
+
+// Redux Toolkit
+import { useSelector, useDispatch } from "react-redux";
+import { setEpisode } from "@/app/redux/episodeSlice";
 
 export default function EpisodeCard({
   className,
@@ -15,7 +18,7 @@ export default function EpisodeCard({
   filmID,
   overlay,
 }) {
-  const { setEpisodeModal } = useContext(DetailsContext);
+  const dispatch = useDispatch();
 
   return (
     <button
@@ -25,8 +28,10 @@ export default function EpisodeCard({
           season: episode.season_number,
           eps: episode.episode_number,
         }).then((res) => {
-          setEpisodeModal(res);
           setLoading(false);
+
+          // Redux Toolkit
+          dispatch(setEpisode(episode));
         });
       }}
       className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full h-fit transition-all ${className}`}

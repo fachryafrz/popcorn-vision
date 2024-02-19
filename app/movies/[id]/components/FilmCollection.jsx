@@ -9,7 +9,7 @@ import {
 } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
@@ -21,9 +21,12 @@ import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/app/lib/formatDate";
 import { isPlural } from "@/app/lib/isPlural";
 import { releaseStatus } from "@/app/lib/releaseStatus";
-import { DetailsContext } from "../context";
 import ImagePovi from "@/app/components/ImagePovi";
 import { formatRuntime } from "@/app/lib/formatRuntime";
+
+// Redux Toolkit
+import { useSelector, useDispatch } from "react-redux";
+import { setSeasonPoster } from "@/app/redux/seasonPosterSlice";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -208,15 +211,17 @@ function CollectionItem({ film, item, index }) {
 function FilmSeason({ film, item, index, setLoading }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const { setActiveSeasonPoster } = useContext(DetailsContext);
+  const dispatch = useDispatch();
 
   const handleViewSeason = async () => {
     setViewSeason(!viewSeason);
 
     if (!viewSeason) {
-      setActiveSeasonPoster(item);
+      // Redux Toolkit
+      dispatch(setSeasonPoster(item));
     } else {
-      setActiveSeasonPoster(null);
+      // Redux Toolkit
+      dispatch(setSeasonPoster(null));
     }
   };
 
