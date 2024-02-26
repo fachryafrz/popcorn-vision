@@ -1,8 +1,8 @@
 import axios from "axios";
 import React from "react";
-import PersonProfile from "./components/PersonProfile";
-import PersonDetails from "./components/PersonDetails";
-import PersonWorks from "./components/PersonWorks";
+import PersonProfile from "../../components/PersonProfile";
+import PersonDetails from "../../components/PersonDetails";
+import PersonWorks from "../../components/PersonWorks";
 import { getPerson } from "@/app/api/route";
 
 export async function generateMetadata({ params }) {

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import PersonDetails from "@/app/(person)/person/[id]/components/PersonDetails";
-import PersonProfile from "@/app/(person)/person/[id]/components/PersonProfile";
-import PersonWorks from "@/app/(person)/person/[id]/components/PersonWorks";
+import PersonDetails from "@/app/(person)/components/PersonDetails";
+import PersonProfile from "@/app/(person)/components/PersonProfile";
+import PersonWorks from "@/app/(person)/components/PersonWorks";
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { useRouter } from "next/navigation";

@@ -85,8 +85,8 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   }, [film, images, isTvPage, reviews, videos]);
 
   return (
-    <Reveal key={filmPoster} y={0}>
-      <div className="sticky top-20 flex flex-col gap-4 h-fit w-full">
+    <Reveal key={filmPoster} y={0} className={`w-full`}>
+      <div className="sticky top-20 flex flex-col gap-4 w-full">
         <ImagePovi
           imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
           className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
