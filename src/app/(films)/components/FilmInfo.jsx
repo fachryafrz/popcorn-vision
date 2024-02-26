@@ -14,7 +14,7 @@ import {
   tvOutline,
 } from "ionicons/icons";
 
-import TitleLogo from "@/components/TitleLogo";
+import TitleLogo from "@/components/Film/TitleLogo";
 import { usePathname, useRouter } from "next/navigation";
 import Person from "./Person";
 import Link from "next/link";
@@ -22,7 +22,7 @@ import EpisodeCard from "./EpisodeCard";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 
 export default function FilmInfo({
   film,

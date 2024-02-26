@@ -2,15 +2,15 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
-import { slugify } from "../lib/slugify";
+import { slugify } from "../../lib/slugify";
 import ImagePovi from "./ImagePovi";
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { motion as m } from "framer-motion";
-import { formatRuntime } from "../lib/formatRuntime";
-import Reveal from "../lib/Reveal";
-import { isPlural } from "../lib/isPlural";
+import { formatRuntime } from "../../lib/formatRuntime";
+import Reveal from "../Layout/Reveal";
+import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 
 export default function FilmCard({ film, genres, isTvPage }) {

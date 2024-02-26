@@ -10,7 +10,7 @@ import { usePathname } from "next/navigation";
 import axios from "axios";
 import FilmSummary from "./FilmSummary";
 import { fetchData, getFilm } from "@/lib/fetch";
-import Reveal from "../lib/Reveal";
+import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 
 export default function Trending({ film, genres }) {

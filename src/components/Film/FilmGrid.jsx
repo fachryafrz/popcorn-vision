@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import FilmCard from "./FilmCard";
 import { fetchData } from "@/lib/fetch";
-import Reveal from "../lib/Reveal";
+import Reveal from "../Layout/Reveal";
 
 export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();

@@ -23,7 +23,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 import YouTube from "react-youtube";
 
 export default function FilmMedia({ videos, images }) {

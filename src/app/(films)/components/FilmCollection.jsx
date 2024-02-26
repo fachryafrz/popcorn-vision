@@ -21,12 +21,12 @@ import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 import { formatRuntime } from "@/lib/formatRuntime";
 
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
-import { setSeasonPoster } from "@/redux/seasonPosterSlice";
+import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {

@@ -5,10 +5,10 @@ import { chevronForward, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { fetchData, getFilmSeason } from "@/lib/fetch";
-import { slugify } from "../lib/slugify";
-import { formatRuntime } from "../lib/formatRuntime";
-import { isPlural } from "../lib/isPlural";
-import Reveal from "../lib/Reveal";
+import { slugify } from "../../lib/slugify";
+import { formatRuntime } from "../../lib/formatRuntime";
+import { isPlural } from "../../lib/isPlural";
+import Reveal from "../Layout/Reveal";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();

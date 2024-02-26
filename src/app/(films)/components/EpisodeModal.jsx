@@ -6,11 +6,11 @@ import { useEffect, useState } from "react";
 import { formatDate } from "@/lib/formatDate";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
-import { setEpisode } from "@/redux/episodeSlice";
+import { setEpisode } from "@/redux/slices/episodeSlice";
 
 export function EpisodeModal({ episode }) {
   const dispatch = useDispatch();

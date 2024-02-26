@@ -1,6 +1,6 @@
 "use client";
 
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 import { slugify } from "@/lib/slugify";
 import { sortFilms } from "@/lib/sortFilms";
 import { IonIcon } from "@ionic/react";

@@ -1,9 +1,9 @@
 export const revalidate = 3600; // revalidate this page every 1 hour
 
 import React from "react";
-import HomeSlider from "@/components/HomeSlider";
-import FilmSlider from "@/components/FilmSlider";
-import Trending from "@/components/Trending";
+import HomeSlider from "@/components/Film/HomeSlider";
+import FilmSlider from "@/components/Film/FilmSlider";
+import Trending from "@/components/Film/Trending";
 import companies from "../json/companies.json";
 import providers from "../json/providers.json";
 import { fetchData, getTrending } from "@/lib/fetch";

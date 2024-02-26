@@ -3,13 +3,13 @@
 
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 import { slugify } from "@/lib/slugify";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
-import { setSeasonPoster } from "@/redux/seasonPosterSlice";
+import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
   const dispatch = useDispatch();

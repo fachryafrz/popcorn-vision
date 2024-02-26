@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { fetchData, getTitleLogo } from "@/lib/fetch";
-import Reveal from "../lib/Reveal";
+import Reveal from "../Layout/Reveal";
 
 export default function TitleLogo({ film, images, setLoading }) {
   const [titleLogo, setTitleLogo] = useState(images);

@@ -9,7 +9,7 @@ import React, { useEffect, useState } from "react";
 
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
-import { setPerson } from "@/redux/personSlice";
+import { setPerson } from "@/redux/slices/personSlice";
 
 export default function PersonModal({ person }) {
   const dispatch = useDispatch();

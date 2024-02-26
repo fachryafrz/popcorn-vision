@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import ImagePovi from "@/components/ImagePovi";
-import Reveal from "@/lib/Reveal";
+import ImagePovi from "@/components/Film/ImagePovi";
+import Reveal from "@/components/Layout/Reveal";
 import React from "react";
 
 export default function FilmBackdrop({ film }) {
