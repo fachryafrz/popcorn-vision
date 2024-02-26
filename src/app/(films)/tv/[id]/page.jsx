@@ -1,0 +1,87 @@
+import { getFilm } from "@/lib/fetch";
+import { releaseStatus } from "@/lib/releaseStatus";
+import React from "react";
+import FilmDetail from "../../movies/[id]/page";
+
+export async function generateMetadata({ params, type = `tv` }) {
+  const { id } = params;
+  const film = await getFilm({ id, type });
+  const images = await getFilm({ id, type, path: "/images" });
+
+  const isTvPage = type !== "movie" ? true : false;
+  const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
+
+  const filmReleaseDate = film.first_air_date
+    ? date.getFullYear()
+    : releaseStatus(film.status);
+  const lastAirDate =
+    film.last_air_date !== null &&
+    new Date(film.last_air_date).getFullYear() !==
+      new Date(film.first_air_date).getFullYear();
+
+  let backdrops;
+
+  // if (images.backdrops.length > 0) {
+  //   backdrops = {
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${images.backdrops[0].file_path}`,
+  //   };
+  // } else if (film.backdrop_path) {
+  //   backdrops = {
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.backdrop_path}`,
+  //   };
+  // } else if (film.poster_path) {
+  //   backdrops = {
+  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.poster_path}`,
+  //   };
+  // }
+
+  let path =
+    images.backdrops.length > 0
+      ? images.backdrops[0].file_path
+      : film.backdrop_path || film.poster_path;
+  if (path) {
+    backdrops = {
+      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
+    };
+  }
+
+  return {
+    title: `${film.name} (${
+      lastAirDate
+        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+        : filmReleaseDate
+    })`,
+    description: film.overview,
+    alternates: {
+      canonical: `/${`tv`}/${film.id}`,
+    },
+    openGraph: {
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+          : filmReleaseDate
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      description: film.overview,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`tv`}/${film.id}`,
+      siteName: process.env.NEXT_PUBLIC_APP_NAME,
+      ...backdrops,
+      locale: "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+          : filmReleaseDate
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      description: film.overview,
+      creator: "@fachryafrz",
+      ...backdrops,
+    },
+  };
+}
+
+export default function page({ params }) {
+  return <FilmDetail params={params} type={`tv`} />;
+}
