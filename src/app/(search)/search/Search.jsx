@@ -2,30 +2,19 @@
 "use client";
 
 import { fetchData } from "@/lib/fetch";
-import FilmCard from "@/components/FilmCard";
-import { slugify } from "@/lib/slugify";
+import FilmCard from "@/components/Film/FilmCard";
 import { IonIcon } from "@ionic/react";
-import { FormControl, InputLabel, MenuItem, Slider } from "@mui/material";
-import {
-  close,
-  closeCircle,
-  closeCircleOutline,
-  filter,
-  grid,
-  menu,
-  search,
-} from "ionicons/icons";
-import Link from "next/link";
+import { Slider } from "@mui/material";
+import { close, closeCircle, filter } from "ionicons/icons";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
-import SelectMUI from "@mui/material/Select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SearchBar } from "@/components/Navbar";
-import { IsInViewport } from "@/lib/IsInViewport";
+import { SearchBar } from "@/components/Layout/Navbar";
+import { IsInViewport } from "@/components/Layout/IsInViewport";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { calculateDate } from "@/lib/formatDate";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -1686,9 +1675,7 @@ export default function Search({ type = "movie" }) {
           </div>
 
           <div className={`lg:w-full`}>
-            <h1 className={`capitalize font-bold text-3xl`}>
-              {`Search`}
-            </h1>
+            <h1 className={`capitalize font-bold text-3xl`}>{`Search`}</h1>
           </div>
 
           <div
@@ -1855,24 +1842,28 @@ export default function Search({ type = "movie" }) {
                         )
                       : [];
 
-                      {
-            /* 1024px */
-          }
-          const lg = `          
+                  {
+                    /* 1024px */
+                  }
+                  const lg = `          
           lg-max:[&_>_a_#FilmPreview]:child-4n+1:left-0 lg-max:[&_>_a_#FilmPreview]:child-4n+1:translate-x-0
 
           lg-max:[&_>_a_#FilmPreview]:child-4n:left-auto lg-max:[&_>_a_#FilmPreview]:child-4n:translate-x-0 lg-max:[&_>_a_#FilmPreview]:child-4n:right-0
           `;
 
-          {/* 1280px */}
-          const xl = `
+                  {
+                    /* 1280px */
+                  }
+                  const xl = `
           xl-max:[&_>_a_#FilmPreview]:child-5n+1:left-0 xl-max:[&_>_a_#FilmPreview]:child-5n+1:translate-x-0
 
           xl-max:[&_>_a_#FilmPreview]:child-5n:left-auto xl-max:[&_>_a_#FilmPreview]:child-5n:translate-x-0 xl-max:[&_>_a_#FilmPreview]:child-5n:right-0
           `;
 
-          {/* 1536px */}
-          const xl2 = `
+                  {
+                    /* 1536px */
+                  }
+                  const xl2 = `
           2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
 
           2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
@@ -1883,7 +1874,9 @@ export default function Search({ type = "movie" }) {
                       <FilmCard
                         film={film}
                         genres={filmGenres}
-                        isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
+                        isTvPage={
+                          isQueryParams ? film.media_type === "tv" : isTvPage
+                        }
                       />
                     </Reveal>
                   );
@@ -1914,7 +1907,7 @@ export default function Search({ type = "movie" }) {
         {notAvailable && (
           <div className="toast toast-start z-40 min-w-0 max-w-full whitespace-normal">
             <div className="alert alert-error">
-              <span style={{textWrap:`balance`}}>{notAvailable}</span>
+              <span style={{ textWrap: `balance` }}>{notAvailable}</span>
             </div>
           </div>
         )}

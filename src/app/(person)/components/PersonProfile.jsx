@@ -1,6 +1,6 @@
 "use client";
 
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import { IonIcon } from "@ionic/react";

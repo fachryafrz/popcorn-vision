@@ -12,8 +12,8 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { sortFilms } from "../lib/sortFilms";
-import Reveal from "../lib/Reveal";
+import { sortFilms } from "../../lib/sortFilms";
+import Reveal from "../Layout/Reveal";
 
 export default function FilmSlider({
   films,

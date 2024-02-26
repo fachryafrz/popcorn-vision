@@ -2,7 +2,7 @@
 
 import { getPerson } from "@/lib/fetch";
 import React from "react";
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 
 // Redux Toolkit
 import { useDispatch } from "react-redux";

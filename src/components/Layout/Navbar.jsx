@@ -10,7 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
-import Reveal from "../lib/Reveal";
+import Reveal from "./Reveal";
 
 export default function Navbar() {
   const router = useRouter();

@@ -13,8 +13,8 @@ import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 // JSON import
-import footer from "../json/footer.json";
-import Reveal from "../lib/Reveal";
+import footer from "../../json/footer.json";
+import Reveal from "./Reveal";
 
 export default function Footer() {
   const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;

@@ -21,7 +21,7 @@ import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
-import ImagePovi from "@/components/ImagePovi";
+import ImagePovi from "@/components/Film/ImagePovi";
 import { formatRuntime } from "@/lib/formatRuntime";
 
 // Redux Toolkit

@@ -6,7 +6,7 @@ import {
   chevronUpCircleOutline,
 } from "ionicons/icons";
 import Person from "./Person";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 
 export default function CastsList({ credits }) {
   const [showAllActors, setShowAllActors] = useState(false);

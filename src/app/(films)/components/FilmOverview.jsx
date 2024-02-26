@@ -18,7 +18,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
-import Reveal from "@/lib/Reveal";
+import Reveal from "@/components/Layout/Reveal";
 
 export default function FilmOverview({
   film,

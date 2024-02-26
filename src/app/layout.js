@@ -1,10 +1,9 @@
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Copyright from "@/components/Copyright";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
-import StoreProvider from "../redux/StoreProvider";
-import UserLocation from "@/components/UserLocation";
+import Navbar from "@/components/Layout/Navbar";
+import Footer from "@/components/Layout/Footer";
+import GoogleAnalytics from "@/components/User/GoogleAnalytics";
+import UserLocation from "@/components/User/UserLocation";
+import StoreProvider from "@/redux/StoreProvider";
 import { Suspense } from "react";
 
 export const viewport = {
