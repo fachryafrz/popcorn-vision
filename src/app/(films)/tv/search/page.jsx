@@ -1,5 +1,4 @@
-import Search from "@/search/Search";
-import { redirect } from "next/navigation";
+import Search from "@/app/(search)/search/Search";
 import React from "react";
 
 export async function generateMetadata() {

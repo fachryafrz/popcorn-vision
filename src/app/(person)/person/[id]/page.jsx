@@ -3,7 +3,7 @@ import React from "react";
 import PersonProfile from "../../components/PersonProfile";
 import PersonDetails from "../../components/PersonDetails";
 import PersonWorks from "../../components/PersonWorks";
-import { getPerson } from "@/app/api/route";
+import { getPerson } from "@/lib/fetch";
 
 export async function generateMetadata({ params }) {
   const { id } = params;
