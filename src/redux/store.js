@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
-import episodeReducer from './episodeSlice'
-import personReducer from './personSlice'
-import seasonPosterReducer from './seasonPosterSlice'
+import episodeReducer from './slices/episodeSlice'
+import personReducer from './slices/personSlice'
+import seasonPosterReducer from './slices/seasonPosterSlice'
 
 export const store = configureStore({
   reducer: {

@@ -6,7 +6,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 
 // Redux Toolkit
 import { useDispatch } from "react-redux";
-import { setPerson } from "@/redux/personSlice";
+import { setPerson } from "@/redux/slices/personSlice";
 
 export default function Person({
   id,

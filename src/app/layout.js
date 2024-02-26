@@ -3,7 +3,7 @@ import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import UserLocation from "@/components/User/UserLocation";
-import StoreProvider from "@/redux/StoreProvider";
+import StoreProvider from "@/redux/components/StoreProvider";
 import { Suspense } from "react";
 
 export const viewport = {

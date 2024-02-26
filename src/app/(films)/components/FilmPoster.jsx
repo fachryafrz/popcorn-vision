@@ -9,7 +9,7 @@ import Reveal from "@/components/Layout/Reveal";
 
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
-import { setSeasonPoster } from "@/redux/seasonPosterSlice";
+import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
   const dispatch = useDispatch();
