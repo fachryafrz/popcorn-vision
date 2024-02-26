@@ -4,7 +4,7 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search, close } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -171,7 +171,9 @@ export default function Navbar() {
         {/* Search bar */}
         <div className={`hidden lg:block`}>
           <Reveal y={-20} delay={0.2}>
-            <SearchBar />
+            <Suspense>
+              <SearchBar />
+            </Suspense>
           </Reveal>
         </div>
 
