@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { slugify } from "../lib/slugify";
+import { slugify } from "@/lib/slugify";
 
 export async function generateSitemaps() {
   const sitemap = [];

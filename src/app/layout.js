@@ -6,6 +6,14 @@ import GoogleAnalytics from "@/components/GoogleAnalytics";
 import StoreProvider from "../redux/StoreProvider";
 import UserLocation from "@/components/UserLocation";
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#131720",
+  userScalable: true,
+  colorScheme: "dark",
+};
+
 export const metadata = {
   generator: process.env.NEXT_PUBLIC_APP_NAME,
   applicationName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -14,13 +22,12 @@ export const metadata = {
   authors: [
     { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
   ],
-  colorScheme: "dark",
   creator: "Fachry Dwi Afriza",
   publisher: "Fachry Dwi Afriza",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
+  // viewport: {
+  //   width: "device-width",
+  //   initialScale: 1,
+  // },
   title: {
     default: process.env.NEXT_PUBLIC_APP_NAME,
     template: "%s - " + process.env.NEXT_PUBLIC_APP_NAME,
@@ -40,7 +47,7 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-  themeColor: "#202735",
+  // themeColor: "#202735",
   manifest: "/manifest.json",
   twitter: {
     card: "summary_large_image",

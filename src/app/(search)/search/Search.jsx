@@ -249,7 +249,7 @@ export default function Search({ type = "movie" }) {
       color: "#fff",
       "& .MuiSlider-markLabel": {
         color: "#fff",
-        backgroundColor: "#202735",
+        backgroundColor: "#131720",
         padding: "0.25rem 0.5rem",
         borderRadius: "999px",
         "&[data-index='0']": {
@@ -273,7 +273,7 @@ export default function Search({ type = "movie" }) {
       control: (styles) => ({
         ...styles,
         color: "#fff",
-        backgroundColor: "#202735",
+        backgroundColor: "#131720",
         borderWidth: "1px",
         borderColor: "#79808B",
         borderRadius: "1.5rem",
@@ -293,13 +293,13 @@ export default function Search({ type = "movie" }) {
       }),
       menu: (styles) => ({
         ...styles,
-        backgroundColor: "#202735",
+        backgroundColor: "#131720",
       }),
       option: (styles, { data, isDisabled, isFocused, isSelected }) => {
         return {
           ...styles,
           color: "#fff",
-          backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#202735",
+          backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#131720",
           cursor: "pointer",
           "&:hover": {
             backgroundColor: "rgba(255,255,255,0.05)",
@@ -1717,7 +1717,7 @@ export default function Search({ type = "movie" }) {
                   control: (styles) => ({
                     ...styles,
                     color: "#fff",
-                    backgroundColor: "#202735",
+                    backgroundColor: "#131720",
                     borderWidth: "1px",
                     borderColor: "#79808B",
                     borderRadius: "1.5rem",
@@ -1747,7 +1747,7 @@ export default function Search({ type = "movie" }) {
                   control: (styles) => ({
                     ...styles,
                     color: "#fff",
-                    backgroundColor: "#202735",
+                    backgroundColor: "#131720",
                     borderWidth: "1px",
                     borderColor: "#79808B",
                     borderRadius: "1.5rem",
