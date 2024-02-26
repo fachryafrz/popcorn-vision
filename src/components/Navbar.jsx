@@ -7,7 +7,6 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { getLocation } from "@/lib/fetch";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -22,18 +21,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [filmType, setFilmType] = useState("movie");
 
-  // For user location
-  const [location, setLocation] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
-
   useEffect(() => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setLocation(position.coords);
-        setUserLocation(localStorage.getItem("user-location"));
-      });
-    }
-
     let steps;
     let desktop = window.matchMedia("(min-width: 1024px)");
 
@@ -107,20 +95,6 @@ export default function Navbar() {
     //   driverObj.drive();
     // }
   }, []);
-
-  useEffect(() => {
-    if (location) {
-      const { latitude, longitude } = location;
-
-      if (!userLocation)
-        getLocation({ latitude, longitude }).then((response) => {
-          // if (response.countryCode !== "ID") {
-          //   setLanguage("en-US");
-          // }
-          localStorage.setItem("user-location", JSON.stringify(response));
-        });
-    }
-  }, [location, userLocation]);
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||

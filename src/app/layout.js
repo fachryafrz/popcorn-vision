@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Copyright from "@/components/Copyright";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import StoreProvider from "../redux/StoreProvider";
+import UserLocation from "@/components/UserLocation";
 
 export const metadata = {
   generator: process.env.NEXT_PUBLIC_APP_NAME,
@@ -81,6 +82,9 @@ export default function RootLayout({ children }) {
         <StoreProvider>
           {/* Navbar */}
           <Navbar />
+
+          {/* User Location */}
+          <UserLocation />
 
           {/* Main Content */}
           <main className={`pb-8 mt-[66px]`}>{children}</main>
