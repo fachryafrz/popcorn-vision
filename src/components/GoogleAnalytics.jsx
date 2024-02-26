@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { pageview } from "../lib/gtagHelper";
 
 export default function GoogleAnalytics({ GA_MEASUREMENT_ID }) {
@@ -16,7 +16,7 @@ export default function GoogleAnalytics({ GA_MEASUREMENT_ID }) {
   }, [pathname, searchParams, GA_MEASUREMENT_ID]);
 
   return (
-    <>
+    <Suspense>
       <Script
         strategy="afterInteractive"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
@@ -40,6 +40,6 @@ export default function GoogleAnalytics({ GA_MEASUREMENT_ID }) {
                 `,
         }}
       />
-    </>
+    </Suspense>
   );
 }

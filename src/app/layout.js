@@ -87,21 +87,19 @@ export default function RootLayout({ children }) {
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-100 text-white">
-        <Suspense>
-          <StoreProvider>
-            {/* Navbar */}
-            <Navbar />
+        <StoreProvider>
+          {/* Navbar */}
+          <Navbar />
 
-            {/* User Location */}
-            <UserLocation />
+          {/* User Location */}
+          <UserLocation />
 
-            {/* Main Content */}
-            <main className={`pb-8 mt-[66px]`}>{children}</main>
+          {/* Main Content */}
+          <main className={`pb-8 mt-[66px]`}>{children}</main>
 
-            {/* Footer */}
-            <Footer />
-          </StoreProvider>
-        </Suspense>
+          {/* Footer */}
+          <Footer />
+        </StoreProvider>
       </body>
     </html>
   );
