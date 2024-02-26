@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Search from "./Search";
 
 export async function generateMetadata() {
@@ -33,5 +33,9 @@ export async function generateMetadata() {
 }
 
 export default function page() {
-  return <Search type={`movie`} />;
+  return (
+    <Suspense>
+      <Search type={`movie`} />
+    </Suspense>
+  );
 }
