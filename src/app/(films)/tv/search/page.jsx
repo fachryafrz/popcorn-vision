@@ -1,5 +1,5 @@
 import Search from "@/app/(search)/search/Search";
-import React from "react";
+import React, { Suspense } from "react";
 
 export async function generateMetadata() {
   return {
@@ -33,5 +33,9 @@ export async function generateMetadata() {
 }
 
 export default function page() {
-  return <Search type={`tv`} />;
+  return (
+    <Suspense>
+      <Search type={`tv`} />
+    </Suspense>
+  );
 }

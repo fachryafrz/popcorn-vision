@@ -5,6 +5,7 @@ import Copyright from "@/components/Copyright";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import StoreProvider from "../redux/StoreProvider";
 import UserLocation from "@/components/UserLocation";
+import { Suspense } from "react";
 
 export const viewport = {
   width: "device-width",
@@ -86,19 +87,21 @@ export default function RootLayout({ children }) {
       <link rel="icon" href="/favicon.ico" sizes="any" />
       <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       <body className="bg-base-100 text-white">
-        <StoreProvider>
-          {/* Navbar */}
-          <Navbar />
+        <Suspense>
+          <StoreProvider>
+            {/* Navbar */}
+            <Navbar />
 
-          {/* User Location */}
-          <UserLocation />
+            {/* User Location */}
+            <UserLocation />
 
-          {/* Main Content */}
-          <main className={`pb-8 mt-[66px]`}>{children}</main>
+            {/* Main Content */}
+            <main className={`pb-8 mt-[66px]`}>{children}</main>
 
-          {/* Footer */}
-          <Footer />
-        </StoreProvider>
+            {/* Footer */}
+            <Footer />
+          </StoreProvider>
+        </Suspense>
       </body>
     </html>
   );
