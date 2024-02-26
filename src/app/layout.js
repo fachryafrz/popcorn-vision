@@ -85,11 +85,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-pt-20">
       <link rel="icon" href="/favicon.ico" sizes="any" />
-      <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
+      <Suspense>
+        <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
+      </Suspense>
       <body className="bg-base-100 text-white">
         <StoreProvider>
           {/* Navbar */}
-          <Navbar />
+          <Suspense>
+            <Navbar />
+          </Suspense>
 
           {/* User Location */}
           <UserLocation />
