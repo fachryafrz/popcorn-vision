@@ -30,6 +30,7 @@ export default function Search({ type = "movie" }) {
   const [genresData, setGenresData] = useState([]);
   const [notAvailable, setNotAvailable] = useState("");
   const [notFoundMessage, setNotFoundMessage] = useState("");
+  const [isFilterActive, setIsFilterActive] = useState(false);
   const [totalSearchPages, setTotalSearchPages] = useState({});
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
 
@@ -44,7 +45,7 @@ export default function Search({ type = "movie" }) {
     () => [
       { value: "popularity", label: "Popularity" },
       { value: "vote_count", label: "Rating" },
-      { value: "primary_release_date", label: "Release Date" },
+      { value: "release_date", label: "Release Date" },
       { value: "revenue", label: "Revenue" },
       { value: "budget", label: "Budget" },
     ],
@@ -266,6 +267,8 @@ export default function Search({ type = "movie" }) {
         setSortByType={setSortByType}
         sortByOrder={sortByOrder}
         setSortByOrder={setSortByOrder}
+        isFilterActive={isFilterActive}
+        setIsFilterActive={setIsFilterActive}
       />
 
       <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
@@ -355,7 +358,7 @@ export default function Search({ type = "movie" }) {
 
             <div className={`flex items-center gap-1 flex-wrap sm:flex-nowrap`}>
               {/* Clear all filters */}
-              {/* <div
+              <div
                 className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
               >
                 {searchParams.get("status") ||
@@ -374,25 +377,25 @@ export default function Search({ type = "movie" }) {
                 searchParams.get("sort_by") ? (
                   <button
                     onClick={() => {
-                      setTimeout(() => {
-                        setSearchQuery("");
-                        setStatus([]);
-                        setTvType([]);
-                        setReleaseDate([minYear, maxYear]);
-                        setReleaseDateSlider([minYear, maxYear]);
-                        setGenre(null);
-                        setLanguage(null);
-                        setCast(null);
-                        setCrew(null);
-                        setKeyword(null);
-                        setCompany(null);
-                        setRating([0, 100]);
-                        setRatingSlider([0, 100]);
-                        setRuntime([0, 300]);
-                        setRuntimeSlider([0, 300]);
-                        setSortByType(sortByTypeOptions[0]);
-                        setSortByOrder(sortByOrderOptions[1]);
-                      }, 500);
+                      // setTimeout(() => {
+                      //   setSearchQuery("");
+                      //   setStatus([]);
+                      //   setTvType([]);
+                      //   setReleaseDate([minYear, maxYear]);
+                      //   setReleaseDateSlider([minYear, maxYear]);
+                      //   setGenre(null);
+                      //   setLanguage(null);
+                      //   setCast(null);
+                      //   setCrew(null);
+                      //   setKeyword(null);
+                      //   setCompany(null);
+                      //   setRating([0, 100]);
+                      //   setRatingSlider([0, 100]);
+                      //   setRuntime([0, 300]);
+                      //   setRuntimeSlider([0, 300]);
+                      //   setSortByType(sortByTypeOptions[0]);
+                      //   setSortByOrder(sortByOrderOptions[1]);
+                      // }, 500);
 
                       router.push(`${pathname}`);
                       // router.refresh();
@@ -408,7 +411,7 @@ export default function Search({ type = "movie" }) {
                 ) : (
                   <span>No filter selected</span>
                 )}
-              </div> */}
+              </div>
 
               {/* Filter button */}
               <button

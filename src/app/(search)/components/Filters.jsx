@@ -1,6 +1,6 @@
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import { Slider } from "@mui/material";
+import { Input, Slider } from "@mui/material";
 import { close } from "ionicons/icons";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
@@ -31,7 +31,7 @@ export default function Filters({
   sortByType,
   setSortByType,
   sortByOrder,
-  setSortByOrder,
+  setSortByOrder,isFilterActive, setIsFilterActive,
 }) {
   const isTvPage = type === "tv";
   const [userLocation, setUserLocation] = useState(null);
@@ -45,7 +45,6 @@ export default function Filters({
   const [keywordData, setKeywordData] = useState();
   const [companyData, setCompanyData] = useState();
   const [isGrid, setIsGrid] = useState(true);
-  const [isFilterActive, setIsFilterActive] = useState(false);
   const [minYear, setMinYear] = useState();
   const [maxYear, setMaxYear] = useState();
 
@@ -197,7 +196,7 @@ export default function Filters({
     router.push(`${pathname}${query}`);
   };
 
-  // Handle MUI Slider & Select Styles
+  // Handle MUI Slider, Select & Input Styles
   const sliderStyles = useMemo(() => {
     return {
       color: "#fff",
@@ -215,6 +214,27 @@ export default function Filters({
       },
     };
   }, []);
+  const muiInputStyles = useMemo(() =>{
+    return {
+      "& input": {
+        color: "#fff",
+        backgroundColor: "#131720",
+        borderRadius: "999px",
+        maxWidth: "45px",
+        fontSize: "14px",
+        textAlign: "center",
+        padding: "0.25rem",
+      },
+      "& input[type=number]::-webkit-outer-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+      "& input[type=number]::-webkit-inner-spin-button": {
+        "-webkit-appearance": "none",
+        margin: 0,
+      },
+    }
+  },[])
 
   // Handle Select Options
   const genresOptions = useMemo(() => {
@@ -616,7 +636,7 @@ export default function Filters({
     fetchData({
       endpoint: `/discover/${type}`,
       queryParams: {
-        sort_by: "primary_release_date.asc",
+        sort_by: !isTvPage ? "primary_release_date.asc" : "first_air_date.asc",
       },
     }).then((res) => {
       const minReleaseDate = !isTvPage
@@ -630,7 +650,9 @@ export default function Filters({
     fetchData({
       endpoint: `/discover/${type}`,
       queryParams: {
-        sort_by: "primary_release_date.desc",
+        sort_by: !isTvPage
+          ? "primary_release_date.desc"
+          : "first_air_date.desc",
       },
     }).then((res) => {
       const maxReleaseDate = !isTvPage
@@ -769,6 +791,9 @@ export default function Filters({
       setReleaseDate([searchMinYear, searchMaxYear]);
       setReleaseDateSlider([searchMinYear, searchMaxYear]);
       // }
+    } else {
+      setReleaseDate([minYear, maxYear]);
+      setReleaseDateSlider([minYear, maxYear]);
     }
 
     // Cast
@@ -949,6 +974,15 @@ export default function Filters({
 
     const performSearch = () => {
       searchAPIParams.sort_by = `${sortByType.value}.${sortByOrder.value}`;
+
+      if (searchParams.get("sort_by")?.includes("release_date")) {
+        if (!isTvPage) {
+          searchAPIParams.sort_by = `primary_release_date.${sortByOrder.value}`;
+        } else {
+          searchAPIParams.sort_by = `first_air_date.${sortByOrder.value}`;
+        }
+      }
+
       if (!isTvPage) {
         searchAPIParams["primary_release_date.gte"] = minFullYear;
         searchAPIParams["primary_release_date.lte"] = maxFullYear;
@@ -1147,6 +1181,7 @@ export default function Filters({
     setTotalSearchPages,
     setNotFoundMessage,
   ]);
+
   return (
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
@@ -1210,23 +1245,67 @@ export default function Filters({
         <span className={`font-medium`}>Release Date</span>
         <div className={`w-full px-3`}>
           {minYear && maxYear ? (
-            <Slider
-              getAriaLabel={() => "Release Date"}
-              value={releaseDateSlider}
-              onChange={(event, newValue) => setReleaseDateSlider(newValue)}
-              onChangeCommitted={handleReleaseDateChange}
-              valueLabelDisplay="off"
-              min={minYear}
-              max={maxYear}
-              marks={releaseDateMarks}
-              sx={sliderStyles}
-              disabled={isQueryParams}
-            />
+            <>
+              <Slider
+                getAriaLabel={() => "Release Date"}
+                value={releaseDateSlider}
+                onChange={(event, newValue) => setReleaseDateSlider(newValue)}
+                onChangeCommitted={handleReleaseDateChange}
+                valueLabelDisplay="off"
+                min={minYear}
+                max={maxYear}
+                // marks={releaseDateMarks}
+                sx={sliderStyles}
+                disabled={isQueryParams}
+              />
+
+              <div className={`flex justify-between -mx-3`}>
+                <Input
+                  value={releaseDateSlider[0]}
+                  size="small"
+                  onChange={({ target }) => {
+                    const newValue = target.value;
+
+                    setReleaseDateSlider((prev) => [newValue, prev[1]]);
+                  }}
+                  onBlur={(e) => handleReleaseDateChange(e, releaseDateSlider)}
+                  inputProps={{
+                    step: 1,
+                    min: minYear,
+                    max: maxYear,
+                    type: "number",
+                    "aria-labelledby": "min-release-date-slider",
+                  }}
+                  disableUnderline
+                  sx={muiInputStyles}
+                />
+
+                <Input
+                  value={releaseDateSlider[1]}
+                  size="small"
+                  onChange={({ target }) => {
+                    const newValue = target.value;
+
+                    setReleaseDateSlider((prev) => [prev[0], newValue]);
+                  }}
+                  onBlur={(e) => handleReleaseDateChange(e, releaseDateSlider)}
+                  inputProps={{
+                    step: 1,
+                    min: minYear,
+                    max: maxYear,
+                    type: "number",
+                    "aria-labelledby": "max-release-date-slider",
+                  }}
+                  disableUnderline
+                  sx={muiInputStyles}
+                />
+              </div>
+            </>
           ) : (
             <span
               className={`text-center text-xs w-full block italic text-gray-400`}
             >
-              Finding oldest & newest...
+              Finding oldest & latest...
             </span>
           )}
         </div>
