@@ -1,9 +1,13 @@
+::-webkit-search-cancel-button {
+  @apply cursor-pointer;
+}
+
 .swiper-button-disabled {
   @apply !opacity-25;
 }
 
 .swiper-slide-thumb {
-  @apply !w-[100px]
+  @apply !w-[100px];
 }
 
 .swiper-slide-thumb-active {
