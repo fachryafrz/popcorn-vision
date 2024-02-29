@@ -413,6 +413,9 @@ export default function Search({ type = "movie" }) {
                       router.push(`${pathname}`);
                       // router.refresh();
                       // defaultFilms();
+
+                      setSortByType(sortByTypeOptions[0]);
+                      setSortByOrder(sortByOrderOptions[1]);
                     }}
                     className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
                   >
