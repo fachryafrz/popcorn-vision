@@ -84,6 +84,9 @@ module.exports = {
       [...Array(24).keys()].forEach((i) => {
         addVariant(`child-${i + 1}n+1`, `&:nth-child(${i + 1}n+1)`);
       });
+      [...Array(24).keys()].forEach((i) => {
+        addVariant(`child-${i + 1}n-1`, `&:nth-child(${i + 1}n-1)`);
+      });
     }),
   ],
 };

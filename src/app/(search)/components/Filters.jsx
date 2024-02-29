@@ -31,7 +31,16 @@ export default function Filters({
   sortByType,
   setSortByType,
   sortByOrder,
-  setSortByOrder,isFilterActive, setIsFilterActive,
+  setSortByOrder,
+  isFilterActive,
+  setIsFilterActive,
+  releaseDate,
+  setReleaseDate,
+  minYear,
+  setMinYear,
+  maxYear,
+  setMaxYear,
+  searchAPIParams,
 }) {
   const isTvPage = type === "tv";
   const [userLocation, setUserLocation] = useState(null);
@@ -45,8 +54,6 @@ export default function Filters({
   const [keywordData, setKeywordData] = useState();
   const [companyData, setCompanyData] = useState();
   const [isGrid, setIsGrid] = useState(true);
-  const [minYear, setMinYear] = useState();
-  const [maxYear, setMaxYear] = useState();
 
   // React-Select Placeholder
   const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
@@ -60,7 +67,6 @@ export default function Filters({
     minYear,
     maxYear,
   ]);
-  const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [genre, setGenre] = useState();
   const [language, setLanguage] = useState();
   const [provider, setProvider] = useState();
@@ -75,11 +81,6 @@ export default function Filters({
   const [runtime, setRuntime] = useState([0, 300]);
 
   // Pre-loaded Options
-  const searchAPIParams = useMemo(() => {
-    return {
-      include_adult: false,
-    };
-  }, []);
   const tvSeriesStatus = useMemo(
     () => [
       "All",
@@ -214,7 +215,7 @@ export default function Filters({
       },
     };
   }, []);
-  const muiInputStyles = useMemo(() =>{
+  const muiInputStyles = useMemo(() => {
     return {
       "& input": {
         color: "#fff",
@@ -233,8 +234,8 @@ export default function Filters({
         "-webkit-appearance": "none",
         margin: 0,
       },
-    }
-  },[])
+    };
+  }, []);
 
   // Handle Select Options
   const genresOptions = useMemo(() => {

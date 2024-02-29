@@ -31,6 +31,9 @@ export default function Search({ type = "movie" }) {
   const [notAvailable, setNotAvailable] = useState("");
   const [notFoundMessage, setNotFoundMessage] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
+  const [minYear, setMinYear] = useState();
+  const [maxYear, setMaxYear] = useState();
+  const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [totalSearchPages, setTotalSearchPages] = useState({});
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
 
@@ -41,6 +44,11 @@ export default function Search({ type = "movie" }) {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Pre-loaded Options
+  const searchAPIParams = useMemo(() => {
+    return {
+      include_adult: false,
+    };
+  }, []);
   const sortByTypeOptions = useMemo(
     () => [
       { value: "popularity", label: "Popularity" },
@@ -269,6 +277,13 @@ export default function Search({ type = "movie" }) {
         setSortByOrder={setSortByOrder}
         isFilterActive={isFilterActive}
         setIsFilterActive={setIsFilterActive}
+        releaseDate={releaseDate}
+        setReleaseDate={setReleaseDate}
+        minYear={minYear}
+        setMinYear={setMinYear}
+        maxYear={maxYear}
+        setMaxYear={setMaxYear}
+        searchAPIParams={searchAPIParams}
       />
 
       <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
@@ -282,9 +297,7 @@ export default function Search({ type = "movie" }) {
           </div>
 
           <div className={`lg:w-full`}>
-            <h1 className={`capitalize font-bold text-2xl`}>
-              Search
-            </h1>
+            <h1 className={`capitalize font-bold text-2xl`}>Search</h1>
           </div>
 
           <div
