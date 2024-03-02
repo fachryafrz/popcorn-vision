@@ -104,7 +104,7 @@ export default function FilmSlider({
           return (
             <SwiperSlide
               key={film.id}
-              className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${lg} ${xl} ${xl2}`}
+              className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${xl} ${xl2}`}
             >
               {/* <Reveal> */}
               <FilmCard

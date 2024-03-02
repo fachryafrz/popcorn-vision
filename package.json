@@ -1,6 +1,6 @@
 {
-  "name": "nextjs14-framer-motion",
-  "version": "0.1.0",
+  "name": "nextjs-popcornvision",
+  "version": "1.30.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
