@@ -2,7 +2,7 @@ import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { Input, Slider } from "@mui/material";
 import { close } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
@@ -269,8 +269,14 @@ export default function Filters({
       callback(filteredOptions);
     }, 2000);
   };
-  const castsLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
+
+  const timerRef = useRef(null);
+  const castsLoadOptions = useCallback((inputValue, callback) => {
+    const fetchDataWithDelay = async () => {
+      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Lakukan pengambilan data setelah delay
       fetchData({
         endpoint: `/search/person`,
         queryParams: {
@@ -286,10 +292,22 @@ export default function Filters({
         );
         callback(filteredOptions);
       });
-    }, 5000);
-  };
-  const crewsLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
+    };
+
+    // Hapus pemanggilan sebelumnya jika ada
+    clearTimeout(timerRef.current);
+
+    // Set timer untuk memanggil fetchDataWithDelay setelah delay
+    timerRef.current = setTimeout(() => {
+      fetchDataWithDelay();
+    }, 1000);
+  }, []);
+  const crewsLoadOptions = useCallback((inputValue, callback) => {
+    const fetchDataWithDelay = async () => {
+      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Lakukan pengambilan data setelah delay
       fetchData({
         endpoint: `/search/person`,
         queryParams: {
@@ -305,10 +323,22 @@ export default function Filters({
         );
         callback(filteredOptions);
       });
-    }, 2000);
-  };
-  const keywordsLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
+    };
+
+    // Hapus pemanggilan sebelumnya jika ada
+    clearTimeout(timerRef.current);
+
+    // Set timer untuk memanggil fetchDataWithDelay setelah delay
+    timerRef.current = setTimeout(() => {
+      fetchDataWithDelay();
+    }, 1000);
+  }, []);
+  const keywordsLoadOptions = useCallback((inputValue, callback) => {
+    const fetchDataWithDelay = async () => {
+      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Lakukan pengambilan data setelah delay
       fetchData({
         endpoint: `/search/keyword`,
         queryParams: {
@@ -324,10 +354,22 @@ export default function Filters({
         );
         callback(filteredOptions);
       });
-    }, 2000);
-  };
-  const companiesLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
+    };
+
+    // Hapus pemanggilan sebelumnya jika ada
+    clearTimeout(timerRef.current);
+
+    // Set timer untuk memanggil fetchDataWithDelay setelah delay
+    timerRef.current = setTimeout(() => {
+      fetchDataWithDelay();
+    }, 1000);
+  }, []);
+  const companiesLoadOptions = useCallback((inputValue, callback) => {
+    const fetchDataWithDelay = async () => {
+      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      // Lakukan pengambilan data setelah delay
       fetchData({
         endpoint: `/search/company`,
         queryParams: {
@@ -343,8 +385,16 @@ export default function Filters({
         );
         callback(filteredOptions);
       });
-    }, 2000);
-  };
+    };
+
+    // Hapus pemanggilan sebelumnya jika ada
+    clearTimeout(timerRef.current);
+
+    // Set timer untuk memanggil fetchDataWithDelay setelah delay
+    timerRef.current = setTimeout(() => {
+      fetchDataWithDelay();
+    }, 1000);
+  }, []);
 
   // Handle Select Change
   const handleGenreChange = useCallback(
@@ -675,7 +725,6 @@ export default function Filters({
         setProvidersData(res.results);
       });
     }
-
   }, [isTvPage, type, userLocation]);
 
   // Use Effect for set available Release Dates
