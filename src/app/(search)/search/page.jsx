@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
 import Search from "./Search";
+import { fetchData } from "@/lib/fetch";
 
 export async function generateMetadata() {
   return {
@@ -32,10 +33,38 @@ export async function generateMetadata() {
   };
 }
 
-export default function page() {
+export default async function page() {
+  const { genres: movieGenresData } = await fetchData({
+    endpoint: `/genre/movie/list`,
+  });
+  const languagesData = await fetchData({
+    endpoint: `/configuration/languages`,
+  });
+  const { results: fetchMinYear } = await fetchData({
+    endpoint: `/discover/movie`,
+    queryParams: {
+      sort_by: "primary_release_date.asc",
+    },
+  });
+  const { results: fetchMaxYear } = await fetchData({
+    endpoint: `/discover/movie`,
+    queryParams: {
+      sort_by: "primary_release_date.desc",
+    },
+  });
+
+  const minYear = new Date(fetchMinYear[0].release_date).getFullYear();
+  const maxYear = new Date(fetchMaxYear[0].release_date).getFullYear();
+
   return (
     <Suspense>
-      <Search type={`movie`} />
+      <Search
+        type={`movie`}
+        genresData={movieGenresData}
+        languagesData={languagesData}
+        minYear={minYear}
+        maxYear={maxYear}
+      />
     </Suspense>
   );
 }

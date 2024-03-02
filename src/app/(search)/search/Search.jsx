@@ -13,7 +13,13 @@ import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
 import Filters from "../components/Filters";
 
-export default function Search({ type = "movie" }) {
+export default function Search({
+  type = "movie",
+  genresData,
+  languagesData,
+  minYear,
+  maxYear,
+}) {
   const isTvPage = type === "tv";
   const router = useRouter();
   const pathname = usePathname();
@@ -27,12 +33,12 @@ export default function Search({ type = "movie" }) {
   // State
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
-  const [genresData, setGenresData] = useState([]);
+  // const [genresData, setGenresData] = useState([]);
   const [notAvailable, setNotAvailable] = useState("");
   const [notFoundMessage, setNotFoundMessage] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [minYear, setMinYear] = useState();
-  const [maxYear, setMaxYear] = useState();
+  // const [minYear, setMinYear] = useState();
+  // const [maxYear, setMaxYear] = useState();
   const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [totalSearchPages, setTotalSearchPages] = useState({});
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
@@ -205,17 +211,16 @@ export default function Search({ type = "movie" }) {
 
   // Fetch more films based on search or selected genres
   const fetchMoreFilms = async () => {
-    setCurrentSearchPage((prevPage) => prevPage + 1);
-
     try {
       let response;
+      const nextPage = currentSearchPage + 1;
 
       if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
         response = await fetchData({
           endpoint: `/discover/${type}`,
           queryParams: {
             ...searchAPIParams,
-            page: currentSearchPage,
+            page: nextPage,
           },
         });
       }
@@ -226,7 +231,7 @@ export default function Search({ type = "movie" }) {
           queryParams: {
             query: searchQuery,
             language: "en-US",
-            page: currentSearchPage,
+            page: nextPage,
           },
         });
       }
@@ -237,6 +242,8 @@ export default function Search({ type = "movie" }) {
       setTimeout(() => {
         setNotFoundMessage("No film found");
       }, 10000);
+
+      setCurrentSearchPage(nextPage);
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
@@ -265,7 +272,7 @@ export default function Search({ type = "movie" }) {
         setLoading={setLoading}
         setFilms={setFilms}
         genresData={genresData}
-        setGenresData={setGenresData}
+        // setGenresData={setGenresData}
         setTotalSearchPages={setTotalSearchPages}
         setCurrentSearchPage={setCurrentSearchPage}
         searchQuery={searchQuery}
@@ -280,10 +287,11 @@ export default function Search({ type = "movie" }) {
         releaseDate={releaseDate}
         setReleaseDate={setReleaseDate}
         minYear={minYear}
-        setMinYear={setMinYear}
+        // setMinYear={setMinYear}
         maxYear={maxYear}
-        setMaxYear={setMaxYear}
+        // setMaxYear={setMaxYear}
         searchAPIParams={searchAPIParams}
+        languagesData={languagesData}
       />
 
       <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
@@ -390,32 +398,29 @@ export default function Search({ type = "movie" }) {
                 searchParams.get("sort_by") ? (
                   <button
                     onClick={() => {
-                      // setTimeout(() => {
-                      //   setSearchQuery("");
-                      //   setStatus([]);
-                      //   setTvType([]);
-                      //   setReleaseDate([minYear, maxYear]);
-                      //   setReleaseDateSlider([minYear, maxYear]);
-                      //   setGenre(null);
-                      //   setLanguage(null);
-                      //   setCast(null);
-                      //   setCrew(null);
-                      //   setKeyword(null);
-                      //   setCompany(null);
-                      //   setRating([0, 100]);
-                      //   setRatingSlider([0, 100]);
-                      //   setRuntime([0, 300]);
-                      //   setRuntimeSlider([0, 300]);
-                      //   setSortByType(sortByTypeOptions[0]);
-                      //   setSortByOrder(sortByOrderOptions[1]);
-                      // }, 500);
+                      setTimeout(() => {
+                        //   setSearchQuery("");
+                        //   setStatus([]);
+                        //   setTvType([]);
+                        //   setReleaseDate([minYear, maxYear]);
+                        //   setReleaseDateSlider([minYear, maxYear]);
+                        //   setGenre(null);
+                        //   setLanguage(null);
+                        //   setCast(null);
+                        //   setCrew(null);
+                        //   setKeyword(null);
+                        //   setCompany(null);
+                        //   setRating([0, 100]);
+                        //   setRatingSlider([0, 100]);
+                        //   setRuntime([0, 300]);
+                        //   setRuntimeSlider([0, 300]);
+                        setSortByType(sortByTypeOptions[0]);
+                        setSortByOrder(sortByOrderOptions[1]);
+                      }, 1000);
 
                       router.push(`${pathname}`);
                       // router.refresh();
                       // defaultFilms();
-
-                      setSortByType(sortByTypeOptions[0]);
-                      setSortByOrder(sortByOrderOptions[1]);
                     }}
                     className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
                   >
@@ -456,7 +461,7 @@ export default function Search({ type = "movie" }) {
           <>
             {/* Films list */}
             <section
-              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6`}
+              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-6`}
             >
               {genresData &&
                 films?.map((film) => {
@@ -495,7 +500,7 @@ export default function Search({ type = "movie" }) {
           `;
 
                   return (
-                    <Reveal key={film.id} className={`${lg} ${xl} ${xl2}`}>
+                    <Reveal key={film.id} className={`${xl2}`}>
                       <FilmCard
                         film={film}
                         genres={filmGenres}
@@ -521,8 +526,8 @@ export default function Search({ type = "movie" }) {
           <section className={`flex items-center justify-center mt-4`}>
             <button
               ref={loadMoreBtn}
-              onClick={() => fetchMoreFilms((currentSearchPage += 1))}
-              className="text-white aspect-square w-[30px] pointer-events-none"
+              onClick={fetchMoreFilms}
+              className="text-white aspect-square w-[30px] pointer-events-auto"
             >
               <span className="loading loading-spinner loading-md"></span>
             </button>

@@ -151,7 +151,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
   }, [film, isItTvPage]);
 
   useEffect(() => {
-    if (isHovering) {
+    if (isHovering && window.innerWidth >= 1280) {
       fetchTitleLogo();
     }
   }, [fetchTitleLogo, isHovering]);
@@ -164,7 +164,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         // transition={{ delay: isHovering ? 0.5 : 0 }}
         exit={{ opacity: 0 }}
         id="FilmPreview"
-        className={`hidden lg:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
+        className={`hidden xl:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
           isHovering ? `pointer-events-auto` : `pointer-events-none`
         }`}
       >

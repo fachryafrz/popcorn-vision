@@ -41,12 +41,13 @@ export default function Filters({
   maxYear,
   setMaxYear,
   searchAPIParams,
+  languagesData,
 }) {
   const isTvPage = type === "tv";
   const [userLocation, setUserLocation] = useState(null);
 
   // State
-  const [languagesData, setLanguagesData] = useState([]);
+  // const [languagesData, setLanguagesData] = useState([]);
   const [providersData, setProvidersData] = useState([]);
   const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [castData, setCastData] = useState();
@@ -285,7 +286,7 @@ export default function Filters({
         );
         callback(filteredOptions);
       });
-    }, 2000);
+    }, 5000);
   };
   const crewsLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
@@ -613,55 +614,55 @@ export default function Filters({
 
   // Use Effect for fetching data
   useEffect(() => {
-    if (!searchParams.get("query")) {
-      // Get default film list
-      // defaultFilms();
-    }
+    // if (!searchParams.get("query")) {
+    //   // Get default film list
+    //   // defaultFilms();
+    // }
 
     // Get movie genres list
-    fetchData({ endpoint: `/genre/movie/list` }).then((res) =>
-      setGenresData((prev) => [...prev, ...res.genres])
-    );
+    // fetchData({ endpoint: `/genre/movie/list` }).then((res) =>
+    //   setGenresData(res.genres)
+    // );
 
     // Get tv genres list
-    fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
-      setGenresData((prev) => [...prev, ...res.genres])
-    );
+    // fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
+    //   setGenresData(res.genres)
+    // );
 
     // Get languages list
-    fetchData({ endpoint: `/configuration/languages` }).then((res) =>
-      setLanguagesData(res)
-    );
+    // fetchData({ endpoint: `/configuration/languages` }).then((res) =>
+    //   setLanguagesData(res)
+    // );
 
     // Fetch min year of available films
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: {
-        sort_by: !isTvPage ? "primary_release_date.asc" : "first_air_date.asc",
-      },
-    }).then((res) => {
-      const minReleaseDate = !isTvPage
-        ? res.results[0].release_date
-        : res.results[0].first_air_date;
-      const minYear = parseInt(new Date(minReleaseDate).getFullYear());
-      setMinYear(minYear);
-    });
+    // fetchData({
+    //   endpoint: `/discover/${type}`,
+    //   queryParams: {
+    //     sort_by: !isTvPage ? "primary_release_date.asc" : "first_air_date.asc",
+    //   },
+    // }).then((res) => {
+    //   const minReleaseDate = !isTvPage
+    //     ? res.results[0].release_date
+    //     : res.results[0].first_air_date;
+    //   const minYear = parseInt(new Date(minReleaseDate).getFullYear());
+    //   setMinYear(minYear);
+    // });
 
     // Fetch max year of available films
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: {
-        sort_by: !isTvPage
-          ? "primary_release_date.desc"
-          : "first_air_date.desc",
-      },
-    }).then((res) => {
-      const maxReleaseDate = !isTvPage
-        ? res.results[0].release_date
-        : res.results[0].first_air_date;
-      const maxYear = parseInt(new Date(maxReleaseDate).getFullYear());
-      setMaxYear(maxYear);
-    });
+    // fetchData({
+    //   endpoint: `/discover/${type}`,
+    //   queryParams: {
+    //     sort_by: !isTvPage
+    //       ? "primary_release_date.desc"
+    //       : "first_air_date.desc",
+    //   },
+    // }).then((res) => {
+    //   const maxReleaseDate = !isTvPage
+    //     ? res.results[0].release_date
+    //     : res.results[0].first_air_date;
+    //   const maxYear = parseInt(new Date(maxReleaseDate).getFullYear());
+    //   setMaxYear(maxYear);
+    // });
 
     // Fetch watch providers by user country code
     if (userLocation) {
@@ -675,8 +676,7 @@ export default function Filters({
       });
     }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, userLocation]);
+  }, [isTvPage, type, userLocation]);
 
   // Use Effect for set available Release Dates
   useEffect(() => {
@@ -700,8 +700,12 @@ export default function Filters({
           }
       );
       setGenre(searchGenresOptions);
+
+      searchAPIParams["with_genres"] = searchParams.get("with_genres");
     } else {
       setGenre(null);
+
+      delete searchAPIParams["with_genres"];
     }
 
     // Languages
@@ -722,8 +726,14 @@ export default function Filters({
           }
       );
       setLanguage(searchLanguagesOptions);
+
+      searchAPIParams["with_original_language"] = searchParams.get(
+        "with_original_language"
+      );
     } else {
       setLanguage(null);
+
+      delete searchAPIParams["with_original_language"];
     }
 
     // Providers
@@ -742,8 +752,12 @@ export default function Filters({
           }
       );
       setProvider(searchProvidersOptions);
+
+      searchAPIParams["watch_providers"] = searchParams.get("watch_providers");
     } else {
       setProvider(null);
+
+      delete searchAPIParams["watch_providers"];
     }
 
     // Network
@@ -763,10 +777,21 @@ export default function Filters({
           }
       );
       setNetwork(searchNetworksOptions);
+
+      searchAPIParams["with_networks"] = searchParams.get("with_networks");
     } else {
       setNetwork(null);
+
+      delete searchAPIParams["with_networks"];
     }
-  }, [genresData, languagesData, providersData, networksData, searchParams]);
+  }, [
+    genresData,
+    languagesData,
+    providersData,
+    networksData,
+    searchParams,
+    searchAPIParams,
+  ]);
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -774,12 +799,20 @@ export default function Filters({
     if (searchParams.get("status")) {
       const statusParams = searchParams.get("status").split(",");
       setStatus(statusParams);
+
+      searchAPIParams["with_status"] = searchParams.get("status");
+    } else {
+      delete searchAPIParams["with_status"];
     }
 
     // TV Series Type
     if (searchParams.get("type")) {
       const typeParams = searchParams.get("type").split(",");
       setTvType(typeParams);
+
+      searchAPIParams["with_type"] = searchParams.get("type");
+    } else {
+      delete searchAPIParams["with_type"];
     }
 
     // Release date
@@ -792,9 +825,28 @@ export default function Filters({
       setReleaseDate([searchMinYear, searchMaxYear]);
       setReleaseDateSlider([searchMinYear, searchMaxYear]);
       // }
+
+      const fullMinYear = `${searchMinYear}-01-01`;
+      const fullMaxYear = `${searchMaxYear}-12-31`;
+
+      if (!isTvPage) {
+        searchAPIParams["primary_release_date.gte"] = fullMinYear;
+        searchAPIParams["primary_release_date.lte"] = fullMaxYear;
+      } else {
+        searchAPIParams["first_air_date.gte"] = fullMinYear;
+        searchAPIParams["first_air_date.lte"] = fullMaxYear;
+      }
     } else {
       setReleaseDate([minYear, maxYear]);
       setReleaseDateSlider([minYear, maxYear]);
+
+      if (!isTvPage) {
+        delete searchAPIParams["primary_release_date.gte"];
+        delete searchAPIParams["primary_release_date.lte"];
+      } else {
+        delete searchAPIParams["first_air_date.gte"];
+        delete searchAPIParams["first_air_date.lte"];
+      }
     }
 
     // Cast
@@ -805,6 +857,8 @@ export default function Filters({
           endpoint: `/person/${castId}`,
         });
       });
+
+      searchAPIParams["with_cast"] = searchParams.get("with_cast");
 
       Promise.all(fetchPromises)
         .then((responses) => {
@@ -820,6 +874,8 @@ export default function Filters({
         });
     } else {
       setCast(null);
+
+      delete searchAPIParams["with_cast"];
     }
 
     // Crew
@@ -830,6 +886,8 @@ export default function Filters({
           endpoint: `/person/${crewId}`,
         });
       });
+
+      searchAPIParams["with_crew"] = searchParams.get("with_crew");
 
       Promise.all(fetchPromises)
         .then((responses) => {
@@ -845,6 +903,8 @@ export default function Filters({
         });
     } else {
       setCrew(null);
+
+      delete searchAPIParams["with_crew"];
     }
 
     // Keyword
@@ -855,6 +915,8 @@ export default function Filters({
           endpoint: `/keyword/${keywordId}`,
         });
       });
+
+      searchAPIParams["with_keywords"] = searchParams.get("with_keywords");
 
       Promise.all(fetchPromises)
         .then((responses) => {
@@ -870,6 +932,8 @@ export default function Filters({
         });
     } else {
       setKeyword(null);
+
+      delete searchAPIParams["with_keywords"];
     }
 
     // Company
@@ -880,6 +944,8 @@ export default function Filters({
           endpoint: `/company/${companyId}`,
         });
       });
+
+      searchAPIParams["with_companies"] = searchParams.get("with_companies");
 
       Promise.all(fetchPromises)
         .then((responses) => {
@@ -895,6 +961,8 @@ export default function Filters({
         });
     } else {
       setCompany(null);
+
+      delete searchAPIParams["with_companies"];
     }
 
     // Rating
@@ -908,6 +976,12 @@ export default function Filters({
       if (rating[0] !== searchRating[0] || rating[1] !== searchRating[1]) {
         setRating(searchRating);
         setRatingSlider(searchRating);
+
+        searchAPIParams["vote_count.gte"] = searchRating[0];
+        searchAPIParams["vote_count.lte"] = searchRating[1];
+      } else {
+        delete searchAPIParams["vote_count.gte"];
+        delete searchAPIParams["vote_count.lte"];
       }
     }
 
@@ -922,6 +996,12 @@ export default function Filters({
       if (runtime[0] !== searchRuntime[0] || runtime[1] !== searchRuntime[1]) {
         setRuntime(searchRuntime);
         setRuntimeSlider(searchRuntime);
+
+        searchAPIParams["with_runtime.gte"] = searchRuntime[0];
+        searchAPIParams["with_runtime.lte"] = searchRuntime[1];
+      } else {
+        delete searchAPIParams["with_runtime.gte"];
+        delete searchAPIParams["with_runtime.lte"];
       }
     }
 
@@ -942,18 +1022,27 @@ export default function Filters({
       if (sortByOrder.value !== searchSortByOrder.value) {
         setSortByOrder(searchSortByOrder);
       }
+
+      searchAPIParams["sort_by"] = searchParams.get("sort_by");
+    } else {
+      delete searchAPIParams["sort_by"];
     }
 
     // Search Query
     if (searchParams.get("query")) {
       const searchQuery = searchParams.get("query");
 
+      searchAPIParams["query"] = searchQuery;
+
       setSearchQuery(searchQuery);
+    } else {
+      delete searchAPIParams["query"];
     }
   }, [
     rating,
     runtime,
     searchParams,
+    searchAPIParams,
     sortByOrder.value,
     sortByOrderOptions,
     sortByType.value,
@@ -963,144 +1052,14 @@ export default function Filters({
     setSearchQuery,
     setSortByType,
     setSortByOrder,
+    isTvPage,
   ]);
 
   // Use Effect for Search
   useEffect(() => {
     setLoading(true);
-    setCurrentSearchPage(1);
-
-    const minFullYear = `${releaseDate[0]}-01-01`;
-    const maxFullYear = `${releaseDate[1]}-12-31`;
 
     const performSearch = () => {
-      searchAPIParams.sort_by = `${sortByType.value}.${sortByOrder.value}`;
-
-      if (searchParams.get("sort_by")?.includes("release_date")) {
-        if (!isTvPage) {
-          searchAPIParams.sort_by = `primary_release_date.${sortByOrder.value}`;
-        } else {
-          searchAPIParams.sort_by = `first_air_date.${sortByOrder.value}`;
-        }
-      }
-
-      if (!isTvPage) {
-        searchAPIParams["primary_release_date.gte"] = minFullYear;
-        searchAPIParams["primary_release_date.lte"] = maxFullYear;
-      } else {
-        searchAPIParams["first_air_date.gte"] = minFullYear;
-        searchAPIParams["first_air_date.lte"] = maxFullYear;
-
-        if (searchParams.get("status")) {
-          searchAPIParams.with_status = status.join("|");
-        } else {
-          delete searchAPIParams.with_status;
-        }
-        if (searchParams.get("type")) {
-          searchAPIParams.with_type = tvType.join("|");
-        } else {
-          delete searchAPIParams.with_type;
-        }
-      }
-      if (searchParams.get("o")) {
-        const currentDate = new Date();
-        const today = calculateDate({ date: currentDate });
-        const tomorrow = calculateDate({ date: currentDate, days: 1 });
-        const monthsAgo = calculateDate({ date: currentDate, months: -1 });
-        const monthsLater = calculateDate({ date: currentDate, months: 1 });
-
-        if (
-          searchParams.get("o") === "now_playing" ||
-          searchParams.get("o") === "on_the_air"
-        ) {
-          if (!isTvPage) {
-            searchAPIParams["primary_release_date.gte"] = monthsAgo;
-            searchAPIParams["primary_release_date.lte"] = today;
-          } else {
-            searchAPIParams["first_air_date.gte"] = monthsAgo;
-            searchAPIParams["first_air_date.lte"] = today;
-          }
-        }
-
-        if (searchParams.get("o") === "upcoming") {
-          if (!isTvPage) {
-            searchAPIParams["primary_release_date.gte"] = tomorrow;
-            searchAPIParams["primary_release_date.lte"] = monthsLater;
-          } else {
-            searchAPIParams["first_air_date.gte"] = tomorrow;
-            searchAPIParams["first_air_date.lte"] = monthsLater;
-          }
-        }
-      }
-      if (searchParams.get("with_genres")) {
-        searchAPIParams.with_genres = genre
-          ?.map((genre) => genre?.value)
-          .join(",");
-      } else {
-        delete searchAPIParams.with_genres;
-      }
-      if (searchParams.get("watch_providers")) {
-        searchAPIParams.watch_region = JSON.parse(userLocation).countryCode;
-        searchAPIParams.with_watch_providers = provider
-          ?.map((provider) => provider?.value)
-          .join(",");
-      } else {
-        delete searchAPIParams.watch_region;
-        delete searchAPIParams.with_watch_providers;
-      }
-      if (searchParams.get("with_networks")) {
-        searchAPIParams.with_networks = network
-          ?.map((network) => network?.value)
-          .join(",");
-      } else {
-        delete searchAPIParams.with_networks;
-      }
-      if (searchParams.get("with_original_language")) {
-        searchAPIParams.with_original_language = language
-          ?.map((language) => language?.value)
-          .join(",");
-      } else {
-        delete searchAPIParams.with_original_language;
-      }
-      if (searchParams.get("with_cast")) {
-        searchAPIParams.with_cast = cast?.map((cast) => cast?.value).join(",");
-      } else {
-        delete searchAPIParams.with_cast;
-      }
-      if (searchParams.get("with_crew")) {
-        searchAPIParams.with_crew = crew?.map((crew) => crew?.value).join(",");
-      } else {
-        delete searchAPIParams.with_crew;
-      }
-      if (searchParams.get("with_keywords")) {
-        searchAPIParams.with_keywords = keyword
-          ?.map((keyword) => keyword?.value)
-          .join(",");
-      } else {
-        delete searchAPIParams.with_keywords;
-      }
-      if (searchParams.get("with_companies")) {
-        searchAPIParams.with_companies = company
-          ?.map((company) => company?.value)
-          .join(",");
-      } else {
-        searchAPIParams.with_companies;
-      }
-      if (searchParams.get("vote_count") && rating) {
-        searchAPIParams["vote_count.gte"] = rating[0];
-        searchAPIParams["vote_count.lte"] = rating[1];
-      } else {
-        delete searchAPIParams["vote_count.gte"];
-        delete searchAPIParams["vote_count.lte"];
-      }
-      if (searchParams.get("with_runtime") && runtime) {
-        searchAPIParams["with_runtime.gte"] = runtime[0];
-        searchAPIParams["with_runtime.lte"] = runtime[1];
-      } else {
-        delete searchAPIParams["with_runtime.gte"];
-        delete searchAPIParams["with_runtime.lte"];
-      }
-
       fetchData({
         endpoint: `/discover/${type}`,
         queryParams: searchAPIParams,
@@ -1109,6 +1068,7 @@ export default function Filters({
           setFilms(res.results);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1137,6 +1097,7 @@ export default function Filters({
           setFilms(filteredMovies);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1147,41 +1108,14 @@ export default function Filters({
         });
     };
 
-    if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
+    if (!searchParams.get("query")) {
       performSearch();
     }
 
     if (searchParams.get("query") && searchQuery) {
       performSearchQuery();
     }
-  }, [
-    status,
-    tvType,
-    cast,
-    company,
-    crew,
-    genre,
-    isTvPage,
-    keyword,
-    language,
-    provider,
-    network,
-    rating,
-    releaseDate,
-    runtime,
-    searchAPIParams,
-    searchParams,
-    searchQuery,
-    sortByOrder.value,
-    sortByType.value,
-    type,
-    userLocation,
-    setLoading,
-    setCurrentSearchPage,
-    setFilms,
-    setTotalSearchPages,
-    setNotFoundMessage,
-  ]);
+  }, [type, searchAPIParams, searchQuery, searchParams]);
 
   return (
     <aside
