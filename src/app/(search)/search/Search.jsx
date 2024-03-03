@@ -469,13 +469,6 @@ export default function Search({
             >
               {genresData &&
                 films?.map((film) => {
-                  const filmGenres =
-                    film.genre_ids && genresData
-                      ? film.genre_ids.map((genreId) =>
-                          genresData.find((genre) => genre.id === genreId)
-                        )
-                      : [];
-
                   {
                     /* 1024px */
                   }
@@ -507,7 +500,6 @@ export default function Search({
                     <Reveal key={film.id} className={`${xl2}`}>
                       <FilmCard
                         film={film}
-                        genres={filmGenres}
                         isTvPage={
                           isQueryParams ? film.media_type === "tv" : isTvPage
                         }

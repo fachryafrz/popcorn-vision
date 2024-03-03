@@ -26,13 +26,6 @@ export default function Trending({ film, genres }) {
     [isTvPage]
   );
 
-  const filmGenres =
-    film.genre_ids && genres
-      ? film.genre_ids.map((genreId) =>
-          genres.find((genre) => genre.id === genreId)
-        )
-      : [];
-
   const filmTitle = !isTvPage ? film.title : film.name;
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
 

@@ -86,13 +86,6 @@ export default function HomeSlider({ films, genres }) {
               film.first_air_date
             );
 
-            const filmGenres =
-              film.genre_ids && genres
-                ? film.genre_ids.map((genreId) =>
-                    genres.find((genre) => genre.id === genreId)
-                  )
-                : [];
-
             return (
               <SwiperSlide
                 key={film.id}
@@ -174,13 +167,6 @@ function HomeFilm({
   );
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
-
-  const filmGenres =
-    film.genre_ids && genres
-      ? film.genre_ids.map((genreId) =>
-          genres.find((genre) => genre.id === genreId)
-        )
-      : [];
 
   const fetchFilmDetails = useCallback(async () => {
     await fetchData({

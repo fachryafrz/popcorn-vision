@@ -24,13 +24,6 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
 
-  const filmGenres =
-    film.genre_ids && genres
-      ? film.genre_ids.map((genreId) =>
-          genres.find((genre) => genre.id === genreId)
-        )
-      : [];
-
   return (
     <div
       className={`flex flex-col items-center md:items-start gap-2 lg:gap-2 md:max-w-[50%] lg:max-w-[40%] h-full justify-end [&_*]:z-10 text-white ${className}`}

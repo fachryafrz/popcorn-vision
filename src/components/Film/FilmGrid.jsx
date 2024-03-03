@@ -65,13 +65,6 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
 
       <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7">
         {filmsData.map((film) => {
-          const filmGenres =
-            film.genre_ids && genres
-              ? film.genre_ids.map((genreId) =>
-                  genres.find((genre) => genre.id === genreId)
-                )
-              : [];
-
           {
             /* 1024px */
           }
@@ -93,15 +86,17 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
           {
             /* 1536px */
           }
-          {/* const xl2 = `
+          {
+            /* const xl2 = `
           2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
 
           2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
-          `; */}
+          `; */
+          }
 
           return (
             <Reveal key={film.id} className={`${lg} ${xl}`}>
-              <FilmCard film={film} genres={filmGenres} isTvPage={isTvPage} />
+              <FilmCard film={film} isTvPage={isTvPage} />
             </Reveal>
           );
         })}
