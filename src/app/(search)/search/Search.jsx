@@ -12,6 +12,8 @@ import { SearchBar } from "@/components/Layout/Navbar";
 import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
 import Filters from "../components/Filters";
+import { useInView } from "react-intersection-observer";
+import { delay } from "@/lib/delay";
 
 export default function Search({
   type = "movie",
@@ -42,10 +44,7 @@ export default function Search({
   const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
-  let [currentSearchPage, setCurrentSearchPage] = useState(1);
-
-  // Ref
-  const loadMoreBtn = useRef(null);
+  const [currentSearchPage, setCurrentSearchPage] = useState(1);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -85,9 +84,13 @@ export default function Search({
   });
 
   // Is in viewport?
-  const isLoadMoreBtnInViewport = IsInViewport({
-    targetRef: loadMoreBtn.current,
-  });
+  const { ref: loadMoreBtn, inView, entry } = useInView();
+  // const isLoadMoreBtnInViewport = IsInViewport({
+  //   targetRef: loadMoreBtn.current,
+  // });
+
+  // Ref
+  // const loadMoreBtn = useRef(ref);
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -237,9 +240,18 @@ export default function Search({
         });
       }
 
+      const isDuplicate = (film) =>
+        films.some((prevFilm) => prevFilm.id === film.id);
+
+      const filteredFilms = response.results.filter(
+        (film) => !isDuplicate(film)
+      );
+
       setLoading(false);
-      setFilms((prevMovies) => [...prevMovies, ...response.results]);
+      setFilms((prevMovies) => [...prevMovies, ...filteredFilms]);
       setTotalSearchResults(response.total_results);
+      setTotalSearchPages(response.total_pages);
+      setCurrentSearchPage(response.page);
 
       setTimeout(() => {
         setNotFoundMessage("No film found");
@@ -252,11 +264,18 @@ export default function Search({
   };
 
   // Use Effect for load more button is in viewport
+  // useEffect(() => {
+  //   if (isLoadMoreBtnInViewport) {
+  //     loadMoreBtn.current.click();
+  //   }
+  // }, [isLoadMoreBtnInViewport]);
+
   useEffect(() => {
-    if (isLoadMoreBtnInViewport) {
-      loadMoreBtn.current.click();
+    if (inView) {
+      fetchMoreFilms();
     }
-  }, [isLoadMoreBtnInViewport]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -518,19 +537,17 @@ export default function Search({
           </>
         )}
 
-        {!loading &&
-          totalSearchPages > currentSearchPage &&
-          totalSearchResults > 20 && (
-            <section className={`flex items-center justify-center mt-4`}>
-              <button
-                ref={loadMoreBtn}
-                onClick={fetchMoreFilms}
-                className="text-white aspect-square w-[30px] pointer-events-none"
-              >
-                <span className="loading loading-spinner loading-md"></span>
-              </button>
-            </section>
-          )}
+        {!loading && totalSearchPages > currentSearchPage && (
+          <section className={`flex items-center justify-center mt-4`}>
+            <button
+              ref={loadMoreBtn}
+              onClick={fetchMoreFilms}
+              className="text-white aspect-square w-[30px] pointer-events-none"
+            >
+              <span className="loading loading-spinner loading-md"></span>
+            </button>
+          </section>
+        )}
 
         {notAvailable && (
           <div className="toast toast-start z-40 min-w-0 max-w-full whitespace-normal">
