@@ -19,7 +19,7 @@ export default function FilmCard({ film, genres, isTvPage }) {
 
   const [isHovering, setIsHovering] = useState(false);
 
-  const handleMouseOver = debounce(() => setIsHovering(true), 500);
+  const handleMouseOver = debounce(() => setIsHovering(true), 1000);
   const handleMouseLeave = () => {
     setIsHovering(false);
     handleMouseOver.clear();
