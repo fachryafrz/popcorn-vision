@@ -7,6 +7,7 @@ import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { calculateDate } from "@/lib/formatDate";
+import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 
 export default function Filters({
   type,
@@ -42,6 +43,8 @@ export default function Filters({
   setMaxYear,
   searchAPIParams,
   languagesData,
+  totalSearchResults,
+  setTotalSearchResults,
 }) {
   const isTvPage = type === "tv";
   const [userLocation, setUserLocation] = useState(null);
@@ -610,23 +613,6 @@ export default function Filters({
     router.push(`${pathname}${query}`);
   };
 
-  // Random options placeholder
-  const getRandomOptionsPlaceholder = (options) => {
-    if (!options) return "Loading...";
-
-    const numberOfOptions = options.length;
-    const randomStart = Math.floor(Math.random() * numberOfOptions);
-    const randomEnd =
-      randomStart + 2 > numberOfOptions ? numberOfOptions : randomStart + 2;
-
-    const selectedOptions = options
-      .slice(randomStart, randomEnd)
-      .map((option) => option?.label)
-      .join(", ");
-
-    return `${selectedOptions}...`;
-  };
-
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
@@ -655,6 +641,8 @@ export default function Filters({
       setProvidersInputPlaceholder(providersPlaceholder);
     };
 
+    updatePlaceholders();
+
     // Set interval to run every 5 seconds
     const intervalId = setInterval(updatePlaceholders, 5000);
 
@@ -662,58 +650,8 @@ export default function Filters({
     return () => clearInterval(intervalId);
   }, [genresOptions, languagesOptions, providersOptions]);
 
-  // Use Effect for fetching data
+  // Use Effect for fetching streaming providers based on user location
   useEffect(() => {
-    // if (!searchParams.get("query")) {
-    //   // Get default film list
-    //   // defaultFilms();
-    // }
-
-    // Get movie genres list
-    // fetchData({ endpoint: `/genre/movie/list` }).then((res) =>
-    //   setGenresData(res.genres)
-    // );
-
-    // Get tv genres list
-    // fetchData({ endpoint: `/genre/tv/list` }).then((res) =>
-    //   setGenresData(res.genres)
-    // );
-
-    // Get languages list
-    // fetchData({ endpoint: `/configuration/languages` }).then((res) =>
-    //   setLanguagesData(res)
-    // );
-
-    // Fetch min year of available films
-    // fetchData({
-    //   endpoint: `/discover/${type}`,
-    //   queryParams: {
-    //     sort_by: !isTvPage ? "primary_release_date.asc" : "first_air_date.asc",
-    //   },
-    // }).then((res) => {
-    //   const minReleaseDate = !isTvPage
-    //     ? res.results[0].release_date
-    //     : res.results[0].first_air_date;
-    //   const minYear = parseInt(new Date(minReleaseDate).getFullYear());
-    //   setMinYear(minYear);
-    // });
-
-    // Fetch max year of available films
-    // fetchData({
-    //   endpoint: `/discover/${type}`,
-    //   queryParams: {
-    //     sort_by: !isTvPage
-    //       ? "primary_release_date.desc"
-    //       : "first_air_date.desc",
-    //   },
-    // }).then((res) => {
-    //   const maxReleaseDate = !isTvPage
-    //     ? res.results[0].release_date
-    //     : res.results[0].first_air_date;
-    //   const maxYear = parseInt(new Date(maxReleaseDate).getFullYear());
-    //   setMaxYear(maxYear);
-    // });
-
     // Fetch watch providers by user country code
     if (userLocation) {
       fetchData({
@@ -731,6 +669,7 @@ export default function Filters({
   useEffect(() => {
     setReleaseDate([minYear, maxYear]);
     setReleaseDateSlider([minYear, maxYear]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minYear, maxYear]);
 
   // Use Effect for Select with preloaded data
@@ -802,11 +741,14 @@ export default function Filters({
       );
       setProvider(searchProvidersOptions);
 
-      searchAPIParams["watch_providers"] = searchParams.get("watch_providers");
+      searchAPIParams["with_watch_providers"] =
+        searchParams.get("watch_providers");
+      searchAPIParams["watch_region"] = JSON.parse(userLocation).countryCode;
     } else {
       setProvider(null);
 
-      delete searchAPIParams["watch_providers"];
+      delete searchAPIParams["with_watch_providers"];
+      delete searchAPIParams["watch_region"];
     }
 
     // Network
@@ -840,6 +782,7 @@ export default function Filters({
     networksData,
     searchParams,
     searchAPIParams,
+    userLocation,
   ]);
 
   // Use Effect for Search Params
@@ -1087,6 +1030,7 @@ export default function Filters({
     } else {
       delete searchAPIParams["query"];
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     rating,
     runtime,
@@ -1118,6 +1062,7 @@ export default function Filters({
           setLoading(false);
           setTotalSearchPages(res.total_pages);
           setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1147,6 +1092,7 @@ export default function Filters({
           setLoading(false);
           setTotalSearchPages(res.total_pages);
           setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
 
           setTimeout(() => {
             setNotFoundMessage("No film found");
@@ -1164,6 +1110,7 @@ export default function Filters({
     if (searchParams.get("query") && searchQuery) {
       performSearchQuery();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, searchAPIParams, searchQuery, searchParams]);
 
   return (

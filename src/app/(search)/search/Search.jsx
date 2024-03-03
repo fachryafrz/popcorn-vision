@@ -40,6 +40,7 @@ export default function Search({
   // const [minYear, setMinYear] = useState();
   // const [maxYear, setMaxYear] = useState();
   const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
+  const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
   let [currentSearchPage, setCurrentSearchPage] = useState(1);
 
@@ -238,6 +239,7 @@ export default function Search({
 
       setLoading(false);
       setFilms((prevMovies) => [...prevMovies, ...response.results]);
+      setTotalSearchResults(response.total_results);
 
       setTimeout(() => {
         setNotFoundMessage("No film found");
@@ -292,6 +294,8 @@ export default function Search({
         // setMaxYear={setMaxYear}
         searchAPIParams={searchAPIParams}
         languagesData={languagesData}
+        totalSearchResults={totalSearchResults}
+        setTotalSearchResults={setTotalSearchResults}
       />
 
       <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
@@ -522,17 +526,19 @@ export default function Search({
           </>
         )}
 
-        {!loading && totalSearchPages > currentSearchPage && (
-          <section className={`flex items-center justify-center mt-4`}>
-            <button
-              ref={loadMoreBtn}
-              onClick={fetchMoreFilms}
-              className="text-white aspect-square w-[30px] pointer-events-auto"
-            >
-              <span className="loading loading-spinner loading-md"></span>
-            </button>
-          </section>
-        )}
+        {!loading &&
+          totalSearchPages > currentSearchPage &&
+          totalSearchResults > 20 && (
+            <section className={`flex items-center justify-center mt-4`}>
+              <button
+                ref={loadMoreBtn}
+                onClick={fetchMoreFilms}
+                className="text-white aspect-square w-[30px] pointer-events-none"
+              >
+                <span className="loading loading-spinner loading-md"></span>
+              </button>
+            </section>
+          )}
 
         {notAvailable && (
           <div className="toast toast-start z-40 min-w-0 max-w-full whitespace-normal">
