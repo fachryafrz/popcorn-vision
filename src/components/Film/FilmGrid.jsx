@@ -5,28 +5,30 @@ import React, { useEffect, useRef, useState } from "react";
 import FilmCard from "./FilmCard";
 import { fetchData } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
+import { useInView } from "react-intersection-observer";
 
 export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  const loadMoreBtn = useRef(null);
+  // const loadMoreBtn = useRef(null);
 
   // Is in viewport?
-  const isLoadMoreBtnInViewport = useIsInViewport(loadMoreBtn);
+  // const isLoadMoreBtnInViewport = useIsInViewport(loadMoreBtn);
+  const { ref: loadMoreBtn, inView, entry } = useInView();
 
-  let [currentSearchPage, setCurrentSearchPage] = useState(films.page);
+  const [currentSearchPage, setCurrentSearchPage] = useState(films.page);
   const [totalSearchPages, setTotalSearchPages] = useState(films.total_pages);
   const [filmsData, setFilmsData] = useState(films.results);
 
   const fetchMoreFilms = async () => {
-    setCurrentSearchPage((prevPage) => prevPage + 1);
-
     try {
+      const nextPage = currentSearchPage + 1;
+      
       const response = await fetchData({
         endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/recommendations`,
         queryParams: {
           language: "en-US",
-          page: currentSearchPage,
+          page: nextPage,
         },
       });
 
@@ -38,6 +40,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
       );
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
+      setCurrentSearchPage(response.page);
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
@@ -45,12 +48,11 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
 
   // Use Effect for load more button is in viewport
   useEffect(() => {
-    if (isLoadMoreBtnInViewport) {
-      setTimeout(() => {
-        loadMoreBtn.current.click();
-      }, 500);
+    if (inView) {
+      fetchMoreFilms()
     }
-  }, [isLoadMoreBtnInViewport]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
 
   return (
     <section
@@ -106,7 +108,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
         <section className={`flex items-center justify-center mt-4`}>
           <button
             ref={loadMoreBtn}
-            onClick={() => fetchMoreFilms((currentSearchPage += 1))}
+            onClick={fetchMoreFilms}
             className="text-white aspect-square w-[30px] pointer-events-none"
           >
             <span className="loading loading-spinner loading-md"></span>
