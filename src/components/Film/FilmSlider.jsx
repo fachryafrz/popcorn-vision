@@ -61,13 +61,6 @@ export default function FilmSlider({
         className={`!px-4 !pb-[2rem] lg:!pb-[3rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
       >
         {sortedFilms.map((film) => {
-          const filmGenres =
-            film.genre_ids && genres
-              ? film.genre_ids.map((genreId) =>
-                  genres.find((genre) => genre.id === genreId)
-                )
-              : [];
-
           {
             /* 1024px */
           }
@@ -107,11 +100,7 @@ export default function FilmSlider({
               className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${xl} ${xl2}`}
             >
               {/* <Reveal> */}
-              <FilmCard
-                film={film}
-                genres={filmGenres}
-                isTvPage={isTvPage}
-              />
+              <FilmCard film={film} isTvPage={isTvPage} />
               {/* </Reveal> */}
             </SwiperSlide>
           );

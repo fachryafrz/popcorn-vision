@@ -13,7 +13,7 @@ import Reveal from "../Layout/Reveal";
 import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 
-export default function FilmCard({ film, genres, isTvPage }) {
+export default function FilmCard({ film, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
   const options = { year: "numeric", month: "short" };
 
@@ -110,7 +110,6 @@ export default function FilmCard({ film, genres, isTvPage }) {
 
       <FilmPreview
         film={film}
-        genres={genres}
         isHovering={isHovering}
         setIsHovering={setIsHovering}
         isTvPage={isTvPage}
@@ -272,10 +271,12 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             )}
 
             {/* Genres */}
-            {genres.length > 0 && !loading && (
+            {filmDetails?.genres.length > 0 && !loading && (
               <Reveal delay={0.25}>
                 <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-                  <span className="!text-white">{genres[0]?.name}</span>
+                  <span className="!text-white">
+                    {filmDetails?.genres[0]?.name}
+                  </span>
                 </div>
               </Reveal>
             )}
