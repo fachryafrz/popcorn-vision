@@ -239,7 +239,9 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
                 <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
                   <IonIcon icon={star} className="" />
                   <span className="!text-white">
-                    {film.vote_average.toFixed(1)}
+                    {film.vote_average < 9.9
+                      ? film.vote_average.toFixed(1)
+                      : film.vote_average}
                   </span>
                 </div>
               </Reveal>
