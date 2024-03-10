@@ -743,7 +743,7 @@ export default function Filters({
 
       searchAPIParams["with_watch_providers"] =
         searchParams.get("watch_providers");
-      searchAPIParams["watch_region"] = JSON.parse(userLocation).countryCode;
+      searchAPIParams["watch_region"] = JSON.parse(userLocation)?.countryCode;
     } else {
       setProvider(null);
 
