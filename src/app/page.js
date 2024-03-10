@@ -1,5 +1,3 @@
-export const revalidate = 0;
-
 import React from "react";
 import HomeSlider from "@/components/Film/HomeSlider";
 import FilmSlider from "@/components/Film/FilmSlider";

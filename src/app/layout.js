@@ -1,3 +1,5 @@
+export const revalidate = 0;
+
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";

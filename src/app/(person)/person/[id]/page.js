@@ -1,4 +1,3 @@
-import axios from "axios";
 import React from "react";
 import PersonProfile from "../../components/PersonProfile";
 import PersonDetails from "../../components/PersonDetails";
@@ -62,7 +61,7 @@ export default async function Person({ params }) {
 
   return (
     <div
-      className={`max-w-7xl mx-auto w-full p-4 max-h-none grid grid-cols-12 gap-4 rounded-t-[2rem] rounded-b-none`}
+      className={`mx-auto grid max-h-none w-full max-w-7xl grid-cols-12 gap-4 rounded-b-none rounded-t-[2rem] p-4`}
       style={{ overflowY: `unset` }}
     >
       {/* Person Profile */}
