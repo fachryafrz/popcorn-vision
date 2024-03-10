@@ -43,7 +43,7 @@ export default function FilmMedia({ videos, images }) {
           result.iso_639_1 === "en" &&
           result.type === "Trailer") ||
         result.type === "Teaser" ||
-        result.type === "Clip"
+        result.type === "Clip",
     );
 
   useEffect(() => {
@@ -91,22 +91,22 @@ export default function FilmMedia({ videos, images }) {
             "--swiper-navigation-color": "#fff",
             "--swiper-pagination-color": "#fff",
           }}
-          className="relative aspect-video rounded-xl overflow-hidden"
+          className="relative aspect-video overflow-hidden rounded-xl"
         >
           <div
             id="navigation"
-            className={`flex justify-between absolute inset-0 items-center flex-row-reverse`}
+            className={`absolute inset-0 flex flex-row-reverse items-center justify-between`}
           >
             <button
               id="next"
-              className={`z-40 flex items-center text-white p-2`}
+              className={`z-40 flex items-center p-2 text-white`}
               aria-labelledby={`next-slide`}
             >
               <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
             </button>
             <button
               id="prev"
-              className={`z-40 flex items-center text-white p-2`}
+              className={`z-40 flex items-center p-2 text-white`}
               aria-labelledby={`previous-slide`}
             >
               <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
@@ -137,7 +137,7 @@ export default function FilmMedia({ videos, images }) {
 
                   <YouTube
                     videoId={vid.key}
-                    className={`w-full h-full`}
+                    className={`h-full w-full`}
                     iframeClassName={`w-full h-full`}
                     // onReady={(e) => console.log(`Ready`, e)}
                     onPlay={(e) => setActiveVideo({ index, video: e.target })}
@@ -161,7 +161,7 @@ export default function FilmMedia({ videos, images }) {
                     loading="lazy"
                     src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                     alt={``}
-                    className={`w-full h-full object-cover`}
+                    className={`h-full w-full object-cover`}
                   />
                 </figure>
               </SwiperSlide>

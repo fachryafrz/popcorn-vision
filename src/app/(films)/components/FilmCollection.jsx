@@ -76,15 +76,15 @@ export default function FilmCollection({ film, setLoading, collection }) {
 
   return (
     <div className={`flex flex-col gap-2`}>
-      <div id="collections" className="flex flex-col gap-2 py-2 z-10">
+      <div id="collections" className="z-10 flex flex-col gap-2 py-2">
         <h2
-          className="font-bold text-xl text-white m-0"
+          className="m-0 text-xl font-bold text-white"
           style={{ textWrap: `balance` }}
         >
           {!isTvPage ? apiData && collectionTitle : `${film.name} Collection`}
         </h2>{" "}
       </div>
-      <ul className="flex flex-col gap-1 relative">
+      <ul className="relative flex flex-col gap-1">
         {!isTvPage
           ? apiData &&
             collections
@@ -102,7 +102,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
           : filteredSeasons
               .slice(
                 0,
-                showAllCollection ? filteredSeasons.length : numCollection
+                showAllCollection ? filteredSeasons.length : numCollection,
               )
               .map((item, index) => {
                 return (
@@ -121,7 +121,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
           ? apiData && collections.length > numCollection
           : filteredSeasons.length > numCollection) && (
           <div
-            className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
+            className={`absolute inset-x-0 bottom-0 h-[200px] items-end justify-center bg-gradient-to-t from-base-100 text-primary-blue ${
               showAllCollection ? "hidden" : "flex"
             }`}
           >
@@ -154,11 +154,11 @@ function CollectionItem({ film, item, index }) {
     <article>
       <Link
         href={`/movies/${item.id}-${slugify(item.title)}`}
-        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full ${
+        className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
           film.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}
       >
-        <span className={`text-gray-400 text-sm font-medium px-1`}>
+        <span className={`px-1 text-sm font-medium text-gray-400`}>
           {index + 1}
         </span>
         <ImagePovi
@@ -166,22 +166,22 @@ function CollectionItem({ film, item, index }) {
             item.poster_path &&
             `https://image.tmdb.org/t/p/w92${item.poster_path}`
           }
-          className={`aspect-poster min-w-[50px] max-w-[50px] rounded-lg overflow-hidden flex items-center bg-base-100`}
+          className={`flex aspect-poster min-w-[50px] max-w-[50px] items-center overflow-hidden rounded-lg bg-base-100`}
         />
-        <div className="flex flex-col gap-1 items-start w-full">
+        <div className="flex w-full flex-col items-start gap-1">
           <h3
-            className="text-start line-clamp-2 font-medium"
+            className="line-clamp-2 text-start font-medium"
             title={item.title}
             style={{ textWrap: "balance" }}
           >
             {item.title}
           </h3>
           <div
-            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+            className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >
             {item.vote_average > 1 && (
               <span
-                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
                 {item.vote_average && item.vote_average.toFixed(1)}
@@ -190,7 +190,7 @@ function CollectionItem({ film, item, index }) {
 
             {filmDetails && (
               <span
-                className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 {formatRuntime(filmDetails.runtime)}
               </span>
@@ -199,7 +199,7 @@ function CollectionItem({ film, item, index }) {
         </div>
         <p
           title={item.overview}
-          className="text-xs text-gray-400 line-clamp-3 w-full"
+          className="line-clamp-3 w-full text-xs text-gray-400"
         >
           {item.overview}
         </p>
@@ -235,13 +235,13 @@ function FilmSeason({ film, item, index, setLoading }) {
         onClick={
           item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
         }
-        className={`transition-all flex items-center gap-2 bg-secondary bg-opacity-10 hocus:bg-opacity-30 p-2 w-full ${
+        className={`flex w-full items-center gap-2 bg-secondary bg-opacity-10 p-2 transition-all hocus:bg-opacity-30 ${
           viewSeason
             ? `rounded-t-xl !bg-primary-blue !bg-opacity-30`
             : `rounded-xl`
         }`}
       >
-        <span className={`text-gray-400 text-sm font-medium px-1`}>
+        <span className={`px-1 text-sm font-medium text-gray-400`}>
           {index + 1}
         </span>
 
@@ -250,39 +250,39 @@ function FilmSeason({ film, item, index, setLoading }) {
             item.poster_path &&
             `https://image.tmdb.org/t/p/w92${item.poster_path}`
           }
-          className={`aspect-poster min-w-[50px] bg-base-100 max-w-[50px] rounded-lg overflow-hidden flex items-center`}
+          className={`flex aspect-poster min-w-[50px] max-w-[50px] items-center overflow-hidden rounded-lg bg-base-100`}
         />
-        <div className="flex flex-col gap-1 items-start w-full">
+        <div className="flex w-full flex-col items-start gap-1">
           <h3
             title={`${item.name} (${item.episode_count} ${isPlural({
               text: "Episode",
               number: item.episode_count,
             })})`}
-            className="text-start line-clamp-1 md:line-clamp-2 font-medium"
+            className="line-clamp-1 text-start font-medium md:line-clamp-2"
             style={{ textWrap: `balance` }}
           >
             {item.name}
           </h3>
 
           {item.episode_count > 0 ? (
-            <span className="text-xs text-gray-400 font-medium line-clamp-1">
+            <span className="line-clamp-1 text-xs font-medium text-gray-400">
               {`${item.episode_count} ${isPlural({
                 text: "Episode",
                 number: item.episode_count,
               })}`}
             </span>
           ) : (
-            <span className="text-xs text-gray-400 font-medium line-clamp-1">
+            <span className="line-clamp-1 text-xs font-medium text-gray-400">
               {releaseStatus(film.status)}
             </span>
           )}
 
           <div
-            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+            className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >
             {item.vote_average > 1 && (
               <span
-                className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-full`}
+                className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
                 {item.vote_average && item.vote_average.toFixed(1)}
@@ -290,7 +290,7 @@ function FilmSeason({ film, item, index, setLoading }) {
             )}
 
             {item.air_date && (
-              <span className="text-xs text-gray-400 font-medium flex p-1 px-2 bg-secondary bg-opacity-20 backdrop-blur-sm rounded-full">
+              <span className="flex rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-xs font-medium text-gray-400 backdrop-blur-sm">
                 {formatDate({ date: item.air_date, showDay: false })}
               </span>
             )}
@@ -299,7 +299,7 @@ function FilmSeason({ film, item, index, setLoading }) {
 
         <p
           title={item.overview}
-          className="hidden text-xs text-gray-400 sm:line-clamp-3 w-full text-start"
+          className="hidden w-full text-start text-xs text-gray-400 sm:line-clamp-3"
         >
           {item.overview}
         </p>
@@ -307,7 +307,7 @@ function FilmSeason({ film, item, index, setLoading }) {
         {item.episode_count > 0 && (
           <IonIcon
             icon={chevronDownOutline}
-            class={`text-lg min-w-[18px] text-secondary transition-all ${
+            class={`min-w-[18px] text-lg text-secondary transition-all ${
               viewSeason ? `-rotate-180` : ``
             }`}
           />
@@ -351,7 +351,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
             slidesPerView: 2,
           },
         }}
-        className={`bg-secondary bg-opacity-10 !p-2 rounded-b-xl relative`}
+        className={`relative rounded-b-xl bg-secondary bg-opacity-10 !p-2`}
       >
         {episodes &&
           episodes.map((item) => {
@@ -368,7 +368,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
                     <>
                       {item.vote_average > 1 && (
                         <span
-                          className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                         >
                           <IonIcon
                             icon={star}
@@ -380,11 +380,11 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
 
                       {item.runtime && (
                         <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                         >
                           {Math.floor(item.runtime / 60) >= 1
                             ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                                item.runtime % 60
+                                item.runtime % 60,
                               )}m`
                             : `${item.runtime} ${isPlural({
                                 text: "minute",
@@ -395,7 +395,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
 
                       {item.air_date && (
                         <span
-                          className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                          className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                         >
                           {formatDate({ date: item.air_date })}
                         </span>
@@ -416,7 +416,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
       )} */}
 
         <div
-          className={`absolute inset-0 flex justify-between z-40 pointer-events-none`}
+          className={`pointer-events-none absolute inset-0 z-40 flex justify-between`}
         >
           <button
             id={`prevEps`}

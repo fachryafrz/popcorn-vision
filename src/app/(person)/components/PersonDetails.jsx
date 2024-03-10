@@ -58,7 +58,7 @@ export default function PersonDetails({
               prevEl: ".prev",
               clickable: true,
             }}
-            className={`!pt-[2.5rem] relative w-full`}
+            className={`relative w-full !pt-[2.5rem]`}
             wrapperClass={`rounded-xl`}
           >
             {images?.profiles
@@ -67,7 +67,7 @@ export default function PersonDetails({
                 return (
                   <SwiperSlide
                     key={image.id}
-                    className={`transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
+                    className={`max-w-[calc(100%/2.5)] transition-all sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
                   >
                     <figure
                       className={`aspect-poster rounded-xl`}
@@ -82,8 +82,8 @@ export default function PersonDetails({
                 );
               })}
 
-            <div className="z-20 absolute top-0 left-0 right-0 h-[28px] max-w-7xl xl:max-w-none flex justify-between items-end">
-              <div className="flex gap-2 items-end">
+            <div className="absolute left-0 right-0 top-0 z-20 flex h-[28px] max-w-7xl items-end justify-between xl:max-w-none">
+              <div className="flex items-end gap-2">
                 <h3 className={`text-2xl font-bold`}>Images</h3>
                 <span className={`block text-base font-normal text-gray-400`}>
                   (
@@ -95,7 +95,7 @@ export default function PersonDetails({
                 </span>
               </div>
 
-              <div className={`flex gap-4 items-center`}>
+              <div className={`flex items-center gap-4`}>
                 <button
                   className="prev h-[1.5rem]"
                   aria-label="Move slider left"
@@ -121,7 +121,7 @@ export default function PersonDetails({
       )}
 
       {/* Stats */}
-      <section className={`flex gap-12 flex-wrap`}>
+      <section className={`flex flex-wrap gap-12`}>
         {person.birthday && (
           <div id={`Age`} className={`flex flex-col gap-1`}>
             <span className={`text-xl font-bold`}>
@@ -154,7 +154,7 @@ export default function PersonDetails({
           <h3 className={`text-2xl font-bold`}>Biography</h3>
 
           <div
-            className={`prose max-w-none [&_*]:!text-gray-400 text-sm sm:text-base`}
+            className={`prose max-w-none text-sm sm:text-base [&_*]:!text-gray-400`}
           >
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {person.biography}

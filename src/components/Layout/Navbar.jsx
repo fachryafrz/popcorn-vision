@@ -102,7 +102,7 @@ export default function Navbar() {
     pathname.startsWith("/search");
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
-    !isTvPage ? `/search` : `/tv/search`
+    !isTvPage ? `/search` : `/tv/search`,
   );
   let URLSearchQuery = searchParams.get("query");
 
@@ -116,7 +116,7 @@ export default function Navbar() {
         router.push(
           `${
             !isTvType ? `/search` : `/tv/search`
-          }?query=${URLSearchQuery.replace(/\s+/g, "+")}`
+          }?query=${URLSearchQuery.replace(/\s+/g, "+")}`,
         );
       } else {
         router.push(`${!isTvType ? `/search` : `/tv/search`}`);
@@ -144,26 +144,26 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all bg-base-100 ${
-        isScrolled ? `backdrop-blur bg-opacity-[85%]` : `bg-opacity-0`
+      className={`fixed inset-x-0 top-0 z-50 bg-base-100 transition-all ${
+        isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
       }`}
     >
-      <nav className="mx-auto py-2 px-4 max-w-none grid grid-cols-2 lg:grid-cols-3">
+      <nav className="mx-auto grid max-w-none grid-cols-2 px-4 py-2 lg:grid-cols-3">
         <Reveal y={-20}>
           <Link
             id={`Home`}
             href={!isTvPage ? `/` : `/tv`}
-            className="flex gap-1 items-center font-semibold tracking-wide leading-none max-w-fit"
+            className="flex max-w-fit items-center gap-1 font-semibold leading-none tracking-wide"
             aria-labelledby={`Home`}
           >
             <figure
               style={{
                 background: `url(/apple-touch-icon.png)`,
               }}
-              className={`w-[50px] aspect-square !bg-contain`}
+              className={`aspect-square w-[50px] !bg-contain`}
             ></figure>
             <figcaption
-              className={`w-[70px] after:content-["Popcorn_Vision"] after:leading-tight after:h-full after:flex after:items-center`}
+              className={`w-[70px] after:flex after:h-full after:items-center after:leading-tight after:content-["Popcorn_Vision"]`}
             ></figcaption>
           </Link>
         </Reveal>
@@ -178,16 +178,16 @@ export default function Navbar() {
         </div>
 
         {/* Movie & TV Series Switcher */}
-        <div className="flex items-center gap-2 lg:col-[3/4] justify-self-end">
+        <div className="flex items-center gap-2 justify-self-end lg:col-[3/4]">
           <Reveal y={-20} delay={0.4}>
             <div
               id={`FilmSwitcher`}
-              className="flex place-content-center w-fit gap-1 p-1 rounded-full bg-gray-900 bg-opacity-[50%] backdrop-blur-sm"
+              className="flex w-fit place-content-center gap-1 rounded-full bg-gray-900 bg-opacity-[50%] p-1 backdrop-blur-sm"
             >
               <button
                 onClick={() => handleFilmTypeChange("movie")}
                 type={`button`}
-                className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-secondary hocus:bg-opacity-20 md:px-4 ${
                   isMoviesPage &&
                   `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
@@ -198,7 +198,7 @@ export default function Navbar() {
               <button
                 onClick={() => handleFilmTypeChange("tv")}
                 type={`button`}
-                className={`transition-all font-medium py-2 px-2 md:px-4 rounded-full hocus:bg-secondary hocus:bg-opacity-20 flex items-center gap-2 ${
+                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-secondary hocus:bg-opacity-20 md:px-4 ${
                   isTvPage &&
                   `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
@@ -213,7 +213,7 @@ export default function Navbar() {
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
-              className={`lg:hidden btn btn-sm h-[40px] btn-ghost bg-secondary bg-opacity-20 rounded-full !px-0 aspect-square md:aspect-auto md:!px-3`}
+              className={`btn btn-ghost btn-sm aspect-square h-[40px] rounded-full bg-secondary bg-opacity-20 !px-0 md:aspect-auto md:!px-3 lg:hidden`}
             >
               <IonIcon icon={search} className="text-[1.25rem]" />
               <span className="hidden md:block">Search</span>
@@ -235,7 +235,7 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
 
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
-    !isTvPage ? `/search` : `/tv/search`
+    !isTvPage ? `/search` : `/tv/search`,
   );
 
   let URLSearchQuery = searchParams.get("query");
@@ -281,17 +281,17 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
         searchRef?.current.blur();
       }}
       id={`SearchBar`}
-      className={`block form-control w-full justify-self-center relative`}
+      className={`form-control relative block w-full justify-self-center`}
     >
       <div
-        className={`flex items-center input input-bordered bg-opacity-[0%] rounded-full px-0`}
+        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
       >
         <div
-          className={`pl-4 absolute h-full flex items-center pointer-events-none`}
+          className={`pointer-events-none absolute flex h-full items-center pl-4`}
         >
           <IonIcon
             icon={search}
-            className={`text-lg text-gray-400 pointer-events-none`}
+            className={`pointer-events-none text-lg text-gray-400`}
           />
         </div>
 
@@ -299,7 +299,7 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
           type={`text`}
           ref={searchRef}
           placeholder={placeholder}
-          className={`w-full bg-transparent pl-10 h-full pr-4`}
+          className={`h-full w-full bg-transparent pl-10 pr-4`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
@@ -311,11 +311,11 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
               setSearchInput("");
               router.push(`${isTvPage ? "/tv" : ""}/search`);
             }}
-            className={`pl-4 absolute h-full flex items-center right-4`}
+            className={`absolute right-4 flex h-full items-center pl-4`}
           >
             <IonIcon
               icon={close}
-              className={`text-2xl text-gray-400 pointer-events-none`}
+              className={`pointer-events-none text-2xl text-gray-400`}
             />
           </button>
         )}

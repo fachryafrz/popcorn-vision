@@ -24,7 +24,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
   useEffect(() => {
     dispatch(setSeasonPoster(null));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
     // NOTE: Can't use window.location.href
     const currentURL = `/${!isTvPage ? `movies` : `tv`}/${film.id}-${slugify(
-      !isTvPage ? film.title : film.name
+      !isTvPage ? film.title : film.name,
     )}`;
 
     if (film.overview) {
@@ -86,10 +86,10 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
   return (
     <Reveal key={filmPoster} y={0} className={`w-full`}>
-      <div className="sticky top-20 flex flex-col gap-4 w-full">
+      <div className="sticky top-20 flex w-full flex-col gap-4">
         <ImagePovi
           imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
-          className={`aspect-poster rounded-xl overflow-hidden self-start shadow-xl relative w-full bg-base-100`}
+          className={`relative aspect-poster w-full self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
         >
           {filmPoster && (
             <img
@@ -101,15 +101,15 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
           {film.vote_average > 0 && (
             <div
-              className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
+              className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
             >
               <div
                 className={`radial-progress text-sm font-semibold ${
                   film.vote_average > 0 && film.vote_average < 3
                     ? `text-primary-red`
                     : film.vote_average >= 3 && film.vote_average < 7
-                    ? `text-primary-yellow`
-                    : `text-green-500`
+                      ? `text-primary-yellow`
+                      : `text-green-500`
                 }`}
                 style={{
                   "--value": film.vote_average * 10,

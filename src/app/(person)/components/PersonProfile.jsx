@@ -33,7 +33,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
   return (
     <div
-      className={`bg-secondary bg-opacity-10 rounded-2xl overflow-hidden sm:flex sm:items-center md:block ${
+      className={`overflow-hidden rounded-2xl bg-secondary bg-opacity-10 sm:flex sm:items-center md:block ${
         isModal ? `sticky top-4` : `sticky top-20`
       }`}
     >
@@ -47,12 +47,12 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
       />
 
       {/* Person Info */}
-      <div className={`p-4 pb-6 flex flex-col gap-4`}>
+      <div className={`flex flex-col gap-4 p-4 pb-6`}>
         <Link
           href={`/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`}
         >
           <h2
-            className={`text-2xl md:text-3xl text-center font-bold md:mb-2`}
+            className={`text-center text-2xl font-bold md:mb-2 md:text-3xl`}
             style={{ textWrap: `balance` }}
           >
             {person.name}
@@ -63,7 +63,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
           <div className={`flex flex-col`}>
             <section id={`Born Date`}>
               <div className={`flex items-center gap-2`}>
-                <span className={`text-gray-400 italic font-medium`}>
+                <span className={`font-medium italic text-gray-400`}>
                   Born:
                 </span>
 
@@ -73,7 +73,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
             <section id={`Death Date`}>
               <div className={`flex items-center gap-2`}>
-                <span className={`text-gray-400 italic font-medium`}>
+                <span className={`font-medium italic text-gray-400`}>
                   Death:
                 </span>
 
@@ -84,7 +84,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
         )}
 
         <div
-          className={`flex flex-col gap-1 [&_ion-icon]:min-w-[16px] [&_ion-icon]:aspect-square`}
+          className={`flex flex-col gap-1 [&_ion-icon]:aspect-square [&_ion-icon]:min-w-[16px]`}
         >
           {!person.deathday && person.birthday && (
             <section id={`Birth Date`}>

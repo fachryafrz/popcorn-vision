@@ -2,20 +2,20 @@ export default function DetailsLoading() {
   const loadingPulse = `animate-pulse bg-gray-400 bg-opacity-20`;
 
   return (
-    <div className={`flex flex-col gap-[1rem] relative md:-mt-[66px]`}>
+    <div className={`relative flex flex-col gap-[1rem] md:-mt-[66px]`}>
       {/* Backdrop */}
       <div
-        className={`${loadingPulse} max-h-[100vh] overflow-hidden z-0 absolute inset-0 w-full before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 before:z-0 aspect-video md:opacity-[60%] lg:max-h-[80svh]`}
+        className={`${loadingPulse} absolute inset-0 z-0 aspect-video max-h-[100vh] w-full overflow-hidden before:absolute before:inset-0 before:z-0 before:bg-gradient-to-t before:from-base-100 md:opacity-[60%] lg:max-h-[80svh]`}
       ></div>
 
       <div className={`z-10 mt-[30%] md:mt-[200px]`}>
         <div
-          className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
+          className={`mx-auto grid max-w-none grid-cols-1 gap-4 px-4 md:grid-cols-12 lg:grid-cols-24`}
         >
           {/* Poster */}
           <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
             <div
-              className={`${loadingPulse} flex w-[50vw] md:w-full mx-auto md:m-0 sticky top-20 flex-col gap-4 aspect-poster rounded-xl overflow-hidden self-start shadow-xl`}
+              className={`${loadingPulse} sticky top-20 mx-auto flex aspect-poster w-[50vw] flex-col gap-4 self-start overflow-hidden rounded-xl shadow-xl md:m-0 md:w-full`}
             ></div>
           </section>
 
@@ -24,7 +24,7 @@ export default function DetailsLoading() {
             <div className={`flex flex-col gap-2 lg:w-full`}>
               {/* Title Logo */}
               <div
-                className={`rounded-lg ${loadingPulse} h-[100px] sm:h-[150px] w-full !max-w-[350px] mx-auto md:mx-0`}
+                className={`rounded-lg ${loadingPulse} mx-auto h-[100px] w-full !max-w-[350px] sm:h-[150px] md:mx-0`}
               ></div>
               {/* Release Date & Runtime */}
               {[...Array(2).keys()].map((i) => (
@@ -43,11 +43,11 @@ export default function DetailsLoading() {
                 ))}
               </ul>
               {/* Director */}
-              <div className={`flex items-center gap-2 w-[160px]`}>
+              <div className={`flex w-[160px] items-center gap-2`}>
                 <figure
-                  className={`${loadingPulse} h-[40px] w-[40px] aspect-square rounded-full`}
+                  className={`${loadingPulse} aspect-square h-[40px] w-[40px] rounded-full`}
                 ></figure>
-                <div className={`w-full flex flex-col gap-1`}>
+                <div className={`flex w-full flex-col gap-1`}>
                   <div
                     id="name"
                     className={`rounded-lg ${loadingPulse} h-[20px] w-full`}
@@ -62,13 +62,13 @@ export default function DetailsLoading() {
           </section>
 
           {/* Overview */}
-          <section className={`md:col-[1/9] lg:col-[6/20] flex`}>
-            <div className={`flex flex-col gap-2 w-full`}>
+          <section className={`flex md:col-[1/9] lg:col-[6/20]`}>
+            <div className={`flex w-full flex-col gap-2`}>
               {/* Overview */}
               <div className={`[&_*]:rounded-lg`}>
                 <div
                   id="title"
-                  className={`mt-2 ${loadingPulse} h-[28px] w-[140px] mb-2`}
+                  className={`mt-2 ${loadingPulse} mb-2 h-[28px] w-[140px]`}
                 ></div>
                 <div id="description" className={`flex flex-col gap-1`}>
                   {[...Array(2).keys()].map((i) => (
@@ -84,27 +84,27 @@ export default function DetailsLoading() {
               </div>
               {/* Media */}
               <figure
-                className={`rounded-lg aspect-video ${loadingPulse}`}
+                className={`aspect-video rounded-lg ${loadingPulse}`}
               ></figure>
               {/* Reviews */}
               <div>
                 <div
                   id="title"
-                  className={`mt-2 rounded-lg ${loadingPulse} h-[28px] w-[140px] mb-2`}
+                  className={`mt-2 rounded-lg ${loadingPulse} mb-2 h-[28px] w-[140px]`}
                 ></div>
                 <ul className={`flex flex-col gap-2`}>
                   {[...Array(3).keys()].map((i) => (
                     <li
                       id="reviewCard"
                       key={i}
-                      className={`flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl`}
+                      className={`flex flex-col gap-2 rounded-xl bg-gray-400 bg-opacity-10 p-4`}
                     >
                       <div className={`flex items-start justify-between`}>
-                        <div className={`flex items-center gap-2 w-[160px]`}>
+                        <div className={`flex w-[160px] items-center gap-2`}>
                           <figure
-                            className={`${loadingPulse} h-[40px] w-[40px] aspect-square rounded-full`}
+                            className={`${loadingPulse} aspect-square h-[40px] w-[40px] rounded-full`}
                           ></figure>
-                          <div className={`w-full flex flex-col gap-1`}>
+                          <div className={`flex w-full flex-col gap-1`}>
                             <div
                               id="name"
                               className={`rounded-lg ${loadingPulse} h-[20px] w-full`}
@@ -137,22 +137,22 @@ export default function DetailsLoading() {
             <div className={`sticky top-20`}>
               <div
                 id="title"
-                className={`rounded-lg ${loadingPulse} h-[28px] w-[140px] mb-4`}
+                className={`rounded-lg ${loadingPulse} mb-4 h-[28px] w-[140px]`}
               ></div>
               <ul
                 id="casts"
-                className={`flex md:flex-col gap-4 overflow-hidden`}
+                className={`flex gap-4 overflow-hidden md:flex-col`}
               >
                 {[...Array(5).keys()].map((i) => (
                   <li
                     key={i}
-                    className={`flex flex-col md:flex-row items-center gap-2 min-w-[120px] md:w-full`}
+                    className={`flex min-w-[120px] flex-col items-center gap-2 md:w-full md:flex-row`}
                   >
                     <figure
-                      className={`${loadingPulse} h-[50px] w-[50px] aspect-square rounded-full`}
+                      className={`${loadingPulse} aspect-square h-[50px] w-[50px] rounded-full`}
                     ></figure>
                     <div
-                      className={`w-full flex flex-col items-center md:items-start gap-1`}
+                      className={`flex w-full flex-col items-center gap-1 md:items-start`}
                     >
                       <div
                         id="name"

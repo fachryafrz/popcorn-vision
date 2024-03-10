@@ -98,7 +98,7 @@ export default function RootLayout({ children }) {
           <UserLocation />
 
           {/* Main Content */}
-          <main className={`pb-8 mt-[66px]`}>{children}</main>
+          <main className={`mt-[66px] pb-8`}>{children}</main>
 
           {/* Footer */}
           <Footer />

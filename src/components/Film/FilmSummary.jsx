@@ -19,24 +19,24 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       const type = !isTvPage ? movie : tv;
       return type;
     },
-    [isTvPage]
+    [isTvPage],
   );
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
 
   return (
     <div
-      className={`flex flex-col items-center md:items-start gap-2 lg:gap-2 md:max-w-[50%] lg:max-w-[40%] h-full justify-end [&_*]:z-10 text-white ${className}`}
+      className={`flex h-full flex-col items-center justify-end gap-2 text-white md:max-w-[50%] md:items-start lg:max-w-[40%] lg:gap-2 [&_*]:z-10 ${className}`}
     >
       <TitleLogo
         film={film}
         images={film.images?.logos.find((img) => img.iso_639_1 === "en")}
       />
-      <div className="flex items-center justify-center flex-wrap gap-1 font-medium text-white">
+      <div className="flex flex-wrap items-center justify-center gap-1 font-medium text-white">
         {film.vote_average > 0 && (
           <Reveal delay={0.1}>
-            <div className="flex items-center gap-1 text-primary-yellow p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
-              <IonIcon icon={star} className="!w-5 h-full aspect-square" />
+            <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm">
+              <IonIcon icon={star} className="aspect-square h-full !w-5" />
               <span className="!text-white">
                 {film.vote_average.toFixed(1)}
               </span>
@@ -59,12 +59,12 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             genre && (
               <Reveal key={genre.id} delay={0.3}>
                 <span
-                  className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
+                  className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
                 >
                   {genre.name}
                 </span>
               </Reveal>
-            )
+            ),
         )}
       </div>
 
@@ -74,14 +74,14 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         </p>
       </Reveal>
 
-      <div className={`grid md:grid-cols-2 gap-2 mt-4 w-full`}>
+      <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
         <Reveal delay={0.2} className={`[&_a]:w-full`}>
           <Link
             href={isItTvPage(
               `/movies/${film.id}-${slugify(film.title)}`,
-              `/tv/${film.id}-${slugify(film.name)}`
+              `/tv/${film.id}-${slugify(film.name)}`,
             )}
-            className={`btn btn-primary bg-opacity-40 border-none rounded-full hocus:bg-opacity-100 backdrop-blur ${btnClass}`}
+            className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
           >
             Details
             <IonIcon
@@ -99,9 +99,9 @@ function FilmSeason({ film }) {
   const season = film.number_of_seasons;
 
   return (
-    <div className="whitespace-nowrap flex items-center gap-1">
+    <div className="flex items-center gap-1 whitespace-nowrap">
       <span
-        className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
+        className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
       >
         {`${season} ${isPlural({ text: "Season", number: season })}`}{" "}
       </span>
@@ -113,7 +113,7 @@ function FilmRuntime({ film }) {
   return (
     <div className="flex items-center gap-1">
       <span
-        className={`block p-1 px-3 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm`}
+        className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
       >
         {`${formatRuntime(film.runtime)}`}{" "}
       </span>

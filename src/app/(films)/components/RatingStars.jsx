@@ -34,7 +34,7 @@ const RatingStars = ({ rating }) => {
         <IonIcon
           key={fullStarCount + (hasHalfStar ? 1 : 0) + i}
           icon={starOutline}
-        />
+        />,
       );
     }
 

@@ -46,7 +46,7 @@ export default function HomeSlider({ films, genres }) {
   };
 
   return (
-    <section name="Home Slider" className={`pb-[2rem] -mt-[66px] relative`}>
+    <section name="Home Slider" className={`relative -mt-[66px] pb-[2rem]`}>
       <h2 className="sr-only">Discover Movies</h2>
       <div>
         <Swiper
@@ -78,18 +78,18 @@ export default function HomeSlider({ films, genres }) {
           keyboard={true}
           spaceBetween={0}
           slidesPerView={1}
-          className={`h-[100svh] lg:h-[calc(100svh+5rem)] min-h-[500px] 2xl:max-w-none relative after:hidden 2xl:after:hidden after:absolute after:inset-y-0 after:w-[10%] after:right-0 after:bg-gradient-to-l after:from-base-100 after:z-50`}
+          className={`relative h-[100svh] min-h-[500px] after:absolute after:inset-y-0 after:right-0 after:z-50 after:hidden after:w-[10%] after:bg-gradient-to-l after:from-base-100 lg:h-[calc(100svh+5rem)] 2xl:max-w-none 2xl:after:hidden`}
         >
           {films.map((film, i) => {
             const releaseDate = isItTvPage(
               film.release_date,
-              film.first_air_date
+              film.first_air_date,
             );
 
             return (
               <SwiperSlide
                 key={film.id}
-                className={`flex items-end relative before:z-50 before:absolute before:inset-0 before:opacity-0 md:before:opacity-100 before:bg-gradient-to-r before:from-base-100 after:absolute after:inset-x-0 after:bottom-0 after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:after:via-40% after:h-[75%] md:after:via-transparent lg:after:opacity-[100%] aspect-auto md:aspect-auto`}
+                className={`relative flex aspect-auto items-end before:absolute before:inset-0 before:z-50 before:bg-gradient-to-r before:from-base-100 before:opacity-0 after:absolute after:inset-x-0 after:bottom-0 after:h-[75%] after:bg-gradient-to-t after:from-base-100 after:via-base-100 after:via-30% md:aspect-auto md:before:opacity-100 md:after:via-transparent md:after:via-40% lg:after:opacity-[100%]`}
               >
                 <HomeFilm
                   film={film}
@@ -107,7 +107,7 @@ export default function HomeSlider({ films, genres }) {
       </div>
 
       <div
-        className={`hidden lg:block absolute right-0 bottom-[calc(5rem+4rem-1rem)] w-fit`}
+        className={`absolute bottom-[calc(5rem+4rem-1rem)] right-0 hidden w-fit lg:block`}
       >
         <Swiper
           onSwiper={setThumbsSwiper}
@@ -121,7 +121,7 @@ export default function HomeSlider({ films, genres }) {
             return (
               <SwiperSlide
                 key={film.id}
-                className={`aspect-video swiper-slide-thumb !h-fit opacity-[60%] cursor-pointer hocus:opacity-[75%] !transition-all origin-bottom`}
+                className={`swiper-slide-thumb aspect-video !h-fit origin-bottom cursor-pointer opacity-[60%] !transition-all hocus:opacity-[75%]`}
               >
                 {/* NOTE: This is film backdrop without logo */}
                 {/* <figure
@@ -163,7 +163,7 @@ function HomeFilm({
       const type = !isTvPage ? movie : tv;
       return type;
     },
-    [isTvPage]
+    [isTvPage],
   );
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
@@ -193,7 +193,7 @@ function HomeFilm({
         setFilmBackdrop(film.backdrop_path);
       } else {
         setFilmBackdrop(
-          backdrops.find((img) => img.iso_639_1 === null)?.file_path
+          backdrops.find((img) => img.iso_639_1 === null)?.file_path,
         );
       }
     });
@@ -205,9 +205,9 @@ function HomeFilm({
 
   return (
     <>
-      <div className={`h-full w-full -z-10`}>
+      <div className={`-z-10 h-full w-full`}>
         {/* Poster */}
-        <Reveal y={0} className={`md:hidden h-full`}>
+        <Reveal y={0} className={`h-full md:hidden`}>
           <ImagePovi
             imgPath={
               filmPoster && `https://image.tmdb.org/t/p/w780${filmPoster}`
@@ -218,7 +218,7 @@ function HomeFilm({
         </Reveal>
 
         {/* Backdrop */}
-        <Reveal y={0} className={`hidden md:block h-full`}>
+        <Reveal y={0} className={`hidden h-full md:block`}>
           <ImagePovi
             imgPath={
               filmBackdrop && `https://image.tmdb.org/t/p/w1280${filmBackdrop}`
@@ -229,7 +229,7 @@ function HomeFilm({
         </Reveal>
       </div>
       <div
-        className={`mx-auto max-w-none z-50 absolute p-4 inset-0 max-h-[100svh] pb-[2rem]`}
+        className={`absolute inset-0 z-50 mx-auto max-h-[100svh] max-w-none p-4 pb-[2rem]`}
       >
         {filmDetails && activeSlide === index && (
           <FilmSummary
@@ -254,7 +254,7 @@ function SliderThumbs({ film, isTvPage, index }) {
       const type = !isTvPage ? movie : tv;
       return type;
     },
-    [isTvPage]
+    [isTvPage],
   );
 
   const fetchBackdrop = useCallback(async () => {
