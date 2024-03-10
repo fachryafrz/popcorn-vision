@@ -1,4 +1,4 @@
-export const revalidate = 1800; // revalidate this page every 1 hour
+export const revalidate = 0;
 
 import React from "react";
 import Home from "@/app/page";
