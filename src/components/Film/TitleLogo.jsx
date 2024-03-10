@@ -19,7 +19,7 @@ export default function TitleLogo({ film, images, setLoading }) {
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
           alt={title}
           title={title}
-          className="max-h-[180px] max-w-fit object-contain bg-contain pointer-events-none"
+          className="pointer-events-none max-h-[180px] max-w-fit bg-contain object-contain"
         />
 
         {!images && (
@@ -32,7 +32,7 @@ export default function TitleLogo({ film, images, setLoading }) {
   ) : (
     <Reveal delay={0.1} className={`w-full`}>
       <h1
-        className="text-center md:text-left font-bold text-3xl lg:text-5xl line-clamp-2 !leading-normal"
+        className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
         style={{ textWrap: `balance` }}
       >
         {title}

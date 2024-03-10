@@ -39,7 +39,7 @@ export default function FilmCard({ film, isTvPage }) {
       id="FilmCard"
       href={isItTvPage(
         `/movies/${film.id}-${slugify(film.title)}`,
-        `/tv/${film.id}-${slugify(film.name)}`
+        `/tv/${film.id}-${slugify(film.name)}`,
       )}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
@@ -50,19 +50,19 @@ export default function FilmCard({ film, isTvPage }) {
           film.poster_path &&
           `https://image.tmdb.org/t/p/w300${film.poster_path}`
         }
-        className={`rounded-xl overflow-hidden aspect-poster relative`}
+        className={`relative aspect-poster overflow-hidden rounded-xl`}
       >
         {film.vote_average > 0 && (
           <div
-            className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
+            className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
           >
             <div
               className={`radial-progress text-sm font-semibold ${
                 film.vote_average > 0 && film.vote_average < 3
                   ? `text-primary-red`
                   : film.vote_average >= 3 && film.vote_average < 7
-                  ? `text-primary-yellow`
-                  : `text-green-500`
+                    ? `text-primary-yellow`
+                    : `text-green-500`
               }`}
               style={{
                 "--value": film.vote_average * 10,
@@ -70,7 +70,7 @@ export default function FilmCard({ film, isTvPage }) {
                 "--thickness": "3px",
               }}
             >
-              <span className={`text-white text-xs`}>
+              <span className={`text-xs text-white`}>
                 {film.vote_average < 9.9
                   ? film.vote_average.toFixed(1)
                   : film.vote_average}
@@ -130,7 +130,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
       const type = !isTvPage ? movie : tv;
       return type;
     },
-    [isTvPage]
+    [isTvPage],
   );
 
   const fetchTitleLogo = useCallback(async () => {
@@ -163,7 +163,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         // transition={{ delay: isHovering ? 0.5 : 0 }}
         exit={{ opacity: 0 }}
         id="FilmPreview"
-        className={`hidden xl:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] z-40 rounded-2xl overflow-hidden bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] ${
+        className={`absolute left-1/2 top-1/2 z-40 hidden w-[300px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block ${
           isHovering ? `pointer-events-auto` : `pointer-events-none`
         }`}
       >
@@ -173,23 +173,23 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             film.backdrop_path &&
             `https://image.tmdb.org/t/p/w92${film.backdrop_path}`
           }
-          className={`aspect-[4/3] relative before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100 overflow-hidden z-0`}
+          className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
         >
           {film.backdrop_path && (
             <img
               src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
               alt={isItTvPage(film.title, film.name)}
-              className={`object-cover pointer-events-none`}
+              className={`pointer-events-none object-cover`}
             />
           )}
         </ImagePovi>
 
         <div
           key={isHovering}
-          className={`p-3 pb-4 -mt-[75px] z-10 relative flex flex-col gap-2`}
+          className={`relative z-10 -mt-[75px] flex flex-col gap-2 p-3 pb-4`}
         >
           {/* Logo */}
-          <section id="Logo" className={`h-[75px] flex items-end`}>
+          <section id="Logo" className={`flex h-[75px] items-end`}>
             {/* Loading */}
             {/* {loading && (
               <div className="h-[75px] w-[200px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
@@ -203,7 +203,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
                     src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
                     alt={isItTvPage(film.title, film.name)}
                     title={isItTvPage(film.title, film.name)}
-                    className={`object-contain max-w-[200px]`}
+                    className={`max-w-[200px] object-contain`}
                   />
                 </figure>
               </Reveal>
@@ -213,7 +213,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {!loading && !titleLogo && (
               <Reveal>
                 <h4
-                  className={`text-xl font-bold line-clamp-2`}
+                  className={`line-clamp-2 text-xl font-bold`}
                   style={{ textWrap: `balance` }}
                 >
                   {isItTvPage(film.title, film.name)}
@@ -236,7 +236,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {/* Rating */}
             {film.vote_average > 0 && !loading && (
               <Reveal delay={0.1}>
-                <div className="flex items-center gap-1 text-primary-yellow p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm">
                   <IonIcon icon={star} className="" />
                   <span className="!text-white">
                     {film.vote_average < 9.9
@@ -250,7 +250,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {/* Runtime */}
             {!isTvPage && filmRuntime > 0 && !loading && (
               <Reveal delay={0.15}>
-                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
                   <span className="!text-white">
                     {formatRuntime(filmRuntime)}
                   </span>
@@ -261,7 +261,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {/* Seasons */}
             {isTvPage && filmDetails?.number_of_seasons > 0 && !loading && (
               <Reveal delay={0.2}>
-                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
                   <span className="!text-white">
                     {`${filmDetails.number_of_seasons} ${isPlural({
                       text: `Season`,
@@ -275,7 +275,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {/* Genres */}
             {filmDetails?.genres.length > 0 && !loading && (
               <Reveal delay={0.25}>
-                <div className="flex items-center gap-1 p-1 px-2 rounded-full bg-secondary bg-opacity-20 backdrop-blur-sm">
+                <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
                   <span className="!text-white">
                     {filmDetails?.genres[0]?.name}
                   </span>
@@ -301,13 +301,13 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
             {!loading && film.overview ? (
               <Reveal delay={0.1}>
-                <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
+                <p className={`line-clamp-4 text-sm font-medium text-gray-400`}>
                   {film.overview}
                 </p>
               </Reveal>
             ) : (
               <Reveal delay={0.1}>
-                <p className={`text-gray-400 text-sm font-medium line-clamp-4`}>
+                <p className={`line-clamp-4 text-sm font-medium text-gray-400`}>
                   No info.
                 </p>
               </Reveal>

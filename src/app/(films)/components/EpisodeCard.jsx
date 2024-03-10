@@ -34,24 +34,24 @@ export default function EpisodeCard({
           dispatch(setEpisode(episode));
         });
       }}
-      className={`flex flex-col items-center gap-2 bg-secondary bg-opacity-10 backdrop-blur hocus:bg-opacity-30 p-2 rounded-xl w-full h-fit transition-all ${className}`}
+      className={`flex h-fit w-full flex-col items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${className}`}
     >
       <ImagePovi
         imgPath={imgPath && `https://image.tmdb.org/t/p/w500${imgPath}`}
-        className={`aspect-video rounded-lg overflow-hidden w-full relative`}
+        className={`relative aspect-video w-full overflow-hidden rounded-lg`}
       >
         {overlay && (
           <span
-            className={`absolute top-0 left-0 m-2 p-1 px-2 text-sm font-medium bg-base-100 bg-opacity-[75%] backdrop-blur-sm rounded-full`}
+            className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-[75%] p-1 px-2 text-sm font-medium backdrop-blur-sm`}
           >
             {overlay}
           </span>
         )}
       </ImagePovi>
 
-      <div className="flex flex-col gap-1 items-start w-full">
+      <div className="flex w-full flex-col items-start gap-1">
         <h3
-          className="text-start line-clamp-1 lg:line-clamp-2 font-medium"
+          className="line-clamp-1 text-start font-medium lg:line-clamp-2"
           title={title}
           style={{ textWrap: `balance` }}
         >
@@ -59,14 +59,14 @@ export default function EpisodeCard({
         </h3>
 
         <div
-          className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+          className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
         >
           {secondaryInfo}
         </div>
 
         {thirdInfo && (
           <div
-            className={`flex items-center gap-1 text-xs text-gray-400 font-medium flex-wrap`}
+            className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >
             {thirdInfo}
           </div>

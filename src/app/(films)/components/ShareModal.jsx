@@ -46,7 +46,7 @@ export default function ShareModal() {
       <div className="modal-box max-w-sm">
         <h2 className={`text-center`}>Share to</h2>
 
-        <div className={`mt-2 flex flex-wrap justify-center gap-2 mb-4`}>
+        <div className={`mb-4 mt-2 flex flex-wrap justify-center gap-2`}>
           <WhatsappShareButton url={URL}>
             <WhatsappIcon size={50} round={true} />
           </WhatsappShareButton>
@@ -83,7 +83,7 @@ export default function ShareModal() {
         <div className="divider">or</div>
 
         <div
-          className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-full bg-black bg-opacity-50 text-sm border border-white border-opacity-50 w-full`}
+          className={`flex w-full flex-col items-center gap-2 rounded-full border border-white border-opacity-50 bg-black bg-opacity-50 p-2 text-sm sm:flex-row`}
         >
           <label htmlFor={`copyURL`}></label>
           <input
@@ -92,11 +92,11 @@ export default function ShareModal() {
             type={`text`}
             value={URL}
             readOnly={true}
-            className={`bg-transparent w-full`}
+            className={`w-full bg-transparent`}
           />
           <button
             onClick={handleCopy}
-            className={`text-black font-medium btn btn-primary btn-sm rounded-full`}
+            className={`btn btn-primary btn-sm rounded-full font-medium text-black`}
           >
             {copied ? `Copied!` : `Copy`}
           </button>

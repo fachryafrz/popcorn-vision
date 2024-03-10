@@ -9,23 +9,23 @@ export default function MainLoading() {
 
   return (
     <div
-      className={`[&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20 flex flex-col gap-[1rem] -mt-[66px]`}
+      className={`-mt-[66px] flex flex-col gap-[1rem] [&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20`}
     >
       {/* HomeSlider */}
       <section
-        className={`h-[100svh] lg:h-[120svh] min-h-[500px] relative before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 flex items-start`}
+        className={`relative flex h-[100svh] min-h-[500px] items-start before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 lg:h-[120svh]`}
       >
         <div
-          className={`h-full max-h-[100svh] pb-[2rem] w-full !bg-opacity-0 flex items-end`}
+          className={`flex h-full max-h-[100svh] w-full items-end !bg-opacity-0 pb-[2rem]`}
         >
           <div
-            className={`w-full max-w-none mx-auto !bg-opacity-0 flex flex-col justify-end items-center md:items-start gap-2 p-4 [&_*]:rounded-lg mb-4 md:[&_*]:max-w-[40%]`}
+            className={`mx-auto mb-4 flex w-full max-w-none flex-col items-center justify-end gap-2 !bg-opacity-0 p-4 md:items-start [&_*]:rounded-lg md:[&_*]:max-w-[40%]`}
           >
             {/* Title Logo */}
             <div className={`h-[150px] w-full !max-w-[350px]`}></div>
             {/* Rating, Runtime, Season, Genre */}
             <div
-              className={`flex items-center justify-center md:justify-start gap-1 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
+              className={`flex w-full items-center justify-center gap-1 !bg-opacity-0 md:justify-start [&_*]:w-full [&_*]:!max-w-[75px]`}
             >
               <div className={`h-[32px] w-full !rounded-full`}></div>
               <div className={`h-[32px] w-full !rounded-full`}></div>
@@ -33,7 +33,7 @@ export default function MainLoading() {
             </div>
             {/* Overview */}
             <div
-              className={`h-[100px] w-full !bg-opacity-0 hidden md:flex flex-col gap-2 items-center md:items-start [&_*]:!max-w-none`}
+              className={`hidden h-[100px] w-full flex-col items-center gap-2 !bg-opacity-0 md:flex md:items-start [&_*]:!max-w-none`}
             >
               <div className={`h-[24px] w-full`}></div>
               <div className={`h-[24px] w-full`}></div>
@@ -41,18 +41,18 @@ export default function MainLoading() {
             </div>
             {/* Details Button */}
             <div
-              className={`h-[48px] w-full md:!max-w-[25%] lg:!max-w-[300px] bg-opacity-40 border-none !rounded-full backdrop-blur`}
+              className={`h-[48px] w-full !rounded-full border-none bg-opacity-40 backdrop-blur md:!max-w-[25%] lg:!max-w-[300px]`}
             ></div>
           </div>
         </div>
       </section>
 
       {/* FilmSlider */}
-      <div className={`lg:-mt-[5rem] !bg-opacity-0`}>
+      <div className={`!bg-opacity-0 lg:-mt-[5rem]`}>
         {[...Array(sectionCount).keys()].map((a) => (
           <section
             key={a}
-            className={`w-full max-w-none mx-auto flex flex-col gap-4 [&_*]:rounded-lg !bg-opacity-0 p-4`}
+            className={`mx-auto flex w-full max-w-none flex-col gap-4 !bg-opacity-0 p-4 [&_*]:rounded-lg`}
           >
             {/* Section Title */}
             <div className={`h-[28px] w-[100px]`}></div>
@@ -78,22 +78,22 @@ export default function MainLoading() {
               allowSlideNext={false}
               allowSlidePrev={false}
               allowTouchMove={false}
-              className={`!bg-opacity-0 w-full !pr-[3rem]`}
+              className={`w-full !bg-opacity-0 !pr-[3rem]`}
               wrapperClass={`!bg-opacity-0`}
             >
               {[...Array(itemCount).keys()].map((b) => (
                 <SwiperSlide
                   key={b}
-                  className={`!bg-opacity-0 max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)] mr-2`}
+                  className={`mr-2 max-w-[calc(100%/2.5)] !bg-opacity-0 sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)] xl:max-w-[calc(100%/6.5)] 2xl:max-w-[calc(100%/7.5)]`}
                 >
                   {/* Poster */}
                   <div className={`aspect-poster`}></div>
 
                   {/* Title */}
-                  <div className={`h-[28px] mt-2`}></div>
+                  <div className={`mt-2 h-[28px]`}></div>
 
                   {/* Release Date & Genres */}
-                  <div className={`h-[20px] mt-1 flex gap-1 !bg-opacity-0`}>
+                  <div className={`mt-1 flex h-[20px] gap-1 !bg-opacity-0`}>
                     <div className={`w-[30%]`}></div>
                     <div className={`w-[70%]`}></div>
                   </div>
@@ -105,28 +105,28 @@ export default function MainLoading() {
       </div>
 
       {/* Trending */}
-      <section className={`px-4 !bg-opacity-0 mx-auto max-w-7xl w-full`}>
+      <section className={`mx-auto w-full max-w-7xl !bg-opacity-0 px-4`}>
         <div
-          className={`relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black`}
+          className={`relative flex flex-col items-center gap-8 overflow-hidden rounded-[2rem] p-8 before:invisible before:absolute before:inset-0 before:z-10 before:bg-gradient-to-t before:from-black before:via-black before:via-30% before:opacity-[100%] after:absolute after:inset-0 after:z-20 after:bg-gradient-to-t after:from-black md:flex-row md:rounded-[3rem] md:p-[3rem] md:before:visible md:before:bg-gradient-to-r md:after:bg-gradient-to-r`}
         >
           {/* Background */}
           <div
-            className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}
+            className={`absolute inset-0 z-0 blur-md md:left-[30%] md:blur-0`}
           ></div>
           {/* Poster */}
           <div
-            className={`z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}
+            className={`z-30 aspect-poster w-full overflow-hidden rounded-2xl sm:w-[300px]`}
           ></div>
 
           {/* Details */}
           <div
-            className={`z-30 flex flex-col items-center text-center gap-2 w-full md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start [&_*]:rounded-lg !bg-opacity-0`}
+            className={`z-30 flex w-full flex-col items-center gap-2 !bg-opacity-0 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%] [&_*]:rounded-lg`}
           >
             {/* Title Logo */}
             <div className={`h-[150px] w-full !max-w-[300px]`}></div>
             {/* Rating, Release Date, Season, Genre */}
             <div
-              className={`flex items-center justify-center md:justify-start gap-2 !bg-opacity-0 w-full [&_*]:w-full [&_*]:!max-w-[75px]`}
+              className={`flex w-full items-center justify-center gap-2 !bg-opacity-0 md:justify-start [&_*]:w-full [&_*]:!max-w-[75px]`}
             >
               <div className={`h-[24px] w-full`}></div>
               <div className={`h-[24px] w-full`}></div>
@@ -134,7 +134,7 @@ export default function MainLoading() {
             </div>
             {/* Overview */}
             <div
-              className={`h-[100px] w-full !bg-opacity-0 flex flex-col gap-2 items-center md:items-start [&_*]:!max-w-none`}
+              className={`flex h-[100px] w-full flex-col items-center gap-2 !bg-opacity-0 md:items-start [&_*]:!max-w-none`}
             >
               <div className={`h-[24px] w-full`}></div>
               <div className={`h-[24px] w-full`}></div>

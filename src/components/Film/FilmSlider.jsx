@@ -28,7 +28,7 @@ export default function FilmSlider({
   const sortedFilms = sortFilms({ films: films.results, sort, isTvPage });
 
   return (
-    <section id={title} className={`w-full max-w-none mx-auto`}>
+    <section id={title} className={`mx-auto w-full max-w-none`}>
       <h2 className="sr-only">{title}</h2>
 
       <Swiper
@@ -58,7 +58,7 @@ export default function FilmSlider({
             slidesPerGroup: 7,
           },
         }}
-        className={`!px-4 !pb-[2rem] lg:!pb-[3rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[2rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[2rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
+        className={`relative !px-4 !pb-[2rem] !pt-[2.5rem] before:pointer-events-none before:absolute before:inset-0 before:z-10 before:hidden before:max-w-[2rem] before:bg-gradient-to-r before:from-base-100 after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:hidden after:!h-full after:!w-[2rem] after:bg-gradient-to-l after:from-base-100 lg:!pb-[3rem] xl:before:hidden xl:after:hidden`}
       >
         {sortedFilms.map((film) => {
           {
@@ -97,7 +97,7 @@ export default function FilmSlider({
           return (
             <SwiperSlide
               key={film.id}
-              className={`transition-all pr-2 max-w-[calc(100%/2.2)] sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${xl} ${xl2}`}
+              className={`max-w-[calc(100%/2.2)] pr-2 transition-all sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${xl} ${xl2}`}
             >
               {/* <Reveal> */}
               <FilmCard film={film} isTvPage={isTvPage} />
@@ -106,15 +106,15 @@ export default function FilmSlider({
           );
         })}
 
-        <div className="absolute top-0 left-0 right-0 h-[28px] px-4 max-w-7xl xl:max-w-none flex justify-between items-end">
+        <div className="absolute left-0 right-0 top-0 flex h-[28px] max-w-7xl items-end justify-between px-4 xl:max-w-none">
           {/* <Reveal> */}
-          <div className="flex gap-4 items-end">
-            <p className="font-bold text-lg md:text-2xl">{title}</p>
+          <div className="flex items-end gap-4">
+            <p className="text-lg font-bold md:text-2xl">{title}</p>
 
             {viewAll !== "" && (
               <Link
                 href={viewAll}
-                className={`text-primary-blue font-medium text-sm mb-[0.25rem]`}
+                className={`mb-[0.25rem] text-sm font-medium text-primary-blue`}
               >
                 View all
               </Link>
@@ -123,7 +123,7 @@ export default function FilmSlider({
           {/* </Reveal> */}
 
           {/* <Reveal> */}
-          <div className={`flex gap-4 items-center`}>
+          <div className={`flex items-center gap-4`}>
             <button className="prev h-[1.5rem]" aria-label="Move slider left">
               <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
             </button>

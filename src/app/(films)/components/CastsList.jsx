@@ -17,10 +17,10 @@ export default function CastsList({ credits }) {
   };
 
   return (
-    <div className={`max-w-full flex flex-col self-start sticky top-20`}>
+    <div className={`sticky top-20 flex max-w-full flex-col self-start`}>
       <div className="flex items-center justify-between">
         <Reveal>
-          <h2 className="font-bold text-xl">
+          <h2 className="text-xl font-bold">
             Casts & Credits {/* ({credits.cast.length}) */}
           </h2>{" "}
         </Reveal>
@@ -28,13 +28,13 @@ export default function CastsList({ credits }) {
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
-            className={`text-primary-blue flex items-center justify-center bg-base-100 bg-opacity-80 backdrop-blur gap-2 font-medium hocus:bg-gray-600 py-2 px-4 text-sm whitespace-nowrap h-fit my-auto md:hidden rounded-full`}
+            className={`my-auto flex h-fit items-center justify-center gap-2 whitespace-nowrap rounded-full bg-base-100 bg-opacity-80 px-4 py-2 text-sm font-medium text-primary-blue backdrop-blur hocus:bg-gray-600 md:hidden`}
           >
             {showAllActors ? "Show Less" : "Show All"}
           </button>
         )}
       </div>
-      <div className="flex flex-col overflow-x-auto md:!overflow-x-clip max-h-[calc(100svh-7.5rem)] overflow-y-auto md:rounded-bl-3xl">
+      <div className="flex max-h-[calc(100svh-7.5rem)] flex-col overflow-x-auto overflow-y-auto md:!overflow-x-clip md:rounded-bl-3xl">
         {credits &&
           credits.cast &&
           credits.cast
@@ -64,10 +64,10 @@ export default function CastsList({ credits }) {
             })}
 
         {credits && credits.cast && credits.cast.length > numActors && (
-          <Reveal className={`sticky mt-2 bottom-0 hidden md:block`} y={0}>
+          <Reveal className={`sticky bottom-0 mt-2 hidden md:block`} y={0}>
             <button
               onClick={handleShowAllActors}
-              className={`text-primary-blue w-full flex btn btn-secondary !bg-opacity-0 !border-none hocus:!bg-opacity-10 rounded-full backdrop-blur-lg ${
+              className={`btn btn-secondary flex w-full rounded-full !border-none !bg-opacity-0 text-primary-blue backdrop-blur-lg hocus:!bg-opacity-10 ${
                 showAllActors ? `mx-1` : ``
               }`}
             >

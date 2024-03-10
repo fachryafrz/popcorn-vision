@@ -39,10 +39,10 @@ export default function FilmOverview({
 
   return (
     <div className={`flex flex-col gap-4`}>
-      <div className="text-white flex flex-col gap-6">
+      <div className="flex flex-col gap-6 text-white">
         {film.overview && (
           <div id="overview" className="flex flex-col gap-2 ">
-            <h2 className="font-bold text-xl text-white m-0">Overview</h2>{" "}
+            <h2 className="m-0 text-xl font-bold text-white">Overview</h2>{" "}
             <p className="text-gray-400 md:text-lg">{film.overview}</p>{" "}
           </div>
         )}
@@ -54,7 +54,12 @@ export default function FilmOverview({
 
       {/* Collection */}
       {isTvPage || film.belongs_to_collection !== null ? (
-        <FilmCollection film={film} loading={loading} setLoading={setLoading} collection={collection} />
+        <FilmCollection
+          film={film}
+          loading={loading}
+          setLoading={setLoading}
+          collection={collection}
+        />
       ) : null}
 
       {/* Reviews */}

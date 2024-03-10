@@ -43,14 +43,14 @@ export default function FilmContent({
   return (
     <div className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}>
       <div
-        className={`mx-auto max-w-none grid grid-cols-1 md:grid-cols-12 lg:grid-cols-24 gap-4 px-4`}
+        className={`mx-auto grid max-w-none grid-cols-1 gap-4 px-4 md:grid-cols-12 lg:grid-cols-24`}
         style={{
           gridTemplateRows: `auto [lastline]`,
         }}
       >
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
-          <div className={`flex h-full w-[60svw] md:w-auto mx-auto md:m-0`}>
+          <div className={`mx-auto flex h-full w-[60svw] md:m-0 md:w-auto`}>
             <FilmPoster
               film={film}
               videos={videos}
@@ -92,7 +92,7 @@ export default function FilmContent({
 
         {/* Casts & Credits */}
         <section
-          className={`md:row-[2/5] md:col-[9/13] lg:col-[20/25] lg:row-[1/3]`}
+          className={`md:col-[9/13] md:row-[2/5] lg:col-[20/25] lg:row-[1/3]`}
         >
           {credits.cast.length > 0 && <CastsList credits={credits} />}
         </section>
@@ -120,7 +120,7 @@ export default function FilmContent({
           <div
             role={`alert`}
             id={`featureNotAvailable`}
-            className={`alert alert-error flex fixed w-[calc(100%-2rem)] sm:w-fit z-50 right-4 bottom-4 transition-all`}
+            className={`alert alert-error fixed bottom-4 right-4 z-50 flex w-[calc(100%-2rem)] transition-all sm:w-fit`}
             style={{
               transform: `translateY(calc(100% + 1rem))`,
             }}
@@ -133,7 +133,7 @@ export default function FilmContent({
             >
               <svg
                 xmlns={`http://www.w3.org/2000/svg`}
-                className={`stroke-current shrink-0 h-6 w-6`}
+                className={`h-6 w-6 shrink-0 stroke-current`}
                 fill={`none`}
                 viewBox={`0 0 24 24`}
               >

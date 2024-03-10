@@ -48,20 +48,20 @@ export default function PersonModal({ person }) {
   return (
     <dialog
       id={`personModal`}
-      className={`modal modal-bottom place-items-center backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm overflow-y-auto`}
+      className={`modal modal-bottom place-items-center overflow-y-auto backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur-sm`}
     >
-      <div className={`pt-16 p-4 relative w-full max-w-7xl`}>
+      <div className={`relative w-full max-w-7xl p-4 pt-16`}>
         <div className={`pointer-events-none absolute inset-0`}>
           <button
             onClick={handleCloseModal}
-            className={`grid place-content-center aspect-square sticky top-0 ml-auto z-50 p-4 mr-4 pointer-events-auto`}
+            className={`pointer-events-auto sticky top-0 z-50 ml-auto mr-4 grid aspect-square place-content-center p-4`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
           </button>
         </div>
 
         <div
-          className={`modal-box max-w-none w-full p-4 max-h-none grid grid-cols-12 gap-4 rounded-[2rem]`}
+          className={`modal-box grid max-h-none w-full max-w-none grid-cols-12 gap-4 rounded-[2rem] p-4`}
           style={{ overflowY: `unset` }}
         >
           {/* Person Profile */}

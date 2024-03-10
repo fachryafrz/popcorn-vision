@@ -28,7 +28,7 @@ export default function Search({
   const searchParams = useSearchParams();
   const current = useMemo(
     () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams]
+    [searchParams],
   );
   const isQueryParams = searchParams.get("query") ? true : false;
 
@@ -63,14 +63,14 @@ export default function Search({
       { value: "revenue", label: "Revenue" },
       { value: "budget", label: "Budget" },
     ],
-    []
+    [],
   );
   const sortByOrderOptions = useMemo(
     () => [
       { value: "asc", label: "Ascending" },
       { value: "desc", label: "Descending" },
     ],
-    []
+    [],
   );
 
   // MUI Select
@@ -185,7 +185,7 @@ export default function Search({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router, sortByOrder]
+    [current, pathname, router, sortByOrder],
   );
   const handleSortByOrderChange = useCallback(
     (selectedOption) => {
@@ -203,13 +203,13 @@ export default function Search({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router, sortByType]
+    [current, pathname, router, sortByType],
   );
 
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
-      "Filters cannot be applied, please clear the search input."
+      "Filters cannot be applied, please clear the search input.",
     );
   };
 
@@ -244,7 +244,7 @@ export default function Search({
         films.some((prevFilm) => prevFilm.id === film.id);
 
       const filteredFilms = response.results.filter(
-        (film) => !isDuplicate(film)
+        (film) => !isDuplicate(film),
       );
 
       setLoading(false);
@@ -274,7 +274,7 @@ export default function Search({
     if (inView) {
       fetchMoreFilms();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
   return (
@@ -317,27 +317,27 @@ export default function Search({
         setTotalSearchResults={setTotalSearchResults}
       />
 
-      <div className={`p-4 lg:pr-0 flex flex-col gap-2 w-full`}>
+      <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
         {/* Options */}
         <section
-          className={`flex flex-col lg:flex-row items-center lg:justify-between gap-4`}
+          className={`flex flex-col items-center gap-4 lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
-          <div className={`lg:hidden w-full`}>
+          <div className={`w-full lg:hidden`}>
             <SearchBar placeholder={`Tap to search`} />
           </div>
 
           <div className={`lg:w-full`}>
-            <h1 className={`capitalize font-bold text-2xl`}>Search</h1>
+            <h1 className={`text-2xl font-bold capitalize`}>Search</h1>
           </div>
 
           <div
-            className={`w-full flex gap-2 items-center justify-between lg:justify-end flex-col sm:flex-row`}
+            className={`flex w-full flex-col items-center justify-between gap-2 sm:flex-row lg:justify-end`}
           >
             <div
               onMouseOver={() => isQueryParams && handleNotAvailable()}
               onMouseLeave={() => setNotAvailable("")}
-              className={`flex justify-center gap-1 flex-wrap sm:flex-nowrap`}
+              className={`flex flex-wrap justify-center gap-1 sm:flex-nowrap`}
             >
               {/* Sort by type */}
               <Select
@@ -400,10 +400,10 @@ export default function Search({
               />
             </div>
 
-            <div className={`flex items-center gap-1 flex-wrap sm:flex-nowrap`}>
+            <div className={`flex flex-wrap items-center gap-1 sm:flex-nowrap`}>
               {/* Clear all filters */}
               <div
-                className={`flex gap-2 items-center flex-wrap flex-row-reverse mr-1`}
+                className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
               >
                 {searchParams.get("status") ||
                 searchParams.get("type") ||
@@ -445,10 +445,10 @@ export default function Search({
                       // router.refresh();
                       // defaultFilms();
                     }}
-                    className={`pr-4 flex items-center gap-1 text-gray-400 bg-secondary bg-opacity-20 hocus:bg-red-600 hocus:text-white transition-all rounded-full p-2`}
+                    className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
                   >
                     <IonIcon icon={closeCircle} className={`text-xl`} />
-                    <span className={`text-sm whitespace-nowrap`}>
+                    <span className={`whitespace-nowrap text-sm`}>
                       Clear all filters
                     </span>
                   </button>
@@ -463,7 +463,7 @@ export default function Search({
                   isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
                 }
                 onMouseLeave={() => setNotAvailable("")}
-                className={`btn btn-ghost bg-secondary bg-opacity-20 aspect-square lg:hidden`}
+                className={`btn btn-ghost aspect-square bg-secondary bg-opacity-20 lg:hidden`}
               >
                 <IonIcon icon={filter} className={`text-2xl`} />
               </button>
@@ -474,8 +474,8 @@ export default function Search({
         {loading ? (
           <>
             {/* Loading films */}
-            <section className={`flex items-center justify-center mt-4`}>
-              <button className="text-white aspect-square w-[30px] pointer-events-none">
+            <section className={`mt-4 flex items-center justify-center`}>
+              <button className="pointer-events-none aspect-square w-[30px] text-white">
                 <span className="loading loading-spinner loading-md"></span>
               </button>
             </section>
@@ -484,7 +484,7 @@ export default function Search({
           <>
             {/* Films list */}
             <section
-              className={`grid gap-2 grid-cols-3 md:grid-cols-4 xl:grid-cols-6`}
+              className={`grid grid-cols-3 gap-2 md:grid-cols-4 xl:grid-cols-6`}
             >
               {genresData &&
                 films?.map((film) => {
@@ -538,11 +538,11 @@ export default function Search({
         )}
 
         {!loading && totalSearchPages > currentSearchPage && (
-          <section className={`flex items-center justify-center mt-4`}>
+          <section className={`mt-4 flex items-center justify-center`}>
             <button
               ref={loadMoreBtn}
               onClick={fetchMoreFilms}
-              className="text-white aspect-square w-[30px] pointer-events-none"
+              className="pointer-events-none aspect-square w-[30px] text-white"
             >
               <span className="loading loading-spinner loading-md"></span>
             </button>
@@ -565,7 +565,7 @@ function ButtonSwitcher({ icon, onClick, condition }) {
   return (
     <button
       onClick={onClick}
-      className={`aspect-square flex p-2 rounded-full transition-all ${
+      className={`flex aspect-square rounded-full p-2 transition-all ${
         condition
           ? `bg-white text-base-100`
           : `bg-transparent text-white hocus:bg-base-100`
@@ -598,7 +598,7 @@ function ButtonFilter({
         const updatedSearchParams = new URLSearchParams(current.toString());
         router.push(`${pathname}?${updatedSearchParams}`);
       }}
-      className={`flex gap-1 text-sm items-center bg-gray-900 p-2 px-3 rounded-full hocus:bg-red-700 hocus:line-through`}
+      className={`flex items-center gap-1 rounded-full bg-gray-900 p-2 px-3 text-sm hocus:bg-red-700 hocus:line-through`}
     >
       <span>{`${title} ${info}`}</span>
     </button>

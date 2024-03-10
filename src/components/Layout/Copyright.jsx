@@ -1,11 +1,11 @@
 const Copyright = () => {
   return (
-    <p className="text-center p-2 bg-gray-900 text-sm cursor-default">
+    <p className="cursor-default bg-gray-900 p-2 text-center text-sm">
       Design by{" "}
       <a
         href="https://dribbble.com/iamehsan"
         target="_blank"
-        className="text-[#ea4c89] font-medium transition-all"
+        className="font-medium text-[#ea4c89] transition-all"
       >
         Ehsan Gholampour
       </a>{" "}
@@ -13,7 +13,7 @@ const Copyright = () => {
       <a
         href="https://fachryafrz.vercel.app"
         target="_blank"
-        className="text-[#ea4c89] font-medium transition-all"
+        className="font-medium text-[#ea4c89] transition-all"
       >
         Fachry Dwi Afriza
       </a>

@@ -48,12 +48,12 @@ export default function FilmInfo({
   let providersIDArray =
     userLocation &&
     providersArray.find(
-      (item) => item[0] === JSON.parse(userLocation).countryCode
+      (item) => item[0] === JSON.parse(userLocation).countryCode,
     );
 
   // Release Date
   const releaseDateByCountry = releaseDates?.results.find(
-    (item) => item.iso_3166_1 === countryCode
+    (item) => item.iso_3166_1 === countryCode,
   );
   const filmReleaseDate = releaseDateByCountry
     ? releaseDateByCountry.release_dates[0].release_date
@@ -70,10 +70,10 @@ export default function FilmInfo({
   const [countdown, setCountdown] = useState({
     years: Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365)),
     months: Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
     ),
     days: Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
     ),
     hours: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
     minutes: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
@@ -83,13 +83,13 @@ export default function FilmInfo({
   const calculateCountdown = (timeLeft) => {
     let yearsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365));
     let monthsLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
     );
     let daysLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
     );
     let hoursLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
     );
     let minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
     let secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
@@ -138,8 +138,8 @@ export default function FilmInfo({
   }, []);
 
   return (
-    <div className="flex gap-4 flex-col items-center md:items-stretch md:flex-row lg:gap-0">
-      <div className="flex flex-col items-center md:justify-center md:items-start gap-4 w-full">
+    <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
+      <div className="flex w-full flex-col items-center gap-4 md:items-start md:justify-center">
         {/* Film Title Logo */}
         {images.logos.length > 0 ? (
           <TitleLogo
@@ -150,7 +150,7 @@ export default function FilmInfo({
           <Reveal>
             <h1
               title={!isTvPage ? film.title : film.name}
-              className="max-w-fit font-bold text-3xl md:text-5xl line-clamp-3 !leading-normal text-center md:text-start"
+              className="line-clamp-3 max-w-fit text-center text-3xl font-bold !leading-normal md:text-start md:text-5xl"
               style={{ textWrap: `balance` }}
             >
               {!isTvPage ? film.title : film.name}
@@ -159,17 +159,17 @@ export default function FilmInfo({
         )}
 
         <div
-          className={`w-full text-sm lg:text-base flex flex-col gap-4 md:gap-2`}
+          className={`flex w-full flex-col gap-4 text-sm md:gap-2 lg:text-base`}
         >
           {/* Film Production Company */}
           {film.production_companies &&
             film.production_companies.length > 0 &&
             film.production_companies.find(
-              (company) => company.logo_path !== null
+              (company) => company.logo_path !== null,
             ) && (
               <section
                 id={`Production Companies`}
-                className={`flex gap-4 flex-wrap justify-center md:justify-start md:mb-4`}
+                className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
               >
                 {film.production_companies.map(
                   (item, i) =>
@@ -185,7 +185,7 @@ export default function FilmInfo({
                           <Reveal delay={0.2 * i}>
                             <figure
                               title={item.name}
-                              className={`h-[50px] grayscale invert hocus:grayscale-0 hocus:invert-0 transition-all bg-center aspect-[4/2]`}
+                              className={`aspect-[4/2] h-[50px] bg-center grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
                               style={{
                                 backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
                                 backgroundSize: `contain`,
@@ -196,7 +196,7 @@ export default function FilmInfo({
                         </Link>
                         <span className={`sr-only`}>{item.name}</span>
                       </div>
-                    )
+                    ),
                 )}
               </section>
             )}
@@ -284,7 +284,7 @@ export default function FilmInfo({
 
           {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
-            <section id={`Film Genres`} className={`gap-1 flex flex-wrap`}>
+            <section id={`Film Genres`} className={`flex flex-wrap gap-1`}>
               {film.genres.map((item, i) => {
                 return (
                   <Reveal delay={0.2 * i} key={item.id}>
@@ -294,7 +294,7 @@ export default function FilmInfo({
                           ? `/search?with_genres=${item.id}`
                           : `/tv/search?with_genres=${item.id}`
                       }
-                      className={`btn btn-ghost bg-secondary bg-opacity-20 rounded-full backdrop-blur`}
+                      className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
                     >
                       {item.name}
                     </Link>{" "}
@@ -355,14 +355,14 @@ export default function FilmInfo({
           {providers.results && providersIDArray ? (
             <section
               id={`Film Providers`}
-              className="flex flex-col gap-1 justify-center md:justify-start"
+              className="flex flex-col justify-center gap-1 md:justify-start"
             >
               <Reveal>
-                <span className={`text-gray-400 text-sm italic`}>
+                <span className={`text-sm italic text-gray-400`}>
                   Where to watch?
                 </span>{" "}
               </Reveal>
-              <div className={`flex gap-2 flex-wrap`}>
+              <div className={`flex flex-wrap gap-2`}>
                 {(
                   providersIDArray[1].rent ||
                   providersIDArray[1].buy ||
@@ -388,7 +388,7 @@ export default function FilmInfo({
                           ></figure>
                         </Link>{" "}
                       </Reveal>
-                    )
+                    ),
                 )}
               </div>
             </section>
@@ -396,7 +396,7 @@ export default function FilmInfo({
             providersIDArray && (
               <Reveal>
                 <section id={`Film Providers`}>
-                  <span className={`text-gray-400 text-sm italic`}>
+                  <span className={`text-sm italic text-gray-400`}>
                     Where to watch? <br /> Hold on we&apos;re still finding...
                   </span>
                 </section>{" "}
@@ -405,7 +405,7 @@ export default function FilmInfo({
           ) : (
             <Reveal>
               <section id={`Film Providers`}>
-                <span className={`text-gray-400 text-sm italic`}>
+                <span className={`text-sm italic text-gray-400`}>
                   Where to watch? <br /> Please enable location services to find
                   out where to watch this film.
                 </span>
@@ -416,7 +416,7 @@ export default function FilmInfo({
           {/* TV Series Episode */}
           <section
             id={`TV Series Episode`}
-            className={`grid xl:grid-cols-2 gap-2 mt-2`}
+            className={`mt-2 grid gap-2 xl:grid-cols-2`}
           >
             {lastEps && (
               <div
@@ -441,7 +441,7 @@ export default function FilmInfo({
                       <>
                         {lastEps.vote_average > 1 && (
                           <span
-                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             <IonIcon
                               icon={star}
@@ -454,11 +454,11 @@ export default function FilmInfo({
 
                         {lastEps.runtime && (
                           <span
-                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             {Math.floor(lastEps.runtime / 60) >= 1
                               ? `${Math.floor(
-                                  lastEps.runtime / 60
+                                  lastEps.runtime / 60,
                                 )}h ${Math.floor(lastEps.runtime % 60)}m`
                               : `${lastEps.runtime} ${isPlural({
                                   text: "minute",
@@ -469,7 +469,7 @@ export default function FilmInfo({
 
                         {lastEps.air_date && (
                           <span
-                            className={`p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             {formatDate({
                               date: lastEps.air_date,
@@ -501,15 +501,15 @@ export default function FilmInfo({
                       nextEps.episode_type == `finale`
                         ? `Final Episode: ${nextEps.episode_number}`
                         : nextEps.episode_number == 1
-                        ? `First Episode`
-                        : `Next Episode: ${nextEps.episode_number}`
+                          ? `First Episode`
+                          : `Next Episode: ${nextEps.episode_number}`
                     }
                     secondaryInfo={`Season ${nextEps.season_number}`}
                     thirdInfo={
                       <>
                         {nextEps.vote_average > 1 && (
                           <span
-                            className={`flex items-center gap-1 p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             <IonIcon
                               icon={star}
@@ -522,11 +522,11 @@ export default function FilmInfo({
 
                         {nextEps.runtime && (
                           <span
-                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             {Math.floor(nextEps.runtime / 60) >= 1
                               ? `${Math.floor(
-                                  nextEps.runtime / 60
+                                  nextEps.runtime / 60,
                                 )}h ${Math.floor(nextEps.runtime % 60)}m`
                               : `${nextEps.runtime} ${isPlural({
                                   text: "minute",
@@ -537,7 +537,7 @@ export default function FilmInfo({
 
                         {nextEps.air_date && (
                           <span
-                            className={`flex p-1 px-2 bg-secondary bg-opacity-10 backdrop-blur-sm rounded-full`}
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
                             {formatDate({
                               date: nextEps.air_date,
@@ -553,10 +553,10 @@ export default function FilmInfo({
             )}
 
             {isUpcoming && (
-              <div className="flex flex-wrap justify-start gap-2 text-center col-span-full">
+              <div className="col-span-full flex flex-wrap justify-start gap-2 text-center">
                 {countdown.years > 0 && (
                   <Reveal>
-                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
                         <span style={{ "--value": countdown.years }}></span>
                       </span>
@@ -566,7 +566,7 @@ export default function FilmInfo({
                 )}
                 {countdown.months > 0 && (
                   <Reveal delay={0.1}>
-                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
                         <span style={{ "--value": countdown.months }}></span>
                       </span>
@@ -577,7 +577,7 @@ export default function FilmInfo({
                 {countdown.days > 0 && (
                   <Reveal delay={0.2}>
                     {" "}
-                    <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                    <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
                         <span style={{ "--value": countdown.days }}></span>
                       </span>
@@ -586,7 +586,7 @@ export default function FilmInfo({
                   </Reveal>
                 )}
                 <Reveal delay={0.3}>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                     <span className="countdown font-mono text-4xl sm:text-5xl">
                       <span style={{ "--value": countdown.hours }}></span>
                     </span>
@@ -594,7 +594,7 @@ export default function FilmInfo({
                   </div>
                 </Reveal>
                 <Reveal delay={0.4}>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                     <span className="countdown font-mono text-4xl sm:text-5xl">
                       <span style={{ "--value": countdown.minutes }}></span>
                     </span>
@@ -602,7 +602,7 @@ export default function FilmInfo({
                   </div>
                 </Reveal>
                 <Reveal delay={0.5}>
-                  <div className="flex flex-col p-2 bg-secondary bg-opacity-10 backdrop-blur rounded-xl text-neutral-content">
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                     <span className="countdown font-mono text-4xl sm:text-5xl">
                       <span style={{ "--value": countdown.seconds }}></span>
                     </span>
@@ -621,7 +621,7 @@ export default function FilmInfo({
             <Reveal className={`sm:hidden`}>
               <button
                 onClick={handleShare}
-                className={`flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm text-sm ml-auto mt-2`}
+                className={`btn btn-ghost ml-auto mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
               >
                 <IonIcon icon={arrowRedoOutline} />
                 <span>Share</span>
@@ -630,7 +630,7 @@ export default function FilmInfo({
 
             <Reveal className={`hidden sm:flex`}>
               <button
-                className={`flex items-center gap-2 rounded-full btn btn-ghost bg-white bg-opacity-5 backdrop-blur-sm hocus:bg-opacity-10 text-sm ml-auto mt-2`}
+                className={`btn btn-ghost ml-auto mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm hocus:bg-opacity-10`}
                 onClick={() =>
                   document.getElementById("shareModal").showModal()
                 }

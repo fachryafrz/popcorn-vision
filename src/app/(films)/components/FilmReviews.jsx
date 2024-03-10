@@ -23,9 +23,9 @@ export default function FilmReviews({ reviews, film }) {
   }, [film]);
 
   return (
-    <div id="reviews" className="flex flex-col gap-2 relative">
-      <div className="flex gap-1 items-center bg-base-100 backdrop-blur bg-opacity-[85%] sticky top-[66px] py-2 z-10">
-        <h2 className="font-bold text-xl text-white m-0">
+    <div id="reviews" className="relative flex flex-col gap-2">
+      <div className="sticky top-[66px] z-10 flex items-center gap-1 bg-base-100 bg-opacity-[85%] py-2 backdrop-blur">
+        <h2 className="m-0 text-xl font-bold text-white">
           {moreReviews.length > 1 ? `Reviews` : `Review`}
         </h2>{" "}
         <span className={`text-sm text-gray-400`}>
@@ -60,7 +60,7 @@ export default function FilmReviews({ reviews, film }) {
                   ]);
                 })
               }
-              className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
+              className="btn btn-ghost w-[25%] min-w-fit rounded-full border-none bg-white bg-opacity-5 px-12 text-primary-blue"
             >
               Load more
             </button>
@@ -70,7 +70,7 @@ export default function FilmReviews({ reviews, film }) {
       {/* View all reviews */}
       {moreReviews.length > numReviews && (
         <div
-          className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-base-100 justify-center items-end h-[200px] text-primary-blue ${
+          className={`absolute inset-x-0 bottom-0 h-[200px] items-end justify-center bg-gradient-to-t from-base-100 text-primary-blue ${
             showAllReviews ? `hidden` : `flex`
           }`}
         >

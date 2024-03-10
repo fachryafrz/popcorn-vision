@@ -91,8 +91,8 @@ export default function ReviewCard({ review }) {
   };
 
   return (
-    <div className="flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 rounded-xl">
-      <div className="flex gap-2 items-center">
+    <div className="flex flex-col gap-2 rounded-xl bg-gray-400 bg-opacity-10 p-4">
+      <div className="flex items-center gap-2">
         <Person
           name={review.author}
           profile_path={imgUrlAPI === null ? null : imgUrl}
@@ -100,7 +100,7 @@ export default function ReviewCard({ review }) {
           personRole={`author`}
           tooltip={
             <div
-              className={`tooltip tooltip-bottom sm:tooltip-right tooltip-info max-w-fit text-xs font-medium text-gray-400 flex flex-wrap gap-1 relative`}
+              className={`tooltip tooltip-bottom tooltip-info relative flex max-w-fit flex-wrap gap-1 text-xs font-medium text-gray-400 sm:tooltip-right`}
               data-tip={`${formatDate({
                 date: review?.created_at,
                 showDay: false,
@@ -113,14 +113,14 @@ export default function ReviewCard({ review }) {
         />
 
         <div
-          className={`ml-auto flex items-start text-primary-yellow whitespace-nowrap mb-auto`}
+          className={`mb-auto ml-auto flex items-start whitespace-nowrap text-primary-yellow`}
         >
           <RatingStars rating={review.author_details.rating} />
         </div>
       </div>
 
       <div
-        className={`prose max-w-none [&_*]:!text-white text-sm sm:text-base`}
+        className={`prose max-w-none text-sm sm:text-base [&_*]:!text-white`}
       >
         <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
           {readMore || wordCount < maxLength
@@ -136,7 +136,7 @@ export default function ReviewCard({ review }) {
       >
         <button
           onClick={handleReadMore}
-          className={`flex text-primary-blue max-w-fit -mt-2 hocus:font-medium pt-1 pr-1`}
+          className={`-mt-2 flex max-w-fit pr-1 pt-1 text-primary-blue hocus:font-medium`}
         >
           {readMore ? `Show less` : `Read more`}
         </button>

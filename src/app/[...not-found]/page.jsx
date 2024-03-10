@@ -20,19 +20,19 @@ export default function NotFound() {
   };
 
   return (
-    <div className={`flex flex-col items-center justify-center h-[90svh] p-4`}>
+    <div className={`flex h-[90svh] flex-col items-center justify-center p-4`}>
       <h2 className={`sr-only`}>Not Found</h2>
       <figure
         style={{
           background: `url(/sad_popcorn.png)`,
           backgroundSize: `contain`,
         }}
-        className={`w-[200px] aspect-square`}
+        className={`aspect-square w-[200px]`}
       ></figure>
       <p>Oops! We don&apos;t have this page.</p>
       <p>Try searching for something else.</p>
       <div
-        className={`mt-4 px-4 py-4 -top-8 w-full max-w-xl sm:mx-auto bg-gray-600 bg-opacity-[90%] backdrop-blur flex items-center gap-4 mx-4 rounded-2xl shadow-xl border-t-4 border-x-4 border-base-100 before:absolute before:w-4 before:h-4 before:bg-transparent before:top-3 before:-left-5 before:rounded-br-xl before:shadow-custom-left after:absolute after:w-4 after:h-4 after:bg-transparent after:top-3 after:-right-5 after:rounded-bl-xl after:shadow-custom-right`}
+        className={`-top-8 mx-4 mt-4 flex w-full max-w-xl items-center gap-4 rounded-2xl border-x-4 border-t-4 border-base-100 bg-gray-600 bg-opacity-[90%] px-4 py-4 shadow-xl backdrop-blur before:absolute before:-left-5 before:top-3 before:h-4 before:w-4 before:rounded-br-xl before:bg-transparent before:shadow-custom-left after:absolute after:-right-5 after:top-3 after:h-4 after:w-4 after:rounded-bl-xl after:bg-transparent after:shadow-custom-right sm:mx-auto`}
       >
         <IonIcon icon={search} className={`text-[1.25rem]`} />
         <form onSubmit={handleSubmit} className={`w-full`}>
@@ -40,7 +40,7 @@ export default function NotFound() {
             onChange={handleSearchQuery}
             type="text"
             placeholder="Search"
-            className={`text-white bg-transparent w-full`}
+            className={`w-full bg-transparent text-white`}
           />
           <input type="submit" className="sr-only" />
         </form>

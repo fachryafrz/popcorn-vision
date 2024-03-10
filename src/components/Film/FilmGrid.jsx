@@ -23,7 +23,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   const fetchMoreFilms = async () => {
     try {
       const nextPage = currentSearchPage + 1;
-      
+
       const response = await fetchData({
         endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/recommendations`,
         queryParams: {
@@ -36,7 +36,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
         filmsData.some((prevFilm) => prevFilm.id === film.id);
 
       const filteredFilms = response.results.filter(
-        (film) => !isDuplicate(film)
+        (film) => !isDuplicate(film),
       );
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
@@ -49,23 +49,23 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
   // Use Effect for load more button is in viewport
   useEffect(() => {
     if (inView) {
-      fetchMoreFilms()
+      fetchMoreFilms();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
   return (
     <section
       id={title}
-      className={`w-full max-w-none mx-auto p-4 flex flex-col gap-2`}
+      className={`mx-auto flex w-full max-w-none flex-col gap-2 p-4`}
     >
-      <div className="flex gap-4 items-end">
+      <div className="flex items-end gap-4">
         <Reveal>
-          <h2 className="font-bold text-lg md:text-2xl">{title}</h2>{" "}
+          <h2 className="text-lg font-bold md:text-2xl">{title}</h2>{" "}
         </Reveal>
       </div>
 
-      <div className="grid gap-2 grid-cols-2 xs:grid-cols-3 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7">
+      <div className="grid grid-cols-2 gap-2 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7 xs:grid-cols-3">
         {filmsData.map((film) => {
           {
             /* 1024px */
@@ -105,11 +105,11 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
       </div>
 
       {totalSearchPages > currentSearchPage && (
-        <section className={`flex items-center justify-center mt-4`}>
+        <section className={`mt-4 flex items-center justify-center`}>
           <button
             ref={loadMoreBtn}
             onClick={fetchMoreFilms}
-            className="text-white aspect-square w-[30px] pointer-events-none"
+            className="pointer-events-none aspect-square w-[30px] text-white"
           >
             <span className="loading loading-spinner loading-md"></span>
           </button>
@@ -127,7 +127,7 @@ export function useIsInViewport(ref) {
 
     if (intersectionObserverSupported && ref.current) {
       const observer = new IntersectionObserver(([entry]) =>
-        setIsIntersecting(entry.isIntersecting)
+        setIsIntersecting(entry.isIntersecting),
       );
 
       observer.observe(ref.current);

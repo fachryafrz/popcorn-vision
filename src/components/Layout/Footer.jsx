@@ -40,26 +40,26 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="px-4 mx-auto pt-[2rem] max-w-7xl flex flex-col text-white">
+    <footer className="mx-auto flex max-w-7xl flex-col px-4 pt-[2rem] text-white">
       <Reveal>
-        <div className="flex flex-col items-center justify-center text-center pb-8">
+        <div className="flex flex-col items-center justify-center pb-8 text-center">
           <figure
             style={{
               background: `url(/popcorn.png)`,
               backgroundSize: `contain`,
             }}
-            className={`w-[200px] aspect-square`}
+            className={`aspect-square w-[200px]`}
           ></figure>
           <figcaption
-            className={`w-[200px] font-bold text-4xl text-center items-center after:leading-tight after:content-["Popcorn_Vision"]`}
+            className={`w-[200px] items-center text-center text-4xl font-bold after:leading-tight after:content-["Popcorn_Vision"]`}
           ></figcaption>
         </div>
       </Reveal>
-      <div className="grid gap-8 py-12 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
         {footer.map((footer, i) => (
           <div key={footer.id}>
             <Reveal delay={0.05 * i}>
-              <h2 className="font-bold text-xl mb-2 xl:mb-4">
+              <h2 className="mb-2 text-xl font-bold xl:mb-4">
                 {footer.section}
               </h2>
               <ul>
@@ -73,14 +73,14 @@ export default function Footer() {
 
                             setInstallPrompt(null);
                           }}
-                          className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
+                          className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
                         >
                           {link.name}
                         </button>
                       ) : (
                         <Link
                           href={link.url}
-                          className="font-light tracking-wider hocus:font-normal transition-all max-w-fit"
+                          className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
                         >
                           {link.name}
                         </Link>
@@ -93,17 +93,17 @@ export default function Footer() {
         ))}
         <div>
           <Reveal delay={0.2}>
-            <h2 className="font-bold text-xl mb-2 xl:mb-4">Get in Touch</h2>
-            <p className="font-light tracking-wide mb-2 xl:mb-4">
+            <h2 className="mb-2 text-xl font-bold xl:mb-4">Get in Touch</h2>
+            <p className="mb-2 font-light tracking-wide xl:mb-4">
               Stay connected with us to discover more stories about new movies
               and explore more with us
             </p>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-wrap gap-2">
               <Reveal delay={0.05}>
                 <Link
                   href="https://facebook.com/fachryafrz"
                   target="_blank"
-                  className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
+                  className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
                   <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
                 </Link>
@@ -112,7 +112,7 @@ export default function Footer() {
                 <Link
                   href="https://twitter.com/fachryafrz"
                   target="_blank"
-                  className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
+                  className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
                   <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
                 </Link>
@@ -121,7 +121,7 @@ export default function Footer() {
                 <Link
                   href="https://instagram.com/fachryafrz"
                   target="_blank"
-                  className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
+                  className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
                   <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
                 </Link>
@@ -130,7 +130,7 @@ export default function Footer() {
                 <Link
                   href="https://youtube.com/@fachryafrz"
                   target="_blank"
-                  className="bg-secondary bg-opacity-10 p-3 rounded-[3rem] hocus:rounded-[0.75rem] text-primary-blue grid place-items-center hocus:bg-opacity-25 transition-all hocus:scale-110"
+                  className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
                   <IonIcon icon={logoYoutube} className="text-[1.25rem]" />
                 </Link>
@@ -139,7 +139,7 @@ export default function Footer() {
           </Reveal>
         </div>
       </div>
-      <div className="p-4 flex flex-col justify-center border-t border-secondary border-opacity-25 text-center">
+      <div className="flex flex-col justify-center border-t border-secondary border-opacity-25 p-4 text-center">
         <Reveal>
           <span>
             Popcorn Vision &copy;{" "}
@@ -150,7 +150,7 @@ export default function Footer() {
           </span>
         </Reveal>
         <Reveal>
-          <span className={`flex gap-1 items-center justify-center`}>
+          <span className={`flex items-center justify-center gap-1`}>
             <span>Powered by</span>
             <a
               href="https://themoviedb.org"

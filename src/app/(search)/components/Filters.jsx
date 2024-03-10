@@ -95,7 +95,7 @@ export default function Filters({
       "Canceled",
       "Pilot",
     ],
-    []
+    [],
   );
   const tvSeriesType = useMemo(
     () => [
@@ -108,7 +108,7 @@ export default function Filters({
       "Talk Show",
       "Video",
     ],
-    []
+    [],
   );
 
   // Handle Slider Marks/Labels
@@ -123,7 +123,7 @@ export default function Filters({
         label: releaseDateSlider[1],
       },
     ],
-    [releaseDateSlider, minYear, maxYear]
+    [releaseDateSlider, minYear, maxYear],
   );
   const ratingMarks = useMemo(
     () => [
@@ -136,7 +136,7 @@ export default function Filters({
         label: ratingSlider[1],
       },
     ],
-    [ratingSlider]
+    [ratingSlider],
   );
   const runtimeMarks = useMemo(
     () => [
@@ -149,7 +149,7 @@ export default function Filters({
         label: runtimeSlider[1],
       },
     ],
-    [runtimeSlider]
+    [runtimeSlider],
   );
 
   // Handle MUI Slider Change
@@ -267,7 +267,7 @@ export default function Filters({
         label: network.name,
       }));
       const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase())
+        option.label.toLowerCase().includes(inputValue.toLowerCase()),
       );
       callback(filteredOptions);
     }, 2000);
@@ -291,7 +291,7 @@ export default function Filters({
           label: person.name,
         }));
         const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         callback(filteredOptions);
       });
@@ -322,7 +322,7 @@ export default function Filters({
           label: person.name,
         }));
         const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         callback(filteredOptions);
       });
@@ -353,7 +353,7 @@ export default function Filters({
           label: keyword.name,
         }));
         const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         callback(filteredOptions);
       });
@@ -384,7 +384,7 @@ export default function Filters({
           label: company.name,
         }));
         const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase())
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
         callback(filteredOptions);
       });
@@ -416,7 +416,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleLanguageChange = useCallback(
     (selectedOption) => {
@@ -434,7 +434,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleProviderChange = useCallback(
     (selectedOption) => {
@@ -452,7 +452,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleNetworkChange = useCallback(
     (selectedOption) => {
@@ -470,7 +470,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleCastChange = useCallback(
     (selectedOption) => {
@@ -488,7 +488,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleCrewChange = useCallback(
     (selectedOption) => {
@@ -506,7 +506,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleKeywordChange = useCallback(
     (selectedOption) => {
@@ -524,7 +524,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
   const handleCompanyChange = useCallback(
     (selectedOption) => {
@@ -542,7 +542,7 @@ export default function Filters({
 
       router.push(`${pathname}${query}`);
     },
-    [current, pathname, router]
+    [current, pathname, router],
   );
 
   // Handle checkbox change
@@ -616,7 +616,7 @@ export default function Filters({
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
-      "Filters cannot be applied, please clear the search input."
+      "Filters cannot be applied, please clear the search input.",
     );
   };
 
@@ -669,7 +669,7 @@ export default function Filters({
   useEffect(() => {
     setReleaseDate([minYear, maxYear]);
     setReleaseDateSlider([minYear, maxYear]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minYear, maxYear]);
 
   // Use Effect for Select with preloaded data
@@ -678,14 +678,14 @@ export default function Filters({
     if (searchParams.get("with_genres")) {
       const genresParams = searchParams.get("with_genres").split(",");
       const searchGenres = genresParams.map((genreId) =>
-        genresData?.find((genre) => parseInt(genre.id) === parseInt(genreId))
+        genresData?.find((genre) => parseInt(genre.id) === parseInt(genreId)),
       );
       const searchGenresOptions = searchGenres?.map(
         (genre) =>
           genre && {
             value: genre.id,
             label: genre.name,
-          }
+          },
       );
       setGenre(searchGenresOptions);
 
@@ -703,20 +703,20 @@ export default function Filters({
         .split(",");
       const searchLanguages = languagesParams.map((languageId) =>
         languagesData?.find(
-          (language) => language.iso_639_1 === languageId.toLowerCase()
-        )
+          (language) => language.iso_639_1 === languageId.toLowerCase(),
+        ),
       );
       const searchLanguagesOptions = searchLanguages?.map(
         (language) =>
           language && {
             value: language.iso_639_1,
             label: language.english_name,
-          }
+          },
       );
       setLanguage(searchLanguagesOptions);
 
       searchAPIParams["with_original_language"] = searchParams.get(
-        "with_original_language"
+        "with_original_language",
       );
     } else {
       setLanguage(null);
@@ -729,15 +729,15 @@ export default function Filters({
       const providersParams = searchParams.get("watch_providers").split(",");
       const searchProviders = providersParams.map((providerId) =>
         providersData?.find(
-          (provider) => parseInt(provider.provider_id) === parseInt(providerId)
-        )
+          (provider) => parseInt(provider.provider_id) === parseInt(providerId),
+        ),
       );
       const searchProvidersOptions = searchProviders?.map(
         (provider) =>
           provider && {
             value: provider.provider_id,
             label: provider.provider_name,
-          }
+          },
       );
       setProvider(searchProvidersOptions);
 
@@ -756,8 +756,8 @@ export default function Filters({
       const networksParams = searchParams.get("with_networks").split(",");
       const searchNetworks = networksParams.map((networkId) =>
         networksData?.find(
-          (network) => parseInt(network.id) === parseInt(networkId)
-        )
+          (network) => parseInt(network.id) === parseInt(networkId),
+        ),
       );
 
       const searchNetworksOptions = searchNetworks?.map(
@@ -765,7 +765,7 @@ export default function Filters({
           network && {
             value: network.id,
             label: network.name,
-          }
+          },
       );
       setNetwork(searchNetworksOptions);
 
@@ -1001,10 +1001,10 @@ export default function Filters({
     if (searchParams.get("sort_by")) {
       const sortByParams = searchParams.get("sort_by").split(".");
       const searchSortByType = sortByParams.map((param) =>
-        sortByTypeOptions.find((option) => option.value === param)
+        sortByTypeOptions.find((option) => option.value === param),
       )[0];
       const searchSortByOrder = sortByParams.map((param) =>
-        sortByOrderOptions.find((option) => option.value === param)
+        sortByOrderOptions.find((option) => option.value === param),
       )[1];
 
       if (sortByType.value !== searchSortByType.value) {
@@ -1030,7 +1030,7 @@ export default function Filters({
     } else {
       delete searchAPIParams["query"];
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     rating,
     runtime,
@@ -1086,7 +1086,7 @@ export default function Filters({
         .then((res) => {
           // Filter movies based on release date
           const filteredMovies = res.results.filter(
-            (film) => film.media_type === "movie" || film.media_type === "tv"
+            (film) => film.media_type === "movie" || film.media_type === "tv",
           );
           setFilms(filteredMovies);
           setLoading(false);
@@ -1110,21 +1110,21 @@ export default function Filters({
     if (searchParams.get("query") && searchQuery) {
       performSearchQuery();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, searchAPIParams, searchQuery, searchParams]);
 
   return (
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => setNotAvailable("")}
-      className={`p-4 w-full lg:max-w-[300px] h-[calc(100svh-66px)] lg:h-[calc(100svh-66px-1rem)] lg:sticky top-[66px] bg-[#2A313E] bg-opacity-[95%] backdrop-blur lg:rounded-3xl overflow-y-auto flex flex-col gap-4 fixed inset-x-0 z-30 transition-all lg:translate-x-0 ${
+      className={`fixed inset-x-0 top-[66px] z-30 flex h-[calc(100svh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100svh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
         isFilterActive ? `translate-x-0` : `-translate-x-full`
       }`}
     >
       {/* Close Button */}
       <button
         onClick={() => setIsFilterActive(false)}
-        className={`grid place-content-center aspect-square absolute top-0 right-0 ml-auto z-50 p-4 pointer-events-auto lg:hidden`}
+        className={`pointer-events-auto absolute right-0 top-0 z-50 ml-auto grid aspect-square place-content-center p-4 lg:hidden`}
       >
         <IonIcon icon={close} className={`text-3xl`} />
       </button>
@@ -1190,7 +1190,7 @@ export default function Filters({
                 disabled={isQueryParams}
               />
 
-              <div className={`flex justify-between -mx-3`}>
+              <div className={`-mx-3 flex justify-between`}>
                 <Input
                   value={releaseDateSlider[0]}
                   size="small"
@@ -1234,7 +1234,7 @@ export default function Filters({
             </>
           ) : (
             <span
-              className={`text-center text-xs w-full block italic text-gray-400`}
+              className={`block w-full text-center text-xs italic text-gray-400`}
             >
               Finding oldest & latest...
             </span>
@@ -1267,7 +1267,7 @@ export default function Filters({
           />
         ) : (
           <span
-            className={`text-center text-xs w-full block italic text-gray-400`}
+            className={`block w-full text-center text-xs italic text-gray-400`}
           >
             Please enable location
           </span>

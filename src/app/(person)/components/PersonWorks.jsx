@@ -75,13 +75,13 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
               slidesPerGroup: 5,
             },
           }}
-          className={`!pb-[2rem] !pt-[2.5rem] relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 before:max-w-[1rem] before:z-10 after:absolute after:top-0 after:right-0 after:!w-[1rem] after:!h-full after:bg-gradient-to-l after:from-base-100 after:z-10 before:hidden after:hidden xl:before:hidden xl:after:hidden before:pointer-events-none after:pointer-events-none`}
+          className={`relative !pb-[2rem] !pt-[2.5rem] before:pointer-events-none before:absolute before:inset-0 before:z-10 before:hidden before:max-w-[1rem] before:bg-gradient-to-r before:from-base-100 after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:hidden after:!h-full after:!w-[1rem] after:bg-gradient-to-l after:from-base-100 xl:before:hidden xl:after:hidden`}
         >
           {films &&
             sortedFilms
               .filter(
                 (item, index, self) =>
-                  index === self.findIndex((t) => t.id === item.id)
+                  index === self.findIndex((t) => t.id === item.id),
               )
               .map((film) => {
                 let popcorn = `url(/popcorn.png)`;
@@ -90,34 +90,34 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                 return (
                   <SwiperSlide
                     key={film.id}
-                    className={`overflow-hidden transition-all max-w-[calc(100%/2.5)] sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
+                    className={`max-w-[calc(100%/2.5)] overflow-hidden transition-all sm:max-w-[calc(100%/3.5)] md:max-w-[calc(100%/4.5)] lg:max-w-[calc(100%/5.5)]`}
                   >
                     <article>
                       <Link
                         href={`/${isItTvPage(`movies`, `tv`)}/${
                           film.id
                         }-${slugify(isItTvPage(film.title, film.name))}`}
-                        className={`hocus:scale-[1.01] active:scale-100 transition-all`}
+                        className={`transition-all active:scale-100 hocus:scale-[1.01]`}
                       >
                         <ImagePovi
                           imgPath={
                             film.poster_path &&
                             `https://image.tmdb.org/t/p/w300${film.poster_path}`
                           }
-                          className={`rounded-lg overflow-hidden aspect-poster relative`}
+                          className={`relative aspect-poster overflow-hidden rounded-lg`}
                         >
                           {film.vote_average > 0 && (
                             <div
-                              className={`absolute top-0 left-0 m-2 p-1 bg-base-100 bg-opacity-50 backdrop-blur-sm rounded-full`}
+                              className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
                             >
                               <div
                                 className={`radial-progress text-sm font-semibold ${
                                   film.vote_average > 0 && film.vote_average < 3
                                     ? `text-primary-red`
                                     : film.vote_average >= 3 &&
-                                      film.vote_average < 7
-                                    ? `text-primary-yellow`
-                                    : `text-green-500`
+                                        film.vote_average < 7
+                                      ? `text-primary-yellow`
+                                      : `text-green-500`
                                 }`}
                                 style={{
                                   "--value": film.vote_average * 10,
@@ -138,15 +138,15 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                         <div className="mt-2">
                           <h3
                             title={isItTvPage(film.title, film.name)}
-                            className="font-bold text-sm sm:text-base line-clamp-2"
+                            className="line-clamp-2 text-sm font-bold sm:text-base"
                             style={{ textWrap: `balance` }}
                           >
                             {isItTvPage(film.title, film.name)}
                           </h3>
 
                           {film.character && film.character !== "Self" && (
-                            <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
-                              <span className="text-gray-400 whitespace-nowrap">
+                            <div className="mt-1 flex items-center gap-1 text-xs sm:text-sm">
+                              <span className="whitespace-nowrap text-gray-400">
                                 {film.character}
                               </span>
                             </div>
@@ -158,12 +158,12 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                 );
               })}
 
-          <div className="z-20 absolute top-0 left-0 right-0 h-[28px] px-2 max-w-7xl xl:max-w-none flex justify-between items-end">
-            <div className="flex gap-4 items-end">
+          <div className="absolute left-0 right-0 top-0 z-20 flex h-[28px] max-w-7xl items-end justify-between px-2 xl:max-w-none">
+            <div className="flex items-end gap-4">
               {personMovies.length > 0 && (
                 <button
                   onClick={() => setCreditsSwitcher(`Movies`)}
-                  className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
+                  className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `Movies`
                       ? `text-white hocus:text-white`
                       : `text-gray-600`
@@ -176,7 +176,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
               {personTV.length > 0 && (
                 <button
                   onClick={() => setCreditsSwitcher(`TV`)}
-                  className={`font-bold transition-all text-lg sm:text-2xl hocus:text-gray-500 ${
+                  className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `TV`
                       ? `text-white hocus:text-white`
                       : `text-gray-600`
@@ -187,7 +187,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
               )}
             </div>
 
-            <div className={`flex gap-4 items-center`}>
+            <div className={`flex items-center gap-4`}>
               <button className="prev h-[1.5rem]" aria-label="Move slider left">
                 <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
               </button>

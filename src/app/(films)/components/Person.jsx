@@ -30,16 +30,16 @@ export default function Person({
   return (
     <button
       onClick={personRole != `author` ? () => handleActorClick() : null}
-      className={`flex flex-row text-start items-center gap-2 min-w-[120px] ${
+      className={`flex min-w-[120px] flex-row items-center gap-2 text-start ${
         personRole != `author`
-          ? `p-2 pr-8 hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur transition-all rounded-[2rem]`
+          ? `rounded-[2rem] p-2 pr-8 transition-all hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur`
           : `cursor-default`
       }`}
     >
       <div
-        className={`!w-[50px] !h-[50px] aspect-square rounded-full overflow-hidden flex-shrink-0 bg-base-100`}
+        className={`aspect-square !h-[50px] !w-[50px] flex-shrink-0 overflow-hidden rounded-full bg-base-100`}
       >
-        <ImagePovi imgPath={profilePath} className={`w-[50px] aspect-square`} />
+        <ImagePovi imgPath={profilePath} className={`aspect-square w-[50px]`} />
       </div>
 
       <div className="w-full self-center">
@@ -48,7 +48,7 @@ export default function Person({
         </h3>
 
         {!tooltip && role !== "" ? (
-          <span className={`text-xs font-medium text-gray-400 line-clamp-2`}>
+          <span className={`line-clamp-2 text-xs font-medium text-gray-400`}>
             <span title={role}>{role}</span>
           </span>
         ) : (

@@ -23,7 +23,7 @@ export default function Trending({ film, genres }) {
       const type = !isTvPage ? movie : tv;
       return type;
     },
-    [isTvPage]
+    [isTvPage],
   );
 
   const filmTitle = !isTvPage ? film.title : film.name;
@@ -45,20 +45,20 @@ export default function Trending({ film, genres }) {
   }, [fetchFilmDetails]);
 
   return (
-    <div className="px-4 mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl px-4">
       <h2 className="sr-only">{`Trending Movie`}</h2>
       {/* <Reveal> */}
-      <div className="relative flex flex-col items-center md:flex-row gap-8 p-8 md:p-[3rem] rounded-[2rem] md:rounded-[3rem] overflow-hidden before:z-10 before:absolute before:inset-0 before:bg-gradient-to-t md:before:bg-gradient-to-r before:from-black before:via-black before:via-30% before:opacity-[100%] before:invisible md:before:visible after:z-20 after:absolute after:inset-0 after:bg-gradient-to-t md:after:bg-gradient-to-r after:from-black">
+      <div className="relative flex flex-col items-center gap-8 overflow-hidden rounded-[2rem] p-8 before:invisible before:absolute before:inset-0 before:z-10 before:bg-gradient-to-t before:from-black before:via-black before:via-30% before:opacity-[100%] after:absolute after:inset-0 after:z-20 after:bg-gradient-to-t after:from-black md:flex-row md:rounded-[3rem] md:p-[3rem] md:before:visible md:before:bg-gradient-to-r md:after:bg-gradient-to-r">
         {/* Backdrop */}
         <ImagePovi
           imgPath={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
-          className={`absolute inset-0 z-0 md:left-[30%] blur-md md:blur-0`}
+          className={`absolute inset-0 z-0 blur-md md:left-[30%] md:blur-0`}
         />
 
         {/* Poster */}
         <Reveal
           y={0}
-          className={`h-full z-30 w-full sm:w-[300px] aspect-poster rounded-2xl overflow-hidden`}
+          className={`z-30 aspect-poster h-full w-full overflow-hidden rounded-2xl sm:w-[300px]`}
         >
           <ImagePovi
             imgPath={
@@ -68,7 +68,7 @@ export default function Trending({ film, genres }) {
             className={`h-full`}
           />
         </Reveal>
-        <div className="z-30 flex flex-col items-center text-center gap-2 md:max-w-[60%] lg:max-w-[50%] md:items-start md:text-start">
+        <div className="z-30 flex flex-col items-center gap-2 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%]">
           {filmDetails && (
             <FilmSummary
               film={filmDetails}
