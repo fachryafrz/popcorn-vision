@@ -53,6 +53,19 @@ export default async function Home({ type = "movie" }) {
   });
   const { results: trending } = await getTrending({ type });
 
+  let trendingFilmsData = [];
+
+  trending.slice(0, 5).forEach(async (item, index) => {
+    const filmData = await fetchData({
+      endpoint: `/${type}/${item.id}`,
+      queryParams: {
+        append_to_response: "images",
+      },
+    });
+
+    trendingFilmsData.push(filmData);
+  });
+
   const defaultParams = !isTvPage
     ? {
         region: "US",
@@ -68,10 +81,16 @@ export default async function Home({ type = "movie" }) {
         sort_by: "popularity.desc",
       };
 
+  // NOTE: Nanti coba implementasi Suspense
+
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-      <HomeSlider films={trending.slice(0, 5)} genres={genres} />
+      <HomeSlider
+        films={trending.slice(0, 5)}
+        genres={genres}
+        filmData={trendingFilmsData}
+      />
 
       <div className={`lg:-mt-[5rem]`}>
         {/* Now Playing */}

@@ -31,7 +31,7 @@ import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 
-export default function HomeSlider({ films, genres }) {
+export default function HomeSlider({ films, genres, filmData }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -99,6 +99,7 @@ export default function HomeSlider({ films, genres }) {
                   isTvPage={isTvPage}
                   loading={loading}
                   setLoading={setLoading}
+                  filmData={filmData}
                 />
               </SwiperSlide>
             );
@@ -134,7 +135,12 @@ export default function HomeSlider({ films, genres }) {
 
                 {/* NOTE: This is film backdrop with logo */}
                 <Reveal>
-                  <SliderThumbs film={film} index={i} isTvPage={isTvPage} />
+                  <SliderThumbs
+                    film={film}
+                    index={i}
+                    isTvPage={isTvPage}
+                    filmData={filmData}
+                  />
                 </Reveal>
               </SwiperSlide>
             );
@@ -153,10 +159,36 @@ function HomeFilm({
   isTvPage,
   loading,
   setLoading,
+  filmData,
 }) {
   const [filmDetails, setFilmDetails] = useState();
-  const [filmPoster, setFilmPoster] = useState("");
-  const [filmBackdrop, setFilmBackdrop] = useState("");
+  const [filmPoster, setFilmPoster] = useState();
+  const [filmBackdrop, setFilmBackdrop] = useState();
+
+  useEffect(() => {
+    if (!filmData) return;
+
+    const matchFilm = filmData?.filter((f) => f.id === film.id);
+
+    const { images } = matchFilm[0];
+    const { posters, backdrops } = images;
+
+    setFilmDetails(matchFilm[0]);
+
+    if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
+      setFilmPoster(film.poster_path);
+    } else {
+      setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
+    }
+
+    if (!backdrops.length || !backdrops.find((img) => img.iso_639_1 === null)) {
+      setFilmBackdrop(film.backdrop_path);
+    } else {
+      setFilmBackdrop(
+        backdrops.find((img) => img.iso_639_1 === null)?.file_path,
+      );
+    }
+  }, [filmData, film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {
@@ -168,40 +200,40 @@ function HomeFilm({
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
 
-  const fetchFilmDetails = useCallback(async () => {
-    await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
-      queryParams: {
-        append_to_response: `images`,
-      },
-    }).then((res) => {
-      const { images } = res;
-      const { posters, backdrops } = images;
+  // const fetchFilmDetails = useCallback(async () => {
+  //   await fetchData({
+  //     endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
+  //     queryParams: {
+  //       append_to_response: `images`,
+  //     },
+  //   }).then((res) => {
+  //     const { images } = res;
+  //     const { posters, backdrops } = images;
 
-      setFilmDetails(res);
+  //     setFilmDetails(res);
 
-      if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
-        setFilmPoster(film.poster_path);
-      } else {
-        setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
-      }
+  //     if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
+  //       setFilmPoster(film.poster_path);
+  //     } else {
+  //       setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
+  //     }
 
-      if (
-        !backdrops.length ||
-        !backdrops.find((img) => img.iso_639_1 === null)
-      ) {
-        setFilmBackdrop(film.backdrop_path);
-      } else {
-        setFilmBackdrop(
-          backdrops.find((img) => img.iso_639_1 === null)?.file_path,
-        );
-      }
-    });
-  }, [film, isItTvPage]);
+  //     if (
+  //       !backdrops.length ||
+  //       !backdrops.find((img) => img.iso_639_1 === null)
+  //     ) {
+  //       setFilmBackdrop(film.backdrop_path);
+  //     } else {
+  //       setFilmBackdrop(
+  //         backdrops.find((img) => img.iso_639_1 === null)?.file_path,
+  //       );
+  //     }
+  //   });
+  // }, [film, isItTvPage]);
 
-  useEffect(() => {
-    fetchFilmDetails();
-  }, [fetchFilmDetails]);
+  // useEffect(() => {
+  //   fetchFilmDetails();
+  // }, [fetchFilmDetails]);
 
   return (
     <>
@@ -246,8 +278,25 @@ function HomeFilm({
 }
 
 // NOTE: This is for the backdrop with the film title
-function SliderThumbs({ film, isTvPage, index }) {
-  const [filmBackdrop, setFilmBackdrop] = useState("");
+function SliderThumbs({ film, isTvPage, index, filmData }) {
+  const [filmBackdrop, setFilmBackdrop] = useState();
+
+  useEffect(() => {
+    if (!filmData) return;
+
+    const matchFilm = filmData?.filter((f) => f.id === film.id);
+
+    const { images } = matchFilm[0];
+    const { backdrops } = images;
+
+    const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
+
+    if (!backdrops.length || !backdropWithTitle) {
+      setFilmBackdrop(film.backdrop_path);
+    } else {
+      setFilmBackdrop(backdropWithTitle?.file_path);
+    }
+  }, [filmData, film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {
@@ -257,32 +306,32 @@ function SliderThumbs({ film, isTvPage, index }) {
     [isTvPage],
   );
 
-  const fetchBackdrop = useCallback(async () => {
-    await getFilm({
-      id: film.id,
-      type: isItTvPage(`movie`, `tv`),
-      path: "/images",
-      params: {
-        include_image_language: "en",
-      },
-    }).then((res) => {
-      let { backdrops } = res;
+  // const fetchBackdrop = useCallback(async () => {
+  //   await getFilm({
+  //     id: film.id,
+  //     type: isItTvPage(`movie`, `tv`),
+  //     path: "/images",
+  //     params: {
+  //       include_image_language: "en",
+  //     },
+  //   }).then((res) => {
+  //     let { backdrops } = res;
 
-      if (!backdrops.length) {
-        setFilmBackdrop(film.backdrop_path);
-      } else {
-        setFilmBackdrop(backdrops[0].file_path);
-      }
-    });
-  }, [film.backdrop_path, film.id, isItTvPage]);
+  //     if (!backdrops.length) {
+  //       setFilmBackdrop(film.backdrop_path);
+  //     } else {
+  //       setFilmBackdrop(backdrops[0].file_path);
+  //     }
+  //   });
+  // }, [film.backdrop_path, film.id, isItTvPage]);
 
-  useEffect(() => {
-    fetchBackdrop();
-  }, [fetchBackdrop]);
+  // useEffect(() => {
+  //   fetchBackdrop();
+  // }, [fetchBackdrop]);
 
   return (
     filmBackdrop && (
-      <Reveal>
+      <Reveal delay={0.1 * index}>
         <figure
           className={`aspect-video rounded-lg`}
           style={{
