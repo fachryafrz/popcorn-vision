@@ -168,7 +168,7 @@ function HomeFilm({
   useEffect(() => {
     if (!filmData) return;
 
-    const matchFilm = filmData.filter((f) => f.id === film.id);
+    const matchFilm = filmData?.filter((f) => f.id === film.id);
 
     const { images } = matchFilm[0];
     const { posters, backdrops } = images;
@@ -284,7 +284,7 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
   useEffect(() => {
     if (!filmData) return;
 
-    const matchFilm = filmData.filter((f) => f.id === film.id);
+    const matchFilm = filmData?.filter((f) => f.id === film.id);
 
     const { images } = matchFilm[0];
     const { backdrops } = images;
