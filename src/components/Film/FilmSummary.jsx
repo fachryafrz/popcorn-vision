@@ -38,7 +38,9 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm">
               <IonIcon icon={star} className="aspect-square h-full !w-5" />
               <span className="!text-white">
-                {film.vote_average.toFixed(1)}
+                {film.vote_average < 9.9
+                  ? film.vote_average.toFixed(1)
+                  : film.vote_average}
               </span>
             </div>
           </Reveal>
