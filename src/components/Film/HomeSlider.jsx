@@ -72,7 +72,7 @@ export default function HomeSlider({ films, genres, filmData }) {
           // loop={true} // NOTE: If this is enabled, the activeSlide will not work
           autoplay={{
             delay: 10000,
-            disableOnInteraction: true,
+            disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
           keyboard={true}
