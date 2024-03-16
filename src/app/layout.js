@@ -1,4 +1,4 @@
-export const revalidate = 0;
+export const revalidate = 1800; // 30 minutes in seconds
 
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";

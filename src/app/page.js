@@ -89,7 +89,7 @@ export default async function Home({ type = "movie" }) {
       <HomeSlider
         films={trending.slice(0, 5)}
         genres={genres}
-        filmData={trendingFilmsData}
+        filmData={trendingFilmsData && trendingFilmsData}
       />
 
       <div className={`lg:-mt-[5rem]`}>
