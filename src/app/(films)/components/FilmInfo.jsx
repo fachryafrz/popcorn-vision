@@ -69,9 +69,7 @@ export default function FilmInfo({
 
   const timeLeft = new Date(new Date(upcomingDate) - new Date());
 
-  const now = moment();
-  const diff = moment(upcomingDate).diff(now);
-  const duration = moment.duration(diff);
+  const duration = moment.duration(timeLeft);
   const yearsLeft = duration.years();
   const monthsLeft = duration.months();
   const daysLeft = duration.days();
