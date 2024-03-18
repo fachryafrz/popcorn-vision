@@ -170,7 +170,7 @@ function HomeFilm({
 
     const matchFilm = filmData?.filter((f) => f.id === film.id);
 
-    const { images } = matchFilm[0];
+    const images = matchFilm[0]?.images;
     const { posters, backdrops } = images;
 
     setFilmDetails(matchFilm[0]);
@@ -188,7 +188,8 @@ function HomeFilm({
         backdrops.find((img) => img.iso_639_1 === null)?.file_path,
       );
     }
-  }, [filmData, film]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {
@@ -286,7 +287,7 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
 
     const matchFilm = filmData?.filter((f) => f.id === film.id);
 
-    const { images } = matchFilm[0];
+    const images = matchFilm[0]?.images;
     const { backdrops } = images;
 
     const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
@@ -296,7 +297,8 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
     } else {
       setFilmBackdrop(backdropWithTitle?.file_path);
     }
-  }, [filmData, film]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {

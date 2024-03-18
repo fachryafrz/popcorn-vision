@@ -23,6 +23,7 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";
+import moment from "moment";
 
 export default function FilmInfo({
   film,
@@ -67,33 +68,27 @@ export default function FilmInfo({
   const upcomingDate = !isTvPage ? filmReleaseDate : nextEps?.air_date;
 
   const timeLeft = new Date(new Date(upcomingDate) - new Date());
+
+  const now = moment();
+  const diff = moment(upcomingDate).diff(now);
+  const duration = moment.duration(diff);
+  const yearsLeft = duration.years();
+  const monthsLeft = duration.months();
+  const daysLeft = duration.days();
+  const hoursLeft = duration.hours();
+  const minutesLeft = duration.minutes();
+  const secondsLeft = duration.seconds();
+
   const [countdown, setCountdown] = useState({
-    years: Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365)),
-    months: Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
-    ),
-    days: Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
-    ),
-    hours: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-    minutes: Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-    seconds: Math.floor((timeLeft % (1000 * 60)) / 1000),
+    years: yearsLeft,
+    months: monthsLeft,
+    days: daysLeft,
+    hours: hoursLeft,
+    minutes: minutesLeft,
+    seconds: secondsLeft,
   });
 
   const calculateCountdown = (timeLeft) => {
-    let yearsLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 365));
-    let monthsLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30),
-    );
-    let daysLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24),
-    );
-    let hoursLeft = Math.floor(
-      (timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-    );
-    let minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    let secondsLeft = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
     return {
       years: yearsLeft,
       months: monthsLeft,
