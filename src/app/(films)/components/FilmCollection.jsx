@@ -27,6 +27,7 @@ import { formatRuntime } from "@/lib/formatRuntime";
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
 import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
+import { formatRating } from "@/lib/formatRating";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -184,7 +185,7 @@ function CollectionItem({ film, item, index }) {
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
-                {item.vote_average && item.vote_average.toFixed(1)}
+                {item.vote_average && formatRating(item.vote_average)}
               </span>
             )}
 
@@ -285,7 +286,7 @@ function FilmSeason({ film, item, index, setLoading }) {
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
-                {item.vote_average && item.vote_average.toFixed(1)}
+                {item.vote_average && formatRating(item.vote_average)}
               </span>
             )}
 
@@ -374,7 +375,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
                             icon={star}
                             className={`text-primary-yellow`}
                           />
-                          {item.vote_average && item.vote_average.toFixed(1)}
+                          {item.vote_average && formatRating(item.vote_average)}
                         </span>
                       )}
 

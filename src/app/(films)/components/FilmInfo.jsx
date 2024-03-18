@@ -24,6 +24,7 @@ import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";
 import moment from "moment";
+import { formatRating } from "@/lib/formatRating";
 
 export default function FilmInfo({
   film,
@@ -440,8 +441,7 @@ export default function FilmInfo({
                               icon={star}
                               className={`text-primary-yellow`}
                             />
-                            {lastEps.vote_average &&
-                              lastEps.vote_average.toFixed(1)}
+                            {formatRating(lastEps.vote_average)}
                           </span>
                         )}
 
@@ -508,8 +508,7 @@ export default function FilmInfo({
                               icon={star}
                               className={`text-primary-yellow`}
                             />
-                            {nextEps.vote_average &&
-                              nextEps.vote_average.toFixed(1)}
+                            {formatRating(nextEps.vote_average)}
                           </span>
                         )}
 

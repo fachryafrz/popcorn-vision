@@ -12,6 +12,7 @@ import { formatRuntime } from "../../lib/formatRuntime";
 import Reveal from "../Layout/Reveal";
 import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
+import { formatRating } from "@/lib/formatRating";
 
 export default function FilmCard({ film, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
@@ -71,9 +72,7 @@ export default function FilmCard({ film, isTvPage }) {
               }}
             >
               <span className={`text-xs text-white`}>
-                {film.vote_average < 9.9
-                  ? film.vote_average.toFixed(1)
-                  : film.vote_average}
+                {formatRating(film.vote_average)}
               </span>
             </div>
           </div>
@@ -239,9 +238,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
                 <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm">
                   <IonIcon icon={star} className="" />
                   <span className="!text-white">
-                    {film.vote_average < 9.9
-                      ? film.vote_average.toFixed(1)
-                      : film.vote_average}
+                    {formatRating(film.vote_average)}
                   </span>
                 </div>
               </Reveal>

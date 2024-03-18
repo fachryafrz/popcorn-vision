@@ -10,6 +10,7 @@ import Reveal from "@/components/Layout/Reveal";
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
 import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
+import { formatRating } from "@/lib/formatRating";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
   const dispatch = useDispatch();
@@ -118,9 +119,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
                 }}
               >
                 <span className={`text-white`}>
-                  {film.vote_average < 9.9
-                    ? film.vote_average.toFixed(1)
-                    : film.vote_average}
+                  {formatRating(film.vote_average)}
                 </span>
               </div>
             </div>

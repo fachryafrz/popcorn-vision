@@ -1,6 +1,7 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
+import { formatRating } from "@/lib/formatRating";
 import { slugify } from "@/lib/slugify";
 import { sortFilms } from "@/lib/sortFilms";
 import { IonIcon } from "@ionic/react";
@@ -126,9 +127,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                                 }}
                               >
                                 <span className={`text-white`}>
-                                  {film.vote_average < 9.9
-                                    ? film.vote_average.toFixed(1)
-                                    : film.vote_average}
+                                  {formatRating(film.vote_average)}
                                 </span>
                               </div>
                             </div>
