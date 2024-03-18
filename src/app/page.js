@@ -86,13 +86,11 @@ export default async function Home({ type = "movie" }) {
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-      {trendingFilmsData.length > 0 && (
-        <HomeSlider
-          films={trending.slice(0, 5)}
-          genres={genres}
-          filmData={trendingFilmsData}
-        />
-      )}
+      <HomeSlider
+        films={trending.slice(0, 5)}
+        genres={genres}
+        filmData={trendingFilmsData}
+      />
 
       <div className={`lg:-mt-[5rem]`}>
         {/* Now Playing */}

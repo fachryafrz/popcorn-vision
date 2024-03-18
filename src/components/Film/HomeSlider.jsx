@@ -166,30 +166,33 @@ function HomeFilm({
   const [filmBackdrop, setFilmBackdrop] = useState();
 
   useEffect(() => {
-    if (!filmData) return;
+    if (filmData) {
+      const matchFilm = filmData.filter((f) => f.id === film.id);
 
-    const matchFilm = filmData?.filter((f) => f.id === film.id);
+      const { images } = matchFilm[0];
+      const { posters, backdrops } = images;
 
-    const { images } = matchFilm[0];
-    const { posters, backdrops } = images;
+      setFilmDetails(matchFilm[0]);
 
-    setFilmDetails(matchFilm[0]);
+      if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
+        setFilmPoster(film.poster_path);
+      } else {
+        setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
+      }
 
-    if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
-      setFilmPoster(film.poster_path);
-    } else {
-      setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
-    }
-
-    if (!backdrops.length || !backdrops.find((img) => img.iso_639_1 === null)) {
-      setFilmBackdrop(film.backdrop_path);
-    } else {
-      setFilmBackdrop(
-        backdrops.find((img) => img.iso_639_1 === null)?.file_path,
-      );
+      if (
+        !backdrops.length ||
+        !backdrops.find((img) => img.iso_639_1 === null)
+      ) {
+        setFilmBackdrop(film.backdrop_path);
+      } else {
+        setFilmBackdrop(
+          backdrops.find((img) => img.iso_639_1 === null)?.file_path,
+        );
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [film]);
+  }, [filmData, film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {
@@ -283,22 +286,22 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
   const [filmBackdrop, setFilmBackdrop] = useState();
 
   useEffect(() => {
-    if (!filmData) return;
+    if (filmData) {
+      const matchFilm = filmData.filter((f) => f.id === film.id);
 
-    const matchFilm = filmData?.filter((f) => f.id === film.id);
+      const images = matchFilm[0]?.images;
+      const { backdrops } = images;
 
-    const { images } = matchFilm[0];
-    const { backdrops } = images;
+      const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
 
-    const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
-
-    if (!backdrops.length || !backdropWithTitle) {
-      setFilmBackdrop(film.backdrop_path);
-    } else {
-      setFilmBackdrop(backdropWithTitle?.file_path);
+      if (!backdrops.length || !backdropWithTitle) {
+        setFilmBackdrop(film.backdrop_path);
+      } else {
+        setFilmBackdrop(backdropWithTitle?.file_path);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [film]);
+  }, [filmData, film]);
 
   const isItTvPage = useCallback(
     (movie, tv) => {
