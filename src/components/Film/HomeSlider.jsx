@@ -170,7 +170,7 @@ function HomeFilm({
 
     const matchFilm = filmData?.filter((f) => f.id === film.id);
 
-    const images = matchFilm[0]?.images;
+    const { images } = matchFilm[0];
     const { posters, backdrops } = images;
 
     setFilmDetails(matchFilm[0]);
@@ -287,7 +287,7 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
 
     const matchFilm = filmData?.filter((f) => f.id === film.id);
 
-    const images = matchFilm[0]?.images;
+    const { images } = matchFilm[0];
     const { backdrops } = images;
 
     const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
