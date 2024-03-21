@@ -6,7 +6,6 @@ export async function fetchData({
   endpoint,
   queryParams = {},
   method = "GET",
-  body,
 }) {
   try {
     const { data } = await axios.request({
@@ -18,8 +17,6 @@ export async function fetchData({
       headers: {
         "Content-Type": "application/json",
       },
-
-      data: body,
     });
 
     return data;

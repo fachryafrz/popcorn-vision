@@ -66,8 +66,13 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
           },
         })
         .then(() => {
-          cookies.remove("tmdb.session_id"), mutate(null);
+          cookies.remove("tmdb.session_id");
+          mutate(null);
         });
+    }
+
+    if (pathname === "/profile") {
+      router.replace("/");
     }
 
     // window.location.pathname = pathname;
