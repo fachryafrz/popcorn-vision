@@ -53,18 +53,22 @@ export default async function Home({ type = "movie" }) {
   });
   const { results: trending } = await getTrending({ type });
 
-  let trendingFilmsData = [];
+  const fetchTrendingFilmsData = async () => {
+    const data = await Promise.all(
+      trending.slice(0, 5).map(async (item) => {
+        const filmData = await fetchData({
+          endpoint: `/${type}/${item.id}`,
+          queryParams: {
+            append_to_response: "images",
+          },
+        });
 
-  trending.slice(0, 5).forEach(async (item, index) => {
-    const filmData = await fetchData({
-      endpoint: `/${type}/${item.id}`,
-      queryParams: {
-        append_to_response: "images",
-      },
-    });
+        return filmData;
+      }),
+    );
 
-    trendingFilmsData.push(filmData);
-  });
+    return data;
+  };
 
   const defaultParams = !isTvPage
     ? {
@@ -89,7 +93,7 @@ export default async function Home({ type = "movie" }) {
       <HomeSlider
         films={trending.slice(0, 5)}
         genres={genres}
-        filmData={trendingFilmsData}
+        filmData={await fetchTrendingFilmsData()}
       />
 
       <div className={`lg:-mt-[5rem]`}>
