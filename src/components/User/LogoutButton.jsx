@@ -33,11 +33,14 @@ export default function LogoutButton({ user }) {
             <img src={profileImage} alt={user.name} />
           </div>
         </figure>
-        <span>{user.username}</span>
+
+        <div className={`flex flex-col items-start`}>
+          <span>{user.username}</span>
+        </div>
       </div>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box z-[1] w-52 bg-base-100 p-2 mt-2 shadow"
+        className="menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 shadow"
       >
         <li>
           <button>

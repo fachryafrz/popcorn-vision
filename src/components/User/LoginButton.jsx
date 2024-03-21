@@ -26,7 +26,10 @@ export default function LoginButton() {
   }, [searchParams]);
 
   return (
-    <button onClick={getToken} className={`btn rounded-full`}>
+    <button
+      onClick={getToken}
+      className={`btn rounded-full border-transparent bg-base-100 bg-opacity-[50%] text-white hover:border-transparent`}
+    >
       <span>Login</span>
     </button>
   );
