@@ -11,11 +11,16 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import Reveal from "./Reveal";
+import LoginButton from "../User/LoginButton";
+import { useAuth } from "@/hooks/auth";
+import LogoutButton from "../User/LogoutButton";
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const { user } = useAuth();
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -148,7 +153,7 @@ export default function Navbar() {
         isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
       }`}
     >
-      <nav className="mx-auto grid max-w-none grid-cols-2 px-4 py-2 lg:grid-cols-3">
+      <nav className="mx-auto grid max-w-none grid-cols-3 px-4 py-2">
         <Reveal y={-20}>
           <Link
             id={`Home`}
@@ -178,7 +183,7 @@ export default function Navbar() {
         </div>
 
         {/* Movie & TV Series Switcher */}
-        <div className="flex items-center gap-2 justify-self-end lg:col-[3/4]">
+        <div className="col-span-2 flex items-center gap-2 justify-self-end lg:col-[3/4]">
           <Reveal y={-20} delay={0.4}>
             <div
               id={`FilmSwitcher`}
@@ -219,6 +224,8 @@ export default function Navbar() {
               <span className="hidden md:block">Search</span>
             </Link>
           </Reveal>
+
+          {!user ? <LoginButton /> : <LogoutButton user={user} />}
         </div>
       </nav>
     </header>

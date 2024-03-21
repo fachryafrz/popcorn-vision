@@ -6,6 +6,7 @@ export async function fetchData({
   endpoint,
   queryParams = {},
   method = "GET",
+  body,
 }) {
   try {
     const { data } = await axios.request({
@@ -17,6 +18,8 @@ export async function fetchData({
       headers: {
         "Content-Type": "application/json",
       },
+
+      data: body,
     });
 
     return data;
@@ -95,7 +98,7 @@ export async function getEpisodes({ id, season }) {
 
 export async function getLocation({ latitude, longitude }) {
   const { data } = await axios.get(
-    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+    `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
   );
 
   return data;
