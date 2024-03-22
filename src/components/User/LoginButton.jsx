@@ -1,5 +1,7 @@
 import { useAuth } from "@/hooks/auth";
 import axios from "@/lib/axios";
+import { IonIcon } from "@ionic/react";
+import { personCircleOutline } from "ionicons/icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -28,9 +30,10 @@ export default function LoginButton() {
   return (
     <button
       onClick={getToken}
-      className={`btn rounded-full border-transparent bg-base-100 bg-opacity-[50%] text-white hover:border-transparent`}
+      className={`btn aspect-square h-auto min-h-0 w-8 rounded-full border-transparent bg-base-100 bg-opacity-[50%] p-0 text-white hover:border-transparent sm:w-12 xl:aspect-auto xl:h-full xl:w-auto xl:px-4`}
     >
-      <span>Login</span>
+      <IonIcon icon={personCircleOutline} className={`!text-xl`} />
+      <span className={`hidden xl:block`}>Login</span>
     </button>
   );
 }

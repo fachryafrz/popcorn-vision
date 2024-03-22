@@ -154,7 +154,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto grid max-w-none grid-cols-3 px-4 py-2">
-        <Reveal y={-20}>
+        <Reveal y={-20} className={`flex items-center`}>
           <Link
             id={`Home`}
             href={!isTvPage ? `/` : `/tv`}
@@ -168,7 +168,7 @@ export default function Navbar() {
               className={`aspect-square w-[50px] !bg-contain`}
             ></figure>
             <figcaption
-              className={`w-[70px] after:flex after:h-full after:items-center after:leading-tight after:content-["Popcorn_Vision"]`}
+              className={`w-[70px] after:hidden after:h-full after:items-center after:leading-tight after:content-["Popcorn_Vision"] xs:after:flex`}
             ></figcaption>
           </Link>
         </Reveal>

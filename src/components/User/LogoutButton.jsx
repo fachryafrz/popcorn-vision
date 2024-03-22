@@ -27,7 +27,7 @@ export default function LogoutButton({ user }) {
       <div
         tabIndex={0}
         role="button"
-        className="btn rounded-full border-transparent bg-opacity-0 px-2 pr-4 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm"
+        className={`btn mt-2 aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-0 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 sm:p-1 xl:aspect-auto xl:pr-4`}
       >
         {!profileImage ? (
           <div className="avatar placeholder">
@@ -43,13 +43,13 @@ export default function LogoutButton({ user }) {
           </figure>
         )}
 
-        <div className={`flex flex-col items-start`}>
+        <div className={`hidden flex-col items-start xl:flex`}>
           <span>{user.username}</span>
         </div>
       </div>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 shadow"
+        className="menu dropdown-content rounded-box z-[1] mt-4 w-52 bg-base-100 p-2 shadow"
       >
         {/* <li>
           <Link href={`/profile`}>
