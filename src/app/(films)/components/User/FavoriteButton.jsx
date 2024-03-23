@@ -16,49 +16,15 @@ export default function FavoriteButton({ film }) {
 
   const [isAdded, setIsAdded] = useState(false);
 
-  const getFavorites = useCallback(async () => {
-    try {
-      const res = await fetchData({
-        endpoint: `/account/${user.id}/favorite/movies`,
-        queryParams: {
-          language: "en",
-          page: 1,
-          session_id: cookies.get("tmdb.session_id"),
-          sort_by: "created_at.desc",
-        },
-      });
-
-      const { total_pages } = res;
-
-      if (total_pages > 1) {
-        await Promise.all(
-          Array.from({ length: total_pages }).map(async (_, index) => {
-            const nextPage = index + 1;
-
-            const data = await fetchData({
-              endpoint: `/account/${user.id}/favorite/movies`,
-              queryParams: {
-                language: "en",
-                page: nextPage,
-                session_id: cookies.get("tmdb.session_id"),
-                sort_by: "created_at.desc",
-              },
-            });
-
-            res.results.push(...data.results);
-          }),
-        );
-      }
-
-      const favorites = res.results;
-
-      if (favorites.some((fav) => fav.id === film.id)) {
-        setIsAdded(true);
-      } else {
-        setIsAdded(false);
-      }
-    } catch (error) {}
-  }, [cookies, film.id, user.id]);
+  // Get account state
+  const getAccountStates = useCallback(async () => {
+    await fetchData({
+      endpoint: `/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`,
+      queryParams: {
+        session_id: cookies.get("tmdb.session_id"),
+      },
+    }).then((res) => setIsAdded(res.favorite));
+  }, [cookies, film.id, isTvPage]);
 
   const handleFavorite = async (favorite) => {
     try {
@@ -78,12 +44,12 @@ export default function FavoriteButton({ film }) {
       // Handle errors appropriately (e.g., display error message to user)
     }
 
-    await getFavorites();
+    await getAccountStates();
   };
 
   useEffect(() => {
-    getFavorites();
-  }, [getFavorites]);
+    getAccountStates();
+  }, [getAccountStates]);
 
   return (
     <button

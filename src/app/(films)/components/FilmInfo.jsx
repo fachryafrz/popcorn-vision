@@ -30,6 +30,8 @@ import { formatRating } from "@/lib/formatRating";
 import WatchlistButton from "./User/WatchlistButton";
 import FavoriteButton from "./User/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
+import { fetchData } from "@/lib/fetch";
+import { useCookies } from "next-client-cookies";
 
 export default function FilmInfo({
   film,
