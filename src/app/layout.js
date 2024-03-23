@@ -7,6 +7,7 @@ import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import UserLocation from "@/components/User/UserLocation";
 import StoreProvider from "@/redux/components/StoreProvider";
 import { Suspense } from "react";
+import { CookiesProvider } from "next-client-cookies/server";
 
 export const viewport = {
   width: "device-width",
@@ -85,26 +86,28 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-pt-20">
-      <link rel="icon" href="favicon.ico" sizes="any" />
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <Suspense>
         <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       </Suspense>
       <body className="bg-base-100 text-white">
-        <StoreProvider>
-          {/* Navbar */}
-          <Suspense>
-            <Navbar />
-          </Suspense>
+        <CookiesProvider>
+          <StoreProvider>
+            {/* Navbar */}
+            <Suspense>
+              <Navbar />
+            </Suspense>
 
-          {/* User Location */}
-          <UserLocation />
+            {/* User Location */}
+            <UserLocation />
 
-          {/* Main Content */}
-          <main className={`mt-[66px] pb-8`}>{children}</main>
+            {/* Main Content */}
+            <main className={`mt-[66px] pb-8`}>{children}</main>
 
-          {/* Footer */}
-          <Footer />
-        </StoreProvider>
+            {/* Footer */}
+            <Footer />
+          </StoreProvider>
+        </CookiesProvider>
       </body>
     </html>
   );

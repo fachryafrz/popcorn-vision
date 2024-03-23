@@ -166,7 +166,7 @@ function HomeFilm({
   const [filmBackdrop, setFilmBackdrop] = useState();
 
   useEffect(() => {
-    if (filmData) {
+    if (filmData.length > 0) {
       const matchFilm = filmData.filter((f) => f.id === film.id);
 
       const { images } = matchFilm[0];
@@ -286,7 +286,7 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
   const [filmBackdrop, setFilmBackdrop] = useState();
 
   useEffect(() => {
-    if (filmData) {
+    if (filmData.length > 0) {
       const matchFilm = filmData.filter((f) => f.id === film.id);
 
       const images = matchFilm[0]?.images;
