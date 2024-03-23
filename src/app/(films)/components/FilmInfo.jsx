@@ -619,7 +619,7 @@ export default function FilmInfo({
             {user && (
               <>
                 {/* Add to Favorite */}
-                <FavoriteButton />
+                <FavoriteButton film={film} />
 
                 {/* Add to Watchlist */}
                 <WatchlistButton film={film} />

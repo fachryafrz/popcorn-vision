@@ -52,7 +52,7 @@ export default function WatchlistButton({ film }) {
 
       const watchlist = res.results;
 
-      if (watchlist.some((movie) => movie.id === film.id)) {
+      if (watchlist.some((wl) => wl.id === film.id)) {
         setIsAdded(true);
       } else {
         setIsAdded(false);
