@@ -614,10 +614,10 @@ export default function FilmInfo({
           {/* Call to Action */}
           <section
             id={`Share`}
-            className={`mt-2 flex flex-wrap items-center gap-1`}
+            className={`mt-2 flex flex-wrap items-end gap-1`}
           >
             {user && (
-              <>
+              <div className={`flex flex-col gap-1 md:flex-row`}>
                 {/* Add to Favorite */}
                 <Reveal>
                   <FavoriteButton film={film} />
@@ -627,7 +627,7 @@ export default function FilmInfo({
                 <Reveal>
                   <WatchlistButton film={film} />
                 </Reveal>
-              </>
+              </div>
             )}
 
             {/* Share */}

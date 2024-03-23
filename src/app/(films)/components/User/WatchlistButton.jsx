@@ -94,7 +94,8 @@ export default function WatchlistButton({ film }) {
         icon={!isAdded ? addOutline : checkmarkOutline}
         className={`text-xl`}
       />
-      <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span>
+      {/* <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span> */}
+      <span>Watchlist</span>
     </button>
   );
 }

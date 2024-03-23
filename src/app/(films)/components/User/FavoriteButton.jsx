@@ -90,8 +90,11 @@ export default function FavoriteButton({ film }) {
       onClick={() => handleFavorite(!isAdded)}
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
-      <IonIcon icon={!isAdded ? starOutline : star} className={`text-xl`} />
-      <span>{!isAdded ? "Favorite" : "Remove Favorite"}</span>
+      <IonIcon
+        icon={!isAdded ? starOutline : star}
+        className={`text-xl ${isAdded ? `!text-yellow-500` : ``}`}
+      />
+      <span>Favorite</span>
     </button>
   );
 }
