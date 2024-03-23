@@ -3,7 +3,7 @@
 import { useAuth } from "@/hooks/auth";
 import { QueryData, fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import { addOutline, checkmarkOutline } from "ionicons/icons";
+import { addOutline, bookmark, bookmarkOutline, checkmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -91,7 +91,7 @@ export default function WatchlistButton({ film }) {
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
       <IonIcon
-        icon={!isAdded ? addOutline : checkmarkOutline}
+        icon={!isAdded ? bookmarkOutline : bookmark}
         className={`text-xl`}
       />
       {/* <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span> */}
