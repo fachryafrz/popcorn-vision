@@ -2,8 +2,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function DELETE(req) {
-  const { session_id } = await req.json();
+export async function DELETE() {
   const cookiesStore = cookies();
 
   try {
@@ -12,7 +11,7 @@ export async function DELETE(req) {
       {
         params: {
           api_key: process.env.API_KEY,
-          session_id: session_id,
+          session_id: cookiesStore.get("tmdb.session_id").value,
         },
       },
     );
