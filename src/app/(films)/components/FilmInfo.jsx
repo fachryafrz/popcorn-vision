@@ -623,12 +623,12 @@ export default function FilmInfo({
             {user && (
               <div className={`flex flex-col gap-1 md:flex-row`}>
                 {/* Add to Favorite */}
-                <Reveal>
+                <Reveal className={`flex`}>
                   <FavoriteButton film={film} />
                 </Reveal>
 
                 {/* Add to Watchlist */}
-                <Reveal>
+                <Reveal className={`flex`}>
                   <WatchlistButton film={film} />
                 </Reveal>
               </div>

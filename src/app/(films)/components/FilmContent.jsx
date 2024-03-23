@@ -117,7 +117,7 @@ export default function FilmContent({
             />
           )}
 
-          <div
+          {/* <div
             role={`alert`}
             id={`featureNotAvailable`}
             className={`alert alert-error fixed bottom-4 right-4 z-50 flex w-[calc(100%-2rem)] transition-all sm:w-fit`}
@@ -146,7 +146,7 @@ export default function FilmContent({
               </svg>
             </button>
             <span>Sorry! Feature not yet available.</span>
-          </div>
+          </div> */}
         </section>
       </div>
     </div>

@@ -27,7 +27,7 @@ export default function LogoutButton({ user }) {
       <div
         tabIndex={0}
         role="button"
-        className={`btn aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 sm:p-1 xl:aspect-auto`}
+        className={`btn aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-1 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 xl:aspect-auto`}
       >
         {!profileImage ? (
           <div className="avatar placeholder">
