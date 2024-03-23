@@ -20,7 +20,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
@@ -226,17 +226,7 @@ export default function Navbar() {
           </Reveal>
 
           <Reveal y={-20} delay={0.6}>
-            {isLoading ? (
-              <div
-                className={`btn pointer-events-none border-transparent bg-transparent hover:border-t hover:border-transparent hover:bg-transparent`}
-              >
-                <span className="loading loading-spinner loading-sm"></span>
-              </div>
-            ) : !user ? (
-              <LoginButton />
-            ) : (
-              <LogoutButton user={user} />
-            )}
+            {!user ? <LoginButton /> : <LogoutButton user={user} />}
           </Reveal>
         </div>
       </nav>

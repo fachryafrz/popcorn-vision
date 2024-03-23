@@ -14,7 +14,6 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     data: user,
     error,
     mutate,
-    isLoading,
   } = useSWR(
     "/account",
     () =>
@@ -70,7 +69,6 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
   return {
     user,
-    isLoading,
     login,
     logout,
   };
