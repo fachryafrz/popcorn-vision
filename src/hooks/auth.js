@@ -17,11 +17,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   } = useSWR(
     "/account",
     () =>
-      Axios.get(`/api/account`, {
-        params: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-      })
+      Axios.get(`/api/account`)
         .then(({ data }) => data)
         .catch((error) => {
           if (error.response.status !== 409) throw error;

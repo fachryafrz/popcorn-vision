@@ -1,7 +1,6 @@
 import React from "react";
 import FilmBackdrop from "../../components/FilmBackdrop";
-import FilmSlider from "@/components/Film/FilmSlider";
-import { fetchData, getFilm, getGenres } from "@/lib/fetch";
+import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import { isPlural } from "@/lib/isPlural";
 import FilmGrid from "@/components/Film/FilmGrid";
@@ -141,7 +140,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
             result.iso_639_1 === "en" &&
             result.type === "Trailer") ||
           result.type === "Teaser" ||
-          result.type === "Clip"
+          result.type === "Clip",
       );
 
   let directorsArray = [];
@@ -249,7 +248,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   return (
     <div
-      className={`flex flex-col bg-base-100 text-white pb-[2rem] md:pb-[5rem] md:-mt-[66px] relative`}
+      className={`relative flex flex-col bg-base-100 pb-[2rem] text-white md:-mt-[66px] md:pb-[5rem]`}
     >
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />

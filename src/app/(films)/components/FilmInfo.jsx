@@ -30,8 +30,6 @@ import { formatRating } from "@/lib/formatRating";
 import WatchlistButton from "./User/WatchlistButton";
 import FavoriteButton from "./User/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
-import { fetchData } from "@/lib/fetch";
-import { useCookies } from "next-client-cookies";
 
 export default function FilmInfo({
   film,
@@ -555,7 +553,9 @@ export default function FilmInfo({
             )}
 
             {isUpcoming && (
-              <div className="flex flex-wrap justify-start gap-2 text-center xl:col-[2/3]">
+              <div
+                className={`flex flex-wrap justify-start gap-2 text-center ${isTvPage ? `xl:col-[2/3]` : ``}`}
+              >
                 {countdown.years > 0 && (
                   <Reveal>
                     <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">

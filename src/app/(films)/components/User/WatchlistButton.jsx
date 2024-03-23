@@ -14,7 +14,8 @@ export default function WatchlistButton({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Get account state
   const getAccountStates = useCallback(async () => {
@@ -23,11 +24,16 @@ export default function WatchlistButton({ film }) {
       queryParams: {
         session_id: cookies.get("tmdb.session_id"),
       },
-    }).then((res) => setIsAdded(res.watchlist));
+    }).then((res) => {
+      setIsAdded(res.watchlist);
+      setIsLoading(false);
+    });
   }, [cookies, film.id, isTvPage]);
 
   const handleWatchlist = async (watchlist) => {
     try {
+      setIsLoading(true);
+
       await QueryData({
         endpoint: `/account/${user.id}/watchlist`,
         queryParams: {
@@ -40,6 +46,8 @@ export default function WatchlistButton({ film }) {
         },
       });
     } catch (error) {
+      setIsLoading(false);
+
       console.error("Error adding to watchlist:", error);
       // Handle errors appropriately (e.g., display error message to user)
     }
@@ -56,10 +64,14 @@ export default function WatchlistButton({ film }) {
       onClick={() => handleWatchlist(!isAdded)}
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
-      <IonIcon
-        icon={!isAdded ? bookmarkOutline : bookmark}
-        className={`text-xl`}
-      />
+      {isLoading ? (
+        <span class="loading loading-spinner loading-xs"></span>
+      ) : (
+        <IonIcon
+          icon={!isAdded ? bookmarkOutline : bookmark}
+          className={`text-xl`}
+        />
+      )}
       {/* <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span> */}
       <span>Watchlist</span>
     </button>

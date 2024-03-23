@@ -14,7 +14,8 @@ export default function FavoriteButton({ film }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Get account state
   const getAccountStates = useCallback(async () => {
@@ -23,11 +24,16 @@ export default function FavoriteButton({ film }) {
       queryParams: {
         session_id: cookies.get("tmdb.session_id"),
       },
-    }).then((res) => setIsAdded(res.favorite));
+    }).then((res) => {
+      setIsAdded(res.favorite);
+      setIsLoading(false);
+    });
   }, [cookies, film.id, isTvPage]);
 
   const handleFavorite = async (favorite) => {
     try {
+      setIsLoading(true);
+
       await QueryData({
         endpoint: `/account/${user.id}/favorite`,
         queryParams: {
@@ -40,6 +46,8 @@ export default function FavoriteButton({ film }) {
         },
       });
     } catch (error) {
+      setIsLoading(false);
+
       console.error("Error adding to favorite:", error);
       // Handle errors appropriately (e.g., display error message to user)
     }
@@ -56,10 +64,14 @@ export default function FavoriteButton({ film }) {
       onClick={() => handleFavorite(!isAdded)}
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
-      <IonIcon
-        icon={!isAdded ? starOutline : star}
-        className={`text-xl ${isAdded ? `!text-yellow-500` : ``}`}
-      />
+      {isLoading ? (
+        <span class="loading loading-spinner loading-xs"></span>
+      ) : (
+        <IonIcon
+          icon={!isAdded ? starOutline : star}
+          className={`text-xl ${isAdded ? `!text-yellow-500` : ``}`}
+        />
+      )}
       <span>Favorite</span>
     </button>
   );

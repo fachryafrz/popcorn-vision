@@ -2,9 +2,8 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
-  const url = new URL(req.url);
-  const session_id = url.searchParams.get("session_id");
+export async function GET() {
+  const cookiesStore = cookies();
 
   try {
     const { data } = await axios.get(
@@ -12,7 +11,7 @@ export async function GET(req) {
       {
         params: {
           api_key: process.env.API_KEY,
-          session_id: session_id,
+          session_id: cookiesStore.get("tmdb.session_id").value,
         },
       },
     );
