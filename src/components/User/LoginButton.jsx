@@ -30,10 +30,10 @@ export default function LoginButton() {
   return (
     <button
       onClick={getToken}
-      className={`btn mt-2 aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-0 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 sm:p-2 xl:aspect-auto xl:pr-4`}
+      className={`btn aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-1 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 xl:aspect-auto`}
     >
-      <IonIcon icon={personCircleOutline} className={`!text-xl`} />
-      <span className={`hidden xl:block`}>Login</span>
+      <IonIcon icon={personCircleOutline} className={`!text-3xl`} />
+      {/* <span className={`hidden xl:block`}>Login</span> */}
     </button>
   );
 }

@@ -3,12 +3,7 @@
 import { useAuth } from "@/hooks/auth";
 import { QueryData, fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import {
-  addOutline,
-  bookmark,
-  bookmarkOutline,
-  checkmarkOutline,
-} from "ionicons/icons";
+import { bookmark, bookmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
