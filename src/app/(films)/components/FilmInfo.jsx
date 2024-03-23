@@ -415,12 +415,14 @@ export default function FilmInfo({
             </Reveal>
           )}
 
+          {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
+
           {/* TV Series Episode */}
           <section
             id={`TV Series Episode`}
             className={`mt-2 grid gap-2 xl:grid-cols-2`}
           >
-            {lastEps && (
+            {lastEps && nextEps && (
               <div
                 id={`TV Series Last Episode`}
                 className={`flex flex-col gap-2`}
@@ -553,7 +555,7 @@ export default function FilmInfo({
             )}
 
             {isUpcoming && (
-              <div className="col-span-full flex flex-wrap justify-start gap-2 text-center">
+              <div className="flex flex-wrap justify-start gap-2 text-center xl:col-[2/3]">
                 {countdown.years > 0 && (
                   <Reveal>
                     <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
