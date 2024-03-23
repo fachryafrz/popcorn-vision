@@ -7,9 +7,11 @@ import React, { useEffect, useState } from "react";
 // Ionic React icons
 import { IonIcon } from "@ionic/react";
 import {
+  addOutline,
   arrowRedoOutline,
   calendarOutline,
   star,
+  starOutline,
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
@@ -25,6 +27,9 @@ import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";
 import moment from "moment";
 import { formatRating } from "@/lib/formatRating";
+import WatchlistButton from "./User/WatchlistButton";
+import FavoriteButton from "./User/FavoriteButton";
+import { useAuth } from "@/hooks/auth";
 
 export default function FilmInfo({
   film,
@@ -42,6 +47,7 @@ export default function FilmInfo({
   const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+  const { user } = useAuth();
 
   const nextEps = film.next_episode_to_air;
   const lastEps = film.last_episode_to_air;
@@ -605,32 +611,45 @@ export default function FilmInfo({
             )}
           </section>
 
-          {/* Share this page */}
+          {/* Call to Action */}
           <section
             id={`Share`}
-            className={`relative flex items-center justify-end gap-4 sm:gap-0`}
+            className={`mt-2 flex flex-wrap items-center gap-1`}
           >
-            <Reveal className={`sm:hidden`}>
-              <button
-                onClick={handleShare}
-                className={`btn btn-ghost ml-auto mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
-              >
-                <IonIcon icon={arrowRedoOutline} />
-                <span>Share</span>
-              </button>
-            </Reveal>
+            {user && (
+              <>
+                {/* Add to Favorite */}
+                <FavoriteButton />
 
-            <Reveal className={`hidden sm:flex`}>
-              <button
-                className={`btn btn-ghost ml-auto mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm hocus:bg-opacity-10`}
-                onClick={() =>
-                  document.getElementById("shareModal").showModal()
-                }
-              >
-                <IonIcon icon={arrowRedoOutline} />
-                <span>Share</span>
-              </button>
-            </Reveal>
+                {/* Add to Watchlist */}
+                <WatchlistButton film={film} />
+              </>
+            )}
+
+            {/* Share */}
+            <div className={`relative ml-auto gap-4 sm:gap-0`}>
+              <Reveal className={`sm:hidden`}>
+                <button
+                  onClick={handleShare}
+                  className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
+                >
+                  <IonIcon icon={arrowRedoOutline} />
+                  <span>Share</span>
+                </button>
+              </Reveal>
+
+              <Reveal className={`hidden sm:flex`}>
+                <button
+                  className={`btn btn-ghost mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm hocus:bg-opacity-10`}
+                  onClick={() =>
+                    document.getElementById("shareModal").showModal()
+                  }
+                >
+                  <IonIcon icon={arrowRedoOutline} />
+                  <span>Share</span>
+                </button>
+              </Reveal>
+            </div>
           </section>
         </div>
       </div>

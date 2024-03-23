@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { useCookies } from "next-client-cookies";
+import { POSTData, QueryData, fetchData } from "@/lib/fetch";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
@@ -28,6 +29,18 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
         .catch((error) => {
           if (error.response.status !== 409) throw error;
         }),
+
+    // fetchData({
+    //   endpoint: `/account`,
+    //   queryParams: {
+    //     session_id: cookies.get("tmdb.session_id"),
+    //   },
+    // })
+    //   .then(({ data }) => data)
+    //   .catch((error) => {
+    //     if (error.response.status !== 409) throw error;
+    //   }),
+
     {
       revalidateOnFocus: false,
       revalidateOnMount: true,
@@ -55,6 +68,22 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
         // setErrors(error.response.data.errors);
       });
+
+    // QueryData({
+    //   endpoint: `/authentication/session/new`,
+    //   queryParams: {
+    //     request_token,
+    //   },
+    // })
+    //   .then(({ data }) => {
+    //     cookies.set("tmdb.session_id", data.session_id);
+    //     mutate();
+    //     router.replace(pathname);
+    //   })
+    //   .catch((error) => {
+    //     if (error.response.status !== 422) throw error;
+    //     // setErrors(error.response.data.errors);
+    //   });
   };
 
   const logout = async () => {
@@ -69,6 +98,17 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
           cookies.remove("tmdb.session_id");
           mutate(null);
         });
+
+      // await QueryData({
+      //   method: "DELETE",
+      //   endpoint: `/authentication/session`,
+      //   queryParams: {
+      //     session_id: cookies.get("tmdb.session_id"),
+      //   },
+      // }).then(() => {
+      //   cookies.remove("tmdb.session_id");
+      //   mutate(null);
+      // });
     }
 
     if (pathname === "/profile") {

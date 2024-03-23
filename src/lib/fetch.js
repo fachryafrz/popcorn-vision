@@ -26,6 +26,26 @@ export async function fetchData({
   }
 }
 
+export async function QueryData({
+  endpoint,
+  data,
+  queryParams,
+  method = "POST",
+}) {
+  const res = await axios.request({
+    method: method,
+    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    url: endpoint,
+    params: { api_key: process.env.API_KEY, ...queryParams },
+    data: data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  return res;
+}
+
 export async function getFilm({ id, type, path, params }) {
   const res = await fetchData({
     endpoint: `/${type}/${id}${path}`,
