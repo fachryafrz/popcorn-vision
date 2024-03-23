@@ -65,7 +65,7 @@ export default function FavoriteButton({ film }) {
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
       {isLoading ? (
-        <span class="loading loading-spinner loading-xs"></span>
+        <span class="loading loading-spinner w-[20px]"></span>
       ) : (
         <IonIcon
           icon={!isAdded ? starOutline : star}
