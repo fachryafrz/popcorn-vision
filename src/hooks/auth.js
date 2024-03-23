@@ -4,6 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import axios from "@/lib/axios";
 import { useCookies } from "next-client-cookies";
 import { POSTData, QueryData, fetchData } from "@/lib/fetch";
+import Axios from "axios";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
@@ -19,27 +20,15 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   } = useSWR(
     "/account",
     () =>
-      axios
-        .get(`/account`, {
-          params: {
-            session_id: cookies.get("tmdb.session_id"),
-          },
-        })
+      Axios.get(`/api/account`, {
+        params: {
+          session_id: cookies.get("tmdb.session_id"),
+        },
+      })
         .then(({ data }) => data)
         .catch((error) => {
           if (error.response.status !== 409) throw error;
         }),
-
-    // fetchData({
-    //   endpoint: `/account`,
-    //   queryParams: {
-    //     session_id: cookies.get("tmdb.session_id"),
-    //   },
-    // })
-    //   .then(({ data }) => data)
-    //   .catch((error) => {
-    //     if (error.response.status !== 409) throw error;
-    //   }),
 
     {
       revalidateOnFocus: false,
@@ -51,72 +40,25 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     },
   );
 
-  const login = async ({ setErrors, setStatus, request_token }) => {
-    // setErrors([]);
-    // setStatus(null);
-
-    axios
-      .post(`/authentication/session/new`, { request_token })
-      .then(({ data }) => {
-        // localStorage.setItem("session_id", data.session_id);
-        cookies.set("tmdb.session_id", data.session_id);
-        mutate();
-        router.replace(pathname);
-      })
-      .catch((error) => {
-        if (error.response.status !== 422) throw error;
-
-        // setErrors(error.response.data.errors);
-      });
-
-    // QueryData({
-    //   endpoint: `/authentication/session/new`,
-    //   queryParams: {
-    //     request_token,
-    //   },
-    // })
-    //   .then(({ data }) => {
-    //     cookies.set("tmdb.session_id", data.session_id);
-    //     mutate();
-    //     router.replace(pathname);
-    //   })
-    //   .catch((error) => {
-    //     if (error.response.status !== 422) throw error;
-    //     // setErrors(error.response.data.errors);
-    //   });
+  const login = async ({ request_token }) => {
+    Axios.post(`/api/login`, { request_token }).then(({ data }) => {
+      mutate();
+      router.replace(pathname);
+    });
   };
 
   const logout = async () => {
     if (!error) {
-      await axios
-        .delete(`/authentication/session`, {
-          params: {
-            session_id: cookies.get("tmdb.session_id"),
-          },
-        })
-        .then(() => {
-          cookies.remove("tmdb.session_id");
-          mutate(null);
-        });
-
-      // await QueryData({
-      //   method: "DELETE",
-      //   endpoint: `/authentication/session`,
-      //   queryParams: {
-      //     session_id: cookies.get("tmdb.session_id"),
-      //   },
-      // }).then(() => {
-      //   cookies.remove("tmdb.session_id");
-      //   mutate(null);
-      // });
+      await Axios.delete(`/api/logout`, {
+        data: {
+          session_id: cookies.get("tmdb.session_id"),
+        },
+      }).then(() => mutate(null));
     }
 
     if (pathname === "/profile") {
       router.replace("/");
     }
-
-    // window.location.pathname = pathname;
-    // router.refresh();
   };
 
   useEffect(() => {
