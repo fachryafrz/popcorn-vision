@@ -23,10 +23,8 @@ export async function POST(req) {
 
     return NextResponse.json(data, { status: 200 });
   } catch (error) {
-    if (error.response.status !== 422) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
   }
 }

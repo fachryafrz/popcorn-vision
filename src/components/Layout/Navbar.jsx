@@ -225,17 +225,19 @@ export default function Navbar() {
             </Link>
           </Reveal>
 
-          {isLoading ? (
-            <div
-              className={`btn pointer-events-none border-transparent bg-transparent hover:border-t hover:border-transparent hover:bg-transparent`}
-            >
-              <span className="loading loading-spinner loading-sm"></span>
-            </div>
-          ) : !user ? (
-            <LoginButton />
-          ) : (
-            <LogoutButton user={user} />
-          )}
+          <Reveal y={-20} delay={0.6}>
+            {isLoading ? (
+              <div
+                className={`btn pointer-events-none border-transparent bg-transparent hover:border-t hover:border-transparent hover:bg-transparent`}
+              >
+                <span className="loading loading-spinner loading-sm"></span>
+              </div>
+            ) : !user ? (
+              <LoginButton />
+            ) : (
+              <LogoutButton user={user} />
+            )}
+          </Reveal>
         </div>
       </nav>
     </header>
