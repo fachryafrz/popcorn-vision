@@ -42,11 +42,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
   const logout = async () => {
     if (!error) {
-      await Axios.delete(`/api/logout`, {
-        data: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-      }).then(() => mutate(null));
+      await Axios.delete(`/api/logout`).then(() => mutate(null));
     }
 
     if (pathname === "/profile") {
