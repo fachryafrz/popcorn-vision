@@ -2,11 +2,12 @@ import { useAuth } from "@/hooks/auth";
 import axios from "@/lib/axios";
 import { IonIcon } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 export default function LoginButton() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const { login } = useAuth();
@@ -22,10 +23,17 @@ export default function LoginButton() {
   };
 
   useEffect(() => {
-    if (searchParams.get("request_token")) {
+    if (
+      searchParams.get("approved") === "true" &&
+      searchParams.get("request_token")
+    ) {
       login({ request_token: searchParams.get("request_token") });
     }
-  }, [searchParams]);
+
+    if (searchParams.get("denied") === "true") {
+      router.replace(pathname);
+    }
+  }, [pathname, router, searchParams]);
 
   return (
     <button
