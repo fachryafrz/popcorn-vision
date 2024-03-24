@@ -731,7 +731,7 @@ export default function FilmInfo({
           )}
 
           {/* Film Rating */}
-          {user && (
+          {user && film.status === "Released" && (
             <Reveal className={`mt-2`}>
               <section className={`max-w-fit`}>
                 <span className={`mb-2 block text-sm font-medium`}>
