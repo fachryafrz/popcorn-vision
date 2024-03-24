@@ -739,7 +739,7 @@ export default function FilmInfo({
                 </span>
 
                 <div
-                  className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl`}
+                  className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl xs:text-xl`}
                   onMouseLeave={() => setHoverRating({ value: rating?.value })}
                 >
                   {[...Array(10)].map((_, index) => {
@@ -769,7 +769,7 @@ export default function FilmInfo({
                 {rating?.value > 0 && (
                   <button
                     onClick={clearRating}
-                    className={`text-sm italic text-primary-blue`}
+                    className={`text-sm font-medium italic text-primary-blue transition-all`}
                   >
                     Clear rating
                   </button>
