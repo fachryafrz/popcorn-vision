@@ -1,14 +1,14 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { QueryData, fetchData } from "@/lib/fetch";
+import { QueryData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-export default function WatchlistButton({ film }) {
+export default function WatchlistButton({ film, getAccountStates }) {
   const { user } = useAuth();
   const cookies = useCookies();
   const pathname = usePathname();
@@ -16,19 +16,6 @@ export default function WatchlistButton({ film }) {
 
   const [isAdded, setIsAdded] = useState();
   const [isLoading, setIsLoading] = useState(false);
-
-  // Get account state
-  const getAccountStates = useCallback(async () => {
-    await fetchData({
-      endpoint: `/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`,
-      queryParams: {
-        session_id: cookies.get("tmdb.session_id"),
-      },
-    }).then((res) => {
-      setIsAdded(res.watchlist);
-      setIsLoading(false);
-    });
-  }, [cookies, film.id, isTvPage]);
 
   const handleWatchlist = async (watchlist) => {
     try {
@@ -46,17 +33,25 @@ export default function WatchlistButton({ film }) {
         },
       });
     } catch (error) {
-      setIsLoading(false);
-
       console.error("Error adding to watchlist:", error);
       // Handle errors appropriately (e.g., display error message to user)
+    } finally {
+      setIsLoading(false);
     }
 
-    await getAccountStates();
+    await getAccountStates({
+      setValue: setIsAdded,
+      setIsLoading,
+      type: "watchlist",
+    });
   };
 
   useEffect(() => {
-    getAccountStates();
+    getAccountStates({
+      setValue: setIsAdded,
+      setIsLoading,
+      type: "watchlist",
+    });
   }, [getAccountStates]);
 
   return (
