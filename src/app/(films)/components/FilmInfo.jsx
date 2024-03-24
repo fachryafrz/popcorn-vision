@@ -528,210 +528,208 @@ export default function FilmInfo({
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
 
-          {/* TV Series Episode */}
-          {isTvPage && (
-            <section
-              id={`TV Series Episode`}
-              className={`mt-2 grid gap-2 xl:grid-cols-2`}
-            >
-              {lastEps && nextEps && (
-                <div
-                  id={`TV Series Last Episode`}
-                  className={`flex flex-col gap-2`}
-                >
+          {/* Countdown */}
+          <section
+            id={`Countdown`}
+            className={`mt-2 grid gap-2 xl:grid-cols-2`}
+          >
+            {lastEps && nextEps && (
+              <div
+                id={`TV Series Last Episode`}
+                className={`flex flex-col gap-2`}
+              >
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={lastEps}
+                    imgPath={lastEps.still_path}
+                    title={lastEps.name}
+                    overlay={
+                      nextEps
+                        ? `Latest Episode: ${lastEps.episode_number}`
+                        : `Last Episode: ${lastEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${lastEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {lastEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {formatRating(lastEps.vote_average)}
+                          </span>
+                        )}
+
+                        {lastEps.runtime && (
+                          <span
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            {Math.floor(lastEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  lastEps.runtime / 60,
+                                )}h ${Math.floor(lastEps.runtime % 60)}m`
+                              : `${lastEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: lastEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
+
+                        {lastEps.air_date && (
+                          <span
+                            className={`rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            {formatDate({
+                              date: lastEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
+              </div>
+            )}
+
+            {nextEps && (
+              <div
+                id={`TV Series Next Episode`}
+                className={`flex flex-col gap-2`}
+              >
+                <Reveal>
+                  <EpisodeCard
+                    className={`w-full`}
+                    filmID={film.id}
+                    setLoading={setLoading}
+                    episode={nextEps}
+                    imgPath={nextEps.still_path}
+                    title={nextEps.name}
+                    overlay={
+                      nextEps.episode_type == `finale`
+                        ? `Final Episode: ${nextEps.episode_number}`
+                        : nextEps.episode_number == 1
+                          ? `First Episode`
+                          : `Next Episode: ${nextEps.episode_number}`
+                    }
+                    secondaryInfo={`Season ${nextEps.season_number}`}
+                    thirdInfo={
+                      <>
+                        {nextEps.vote_average > 1 && (
+                          <span
+                            className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            <IonIcon
+                              icon={star}
+                              className={`text-primary-yellow`}
+                            />
+                            {formatRating(nextEps.vote_average)}
+                          </span>
+                        )}
+
+                        {nextEps.runtime && (
+                          <span
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            {Math.floor(nextEps.runtime / 60) >= 1
+                              ? `${Math.floor(
+                                  nextEps.runtime / 60,
+                                )}h ${Math.floor(nextEps.runtime % 60)}m`
+                              : `${nextEps.runtime} ${isPlural({
+                                  text: "minute",
+                                  number: nextEps.runtime % 60,
+                                })}`}
+                          </span>
+                        )}
+
+                        {nextEps.air_date && (
+                          <span
+                            className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                          >
+                            {formatDate({
+                              date: nextEps.air_date,
+                              showDay: false,
+                            })}
+                          </span>
+                        )}
+                      </>
+                    }
+                  />
+                </Reveal>
+              </div>
+            )}
+
+            {isUpcoming && (
+              <div
+                className={`flex flex-wrap justify-start gap-2 text-center ${isTvPage ? `xl:col-[2/3]` : ``}`}
+              >
+                {countdown.years > 0 && (
                   <Reveal>
-                    <EpisodeCard
-                      className={`w-full`}
-                      filmID={film.id}
-                      setLoading={setLoading}
-                      episode={lastEps}
-                      imgPath={lastEps.still_path}
-                      title={lastEps.name}
-                      overlay={
-                        nextEps
-                          ? `Latest Episode: ${lastEps.episode_number}`
-                          : `Last Episode: ${lastEps.episode_number}`
-                      }
-                      secondaryInfo={`Season ${lastEps.season_number}`}
-                      thirdInfo={
-                        <>
-                          {lastEps.vote_average > 1 && (
-                            <span
-                              className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              <IonIcon
-                                icon={star}
-                                className={`text-primary-yellow`}
-                              />
-                              {formatRating(lastEps.vote_average)}
-                            </span>
-                          )}
-
-                          {lastEps.runtime && (
-                            <span
-                              className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              {Math.floor(lastEps.runtime / 60) >= 1
-                                ? `${Math.floor(
-                                    lastEps.runtime / 60,
-                                  )}h ${Math.floor(lastEps.runtime % 60)}m`
-                                : `${lastEps.runtime} ${isPlural({
-                                    text: "minute",
-                                    number: lastEps.runtime % 60,
-                                  })}`}
-                            </span>
-                          )}
-
-                          {lastEps.air_date && (
-                            <span
-                              className={`rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              {formatDate({
-                                date: lastEps.air_date,
-                                showDay: false,
-                              })}
-                            </span>
-                          )}
-                        </>
-                      }
-                    />
-                  </Reveal>
-                </div>
-              )}
-
-              {nextEps && (
-                <div
-                  id={`TV Series Next Episode`}
-                  className={`flex flex-col gap-2`}
-                >
-                  <Reveal>
-                    <EpisodeCard
-                      className={`w-full`}
-                      filmID={film.id}
-                      setLoading={setLoading}
-                      episode={nextEps}
-                      imgPath={nextEps.still_path}
-                      title={nextEps.name}
-                      overlay={
-                        nextEps.episode_type == `finale`
-                          ? `Final Episode: ${nextEps.episode_number}`
-                          : nextEps.episode_number == 1
-                            ? `First Episode`
-                            : `Next Episode: ${nextEps.episode_number}`
-                      }
-                      secondaryInfo={`Season ${nextEps.season_number}`}
-                      thirdInfo={
-                        <>
-                          {nextEps.vote_average > 1 && (
-                            <span
-                              className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              <IonIcon
-                                icon={star}
-                                className={`text-primary-yellow`}
-                              />
-                              {formatRating(nextEps.vote_average)}
-                            </span>
-                          )}
-
-                          {nextEps.runtime && (
-                            <span
-                              className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              {Math.floor(nextEps.runtime / 60) >= 1
-                                ? `${Math.floor(
-                                    nextEps.runtime / 60,
-                                  )}h ${Math.floor(nextEps.runtime % 60)}m`
-                                : `${nextEps.runtime} ${isPlural({
-                                    text: "minute",
-                                    number: nextEps.runtime % 60,
-                                  })}`}
-                            </span>
-                          )}
-
-                          {nextEps.air_date && (
-                            <span
-                              className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                            >
-                              {formatDate({
-                                date: nextEps.air_date,
-                                showDay: false,
-                              })}
-                            </span>
-                          )}
-                        </>
-                      }
-                    />
-                  </Reveal>
-                </div>
-              )}
-
-              {isUpcoming && (
-                <div
-                  className={`flex flex-wrap justify-start gap-2 text-center ${isTvPage ? `xl:col-[2/3]` : ``}`}
-                >
-                  {countdown.years > 0 && (
-                    <Reveal>
-                      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.years }}></span>
-                        </span>
-                        {isPlural({ text: "year", number: countdown.years })}
-                      </div>
-                    </Reveal>
-                  )}
-                  {countdown.months > 0 && (
-                    <Reveal delay={0.1}>
-                      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.months }}></span>
-                        </span>
-                        {isPlural({ text: "month", number: countdown.months })}
-                      </div>
-                    </Reveal>
-                  )}
-                  {countdown.days > 0 && (
-                    <Reveal delay={0.2}>
-                      {" "}
-                      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-                        <span className="countdown font-mono text-4xl sm:text-5xl">
-                          <span style={{ "--value": countdown.days }}></span>
-                        </span>
-                        {isPlural({ text: "day", number: countdown.days })}
-                      </div>
-                    </Reveal>
-                  )}
-                  <Reveal delay={0.3}>
                     <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
-                        <span style={{ "--value": countdown.hours }}></span>
+                        <span style={{ "--value": countdown.years }}></span>
                       </span>
-                      {isPlural({ text: "hour", number: countdown.hours })}
+                      {isPlural({ text: "year", number: countdown.years })}
                     </div>
                   </Reveal>
-                  <Reveal delay={0.4}>
+                )}
+                {countdown.months > 0 && (
+                  <Reveal delay={0.1}>
                     <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
-                        <span style={{ "--value": countdown.minutes }}></span>
+                        <span style={{ "--value": countdown.months }}></span>
                       </span>
-                      min
+                      {isPlural({ text: "month", number: countdown.months })}
                     </div>
                   </Reveal>
-                  <Reveal delay={0.5}>
+                )}
+                {countdown.days > 0 && (
+                  <Reveal delay={0.2}>
+                    {" "}
                     <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
                       <span className="countdown font-mono text-4xl sm:text-5xl">
-                        <span style={{ "--value": countdown.seconds }}></span>
+                        <span style={{ "--value": countdown.days }}></span>
                       </span>
-                      sec
+                      {isPlural({ text: "day", number: countdown.days })}
                     </div>
                   </Reveal>
-                </div>
-              )}
-            </section>
-          )}
+                )}
+                <Reveal delay={0.3}>
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.hours }}></span>
+                    </span>
+                    {isPlural({ text: "hour", number: countdown.hours })}
+                  </div>
+                </Reveal>
+                <Reveal delay={0.4}>
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.minutes }}></span>
+                    </span>
+                    min
+                  </div>
+                </Reveal>
+                <Reveal delay={0.5}>
+                  <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+                    <span className="countdown font-mono text-4xl sm:text-5xl">
+                      <span style={{ "--value": countdown.seconds }}></span>
+                    </span>
+                    sec
+                  </div>
+                </Reveal>
+              </div>
+            )}
+          </section>
 
           {/* Film Rating */}
-          {user && film.status === "Released" && (
+          {user && film.status === "Released" && !isUpcoming && (
             <Reveal className={`mt-2`}>
               <section className={`max-w-fit`}>
                 <span className={`mb-2 block text-sm font-medium`}>
