@@ -732,10 +732,8 @@ export default function FilmInfo({
 
           {/* Film Rating */}
           {user && (
-            <Reveal>
-              <section
-                className={`max-w-fit rounded-xl bg-gray-400 bg-opacity-10 p-2 px-3 backdrop-blur-sm`}
-              >
+            <Reveal className={`mt-2`}>
+              <section className={`max-w-fit`}>
                 <span className={`mb-2 block text-sm font-medium`}>
                   Your rating
                 </span>
