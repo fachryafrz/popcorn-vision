@@ -233,7 +233,7 @@ export default function FilmInfo({
   // Fungsi untuk mengatur nilai rating saat kursor diarahkan pada bintang tertentu
   const handleClickRating = async (value) => {
     // setRating({ value }); // Atur nilai rating yang baru
-    // setHoverRating({ value }); // Setel hoverRating kembali ke 0
+    setHoverRating({ value }); // Setel hoverRating kembali ke 0
     await handleRating(value);
   };
 
