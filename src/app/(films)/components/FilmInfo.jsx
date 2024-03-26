@@ -655,7 +655,7 @@ export default function FilmInfo({
           </section>
 
           {/* User Rating */}
-          {user && film.status === "Released" && !isUpcoming && (
+          {user && !isUpcoming && (
             <Reveal className={`mt-2`}>
               <section id={`User Rating`} className={`max-w-fit`}>
                 <UserRating film={film} getAccountStates={getAccountStates} />
