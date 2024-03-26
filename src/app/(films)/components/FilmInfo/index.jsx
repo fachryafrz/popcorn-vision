@@ -6,32 +6,18 @@ import React, { useCallback, useEffect, useState } from "react";
 
 // Ionic React icons
 import { IonIcon } from "@ionic/react";
-import {
-  arrowRedoOutline,
-  calendarOutline,
-  star,
-  timeOutline,
-  tvOutline,
-} from "ionicons/icons";
+import { timeOutline, tvOutline } from "ionicons/icons";
 
 import TitleLogo from "@/components/Film/TitleLogo";
-import { usePathname, useRouter } from "next/navigation";
-import Person from "../Person";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-import EpisodeCard from "../EpisodeCard";
 import { formatRuntime } from "@/lib/formatRuntime";
-import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";
-import moment from "moment";
-import { formatRating } from "@/lib/formatRating";
 import WatchlistButton from "../User/WatchlistButton";
 import FavoriteButton from "../User/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
-import { useCookies } from "next-client-cookies";
-import { QueryData, fetchData } from "@/lib/fetch";
 import axios from "axios";
-import { delay } from "@/lib/delay";
 import UserRating from "../User/UserRating";
 import ProductionCompany from "./ProductionCompany";
 import FilmReleaseDate from "./FilmReleaseDate";
@@ -40,6 +26,7 @@ import WatchProvider from "./WatchProvider";
 import Countdown from "./Countdown";
 import LastEpisode from "./tv/LastEpisode";
 import NextEpisode from "./tv/NextEpisode";
+import ShareButton from "./ShareButton";
 
 export default function FilmInfo({
   film,
@@ -49,7 +36,6 @@ export default function FilmInfo({
   setLoading,
   releaseDates,
 }) {
-  const [URL, setURL] = useState("");
   const [userLocation, setUserLocation] = useState(null);
   const countryCode = userLocation && JSON.parse(userLocation).countryCode;
   const countryName = userLocation && JSON.parse(userLocation).countryName;
@@ -72,19 +58,6 @@ export default function FilmInfo({
   const isUpcoming =
     new Date(!isTvPage ? filmReleaseDate : nextEps?.air_date) > new Date();
 
-  const handleShare = async () => {
-    try {
-      await navigator.share({
-        title: "Shared via Popcorn Vision",
-        // text: "Check out this amazing film!",
-        url: window.location.href,
-      });
-    } catch (error) {
-      console.error("Error sharing content:", error);
-    }
-  };
-
-  let director = credits.crew.find((person) => person.job === "Director");
   const filmRuntime = !isTvPage
     ? film.runtime
     : film.episode_run_time.length > 0 && film.episode_run_time[0];
@@ -251,12 +224,7 @@ export default function FilmInfo({
           )}
 
           {/* Film Director / Creator */}
-          <FilmDirector
-            film={film}
-            credits={credits}
-            director={director}
-            isTvPage={isTvPage}
-          />
+          <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
           <WatchProvider
@@ -348,29 +316,9 @@ export default function FilmInfo({
             )}
 
             {/* Share */}
-            <div className={`relative ml-auto gap-4 sm:gap-0`}>
-              <Reveal className={`sm:hidden`}>
-                <button
-                  onClick={handleShare}
-                  className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
-                >
-                  <IonIcon icon={arrowRedoOutline} />
-                  <span>Share</span>
-                </button>
-              </Reveal>
-
-              <Reveal className={`hidden sm:flex`}>
-                <button
-                  className={`btn btn-ghost mt-2 flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm hocus:bg-opacity-10`}
-                  onClick={() =>
-                    document.getElementById("shareModal").showModal()
-                  }
-                >
-                  <IonIcon icon={arrowRedoOutline} />
-                  <span>Share</span>
-                </button>
-              </Reveal>
-            </div>
+            <Reveal className={`relative ml-auto gap-4 sm:gap-0`}>
+              <ShareButton />
+            </Reveal>
           </section>
         </div>
       </div>

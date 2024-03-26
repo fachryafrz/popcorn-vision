@@ -2,7 +2,9 @@ import Reveal from "@/components/Layout/Reveal";
 import React from "react";
 import Person from "../Person";
 
-export default function FilmDirector({ credits, director, film, isTvPage }) {
+export default function FilmDirector({ credits, film, isTvPage }) {
+  const director = credits.crew.find((person) => person.job === "Director");
+
   return (
     <>
       {!isTvPage
