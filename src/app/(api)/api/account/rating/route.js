@@ -3,14 +3,14 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
-  const { id, type, rating } = await req.json();
+  const { id, type, rating: value } = await req.json();
   const cookiesStore = cookies();
 
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}/rating`,
       {
-        value: rating,
+        value,
       },
       {
         params: {

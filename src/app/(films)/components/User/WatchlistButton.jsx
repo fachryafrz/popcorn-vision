@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { QueryData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
