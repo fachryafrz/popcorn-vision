@@ -68,6 +68,8 @@ export default function FilmInfo({
   }, []);
 
   // Get account state
+  const [accountStates, setAccountStates] = useState();
+
   const getAccountStates = useCallback(
     async ({ setValue, setHoverValue, setIsLoading, type }) => {
       await axios
@@ -97,10 +99,20 @@ export default function FilmInfo({
         .catch((error) => {
           console.error("Error getting account states:", error);
         })
-        .finally(() => setIsLoading(false));
+        .finally(() => {
+          if (setIsLoading) {
+            setIsLoading(false);
+          }
+        });
     },
     [film, isTvPage],
   );
+
+  useEffect(() => {
+    getAccountStates({
+      setValue: setAccountStates,
+    });
+  }, [getAccountStates]);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -285,7 +297,11 @@ export default function FilmInfo({
           {user && !isUpcoming && (
             <Reveal className={`mt-2`}>
               <section id={`User Rating`} className={`max-w-fit`}>
-                <UserRating film={film} getAccountStates={getAccountStates} />
+                <UserRating
+                  film={film}
+                  getAccountStates={getAccountStates}
+                  rating={accountStates?.rated}
+                />
               </section>
             </Reveal>
           )}
@@ -302,6 +318,7 @@ export default function FilmInfo({
                   <FavoriteButton
                     film={film}
                     getAccountStates={getAccountStates}
+                    favorite={accountStates?.favorite}
                   />
                 </Reveal>
 
@@ -310,6 +327,7 @@ export default function FilmInfo({
                   <WatchlistButton
                     film={film}
                     getAccountStates={getAccountStates}
+                    watchlist={accountStates?.watchlist}
                   />
                 </Reveal>
               </div>
