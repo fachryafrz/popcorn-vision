@@ -8,7 +8,7 @@ import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function WatchlistButton({ film, getAccountStates }) {
+export default function WatchlistButton({ film, getAccountStates, watchlist }) {
   const { user } = useAuth();
   const cookies = useCookies();
   const pathname = usePathname();
@@ -40,12 +40,16 @@ export default function WatchlistButton({ film, getAccountStates }) {
   };
 
   useEffect(() => {
-    getAccountStates({
-      setValue: setIsAdded,
-      setIsLoading,
-      type: "watchlist",
-    });
-  }, [getAccountStates]);
+    setIsAdded(watchlist);
+  }, [watchlist]);
+
+  // useEffect(() => {
+  //   getAccountStates({
+  //     setValue: setIsAdded,
+  //     setIsLoading,
+  //     type: "watchlist",
+  //   });
+  // }, [getAccountStates]);
 
   return (
     <button

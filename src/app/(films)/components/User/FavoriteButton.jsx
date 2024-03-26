@@ -4,13 +4,11 @@ import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
-import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function FavoriteButton({ film, getAccountStates }) {
+export default function FavoriteButton({ film, getAccountStates, favorite }) {
   const { user } = useAuth();
-  const cookies = useCookies();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -40,12 +38,16 @@ export default function FavoriteButton({ film, getAccountStates }) {
   };
 
   useEffect(() => {
-    getAccountStates({
-      setValue: setIsAdded,
-      setIsLoading,
-      type: "favorite",
-    });
-  }, [getAccountStates]);
+    setIsAdded(favorite);
+  }, [favorite]);
+
+  // useEffect(() => {
+  //   getAccountStates({
+  //     setValue: setIsAdded,
+  //     setIsLoading,
+  //     type: "favorite",
+  //   });
+  // }, [getAccountStates]);
 
   return (
     <button

@@ -21,7 +21,7 @@ import {
 } from "react-share";
 
 export default function ShareModal() {
-  const [URL, setURL] = useState("");
+  const [URL, setURL] = useState();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {

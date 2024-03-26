@@ -6,11 +6,11 @@ import { star, starHalf, starOutline } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function UserRating({ film, getAccountStates }) {
+export default function UserRating({ film, getAccountStates, rating }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [rating, setRating] = useState(); // State untuk menyimpan nilai rating
+  const [isAdded, setIsAdded] = useState();
   const [hoverRating, setHoverRating] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +28,7 @@ export default function UserRating({ film, getAccountStates }) {
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
       getAccountStates({
-        setValue: setRating,
+        setValue: setIsAdded,
         setHoverValue: setHoverRating,
         setIsLoading,
         type: "rating",
@@ -51,7 +51,7 @@ export default function UserRating({ film, getAccountStates }) {
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
       getAccountStates({
-        setValue: setRating,
+        setValue: setIsAdded,
         setHoverValue: setHoverRating,
         setIsLoading,
         type: "rating",
@@ -59,21 +59,10 @@ export default function UserRating({ film, getAccountStates }) {
     }
   };
 
-  // Fungsi untuk mengatur nilai rating saat kursor diarahkan pada bintang tertentu
-  const handleClickRating = async (value) => {
-    // setRating({ value }); // Atur nilai rating yang baru
-    setHoverRating({ value }); // Setel hoverRating kembali ke 0
-    await handleRating(value);
-  };
-
   useEffect(() => {
-    getAccountStates({
-      setValue: setRating,
-      setHoverValue: setHoverRating,
-      setIsLoading,
-      type: "rating",
-    });
-  }, [getAccountStates]);
+    setIsAdded(rating);
+    setHoverRating(rating);
+  }, [rating]);
 
   return (
     <>
@@ -85,12 +74,18 @@ export default function UserRating({ film, getAccountStates }) {
 
       <div
         className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl xs:text-xl`}
-        onMouseLeave={() => setHoverRating({ value: rating?.value })}
+        onMouseLeave={() => setHoverRating({ value: isAdded?.value })}
       >
         {[...Array(10)].map((_, index) => {
           const starValue = index + 1;
           return (
-            <button key={index} onClick={() => handleClickRating(starValue)}>
+            <button
+              key={index}
+              onClick={async () => {
+                setHoverRating({ value: starValue }); // Setel hoverRating kembali ke 0
+                await handleRating(starValue);
+              }}
+            >
               <IonIcon
                 icon={
                   hoverRating?.value >= starValue
@@ -106,9 +101,9 @@ export default function UserRating({ film, getAccountStates }) {
         })}
       </div>
 
-      {rating?.value > 0 && (
+      {isAdded?.value > 0 && (
         <button
-          onClick={handleDeleteRating}
+          onClick={async () => await handleDeleteRating()}
           className={`text-sm font-medium italic text-primary-blue transition-all`}
         >
           Clear rating
