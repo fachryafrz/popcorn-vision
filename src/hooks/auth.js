@@ -1,14 +1,11 @@
 import useSWR from "swr";
 import { useEffect } from "react";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useCookies } from "next-client-cookies";
+import { usePathname, useRouter } from "next/navigation";
 import Axios from "axios";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
-  const params = useParams();
   const pathname = usePathname();
-  const cookies = useCookies();
 
   const {
     data: user,
@@ -34,7 +31,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   );
 
   const login = async ({ request_token }) => {
-    Axios.post(`/api/login`, { request_token }).then(({ data }) => {
+    Axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
       mutate();
       router.replace(pathname);
     });
@@ -42,7 +39,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
   const logout = async () => {
     if (!error) {
-      await Axios.delete(`/api/logout`).then(() => mutate(null));
+      await Axios.delete(`/api/auth/logout`).then(() => mutate(null));
     }
 
     if (pathname === "/profile") {

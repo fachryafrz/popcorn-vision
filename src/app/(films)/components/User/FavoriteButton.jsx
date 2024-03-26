@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/auth";
 import { QueryData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
+import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
@@ -21,29 +22,22 @@ export default function FavoriteButton({ film, getAccountStates }) {
     try {
       setIsLoading(true);
 
-      await QueryData({
-        endpoint: `/account/${user.id}/favorite`,
-        queryParams: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-        data: {
-          media_type: isTvPage ? "tv" : "movie",
-          media_id: film.id,
-          favorite: favorite,
-        },
+      await axios.post(`/api/account/favorite`, {
+        user_id: user.id,
+        media_type: !isTvPage ? "movie" : "tv",
+        media_id: film.id,
+        favorite: favorite,
       });
     } catch (error) {
       console.error("Error adding to favorite:", error);
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
-      setIsLoading(false);
+      getAccountStates({
+        setValue: setIsAdded,
+        setIsLoading,
+        type: "favorite",
+      });
     }
-
-    await getAccountStates({
-      setValue: setIsAdded,
-      setIsLoading,
-      type: "favorite",
-    });
   };
 
   useEffect(() => {

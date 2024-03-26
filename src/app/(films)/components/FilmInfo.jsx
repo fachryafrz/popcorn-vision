@@ -32,6 +32,8 @@ import FavoriteButton from "./User/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
 import { useCookies } from "next-client-cookies";
 import { QueryData, fetchData } from "@/lib/fetch";
+import axios from "axios";
+import { delay } from "@/lib/delay";
 
 export default function FilmInfo({
   film,
@@ -145,32 +147,36 @@ export default function FilmInfo({
 
   const getAccountStates = useCallback(
     async ({ setValue, setHoverValue, setIsLoading, type }) => {
-      await fetchData({
-        endpoint: `/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`,
-        queryParams: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-      }).then((res) => {
-        setIsLoading(false);
-
-        switch (type) {
-          case "favorite":
-            setValue(res.favorite);
-            break;
-          case "watchlist":
-            setValue(res.watchlist);
-            break;
-          case "rating":
-            setValue(res.rated);
-            setHoverValue(res.rated);
-            break;
-          default:
-            setValue(res);
-            break;
-        }
-      });
+      await axios
+        .get(`/api/account_states`, {
+          params: {
+            id: film.id,
+            type: !isTvPage ? `movie` : `tv`,
+          },
+        })
+        .then(({ data: res }) => {
+          switch (type) {
+            case "favorite":
+              setValue(res.favorite);
+              break;
+            case "watchlist":
+              setValue(res.watchlist);
+              break;
+            case "rating":
+              setValue(res.rated);
+              setHoverValue(res.rated);
+              break;
+            default:
+              setValue(res);
+              break;
+          }
+        })
+        .catch((error) => {
+          console.error("Error getting account states:", error);
+        })
+        .finally(() => setIsLoading(false));
     },
-    [cookies, film.id, isTvPage],
+    [film, isTvPage],
   );
 
   const [rating, setRating] = useState(); // State untuk menyimpan nilai rating
@@ -180,54 +186,45 @@ export default function FilmInfo({
     try {
       setIsLoading(true);
 
-      await QueryData({
-        endpoint: `/${!isTvPage ? "movie" : "tv"}/${film.id}/rating`,
-        queryParams: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-        data: {
-          value: value,
-        },
+      await axios.post(`/api/account/rating`, {
+        rating: value,
+        id: film.id,
+        type: !isTvPage ? `movie` : `tv`,
       });
     } catch (error) {
       console.error("Error adding rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
-      setIsLoading(false);
+      getAccountStates({
+        setValue: setRating,
+        setHoverValue: setHoverRating,
+        setIsLoading,
+        type: "rating",
+      });
     }
-
-    await getAccountStates({
-      setValue: setRating,
-      setHoverValue: setHoverRating,
-      setIsLoading,
-      type: "rating",
-    });
   };
 
   const handleDeleteRating = async () => {
     try {
       setIsLoading(true);
 
-      await QueryData({
-        endpoint: `/${!isTvPage ? "movie" : "tv"}/${film.id}/rating`,
-        queryParams: {
-          session_id: cookies.get("tmdb.session_id"),
+      await axios.delete(`/api/account/rating`, {
+        params: {
+          id: film.id,
+          type: !isTvPage ? `movie` : `tv`,
         },
-        method: "DELETE",
       });
     } catch (error) {
       console.error("Error deleting rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
-      setIsLoading(false);
+      getAccountStates({
+        setValue: setRating,
+        setHoverValue: setHoverRating,
+        setIsLoading,
+        type: "rating",
+      });
     }
-
-    await getAccountStates({
-      setValue: setRating,
-      setHoverValue: setHoverRating,
-      setIsLoading,
-      type: "rating",
-    });
   };
 
   // Fungsi untuk mengatur nilai rating saat kursor diarahkan pada bintang tertentu
@@ -732,9 +729,15 @@ export default function FilmInfo({
           {user && film.status === "Released" && !isUpcoming && (
             <Reveal className={`mt-2`}>
               <section className={`max-w-fit`}>
-                <span className={`mb-2 block text-sm font-medium`}>
-                  Your rating
-                </span>
+                <div className={`flex items-center gap-2`}>
+                  <span className={`mb-2 block text-sm font-medium`}>
+                    Your rating
+                  </span>
+
+                  {isLoading && (
+                    <span class="loading loading-spinner loading-xs"></span>
+                  )}
+                </div>
 
                 <div
                   className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl xs:text-xl`}

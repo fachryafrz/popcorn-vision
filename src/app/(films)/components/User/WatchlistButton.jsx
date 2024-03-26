@@ -3,6 +3,7 @@
 import { useAuth } from "@/hooks/auth";
 import { QueryData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
+import axios from "axios";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";
@@ -21,29 +22,22 @@ export default function WatchlistButton({ film, getAccountStates }) {
     try {
       setIsLoading(true);
 
-      await QueryData({
-        endpoint: `/account/${user.id}/watchlist`,
-        queryParams: {
-          session_id: cookies.get("tmdb.session_id"),
-        },
-        data: {
-          media_type: isTvPage ? "tv" : "movie",
-          media_id: film.id,
-          watchlist: watchlist,
-        },
+      await axios.post(`/api/account/watchlist`, {
+        user_id: user.id,
+        media_type: !isTvPage ? "movie" : "tv",
+        media_id: film.id,
+        watchlist: watchlist,
       });
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       // Handle errors appropriately (e.g., display error message to user)
     } finally {
-      setIsLoading(false);
+      getAccountStates({
+        setValue: setIsAdded,
+        setIsLoading,
+        type: "watchlist",
+      });
     }
-
-    await getAccountStates({
-      setValue: setIsAdded,
-      setIsLoading,
-      type: "watchlist",
-    });
   };
 
   useEffect(() => {
