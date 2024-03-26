@@ -21,7 +21,8 @@ import {
 } from "react-share";
 
 export default function ShareModal() {
-  const [URL, setURL] = useState("");
+  const URL = window.location.href;
+
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -33,10 +34,6 @@ export default function ShareModal() {
       console.error("Error copying text:", error);
     }
   };
-
-  useEffect(() => {
-    setURL(window.location.href);
-  }, []);
 
   return (
     <dialog
