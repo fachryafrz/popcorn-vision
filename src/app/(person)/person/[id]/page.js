@@ -51,13 +51,20 @@ export default async function Person({ params }) {
   const { id } = params;
 
   const person = await getPerson({ id });
-  const combinedCredits = await getPerson({
-    id,
-    path: "/combined_credits",
-  });
-  const movieCredits = await getPerson({ id, path: "/movie_credits" });
-  const tvCredits = await getPerson({ id, path: "/tv_credits" });
-  const images = await getPerson({ id, path: "/images" });
+  const {
+    combined_credits: combinedCredits,
+    movie_credits: movieCredits,
+    tv_credits: tvCredits,
+    images,
+  } = person;
+
+  // const combinedCredits = await getPerson({
+  //   id,
+  //   path: "/combined_credits",
+  // });
+  // const movieCredits = await getPerson({ id, path: "/movie_credits" });
+  // const tvCredits = await getPerson({ id, path: "/tv_credits" });
+  // const images = await getPerson({ id, path: "/images" });
 
   return (
     <div
@@ -84,7 +91,11 @@ export default async function Person({ params }) {
         <section
           className={`col-span-12 border-t border-t-white border-opacity-10 pt-4`}
         >
-          <PersonWorks movieCredits={movieCredits} tvCredits={tvCredits} />
+          <PersonWorks
+            person={person}
+            movieCredits={movieCredits}
+            tvCredits={tvCredits}
+          />
         </section>
       )}
     </div>

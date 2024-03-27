@@ -11,9 +11,11 @@ import ImagePovi from "@/components/Film/ImagePovi";
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
 import { setEpisode } from "@/redux/slices/episodeSlice";
+import { useRouter } from "next/navigation";
 
 export function EpisodeModal({ episode }) {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
@@ -38,6 +40,7 @@ export function EpisodeModal({ episode }) {
           <button
             onClick={() => {
               document.getElementById(`episodeModal`).close();
+              router.back();
               setTimeout(() => {
                 // Redux Toolkit
                 dispatch(setEpisode(null));
