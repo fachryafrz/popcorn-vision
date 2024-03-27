@@ -6,6 +6,8 @@ import ImagePovi from "@/components/Film/ImagePovi";
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
 import { setEpisode } from "@/redux/slices/episodeSlice";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function EpisodeCard({
   className,
@@ -19,21 +21,34 @@ export default function EpisodeCard({
   overlay,
 }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <button
       onClick={() => {
-        getEpisodeModal({
-          filmID,
-          season: episode.season_number,
-          eps: episode.episode_number,
-        }).then((res) => {
-          setLoading(false);
+        // getEpisodeModal({
+        //   filmID,
+        //   season: episode.season_number,
+        //   eps: episode.episode_number,
+        // }).then((res) => {
+        //   setLoading(false);
 
-          // Redux Toolkit
-          dispatch(setEpisode(episode));
-        });
+        //   // Redux Toolkit
+        //   dispatch(setEpisode(episode));
+        // });
+
+        router.push(
+          `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
+          {
+            scroll: false,
+          },
+        );
       }}
+      // href={{
+      //   pathname,
+      //   query: { season: episode.season_number, episode: episode.episode_number },
+      // }}
       className={`flex h-fit w-full flex-col items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${className}`}
     >
       <ImagePovi

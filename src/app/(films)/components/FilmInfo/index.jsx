@@ -184,8 +184,7 @@ export default function FilmInfo({
                       {`${film.number_of_seasons} ${isPlural({
                         text: "Season",
                         number: film.number_of_seasons,
-                      })}`}
-
+                      })}`}{" "}
                       {`(${film.number_of_episodes} ${isPlural({
                         text: "Episode",
                         number: film.number_of_episodes,

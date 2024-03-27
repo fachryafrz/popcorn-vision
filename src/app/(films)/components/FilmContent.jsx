@@ -9,7 +9,11 @@ import ShareModal from "./ShareModal";
 import { EpisodeModal } from "./EpisodeModal";
 import PersonModal from "./PersonModal";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useSearchParams } from "next/navigation";
+import { getEpisodeModal, getPerson } from "@/lib/fetch";
+import { setPerson } from "@/redux/slices/personSlice";
+import { setEpisode } from "@/redux/slices/episodeSlice";
 
 export default function FilmContent({
   film,
@@ -22,10 +26,33 @@ export default function FilmContent({
   isTvPage,
   releaseDates,
 }) {
+  const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+
   const episodeForModal = useSelector((state) => state.episode.value);
   const personForModal = useSelector((state) => state.person.value);
 
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (searchParams.get("person")) {
+      getPerson({ id: searchParams.get("person") }).then((res) => {
+        // Redux Toolkit
+        dispatch(setPerson(res));
+      });
+    }
+
+    if (searchParams.get("season") && searchParams.get("episode")) {
+      getEpisodeModal({
+        filmID: film.id,
+        season: searchParams.get("season"),
+        eps: searchParams.get("episode"),
+      }).then((res) => {
+        // Redux Toolkit
+        dispatch(setEpisode(res));
+      });
+    }
+  }, [dispatch, film, searchParams]);
 
   useEffect(() => {
     if (episodeForModal) {

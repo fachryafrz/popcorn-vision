@@ -7,6 +7,8 @@ import ImagePovi from "@/components/Film/ImagePovi";
 // Redux Toolkit
 import { useDispatch } from "react-redux";
 import { setPerson } from "@/redux/slices/personSlice";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Person({
   id,
@@ -17,19 +19,32 @@ export default function Person({
   tooltip = false,
 }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const pathname = usePathname();
 
   let profilePath = profile_path;
 
   const handleActorClick = () => {
-    getPerson({ id }).then((res) => {
-      // Redux Toolkit
-      dispatch(setPerson(res));
+    // getPerson({ id }).then((res) => {
+    //   // Redux Toolkit
+    //   dispatch(setPerson(res));
+    // });
+
+    router.push(`${pathname}/?person=${id}`, {
+      scroll: false,
     });
   };
 
   return (
     <button
       onClick={personRole != `author` ? () => handleActorClick() : null}
+      // href={{
+      //   pathname,
+      //   query: { person: id },
+      // }}
+      // as={{
+      //   pathname: `/person/${id}`,
+      // }}
       className={`flex min-w-[120px] flex-row items-center gap-2 text-start ${
         personRole != `author`
           ? `rounded-[2rem] p-2 pr-8 transition-all hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur`

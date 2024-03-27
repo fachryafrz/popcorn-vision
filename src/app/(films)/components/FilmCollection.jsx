@@ -226,9 +226,9 @@ function FilmSeason({ film, item, index, setLoading }) {
     }
   };
 
-  useEffect(() => {
-    setViewSeason(false);
-  }, [film]);
+  // useEffect(() => {
+  //   setViewSeason(false);
+  // }, [film]);
 
   return (
     <>

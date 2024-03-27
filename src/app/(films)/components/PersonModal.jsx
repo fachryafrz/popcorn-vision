@@ -13,6 +13,7 @@ import { setPerson } from "@/redux/slices/personSlice";
 
 export default function PersonModal({ person }) {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const episodeForModal = useSelector((state) => state.episode.value);
 
@@ -25,6 +26,8 @@ export default function PersonModal({ person }) {
 
   const handleCloseModal = () => {
     document.getElementById(`personModal`).close();
+    router.back();
+
     if (episodeForModal) {
       document.getElementById(`episodeModal`).showModal();
     }
