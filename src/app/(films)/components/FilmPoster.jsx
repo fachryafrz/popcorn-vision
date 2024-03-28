@@ -130,8 +130,9 @@ export default function FilmPoster({ film, videos, images, reviews }) {
           <span
             className={`btn pointer-events-none rounded-full border-transparent bg-primary-blue bg-opacity-10 text-primary-blue backdrop-blur-sm`}
           >
-            {film.status === "Canceled" ||
-              (film.status === "In Production" && (
+            {film.status !== "Canceled" ||
+              film.status !== "Ended" ||
+              (film.status !== "Pilot" && (
                 <span className="loading loading-infinity w-[2rem]"></span>
               ))}
 
