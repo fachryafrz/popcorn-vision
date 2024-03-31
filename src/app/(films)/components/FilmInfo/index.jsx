@@ -247,58 +247,59 @@ export default function FilmInfo({
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
 
           {/* Countdown */}
-          <section
-            id={`Countdown`}
-            className={`mt-2 grid gap-2 xl:grid-cols-2`}
-          >
-            {lastEps && nextEps && (
-              <div
-                id={`TV Series Last Episode`}
-                className={`flex flex-col gap-2`}
-              >
-                <Reveal>
-                  <LastEpisode
-                    film={film}
-                    lastEps={lastEps}
-                    nextEps={nextEps}
-                    setLoading={setLoading}
-                  />
-                </Reveal>
-              </div>
-            )}
+          {filmReleaseDate !== "" && (
+            <section
+              id={`Countdown`}
+              className={`mt-2 grid gap-2 xl:grid-cols-2`}
+            >
+              {lastEps && nextEps && (
+                <div
+                  id={`TV Series Last Episode`}
+                  className={`flex flex-col gap-2`}
+                >
+                  <Reveal>
+                    <LastEpisode
+                      film={film}
+                      lastEps={lastEps}
+                      nextEps={nextEps}
+                      setLoading={setLoading}
+                    />
+                  </Reveal>
+                </div>
+              )}
 
-            {nextEps && (
-              <div
-                id={`TV Series Next Episode`}
-                className={`flex flex-col gap-2`}
-              >
-                <Reveal>
-                  <NextEpisode
-                    film={film}
-                    nextEps={nextEps}
-                    setLoading={setLoading}
-                  />
-                </Reveal>
-              </div>
-            )}
+              {nextEps && (
+                <div
+                  id={`TV Series Next Episode`}
+                  className={`flex flex-col gap-2`}
+                >
+                  <Reveal>
+                    <NextEpisode
+                      film={film}
+                      nextEps={nextEps}
+                      setLoading={setLoading}
+                    />
+                  </Reveal>
+                </div>
+              )}
 
-            {isUpcoming && (
-              <div
-                id={`Countdown`}
-                className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : ``}`}
-              >
-                <Countdown
-                  isTvPage={isTvPage}
-                  filmReleaseDate={filmReleaseDate}
-                  nextEps={nextEps}
-                  film={film}
-                />
-              </div>
-            )}
-          </section>
+              {isUpcoming && (
+                <div
+                  className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : ``}`}
+                >
+                  <Countdown
+                    isTvPage={isTvPage}
+                    filmReleaseDate={filmReleaseDate}
+                    nextEps={nextEps}
+                    film={film}
+                  />
+                </div>
+              )}
+            </section>
+          )}
 
           {/* User Rating */}
-          {user && !isUpcoming && (
+          {user && !isUpcoming && filmReleaseDate !== "" && (
             <Reveal className={`mt-2`}>
               <section id={`User Rating`} className={`max-w-fit`}>
                 <UserRating
