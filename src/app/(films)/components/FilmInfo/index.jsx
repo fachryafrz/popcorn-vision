@@ -283,12 +283,17 @@ export default function FilmInfo({
             )}
 
             {isUpcoming && (
-              <Countdown
-                isTvPage={isTvPage}
-                filmReleaseDate={filmReleaseDate}
-                nextEps={nextEps}
-                film={film}
-              />
+              <div
+                id={`Countdown`}
+                className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : ``}`}
+              >
+                <Countdown
+                  isTvPage={isTvPage}
+                  filmReleaseDate={filmReleaseDate}
+                  nextEps={nextEps}
+                  film={film}
+                />
+              </div>
             )}
           </section>
 

@@ -50,13 +50,11 @@ export default function Countdown({
     }, 1000);
 
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [date]);
 
   return (
-    <div
-      className={`flex flex-wrap justify-start gap-2 text-center ${isTvPage ? `xl:col-[2/3]` : ``}`}
-    >
+    <div className={`flex flex-wrap justify-start gap-2 text-center`}>
       {countdown.years > 0 && (
         <Reveal>
           <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
