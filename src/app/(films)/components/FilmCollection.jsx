@@ -42,35 +42,9 @@ export default function FilmCollection({ film, setLoading, collection }) {
   const [collections, setCollections] = useState(sortedCollections);
   const [showAllCollection, setShowAllCollection] = useState(false);
   const [viewSeason, setViewSeason] = useState(false);
-  const numCollection = 3;
+  const numCollection = 5;
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-
-  const handleShowAllCollection = () => {
-    setShowAllCollection(true);
-  };
-
-  const handleViewSeason = () => {
-    setViewSeason(!viewSeason);
-  };
-
-  // useEffect(() => {
-  //   if (film.belongs_to_collection) {
-  //     getFilmCollection({ film }).then((res) => {
-  //       setApiData(res);
-  //       setCollectionTitle(res.name);
-  //       const sortedCollections = res.parts.sort((a, b) => {
-  //         const dateA = new Date(a.release_date);
-  //         const dateB = new Date(b.release_date);
-
-  //         return dateA - dateB;
-  //       });
-  //       setCollections(sortedCollections);
-  //     });
-  //   }
-
-  //   setShowAllCollection(false);
-  // }, [film]);
 
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
@@ -126,7 +100,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
               showAllCollection ? "hidden" : "flex"
             }`}
           >
-            <button onClick={handleShowAllCollection}>
+            <button onClick={() => setShowAllCollection(true)}>
               View all collection
             </button>
           </div>

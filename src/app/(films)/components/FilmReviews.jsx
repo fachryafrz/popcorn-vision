@@ -8,7 +8,7 @@ export default function FilmReviews({ reviews, film }) {
   let [currentPage, setCurrentPage] = useState(1);
   const [moreReviews, setMoreReviews] = useState(reviews.results);
   const [showAllReviews, setShowAllReviews] = useState(false);
-  const numReviews = 2;
+  const numReviews = 5;
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
