@@ -1,8 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
-import { calendarOutline, close, timeOutline, tvOutline } from "ionicons/icons";
+import {
+  calendarOutline,
+  chevronBack,
+  chevronForward,
+  close,
+  timeOutline,
+  tvOutline,
+} from "ionicons/icons";
 import Person from "./Person";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { formatDate } from "@/lib/formatDate";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
@@ -11,11 +18,16 @@ import ImagePovi from "@/components/Film/ImagePovi";
 // Redux Toolkit
 import { useSelector, useDispatch } from "react-redux";
 import { setEpisode } from "@/redux/slices/episodeSlice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export function EpisodeModal({ episode }) {
+export function EpisodeModal({ seasons, episode }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const seasonParams = searchParams.get("season");
+  const episodeParams = searchParams.get("episode");
+  const dialogRef = useRef(null);
 
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
@@ -24,12 +36,70 @@ export function EpisodeModal({ episode }) {
     setShowAllGuestStars(true);
   };
 
+  const scrollToTop = () => {
+    const dialogElement = dialogRef.current;
+
+    dialogElement.scrollTo({
+      top: 0,
+      behavior: `smooth`,
+    });
+  };
+
+  const filteredSeasons = seasons.filter((item) => item.season_number > 0);
+
+  const handlePrevEpisode = () => {
+    if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
+      router.push(
+        `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
+        {
+          scroll: false,
+        },
+      );
+      return;
+    }
+
+    router.push(
+      `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
+      {
+        scroll: false,
+      },
+    );
+
+    scrollToTop();
+
+    // document.getElementById(`episodeModal`).close();
+  };
+
+  const handleNextEpisode = () => {
+    if (
+      parseInt(episodeParams) ===
+      filteredSeasons[seasonParams - 1]?.episode_count
+    ) {
+      router.push(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
+        scroll: false,
+      });
+      return;
+    }
+
+    router.push(
+      `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
+      {
+        scroll: false,
+      },
+    );
+
+    scrollToTop();
+
+    // document.getElementById(`episodeModal`).close();
+  };
+
   useEffect(() => {
     setShowAllGuestStars(false);
   }, [episode]);
 
   return (
     <dialog
+      ref={dialogRef}
       id={`episodeModal`}
       className={`modal modal-bottom place-items-center overflow-y-auto backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur`}
     >
@@ -40,7 +110,7 @@ export function EpisodeModal({ episode }) {
           <button
             onClick={() => {
               document.getElementById(`episodeModal`).close();
-              router.back();
+              router.push(pathname, { scroll: false });
               setTimeout(() => {
                 // Redux Toolkit
                 dispatch(setEpisode(null));
@@ -64,7 +134,7 @@ export function EpisodeModal({ episode }) {
           >
             {episode.still_path && (
               <img
-                src={`https://image.tmdb.org/t/p/original${episode.still_path}`}
+                src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
                 alt={episode.name}
                 className={`pointer-events-none object-cover`}
               />
@@ -181,6 +251,36 @@ export function EpisodeModal({ episode }) {
             )}
           </div>
         </div>
+
+        {/* Pagination */}
+        <Suspense>
+          <div
+            className={`pointer-events-none inset-0 mt-4 grid grid-cols-2 gap-2 lg:fixed lg:mx-auto lg:flex lg:items-center lg:justify-between lg:p-4 lg:pr-8 [&_button]:pointer-events-auto`}
+          >
+            <button
+              onClick={handlePrevEpisode}
+              disabled={
+                parseInt(seasonParams) === 1 && parseInt(episodeParams) === 1
+              }
+              className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
+            >
+              <IonIcon icon={chevronBack} className={`text-lg`} />
+              <span>Previous</span>
+            </button>
+            <button
+              onClick={handleNextEpisode}
+              disabled={
+                parseInt(seasonParams) === filteredSeasons.length &&
+                parseInt(episodeParams) ===
+                  filteredSeasons[seasonParams - 1]?.episode_count
+              }
+              className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
+            >
+              <span>Next</span>
+              <IonIcon icon={chevronForward} className={`text-lg`} />
+            </button>
+          </div>
+        </Suspense>
       </div>
 
       {/* <form method={`dialog`} className={`modal-backdrop`}>

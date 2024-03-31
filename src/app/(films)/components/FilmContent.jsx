@@ -131,6 +131,7 @@ export default function FilmContent({
           {isTvPage && episodeForModal && (
             <EpisodeModal
               episode={episodeForModal}
+              seasons={film.seasons}
               person={personForModal}
               loading={loading}
             />
