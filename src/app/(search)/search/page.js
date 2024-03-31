@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import Search from "./Search";
 import { fetchData } from "@/lib/fetch";
 
@@ -58,14 +58,12 @@ export default async function page() {
   const maxYear = new Date(fetchMaxYear[0].release_date).getFullYear();
 
   return (
-    <Suspense>
-      <Search
-        type={`movie`}
-        genresData={movieGenresData}
-        languagesData={languagesData}
-        minYear={minYear}
-        maxYear={maxYear > defaultMaxYear ? defaultMaxYear : maxYear}
-      />
-    </Suspense>
+    <Search
+      type={`movie`}
+      genresData={movieGenresData}
+      languagesData={languagesData}
+      minYear={minYear}
+      maxYear={maxYear > defaultMaxYear ? defaultMaxYear : maxYear}
+    />
   );
 }

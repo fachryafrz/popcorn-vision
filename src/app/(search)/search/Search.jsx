@@ -5,7 +5,14 @@ import { fetchData } from "@/lib/fetch";
 import FilmCard from "@/components/Film/FilmCard";
 import { IonIcon } from "@ionic/react";
 import { closeCircle, filter } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+  useRef,
+  Suspense,
+} from "react";
 import Select from "react-select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
@@ -279,43 +286,45 @@ export default function Search({
 
   return (
     <div className={`flex lg:px-4`}>
-      <Filters
-        type={type}
-        isQueryParams={isQueryParams}
-        router={router}
-        pathname={pathname}
-        searchParams={searchParams}
-        current={current}
-        inputStyles={inputStyles}
-        setNotAvailable={setNotAvailable}
-        sortByOrderOptions={sortByOrderOptions}
-        sortByTypeOptions={sortByTypeOptions}
-        setLoading={setLoading}
-        setFilms={setFilms}
-        genresData={genresData}
-        // setGenresData={setGenresData}
-        setTotalSearchPages={setTotalSearchPages}
-        setCurrentSearchPage={setCurrentSearchPage}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        setNotFoundMessage={setNotFoundMessage}
-        sortByType={sortByType}
-        setSortByType={setSortByType}
-        sortByOrder={sortByOrder}
-        setSortByOrder={setSortByOrder}
-        isFilterActive={isFilterActive}
-        setIsFilterActive={setIsFilterActive}
-        releaseDate={releaseDate}
-        setReleaseDate={setReleaseDate}
-        minYear={minYear}
-        // setMinYear={setMinYear}
-        maxYear={maxYear}
-        // setMaxYear={setMaxYear}
-        searchAPIParams={searchAPIParams}
-        languagesData={languagesData}
-        totalSearchResults={totalSearchResults}
-        setTotalSearchResults={setTotalSearchResults}
-      />
+      <Suspense>
+        <Filters
+          type={type}
+          isQueryParams={isQueryParams}
+          router={router}
+          pathname={pathname}
+          searchParams={searchParams}
+          current={current}
+          inputStyles={inputStyles}
+          setNotAvailable={setNotAvailable}
+          sortByOrderOptions={sortByOrderOptions}
+          sortByTypeOptions={sortByTypeOptions}
+          setLoading={setLoading}
+          setFilms={setFilms}
+          genresData={genresData}
+          // setGenresData={setGenresData}
+          setTotalSearchPages={setTotalSearchPages}
+          setCurrentSearchPage={setCurrentSearchPage}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          setNotFoundMessage={setNotFoundMessage}
+          sortByType={sortByType}
+          setSortByType={setSortByType}
+          sortByOrder={sortByOrder}
+          setSortByOrder={setSortByOrder}
+          isFilterActive={isFilterActive}
+          setIsFilterActive={setIsFilterActive}
+          releaseDate={releaseDate}
+          setReleaseDate={setReleaseDate}
+          minYear={minYear}
+          // setMinYear={setMinYear}
+          maxYear={maxYear}
+          // setMaxYear={setMaxYear}
+          searchAPIParams={searchAPIParams}
+          languagesData={languagesData}
+          totalSearchResults={totalSearchResults}
+          setTotalSearchResults={setTotalSearchResults}
+        />
+      </Suspense>
 
       <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
         {/* Options */}
@@ -402,60 +411,62 @@ export default function Search({
 
             <div className={`flex flex-wrap items-center gap-1 sm:flex-nowrap`}>
               {/* Clear all filters */}
-              <div
-                className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
-              >
-                {searchParams.get("status") ||
-                searchParams.get("type") ||
-                searchParams.get("release_date") ||
-                searchParams.get("with_genres") ||
-                searchParams.get("with_original_language") ||
-                searchParams.get("watch_providers") ||
-                searchParams.get("with_networks") ||
-                searchParams.get("with_cast") ||
-                searchParams.get("with_crew") ||
-                searchParams.get("with_keywords") ||
-                searchParams.get("with_companies") ||
-                searchParams.get("vote_count") ||
-                searchParams.get("with_runtime") ||
-                searchParams.get("sort_by") ? (
-                  <button
-                    onClick={() => {
-                      setTimeout(() => {
-                        //   setSearchQuery("");
-                        //   setStatus([]);
-                        //   setTvType([]);
-                        //   setReleaseDate([minYear, maxYear]);
-                        //   setReleaseDateSlider([minYear, maxYear]);
-                        //   setGenre(null);
-                        //   setLanguage(null);
-                        //   setCast(null);
-                        //   setCrew(null);
-                        //   setKeyword(null);
-                        //   setCompany(null);
-                        //   setRating([0, 100]);
-                        //   setRatingSlider([0, 100]);
-                        //   setRuntime([0, 300]);
-                        //   setRuntimeSlider([0, 300]);
-                        setSortByType(sortByTypeOptions[0]);
-                        setSortByOrder(sortByOrderOptions[1]);
-                      }, 1000);
+              <Suspense>
+                <div
+                  className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
+                >
+                  {searchParams.get("status") ||
+                  searchParams.get("type") ||
+                  searchParams.get("release_date") ||
+                  searchParams.get("with_genres") ||
+                  searchParams.get("with_original_language") ||
+                  searchParams.get("watch_providers") ||
+                  searchParams.get("with_networks") ||
+                  searchParams.get("with_cast") ||
+                  searchParams.get("with_crew") ||
+                  searchParams.get("with_keywords") ||
+                  searchParams.get("with_companies") ||
+                  searchParams.get("vote_count") ||
+                  searchParams.get("with_runtime") ||
+                  searchParams.get("sort_by") ? (
+                    <button
+                      onClick={() => {
+                        setTimeout(() => {
+                          //   setSearchQuery("");
+                          //   setStatus([]);
+                          //   setTvType([]);
+                          //   setReleaseDate([minYear, maxYear]);
+                          //   setReleaseDateSlider([minYear, maxYear]);
+                          //   setGenre(null);
+                          //   setLanguage(null);
+                          //   setCast(null);
+                          //   setCrew(null);
+                          //   setKeyword(null);
+                          //   setCompany(null);
+                          //   setRating([0, 100]);
+                          //   setRatingSlider([0, 100]);
+                          //   setRuntime([0, 300]);
+                          //   setRuntimeSlider([0, 300]);
+                          setSortByType(sortByTypeOptions[0]);
+                          setSortByOrder(sortByOrderOptions[1]);
+                        }, 1000);
 
-                      router.push(`${pathname}`);
-                      // router.refresh();
-                      // defaultFilms();
-                    }}
-                    className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
-                  >
-                    <IonIcon icon={closeCircle} className={`text-xl`} />
-                    <span className={`whitespace-nowrap text-sm`}>
-                      Clear all filters
-                    </span>
-                  </button>
-                ) : (
-                  <span>No filter selected</span>
-                )}
-              </div>
+                        router.push(`${pathname}`);
+                        // router.refresh();
+                        // defaultFilms();
+                      }}
+                      className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
+                    >
+                      <IonIcon icon={closeCircle} className={`text-xl`} />
+                      <span className={`whitespace-nowrap text-sm`}>
+                        Clear all filters
+                      </span>
+                    </button>
+                  ) : (
+                    <span>No filter selected</span>
+                  )}
+                </div>
+              </Suspense>
 
               {/* Filter button */}
               <button
