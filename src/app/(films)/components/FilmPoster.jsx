@@ -87,7 +87,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
   return (
     <Reveal key={filmPoster} y={0} className={`w-full`}>
-      <div className="sticky top-20 flex w-full flex-col gap-4">
+      <div className="sticky top-20 flex w-full flex-col gap-2">
         <ImagePovi
           imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
           className={`relative aspect-poster w-full self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
@@ -130,11 +130,11 @@ export default function FilmPoster({ film, videos, images, reviews }) {
           <span
             className={`btn pointer-events-none rounded-full border-transparent bg-primary-blue bg-opacity-10 text-primary-blue backdrop-blur-sm`}
           >
-            {film.status !== "Canceled" ||
-              film.status !== "Ended" ||
-              (film.status !== "Pilot" && (
+            {film.status !== "Canceled" &&
+              film.status !== "Ended" &&
+              film.status !== "Pilot" && (
                 <span className="loading loading-infinity w-[2rem]"></span>
-              ))}
+              )}
 
             {film.status}
           </span>
