@@ -1,12 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
 import { useAuth } from "@/hooks/auth";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {
+  const router = useRouter();
+
   const { logout } = useAuth();
 
   const [profileImage, setProfileImage] = useState(null);
+
+  const handleProfile = async () => {
+    await axios
+      .get(`/api/revalidate`, {
+        params: { path: "/profile" },
+      })
+      .then(({ data: { revalidated, path } }) => {
+        if (revalidated) {
+          router.push(path);
+        }
+      });
+  };
 
   useEffect(() => {
     const { avatar } = user;
@@ -52,9 +68,9 @@ export default function LogoutButton({ user }) {
         className="menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 shadow"
       >
         <li>
-          <Link href={`/profile`}>
+          <button onClick={handleProfile}>
             <span>Profile</span>
-          </Link>
+          </button>
         </li>
         <li>
           <button onClick={logout}>

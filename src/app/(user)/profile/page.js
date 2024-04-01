@@ -6,7 +6,6 @@ import { fetchData } from "@/lib/fetch";
 import TileList from "./components/TileList";
 
 export const revalidate = 0;
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata() {
   const cookiesStore = cookies();
