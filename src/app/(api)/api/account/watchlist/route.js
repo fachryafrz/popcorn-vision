@@ -9,11 +9,21 @@ export async function POST(req) {
   try {
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/account/${user_id}/watchlist`,
+      { watchlist, media_type, media_id },
       {
-        watchlist,
-        media_type,
-        media_id,
+        params: {
+          api_key: process.env.API_KEY,
+          session_id: cookiesStore.get("tmdb.session_id").value,
+        },
       },
+    );
+  } catch (error) {
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
+  } finally {
+    const { data } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/${media_type}/${media_id}/account_states`,
       {
         params: {
           api_key: process.env.API_KEY,
@@ -23,9 +33,5 @@ export async function POST(req) {
     );
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
   }
 }

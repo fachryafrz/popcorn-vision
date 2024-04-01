@@ -21,35 +21,26 @@ export default function WatchlistButton({ film, getAccountStates, watchlist }) {
     try {
       setIsLoading(true);
 
-      await axios.post(`/api/account/watchlist`, {
-        user_id: user.id,
-        media_type: !isTvPage ? "movie" : "tv",
-        media_id: film.id,
-        watchlist: watchlist,
-      });
+      await axios
+        .post(`/api/account/watchlist`, {
+          user_id: user.id,
+          media_type: !isTvPage ? "movie" : "tv",
+          media_id: film.id,
+          watchlist: watchlist,
+        })
+        .then(({ data: { watchlist } }) => {
+          setIsLoading(false);
+          setIsAdded(watchlist);
+        });
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       // Handle errors appropriately (e.g., display error message to user)
-    } finally {
-      getAccountStates({
-        setValue: setIsAdded,
-        setIsLoading,
-        type: "watchlist",
-      });
     }
   };
 
   useEffect(() => {
     setIsAdded(watchlist);
   }, [watchlist]);
-
-  // useEffect(() => {
-  //   getAccountStates({
-  //     setValue: setIsAdded,
-  //     setIsLoading,
-  //     type: "watchlist",
-  //   });
-  // }, [getAccountStates]);
 
   return (
     <button

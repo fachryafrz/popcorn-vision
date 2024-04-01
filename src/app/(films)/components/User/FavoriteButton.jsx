@@ -19,35 +19,26 @@ export default function FavoriteButton({ film, getAccountStates, favorite }) {
     try {
       setIsLoading(true);
 
-      await axios.post(`/api/account/favorite`, {
-        user_id: user.id,
-        media_type: !isTvPage ? "movie" : "tv",
-        media_id: film.id,
-        favorite: favorite,
-      });
+      await axios
+        .post(`/api/account/favorite`, {
+          user_id: user.id,
+          media_type: !isTvPage ? "movie" : "tv",
+          media_id: film.id,
+          favorite: favorite,
+        })
+        .then(({ data: { favorite } }) => {
+          setIsLoading(false);
+          setIsAdded(favorite);
+        });
     } catch (error) {
       console.error("Error adding to favorite:", error);
       // Handle errors appropriately (e.g., display error message to user)
-    } finally {
-      getAccountStates({
-        setValue: setIsAdded,
-        setIsLoading,
-        type: "favorite",
-      });
     }
   };
 
   useEffect(() => {
     setIsAdded(favorite);
   }, [favorite]);
-
-  // useEffect(() => {
-  //   getAccountStates({
-  //     setValue: setIsAdded,
-  //     setIsLoading,
-  //     type: "favorite",
-  //   });
-  // }, [getAccountStates]);
 
   return (
     <button

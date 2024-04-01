@@ -18,21 +18,20 @@ export default function UserRating({ film, getAccountStates, rating }) {
     try {
       setIsLoading(true);
 
-      await axios.post(`/api/account/rating`, {
-        type: !isTvPage ? "movie" : "tv",
-        id: film.id,
-        rating: value,
-      });
+      await axios
+        .post(`/api/account/rating`, {
+          type: !isTvPage ? "movie" : "tv",
+          id: film.id,
+          rating: value,
+        })
+        .then(({ data: { rated } }) => {
+          setIsLoading(false);
+          setIsAdded(rated);
+          setHoverRating(rated);
+        });
     } catch (error) {
       console.error("Error adding rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
-    } finally {
-      getAccountStates({
-        setValue: setIsAdded,
-        setHoverValue: setHoverRating,
-        setIsLoading,
-        type: "rating",
-      });
     }
   };
 
@@ -40,22 +39,21 @@ export default function UserRating({ film, getAccountStates, rating }) {
     try {
       setIsLoading(true);
 
-      await axios.delete(`/api/account/rating`, {
-        params: {
-          id: film.id,
-          type: !isTvPage ? `movie` : `tv`,
-        },
-      });
+      await axios
+        .delete(`/api/account/rating`, {
+          params: {
+            id: film.id,
+            type: !isTvPage ? `movie` : `tv`,
+          },
+        })
+        .then(({ data: { rated } }) => {
+          setIsLoading(false);
+          setIsAdded(rated);
+          setHoverRating(rated);
+        });
     } catch (error) {
       console.error("Error deleting rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
-    } finally {
-      getAccountStates({
-        setValue: setIsAdded,
-        setHoverValue: setHoverRating,
-        setIsLoading,
-        type: "rating",
-      });
     }
   };
 
