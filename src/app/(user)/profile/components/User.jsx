@@ -40,7 +40,11 @@ export default function User({ user }) {
       ) : (
         <figure className="avatar">
           <div className="w-[100px] rounded-full md:w-[150px]">
-            <img src={profileImage} alt={user.name} />
+            <img
+              src={profileImage}
+              alt={user.name}
+              className={`pointer-events-none`}
+            />
           </div>
         </figure>
       )}
