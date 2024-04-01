@@ -51,11 +51,11 @@ export default function LogoutButton({ user }) {
         tabIndex={0}
         className="menu dropdown-content rounded-box z-[1] mt-2 w-52 bg-base-100 p-2 shadow"
       >
-        {/* <li>
+        <li>
           <Link href={`/profile`}>
             <span>Profile</span>
           </Link>
-        </li> */}
+        </li>
         <li>
           <button onClick={logout}>
             <span>Logout</span>

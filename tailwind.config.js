@@ -73,6 +73,7 @@ module.exports = {
   plugins: [
     require("daisyui"),
     require("@tailwindcss/typography"),
+    require("@tailwindcss/container-queries"),
     plugin(function ({ addVariant }) {
       addVariant("hocus", ["&:hover", "&:focus"]);
       [...Array(24).keys()].forEach((i) => {

@@ -8,5 +8,7 @@ export default function UserLayout({ children }) {
     middleware: "auth",
   });
 
-  return <main>{children}</main>;
+  if (user) {
+    return <div>{children}</div>;
+  }
 }

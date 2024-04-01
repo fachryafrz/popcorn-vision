@@ -1,4 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
 
 import { IonIcon } from "@ionic/react";
 import {
@@ -110,27 +111,42 @@ export default function FilmCollection({ film, setLoading, collection }) {
   );
 }
 
-function CollectionItem({ film, item, index }) {
+export function CollectionItem({
+  film = null,
+  item,
+  index,
+  type = "movie",
+  shouldFetch = true,
+}) {
   const [filmDetails, setFilmDetails] = useState();
+
+  const isTv = type === "tv";
+  const filmTitle = !isTv ? item.title : item.name;
+  const filmRuntime = !isTv
+    ? filmDetails?.runtime
+    : filmDetails?.episode_run_time.length > 0 &&
+      filmDetails?.episode_run_time[0];
 
   useEffect(() => {
     const fetchFilmDetails = async () => {
       await fetchData({
-        endpoint: `/movie/${item.id}`,
+        endpoint: `/${type}/${item.id}`,
       }).then((res) => {
         setFilmDetails(res);
       });
     };
 
-    fetchFilmDetails();
-  }, [item]);
+    if (shouldFetch) {
+      fetchFilmDetails();
+    }
+  }, [item, shouldFetch, type]);
 
   return (
     <article>
       <Link
-        href={`/movies/${item.id}-${slugify(item.title)}`}
-        className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
-          film.id === item.id && `!bg-primary-blue !bg-opacity-30`
+        href={`/${type === "movie" ? "movies" : "tv"}/${item.id}-${slugify(filmTitle)}`}
+        className={`@container flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
+          film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}
       >
         <span className={`px-1 text-sm font-medium text-gray-400`}>
@@ -146,10 +162,10 @@ function CollectionItem({ film, item, index }) {
         <div className="flex w-full flex-col items-start gap-1">
           <h3
             className="line-clamp-2 text-start font-medium"
-            title={item.title}
+            title={filmTitle}
             style={{ textWrap: "balance" }}
           >
-            {item.title}
+            {filmTitle}
           </h3>
           <div
             className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
@@ -163,18 +179,18 @@ function CollectionItem({ film, item, index }) {
               </span>
             )}
 
-            {filmDetails && (
+            {filmDetails && filmRuntime > 0 && (
               <span
                 className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
-                {formatRuntime(filmDetails.runtime)}
+                {formatRuntime(filmRuntime)}
               </span>
             )}
           </div>
         </div>
         <p
           title={item.overview}
-          className="line-clamp-3 w-full text-xs text-gray-400"
+          className="@xs:line-clamp-3 hidden w-full text-xs text-gray-400"
         >
           {item.overview}
         </p>
