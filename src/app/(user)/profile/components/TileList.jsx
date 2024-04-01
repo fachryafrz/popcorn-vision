@@ -9,10 +9,10 @@ import { useInView } from "react-intersection-observer";
 
 export default function TileList({
   title,
+  section,
   films,
   type = "movie",
   user,
-  className,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -29,7 +29,7 @@ export default function TileList({
 
       // NOTE: Session ID still visible in the Network DevTools
       const response = await fetchData({
-        endpoint: `/account/${user.id}/${title.toLowerCase()}/${type === "movie" ? "movies" : "tv"}`,
+        endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
         queryParams: {
           language: "en-US",
           page: nextPage,
@@ -60,8 +60,8 @@ export default function TileList({
   }, [inView]);
 
   return (
-    <section className={className}>
-      <h2 className={`mb-2 text-center text-lg font-bold md:text-2xl`}>
+    <section className={`rounded-xl bg-gray-400 bg-opacity-5 p-2 py-4`}>
+      <h2 className={`mb-4 text-center text-lg font-bold md:text-2xl`}>
         {title}
       </h2>
 
