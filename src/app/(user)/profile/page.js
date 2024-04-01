@@ -108,6 +108,24 @@ export default async function page() {
     },
   });
 
+  // const fetchFilmsData = async ({ type = "movie", section, films }) => {
+  //   const data = await Promise.all(
+  //     films.results.map(async (item) => {
+  //       const filmData = await fetchData({
+  //         endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
+  //         queryParams: {
+  //           session_id: cookiesStore.get("tmdb.session_id").value,
+  //           sort_by: "created_at.desc",
+  //         },
+  //       });
+
+  //       return filmData;
+  //     }),
+  //   );
+
+  //   return data;
+  // };
+
   return (
     <>
       <User user={user} />

@@ -68,7 +68,12 @@ export default function TileList({
       <ul className={`flex flex-col gap-1`}>
         {filmsData.map((film, i) => (
           <li key={film.id}>
-            <CollectionItem index={i} item={film} type={type} />
+            <CollectionItem
+              index={i}
+              item={film}
+              type={type}
+              shouldFetch={false}
+            />
           </li>
         ))}
 

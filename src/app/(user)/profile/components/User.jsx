@@ -28,14 +28,26 @@ export default function User({ user }) {
   if (!user) return;
 
   return (
-    <div className={`flex items-center justify-center gap-8`}>
-      <figure className={`max-w-[200px] overflow-hidden rounded-full pointer-events-none`}>
-        <img src={profileImage} alt={user.name} />
-      </figure>
+    <div
+      className={`flex flex-col items-center justify-center gap-4 text-center md:flex-row md:text-start`}
+    >
+      {!profileImage ? (
+        <div className="avatar placeholder">
+          <div className="w-[100px] rounded-full bg-base-200 text-neutral-content md:w-[150px]">
+            <span className="text-7xl">{user.username.slice(0, 2)}</span>
+          </div>
+        </div>
+      ) : (
+        <figure className="avatar">
+          <div className="w-[100px] rounded-full md:w-[150px]">
+            <img src={profileImage} alt={user.name} />
+          </div>
+        </figure>
+      )}
 
       <div className={`flex flex-col gap-2`}>
-        <h1 className={`text-5xl font-bold`}>{user.username}</h1>
-        <span className={`text-2xl font-medium text-gray-400`}>
+        <h1 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h1>
+        <span className={`text-md font-medium text-gray-400 md:text-xl`}>
           {user.name}
         </span>
       </div>

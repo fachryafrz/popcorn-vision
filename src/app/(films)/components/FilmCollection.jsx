@@ -111,7 +111,13 @@ export default function FilmCollection({ film, setLoading, collection }) {
   );
 }
 
-export function CollectionItem({ film = null, item, index, type = "movie" }) {
+export function CollectionItem({
+  film = null,
+  item,
+  index,
+  type = "movie",
+  shouldFetch = true,
+}) {
   const [filmDetails, setFilmDetails] = useState();
 
   const isTv = type === "tv";
@@ -130,14 +136,16 @@ export function CollectionItem({ film = null, item, index, type = "movie" }) {
       });
     };
 
-    fetchFilmDetails();
-  }, [item, type]);
+    if (shouldFetch) {
+      fetchFilmDetails();
+    }
+  }, [item, shouldFetch, type]);
 
   return (
     <article>
       <Link
         href={`/${type === "movie" ? "movies" : "tv"}/${item.id}-${slugify(filmTitle)}`}
-        className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
+        className={`@container flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
           film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}
       >
@@ -182,7 +190,7 @@ export function CollectionItem({ film = null, item, index, type = "movie" }) {
         </div>
         <p
           title={item.overview}
-          className="line-clamp-3 w-full text-xs text-gray-400"
+          className="@xs:line-clamp-3 hidden w-full text-xs text-gray-400"
         >
           {item.overview}
         </p>
