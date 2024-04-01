@@ -8,5 +8,5 @@ export default function UserLayout({ children }) {
     middleware: "auth",
   });
 
-  return <main>{children}</main>;
+  return <div>{children}</div>;
 }
