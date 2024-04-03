@@ -17,10 +17,10 @@ export default function FilmReviews({ reviews, film }) {
     setShowAllReviews(true);
   };
 
-  useEffect(() => {
-    setCurrentPage(1);
-    setShowAllReviews(false);
-  }, [film]);
+  // useEffect(() => {
+  //   setCurrentPage(1);
+  //   setShowAllReviews(false);
+  // }, [film]);
 
   return (
     <div id="reviews" className="relative flex flex-col gap-2">
