@@ -7,6 +7,7 @@ import RatingStars from "./RatingStars";
 import Person from "./Person";
 import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
+import moment from "moment";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -40,63 +41,13 @@ export default function ReviewCard({ review }) {
     setReadMore(false);
   }, [review]);
 
-  const timeAgo = (date) => {
-    var seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    var interval = seconds / 31536000;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "year", number: Math.floor(interval) })} ago`
-      );
-    }
-    interval = seconds / 2592000;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "month", number: Math.floor(interval) })} ago`
-      );
-    }
-    interval = seconds / 604800;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "week", number: Math.floor(interval) })} ago`
-      );
-    }
-    interval = seconds / 86400;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "day", number: Math.floor(interval) })} ago`
-      );
-    }
-    interval = seconds / 3600;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "hour", number: Math.floor(interval) })} ago`
-      );
-    }
-    interval = seconds / 60;
-    if (interval > 1) {
-      return (
-        Math.floor(interval) +
-        ` ${isPlural({ text: "minute", number: Math.floor(interval) })} ago`
-      );
-    }
-    return (
-      Math.floor(seconds) +
-      ` ${isPlural({ text: "second", number: Math.floor(interval) })} ago`
-    );
-  };
-
   return (
     <div className="flex flex-col gap-2 rounded-xl bg-gray-400 bg-opacity-10 p-4">
       <div className="flex items-center gap-2">
         <Person
           name={review.author}
           profile_path={imgUrlAPI === null ? null : imgUrl}
-          role={timeAgo(review.created_at)}
+          role={moment(review.created_at).fromNow()}
           personRole={`author`}
           tooltip={
             <div
@@ -106,7 +57,7 @@ export default function ReviewCard({ review }) {
                 showDay: false,
               })} ${updatedAt !== createdAt ? `(${updatedAt})` : ``}`}
             >
-              <span>{timeAgo(review.created_at)}</span>
+              <span>{moment(review.created_at).fromNow()}</span>
               {updatedAt !== createdAt && <span>{`(edited)`}</span>}
             </div>
           }
