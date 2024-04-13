@@ -16,7 +16,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
-import { fetchData, getEpisodes, getFilmCollection } from "@/lib/fetch";
+import { fetchData, getEpisodes } from "@/lib/fetch";
 import { slugify } from "@/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
 import { formatDate } from "@/lib/formatDate";
@@ -25,10 +25,9 @@ import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";
 import { formatRuntime } from "@/lib/formatRuntime";
 
-// Redux Toolkit
-import { useSelector, useDispatch } from "react-redux";
-import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
+// Zustand
 import { formatRating } from "@/lib/formatRating";
+import { useSeasonPoster } from "@/zustand/seasonPoster";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -145,7 +144,7 @@ export function CollectionItem({
     <article>
       <Link
         href={`/${type === "movie" ? "movies" : "tv"}/${item.id}-${slugify(filmTitle)}`}
-        className={`@container flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${
+        className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all @container hocus:bg-opacity-30 ${
           film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}
       >
@@ -190,7 +189,7 @@ export function CollectionItem({
         </div>
         <p
           title={item.overview}
-          className="@xs:line-clamp-3 hidden w-full text-xs text-gray-400"
+          className="hidden w-full text-xs text-gray-400 @xs:line-clamp-3"
         >
           {item.overview}
         </p>
@@ -202,17 +201,17 @@ export function CollectionItem({
 function FilmSeason({ film, item, index, setLoading }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const dispatch = useDispatch();
+  const { setSeasonPoster } = useSeasonPoster((state) => state);
 
   const handleViewSeason = async () => {
     setViewSeason(!viewSeason);
 
     if (!viewSeason) {
-      // Redux Toolkit
-      dispatch(setSeasonPoster(item));
+      // Zustand
+      setSeasonPoster(item);
     } else {
-      // Redux Toolkit
-      dispatch(setSeasonPoster(null));
+      // Zustand
+      setSeasonPoster(null);
     }
   };
 
@@ -340,6 +339,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
         breakpoints={{
           1024: {
             slidesPerView: 2,
+            slidesPerGroup: 2,
           },
         }}
         className={`relative rounded-b-xl bg-secondary bg-opacity-10 !p-2`}

@@ -1,14 +1,10 @@
 "use client";
 
-import { getPerson } from "@/lib/fetch";
 import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
 
-// Redux Toolkit
-import { useDispatch } from "react-redux";
-import { setPerson } from "@/redux/slices/personSlice";
+// Zustand
 import { usePathname, useRouter } from "next/navigation";
-import Link from "next/link";
 
 export default function Person({
   id,
@@ -18,18 +14,12 @@ export default function Person({
   personRole,
   tooltip = false,
 }) {
-  const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
 
   let profilePath = profile_path;
 
   const handleActorClick = () => {
-    // getPerson({ id }).then((res) => {
-    //   // Redux Toolkit
-    //   dispatch(setPerson(res));
-    // });
-
     router.push(`${pathname}/?person=${id}`, {
       scroll: false,
     });

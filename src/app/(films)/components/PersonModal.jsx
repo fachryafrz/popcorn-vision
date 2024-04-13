@@ -7,16 +7,16 @@ import { close } from "ionicons/icons";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-// Redux Toolkit
-import { useSelector, useDispatch } from "react-redux";
-import { setPerson } from "@/redux/slices/personSlice";
+// Zustand
+import { usePersonModal } from "@/zustand/personModal";
+import { useEpisodeModal } from "@/zustand/episodeModal";
 
 export default function PersonModal({ person }) {
-  const dispatch = useDispatch();
   const router = useRouter();
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const episodeForModal = useSelector((state) => state.episode.value);
+  const { episode: episodeForModal } = useEpisodeModal((state) => state);
+  const { setPersonModal } = usePersonModal((state) => state);
 
   const combinedCredits = person.combined_credits;
   const movieCredits = person.movie_credits;
@@ -33,8 +33,8 @@ export default function PersonModal({ person }) {
       document.getElementById(`episodeModal`).showModal();
     }
     setTimeout(() => {
-      // Redux Toolkit
-      dispatch(setPerson(null));
+      // Zustand
+      setPersonModal(null);
     }, 100);
 
     // router.back();

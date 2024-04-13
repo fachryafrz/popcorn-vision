@@ -5,7 +5,6 @@ import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import UserLocation from "@/components/User/UserLocation";
-import StoreProvider from "@/redux/components/StoreProvider";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
 
@@ -92,21 +91,19 @@ export default function RootLayout({ children }) {
       </Suspense>
       <body className="bg-base-100 text-white">
         <CookiesProvider>
-          <StoreProvider>
-            {/* Navbar */}
-            <Suspense>
-              <Navbar />
-            </Suspense>
+          {/* Navbar */}
+          <Suspense>
+            <Navbar />
+          </Suspense>
 
-            {/* User Location */}
-            <UserLocation />
+          {/* User Location */}
+          <UserLocation />
 
-            {/* Main Content */}
-            <main className={`mt-[66px] pb-8`}>{children}</main>
+          {/* Main Content */}
+          <main className={`mt-[66px] pb-8`}>{children}</main>
 
-            {/* Footer */}
-            <Footer />
-          </StoreProvider>
+          {/* Footer */}
+          <Footer />
         </CookiesProvider>
       </body>
     </html>

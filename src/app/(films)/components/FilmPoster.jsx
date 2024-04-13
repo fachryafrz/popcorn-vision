@@ -7,24 +7,24 @@ import ImagePovi from "@/components/Film/ImagePovi";
 import { slugify } from "@/lib/slugify";
 import Reveal from "@/components/Layout/Reveal";
 
-// Redux Toolkit
-import { useSelector, useDispatch } from "react-redux";
-import { setSeasonPoster } from "@/redux/slices/seasonPosterSlice";
+// Zustand
 import { formatRating } from "@/lib/formatRating";
+import { useSeasonPoster } from "@/zustand/seasonPoster";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
-  const dispatch = useDispatch();
-
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const seasonPoster = useSelector((state) => state.seasonPoster.value);
+  const { poster: seasonPoster, setSeasonPoster } = useSeasonPoster(
+    (state) => state,
+  );
 
   const [filmPoster, setFilmPoster] = useState(film.poster_path);
   const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
-    dispatch(setSeasonPoster(null));
+    // Zustand
+    setSeasonPoster(null);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

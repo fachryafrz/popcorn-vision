@@ -15,13 +15,11 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import ImagePovi from "@/components/Film/ImagePovi";
 
-// Redux Toolkit
-import { useSelector, useDispatch } from "react-redux";
-import { setEpisode } from "@/redux/slices/episodeSlice";
+// Zustand
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEpisodeModal } from "@/zustand/episodeModal";
 
 export function EpisodeModal({ seasons, episode }) {
-  const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -31,6 +29,8 @@ export function EpisodeModal({ seasons, episode }) {
 
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
+
+  const { setEpisodeModal } = useEpisodeModal((state) => state);
 
   const handleShowAllGuestStars = () => {
     setShowAllGuestStars(true);
@@ -46,6 +46,16 @@ export function EpisodeModal({ seasons, episode }) {
   };
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
+
+  const handleCloseModal = () => {
+    document.getElementById(`episodeModal`).close();
+    router.push(pathname, { scroll: false });
+
+    setTimeout(() => {
+      // Zustand
+      setEpisodeModal(null);
+    }, 100);
+  };
 
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
@@ -108,14 +118,7 @@ export function EpisodeModal({ seasons, episode }) {
           className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}
         >
           <button
-            onClick={() => {
-              document.getElementById(`episodeModal`).close();
-              router.push(pathname, { scroll: false });
-              setTimeout(() => {
-                // Redux Toolkit
-                dispatch(setEpisode(null));
-              }, 100);
-            }}
+            onClick={handleCloseModal}
             className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
           >
             <IonIcon icon={close} className={`text-3xl`} />
