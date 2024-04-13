@@ -4,7 +4,7 @@ import PersonProfile from "@/app/(person)/components/PersonProfile";
 import PersonWorks from "@/app/(person)/components/PersonWorks";
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // Redux Toolkit
@@ -14,6 +14,7 @@ import { setPerson } from "@/redux/slices/personSlice";
 export default function PersonModal({ person }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname()
 
   const episodeForModal = useSelector((state) => state.episode.value);
 
@@ -26,7 +27,7 @@ export default function PersonModal({ person }) {
 
   const handleCloseModal = () => {
     document.getElementById(`personModal`).close();
-    router.back();
+    router.push(pathname, { scroll: false });
 
     if (episodeForModal) {
       document.getElementById(`episodeModal`).showModal();
