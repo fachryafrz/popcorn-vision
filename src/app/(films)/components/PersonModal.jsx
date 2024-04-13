@@ -27,10 +27,12 @@ export default function PersonModal({ person }) {
 
   const handleCloseModal = () => {
     document.getElementById(`personModal`).close();
-    router.push(pathname, { scroll: false });
 
     if (episodeForModal) {
+      router.back();
       document.getElementById(`episodeModal`).showModal();
+    } else {
+      router.push(pathname, { scroll: false });
     }
     setTimeout(() => {
       // Zustand
