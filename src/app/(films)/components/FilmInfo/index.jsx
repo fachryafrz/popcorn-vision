@@ -52,7 +52,8 @@ export default function FilmInfo({
     (item) => item.iso_3166_1 === countryCode,
   );
   const filmReleaseDate = releaseDateByCountry
-    ? releaseDateByCountry.release_dates[0].release_date
+    ? releaseDateByCountry.release_dates.find((item) => item.type === 3)
+        ?.release_date
     : film.release_date;
 
   const isUpcoming =
