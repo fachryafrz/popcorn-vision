@@ -307,6 +307,7 @@ export function SearchBar({ placeholder = `Search` }) {
         <input
           type={`text`}
           ref={searchRef}
+          tabIndex={isSearchPage ? 0 : -1}
           placeholder={placeholder}
           className={`h-full w-full bg-transparent pl-10 pr-4`}
           value={searchInput}
@@ -329,11 +330,11 @@ export function SearchBar({ placeholder = `Search` }) {
           </button>
         )}
       </div>
-      <input type={`submit`} className={`sr-only`} />
+
       {!isSearchPage && (
         <Link
           href={isTvPage ? "/tv/search" : "/search"}
-          className={`absolute inset-0 rounded-full transition-all hover:bg-white hover:bg-opacity-5`}
+          className={`absolute inset-0 rounded-full transition-all hocus:bg-white hocus:bg-opacity-5`}
         ></Link>
       )}
     </form>
