@@ -33,6 +33,7 @@ export default function LoginButton() {
     if (searchParams.get("denied") === "true") {
       router.replace(pathname);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, router, searchParams]);
 
   return (

@@ -234,7 +234,7 @@ export default function Navbar() {
   );
 }
 
-export function SearchBar({ placeholder = `Search or press "/"` }) {
+export function SearchBar({ placeholder = `Search` }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -265,7 +265,7 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
     document.addEventListener("keydown", (e) => {
       if (e.key === "/") {
         e.preventDefault();
-        router.push(`${isTvPage ? "/tv" : ""}/search`);
+        router.push(isTvPage ? "/tv/search" : "/search");
       }
     });
   }, [isTvPage, router, isSearchPage]);
@@ -330,6 +330,12 @@ export function SearchBar({ placeholder = `Search or press "/"` }) {
         )}
       </div>
       <input type={`submit`} className={`sr-only`} />
+      {!isSearchPage && (
+        <Link
+          href={isTvPage ? "/tv/search" : "/search"}
+          className={`absolute inset-0 rounded-full transition-all hover:bg-white hover:bg-opacity-5`}
+        ></Link>
+      )}
     </form>
   );
 }

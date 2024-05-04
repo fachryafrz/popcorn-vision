@@ -147,6 +147,7 @@ export default function Search() {
     } else if (genres !== null) {
       searchMovies({ query: query, genres: genres });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [URLSearchQuery, URLSearchGenres, isTvPage]);
 
   // Fetch background movies
