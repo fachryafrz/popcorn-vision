@@ -320,13 +320,15 @@ export default function FilmInfo({
             {user && (
               <div className={`flex flex-col gap-1 md:flex-row`}>
                 {/* Add to Favorite */}
-                <Reveal className={`flex`}>
-                  <FavoriteButton
-                    film={film}
-                    getAccountStates={getAccountStates}
-                    favorite={accountStates?.favorite}
-                  />
-                </Reveal>
+                {!isUpcoming && filmReleaseDate !== "" && (
+                  <Reveal className={`flex`}>
+                    <FavoriteButton
+                      film={film}
+                      getAccountStates={getAccountStates}
+                      favorite={accountStates?.favorite}
+                    />
+                  </Reveal>
+                )}
 
                 {/* Add to Watchlist */}
                 <Reveal className={`flex`}>
