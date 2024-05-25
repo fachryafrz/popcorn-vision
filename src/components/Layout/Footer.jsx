@@ -21,6 +21,7 @@ export default function Footer() {
 
   // Date variables
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().toLocaleString("en-US", { month: "short" });
   const createdDate = new Date("2023-02-17");
   const createdMonth = createdDate.toLocaleString("en-US", { month: "short" });
   const createdYear = createdDate.getFullYear();
@@ -141,18 +142,18 @@ export default function Footer() {
       </div>
       <div className="flex flex-col justify-center border-t border-secondary border-opacity-25 p-4 text-center">
         <Reveal>
-          <span>
-            Popcorn Vision &copy;{" "}
-            {createdYear == currentYear
-              ? `${createdMonth} ${createdYear}`
-              : `${createdMonth} ${createdYear}-${currentYear}`}{" "}
-            all rights reserved
+          <span style={{ textWrap: `balance` }}>
+            {`Popcorn Vision © ${
+              createdYear == currentYear
+                ? `${createdMonth} ${createdYear}`
+                : `${createdMonth} ${createdYear} - ${currentMonth} ${currentYear}`
+            } all rights reserved`}
           </span>
         </Reveal>
         <Reveal>
           <span className={`flex items-center justify-center gap-1`}>
             <span>Powered by</span>
-            <a
+            <Link
               href="https://themoviedb.org"
               target="_blank"
               className={`h-6 p-1.5 pl-0 pt-2`}
@@ -166,7 +167,7 @@ export default function Footer() {
                   backgroundSize: `contain`,
                 }}
               ></figure>
-            </a>
+            </Link>
           </span>
         </Reveal>
       </div>

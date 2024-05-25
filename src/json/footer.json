@@ -13,15 +13,15 @@
       },
       {
         "name": "Streaming",
-        "url": "/streaming"
+        "url": "/"
       },
       {
         "name": "Newsletter",
-        "url": "/newsletter"
+        "url": "/"
       },
       {
         "name": "Blogs Article",
-        "url": "/blog"
+        "url": "/"
       }
     ]
   },
@@ -31,19 +31,19 @@
     "links": [
       {
         "name": "Sign Up",
-        "url": "/signup"
+        "url": "/"
       },
       {
         "name": "Download App",
-        "url": "/download"
+        "url": "/"
       },
       {
         "name": "Choose Plan",
-        "url": "/plans"
+        "url": "/"
       },
       {
         "name": "Pay Method",
-        "url": "/pay"
+        "url": "/"
       }
     ]
   },
@@ -53,19 +53,19 @@
     "links": [
       {
         "name": "Partnership",
-        "url": "/partnership"
+        "url": "/"
       },
       {
         "name": "Terms of Use",
-        "url": "/tou"
+        "url": "/"
       },
       {
         "name": "About",
-        "url": "/about"
+        "url": "/"
       },
       {
         "name": "Pricing",
-        "url": "/pricing"
+        "url": "/"
       },
       {
         "name": "Contact",

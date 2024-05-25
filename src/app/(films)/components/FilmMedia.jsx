@@ -113,8 +113,8 @@ export default function FilmMedia({ videos, images }) {
             </button>
           </div>
           {filteredVideos
-            .reverse()
-            .slice(0, 10)
+            // .reverse()
+            // .slice(0, 10)
             .map((vid, index) => {
               return (
                 <SwiperSlide key={vid.key}>
