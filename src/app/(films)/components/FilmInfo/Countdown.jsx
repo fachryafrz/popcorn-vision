@@ -24,29 +24,20 @@ export default function Countdown({
   const minutesLeft = duration.minutes();
   const secondsLeft = duration.seconds();
 
-  const [countdown, setCountdown] = useState({
+  const countdownValue = {
     years: yearsLeft,
     months: monthsLeft,
     days: daysLeft,
     hours: hoursLeft,
     minutes: minutesLeft,
     seconds: secondsLeft,
-  });
-
-  const calculateCountdown = () => {
-    return {
-      years: yearsLeft,
-      months: monthsLeft,
-      days: daysLeft,
-      hours: hoursLeft,
-      minutes: minutesLeft,
-      seconds: secondsLeft,
-    };
   };
+
+  const [countdown, setCountdown] = useState(countdownValue);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCountdown(calculateCountdown());
+      setCountdown(countdownValue);
     }, 1000);
 
     return () => clearInterval(interval);

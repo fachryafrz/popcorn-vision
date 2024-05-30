@@ -286,7 +286,7 @@ export default function FilmInfo({
 
               {isUpcoming && (
                 <div
-                  className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : ``}`}
+                  className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : `xl:col-[1/3]`}`}
                 >
                   <Countdown
                     isTvPage={isTvPage}
