@@ -43,7 +43,7 @@ export async function generateMetadata({ params, type = "movie" }) {
   let path =
     images.backdrops.length > 0
       ? images.backdrops[0].file_path
-      : film.backdrop_path || film.poster_path;
+      : film.poster_path || film.backdrop_path;
   if (path) {
     backdrops = {
       images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
