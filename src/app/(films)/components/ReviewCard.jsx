@@ -5,8 +5,6 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import RatingStars from "./RatingStars";
 import Person from "./Person";
-import { formatDate } from "@/lib/formatDate";
-import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 
 export default function ReviewCard({ review }) {
@@ -21,8 +19,8 @@ export default function ReviewCard({ review }) {
   const maxLength = 300;
 
   // Review date variables
-  const createdAt = formatDate({ date: review.created_at, showDay: false });
-  const updatedAt = formatDate({ date: review.updated_at, showDay: false });
+  const createdAt = moment(review.created_at).format("MMM D, YYYY");
+  const updatedAt = moment(review.updated_at).format("MMM D, YYYY");
 
   // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
@@ -51,11 +49,8 @@ export default function ReviewCard({ review }) {
           personRole={`author`}
           tooltip={
             <div
-              className={`tooltip tooltip-bottom tooltip-info relative flex max-w-fit flex-wrap gap-1 text-xs font-medium text-gray-400 sm:tooltip-right`}
-              data-tip={`${formatDate({
-                date: review?.created_at,
-                showDay: false,
-              })} ${updatedAt !== createdAt ? `(${updatedAt})` : ``}`}
+              className={`tooltip tooltip-bottom tooltip-info relative flex max-w-fit flex-wrap gap-1 text-xs font-medium text-gray-400 sm:tooltip-right before:text-xs`}
+              data-tip={`${createdAt} ${updatedAt !== createdAt ? ` (${updatedAt})` : ``}`}
             >
               <span>{moment(review.created_at).fromNow()}</span>
               {updatedAt !== createdAt && <span>{`(edited)`}</span>}

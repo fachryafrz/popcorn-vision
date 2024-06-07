@@ -19,7 +19,6 @@ import { Keyboard, Navigation } from "swiper/modules";
 import { fetchData, getEpisodes } from "@/lib/fetch";
 import { slugify } from "@/lib/slugify";
 import EpisodeCard from "./EpisodeCard";
-import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -28,6 +27,7 @@ import { formatRuntime } from "@/lib/formatRuntime";
 // Zustand
 import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
+import moment from "moment";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -281,7 +281,7 @@ function FilmSeason({ film, item, index, setLoading }) {
 
             {item.air_date && (
               <span className="flex rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-xs font-medium text-gray-400 backdrop-blur-sm">
-                {formatDate({ date: item.air_date, showDay: false })}
+                {moment(item.air_date).format("MMM D, YYYY")}
               </span>
             )}
           </div>
@@ -388,7 +388,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
                         <span
                           className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                         >
-                          {formatDate({ date: item.air_date })}
+                          {moment(item.air_date).format("ddd, MMMM D, YYYY")}
                         </span>
                       )}
                     </>

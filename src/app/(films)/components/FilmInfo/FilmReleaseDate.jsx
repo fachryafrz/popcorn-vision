@@ -1,7 +1,7 @@
 import Reveal from "@/components/Layout/Reveal";
-import { formatDate } from "@/lib/formatDate";
 import { IonIcon } from "@ionic/react";
 import { calendarOutline } from "ionicons/icons";
+import moment from "moment";
 import React from "react";
 
 export default function FilmReleaseDate({
@@ -21,7 +21,7 @@ export default function FilmReleaseDate({
                   <IonIcon icon={calendarOutline} />
 
                   <time dateTime={filmReleaseDate}>
-                    {formatDate({ date: filmReleaseDate })}
+                    {moment(filmReleaseDate).format("dddd, MMMM D, YYYY")}
                   </time>
 
                   {releaseDateByCountry && <span>{`(${countryName})`}</span>}
@@ -36,12 +36,12 @@ export default function FilmReleaseDate({
                   <IonIcon icon={calendarOutline} />
 
                   <time dateTime={film.first_air_date}>
-                    {formatDate({ date: film.first_air_date })}
+                    {moment(film.first_air_date).format("dddd, MMMM D, YYYY")}
 
                     {film.last_air_date !== null &&
                       film.last_air_date !== film.first_air_date && (
                         <span className="hidden xs:inline">
-                          {` - ${formatDate({ date: film.last_air_date })}`}
+                          {` - ${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
                         </span>
                       )}
                   </time>

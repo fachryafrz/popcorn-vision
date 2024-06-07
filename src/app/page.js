@@ -5,7 +5,7 @@ import Trending from "@/components/Film/Trending";
 import companies from "../json/companies.json";
 import providers from "../json/providers.json";
 import { fetchData, getTrending } from "@/lib/fetch";
-import { calculateDate } from "@/lib/formatDate";
+import moment from "moment";
 
 export async function generateMetadata() {
   return {
@@ -41,11 +41,10 @@ export default async function Home({ type = "movie" }) {
   const isTvPage = type === "tv";
 
   // Get current date and other date-related variables
-  const currentDate = new Date();
-  const today = calculateDate({ date: currentDate });
-  const tomorrow = calculateDate({ date: currentDate, days: 1 });
-  const monthsAgo = calculateDate({ date: currentDate, months: -1 });
-  const monthsLater = calculateDate({ date: currentDate, months: 1 });
+  const today = moment().format("YYYY-MM-DD");
+  const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
+  const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
+  const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
 
   // API Requests
   const { genres } = await fetchData({

@@ -1,7 +1,6 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
-import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
 import { IonIcon } from "@ionic/react";
 import {
@@ -10,6 +9,7 @@ import {
   filmOutline,
   locationOutline,
 } from "ionicons/icons";
+import moment from "moment";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
@@ -20,13 +20,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
   const isTvPage = pathname.startsWith(`/tv`);
 
   // Format Date
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  };
-  const birthday = formatDate({ date: person.birthday, options });
-  const deathday = formatDate({ date: person.deathday, options });
+  const birthday = moment(person.birthday).format("dddd, MMMM D, YYYY");
+  const deathday = moment(person.deathday).format("dddd, MMMM D, YYYY");
   const personJob = person.known_for_department;
   const isActing = personJob === "Acting";
   const personWorks = isActing ? combinedCredits?.cast : combinedCredits?.crew;

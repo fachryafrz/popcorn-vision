@@ -4,7 +4,7 @@ import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { formatRating } from "@/lib/formatRating";
 import { isPlural } from "@/lib/isPlural";
-import { formatDate } from "@/lib/formatDate";
+import moment from "moment";
 
 export default function NextEpisode({ film, nextEps, setLoading }) {
   return (
@@ -53,10 +53,7 @@ export default function NextEpisode({ film, nextEps, setLoading }) {
             <span
               className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
             >
-              {formatDate({
-                date: nextEps.air_date,
-                showDay: false,
-              })}
+              {moment(nextEps.air_date).format("MMM D, YYYY")}
             </span>
           )}
         </>

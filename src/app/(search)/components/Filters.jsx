@@ -6,7 +6,6 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
-import { calculateDate } from "@/lib/formatDate";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 
 export default function Filters({

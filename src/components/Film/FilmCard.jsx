@@ -78,34 +78,6 @@ export default function FilmCard({ film, isTvPage }) {
           </div>
         )}
       </ImagePovi>
-      {/* <div className="mt-2">
-        <h3
-          title={isItTvPage(film.title, film.name)}
-          className="font-bold text-sm sm:text-base line-clamp-1"
-        >
-          {isItTvPage(film.title, film.name)}
-        </h3>
-
-        <div className="flex items-center gap-1 text-xs sm:text-sm mt-1">
-          {releaseDate && (
-            <span className="text-gray-400 whitespace-nowrap">
-              {formatDate({
-                date: releaseDate,
-                showDay: false,
-                options,
-              })}
-            </span>
-          )}
-
-          {releaseDate && genres.length > 0 && (
-            <span className="text-gray-400 whitespace-nowrap">&bull;</span>
-          )}
-
-          <p className="line-clamp-1">
-            {genres && genres.map((genre) => genre && genre.name).join(", ")}
-          </p>
-        </div>
-      </div> */}
 
       <FilmPreview
         film={film}

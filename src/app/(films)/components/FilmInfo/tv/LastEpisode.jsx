@@ -3,8 +3,8 @@ import EpisodeCard from "../../EpisodeCard";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { formatRating } from "@/lib/formatRating";
-import { formatDate } from "@/lib/formatDate";
 import { isPlural } from "@/lib/isPlural";
+import moment from "moment";
 
 export default function LastEpisode({ film, lastEps, nextEps, setLoading }) {
   return (
@@ -51,10 +51,7 @@ export default function LastEpisode({ film, lastEps, nextEps, setLoading }) {
             <span
               className={`rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
             >
-              {formatDate({
-                date: lastEps.air_date,
-                showDay: false,
-              })}
+              {moment(lastEps.air_date).format("MMM D, YYYY")}
             </span>
           )}
         </>

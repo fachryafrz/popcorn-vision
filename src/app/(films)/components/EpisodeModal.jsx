@@ -10,7 +10,6 @@ import {
 } from "ionicons/icons";
 import Person from "./Person";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { formatDate } from "@/lib/formatDate";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -18,6 +17,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 // Zustand
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEpisodeModal } from "@/zustand/episodeModal";
+import moment from "moment";
 
 export function EpisodeModal({ seasons, episode }) {
   const router = useRouter();
@@ -169,9 +169,7 @@ export function EpisodeModal({ seasons, episode }) {
                 <div className={`flex items-center gap-2`}>
                   <IonIcon icon={calendarOutline} />
                   <time dateTime={episode.air_date}>
-                    {formatDate({
-                      date: episode.air_date,
-                    })}
+                    {moment(episode.air_date).format("dddd, MMMM D, YYYY")}
                   </time>
                 </div>
               </section>
