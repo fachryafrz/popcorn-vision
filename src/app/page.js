@@ -103,11 +103,13 @@ export default async function Home({ type = "movie" }) {
             queryParams: !isTvPage
               ? {
                   ...defaultParams,
+                  without_genres: 18,
                   "primary_release_date.gte": monthsAgo,
                   "primary_release_date.lte": today,
                 }
               : {
                   ...defaultParams,
+                  without_genres: 18,
                   "first_air_date.gte": monthsAgo,
                   "first_air_date.lte": today,
                 },
@@ -126,11 +128,13 @@ export default async function Home({ type = "movie" }) {
             queryParams: !isTvPage
               ? {
                   ...defaultParams,
+                  without_genres: 18,
                   "primary_release_date.gte": tomorrow,
                   "primary_release_date.lte": monthsLater,
                 }
               : {
                   ...defaultParams,
+                  without_genres: 18,
                   "first_air_date.gte": tomorrow,
                   "first_air_date.lte": monthsLater,
                 },
@@ -147,6 +151,7 @@ export default async function Home({ type = "movie" }) {
             endpoint: `/discover/${type}`,
             queryParams: {
               ...defaultParams,
+              without_genres: 18,
               sort_by: "vote_count.desc",
             },
           })}
