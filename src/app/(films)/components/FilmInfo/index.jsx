@@ -53,13 +53,16 @@ export default function FilmInfo({
   );
   const releaseDateByCountryTheatrical =
     releaseDateByCountry?.release_dates.find((item) => item.type === 3);
+  const releaseDateByCountryTheatricalLimited =
+    releaseDateByCountry?.release_dates.find((item) => item.type === 2);
   const releaseDateByCountryDigital = releaseDateByCountry?.release_dates.find(
     (item) => item.type === 4,
   );
+
   const filmReleaseDate = releaseDateByCountry
-    ? releaseDateByCountryTheatrical
-      ? releaseDateByCountryTheatrical.release_date
-      : releaseDateByCountryDigital.release_date
+    ? releaseDateByCountryTheatrical?.release_date ||
+      releaseDateByCountryTheatricalLimited?.release_date ||
+      releaseDateByCountryDigital?.release_date
     : film.release_date;
 
   const isUpcoming =

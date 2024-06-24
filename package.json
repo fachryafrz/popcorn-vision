@@ -1,6 +1,6 @@
 {
-  "name": "nextjs-popcornvision",
-  "version": "1.31.6",
+  "name": "popcorn-vision",
+  "version": "1.31.7",
   "private": true,
   "scripts": {
     "dev": "next dev",
