@@ -1,8 +1,8 @@
 # Popcorn Vision
 
-[![Popcorn Vision](/public/popcorn-vision.png)](https://www.popcorn.vision)
+[![Popcorn Vision](/public/popcorn-vision.png)](https://popcornvision.vercel.app)
 
-[![Website](https://img.shields.io/badge/Popcorn%20Vision-Discover%20your%20favorite%20film%20now!-blue)](https://www.popcorn.vision)
+[![Website](https://img.shields.io/badge/Popcorn%20Vision-Discover%20your%20favorite%20film%20now!-blue)](https://popcornvision.vercel.app)
 
 ## 🎥 I'm thrilled to introduce you to Popcorn Vision 📺
 
@@ -34,7 +34,7 @@ Learn more about the talented individuals who bring your favorite movies and TV 
 
 Find what you're looking for with our convenient search feature. Our user-friendly interface makes it a breeze to find your next entertainment obsession.
 
-🎉 Visit our website at https://www.popcorn.vision and discover a world of movies and TV shows like never before.
+🎉 Visit our website at https://popcornvision.vercel.app and discover a world of movies and TV shows like never before.
 
 Ready to immerse yourself in the magic of cinema? Let Popcorn Vision be your trusted companion. 🍿🔍📺
 
