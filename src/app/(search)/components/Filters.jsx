@@ -7,6 +7,7 @@ import Select from "react-select";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
+import moment from "moment";
 
 export default function Filters({
   type,
@@ -1017,6 +1018,47 @@ export default function Filters({
       searchAPIParams["sort_by"] = searchParams.get("sort_by");
     } else {
       delete searchAPIParams["sort_by"];
+    }
+
+    // Options (o)
+    if (searchParams.get("o")) {
+      const optionsParams = searchParams.get("o");
+
+      const today = moment().format("YYYY-MM-DD");
+      const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
+      const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
+      const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
+
+      searchAPIParams["without_genres"] = 18;
+
+      if (optionsParams === "now_playing" || optionsParams === "on_the_air") {
+        if (!isTvPage) {
+          searchAPIParams["primary_release_date.gte"] = monthsAgo;
+          searchAPIParams["primary_release_date.lte"] = today;
+        } else {
+          searchAPIParams["first_air_date.gte"] = monthsAgo;
+          searchAPIParams["first_air_date.lte"] = today;
+        }
+      }
+
+      if (optionsParams === "upcoming") {
+        if (!isTvPage) {
+          searchAPIParams["primary_release_date.gte"] = tomorrow;
+          searchAPIParams["primary_release_date.lte"] = monthsLater;
+        } else {
+          searchAPIParams["first_air_date.gte"] = tomorrow;
+          searchAPIParams["first_air_date.lte"] = monthsLater;
+        }
+      }
+    } else {
+      delete searchAPIParams["without_genres"];
+      if (!isTvPage) {
+        delete searchAPIParams["primary_release_date.gte"];
+        delete searchAPIParams["primary_release_date.lte"];
+      } else {
+        delete searchAPIParams["first_air_date.gte"];
+        delete searchAPIParams["first_air_date.lte"];
+      }
     }
 
     // Search Query

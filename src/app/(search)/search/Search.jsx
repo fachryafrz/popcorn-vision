@@ -428,6 +428,7 @@ export default function Search({
                   searchParams.get("with_companies") ||
                   searchParams.get("vote_count") ||
                   searchParams.get("with_runtime") ||
+                  searchParams.get("o") ||
                   searchParams.get("sort_by") ? (
                     <button
                       onClick={() => {
