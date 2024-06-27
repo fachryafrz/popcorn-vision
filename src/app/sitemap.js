@@ -1,7 +1,7 @@
 import { fetchData } from "@/lib/fetch";
 import { slugify } from "@/lib/slugify";
 
-export const revalidate = 0;
+export const revalidate = 1;
 
 export default async function sitemap() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
