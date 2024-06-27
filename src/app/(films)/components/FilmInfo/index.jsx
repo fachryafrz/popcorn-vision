@@ -51,18 +51,25 @@ export default function FilmInfo({
   const releaseDateByCountry = releaseDates?.results.find(
     (item) => item.iso_3166_1 === countryCode,
   );
-  const releaseDateByCountryTheatrical =
-    releaseDateByCountry?.release_dates.find((item) => item.type === 3);
-  const releaseDateByCountryTheatricalLimited =
-    releaseDateByCountry?.release_dates.find((item) => item.type === 2);
-  const releaseDateByCountryDigital = releaseDateByCountry?.release_dates.find(
-    (item) => item.type === 4,
-  );
+
+  const filteredReleaseDateByCountry = releaseDateByCountry?.release_dates
+    .filter(
+      (item) =>
+        item.type === 1 ||
+        item.type === 3 ||
+        item.type === 2 ||
+        item.type === 4 ||
+        item.type === 5 ||
+        item.type === 6,
+    )
+    .reduce((earliest, current) => {
+      return new Date(current.release_date) < new Date(earliest.release_date)
+        ? current
+        : earliest;
+    });
 
   const filmReleaseDate = releaseDateByCountry
-    ? releaseDateByCountryTheatrical?.release_date ||
-      releaseDateByCountryTheatricalLimited?.release_date ||
-      releaseDateByCountryDigital?.release_date
+    ? filteredReleaseDateByCountry?.release_date
     : film.release_date;
 
   const isUpcoming =
