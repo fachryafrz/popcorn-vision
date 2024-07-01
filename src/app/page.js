@@ -84,17 +84,25 @@ export default async function Home({ type = "movie" }) {
         sort_by: "popularity.desc",
       };
 
+  const pageUrl = !isTvPage
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : `${process.env.NEXT_PUBLIC_APP_URL}/tv`;
+
+  const urlTemplate = !isTvPage
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`
+    : `${process.env.NEXT_PUBLIC_APP_URL}/tv/search?query={search_term_string}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: process.env.NEXT_PUBLIC_APP_NAME,
     alternateName: process.env.NEXT_PUBLIC_APP_NAME,
-    url: process.env.NEXT_PUBLIC_APP_URL,
+    url: pageUrl,
     potentialAction: {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`,
+        urlTemplate: urlTemplate,
       },
       "query-input": "required title=search_term_string",
     },
