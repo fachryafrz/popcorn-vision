@@ -30,8 +30,8 @@ export async function generateMetadata() {
       images: "/popcorn.png",
     },
     icons: {
-      icon: "/popcorn.png",
-      shortcut: "/popcorn.png",
+      icon: "/favicon.ico",
+      shortcut: "/favicon.ico",
       apple: "/apple-touch-icon.png",
     },
   };
