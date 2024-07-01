@@ -84,7 +84,21 @@ export default async function Home({ type = "movie" }) {
         sort_by: "popularity.desc",
       };
 
-  // NOTE: Nanti coba implementasi Suspense
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: process.env.NEXT_PUBLIC_APP_NAME,
+    alternateName: process.env.NEXT_PUBLIC_APP_NAME,
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`,
+      },
+      "query-input": "required title=search_term_string",
+    },
+  };
 
   return (
     <>
@@ -230,6 +244,11 @@ export default async function Home({ type = "movie" }) {
           <Trending film={trending[7]} genres={genres} />
         </section>
       </div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </>
   );
 }
