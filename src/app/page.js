@@ -89,8 +89,8 @@ export default async function Home({ type = "movie" }) {
     : `${process.env.NEXT_PUBLIC_APP_URL}/tv`;
 
   const urlTemplate = !isTvPage
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`
-    : `${process.env.NEXT_PUBLIC_APP_URL}/tv/search?query={search_term_string}`;
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`
+    : `${process.env.NEXT_PUBLIC_APP_URL}/tv/search?query={title}`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -104,7 +104,7 @@ export default async function Home({ type = "movie" }) {
         "@type": "EntryPoint",
         urlTemplate: urlTemplate,
       },
-      "query-input": "required title=search_term_string",
+      "query-input": "required name=title maxlength=100",
     },
   };
 
