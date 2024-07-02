@@ -84,30 +84,6 @@ export default async function Home({ type = "movie" }) {
         sort_by: "popularity.desc",
       };
 
-  const pageUrl = !isTvPage
-    ? process.env.NEXT_PUBLIC_APP_URL
-    : `${process.env.NEXT_PUBLIC_APP_URL}/tv`;
-
-  const urlTemplate = !isTvPage
-    ? `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`
-    : `${process.env.NEXT_PUBLIC_APP_URL}/tv/search?query={title}`;
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: process.env.NEXT_PUBLIC_APP_NAME,
-    alternateName: process.env.NEXT_PUBLIC_APP_NAME,
-    url: pageUrl,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: urlTemplate,
-      },
-      "query-input": "required name=title maxlength=100",
-    },
-  };
-
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
@@ -252,11 +228,6 @@ export default async function Home({ type = "movie" }) {
           <Trending film={trending[7]} genres={genres} />
         </section>
       </div>
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
     </>
   );
 }

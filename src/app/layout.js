@@ -83,6 +83,22 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: process.env.NEXT_PUBLIC_APP_NAME,
+    alternateName: process.env.NEXT_PUBLIC_APP_NAME,
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`,
+      },
+      "query-input": "required name=title maxlength=100",
+    },
+  };
+
   return (
     <html lang="en" className="scroll-pt-20">
       <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -105,6 +121,11 @@ export default function RootLayout({ children }) {
           {/* Footer */}
           <Footer />
         </CookiesProvider>
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </body>
     </html>
   );
