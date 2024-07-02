@@ -83,6 +83,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const pageUrl = !isTvPage
+    ? process.env.NEXT_PUBLIC_APP_URL
+    : `${process.env.NEXT_PUBLIC_APP_URL}/tv`;
+
+  const urlTemplate = !isTvPage
+    ? `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`
+    : `${process.env.NEXT_PUBLIC_APP_URL}/tv/search?query={title}`;
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
