@@ -73,7 +73,8 @@ export default function FilmInfo({
     : film.release_date;
 
   const isUpcoming =
-    new Date(!isTvPage ? filmReleaseDate : nextEps?.air_date) > new Date();
+    new Date(!isTvPage ? filmReleaseDate : film.first_air_date) > new Date();
+  const isUpcomingNextEps = new Date(nextEps?.air_date) > new Date();
 
   const filmRuntime = !isTvPage
     ? film.runtime
@@ -300,7 +301,7 @@ export default function FilmInfo({
                 </div>
               )}
 
-              {isUpcoming && (
+              {(isUpcoming || isUpcomingNextEps) && (
                 <div
                   className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : `xl:col-[1/3]`}`}
                 >

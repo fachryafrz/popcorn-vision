@@ -126,7 +126,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
           )}
         </ImagePovi>
 
-        {film.status !== "Released" && (
+        {film.status !== "Released" && film.status !== "Returning Series" && (
           <span
             className={`btn pointer-events-none rounded-full border-transparent bg-primary-blue bg-opacity-10 text-primary-blue backdrop-blur-sm`}
           >
