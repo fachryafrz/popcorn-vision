@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/auth";
 import { useEffect, useState } from "react";
 
 export default function User({ user }) {
+  window.scrollTo(0, 0);
+
   const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
