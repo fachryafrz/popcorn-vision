@@ -45,7 +45,7 @@ export default function DetailsLoading() {
               {/* Director */}
               <div className={`flex w-[160px] items-center gap-2`}>
                 <figure
-                  className={`${loadingPulse} aspect-square h-[40px] w-[40px] rounded-full`}
+                  className={`${loadingPulse} aspect-square h-[40px] min-w-[40px] rounded-full`}
                 ></figure>
                 <div className={`flex w-full flex-col gap-1`}>
                   <div
@@ -102,7 +102,7 @@ export default function DetailsLoading() {
                       <div className={`flex items-start justify-between`}>
                         <div className={`flex w-[160px] items-center gap-2`}>
                           <figure
-                            className={`${loadingPulse} aspect-square h-[40px] w-[40px] rounded-full`}
+                            className={`${loadingPulse} aspect-square h-[40px] min-w-[40px] rounded-full`}
                           ></figure>
                           <div className={`flex w-full flex-col gap-1`}>
                             <div
@@ -149,7 +149,7 @@ export default function DetailsLoading() {
                     className={`flex min-w-[120px] flex-col items-center gap-2 md:w-full md:flex-row`}
                   >
                     <figure
-                      className={`${loadingPulse} aspect-square h-[50px] w-[50px] rounded-full`}
+                      className={`${loadingPulse} aspect-square h-[50px] min-w-[50px] rounded-full`}
                     ></figure>
                     <div
                       className={`flex w-full flex-col items-center gap-1 md:items-start`}
