@@ -49,7 +49,7 @@ export function EpisodeModal({ seasons, episode }) {
 
   const handleCloseModal = () => {
     document.getElementById(`episodeModal`).close();
-    router.push(pathname, { scroll: false });
+    router.replace  (pathname, { scroll: false });
 
     setTimeout(() => {
       // Zustand
@@ -59,7 +59,7 @@ export function EpisodeModal({ seasons, episode }) {
 
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
-      router.push(
+      router.replace(
         `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
         {
           scroll: false,
@@ -68,7 +68,7 @@ export function EpisodeModal({ seasons, episode }) {
       return;
     }
 
-    router.push(
+    router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
       {
         scroll: false,
@@ -85,13 +85,13 @@ export function EpisodeModal({ seasons, episode }) {
       parseInt(episodeParams) ===
       filteredSeasons[seasonParams - 1]?.episode_count
     ) {
-      router.push(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
+      router.replace(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
         scroll: false,
       });
       return;
     }
 
-    router.push(
+    router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
       {
         scroll: false,

@@ -29,17 +29,20 @@ export default function PersonModal({ person }) {
     document.getElementById(`personModal`).close();
 
     if (episodeForModal) {
-      router.back();
+      router.replace(
+        `${pathname}/?season=${episodeForModal.season_number}&episode=${episodeForModal.episode_number}`,
+        {
+          scroll: false,
+        },
+      );
       document.getElementById(`episodeModal`).showModal();
     } else {
-      router.push(pathname, { scroll: false });
+      router.replace(pathname, { scroll: false });
     }
     setTimeout(() => {
       // Zustand
       setPersonModal(null);
     }, 100);
-
-    // router.back();
   };
 
   useEffect(() => {

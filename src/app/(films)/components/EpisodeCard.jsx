@@ -23,7 +23,7 @@ export default function EpisodeCard({
   return (
     <button
       onClick={() => {
-        router.push(
+        router.replace(
           `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
           {
             scroll: false,

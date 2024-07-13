@@ -20,7 +20,7 @@ export default function Person({
   let profilePath = profile_path;
 
   const handleActorClick = () => {
-    router.push(`${pathname}/?person=${id}`, {
+    router.replace(`${pathname}/?person=${id}`, {
       scroll: false,
     });
   };
@@ -35,7 +35,7 @@ export default function Person({
       // as={{
       //   pathname: `/person/${id}`,
       // }}
-      className={`flex min-w-[120px] flex-row items-center gap-2 text-start ${
+      className={`flex min-w-[120px] flex-row items-start gap-2 text-start ${
         personRole != `author`
           ? `rounded-[2rem] p-2 pr-8 transition-all hocus:bg-secondary hocus:bg-opacity-20 hocus:backdrop-blur`
           : `cursor-default`
@@ -48,7 +48,7 @@ export default function Person({
       </div>
 
       <div className="w-full self-center">
-        <h3 title={name} className={`font-medium md:line-clamp-1`}>
+        <h3 title={name} className={`font-medium md:line-clamp-2`}>
           {name}
         </h3>
 
