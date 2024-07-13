@@ -31,7 +31,7 @@ export default function NotFound() {
       ></figure>
       <p>Oops! We don&apos;t have this page.</p>
       <p>Try searching for something else.</p>
-      <div
+      {/* <div
         className={`-top-8 mx-4 mt-4 flex w-full max-w-xl items-center gap-4 rounded-2xl border-x-4 border-t-4 border-base-100 bg-gray-600 bg-opacity-[90%] px-4 py-4 shadow-xl backdrop-blur before:absolute before:-left-5 before:top-3 before:h-4 before:w-4 before:rounded-br-xl before:bg-transparent before:shadow-custom-left after:absolute after:-right-5 after:top-3 after:h-4 after:w-4 after:rounded-bl-xl after:bg-transparent after:shadow-custom-right sm:mx-auto`}
       >
         <IonIcon icon={search} className={`text-[1.25rem]`} />
@@ -44,7 +44,7 @@ export default function NotFound() {
           />
           <input type="submit" className="sr-only" />
         </form>
-      </div>
+      </div> */}
     </div>
   );
 }
