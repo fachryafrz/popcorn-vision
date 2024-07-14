@@ -1374,6 +1374,9 @@ export default function Filters({
                         borderRadius: "1.5rem",
                         cursor: "text",
                         fontSize: "14px",
+                        "& input": {
+                          textAlign: "center",
+                        },
                         "& button": {
                           color: "#fff",
                         },
@@ -1422,6 +1425,9 @@ export default function Filters({
                         borderRadius: "1.5rem",
                         cursor: "text",
                         fontSize: "14px",
+                        "& input": {
+                          textAlign: "center",
+                        },
                         "& button": {
                           color: "#fff",
                         },
