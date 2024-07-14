@@ -11,7 +11,7 @@
 }
 
 .swiper-slide-thumb-active {
-  @apply !opacity-100 !w-[120px];
+  @apply !w-[120px] !opacity-100;
 }
 
 .driver-popover-arrow-side-right {
@@ -32,12 +32,26 @@
 
 .driver-popover-next-btn,
 .driver-popover-prev-btn {
-  @apply !btn !btn-sm !btn-ghost !bg-primary-blue !text-white !rounded-full !outline-none !capitalize;
+  @apply !btn !btn-ghost !btn-sm !rounded-full !bg-primary-blue !capitalize !text-white !outline-none;
 }
 
 .driver-popover-next-btn,
 .driver-popover-prev-btn {
   text-shadow: unset !important;
+}
+
+.MuiPaper-root {
+  @apply !bg-[#131720] !text-white;
+}
+
+.MuiTypography-root,
+.MuiPickersCalendarHeader-root button,
+.MuiPickersDay-root {
+  @apply !text-white;
+}
+
+.MuiPickersDay-today {
+  @apply !border-white;
 }
 
 @tailwind base;
@@ -50,7 +64,7 @@
   }
 
   img {
-    @apply w-full h-full bg-no-repeat bg-cover italic object-cover align-middle;
+    @apply h-full w-full bg-cover bg-no-repeat object-cover align-middle italic;
   }
 
   /* .btn {
