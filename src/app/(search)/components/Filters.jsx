@@ -9,6 +9,11 @@ import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import moment from "moment";
 
+import dayjs from "dayjs";
+import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 export default function Filters({
   type,
   isQueryParams,
@@ -192,6 +197,21 @@ export default function Filters({
       current.delete("with_runtime");
     } else {
       current.set("with_runtime", `${newValue[0]}..${newValue[1]}`);
+    }
+
+    const search = current.toString();
+
+    const query = search ? `?${search}` : "";
+
+    router.push(`${pathname}${query}`);
+  };
+  const handleDatePickerChange = (newValue) => {
+    const value = releaseDate ? `${newValue[0]},${newValue[1]}` : "";
+
+    if (!value) {
+      current.delete("release_date");
+    } else {
+      current.set("release_date", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -808,38 +828,38 @@ export default function Filters({
     }
 
     // Release date
-    if (searchParams.get("release_date")) {
-      const releaseDateParams = searchParams.get("release_date").split(".");
-      const searchMinYear = parseInt(releaseDateParams[0]);
-      const searchMaxYear = parseInt(releaseDateParams[2]);
+    // if (searchParams.get("release_date")) {
+    //   const releaseDateParams = searchParams.get("release_date").split(".");
+    //   const searchMinYear = parseInt(releaseDateParams[0]);
+    //   const searchMaxYear = parseInt(releaseDateParams[2]);
 
-      // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
-      setReleaseDate([searchMinYear, searchMaxYear]);
-      setReleaseDateSlider([searchMinYear, searchMaxYear]);
-      // }
+    //   // if (minYear !== searchMinYear || maxYear !== searchMaxYear) {
+    //   setReleaseDate([searchMinYear, searchMaxYear]);
+    //   setReleaseDateSlider([searchMinYear, searchMaxYear]);
+    //   // }
 
-      const fullMinYear = `${searchMinYear}-01-01`;
-      const fullMaxYear = `${searchMaxYear}-12-31`;
+    //   const fullMinYear = `${searchMinYear}-01-01`;
+    //   const fullMaxYear = `${searchMaxYear}-12-31`;
 
-      if (!isTvPage) {
-        searchAPIParams["primary_release_date.gte"] = fullMinYear;
-        searchAPIParams["primary_release_date.lte"] = fullMaxYear;
-      } else {
-        searchAPIParams["first_air_date.gte"] = fullMinYear;
-        searchAPIParams["first_air_date.lte"] = fullMaxYear;
-      }
-    } else {
-      setReleaseDate([minYear, maxYear]);
-      setReleaseDateSlider([minYear, maxYear]);
+    //   if (!isTvPage) {
+    //     searchAPIParams["primary_release_date.gte"] = fullMinYear;
+    //     searchAPIParams["primary_release_date.lte"] = fullMaxYear;
+    //   } else {
+    //     searchAPIParams["first_air_date.gte"] = fullMinYear;
+    //     searchAPIParams["first_air_date.lte"] = fullMaxYear;
+    //   }
+    // } else {
+    //   setReleaseDate([minYear, maxYear]);
+    //   setReleaseDateSlider([minYear, maxYear]);
 
-      if (!isTvPage) {
-        delete searchAPIParams["primary_release_date.gte"];
-        delete searchAPIParams["primary_release_date.lte"];
-      } else {
-        delete searchAPIParams["first_air_date.gte"];
-        delete searchAPIParams["first_air_date.lte"];
-      }
-    }
+    //   if (!isTvPage) {
+    //     delete searchAPIParams["primary_release_date.gte"];
+    //     delete searchAPIParams["primary_release_date.lte"];
+    //   } else {
+    //     delete searchAPIParams["first_air_date.gte"];
+    //     delete searchAPIParams["first_air_date.lte"];
+    //   }
+    // }
 
     // Cast
     if (searchParams.get("with_cast")) {
@@ -1061,6 +1081,40 @@ export default function Filters({
       }
     }
 
+    // Datepicker
+    if (searchParams.get("release_date")) {
+      const datepickerParams = searchParams.get("release_date").split("..");
+      const searchMinDatepicker = dayjs(datepickerParams[0]);
+      const searchMaxDatepicker = dayjs(datepickerParams[1]);
+
+      setMinDatepicker(searchMinDatepicker);
+      setMaxDatepicker(searchMaxDatepicker);
+
+      if (!isTvPage) {
+        searchAPIParams["primary_release_date.gte"] =
+          searchMinDatepicker.format("YYYY-MM-DD");
+        searchAPIParams["primary_release_date.lte"] =
+          searchMaxDatepicker.format("YYYY-MM-DD");
+      }
+
+      if (isTvPage) {
+        searchAPIParams["first_air_date.gte"] =
+          searchMinDatepicker.format("YYYY-MM-DD");
+        searchAPIParams["first_air_date.lte"] =
+          searchMaxDatepicker.format("YYYY-MM-DD");
+      }
+    } else {
+      if (!isTvPage) {
+        delete searchAPIParams["primary_release_date.gte"];
+        delete searchAPIParams["primary_release_date.lte"];
+      }
+
+      if (isTvPage) {
+        delete searchAPIParams["first_air_date.gte"];
+        delete searchAPIParams["first_air_date.lte"];
+      }
+    }
+
     // Search Query
     if (searchParams.get("query")) {
       const searchQuery = searchParams.get("query");
@@ -1154,6 +1208,11 @@ export default function Filters({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, searchAPIParams, searchQuery, searchParams]);
 
+  const [minDatepicker, setMinDatepicker] = useState(dayjs(new Date()));
+  const [maxDatepicker, setMaxDatepicker] = useState(
+    dayjs(new Date(maxYear, 11, 31)),
+  );
+
   return (
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
@@ -1213,7 +1272,7 @@ export default function Filters({
       )}
 
       {/* Release Date */}
-      <section className={`flex flex-col gap-1`}>
+      {/* <section className={`flex flex-col gap-1`}>
         <span className={`font-medium`}>Release Date</span>
         <div className={`w-full px-3`}>
           {minYear && maxYear ? (
@@ -1272,6 +1331,120 @@ export default function Filters({
                   sx={muiInputStyles}
                 />
               </div>
+            </>
+          ) : (
+            <span
+              className={`block w-full text-center text-xs italic text-gray-400`}
+            >
+              Finding oldest & latest...
+            </span>
+          )}
+        </div>
+      </section> */}
+
+      {/* NOTE: NEW Release Date */}
+      <section className={`flex flex-col gap-1`}>
+        <span className={`font-medium`}>Release Date</span>
+        <div className={`w-full px-3 pt-2`}>
+          {minYear && maxYear ? (
+            <>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <div className={`-mx-3 flex flex-row items-center gap-1`}>
+                  <MobileDatePicker
+                    // label="Start"
+                    minDate={dayjs(`${minYear}-01-01`)}
+                    maxDate={dayjs(`${maxYear}-12-31`)}
+                    defaultValue={minDatepicker}
+                    value={minDatepicker}
+                    onChange={(newValue) => {
+                      setMinDatepicker(newValue);
+                      handleDatePickerChange([
+                        dayjs(newValue).format("YYYY-MM-DD"),
+                        dayjs(maxDatepicker).format("YYYY-MM-DD"),
+                      ]);
+                    }}
+                    slotProps={{
+                      textField: { size: "small" },
+                    }}
+                    format="DD MMM YYYY"
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        color: "#fff",
+                        backgroundColor: "#131720",
+                        borderRadius: "1.5rem",
+                        cursor: "text",
+                        fontSize: "14px",
+                        "& button": {
+                          color: "#fff",
+                        },
+                        "& fieldset": {
+                          borderColor: "#79808B",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#fff",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#fff",
+                        },
+                      },
+                      label: {
+                        color: "#fff",
+                        "&.Mui-focused": {
+                          color: "#fff",
+                        },
+                      },
+                    }}
+                  />
+
+                  <span className={`text-base`}>-</span>
+
+                  <MobileDatePicker
+                    // label="End"
+                    minDate={dayjs(`${minYear}-01-01`)}
+                    maxDate={dayjs(`${maxYear}-12-31`)}
+                    defaultValue={maxDatepicker}
+                    value={maxDatepicker}
+                    onChange={(newValue) => {
+                      setMaxDatepicker(newValue);
+                      handleDatePickerChange([
+                        dayjs(minDatepicker).format("YYYY-MM-DD"),
+                        dayjs(newValue).format("YYYY-MM-DD"),
+                      ]);
+                    }}
+                    slotProps={{
+                      textField: { size: "small" },
+                    }}
+                    format="DD MMM YYYY"
+                    sx={{
+                      "& .MuiInputBase-root": {
+                        color: "#fff",
+                        backgroundColor: "#131720",
+                        borderRadius: "1.5rem",
+                        cursor: "text",
+                        fontSize: "14px",
+                        "& button": {
+                          color: "#fff",
+                        },
+                        "& fieldset": {
+                          borderColor: "#79808B",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#fff",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#fff",
+                        },
+                      },
+                      label: {
+                        color: "#fff",
+                        "&.Mui-focused": {
+                          color: "#fff",
+                        },
+                      },
+                    }}
+                  />
+                </div>
+              </LocalizationProvider>
             </>
           ) : (
             <span
