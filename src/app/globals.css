@@ -41,19 +41,13 @@
 }
 
 .MuiPaper-root {
-  @apply bg-[#131720] text-white;
+  @apply !bg-[#131720] !text-white;
 }
 
-.MuiTypography-root {
-  @apply text-white;
-}
-
-.MuiPickersCalendarHeader-root button {
-  @apply text-white;
-}
-
+.MuiTypography-root,
+.MuiPickersCalendarHeader-root button,
 .MuiPickersDay-root {
-  @apply text-white;
+  @apply !text-white;
 }
 
 .MuiPickersDay-today {
