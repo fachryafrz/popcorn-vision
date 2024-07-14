@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import packageJson from '../../../package.json';
 
 // JSON import
 import footer from "../../json/footer.json";
@@ -169,6 +170,9 @@ export default function Footer() {
               ></figure>
             </Link>
           </span>
+        </Reveal>
+        <Reveal>
+          <span>{`v${packageJson.version}`}</span>
         </Reveal>
       </div>
     </footer>

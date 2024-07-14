@@ -1,8 +1,11 @@
 import Reveal from "@/components/Layout/Reveal";
+import { askLocation } from "@/lib/navigator";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 
 export default function WatchProvider({ providers, userLocation, isTvPage }) {
+  const [locationError, setLocationError] = useState();
+
   const providersArray = Object.entries(providers.results);
   const providersIDArray =
     userLocation &&
@@ -65,10 +68,29 @@ export default function WatchProvider({ providers, userLocation, isTvPage }) {
       ) : (
         <Reveal>
           <section id={`Film Providers`}>
-            <span className={`text-sm italic text-gray-400`}>
-              Where to watch? <br /> Please enable location services to find out
-              where to watch this film.
-            </span>
+            <div className={`flex flex-col text-sm italic text-gray-400`}>
+              <span>Where to watch?</span>
+              <button
+                onClick={() => askLocation(null, setLocationError)}
+                className={`btn btn-outline btn-sm max-w-fit rounded-full`}
+              >
+                Click to enable location
+              </button>
+              {locationError && (
+                <div className={`prose`}>
+                  <p>{locationError}</p>
+                  <p>Please follow these steps to enable location access:</p>
+                  <ol>
+                    <li>Click the icon on the left side of the address bar</li>
+                    <li>Go to &quot;Site settings&quot;.</li>
+                    <li>
+                      Find &quot;Location&quot; and set it to &quot;Allow&quot;.
+                    </li>
+                    <li>Reload the page and click the button again.</li>
+                  </ol>
+                </div>
+              )}
+            </div>
           </section>
         </Reveal>
       )}

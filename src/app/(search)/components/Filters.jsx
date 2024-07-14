@@ -1,4 +1,4 @@
-import { fetchData } from "@/lib/fetch";
+import { fetchData, getLocation } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { Input, Slider } from "@mui/material";
 import { close } from "ionicons/icons";
@@ -13,6 +13,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { askLocation } from "@/lib/navigator";
 
 export default function Filters({
   type,
@@ -53,6 +54,7 @@ export default function Filters({
 }) {
   const isTvPage = type === "tv";
   const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState();
 
   // State
   // const [languagesData, setLanguagesData] = useState([]);
@@ -88,6 +90,10 @@ export default function Filters({
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
   const [rating, setRating] = useState([0, 100]);
   const [runtime, setRuntime] = useState([0, 300]);
+  const [minDatepicker, setMinDatepicker] = useState(dayjs(new Date()));
+  const [maxDatepicker, setMaxDatepicker] = useState(
+    dayjs(new Date(maxYear, 11, 31)),
+  );
 
   // Pre-loaded Options
   const tvSeriesStatus = useMemo(
@@ -642,7 +648,7 @@ export default function Filters({
 
   // Use Effect for getting user location
   useEffect(() => {
-    setUserLocation(localStorage.getItem("user-location"));
+    askLocation(setUserLocation, setLocationError);
   }, []);
 
   // Use Effect for cycling random options placeholder
@@ -991,10 +997,10 @@ export default function Filters({
 
         searchAPIParams["vote_count.gte"] = searchRating[0];
         searchAPIParams["vote_count.lte"] = searchRating[1];
-      } else {
-        delete searchAPIParams["vote_count.gte"];
-        delete searchAPIParams["vote_count.lte"];
       }
+    } else {
+      delete searchAPIParams["vote_count.gte"];
+      delete searchAPIParams["vote_count.lte"];
     }
 
     // Runtime
@@ -1011,10 +1017,10 @@ export default function Filters({
 
         searchAPIParams["with_runtime.gte"] = searchRuntime[0];
         searchAPIParams["with_runtime.lte"] = searchRuntime[1];
-      } else {
-        delete searchAPIParams["with_runtime.gte"];
-        delete searchAPIParams["with_runtime.lte"];
       }
+    } else {
+      delete searchAPIParams["with_runtime.gte"];
+      delete searchAPIParams["with_runtime.lte"];
     }
 
     // Sort by
@@ -1207,11 +1213,6 @@ export default function Filters({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, searchAPIParams, searchQuery, searchParams]);
-
-  const [minDatepicker, setMinDatepicker] = useState(dayjs(new Date()));
-  const [maxDatepicker, setMaxDatepicker] = useState(
-    dayjs(new Date(maxYear, 11, 31)),
-  );
 
   return (
     <aside
@@ -1486,11 +1487,27 @@ export default function Filters({
             isMulti
           />
         ) : (
-          <span
-            className={`block w-full text-center text-xs italic text-gray-400`}
+          <button
+            onClick={() => askLocation(setUserLocation, setLocationError)}
+            className={`btn btn-outline btn-sm rounded-full`}
           >
-            Please enable location
-          </span>
+            Click to enable location
+          </button>
+        )}
+
+        {locationError && (
+          <div className={`prose text-xs`}>
+            <p>{locationError}</p>
+            <p>Please follow these steps to enable location access:</p>
+            <ol>
+              <li>Click the icon on the left side of the address bar</li>
+              <li>Go to &quot;Site settings&quot;.</li>
+              <li>
+                Find &quot;Location&quot; and set it to &quot;Allow&quot;.
+              </li>
+              <li>Reload the page and click the button again.</li>
+            </ol>
+          </div>
         )}
       </section>
 
@@ -1518,28 +1535,24 @@ export default function Filters({
         />
       </section>
 
-      {/* Language */}
+      {/* Runtime */}
       <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Language</span>
-        <Select
-          options={languagesData && languagesOptions}
-          onChange={handleLanguageChange}
-          value={language}
-          styles={{
-            ...inputStyles,
-            dropdownIndicator: (styles) => ({
-              ...styles,
-              display: "block",
-              "&:hover": {
-                color: "#fff",
-              },
-              cursor: "pointer",
-            }),
-          }}
-          placeholder={languagesInputPlaceholder}
-          isDisabled={isQueryParams}
-          isMulti
-        />
+        <span className={`font-medium`}>Runtime</span>
+        <div className={`w-full px-3`}>
+          <Slider
+            getAriaLabel={() => "Runtime"}
+            value={runtimeSlider}
+            onChange={(event, newValue) => setRuntimeSlider(newValue)}
+            onChangeCommitted={handleRuntimeChange}
+            valueLabelDisplay="off"
+            min={0}
+            step={10}
+            max={300}
+            marks={runtimeMarks}
+            sx={sliderStyles}
+            disabled={isQueryParams}
+          />
+        </div>
       </section>
 
       {/* Networks */}
@@ -1596,22 +1609,6 @@ export default function Filters({
         </section>
       )}
 
-      {/* Keyword */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Keyword</span>
-        <AsyncSelect
-          noOptionsMessage={() => "Type to search"}
-          loadingMessage={() => "Searching..."}
-          loadOptions={keywordsLoadOptions}
-          onChange={handleKeywordChange}
-          value={keyword}
-          styles={inputStyles}
-          placeholder={`Search keyword...`}
-          isDisabled={isQueryParams}
-          isMulti
-        />
-      </section>
-
       {/* Company */}
       <section className={`flex flex-col gap-1`}>
         <span className={`font-medium`}>Company</span>
@@ -1626,6 +1623,25 @@ export default function Filters({
           isDisabled={isQueryParams}
           isMulti
         />
+      </section>
+
+      {/* Rating */}
+      <section className={`flex flex-col gap-1`}>
+        <span className={`font-medium`}>Rating</span>
+        <div className={`w-full px-3`}>
+          <Slider
+            getAriaLabel={() => "Rating"}
+            value={ratingSlider}
+            onChange={(event, newValue) => setRatingSlider(newValue)}
+            onChangeCommitted={handleRatingChange}
+            valueLabelDisplay="off"
+            min={0}
+            max={100}
+            marks={ratingMarks}
+            sx={sliderStyles}
+            disabled={isQueryParams}
+          />
+        </div>
       </section>
 
       {/* Tv Series Type */}
@@ -1667,43 +1683,44 @@ export default function Filters({
         </section>
       )}
 
-      {/* Rating */}
+      {/* Language */}
       <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Rating</span>
-        <div className={`w-full px-3`}>
-          <Slider
-            getAriaLabel={() => "Rating"}
-            value={ratingSlider}
-            onChange={(event, newValue) => setRatingSlider(newValue)}
-            onChangeCommitted={handleRatingChange}
-            valueLabelDisplay="off"
-            min={0}
-            max={100}
-            marks={ratingMarks}
-            sx={sliderStyles}
-            disabled={isQueryParams}
-          />
-        </div>
+        <span className={`font-medium`}>Language</span>
+        <Select
+          options={languagesData && languagesOptions}
+          onChange={handleLanguageChange}
+          value={language}
+          styles={{
+            ...inputStyles,
+            dropdownIndicator: (styles) => ({
+              ...styles,
+              display: "block",
+              "&:hover": {
+                color: "#fff",
+              },
+              cursor: "pointer",
+            }),
+          }}
+          placeholder={languagesInputPlaceholder}
+          isDisabled={isQueryParams}
+          isMulti
+        />
       </section>
 
-      {/* Runtime */}
+      {/* Keyword */}
       <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Runtime</span>
-        <div className={`w-full px-3`}>
-          <Slider
-            getAriaLabel={() => "Runtime"}
-            value={runtimeSlider}
-            onChange={(event, newValue) => setRuntimeSlider(newValue)}
-            onChangeCommitted={handleRuntimeChange}
-            valueLabelDisplay="off"
-            min={0}
-            step={10}
-            max={300}
-            marks={runtimeMarks}
-            sx={sliderStyles}
-            disabled={isQueryParams}
-          />
-        </div>
+        <span className={`font-medium`}>Keyword</span>
+        <AsyncSelect
+          noOptionsMessage={() => "Type to search"}
+          loadingMessage={() => "Searching..."}
+          loadOptions={keywordsLoadOptions}
+          onChange={handleKeywordChange}
+          value={keyword}
+          styles={inputStyles}
+          placeholder={`Search keyword...`}
+          isDisabled={isQueryParams}
+          isMulti
+        />
       </section>
     </aside>
   );
