@@ -165,18 +165,11 @@ export default function FilmInfo({
                 id={`Production Companies`}
                 className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
               >
-                {film.production_companies.map(
-                  (item, i) =>
-                    item.logo_path !== null && (
-                      <div key={item.id}>
-                        <ProductionCompany
-                          item={item}
-                          i={i}
-                          isTvPage={isTvPage}
-                        />
-                      </div>
-                    ),
-                )}
+                {film.production_companies.map((item, i) => (
+                  <div key={item.id} className={`grid place-content-center`}>
+                    <ProductionCompany item={item} i={i} isTvPage={isTvPage} />
+                  </div>
+                ))}
               </section>
             )}
 
