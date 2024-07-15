@@ -24,7 +24,11 @@ export default function ProductionCompany({ item, i, isTvPage }) {
               }}
             ></figure>
           ) : (
-            <span className={`font-semibold`}>{item.name}</span>
+            <span
+              className={`block max-w-[120px] text-pretty text-center font-semibold`}
+            >
+              {item.name}
+            </span>
           )}
         </Reveal>
       </Link>
