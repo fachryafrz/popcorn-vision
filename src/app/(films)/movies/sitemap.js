@@ -11,7 +11,7 @@ export async function generateSitemaps() {
     },
   });
 
-  for (let i = 1; i <= 500; i++) {
+  for (let i = 1; i <= 10; i++) {
     sitemap.push({
       id: i,
     });
@@ -40,7 +40,7 @@ export default async function sitemap({ id }) {
     url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
-    priority: 0.8,
+    priority: 0.7,
   }));
 
   sitemap.push(...moviesInSitemap);

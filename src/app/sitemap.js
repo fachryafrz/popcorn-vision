@@ -55,24 +55,24 @@ export default async function sitemap() {
     tvShows.push(...results);
   }
 
-  const moviesInSitemap = movies.map((movie) => ({
-    url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
-    lastModified: new Date(),
-    changeFrequency: "hourly",
-    priority: 0.8,
-  }));
+  // const moviesInSitemap = movies.map((movie) => ({
+  //   url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
+  //   lastModified: new Date(),
+  //   changeFrequency: "hourly",
+  //   priority: 0.8,
+  // }));
 
-  const tvShowsInSitemap = tvShows.map((show) => ({
-    url: `${appUrl}/tv/${show.id}-${slugify(show.name)}`,
-    lastModified: new Date(),
-    changeFrequency: "hourly",
-    priority: 0.8,
-  }));
+  // const tvShowsInSitemap = tvShows.map((show) => ({
+  //   url: `${appUrl}/tv/${show.id}-${slugify(show.name)}`,
+  //   lastModified: new Date(),
+  //   changeFrequency: "hourly",
+  //   priority: 0.8,
+  // }));
 
   // sitemap.push(...moviesInSitemap);
   // sitemap.push(...tvShowsInSitemap);
 
-  for (let i = 1; i <= 500; i++) {
+  for (let i = 1; i <= 10; i++) {
     sitemap.push({
       url: `${appUrl}/movies/sitemap/${i}.xml`,
       lastModified: new Date(),
@@ -81,7 +81,7 @@ export default async function sitemap() {
     });
   }
 
-  for (let i = 1; i <= 500; i++) {
+  for (let i = 1; i <= 10; i++) {
     sitemap.push({
       url: `${appUrl}/tv/sitemap/${i}.xml`,
       lastModified: new Date(),
