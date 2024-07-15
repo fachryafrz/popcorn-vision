@@ -12,7 +12,7 @@ export default function ProductionCompany({ item, i, isTvPage }) {
             : `/tv/search?with_companies=${item.id}`
         }
       >
-        <Reveal delay={0.2 * i}>
+        <Reveal delay={0.1 * i}>
           {item.logo_path ? (
             <figure
               title={item.name}
