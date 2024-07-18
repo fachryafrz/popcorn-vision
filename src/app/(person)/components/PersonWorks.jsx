@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 export default function PersonWorks({ person, movieCredits, tvCredits }) {
   const [creditsSwitcher, setCreditsSwitcher] = useState(`Movies`);
   const [films, setFilms] = useState();
+  const [mediaSwiper, setMediaSwiper] = useState();
 
   const { setPersonModal } = usePersonModal((state) => state);
 
@@ -56,6 +57,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
         <h2 className="sr-only">{`Movies & TV Series`}</h2>
 
         <Swiper
+          onSwiper={(swiper) => setMediaSwiper(swiper)}
           modules={[Navigation]}
           spaceBetween={8}
           slidesPerView={"auto"}
@@ -173,7 +175,10 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
             <div className="flex items-end gap-4">
               {personMovies.length > 0 && (
                 <button
-                  onClick={() => setCreditsSwitcher(`Movies`)}
+                  onClick={() => {
+                    setCreditsSwitcher(`Movies`);
+                    mediaSwiper.slideTo(0);
+                  }}
                   className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `Movies`
                       ? `text-white hocus:text-white`
@@ -186,7 +191,10 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
               {personTV.length > 0 && (
                 <button
-                  onClick={() => setCreditsSwitcher(`TV`)}
+                  onClick={() => {
+                    setCreditsSwitcher(`TV`);
+                    mediaSwiper.slideTo(0);
+                  }}
                   className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `TV`
                       ? `text-white hocus:text-white`
