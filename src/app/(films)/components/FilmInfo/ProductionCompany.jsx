@@ -16,7 +16,7 @@ export default function ProductionCompany({ item, i, isTvPage }) {
           {item.logo_path ? (
             <figure
               title={item.name}
-              className={`aspect-[2/1] h-[60px] bg-center grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
+              className={`aspect-[2/1] h-[60px] bg-center brightness-0 invert transition-all hocus:brightness-100 hocus:invert-0`}
               style={{
                 backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
                 backgroundSize: `contain`,
