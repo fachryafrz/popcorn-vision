@@ -596,7 +596,7 @@ export default function Filters({
       setStatus(updatedValue);
       current.delete("status");
     } else {
-      current.set("status", updatedValue.join(","));
+      current.set("status", updatedValue.join("|"));
     }
 
     const search = current.toString();
@@ -629,7 +629,7 @@ export default function Filters({
       setTvType(updatedValue);
       current.delete("type");
     } else {
-      current.set("type", updatedValue.join(","));
+      current.set("type", updatedValue.join("|"));
     }
 
     const search = current.toString();
@@ -815,7 +815,7 @@ export default function Filters({
   useEffect(() => {
     // TV Series Status
     if (searchParams.get("status")) {
-      const statusParams = searchParams.get("status").split(",");
+      const statusParams = searchParams.get("status").split("|");
       setStatus(statusParams);
 
       searchAPIParams["with_status"] = searchParams.get("status");
@@ -825,7 +825,7 @@ export default function Filters({
 
     // TV Series Type
     if (searchParams.get("type")) {
-      const typeParams = searchParams.get("type").split(",");
+      const typeParams = searchParams.get("type").split("|");
       setTvType(typeParams);
 
       searchAPIParams["with_type"] = searchParams.get("type");
