@@ -196,7 +196,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       "@type": "VideoObject",
       name: video.name,
       description: video.type,
-      thumbnailUrl: `https://i.ytimg.com/vi_webp/${video.key}/maxresdefault.webp`,
+      thumbnailUrl: `https://img.youtube.com/vi/${video.key}/0.jpg`,
       embedUrl: `https://www.youtube.com/embed/${video.key}`,
       uploadDate: video.published_at,
     });
