@@ -45,7 +45,7 @@ export const metadata = {
     description: process.env.NEXT_PUBLIC_APP_DESC,
     url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: process.env.NEXT_PUBLIC_APP_NAME,
-    images: "/popcorn.png",
+    images: "/maskable_icon_x512.png",
     locale: "en_US",
     type: "website",
   },
@@ -56,7 +56,7 @@ export const metadata = {
     title: process.env.NEXT_PUBLIC_APP_NAME,
     description: process.env.NEXT_PUBLIC_APP_DESC,
     creator: "@fachryafrz",
-    images: "/popcorn.png",
+    images: "/maskable_icon_x512.png",
   },
   verification: {
     google: "google",
