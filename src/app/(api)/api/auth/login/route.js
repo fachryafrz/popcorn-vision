@@ -20,8 +20,8 @@ export async function POST(req) {
     );
 
     cookiesStore.set("tmdb.session_id", data.session_id, {
-      // expires: new Date(Date.now() + 60 * 60 * 24 * 7 * 1000),
-      maxAge: 60 * 60 * 24 * 365,
+      expires: Date.now() + 1000 * 60 * 60 * 24 * 365,
+      // maxAge: 60 * 60 * 24 * 365,
     });
 
     return NextResponse.json(data, { status: 200 });
