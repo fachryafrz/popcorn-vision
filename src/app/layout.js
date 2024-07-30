@@ -50,7 +50,7 @@ export const metadata = {
     type: "website",
   },
   // themeColor: "#202735",
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   twitter: {
     card: "summary_large_image",
     title: process.env.NEXT_PUBLIC_APP_NAME,
