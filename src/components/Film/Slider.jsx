@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import FilmCard from "./FilmCard";
+import FilmCard from "./Card";
 
 // Swiper
 import { Navigation } from "swiper/modules";

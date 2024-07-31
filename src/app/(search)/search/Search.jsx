@@ -2,7 +2,6 @@
 "use client";
 
 import { fetchData } from "@/lib/fetch";
-import FilmCard from "@/components/Film/FilmCard";
 import { IonIcon } from "@ionic/react";
 import { closeCircle, filter } from "ionicons/icons";
 import {
@@ -18,9 +17,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
-import Filters from "../components/Filters";
+import Filters from "../../../components/Layout/Filters";
 import { useInView } from "react-intersection-observer";
 import { delay } from "@/lib/delay";
+import FilmCard from "@/components/Film/Card";
 
 export default function Search({
   type = "movie",

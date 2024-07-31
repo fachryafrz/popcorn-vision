@@ -1,10 +1,10 @@
 import React from "react";
-import EpisodeCard from "../../EpisodeCard";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { formatRating } from "@/lib/formatRating";
 import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
+import EpisodeCard from "./EpisodeCard";
 
 export default function NextEpisode({ film, nextEps, setLoading }) {
   return (

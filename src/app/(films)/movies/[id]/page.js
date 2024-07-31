@@ -1,10 +1,10 @@
 import React from "react";
-import FilmBackdrop from "../../components/FilmBackdrop";
+import FilmBackdrop from "../../../../components/Film/Details/Backdrop";
 import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import { isPlural } from "@/lib/isPlural";
-import FilmGrid from "@/components/Film/FilmGrid";
-import FilmContent from "../../components/FilmContent";
+import FilmGrid from "@/components/Film/Grid";
+import FilmContent from "../../../../components/Film/Details/Content";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;

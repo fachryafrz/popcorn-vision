@@ -1,7 +1,7 @@
 import React from "react";
-import PersonProfile from "../../components/PersonProfile";
-import PersonDetails from "../../components/PersonDetails";
-import PersonWorks from "../../components/PersonWorks";
+import PersonProfile from "../../../../components/Person/Profile";
+import PersonDetails from "../../../../components/Person/Details";
+import PersonWorks from "../../../../components/Person/Works";
 import { getPerson } from "@/lib/fetch";
 
 export async function generateMetadata({ params }) {

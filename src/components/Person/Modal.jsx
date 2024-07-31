@@ -1,7 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import PersonDetails from "@/app/(person)/components/PersonDetails";
-import PersonProfile from "@/app/(person)/components/PersonProfile";
-import PersonWorks from "@/app/(person)/components/PersonWorks";
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { usePathname, useRouter } from "next/navigation";
@@ -10,6 +7,9 @@ import React, { useEffect, useState } from "react";
 // Zustand
 import { usePersonModal } from "@/zustand/personModal";
 import { useEpisodeModal } from "@/zustand/episodeModal";
+import PersonProfile from "./Profile";
+import PersonDetails from "./Details";
+import PersonWorks from "./Works";
 
 export default function PersonModal({ person }) {
   const router = useRouter();

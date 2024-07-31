@@ -4,7 +4,7 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import RatingStars from "./RatingStars";
-import Person from "./Person";
+import Person from "../../Person/Person";
 import moment from "moment";
 
 export default function ReviewCard({ review }) {

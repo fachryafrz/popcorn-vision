@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FilmPoster from "./FilmPoster";
+import FilmPoster from "./Poster";
 import CastsList from "./CastsList";
-import FilmInfo from "./FilmInfo";
-import FilmOverview from "./FilmOverview";
+import FilmInfo from "./Info";
+import FilmOverview from "./Overview";
 import ShareModal from "./ShareModal";
-import { EpisodeModal } from "./EpisodeModal";
-import PersonModal from "./PersonModal";
+import PersonModal from "../../Person/Modal";
+import { EpisodeModal } from "./TV/EpisodeModal";
 
 import { useSearchParams } from "next/navigation";
 import { getEpisodeModal, getPerson } from "@/lib/fetch";

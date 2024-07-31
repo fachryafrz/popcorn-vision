@@ -1,9 +1,9 @@
 import React from "react";
-import User from "./components/User";
+import User from "../../../components/User/Profile/User";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { fetchData } from "@/lib/fetch";
-import TileList from "./components/TileList";
+import TileList from "../../../components/User/Profile/TileList";
 
 export const revalidate = 0;
 
