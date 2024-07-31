@@ -5,14 +5,14 @@ import FilmPoster from "./Poster";
 import CastsList from "./CastsList";
 import FilmInfo from "./Info";
 import FilmOverview from "./Overview";
-import ShareModal from "./ShareModal";
-import PersonModal from "../../Person/Modal";
-import { EpisodeModal } from "./TV/EpisodeModal";
+import { EpisodeModal } from "../../Modals/EpisodeModal";
 
 import { useSearchParams } from "next/navigation";
 import { getEpisodeModal, getPerson } from "@/lib/fetch";
 import { useEpisodeModal } from "@/zustand/episodeModal";
 import { usePersonModal } from "@/zustand/personModal";
+import ShareModal from "@/components/Modals/ShareModal";
+import PersonModal from "@/components/Modals/PersonModal";
 
 export default function FilmContent({
   film,

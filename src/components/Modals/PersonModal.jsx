@@ -7,9 +7,9 @@ import React, { useEffect, useState } from "react";
 // Zustand
 import { usePersonModal } from "@/zustand/personModal";
 import { useEpisodeModal } from "@/zustand/episodeModal";
-import PersonProfile from "./Profile";
-import PersonDetails from "./Details";
-import PersonWorks from "./Works";
+import PersonProfile from "../Person/Profile";
+import PersonDetails from "../Person/Details";
+import PersonWorks from "../Person/Works";
 
 export default function PersonModal({ person }) {
   const router = useRouter();
