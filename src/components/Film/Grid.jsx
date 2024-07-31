@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import FilmCard from "./FilmCard";
+import FilmCard from "./Card";
 import { fetchData } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import { useInView } from "react-intersection-observer";

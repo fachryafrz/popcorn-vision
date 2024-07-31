@@ -5,7 +5,7 @@ import {
   chevronDownCircleOutline,
   chevronUpCircleOutline,
 } from "ionicons/icons";
-import Person from "./Person";
+import Person from "../../Person/Person";
 import Reveal from "@/components/Layout/Reveal";
 
 export default function CastsList({ credits }) {

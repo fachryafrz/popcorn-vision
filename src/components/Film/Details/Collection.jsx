@@ -18,7 +18,7 @@ import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
 import { fetchData, getEpisodes } from "@/lib/fetch";
 import { slugify } from "@/lib/slugify";
-import EpisodeCard from "./EpisodeCard";
+import EpisodeCard from "./TV/EpisodeCard";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";

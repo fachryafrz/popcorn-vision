@@ -26,7 +26,7 @@ import "swiper/css/effect-fade";
 import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
 import axios from "axios";
-import FilmSummary from "./FilmSummary";
+import FilmSummary from "./Summary";
 import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";

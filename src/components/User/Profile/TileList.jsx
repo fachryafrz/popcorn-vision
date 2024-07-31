@@ -1,6 +1,6 @@
 "use client";
 
-import { CollectionItem } from "@/app/(films)/components/FilmCollection";
+import { CollectionItem } from "@/components/Film/Details/Collection";
 import { fetchData } from "@/lib/fetch";
 import { useCookies } from "next-client-cookies";
 import { usePathname } from "next/navigation";

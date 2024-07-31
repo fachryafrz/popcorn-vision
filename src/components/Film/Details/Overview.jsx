@@ -6,9 +6,9 @@ import React from "react";
 import { usePathname } from "next/navigation";
 
 // Components
-import FilmMedia from "./FilmMedia";
-import FilmCollection from "./FilmCollection";
-import FilmReviews from "./FilmReviews";
+import FilmMedia from "./Media";
+import FilmCollection from "./Collection";
+import FilmReviews from "./Reviews";
 
 // Swiper
 import "swiper/css";

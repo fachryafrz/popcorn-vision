@@ -8,7 +8,6 @@ import {
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
-import Person from "./Person";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
@@ -18,6 +17,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEpisodeModal } from "@/zustand/episodeModal";
 import moment from "moment";
+import Person from "@/components/Person/Person";
 
 export function EpisodeModal({ seasons, episode }) {
   const router = useRouter();

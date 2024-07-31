@@ -1,6 +1,6 @@
 import Reveal from "@/components/Layout/Reveal";
 import React from "react";
-import Person from "../Person";
+import Person from "../../../Person/Person";
 
 export default function FilmDirector({ credits, film, isTvPage }) {
   const director = credits.crew.find((person) => person.job === "Director");

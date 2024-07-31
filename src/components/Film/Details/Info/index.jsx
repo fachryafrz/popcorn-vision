@@ -14,19 +14,19 @@ import Link from "next/link";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";
-import WatchlistButton from "../User/WatchlistButton";
-import FavoriteButton from "../User/FavoriteButton";
+import WatchlistButton from "../../../User/Actions/WatchlistButton";
+import FavoriteButton from "../../../User/Actions/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
 import axios from "axios";
-import UserRating from "../User/UserRating";
+import UserRating from "../../../User/Actions/UserRating";
 import ProductionCompany from "./ProductionCompany";
 import FilmReleaseDate from "./FilmReleaseDate";
 import FilmDirector from "./FilmDirector";
 import WatchProvider from "./WatchProvider";
 import Countdown from "./Countdown";
-import LastEpisode from "./tv/LastEpisode";
-import NextEpisode from "./tv/NextEpisode";
 import ShareButton from "./ShareButton";
+import LastEpisode from "../TV/LastEpisode";
+import NextEpisode from "../TV/NextEpisode";
 
 export default function FilmInfo({
   film,

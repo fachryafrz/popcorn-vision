@@ -1,6 +1,6 @@
 import React from "react";
 import HomeSlider from "@/components/Film/HomeSlider";
-import FilmSlider from "@/components/Film/FilmSlider";
+import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
 import companies from "../json/companies.json";
 import providers from "../json/providers.json";
