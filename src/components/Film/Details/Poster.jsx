@@ -96,7 +96,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
             <img
               src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
               alt={!isTvPage ? film.title : film.name}
-              className={`pointer-events-none object-cover transition-all`}
+              className={`object-cover transition-all`}
             />
           )}
 
