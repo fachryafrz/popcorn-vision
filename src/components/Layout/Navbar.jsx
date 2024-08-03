@@ -331,12 +331,12 @@ export function SearchBar({ placeholder = `Search` }) {
         )}
       </div>
 
-      {!isSearchPage && (
+      {/* {!isSearchPage && (
         <Link
           href={isTvPage ? "/tv/search" : "/search"}
           className={`absolute inset-0 rounded-full transition-all hocus:bg-white hocus:bg-opacity-5`}
         ></Link>
-      )}
+      )} */}
     </form>
   );
 }
