@@ -1367,6 +1367,7 @@ export default function Filters({
                     slotProps={{
                       textField: { size: "small" },
                     }}
+                    disabled={isQueryParams}
                     format="DD MMM YYYY"
                     sx={{
                       "& .MuiInputBase-root": {
@@ -1418,6 +1419,7 @@ export default function Filters({
                     slotProps={{
                       textField: { size: "small" },
                     }}
+                    disabled={isQueryParams}
                     format="DD MMM YYYY"
                     sx={{
                       "& .MuiInputBase-root": {
