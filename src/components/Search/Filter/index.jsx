@@ -23,6 +23,7 @@ import Crew from "./Crew";
 import Company from "./Company";
 import Rating from "./Rating";
 import TVSeriesType from "./TVSeriesType";
+import Language from "./Language";
 
 export default function Filters({
   type,
@@ -66,14 +67,12 @@ export default function Filters({
   const [isGrid, setIsGrid] = useState(true);
 
   // React-Select Placeholder
-  const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
 
   // Filters
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
     maxYear,
   ]);
-  const [language, setLanguage] = useState();
   const [keyword, setKeyword] = useState([]);
   const [ratingSlider, setRatingSlider] = useState([0, 100]);
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
@@ -152,14 +151,6 @@ export default function Filters({
     };
   }, []);
 
-  // Handle Select Options
-  const languagesOptions = useMemo(() => {
-    return languagesData?.map((language) => ({
-      value: language.iso_639_1,
-      label: language.english_name,
-    }));
-  }, [languagesData]);
-
   const timerRef = useRef(null);
   const keywordsLoadOptions = useCallback((inputValue, callback) => {
     const fetchDataWithDelay = async () => {
@@ -194,24 +185,7 @@ export default function Filters({
   }, []);
 
   // Handle Select Change
-  const handleLanguageChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_original_language");
-      } else {
-        current.set("with_original_language", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
   const handleKeywordChange = useCallback(
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
@@ -238,24 +212,6 @@ export default function Filters({
     );
   };
 
-  // Use Effect for cycling random options placeholder
-  useEffect(() => {
-    const updatePlaceholders = () => {
-      const languagesPlaceholder =
-        getRandomOptionsPlaceholder(languagesOptions);
-
-      setLanguagesInputPlaceholder(languagesPlaceholder);
-    };
-
-    updatePlaceholders();
-
-    // Set interval to run every 5 seconds
-    const intervalId = setInterval(updatePlaceholders, 5000);
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [languagesOptions]);
-
   // Use Effect for set available Release Dates
   useEffect(() => {
     setReleaseDate([minYear, maxYear]);
@@ -264,35 +220,12 @@ export default function Filters({
   }, [minYear, maxYear]);
 
   // Use Effect for Select with preloaded data
-  useEffect(() => {
-    // Languages
-    if (searchParams.get("with_original_language")) {
-      const languagesParams = searchParams
-        .get("with_original_language")
-        .split(",");
-      const searchLanguages = languagesParams.map((languageId) =>
-        languagesData?.find(
-          (language) => language.iso_639_1 === languageId.toLowerCase(),
-        ),
-      );
-      const searchLanguagesOptions = searchLanguages?.map(
-        (language) =>
-          language && {
-            value: language.iso_639_1,
-            label: language.english_name,
-          },
-      );
-      setLanguage(searchLanguagesOptions);
-
-      searchAPIParams["with_original_language"] = searchParams.get(
-        "with_original_language",
-      );
-    } else {
-      setLanguage(null);
-
-      delete searchAPIParams["with_original_language"];
-    }
-  }, [genresData, languagesData, searchParams, searchAPIParams]);
+  useEffect(() => {}, [
+    genresData,
+    languagesData,
+    searchParams,
+    searchAPIParams,
+  ]);
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -445,38 +378,21 @@ export default function Filters({
         <Crew searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
-      {/* NOTE: Company */}
+      {/* Company */}
       <Company searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
       {/* Rating */}
       <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
 
-      {/* Tv Series Type */}
+      {/* TV Series Type */}
       {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
 
-      {/* Language */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Language</span>
-        <Select
-          options={languagesData && languagesOptions}
-          onChange={handleLanguageChange}
-          value={language}
-          styles={{
-            ...inputStyles,
-            dropdownIndicator: (styles) => ({
-              ...styles,
-              display: "block",
-              "&:hover": {
-                color: "#fff",
-              },
-              cursor: "pointer",
-            }),
-          }}
-          placeholder={languagesInputPlaceholder}
-          isDisabled={isQueryParams}
-          isMulti
-        />
-      </section>
+      {/* NOTE: Language */}
+      <Language
+        searchAPIParams={searchAPIParams}
+        inputStyles={inputStyles}
+        languagesData={languagesData}
+      />
 
       {/* Keyword */}
       <section className={`flex flex-col gap-1`}>
