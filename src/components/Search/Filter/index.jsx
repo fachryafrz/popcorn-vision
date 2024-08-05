@@ -17,6 +17,7 @@ import ReleaseDate from "./ReleaseDate";
 import Streaming from "./Streaming";
 import Genre from "./Genre";
 import Runtime from "./Runtime";
+import Network from "./Network";
 
 export default function Filters({
   type,
@@ -53,7 +54,6 @@ export default function Filters({
 
   // State
   // const [languagesData, setLanguagesData] = useState([]);
-  const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [castData, setCastData] = useState();
   const [crewData, setCrewData] = useState();
   const [keywordData, setKeywordData] = useState();
@@ -70,7 +70,6 @@ export default function Filters({
     maxYear,
   ]);
   const [language, setLanguage] = useState();
-  const [network, setNetwork] = useState([]);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
   const [keyword, setKeyword] = useState([]);
@@ -203,18 +202,6 @@ export default function Filters({
       label: language.english_name,
     }));
   }, [languagesData]);
-  const networksLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
-      const options = networksData.map((network) => ({
-        value: network.id,
-        label: network.name,
-      }));
-      const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase()),
-      );
-      callback(filteredOptions);
-    }, 2000);
-  };
 
   const timerRef = useRef(null);
   const castsLoadOptions = useCallback((inputValue, callback) => {
@@ -351,24 +338,6 @@ export default function Filters({
         current.delete("with_original_language");
       } else {
         current.set("with_original_language", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
-  const handleNetworkChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("with_networks");
-      } else {
-        current.set("with_networks", value);
       }
 
       const search = current.toString();
@@ -548,32 +517,7 @@ export default function Filters({
 
       delete searchAPIParams["with_original_language"];
     }
-
-    // Network
-    if (searchParams.get("with_networks")) {
-      const networksParams = searchParams.get("with_networks").split(",");
-      const searchNetworks = networksParams.map((networkId) =>
-        networksData?.find(
-          (network) => parseInt(network.id) === parseInt(networkId),
-        ),
-      );
-
-      const searchNetworksOptions = searchNetworks?.map(
-        (network) =>
-          network && {
-            value: network.id,
-            label: network.name,
-          },
-      );
-      setNetwork(searchNetworksOptions);
-
-      searchAPIParams["with_networks"] = searchParams.get("with_networks");
-    } else {
-      setNetwork(null);
-
-      delete searchAPIParams["with_networks"];
-    }
-  }, [genresData, languagesData, networksData, searchParams, searchAPIParams]);
+  }, [genresData, languagesData, searchParams, searchAPIParams]);
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -825,25 +769,12 @@ export default function Filters({
         inputStyles={inputStyles}
       />
 
-      {/* NOTE: Runtime */}
+      {/* Runtime */}
       <Runtime searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
 
-      {/* Networks */}
+      {/* NOTE: Networks */}
       {isTvPage && (
-        <section className={`flex flex-col gap-1`}>
-          <span className={`font-medium`}>Networks</span>
-          <AsyncSelect
-            noOptionsMessage={() => "Type to search"}
-            loadingMessage={() => "Searching..."}
-            loadOptions={networksLoadOptions}
-            onChange={handleNetworkChange}
-            value={network}
-            styles={inputStyles}
-            placeholder={`Search TV networks...`}
-            isDisabled={isQueryParams}
-            isMulti
-          />
-        </section>
+        <Network searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
       {/* Cast */}
