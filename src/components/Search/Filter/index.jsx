@@ -34,84 +34,19 @@ export default function Filters({
   searchParams,
   current,
   inputStyles,
-  setNotAvailable,
-  setLoading,
-  setFilms,
   genresData,
-  setGenresData,
-  setTotalSearchPages,
-  setCurrentSearchPage,
-  searchQuery,
   setSearchQuery,
-  setNotFoundMessage,
   isFilterActive,
   setIsFilterActive,
   releaseDate,
-  setReleaseDate,
   minYear,
-  setMinYear,
   maxYear,
-  setMaxYear,
   searchAPIParams,
   languagesData,
-  totalSearchResults,
-  setTotalSearchResults,
   handleNotAvailable,
   handleClearNotAvailable,
 }) {
   const isTvPage = type === "tv";
-
-  // State
-  // const [languagesData, setLanguagesData] = useState([]);
-  const [castData, setCastData] = useState();
-  const [crewData, setCrewData] = useState();
-  const [keywordData, setKeywordData] = useState();
-  const [companyData, setCompanyData] = useState();
-  const [isGrid, setIsGrid] = useState(true);
-
-  // React-Select Placeholder
-
-  // Filters
-  const [releaseDateSlider, setReleaseDateSlider] = useState([
-    minYear,
-    maxYear,
-  ]);
-  const [ratingSlider, setRatingSlider] = useState([0, 100]);
-  const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
-  const [rating, setRating] = useState([0, 100]);
-  const [runtime, setRuntime] = useState([0, 300]);
-
-  // Handle Slider Marks/Labels
-  const releaseDateMarks = useMemo(
-    () => [
-      {
-        value: minYear,
-        label: releaseDateSlider[0],
-      },
-      {
-        value: maxYear,
-        label: releaseDateSlider[1],
-      },
-    ],
-    [releaseDateSlider, minYear, maxYear],
-  );
-
-  // Handle MUI Slider Change
-  const handleReleaseDateChange = (event, newValue) => {
-    const value = releaseDate ? `${newValue[0]},${newValue[1]}` : "";
-
-    if (!value) {
-      current.delete("release_date");
-    } else {
-      current.set("release_date", `${newValue[0]}..${newValue[1]}`);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
 
   // Handle MUI Slider, Select & Input Styles
   const sliderStyles = useMemo(() => {
@@ -152,12 +87,6 @@ export default function Filters({
       },
     };
   }, []);
-
-  const timerRef = useRef(null);
-
-  // Handle Select Change
-
-  // Handle not available
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -215,8 +144,6 @@ export default function Filters({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    rating,
-    runtime,
     searchParams,
     searchAPIParams,
     minYear,

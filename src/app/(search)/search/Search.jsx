@@ -3,12 +3,9 @@
 
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import { closeCircle, filter } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
-import Select from "react-select";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
-import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
 import Filters from "@/components/Search/Filter";
 import { useInView } from "react-intersection-observer";
@@ -210,7 +207,9 @@ export default function Search({
     const performSearch = () => {
       fetchData({
         endpoint: `/discover/${type}`,
-        queryParams: searchAPIParams,
+        queryParams: {
+          ...searchAPIParams,
+        },
       })
         .then((res) => {
           setFilms(res.results);
@@ -258,15 +257,14 @@ export default function Search({
         });
     };
 
-    if (!searchParams.get("query")) {
+    if (!searchParams.get("query") && searchAPIParams) {
       performSearch();
     }
 
     if (searchParams.get("query") && searchQuery) {
       performSearchQuery();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, searchAPIParams, searchQuery, searchParams]);
+  }, [searchAPIParams, searchParams, searchQuery, type]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -279,28 +277,15 @@ export default function Search({
           searchParams={searchParams}
           current={current}
           inputStyles={inputStyles}
-          setNotAvailable={setNotAvailable}
-          setLoading={setLoading}
-          setFilms={setFilms}
           genresData={genresData}
-          // setGenresData={setGenresData}
-          setTotalSearchPages={setTotalSearchPages}
-          setCurrentSearchPage={setCurrentSearchPage}
-          searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          setNotFoundMessage={setNotFoundMessage}
           isFilterActive={isFilterActive}
           setIsFilterActive={setIsFilterActive}
           releaseDate={releaseDate}
-          setReleaseDate={setReleaseDate}
           minYear={minYear}
-          // setMinYear={setMinYear}
           maxYear={maxYear}
-          // setMaxYear={setMaxYear}
           searchAPIParams={searchAPIParams}
           languagesData={languagesData}
-          totalSearchResults={totalSearchResults}
-          setTotalSearchResults={setTotalSearchResults}
           handleNotAvailable={handleNotAvailable}
           handleClearNotAvailable={handleClearNotAvailable}
         />

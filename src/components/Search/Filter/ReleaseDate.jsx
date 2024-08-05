@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo,  } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -92,6 +92,7 @@ export default function ReleaseDate({
               <div className={`-mx-3 flex flex-row items-center gap-1`}>
                 <MobileDatePicker
                   // label="Start"
+                  orientation="portrait"
                   minDate={dayjs(`${minYear}-01-01`)}
                   maxDate={dayjs(`${maxYear}-12-31`)}
                   defaultValue={minDatepicker}
@@ -144,6 +145,7 @@ export default function ReleaseDate({
 
                 <MobileDatePicker
                   // label="End"
+                  orientation="portrait"
                   minDate={minDatepicker}
                   maxDate={dayjs(`${maxYear}-12-31`)}
                   defaultValue={maxDatepicker}
