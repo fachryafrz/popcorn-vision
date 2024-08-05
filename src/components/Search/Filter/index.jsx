@@ -22,6 +22,7 @@ import Cast from "./Cast";
 import Crew from "./Crew";
 import Company from "./Company";
 import Rating from "./Rating";
+import TVSeriesType from "./TVSeriesType";
 
 export default function Filters({
   type,
@@ -68,7 +69,6 @@ export default function Filters({
   const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
 
   // Filters
-  const [tvType, setTvType] = useState([]);
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
     maxYear,
@@ -79,21 +79,6 @@ export default function Filters({
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
   const [rating, setRating] = useState([0, 100]);
   const [runtime, setRuntime] = useState([0, 300]);
-
-  // Pre-loaded Options
-  const tvSeriesType = useMemo(
-    () => [
-      "All",
-      "Documentary",
-      "News",
-      "Miniseries",
-      "Reality",
-      "Scripted",
-      "Talk Show",
-      "Video",
-    ],
-    [],
-  );
 
   // Handle Slider Marks/Labels
   const releaseDateMarks = useMemo(
@@ -246,41 +231,6 @@ export default function Filters({
     [current, pathname, router],
   );
 
-  // Handle checkbox change
-  const handleTypeChange = (event) => {
-    const isChecked = event.target.checked;
-    const inputValue = parseInt(event.target.value);
-
-    let updatedValue = [...tvType]; // Salin status sebelumnya
-
-    if (inputValue === -1) {
-      // Jika yang dipilih adalah "All", bersihkan semua status
-      updatedValue = [];
-    } else {
-      if (isChecked && !updatedValue.includes(inputValue.toString())) {
-        // Tambahkan status yang dipilih jika belum ada
-        updatedValue.push(inputValue.toString());
-      } else {
-        // Hapus status yang tidak dipilih lagi
-        updatedValue = updatedValue.filter((s) => s !== inputValue.toString());
-      }
-    }
-
-    // Lakukan pengaturan URL
-    if (updatedValue.length === 0) {
-      setTvType(updatedValue);
-      current.delete("type");
-    } else {
-      current.set("type", updatedValue.join("|"));
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
@@ -346,16 +296,6 @@ export default function Filters({
 
   // Use Effect for Search Params
   useEffect(() => {
-    // TV Series Type
-    if (searchParams.get("type")) {
-      const typeParams = searchParams.get("type").split("|");
-      setTvType(typeParams);
-
-      searchAPIParams["with_type"] = searchParams.get("type");
-    } else {
-      delete searchAPIParams["with_type"];
-    }
-
     // Keyword
     if (searchParams.get("with_keywords")) {
       const keywordParams = searchParams.get("with_keywords").split(",");
@@ -512,43 +452,7 @@ export default function Filters({
       <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
 
       {/* Tv Series Type */}
-      {isTvPage && (
-        <section>
-          <span className={`font-medium`}>Types</span>
-          <ul className={`mt-2`}>
-            {tvSeriesType.map((typeName, i) => {
-              const index = i - 1;
-              const isChecked = tvType.length === 0 && i === 0;
-
-              return (
-                <li key={index}>
-                  <div className={`flex items-center`}>
-                    <input
-                      type={`checkbox`}
-                      id={`type_${index}`}
-                      name={`type`}
-                      className={`checkbox checkbox-md`}
-                      value={index}
-                      checked={isChecked || tvType.includes(index.toString())}
-                      onChange={handleTypeChange}
-                      disabled={isQueryParams}
-                    />
-
-                    <label
-                      htmlFor={`type_${index}`}
-                      className={`${
-                        isQueryParams ? `cursor-default` : `cursor-pointer`
-                      } flex w-full py-2 pl-2`}
-                    >
-                      {typeName}
-                    </label>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+      {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
 
       {/* Language */}
       <section className={`flex flex-col gap-1`}>
