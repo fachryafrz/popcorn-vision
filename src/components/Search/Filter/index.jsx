@@ -14,6 +14,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { askLocation } from "@/lib/navigator";
 import TVSeriesStatus from "./TVSeriesStatus";
 import ReleaseDate from "./ReleaseDate";
+import Streaming from "./Streaming";
 
 export default function Filters({
   type,
@@ -679,33 +680,6 @@ export default function Filters({
       delete searchAPIParams["with_original_language"];
     }
 
-    // Providers
-    if (searchParams.get("watch_providers")) {
-      const providersParams = searchParams.get("watch_providers").split(",");
-      const searchProviders = providersParams.map((providerId) =>
-        providersData?.find(
-          (provider) => parseInt(provider.provider_id) === parseInt(providerId),
-        ),
-      );
-      const searchProvidersOptions = searchProviders?.map(
-        (provider) =>
-          provider && {
-            value: provider.provider_id,
-            label: provider.provider_name,
-          },
-      );
-      setProvider(searchProvidersOptions);
-
-      searchAPIParams["with_watch_providers"] =
-        searchParams.get("watch_providers");
-      searchAPIParams["watch_region"] = JSON.parse(userLocation)?.countryCode;
-    } else {
-      setProvider(null);
-
-      delete searchAPIParams["with_watch_providers"];
-      delete searchAPIParams["watch_region"];
-    }
-
     // Network
     if (searchParams.get("with_networks")) {
       const networksParams = searchParams.get("with_networks").split(",");
@@ -991,7 +965,7 @@ export default function Filters({
       {/* TV Series Status */}
       {isTvPage && <TVSeriesStatus searchAPIParams={searchAPIParams} />}
 
-      {/* NOTE: Release Date */}
+      {/* Release Date */}
       <ReleaseDate
         isTvPage={isTvPage}
         searchAPIParams={searchAPIParams}
@@ -1000,53 +974,8 @@ export default function Filters({
         releaseDate={releaseDate}
       />
 
-      {/* Streaming (Watch Providers) */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Streaming</span>
-        {userLocation ? (
-          <Select
-            options={providersData && providersOptions}
-            onChange={handleProviderChange}
-            value={provider}
-            styles={{
-              ...inputStyles,
-              dropdownIndicator: (styles) => ({
-                ...styles,
-                display: "block",
-                "&:hover": {
-                  color: "#fff",
-                },
-                cursor: "pointer",
-              }),
-            }}
-            placeholder={providersInputPlaceholder}
-            isDisabled={isQueryParams}
-            isMulti
-          />
-        ) : (
-          <button
-            onClick={() => askLocation(setUserLocation, setLocationError)}
-            className={`btn btn-outline btn-sm rounded-full`}
-          >
-            Click to enable location
-          </button>
-        )}
-
-        {locationError && (
-          <div className={`prose text-xs`}>
-            <p>{locationError}</p>
-            <p>Please follow these steps to enable location access:</p>
-            <ol>
-              <li>Click the icon on the left side of the address bar</li>
-              <li>Go to &quot;Site settings&quot;.</li>
-              <li>
-                Find &quot;Location&quot; and set it to &quot;Allow&quot;.
-              </li>
-              <li>Reload the page and click the button again.</li>
-            </ol>
-          </div>
-        )}
-      </section>
+      {/* NOTE: Streaming (Watch Providers) */}
+      <Streaming searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
       {/* Genre */}
       <section className={`flex flex-col gap-1`}>
