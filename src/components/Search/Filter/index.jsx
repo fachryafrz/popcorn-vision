@@ -24,6 +24,7 @@ import Company from "./Company";
 import Rating from "./Rating";
 import TVSeriesType from "./TVSeriesType";
 import Language from "./Language";
+import Keyword from "./Keyword";
 
 export default function Filters({
   type,
@@ -55,6 +56,8 @@ export default function Filters({
   languagesData,
   totalSearchResults,
   setTotalSearchResults,
+  handleNotAvailable,
+  handleClearNotAvailable,
 }) {
   const isTvPage = type === "tv";
 
@@ -73,7 +76,6 @@ export default function Filters({
     minYear,
     maxYear,
   ]);
-  const [keyword, setKeyword] = useState([]);
   const [ratingSlider, setRatingSlider] = useState([0, 100]);
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
   const [rating, setRating] = useState([0, 100]);
@@ -152,112 +154,13 @@ export default function Filters({
   }, []);
 
   const timerRef = useRef(null);
-  const keywordsLoadOptions = useCallback((inputValue, callback) => {
-    const fetchDataWithDelay = async () => {
-      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/keyword`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((keyword) => ({
-          value: keyword.id,
-          label: keyword.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
-    };
-
-    // Hapus pemanggilan sebelumnya jika ada
-    clearTimeout(timerRef.current);
-
-    // Set timer untuk memanggil fetchDataWithDelay setelah delay
-    timerRef.current = setTimeout(() => {
-      fetchDataWithDelay();
-    }, 1000);
-  }, []);
 
   // Handle Select Change
 
-  const handleKeywordChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("with_keywords");
-      } else {
-        current.set("with_keywords", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
-
   // Handle not available
-  const handleNotAvailable = () => {
-    setNotAvailable(
-      "Filters cannot be applied, please clear the search input.",
-    );
-  };
-
-  // Use Effect for set available Release Dates
-  useEffect(() => {
-    setReleaseDate([minYear, maxYear]);
-    setReleaseDateSlider([minYear, maxYear]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [minYear, maxYear]);
-
-  // Use Effect for Select with preloaded data
-  useEffect(() => {}, [
-    genresData,
-    languagesData,
-    searchParams,
-    searchAPIParams,
-  ]);
 
   // Use Effect for Search Params
   useEffect(() => {
-    // Keyword
-    if (searchParams.get("with_keywords")) {
-      const keywordParams = searchParams.get("with_keywords").split(",");
-      const fetchPromises = keywordParams.map((keywordId) => {
-        return fetchData({
-          endpoint: `/keyword/${keywordId}`,
-        });
-      });
-
-      searchAPIParams["with_keywords"] = searchParams.get("with_keywords");
-
-      Promise.all(fetchPromises)
-        .then((responses) => {
-          const uniqueKeyword = [...new Set(responses)]; // Remove duplicates if any
-          const searchKeyword = uniqueKeyword.map((keyword) => ({
-            value: keyword.id,
-            label: keyword.name,
-          }));
-          setKeyword(searchKeyword);
-        })
-        .catch((error) => {
-          console.error("Error fetching keyword:", error);
-        });
-    } else {
-      setKeyword(null);
-
-      delete searchAPIParams["with_keywords"];
-    }
-
     // Options (o)
     if (searchParams.get("o")) {
       const optionsParams = searchParams.get("o");
@@ -325,7 +228,7 @@ export default function Filters({
   return (
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
-      onMouseLeave={() => setNotAvailable("")}
+      onMouseLeave={() => handleClearNotAvailable()}
       className={`fixed inset-x-0 top-[66px] z-30 flex h-[calc(100svh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100svh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
         isFilterActive ? `translate-x-0` : `-translate-x-full`
       }`}
@@ -387,28 +290,15 @@ export default function Filters({
       {/* TV Series Type */}
       {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
 
-      {/* NOTE: Language */}
+      {/* Language */}
       <Language
         searchAPIParams={searchAPIParams}
         inputStyles={inputStyles}
         languagesData={languagesData}
       />
 
-      {/* Keyword */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Keyword</span>
-        <AsyncSelect
-          noOptionsMessage={() => "Type to search"}
-          loadingMessage={() => "Searching..."}
-          loadOptions={keywordsLoadOptions}
-          onChange={handleKeywordChange}
-          value={keyword}
-          styles={inputStyles}
-          placeholder={`Search keyword...`}
-          isDisabled={isQueryParams}
-          isMulti
-        />
-      </section>
+      {/* NOTE: Keyword */}
+      <Keyword searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
     </aside>
   );
 }

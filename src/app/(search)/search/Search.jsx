@@ -301,6 +301,8 @@ export default function Search({
           languagesData={languagesData}
           totalSearchResults={totalSearchResults}
           setTotalSearchResults={setTotalSearchResults}
+          handleNotAvailable={handleNotAvailable}
+          handleClearNotAvailable={handleClearNotAvailable}
         />
       </Suspense>
 

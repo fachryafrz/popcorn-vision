@@ -1,28 +1,6 @@
-import { fetchData } from "@/lib/fetch";
-import { IonIcon } from "@ionic/react";
-import { Slider } from "@mui/material";
-import { close } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
-import AsyncSelect from "react-select/async";
-import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import moment from "moment";
-import dayjs from "dayjs";
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { askLocation } from "@/lib/navigator";
-import TVSeriesStatus from "./TVSeriesStatus";
-import ReleaseDate from "./ReleaseDate";
-import Streaming from "./Streaming";
-import Genre from "./Genre";
-import Runtime from "./Runtime";
-import Network from "./Network";
-import Cast from "./Cast";
-import Crew from "./Crew";
-import Company from "./Company";
-import Rating from "./Rating";
-import TVSeriesType from "./TVSeriesType";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Language({
