@@ -36,12 +36,15 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       <div className="flex flex-wrap items-center justify-center gap-1 font-medium text-white">
         {film.vote_average > 0 && (
           <Reveal delay={0.1}>
-            <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm">
+            <Link
+              href={`/search?vote_count=${film.vote_average.toFixed(1) * 10}..100`}
+              className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm"
+            >
               <IonIcon icon={star} className="aspect-square h-full !w-5" />
               <span className="!text-white">
                 {formatRating(film.vote_average)}
               </span>
-            </div>
+            </Link>
           </Reveal>
         )}
 
@@ -59,11 +62,16 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           (genre) =>
             genre && (
               <Reveal key={genre.id} delay={0.3}>
-                <span
+                <Link
+                  href={
+                    !isTvPage
+                      ? `/search?with_genres=${genre.id}`
+                      : `/tv/search?with_genres=${genre.id}`
+                  }
                   className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
                 >
                   {genre.name}
-                </span>
+                </Link>
               </Reveal>
             ),
         )}
@@ -113,11 +121,12 @@ function FilmSeason({ film }) {
 function FilmRuntime({ film }) {
   return (
     <div className="flex items-center gap-1">
-      <span
+      <Link
+        href={`/search?with_runtime=${film.runtime}..300`}
         className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
       >
         {`${formatRuntime(film.runtime)}`}{" "}
-      </span>
+      </Link>
     </div>
   );
 }
