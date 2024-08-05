@@ -180,9 +180,6 @@ export default function Filters({
         inputStyles={inputStyles}
       />
 
-      {/* Runtime */}
-      <Runtime searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
-
       {/* Networks */}
       {isTvPage && (
         <Network searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
@@ -201,12 +198,6 @@ export default function Filters({
       {/* Company */}
       <Company searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
-      {/* Rating */}
-      <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
-
-      {/* TV Series Type */}
-      {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
-
       {/* Language */}
       <Language
         searchAPIParams={searchAPIParams}
@@ -214,8 +205,17 @@ export default function Filters({
         languagesData={languagesData}
       />
 
-      {/* NOTE: Keyword */}
+      {/* Keyword */}
       <Keyword searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
+
+      {/* TV Series Type */}
+      {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
+
+      {/* Runtime */}
+      <Runtime searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
+
+      {/* Rating */}
+      <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
     </aside>
   );
 }

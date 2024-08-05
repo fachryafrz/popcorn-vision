@@ -1,4 +1,4 @@
-import Search from "@/app/(search)/search/Search";
+import Search from "@/components/Search/";
 import { fetchData } from "@/lib/fetch";
 import React, { Suspense } from "react";
 

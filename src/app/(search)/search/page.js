@@ -1,5 +1,5 @@
 import React from "react";
-import Search from "./Search";
+import Search from "@/components/Search/";
 import { fetchData } from "@/lib/fetch";
 
 export async function generateMetadata() {
