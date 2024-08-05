@@ -1,6 +1,6 @@
-import { fetchData, getLocation } from "@/lib/fetch";
+import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import { Input, Slider } from "@mui/material";
+import { Slider } from "@mui/material";
 import { close } from "ionicons/icons";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import Select from "react-select";
@@ -8,11 +8,9 @@ import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import moment from "moment";
-
 import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { askLocation } from "@/lib/navigator";
 
 export default function Filters({
@@ -1023,29 +1021,6 @@ export default function Filters({
       delete searchAPIParams["with_runtime.lte"];
     }
 
-    // Sort by
-    if (searchParams.get("sort_by")) {
-      const sortByParams = searchParams.get("sort_by").split(".");
-      const searchSortByType = sortByParams.map((param) =>
-        sortByTypeOptions.find((option) => option.value === param),
-      )[0];
-      const searchSortByOrder = sortByParams.map((param) =>
-        sortByOrderOptions.find((option) => option.value === param),
-      )[1];
-
-      if (sortByType.value !== searchSortByType.value) {
-        setSortByType(searchSortByType);
-      }
-
-      if (sortByOrder.value !== searchSortByOrder.value) {
-        setSortByOrder(searchSortByOrder);
-      }
-
-      searchAPIParams["sort_by"] = searchParams.get("sort_by");
-    } else {
-      delete searchAPIParams["sort_by"];
-    }
-
     // Options (o)
     if (searchParams.get("o")) {
       const optionsParams = searchParams.get("o");
@@ -1150,69 +1125,69 @@ export default function Filters({
   ]);
 
   // Use Effect for Search
-  useEffect(() => {
-    setLoading(true);
+  // useEffect(() => {
+  //   setLoading(true);
 
-    const performSearch = () => {
-      fetchData({
-        endpoint: `/discover/${type}`,
-        queryParams: searchAPIParams,
-      })
-        .then((res) => {
-          setFilms(res.results);
-          setLoading(false);
-          setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
-          setTotalSearchResults(res.total_results);
+  //   const performSearch = () => {
+  //     fetchData({
+  //       endpoint: `/discover/${type}`,
+  //       queryParams: searchAPIParams,
+  //     })
+  //       .then((res) => {
+  //         setFilms(res.results);
+  //         setLoading(false);
+  //         setTotalSearchPages(res.total_pages);
+  //         setCurrentSearchPage(1);
+  //         setTotalSearchResults(res.total_results);
 
-          setTimeout(() => {
-            setNotFoundMessage("No film found");
-          }, 10000);
-        })
-        .catch((error) => {
-          console.error("Error fetching films:", error);
-        });
-    };
+  //         setTimeout(() => {
+  //           setNotFoundMessage("No film found");
+  //         }, 10000);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching films:", error);
+  //       });
+  //   };
 
-    const performSearchQuery = () => {
-      fetchData({
-        endpoint: `/search/multi`,
-        queryParams: {
-          query: searchQuery,
-          include_adult: false,
-          language: "en-US",
-          page: 1,
-        },
-      })
-        .then((res) => {
-          // Filter movies based on release date
-          const filteredMovies = res.results.filter(
-            (film) => film.media_type === "movie" || film.media_type === "tv",
-          );
-          setFilms(filteredMovies);
-          setLoading(false);
-          setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
-          setTotalSearchResults(res.total_results);
+  //   const performSearchQuery = () => {
+  //     fetchData({
+  //       endpoint: `/search/multi`,
+  //       queryParams: {
+  //         query: searchQuery,
+  //         include_adult: false,
+  //         language: "en-US",
+  //         page: 1,
+  //       },
+  //     })
+  //       .then((res) => {
+  //         // Filter movies based on release date
+  //         const filteredMovies = res.results.filter(
+  //           (film) => film.media_type === "movie" || film.media_type === "tv",
+  //         );
+  //         setFilms(filteredMovies);
+  //         setLoading(false);
+  //         setTotalSearchPages(res.total_pages);
+  //         setCurrentSearchPage(1);
+  //         setTotalSearchResults(res.total_results);
 
-          setTimeout(() => {
-            setNotFoundMessage("No film found");
-          }, 10000);
-        })
-        .catch((error) => {
-          console.error("Error fetching films:", error);
-        });
-    };
+  //         setTimeout(() => {
+  //           setNotFoundMessage("No film found");
+  //         }, 10000);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching films:", error);
+  //       });
+  //   };
 
-    if (!searchParams.get("query")) {
-      performSearch();
-    }
+  //   if (!searchParams.get("query")) {
+  //     performSearch();
+  //   }
 
-    if (searchParams.get("query") && searchQuery) {
-      performSearchQuery();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, searchAPIParams, searchQuery, searchParams]);
+  //   if (searchParams.get("query") && searchQuery) {
+  //     performSearchQuery();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [type, searchAPIParams, searchQuery, searchParams]);
 
   return (
     <aside

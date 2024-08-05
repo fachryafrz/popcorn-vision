@@ -4,23 +4,16 @@
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { closeCircle, filter } from "ionicons/icons";
-import {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-  Suspense,
-} from "react";
+import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
 import Select from "react-select";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
-import Filters from "../../../components/Layout/Filters";
+import Filters from "@/components/Search/Filter";
 import { useInView } from "react-intersection-observer";
-import { delay } from "@/lib/delay";
 import FilmCard from "@/components/Film/Card";
+import SearchSort from "@/components/Search/Sort";
 
 export default function Search({
   type = "movie",
@@ -219,6 +212,9 @@ export default function Search({
       "Filters cannot be applied, please clear the search input.",
     );
   };
+  const handleClearNotAvailable = () => {
+    setNotAvailable("");
+  };
 
   // Fetch more films based on search or selected genres
   const fetchMoreFilms = async () => {
@@ -284,6 +280,71 @@ export default function Search({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
+  // Use Effect for Search
+  useEffect(() => {
+    setLoading(true);
+
+    const performSearch = () => {
+      fetchData({
+        endpoint: `/discover/${type}`,
+        queryParams: searchAPIParams,
+      })
+        .then((res) => {
+          setFilms(res.results);
+          setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 10000);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    const performSearchQuery = () => {
+      fetchData({
+        endpoint: `/search/multi`,
+        queryParams: {
+          query: searchQuery,
+          include_adult: false,
+          language: "en-US",
+          page: 1,
+        },
+      })
+        .then((res) => {
+          // Filter movies based on release date
+          const filteredMovies = res.results.filter(
+            (film) => film.media_type === "movie" || film.media_type === "tv",
+          );
+          setFilms(filteredMovies);
+          setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 10000);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    if (!searchParams.get("query")) {
+      performSearch();
+    }
+
+    if (searchParams.get("query") && searchQuery) {
+      performSearchQuery();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, searchAPIParams, searchQuery, searchParams]);
+
   return (
     <div className={`flex lg:px-4`}>
       <Suspense>
@@ -340,147 +401,12 @@ export default function Search({
             <h1 className={`text-2xl font-bold capitalize`}>Search</h1>
           </div>
 
-          <div
-            className={`flex w-full flex-col items-center justify-between gap-2 sm:flex-row lg:justify-end`}
-          >
-            <div
-              onMouseOver={() => isQueryParams && handleNotAvailable()}
-              onMouseLeave={() => setNotAvailable("")}
-              className={`flex flex-wrap justify-center gap-1 sm:flex-nowrap`}
-            >
-              {/* Sort by type */}
-              <Select
-                options={sortByTypeOptions}
-                onChange={handleSortByTypeChange}
-                value={sortByType}
-                styles={{
-                  ...inputStyles,
-                  dropdownIndicator: (styles) => ({
-                    ...styles,
-                    display: "block",
-                    "&:hover": {
-                      color: "#fff",
-                    },
-                    cursor: "pointer",
-                  }),
-                  control: (styles) => ({
-                    ...styles,
-                    color: "#fff",
-                    backgroundColor: "#131720",
-                    borderWidth: "1px",
-                    borderColor: "#79808B",
-                    borderRadius: "1.5rem",
-                    cursor: "pointer",
-                  }),
-                }}
-                isDisabled={isQueryParams}
-                isSearchable={false}
-                className={`w-[145px]`}
-              />
-
-              {/* Sort by order */}
-              <Select
-                options={sortByOrderOptions}
-                onChange={handleSortByOrderChange}
-                value={sortByOrder}
-                styles={{
-                  ...inputStyles,
-                  dropdownIndicator: (styles) => ({
-                    ...styles,
-                    display: "block",
-                    "&:hover": {
-                      color: "#fff",
-                    },
-                    cursor: "pointer",
-                  }),
-                  control: (styles) => ({
-                    ...styles,
-                    color: "#fff",
-                    backgroundColor: "#131720",
-                    borderWidth: "1px",
-                    borderColor: "#79808B",
-                    borderRadius: "1.5rem",
-                    cursor: "pointer",
-                  }),
-                }}
-                isDisabled={isQueryParams}
-                isSearchable={false}
-                className={`w-[145px]`}
-              />
-            </div>
-
-            <div className={`flex flex-wrap items-center gap-1 sm:flex-nowrap`}>
-              {/* Clear all filters */}
-              <Suspense>
-                <div
-                  className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
-                >
-                  {searchParams.get("status") ||
-                  searchParams.get("type") ||
-                  searchParams.get("release_date") ||
-                  searchParams.get("with_genres") ||
-                  searchParams.get("with_original_language") ||
-                  searchParams.get("watch_providers") ||
-                  searchParams.get("with_networks") ||
-                  searchParams.get("with_cast") ||
-                  searchParams.get("with_crew") ||
-                  searchParams.get("with_keywords") ||
-                  searchParams.get("with_companies") ||
-                  searchParams.get("vote_count") ||
-                  searchParams.get("with_runtime") ||
-                  searchParams.get("o") ||
-                  searchParams.get("sort_by") ? (
-                    <button
-                      onClick={() => {
-                        setTimeout(() => {
-                          //   setSearchQuery("");
-                          //   setStatus([]);
-                          //   setTvType([]);
-                          //   setReleaseDate([minYear, maxYear]);
-                          //   setReleaseDateSlider([minYear, maxYear]);
-                          //   setGenre(null);
-                          //   setLanguage(null);
-                          //   setCast(null);
-                          //   setCrew(null);
-                          //   setKeyword(null);
-                          //   setCompany(null);
-                          //   setRating([0, 100]);
-                          //   setRatingSlider([0, 100]);
-                          //   setRuntime([0, 300]);
-                          //   setRuntimeSlider([0, 300]);
-                          setSortByType(sortByTypeOptions[0]);
-                          setSortByOrder(sortByOrderOptions[1]);
-                        }, 1000);
-
-                        router.push(`${pathname}`);
-                        // router.refresh();
-                        // defaultFilms();
-                      }}
-                      className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
-                    >
-                      <IonIcon icon={closeCircle} className={`text-xl`} />
-                      <span className={`whitespace-nowrap text-sm`}>
-                        Clear all filters
-                      </span>
-                    </button>
-                  ) : (
-                    <span>No filter selected</span>
-                  )}
-                </div>
-              </Suspense>
-
-              {/* Filter button */}
-              <button
-                onClick={() =>
-                  isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
-                }
-                onMouseLeave={() => setNotAvailable("")}
-                className={`btn btn-ghost aspect-square bg-secondary bg-opacity-20 lg:hidden`}
-              >
-                <IonIcon icon={filter} className={`text-2xl`} />
-              </button>
-            </div>
-          </div>
+          <SearchSort
+            searchAPIParams={searchAPIParams}
+            handleNotAvailable={handleNotAvailable}
+            handleClearNotAvailable={handleClearNotAvailable}
+            inputStyles={inputStyles}
+          />
         </section>
 
         {loading ? (
