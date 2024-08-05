@@ -16,6 +16,7 @@ import TVSeriesStatus from "./TVSeriesStatus";
 import ReleaseDate from "./ReleaseDate";
 import Streaming from "./Streaming";
 import Genre from "./Genre";
+import Runtime from "./Runtime";
 
 export default function Filters({
   type,
@@ -121,19 +122,6 @@ export default function Filters({
     ],
     [ratingSlider],
   );
-  const runtimeMarks = useMemo(
-    () => [
-      {
-        value: 0,
-        label: runtimeSlider[0],
-      },
-      {
-        value: 300,
-        label: runtimeSlider[1],
-      },
-    ],
-    [runtimeSlider],
-  );
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
@@ -159,22 +147,6 @@ export default function Filters({
       current.delete("vote_count");
     } else {
       current.set("vote_count", `${newValue[0]}..${newValue[1]}`);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-  const handleRuntimeChange = (event, newValue) => {
-    const value = runtime ? `${newValue[0]},${newValue[1]}` : "";
-
-    // NOTE: Using with_runtime.gte & with_runtime.lte
-    if (!value) {
-      current.delete("with_runtime");
-    } else {
-      current.set("with_runtime", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -751,26 +723,6 @@ export default function Filters({
       delete searchAPIParams["vote_count.lte"];
     }
 
-    // Runtime
-    if (searchParams.get("with_runtime")) {
-      const runtimeParams = searchParams.get("with_runtime").split(".");
-      const searchRuntime = [
-        parseInt(runtimeParams[0]),
-        parseInt(runtimeParams[2]),
-      ];
-
-      if (runtime[0] !== searchRuntime[0] || runtime[1] !== searchRuntime[1]) {
-        setRuntime(searchRuntime);
-        setRuntimeSlider(searchRuntime);
-
-        searchAPIParams["with_runtime.gte"] = searchRuntime[0];
-        searchAPIParams["with_runtime.lte"] = searchRuntime[1];
-      }
-    } else {
-      delete searchAPIParams["with_runtime.gte"];
-      delete searchAPIParams["with_runtime.lte"];
-    }
-
     // Options (o)
     if (searchParams.get("o")) {
       const optionsParams = searchParams.get("o");
@@ -866,32 +818,15 @@ export default function Filters({
       {/* Streaming (Watch Providers) */}
       <Streaming searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
-      {/* NOTE: Genre */}
+      {/* Genre */}
       <Genre
         searchAPIParams={searchAPIParams}
         genresData={genresData}
         inputStyles={inputStyles}
       />
 
-      {/* Runtime */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Runtime</span>
-        <div className={`w-full px-3`}>
-          <Slider
-            getAriaLabel={() => "Runtime"}
-            value={runtimeSlider}
-            onChange={(event, newValue) => setRuntimeSlider(newValue)}
-            onChangeCommitted={handleRuntimeChange}
-            valueLabelDisplay="off"
-            min={0}
-            step={10}
-            max={300}
-            marks={runtimeMarks}
-            sx={sliderStyles}
-            disabled={isQueryParams}
-          />
-        </div>
-      </section>
+      {/* NOTE: Runtime */}
+      <Runtime searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
 
       {/* Networks */}
       {isTvPage && (
