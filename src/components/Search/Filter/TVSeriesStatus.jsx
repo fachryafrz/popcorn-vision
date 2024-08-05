@@ -76,9 +76,9 @@ export default function TVSeriesStatus({ searchAPIParams }) {
   }, [searchAPIParams, searchParams]);
 
   return (
-    <section>
+    <section className="@container">
       <span className={`font-medium`}>Status</span>
-      <ul className={`mt-2`}>
+      <ul className={`mt-2 grid @sm:grid-cols-2`}>
         {tvSeriesStatus.map((statusName, i) => {
           const index = i - 1;
           const isChecked = status.length === 0 && i === 0;

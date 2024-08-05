@@ -89,7 +89,9 @@ export default function ReleaseDate({
         {minYear && maxYear ? (
           <>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <div className={`-mx-3 flex flex-row items-center gap-1`}>
+              <div
+                className={`-mx-3 flex flex-row items-center justify-center gap-1`}
+              >
                 <MobileDatePicker
                   // label="Start"
                   orientation="portrait"

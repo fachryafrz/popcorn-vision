@@ -20,7 +20,7 @@ export default function NotFound() {
   };
 
   return (
-    <div className={`flex h-[90svh] flex-col items-center justify-center p-4`}>
+    <div className={`flex h-[90dvh] flex-col items-center justify-center p-4`}>
       <h2 className={`sr-only`}>Not Found</h2>
       <figure
         style={{

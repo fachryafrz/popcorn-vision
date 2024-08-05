@@ -310,6 +310,7 @@ export default function Search({
             handleNotAvailable={handleNotAvailable}
             handleClearNotAvailable={handleClearNotAvailable}
             inputStyles={inputStyles}
+            setIsFilterActive={setIsFilterActive}
           />
         </section>
 

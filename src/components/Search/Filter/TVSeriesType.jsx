@@ -76,9 +76,9 @@ export default function TVSeriesType({ searchAPIParams }) {
   }, [searchAPIParams, searchParams]);
 
   return (
-    <section>
+    <section className="@container">
       <span className={`font-medium`}>Types</span>
-      <ul className={`mt-2`}>
+      <ul className={`mt-2 grid @sm:grid-cols-2`}>
         {tvSeriesType.map((typeName, i) => {
           const index = i - 1;
           const isChecked = tvType.length === 0 && i === 0;

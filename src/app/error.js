@@ -6,7 +6,7 @@ import { refresh } from "ionicons/icons";
 
 export default function Error({ error, reset }) {
   return (
-    <div className={`grid min-h-[calc(100svh-66px)] place-content-center`}>
+    <div className={`grid min-h-[calc(100dvh-66px)] place-content-center`}>
       <div
         className={`mx-auto flex max-w-7xl flex-col items-center justify-center p-4 xl:flex-row xl:items-start`}
       >

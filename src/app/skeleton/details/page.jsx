@@ -5,7 +5,7 @@ export default function DetailsLoading() {
     <div className={`relative flex flex-col gap-[1rem] md:-mt-[66px]`}>
       {/* Backdrop */}
       <div
-        className={`${loadingPulse} absolute inset-0 z-0 aspect-video max-h-[100vh] w-full overflow-hidden before:absolute before:inset-0 before:z-0 before:bg-gradient-to-t before:from-base-100 md:opacity-[60%] lg:max-h-[80svh]`}
+        className={`${loadingPulse} absolute inset-0 z-0 aspect-video max-h-[100vh] w-full overflow-hidden before:absolute before:inset-0 before:z-0 before:bg-gradient-to-t before:from-base-100 md:opacity-[60%] lg:max-h-[80dvh]`}
       ></div>
 
       <div className={`z-10 mt-[30%] md:mt-[200px]`}>

@@ -11,6 +11,7 @@ export default function SearchSort({
   handleNotAvailable,
   handleClearNotAvailable,
   inputStyles,
+  setIsFilterActive,
 }) {
   const router = useRouter();
   const pathname = usePathname();
