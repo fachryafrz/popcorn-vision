@@ -21,6 +21,7 @@ import Network from "./Network";
 import Cast from "./Cast";
 import Crew from "./Crew";
 import Company from "./Company";
+import Rating from "./Rating";
 
 export default function Filters({
   type,
@@ -108,19 +109,6 @@ export default function Filters({
     ],
     [releaseDateSlider, minYear, maxYear],
   );
-  const ratingMarks = useMemo(
-    () => [
-      {
-        value: 0,
-        label: ratingSlider[0],
-      },
-      {
-        value: 100,
-        label: ratingSlider[1],
-      },
-    ],
-    [ratingSlider],
-  );
 
   // Handle MUI Slider Change
   const handleReleaseDateChange = (event, newValue) => {
@@ -130,22 +118,6 @@ export default function Filters({
       current.delete("release_date");
     } else {
       current.set("release_date", `${newValue[0]}..${newValue[1]}`);
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
-  const handleRatingChange = (event, newValue) => {
-    const value = rating ? `${newValue[0]},${newValue[1]}` : "";
-
-    // NOTE: Using vote_count.gte & vote_count.lte
-    if (!value) {
-      current.delete("vote_count");
-    } else {
-      current.set("vote_count", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -413,26 +385,6 @@ export default function Filters({
       delete searchAPIParams["with_keywords"];
     }
 
-    // Rating
-    if (searchParams.get("vote_count")) {
-      const ratingParams = searchParams.get("vote_count").split(".");
-      const searchRating = [
-        parseInt(ratingParams[0]),
-        parseInt(ratingParams[2]),
-      ];
-
-      if (rating[0] !== searchRating[0] || rating[1] !== searchRating[1]) {
-        setRating(searchRating);
-        setRatingSlider(searchRating);
-
-        searchAPIParams["vote_count.gte"] = searchRating[0];
-        searchAPIParams["vote_count.lte"] = searchRating[1];
-      }
-    } else {
-      delete searchAPIParams["vote_count.gte"];
-      delete searchAPIParams["vote_count.lte"];
-    }
-
     // Options (o)
     if (searchParams.get("o")) {
       const optionsParams = searchParams.get("o");
@@ -557,23 +509,7 @@ export default function Filters({
       <Company searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
       {/* Rating */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Rating</span>
-        <div className={`w-full px-3`}>
-          <Slider
-            getAriaLabel={() => "Rating"}
-            value={ratingSlider}
-            onChange={(event, newValue) => setRatingSlider(newValue)}
-            onChangeCommitted={handleRatingChange}
-            valueLabelDisplay="off"
-            min={0}
-            max={100}
-            marks={ratingMarks}
-            sx={sliderStyles}
-            disabled={isQueryParams}
-          />
-        </div>
-      </section>
+      <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
 
       {/* Tv Series Type */}
       {isTvPage && (
