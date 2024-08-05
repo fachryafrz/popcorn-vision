@@ -321,7 +321,7 @@ export function SearchBar({ placeholder = `Search` }) {
               setSearchInput("");
               router.push(`${isTvPage ? "/tv" : ""}/search`);
             }}
-            className={`absolute right-4 flex h-full items-center pl-4`}
+            className={`flex h-full items-center mr-1`}
           >
             <IonIcon
               icon={close}
