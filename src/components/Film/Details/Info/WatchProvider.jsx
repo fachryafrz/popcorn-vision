@@ -3,7 +3,12 @@ import { askLocation } from "@/lib/navigator";
 import Link from "next/link";
 import React, { useState } from "react";
 
-export default function WatchProvider({ providers, userLocation, isTvPage }) {
+export default function WatchProvider({
+  providers,
+  userLocation,
+  setUserLocation,
+  isTvPage,
+}) {
   const [locationError, setLocationError] = useState();
 
   const providersArray = Object.entries(providers.results);
@@ -71,7 +76,7 @@ export default function WatchProvider({ providers, userLocation, isTvPage }) {
             <div className={`flex flex-col text-sm italic text-gray-400`}>
               <span>Where to watch?</span>
               <button
-                onClick={() => askLocation(null, setLocationError)}
+                onClick={() => askLocation(setUserLocation, setLocationError)}
                 className={`btn btn-outline btn-sm max-w-fit rounded-full`}
               >
                 Click to enable location

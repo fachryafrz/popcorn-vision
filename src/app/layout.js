@@ -113,7 +113,7 @@ export default function RootLayout({ children }) {
           </Suspense>
 
           {/* User Location */}
-          <UserLocation />
+          {/* <UserLocation /> */}
 
           {/* Main Content */}
           <main className={`mt-[66px] pb-8`}>{children}</main>

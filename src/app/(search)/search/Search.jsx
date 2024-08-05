@@ -3,24 +3,14 @@
 
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
-import { closeCircle, filter } from "ionicons/icons";
-import {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-  Suspense,
-} from "react";
-import Select from "react-select";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
-import { IsInViewport } from "@/components/Layout/IsInViewport";
 import Reveal from "@/components/Layout/Reveal";
-import Filters from "../../../components/Layout/Filters";
+import Filters from "@/components/Search/Filter";
 import { useInView } from "react-intersection-observer";
-import { delay } from "@/lib/delay";
 import FilmCard from "@/components/Film/Card";
+import SearchSort from "@/components/Search/Sort";
 
 export default function Search({
   type = "movie",
@@ -62,42 +52,9 @@ export default function Search({
       include_adult: false,
     };
   }, []);
-  const sortByTypeOptions = useMemo(
-    () => [
-      { value: "popularity", label: "Popularity" },
-      { value: "vote_count", label: "Rating" },
-      { value: "release_date", label: "Release Date" },
-      { value: "revenue", label: "Revenue" },
-      { value: "budget", label: "Budget" },
-    ],
-    [],
-  );
-  const sortByOrderOptions = useMemo(
-    () => [
-      { value: "asc", label: "Ascending" },
-      { value: "desc", label: "Descending" },
-    ],
-    [],
-  );
-
-  // MUI Select
-  const [sortByType, setSortByType] = useState({
-    value: "popularity",
-    label: "Popularity",
-  });
-  const [sortByOrder, setSortByOrder] = useState({
-    value: "desc",
-    label: "Descending",
-  });
 
   // Is in viewport?
   const { ref: loadMoreBtn, inView, entry } = useInView();
-  // const isLoadMoreBtnInViewport = IsInViewport({
-  //   targetRef: loadMoreBtn.current,
-  // });
-
-  // Ref
-  // const loadMoreBtn = useRef(ref);
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -175,49 +132,14 @@ export default function Search({
     };
   }, []);
 
-  // Handle Select Change
-  const handleSortByTypeChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
-
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${value}.${sortByOrder.value}`);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByOrder],
-  );
-  const handleSortByOrderChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
-
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${sortByType.value}.${value}`);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByType],
-  );
-
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
       "Filters cannot be applied, please clear the search input.",
     );
+  };
+  const handleClearNotAvailable = () => {
+    setNotAvailable("");
   };
 
   // Fetch more films based on search or selected genres
@@ -271,18 +193,78 @@ export default function Search({
   };
 
   // Use Effect for load more button is in viewport
-  // useEffect(() => {
-  //   if (isLoadMoreBtnInViewport) {
-  //     loadMoreBtn.current.click();
-  //   }
-  // }, [isLoadMoreBtnInViewport]);
-
   useEffect(() => {
     if (inView) {
       fetchMoreFilms();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
+
+  // Use Effect for Search
+  useEffect(() => {
+    setLoading(true);
+
+    const performSearch = () => {
+      fetchData({
+        endpoint: `/discover/${type}`,
+        queryParams: {
+          ...searchAPIParams,
+        },
+      })
+        .then((res) => {
+          setFilms(res.results);
+          setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 10000);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    const performSearchQuery = () => {
+      fetchData({
+        endpoint: `/search/multi`,
+        queryParams: {
+          query: searchQuery,
+          include_adult: false,
+          language: "en-US",
+          page: 1,
+        },
+      })
+        .then((res) => {
+          // Filter movies based on release date
+          const filteredMovies = res.results.filter(
+            (film) => film.media_type === "movie" || film.media_type === "tv",
+          );
+          setFilms(filteredMovies);
+          setLoading(false);
+          setTotalSearchPages(res.total_pages);
+          setCurrentSearchPage(1);
+          setTotalSearchResults(res.total_results);
+
+          setTimeout(() => {
+            setNotFoundMessage("No film found");
+          }, 10000);
+        })
+        .catch((error) => {
+          console.error("Error fetching films:", error);
+        });
+    };
+
+    if (!searchParams.get("query") && searchAPIParams) {
+      performSearch();
+    }
+
+    if (searchParams.get("query") && searchQuery) {
+      performSearchQuery();
+    }
+  }, [searchAPIParams, searchParams, searchQuery, type]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -295,34 +277,17 @@ export default function Search({
           searchParams={searchParams}
           current={current}
           inputStyles={inputStyles}
-          setNotAvailable={setNotAvailable}
-          sortByOrderOptions={sortByOrderOptions}
-          sortByTypeOptions={sortByTypeOptions}
-          setLoading={setLoading}
-          setFilms={setFilms}
           genresData={genresData}
-          // setGenresData={setGenresData}
-          setTotalSearchPages={setTotalSearchPages}
-          setCurrentSearchPage={setCurrentSearchPage}
-          searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          setNotFoundMessage={setNotFoundMessage}
-          sortByType={sortByType}
-          setSortByType={setSortByType}
-          sortByOrder={sortByOrder}
-          setSortByOrder={setSortByOrder}
           isFilterActive={isFilterActive}
           setIsFilterActive={setIsFilterActive}
           releaseDate={releaseDate}
-          setReleaseDate={setReleaseDate}
           minYear={minYear}
-          // setMinYear={setMinYear}
           maxYear={maxYear}
-          // setMaxYear={setMaxYear}
           searchAPIParams={searchAPIParams}
           languagesData={languagesData}
-          totalSearchResults={totalSearchResults}
-          setTotalSearchResults={setTotalSearchResults}
+          handleNotAvailable={handleNotAvailable}
+          handleClearNotAvailable={handleClearNotAvailable}
         />
       </Suspense>
 
@@ -340,147 +305,12 @@ export default function Search({
             <h1 className={`text-2xl font-bold capitalize`}>Search</h1>
           </div>
 
-          <div
-            className={`flex w-full flex-col items-center justify-between gap-2 sm:flex-row lg:justify-end`}
-          >
-            <div
-              onMouseOver={() => isQueryParams && handleNotAvailable()}
-              onMouseLeave={() => setNotAvailable("")}
-              className={`flex flex-wrap justify-center gap-1 sm:flex-nowrap`}
-            >
-              {/* Sort by type */}
-              <Select
-                options={sortByTypeOptions}
-                onChange={handleSortByTypeChange}
-                value={sortByType}
-                styles={{
-                  ...inputStyles,
-                  dropdownIndicator: (styles) => ({
-                    ...styles,
-                    display: "block",
-                    "&:hover": {
-                      color: "#fff",
-                    },
-                    cursor: "pointer",
-                  }),
-                  control: (styles) => ({
-                    ...styles,
-                    color: "#fff",
-                    backgroundColor: "#131720",
-                    borderWidth: "1px",
-                    borderColor: "#79808B",
-                    borderRadius: "1.5rem",
-                    cursor: "pointer",
-                  }),
-                }}
-                isDisabled={isQueryParams}
-                isSearchable={false}
-                className={`w-[145px]`}
-              />
-
-              {/* Sort by order */}
-              <Select
-                options={sortByOrderOptions}
-                onChange={handleSortByOrderChange}
-                value={sortByOrder}
-                styles={{
-                  ...inputStyles,
-                  dropdownIndicator: (styles) => ({
-                    ...styles,
-                    display: "block",
-                    "&:hover": {
-                      color: "#fff",
-                    },
-                    cursor: "pointer",
-                  }),
-                  control: (styles) => ({
-                    ...styles,
-                    color: "#fff",
-                    backgroundColor: "#131720",
-                    borderWidth: "1px",
-                    borderColor: "#79808B",
-                    borderRadius: "1.5rem",
-                    cursor: "pointer",
-                  }),
-                }}
-                isDisabled={isQueryParams}
-                isSearchable={false}
-                className={`w-[145px]`}
-              />
-            </div>
-
-            <div className={`flex flex-wrap items-center gap-1 sm:flex-nowrap`}>
-              {/* Clear all filters */}
-              <Suspense>
-                <div
-                  className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
-                >
-                  {searchParams.get("status") ||
-                  searchParams.get("type") ||
-                  searchParams.get("release_date") ||
-                  searchParams.get("with_genres") ||
-                  searchParams.get("with_original_language") ||
-                  searchParams.get("watch_providers") ||
-                  searchParams.get("with_networks") ||
-                  searchParams.get("with_cast") ||
-                  searchParams.get("with_crew") ||
-                  searchParams.get("with_keywords") ||
-                  searchParams.get("with_companies") ||
-                  searchParams.get("vote_count") ||
-                  searchParams.get("with_runtime") ||
-                  searchParams.get("o") ||
-                  searchParams.get("sort_by") ? (
-                    <button
-                      onClick={() => {
-                        setTimeout(() => {
-                          //   setSearchQuery("");
-                          //   setStatus([]);
-                          //   setTvType([]);
-                          //   setReleaseDate([minYear, maxYear]);
-                          //   setReleaseDateSlider([minYear, maxYear]);
-                          //   setGenre(null);
-                          //   setLanguage(null);
-                          //   setCast(null);
-                          //   setCrew(null);
-                          //   setKeyword(null);
-                          //   setCompany(null);
-                          //   setRating([0, 100]);
-                          //   setRatingSlider([0, 100]);
-                          //   setRuntime([0, 300]);
-                          //   setRuntimeSlider([0, 300]);
-                          setSortByType(sortByTypeOptions[0]);
-                          setSortByOrder(sortByOrderOptions[1]);
-                        }, 1000);
-
-                        router.push(`${pathname}`);
-                        // router.refresh();
-                        // defaultFilms();
-                      }}
-                      className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
-                    >
-                      <IonIcon icon={closeCircle} className={`text-xl`} />
-                      <span className={`whitespace-nowrap text-sm`}>
-                        Clear all filters
-                      </span>
-                    </button>
-                  ) : (
-                    <span>No filter selected</span>
-                  )}
-                </div>
-              </Suspense>
-
-              {/* Filter button */}
-              <button
-                onClick={() =>
-                  isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
-                }
-                onMouseLeave={() => setNotAvailable("")}
-                className={`btn btn-ghost aspect-square bg-secondary bg-opacity-20 lg:hidden`}
-              >
-                <IonIcon icon={filter} className={`text-2xl`} />
-              </button>
-            </div>
-          </div>
+          <SearchSort
+            searchAPIParams={searchAPIParams}
+            handleNotAvailable={handleNotAvailable}
+            handleClearNotAvailable={handleClearNotAvailable}
+            inputStyles={inputStyles}
+          />
         </section>
 
         {loading ? (

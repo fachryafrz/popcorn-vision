@@ -329,6 +329,10 @@ export function SearchBar({ placeholder = `Search` }) {
             />
           </button>
         )}
+
+        <kbd className={`kbd kbd-sm pointer-events-none mr-4 hidden xl:flex`}>
+          /
+        </kbd>
       </div>
 
       {/* {!isSearchPage && (
