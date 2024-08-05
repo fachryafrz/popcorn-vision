@@ -148,16 +148,22 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
       )}
 
       {locationError && (
-        <div className={`prose text-xs`}>
-          <p>{locationError}</p>
-          <p>Please follow these steps to enable location access:</p>
-          <ol>
-            <li>Click the icon on the left side of the address bar</li>
-            <li>Go to &quot;Site settings&quot;.</li>
-            <li>Find &quot;Location&quot; and set it to &quot;Allow&quot;.</li>
-            <li>Reload the page and click the button again.</li>
-          </ol>
-        </div>
+        <>
+        <p className="text-xs text-error font-medium">Oops! something isn&apos;t right</p>
+        
+          {/* <div className={`prose text-xs`}>
+            <p>{locationError}</p>
+            <p>Please follow these steps to enable location access:</p>
+            <ol>
+              <li>Click the icon on the left side of the address bar</li>
+              <li>Go to &quot;Site settings&quot;.</li>
+              <li>
+                Find &quot;Location&quot; and set it to &quot;Allow&quot;.
+              </li>
+              <li>Reload the page and click the button again.</li>
+            </ol>
+          </div> */}
+        </>
       )}
     </section>
   );

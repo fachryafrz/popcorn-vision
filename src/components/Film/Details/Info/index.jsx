@@ -80,11 +80,6 @@ export default function FilmInfo({
     ? film.runtime
     : film.episode_run_time.length > 0 && film.episode_run_time[0];
 
-  // Use Effect for getting user location
-  useEffect(() => {
-    setUserLocation(localStorage.getItem("user-location"));
-  }, []);
-
   // Get account state
   const [accountStates, setAccountStates] = useState();
 
@@ -252,6 +247,7 @@ export default function FilmInfo({
           <WatchProvider
             providers={providers}
             userLocation={userLocation}
+            setUserLocation={setUserLocation}
             isTvPage={isTvPage}
           />
 
