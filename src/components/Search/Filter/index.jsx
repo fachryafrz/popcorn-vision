@@ -19,6 +19,7 @@ import Genre from "./Genre";
 import Runtime from "./Runtime";
 import Network from "./Network";
 import Cast from "./Cast";
+import Crew from "./Crew";
 
 export default function Filters({
   type,
@@ -71,7 +72,6 @@ export default function Filters({
     maxYear,
   ]);
   const [language, setLanguage] = useState();
-  const [crew, setCrew] = useState([]);
   const [keyword, setKeyword] = useState([]);
   const [company, setCompany] = useState([]);
   const [ratingSlider, setRatingSlider] = useState([0, 100]);
@@ -204,37 +204,6 @@ export default function Filters({
   }, [languagesData]);
 
   const timerRef = useRef(null);
-  const crewsLoadOptions = useCallback((inputValue, callback) => {
-    const fetchDataWithDelay = async () => {
-      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/person`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
-    };
-
-    // Hapus pemanggilan sebelumnya jika ada
-    clearTimeout(timerRef.current);
-
-    // Set timer untuk memanggil fetchDataWithDelay setelah delay
-    timerRef.current = setTimeout(() => {
-      fetchDataWithDelay();
-    }, 1000);
-  }, []);
   const keywordsLoadOptions = useCallback((inputValue, callback) => {
     const fetchDataWithDelay = async () => {
       // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
@@ -307,24 +276,6 @@ export default function Filters({
         current.delete("with_original_language");
       } else {
         current.set("with_original_language", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
-  const handleCrewChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("with_crew");
-      } else {
-        current.set("with_crew", value);
       }
 
       const search = current.toString();
@@ -480,35 +431,6 @@ export default function Filters({
       searchAPIParams["with_type"] = searchParams.get("type");
     } else {
       delete searchAPIParams["with_type"];
-    }
-
-    // Crew
-    if (searchParams.get("with_crew")) {
-      const crewParams = searchParams.get("with_crew").split(",");
-      const fetchPromises = crewParams.map((crewId) => {
-        return fetchData({
-          endpoint: `/person/${crewId}`,
-        });
-      });
-
-      searchAPIParams["with_crew"] = searchParams.get("with_crew");
-
-      Promise.all(fetchPromises)
-        .then((responses) => {
-          const uniqueCrew = [...new Set(responses)]; // Remove duplicates if any
-          const searchCrew = uniqueCrew.map((crew) => ({
-            value: crew.id,
-            label: crew.name,
-          }));
-          setCrew(searchCrew);
-        })
-        .catch((error) => {
-          console.error("Error fetching crew:", error);
-        });
-    } else {
-      setCrew(null);
-
-      delete searchAPIParams["with_crew"];
     }
 
     // Keyword
@@ -699,27 +621,14 @@ export default function Filters({
         <Network searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
-      {/* NOTE: Cast */}
+      {/* Cast */}
       {!isTvPage && (
         <Cast searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
-      {/* Crew */}
+      {/* NOTE: Crew */}
       {!isTvPage && (
-        <section className={`flex flex-col gap-1`}>
-          <span className={`font-medium`}>Crew</span>
-          <AsyncSelect
-            noOptionsMessage={() => "Type to search"}
-            loadingMessage={() => "Searching..."}
-            loadOptions={crewsLoadOptions}
-            onChange={handleCrewChange}
-            value={crew}
-            styles={inputStyles}
-            placeholder={`Search director, creator...`}
-            isDisabled={isQueryParams}
-            isMulti
-          />
-        </section>
+        <Crew searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
       {/* Company */}

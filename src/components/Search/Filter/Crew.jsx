@@ -1,9 +1,20 @@
 import { fetchData } from "@/lib/fetch";
+import { IonIcon } from "@ionic/react";
+import { Slider } from "@mui/material";
+import { close } from "ionicons/icons";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import Select from "react-select";
 import AsyncSelect from "react-select/async";
+import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
+import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
+import moment from "moment";
+import dayjs from "dayjs";
+import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { askLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Cast({ searchAPIParams, inputStyles }) {
+export default function Crew({ searchAPIParams, inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -13,10 +24,10 @@ export default function Cast({ searchAPIParams, inputStyles }) {
   );
   const isQueryParams = searchParams.get("query") ? true : false;
 
-  const [cast, setCast] = useState([]);
+  const [crew, setCrew] = useState([]);
 
   const timerRef = useRef(null);
-  const castsLoadOptions = useCallback((inputValue, callback) => {
+  const crewsLoadOptions = useCallback((inputValue, callback) => {
     const fetchDataWithDelay = async () => {
       // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -48,14 +59,14 @@ export default function Cast({ searchAPIParams, inputStyles }) {
     }, 1000);
   }, []);
 
-  const handleCastChange = useCallback(
+  const handleCrewChange = useCallback(
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
 
       if (value.length === 0) {
-        current.delete("with_cast");
+        current.delete("with_crew");
       } else {
-        current.set("with_cast", value);
+        current.set("with_crew", value);
       }
 
       const search = current.toString();
@@ -68,47 +79,47 @@ export default function Cast({ searchAPIParams, inputStyles }) {
   );
 
   useEffect(() => {
-    // Cast
-    if (searchParams.get("with_cast")) {
-      const castParams = searchParams.get("with_cast").split(",");
-      const fetchPromises = castParams.map((castId) => {
+    // Crew
+    if (searchParams.get("with_crew")) {
+      const crewParams = searchParams.get("with_crew").split(",");
+      const fetchPromises = crewParams.map((crewId) => {
         return fetchData({
-          endpoint: `/person/${castId}`,
+          endpoint: `/person/${crewId}`,
         });
       });
 
-      searchAPIParams["with_cast"] = searchParams.get("with_cast");
+      searchAPIParams["with_crew"] = searchParams.get("with_crew");
 
       Promise.all(fetchPromises)
         .then((responses) => {
-          const uniqueCast = [...new Set(responses)]; // Remove duplicates if any
-          const searchCast = uniqueCast.map((cast) => ({
-            value: cast.id,
-            label: cast.name,
+          const uniqueCrew = [...new Set(responses)]; // Remove duplicates if any
+          const searchCrew = uniqueCrew.map((crew) => ({
+            value: crew.id,
+            label: crew.name,
           }));
-          setCast(searchCast);
+          setCrew(searchCrew);
         })
         .catch((error) => {
-          console.error("Error fetching cast:", error);
+          console.error("Error fetching crew:", error);
         });
     } else {
-      setCast(null);
+      setCrew(null);
 
-      delete searchAPIParams["with_cast"];
+      delete searchAPIParams["with_crew"];
     }
   }, [searchAPIParams, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Actor</span>
+      <span className={`font-medium`}>Crew</span>
       <AsyncSelect
         noOptionsMessage={() => "Type to search"}
         loadingMessage={() => "Searching..."}
-        loadOptions={castsLoadOptions}
-        onChange={handleCastChange}
-        value={cast}
+        loadOptions={crewsLoadOptions}
+        onChange={handleCrewChange}
+        value={crew}
         styles={inputStyles}
-        placeholder={`Search actor...`}
+        placeholder={`Search director, creator...`}
         isDisabled={isQueryParams}
         isMulti
       />
