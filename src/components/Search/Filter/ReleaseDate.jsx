@@ -132,6 +132,10 @@ export default function ReleaseDate({
                         borderColor: "#fff",
                       },
                     },
+                    ".Mui-disabled": {
+                      color: "#fff",
+                      WebkitTextFillColor: "#fff",
+                    },
                     label: {
                       color: "#fff",
                       "&.Mui-focused": {
@@ -184,6 +188,10 @@ export default function ReleaseDate({
                       "&.Mui-focused fieldset": {
                         borderColor: "#fff",
                       },
+                    },
+                    ".Mui-disabled": {
+                      color: "#fff",
+                      WebkitTextFillColor: "#fff",
                     },
                     label: {
                       color: "#fff",
