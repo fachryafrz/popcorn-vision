@@ -15,6 +15,7 @@ import { askLocation } from "@/lib/navigator";
 import TVSeriesStatus from "./TVSeriesStatus";
 import ReleaseDate from "./ReleaseDate";
 import Streaming from "./Streaming";
+import Genre from "./Genre";
 
 export default function Filters({
   type,
@@ -48,12 +49,9 @@ export default function Filters({
   setTotalSearchResults,
 }) {
   const isTvPage = type === "tv";
-  const [userLocation, setUserLocation] = useState(null);
-  const [locationError, setLocationError] = useState();
 
   // State
   // const [languagesData, setLanguagesData] = useState([]);
-  const [providersData, setProvidersData] = useState([]);
   const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [castData, setCastData] = useState();
   const [crewData, setCrewData] = useState();
@@ -62,9 +60,7 @@ export default function Filters({
   const [isGrid, setIsGrid] = useState(true);
 
   // React-Select Placeholder
-  const [genresInputPlaceholder, setGenresInputPlaceholder] = useState();
   const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
-  const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
 
   // Filters
   const [tvType, setTvType] = useState([]);
@@ -72,9 +68,7 @@ export default function Filters({
     minYear,
     maxYear,
   ]);
-  const [genre, setGenre] = useState();
   const [language, setLanguage] = useState();
-  const [provider, setProvider] = useState();
   const [network, setNetwork] = useState([]);
   const [cast, setCast] = useState([]);
   const [crew, setCrew] = useState([]);
@@ -231,24 +225,12 @@ export default function Filters({
   }, []);
 
   // Handle Select Options
-  const genresOptions = useMemo(() => {
-    return genresData?.map((genre) => ({
-      value: genre.id,
-      label: genre.name,
-    }));
-  }, [genresData]);
   const languagesOptions = useMemo(() => {
     return languagesData?.map((language) => ({
       value: language.iso_639_1,
       label: language.english_name,
     }));
   }, [languagesData]);
-  const providersOptions = useMemo(() => {
-    return providersData?.map((provider) => ({
-      value: provider.provider_id,
-      label: provider.provider_name,
-    }));
-  }, [providersData]);
   const networksLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
       const options = networksData.map((network) => ({
@@ -389,24 +371,6 @@ export default function Filters({
   }, []);
 
   // Handle Select Change
-  const handleGenreChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("with_genres");
-      } else {
-        current.set("with_genres", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
   const handleLanguageChange = useCallback(
     (selectedOption) => {
       const value = selectedOption.map((option) => option.value);
@@ -415,24 +379,6 @@ export default function Filters({
         current.delete("with_original_language");
       } else {
         current.set("with_original_language", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
-  const handleProviderChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("watch_providers");
-      } else {
-        current.set("watch_providers", value);
       }
 
       const search = current.toString();
@@ -576,25 +522,13 @@ export default function Filters({
     );
   };
 
-  // Use Effect for getting user location
-  useEffect(() => {
-    askLocation(setUserLocation, setLocationError);
-  }, []);
-
   // Use Effect for cycling random options placeholder
   useEffect(() => {
     const updatePlaceholders = () => {
-      const genresPlaceholder = getRandomOptionsPlaceholder(genresOptions);
       const languagesPlaceholder =
         getRandomOptionsPlaceholder(languagesOptions);
-      const providersPlaceholder =
-        getRandomOptionsPlaceholder(providersOptions);
 
-      // Set placeholders for your elements here
-      // For example:
-      setGenresInputPlaceholder(genresPlaceholder);
       setLanguagesInputPlaceholder(languagesPlaceholder);
-      setProvidersInputPlaceholder(providersPlaceholder);
     };
 
     updatePlaceholders();
@@ -604,22 +538,7 @@ export default function Filters({
 
     // Clean up the interval on component unmount
     return () => clearInterval(intervalId);
-  }, [genresOptions, languagesOptions, providersOptions]);
-
-  // Use Effect for fetching streaming providers based on user location
-  useEffect(() => {
-    // Fetch watch providers by user country code
-    if (userLocation) {
-      fetchData({
-        endpoint: `/watch/providers/movie`,
-        queryParams: {
-          watch_region: JSON.parse(userLocation).countryCode,
-        },
-      }).then((res) => {
-        setProvidersData(res.results);
-      });
-    }
-  }, [isTvPage, type, userLocation]);
+  }, [languagesOptions]);
 
   // Use Effect for set available Release Dates
   useEffect(() => {
@@ -630,28 +549,6 @@ export default function Filters({
 
   // Use Effect for Select with preloaded data
   useEffect(() => {
-    // Genres
-    if (searchParams.get("with_genres")) {
-      const genresParams = searchParams.get("with_genres").split(",");
-      const searchGenres = genresParams.map((genreId) =>
-        genresData?.find((genre) => parseInt(genre.id) === parseInt(genreId)),
-      );
-      const searchGenresOptions = searchGenres?.map(
-        (genre) =>
-          genre && {
-            value: genre.id,
-            label: genre.name,
-          },
-      );
-      setGenre(searchGenresOptions);
-
-      searchAPIParams["with_genres"] = searchParams.get("with_genres");
-    } else {
-      setGenre(null);
-
-      delete searchAPIParams["with_genres"];
-    }
-
     // Languages
     if (searchParams.get("with_original_language")) {
       const languagesParams = searchParams
@@ -704,15 +601,7 @@ export default function Filters({
 
       delete searchAPIParams["with_networks"];
     }
-  }, [
-    genresData,
-    languagesData,
-    providersData,
-    networksData,
-    searchParams,
-    searchAPIParams,
-    userLocation,
-  ]);
+  }, [genresData, languagesData, networksData, searchParams, searchAPIParams]);
 
   // Use Effect for Search Params
   useEffect(() => {
@@ -974,32 +863,15 @@ export default function Filters({
         releaseDate={releaseDate}
       />
 
-      {/* NOTE: Streaming (Watch Providers) */}
+      {/* Streaming (Watch Providers) */}
       <Streaming searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
-      {/* Genre */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Genre</span>
-        <Select
-          options={genresData && genresOptions}
-          onChange={handleGenreChange}
-          value={genre}
-          styles={{
-            ...inputStyles,
-            dropdownIndicator: (styles) => ({
-              ...styles,
-              display: "block",
-              "&:hover": {
-                color: "#fff",
-              },
-              cursor: "pointer",
-            }),
-          }}
-          placeholder={genresInputPlaceholder}
-          isDisabled={isQueryParams}
-          isMulti
-        />
-      </section>
+      {/* NOTE: Genre */}
+      <Genre
+        searchAPIParams={searchAPIParams}
+        genresData={genresData}
+        inputStyles={inputStyles}
+      />
 
       {/* Runtime */}
       <section className={`flex flex-col gap-1`}>

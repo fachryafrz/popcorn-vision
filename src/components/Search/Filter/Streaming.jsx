@@ -1,16 +1,7 @@
 import { fetchData } from "@/lib/fetch";
-import { IonIcon } from "@ionic/react";
-import { Slider } from "@mui/material";
-import { close } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
-import AsyncSelect from "react-select/async";
-import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import moment from "moment";
-import dayjs from "dayjs";
-import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { askLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -62,6 +53,7 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
     askLocation(setUserLocation, setLocationError);
   }, []);
 
+  // Use Effect for fetching streaming providers based on user location
   useEffect(() => {
     // Fetch watch providers by user country code
     if (userLocation) {
@@ -76,6 +68,7 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
     }
   }, [userLocation]);
 
+  // Use Effect for cycling random options placeholder
   useEffect(() => {
     const updatePlaceholders = () => {
       const providersPlaceholder =
