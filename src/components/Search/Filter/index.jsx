@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { askLocation } from "@/lib/navigator";
+import TVSeriesStatus from "./TVSeriesStatus";
 
 export default function Filters({
   type,
@@ -70,7 +71,6 @@ export default function Filters({
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
 
   // Filters
-  const [status, setStatus] = useState([]);
   const [tvType, setTvType] = useState([]);
   const [releaseDateSlider, setReleaseDateSlider] = useState([
     minYear,
@@ -94,18 +94,6 @@ export default function Filters({
   );
 
   // Pre-loaded Options
-  const tvSeriesStatus = useMemo(
-    () => [
-      "All",
-      "Returning Series",
-      "Planned",
-      "In Production",
-      "Ended",
-      "Canceled",
-      "Pilot",
-    ],
-    [],
-  );
   const tvSeriesType = useMemo(
     () => [
       "All",
@@ -570,39 +558,6 @@ export default function Filters({
   );
 
   // Handle checkbox change
-  const handleStatusChange = (event) => {
-    const isChecked = event.target.checked;
-    const inputValue = parseInt(event.target.value);
-
-    let updatedValue = [...status]; // Salin status sebelumnya
-
-    if (inputValue === -1) {
-      // Jika yang dipilih adalah "All", bersihkan semua status
-      updatedValue = [];
-    } else {
-      if (isChecked && !updatedValue.includes(inputValue.toString())) {
-        // Tambahkan status yang dipilih jika belum ada
-        updatedValue.push(inputValue.toString());
-      } else {
-        // Hapus status yang tidak dipilih lagi
-        updatedValue = updatedValue.filter((s) => s !== inputValue.toString());
-      }
-    }
-
-    // Lakukan pengaturan URL
-    if (updatedValue.length === 0) {
-      setStatus(updatedValue);
-      current.delete("status");
-    } else {
-      current.set("status", updatedValue.join("|"));
-    }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
-  };
   const handleTypeChange = (event) => {
     const isChecked = event.target.checked;
     const inputValue = parseInt(event.target.value);
@@ -811,16 +766,6 @@ export default function Filters({
 
   // Use Effect for Search Params
   useEffect(() => {
-    // TV Series Status
-    if (searchParams.get("status")) {
-      const statusParams = searchParams.get("status").split("|");
-      setStatus(statusParams);
-
-      searchAPIParams["with_status"] = searchParams.get("status");
-    } else {
-      delete searchAPIParams["with_status"];
-    }
-
     // TV Series Type
     if (searchParams.get("type")) {
       const typeParams = searchParams.get("type").split("|");
@@ -1208,44 +1153,8 @@ export default function Filters({
       {/* Title */}
       {/* <span className={`font-bold text-2xl`}>Filters</span> */}
 
-      {/* Tv Series Status */}
-      {isTvPage && (
-        <section>
-          <span className={`font-medium`}>Status</span>
-          <ul className={`mt-2`}>
-            {tvSeriesStatus.map((statusName, i) => {
-              const index = i - 1;
-              const isChecked = status.length === 0 && i === 0;
-
-              return (
-                <li key={index}>
-                  <div className={`flex items-center`}>
-                    <input
-                      type={`checkbox`}
-                      id={`status_${index}`}
-                      name={`status`}
-                      className={`checkbox checkbox-md`}
-                      value={index}
-                      checked={isChecked || status.includes(index.toString())}
-                      onChange={handleStatusChange}
-                      disabled={isQueryParams}
-                    />
-
-                    <label
-                      htmlFor={`status_${index}`}
-                      className={`${
-                        isQueryParams ? `cursor-default` : `cursor-pointer`
-                      } flex w-full py-2 pl-2`}
-                    >
-                      {statusName}
-                    </label>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+      {/* NOTE: Tv Series Status */}
+      {isTvPage && <TVSeriesStatus searchAPIParams={searchAPIParams} />}
 
       {/* Release Date */}
       {/* <section className={`flex flex-col gap-1`}>
@@ -1318,7 +1227,7 @@ export default function Filters({
         </div>
       </section> */}
 
-      {/* NOTE: NEW Release Date */}
+      {/* NEW Release Date */}
       <section className={`flex flex-col gap-1`}>
         <span className={`font-medium`}>Release Date</span>
         <div className={`w-full px-3 pt-2`}>
