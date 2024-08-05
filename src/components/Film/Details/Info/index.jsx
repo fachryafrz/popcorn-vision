@@ -27,6 +27,7 @@ import Countdown from "./Countdown";
 import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
+import { askLocation } from "@/lib/navigator";
 
 export default function FilmInfo({
   film,
@@ -37,6 +38,8 @@ export default function FilmInfo({
   releaseDates,
 }) {
   const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState();
+
   const countryCode = userLocation && JSON.parse(userLocation).countryCode;
   const countryName = userLocation && JSON.parse(userLocation).countryName;
 
@@ -79,6 +82,13 @@ export default function FilmInfo({
   const filmRuntime = !isTvPage
     ? film.runtime
     : film.episode_run_time.length > 0 && film.episode_run_time[0];
+
+  const providersArray = Object.entries(providers.results);
+  const providersIDArray =
+    userLocation &&
+    providersArray.find(
+      (item) => item[0] === JSON.parse(userLocation).countryCode,
+    );
 
   // Get account state
   const [accountStates, setAccountStates] = useState();
@@ -126,6 +136,11 @@ export default function FilmInfo({
       setValue: setAccountStates,
     });
   }, [getAccountStates]);
+
+  // Use Effect for getting user location
+  useEffect(() => {
+    askLocation(setUserLocation, setLocationError);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -244,12 +259,67 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          <WatchProvider
-            providers={providers}
-            userLocation={userLocation}
-            setUserLocation={setUserLocation}
-            isTvPage={isTvPage}
-          />
+          {providers.results && providersIDArray ? (
+            <WatchProvider
+              providers={providers}
+              providersIDArray={providersIDArray}
+              userLocation={userLocation}
+              setUserLocation={setUserLocation}
+              isTvPage={isTvPage}
+            />
+          ) : userLocation ? (
+            providersIDArray && (
+              <Reveal>
+                <section id={`Film Providers`}>
+                  <span className={`text-sm italic text-gray-400`}>
+                    Where to watch? <br /> Hold on we&apos;re still finding...
+                  </span>
+                </section>
+              </Reveal>
+            )
+          ) : (
+            <Reveal>
+              <section id={`Film Providers`}>
+                <div className={`flex flex-col text-sm italic text-gray-400`}>
+                  <span>Where to watch?</span>
+                  <button
+                    onClick={() =>
+                      askLocation(setUserLocation, setLocationError)
+                    }
+                    className={`btn btn-outline btn-sm max-w-fit rounded-full`}
+                  >
+                    Click to enable location
+                  </button>
+
+                  {locationError && (
+                    <>
+                      <p className="text-xs font-medium text-error">
+                        Oops! something isn&apos;t right
+                      </p>
+
+                      {/* <div className={`prose`}>
+                        <p>{locationError}</p>
+                        <p>
+                          Please follow these steps to enable location access:
+                        </p>
+                        <ol>
+                          <li>
+                            Click the icon on the left side of the address bar
+                          </li>
+                          <li>Go to &quot;Site settings&quot;.</li>
+                          <li>
+                            Find &quot;Location&quot; and set it to
+                            &quot;Allow&quot;.
+                          </li>
+                          <li>Reload the page and click the button again.</li>
+                        </ol>
+                      </div> */}
+                    </>
+                  )}
+                </div>
+              </section>
+            </Reveal>
+          )}
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
 
