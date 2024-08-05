@@ -55,42 +55,9 @@ export default function Search({
       include_adult: false,
     };
   }, []);
-  const sortByTypeOptions = useMemo(
-    () => [
-      { value: "popularity", label: "Popularity" },
-      { value: "vote_count", label: "Rating" },
-      { value: "release_date", label: "Release Date" },
-      { value: "revenue", label: "Revenue" },
-      { value: "budget", label: "Budget" },
-    ],
-    [],
-  );
-  const sortByOrderOptions = useMemo(
-    () => [
-      { value: "asc", label: "Ascending" },
-      { value: "desc", label: "Descending" },
-    ],
-    [],
-  );
-
-  // MUI Select
-  const [sortByType, setSortByType] = useState({
-    value: "popularity",
-    label: "Popularity",
-  });
-  const [sortByOrder, setSortByOrder] = useState({
-    value: "desc",
-    label: "Descending",
-  });
 
   // Is in viewport?
   const { ref: loadMoreBtn, inView, entry } = useInView();
-  // const isLoadMoreBtnInViewport = IsInViewport({
-  //   targetRef: loadMoreBtn.current,
-  // });
-
-  // Ref
-  // const loadMoreBtn = useRef(ref);
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -168,44 +135,6 @@ export default function Search({
     };
   }, []);
 
-  // Handle Select Change
-  const handleSortByTypeChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
-
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${value}.${sortByOrder.value}`);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByOrder],
-  );
-  const handleSortByOrderChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
-
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${sortByType.value}.${value}`);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByType],
-  );
-
   // Handle not available
   const handleNotAvailable = () => {
     setNotAvailable(
@@ -267,12 +196,6 @@ export default function Search({
   };
 
   // Use Effect for load more button is in viewport
-  // useEffect(() => {
-  //   if (isLoadMoreBtnInViewport) {
-  //     loadMoreBtn.current.click();
-  //   }
-  // }, [isLoadMoreBtnInViewport]);
-
   useEffect(() => {
     if (inView) {
       fetchMoreFilms();
@@ -357,8 +280,6 @@ export default function Search({
           current={current}
           inputStyles={inputStyles}
           setNotAvailable={setNotAvailable}
-          sortByOrderOptions={sortByOrderOptions}
-          sortByTypeOptions={sortByTypeOptions}
           setLoading={setLoading}
           setFilms={setFilms}
           genresData={genresData}
@@ -368,10 +289,6 @@ export default function Search({
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setNotFoundMessage={setNotFoundMessage}
-          sortByType={sortByType}
-          setSortByType={setSortByType}
-          sortByOrder={sortByOrder}
-          setSortByOrder={setSortByOrder}
           isFilterActive={isFilterActive}
           setIsFilterActive={setIsFilterActive}
           releaseDate={releaseDate}
