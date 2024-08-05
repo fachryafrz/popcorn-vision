@@ -20,6 +20,7 @@ import Runtime from "./Runtime";
 import Network from "./Network";
 import Cast from "./Cast";
 import Crew from "./Crew";
+import Company from "./Company";
 
 export default function Filters({
   type,
@@ -73,7 +74,6 @@ export default function Filters({
   ]);
   const [language, setLanguage] = useState();
   const [keyword, setKeyword] = useState([]);
-  const [company, setCompany] = useState([]);
   const [ratingSlider, setRatingSlider] = useState([0, 100]);
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
   const [rating, setRating] = useState([0, 100]);
@@ -235,37 +235,6 @@ export default function Filters({
       fetchDataWithDelay();
     }, 1000);
   }, []);
-  const companiesLoadOptions = useCallback((inputValue, callback) => {
-    const fetchDataWithDelay = async () => {
-      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/company`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((company) => ({
-          value: company.id,
-          label: company.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
-    };
-
-    // Hapus pemanggilan sebelumnya jika ada
-    clearTimeout(timerRef.current);
-
-    // Set timer untuk memanggil fetchDataWithDelay setelah delay
-    timerRef.current = setTimeout(() => {
-      fetchDataWithDelay();
-    }, 1000);
-  }, []);
 
   // Handle Select Change
   const handleLanguageChange = useCallback(
@@ -294,24 +263,6 @@ export default function Filters({
         current.delete("with_keywords");
       } else {
         current.set("with_keywords", value);
-      }
-
-      const search = current.toString();
-
-      const query = search ? `?${search}` : "";
-
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
-  const handleCompanyChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
-
-      if (value.length === 0) {
-        current.delete("with_companies");
-      } else {
-        current.set("with_companies", value);
       }
 
       const search = current.toString();
@@ -462,35 +413,6 @@ export default function Filters({
       delete searchAPIParams["with_keywords"];
     }
 
-    // Company
-    if (searchParams.get("with_companies")) {
-      const companyParams = searchParams.get("with_companies").split(",");
-      const fetchPromises = companyParams.map((companyId) => {
-        return fetchData({
-          endpoint: `/company/${companyId}`,
-        });
-      });
-
-      searchAPIParams["with_companies"] = searchParams.get("with_companies");
-
-      Promise.all(fetchPromises)
-        .then((responses) => {
-          const uniqueCompany = [...new Set(responses)]; // Remove duplicates if any
-          const searchCompany = uniqueCompany.map((company) => ({
-            value: company.id,
-            label: company.name,
-          }));
-          setCompany(searchCompany);
-        })
-        .catch((error) => {
-          console.error("Error fetching company:", error);
-        });
-    } else {
-      setCompany(null);
-
-      delete searchAPIParams["with_companies"];
-    }
-
     // Rating
     if (searchParams.get("vote_count")) {
       const ratingParams = searchParams.get("vote_count").split(".");
@@ -626,26 +548,13 @@ export default function Filters({
         <Cast searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
-      {/* NOTE: Crew */}
+      {/* Crew */}
       {!isTvPage && (
         <Crew searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
       )}
 
-      {/* Company */}
-      <section className={`flex flex-col gap-1`}>
-        <span className={`font-medium`}>Company</span>
-        <AsyncSelect
-          noOptionsMessage={() => "Type to search"}
-          loadingMessage={() => "Searching..."}
-          loadOptions={companiesLoadOptions}
-          onChange={handleCompanyChange}
-          value={company}
-          styles={inputStyles}
-          placeholder={`Search company...`}
-          isDisabled={isQueryParams}
-          isMulti
-        />
-      </section>
+      {/* NOTE: Company */}
+      <Company searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
 
       {/* Rating */}
       <section className={`flex flex-col gap-1`}>
