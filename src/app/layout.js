@@ -83,21 +83,21 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: process.env.NEXT_PUBLIC_APP_NAME,
-    alternateName: process.env.NEXT_PUBLIC_APP_NAME,
-    url: process.env.NEXT_PUBLIC_APP_URL,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`,
-      },
-      "query-input": "required name=title maxlength=100",
-    },
-  };
+  // const jsonLd = {
+  //   "@context": "https://schema.org",
+  //   "@type": "WebSite",
+  //   name: process.env.NEXT_PUBLIC_APP_NAME,
+  //   alternateName: process.env.NEXT_PUBLIC_APP_NAME,
+  //   url: process.env.NEXT_PUBLIC_APP_URL,
+  //   potentialAction: {
+  //     "@type": "SearchAction",
+  //     target: {
+  //       "@type": "EntryPoint",
+  //       urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`,
+  //     },
+  //     "query-input": "required name=title maxlength=100",
+  //   },
+  // };
 
   return (
     <html lang="en" className="scroll-pt-20">
