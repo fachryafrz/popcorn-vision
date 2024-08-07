@@ -9,7 +9,7 @@ export async function POST(req) {
   const cookiesStore = cookies();
 
   try {
-    const { data } = await axios.post(
+    const addRating = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/rating`,
       {
         value: rating,
@@ -21,11 +21,7 @@ export async function POST(req) {
         },
       },
     );
-  } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
-  } finally {
+
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
       {
@@ -37,16 +33,22 @@ export async function POST(req) {
     );
 
     return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
   }
 }
 
 export async function DELETE(req) {
   const url = new URL(req.url);
-  const { id, season_number, episode_number, rating } = Object.fromEntries(url.searchParams);
+  const { id, season_number, episode_number, rating } = Object.fromEntries(
+    url.searchParams,
+  );
   const cookiesStore = cookies();
 
   try {
-    const { data } = await axios.delete(
+    const removeRating = await axios.delete(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/rating`,
       {
         params: {
@@ -55,11 +57,7 @@ export async function DELETE(req) {
         },
       },
     );
-  } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
-  } finally {
+
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
       {
@@ -71,5 +69,9 @@ export async function DELETE(req) {
     );
 
     return NextResponse.json(data, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
   }
 }

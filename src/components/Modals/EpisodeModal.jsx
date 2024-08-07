@@ -20,6 +20,7 @@ import moment from "moment";
 import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
+import { useAuth } from "@/hooks/auth";
 
 export function EpisodeModal({ film, seasons, episode }) {
   const router = useRouter();
@@ -28,6 +29,8 @@ export function EpisodeModal({ film, seasons, episode }) {
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
+
+  const { user } = useAuth();
 
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
@@ -228,18 +231,18 @@ export function EpisodeModal({ film, seasons, episode }) {
               </section>
             </div>
 
-            {/* <Reveal className={`mt-2`}> */}
-            <section id={`Episode Rating`} className={`max-w-fit`}>
-              <UserRating
-                film={film}
-                url={`/api/tv/season/episode/rating`}
-                season={episode.season_number}
-                episode={episode.episode_number}
-                rating={accountStates?.rated}
-                title={`What did you think of ${episode.name}`}
-              />
-            </section>
-            {/* </Reveal> */}
+            {user && (
+              <section id={`Episode Rating`} className={`max-w-fit`}>
+                <UserRating
+                  film={film}
+                  url={`/api/tv/season/episode/rating`}
+                  season={episode.season_number}
+                  episode={episode.episode_number}
+                  rating={accountStates?.rated}
+                  title={`What did you think of ${episode.name}`}
+                />
+              </section>
+            )}
 
             {episode.overview != "" && (
               <section id={`Episode Overview`}>
