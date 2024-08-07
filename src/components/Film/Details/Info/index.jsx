@@ -378,11 +378,15 @@ export default function FilmInfo({
           {/* User Rating */}
           {user && !isUpcoming && filmReleaseDate !== "" && (
             <Reveal className={`mt-2`}>
-              <section id={`User Rating`} className={`max-w-fit`}>
+              <section
+                id={`${!isTvPage ? `Movie` : `TV Series`} Rating`}
+                className={`max-w-fit`}
+              >
                 <UserRating
                   film={film}
-                  getAccountStates={getAccountStates}
+                  url={`/api/account/rating`}
                   rating={accountStates?.rated}
+                  title={`How was ${!isTvPage ? film.title : film.name}`}
                 />
               </section>
             </Reveal>

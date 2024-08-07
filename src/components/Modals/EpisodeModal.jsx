@@ -8,7 +8,7 @@ import {
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -18,14 +18,19 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEpisodeModal } from "@/zustand/episodeModal";
 import moment from "moment";
 import Person from "@/components/Person/Person";
+import axios from "axios";
+import UserRating from "../User/Actions/UserRating";
+import { useAuth } from "@/hooks/auth";
 
-export function EpisodeModal({ seasons, episode }) {
+export function EpisodeModal({ film, seasons, episode }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
+
+  const { user } = useAuth();
 
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
@@ -49,7 +54,7 @@ export function EpisodeModal({ seasons, episode }) {
 
   const handleCloseModal = () => {
     document.getElementById(`episodeModal`).close();
-    router.replace  (pathname, { scroll: false });
+    router.replace(pathname, { scroll: false });
 
     setTimeout(() => {
       // Zustand
@@ -106,6 +111,32 @@ export function EpisodeModal({ seasons, episode }) {
   useEffect(() => {
     setShowAllGuestStars(false);
   }, [episode]);
+
+  // NOTE: EPISODE RATING
+  const [accountStates, setAccountStates] = useState();
+
+  useEffect(() => {
+    const getAccountStates = async () => {
+      try {
+        const { data } = await axios.get(
+          `/api/tv/season/episode/account_states`,
+          {
+            params: {
+              id: film.id,
+              season_number: episode.season_number,
+              episode_number: episode.episode_number,
+            },
+          },
+        );
+
+        setAccountStates(data);
+      } catch (error) {
+        console.error("Error getting account states:", error);
+      }
+    };
+
+    getAccountStates();
+  }, [episode, film]);
 
   return (
     <dialog
@@ -199,6 +230,19 @@ export function EpisodeModal({ seasons, episode }) {
                 </div>
               </section>
             </div>
+
+            {user && (
+              <section id={`Episode Rating`} className={`max-w-fit`}>
+                <UserRating
+                  film={film}
+                  url={`/api/tv/season/episode/rating`}
+                  season={episode.season_number}
+                  episode={episode.episode_number}
+                  rating={accountStates?.rated}
+                  title={`What did you think of ${episode.name}`}
+                />
+              </section>
+            )}
 
             {episode.overview != "" && (
               <section id={`Episode Overview`}>
