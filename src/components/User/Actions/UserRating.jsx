@@ -6,7 +6,14 @@ import { star, starHalf, starOutline } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function UserRating({ film, getAccountStates, rating }) {
+export default function UserRating({
+  film,
+  rating,
+  url,
+  season,
+  episode,
+  title,
+}) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -19,10 +26,12 @@ export default function UserRating({ film, getAccountStates, rating }) {
       setIsLoading(true);
 
       await axios
-        .post(`/api/account/rating`, {
+        .post(url, {
           type: !isTvPage ? "movie" : "tv",
           id: film.id,
           rating: value,
+          season_number: season,
+          episode_number: episode,
         })
         .then(({ data: { rated } }) => {
           setIsLoading(false);
@@ -40,10 +49,12 @@ export default function UserRating({ film, getAccountStates, rating }) {
       setIsLoading(true);
 
       await axios
-        .delete(`/api/account/rating`, {
+        .delete(url, {
           params: {
             id: film.id,
             type: !isTvPage ? `movie` : `tv`,
+            season_number: season,
+            episode_number: episode,
           },
         })
         .then(({ data: { rated } }) => {
@@ -65,7 +76,7 @@ export default function UserRating({ film, getAccountStates, rating }) {
   return (
     <>
       <div className={`flex items-center gap-2`}>
-        <span className={`mb-2 block text-sm font-medium`}>Your rating</span>
+        <span className={`mb-2 block text-sm font-medium italic`}>{title}</span>
 
         {isLoading && <span class="loading loading-spinner loading-xs"></span>}
       </div>
