@@ -134,7 +134,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         // transition={{ delay: isHovering ? 0.5 : 0 }}
         exit={{ opacity: 0 }}
         id="FilmPreview"
-        className={`absolute left-1/2 top-1/2 z-40 hidden w-[300px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block ${
+        className={`absolute left-1/2 top-1/2 z-[99] hidden w-[300px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block ${
           isHovering ? `pointer-events-auto` : `pointer-events-none`
         }`}
       >
