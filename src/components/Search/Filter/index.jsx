@@ -15,6 +15,7 @@ import Rating from "./Rating";
 import TVSeriesType from "./TVSeriesType";
 import Language from "./Language";
 import Keyword from "./Keyword";
+import SearchSort from "../Sort";
 
 export default function Filters({
   type,
@@ -146,17 +147,29 @@ export default function Filters({
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
-      className={`fixed inset-x-0 top-[66px] z-30 flex h-[calc(100dvh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100dvh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
+      className={`fixed inset-x-0 top-[66px] z-[100] flex h-[calc(100dvh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100dvh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
         isFilterActive ? `translate-x-0` : `-translate-x-full`
       }`}
     >
       {/* Close Button */}
       <button
         onClick={() => setIsFilterActive(false)}
-        className={`pointer-events-auto absolute right-0 top-0 z-50 ml-auto grid aspect-square place-content-center p-4 lg:hidden`}
+        className={`pointer-events-auto absolute right-4 top-2 z-50  aspect-square  lg:hidden`}
       >
         <IonIcon icon={close} className={`text-3xl`} />
       </button>
+
+      {/* Sort */}
+      <section className={`flex flex-col gap-1 lg:hidden`}>
+        <span className={`font-medium`}>Sort</span>
+        <SearchSort
+          searchAPIParams={searchAPIParams}
+          handleNotAvailable={handleNotAvailable}
+          handleClearNotAvailable={handleClearNotAvailable}
+          inputStyles={inputStyles}
+          setIsFilterActive={setIsFilterActive}
+        />
+      </section>
 
       {/* TV Series Status */}
       {isTvPage && <TVSeriesStatus searchAPIParams={searchAPIParams} />}

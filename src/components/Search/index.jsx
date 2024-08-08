@@ -11,6 +11,7 @@ import Filters from "@/components/Search/Filter";
 import { useInView } from "react-intersection-observer";
 import FilmCard from "@/components/Film/Card";
 import SearchSort from "@/components/Search/Sort";
+import { closeCircle, filter } from "ionicons/icons";
 
 export default function Search({
   type = "movie",
@@ -28,6 +29,7 @@ export default function Search({
     [searchParams],
   );
   const isQueryParams = searchParams.get("query") ? true : false;
+  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   // State
   const [loading, setLoading] = useState(true);
@@ -294,24 +296,63 @@ export default function Search({
       <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
         {/* Options */}
         <section
-          className={`flex flex-col items-center gap-4 lg:flex-row lg:justify-between`}
+          className={`sticky top-[66px] z-[99] -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
           <div className={`w-full lg:hidden`}>
             <SearchBar placeholder={`Tap to search`} />
           </div>
 
-          <div className={`lg:w-full`}>
+          {/* <div className={`lg:w-full`}>
             <h1 className={`text-2xl font-bold capitalize`}>Search</h1>
-          </div>
+          </div> */}
 
-          <SearchSort
-            searchAPIParams={searchAPIParams}
-            handleNotAvailable={handleNotAvailable}
-            handleClearNotAvailable={handleClearNotAvailable}
-            inputStyles={inputStyles}
-            setIsFilterActive={setIsFilterActive}
-          />
+          {/* Clear filters */}
+          {isThereAnyFilter > 0 && (
+            <Suspense>
+              <div
+                className={`flex min-w-fit flex-row-reverse flex-wrap items-center gap-2 lg:h-[42px]`}
+              >
+                <button
+                  onClick={() => router.push(`${pathname}`)}
+                  className={`btn btn-circle btn-ghost bg-secondary bg-opacity-20 hocus:btn-error md:btn-block lg:btn-sm hocus:text-white md:!h-full md:px-4 lg:w-fit`}
+                >
+                  <IonIcon icon={closeCircle} className={`text-2xl`} />
+                  <span className={`hidden whitespace-nowrap text-sm md:block`}>
+                    Clear filters
+                  </span>
+                </button>
+              </div>
+            </Suspense>
+          )}
+
+          <div
+            className={`flex min-w-fit flex-wrap items-center justify-between gap-2 lg:w-full`}
+          >
+            {/* <div className={`flex items-center justify-center gap-2`}> */}
+            {/* Filter button */}
+            <button
+              onClick={() =>
+                isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
+              }
+              onMouseLeave={() => handleClearNotAvailable()}
+              className={`btn btn-circle btn-ghost bg-secondary bg-opacity-20 md:btn-block md:px-4 lg:hidden`}
+            >
+              <span className="hidden md:block">Filters</span>
+              <IonIcon icon={filter} className={`text-xl`} />
+            </button>
+            {/* </div> */}
+
+            <div className={`hidden w-full lg:block`}>
+              <SearchSort
+                searchAPIParams={searchAPIParams}
+                handleNotAvailable={handleNotAvailable}
+                handleClearNotAvailable={handleClearNotAvailable}
+                inputStyles={inputStyles}
+                setIsFilterActive={setIsFilterActive}
+              />
+            </div>
+          </div>
         </section>
 
         {loading ? (

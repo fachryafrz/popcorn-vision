@@ -85,15 +85,16 @@ export default function ReleaseDate({
   return (
     <section className={`flex flex-col gap-1`}>
       <span className={`font-medium`}>Release Date</span>
-      <div className={`w-full px-3 pt-2`}>
+      <div className={`w-full px-3`}>
         {minYear && maxYear ? (
           <>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <div
-                className={`-mx-3 flex flex-row items-center justify-center gap-1`}
+                className={`-mx-3 flex flex-row items-center justify-center gap-2 lg:gap-1`}
               >
                 <MobileDatePicker
                   // label="Start"
+                  className="w-full"
                   orientation="portrait"
                   minDate={dayjs(`${minYear}-01-01`)}
                   maxDate={dayjs(`${maxYear}-12-31`)}
@@ -151,6 +152,7 @@ export default function ReleaseDate({
 
                 <MobileDatePicker
                   // label="End"
+                  className="w-full"
                   orientation="portrait"
                   minDate={minDatepicker}
                   maxDate={dayjs(`${maxYear}-12-31`)}

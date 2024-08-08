@@ -21,7 +21,6 @@ export default function SearchSort({
     [searchParams],
   );
   const isQueryParams = searchParams.get("query") ? true : false;
-  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   const sortByTypeOptions = useMemo(
     () => [
@@ -125,65 +124,27 @@ export default function SearchSort({
 
   return (
     <div
-      className={`flex w-full flex-col items-center justify-between gap-2 sm:flex-row lg:justify-end`}
+      onMouseOver={() => isQueryParams && handleNotAvailable()}
+      onMouseLeave={() => handleClearNotAvailable()}
+      className={`flex justify-center lg:justify-end gap-2 flex-nowrap lg:ml-auto [&>div]:w-full lg:[&>div]:w-[145px]`}
     >
-      <div
-        onMouseOver={() => isQueryParams && handleNotAvailable()}
-        onMouseLeave={() => handleClearNotAvailable()}
-        className={`flex flex-wrap justify-center gap-1 sm:flex-nowrap`}
-      >
-        {/* Sort by type */}
-        <SortByType
-          sortByTypeOptions={sortByTypeOptions}
-          handleSortByTypeChange={handleSortByTypeChange}
-          sortByType={sortByType}
-          inputStyles={inputStyles}
-          isQueryParams={isQueryParams}
-        />
+      {/* Sort by type */}
+      <SortByType
+        sortByTypeOptions={sortByTypeOptions}
+        handleSortByTypeChange={handleSortByTypeChange}
+        sortByType={sortByType}
+        inputStyles={inputStyles}
+        isQueryParams={isQueryParams}
+      />
 
-        {/* Sort by order */}
-        <SortByOrder
-          sortByOrderOptions={sortByOrderOptions}
-          handleSortByOrderChange={handleSortByOrderChange}
-          sortByOrder={sortByOrder}
-          inputStyles={inputStyles}
-          isQueryParams={isQueryParams}
-        />
-      </div>
-
-      <div className={`flex flex-wrap items-center gap-1 sm:flex-nowrap`}>
-        {/* Clear all filters */}
-        <Suspense>
-          <div
-            className={`mr-1 flex flex-row-reverse flex-wrap items-center gap-2`}
-          >
-            {isThereAnyFilter ? (
-              <button
-                onClick={() => router.push(`${pathname}`)}
-                className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-2 pr-4 text-gray-400 transition-all hocus:bg-red-600 hocus:text-white`}
-              >
-                <IonIcon icon={closeCircle} className={`text-xl`} />
-                <span className={`whitespace-nowrap text-sm`}>
-                  Clear all filters
-                </span>
-              </button>
-            ) : (
-              <span>No filter selected</span>
-            )}
-          </div>
-        </Suspense>
-
-        {/* Filter button */}
-        <button
-          onClick={() =>
-            isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
-          }
-          onMouseLeave={() => handleClearNotAvailable()}
-          className={`btn btn-ghost aspect-square bg-secondary bg-opacity-20 lg:hidden`}
-        >
-          <IonIcon icon={filter} className={`text-2xl`} />
-        </button>
-      </div>
+      {/* Sort by order */}
+      <SortByOrder
+        sortByOrderOptions={sortByOrderOptions}
+        handleSortByOrderChange={handleSortByOrderChange}
+        sortByOrder={sortByOrder}
+        inputStyles={inputStyles}
+        isQueryParams={isQueryParams}
+      />
     </div>
   );
 }
