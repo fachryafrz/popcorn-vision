@@ -49,6 +49,8 @@ export default function FilmCollection({ film, setLoading, collection }) {
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
 
+    console.log(filteredSeasons)
+
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="z-10 flex flex-col gap-2 py-2">
@@ -223,7 +225,7 @@ function FilmSeason({ film, item, index, setLoading }) {
     <>
       <button
         onClick={
-          item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
+          item.episode_count > 0 && item.air_date ? handleViewSeason : () => setViewSeason(false)
         }
         className={`flex w-full items-center gap-2 bg-secondary bg-opacity-10 p-2 transition-all hocus:bg-opacity-30 ${
           viewSeason
@@ -254,7 +256,7 @@ function FilmSeason({ film, item, index, setLoading }) {
             {item.name}
           </h3>
 
-          {item.episode_count > 0 ? (
+          {item.episode_count > 0 && item.air_date ? (
             <span className="line-clamp-1 text-xs font-medium text-gray-400">
               {`${item.episode_count} ${isPlural({
                 text: "Episode",
@@ -294,7 +296,7 @@ function FilmSeason({ film, item, index, setLoading }) {
           {item.overview}
         </p>
 
-        {item.episode_count > 0 && (
+        {item.episode_count > 0 && item.air_date && (
           <IonIcon
             icon={chevronDownOutline}
             class={`min-w-[18px] text-lg text-secondary transition-all ${
