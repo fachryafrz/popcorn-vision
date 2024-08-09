@@ -40,7 +40,7 @@ export default async function sitemap({ id }) {
     url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
-    priority: 0.7,
+    priority: 0.8,
   }));
 
   sitemap.push(...moviesInSitemap);
