@@ -77,7 +77,7 @@ export default async function sitemap() {
       url: `${appUrl}/movies/sitemap/${i}.xml`,
       lastModified: new Date(),
       changeFrequency: "hourly",
-      priority: 0.7,
+      priority: 0.8,
     });
   }
 
@@ -86,7 +86,7 @@ export default async function sitemap() {
       url: `${appUrl}/tv/sitemap/${i}.xml`,
       lastModified: new Date(),
       changeFrequency: "hourly",
-      priority: 0.7,
+      priority: 0.8,
     });
   }
 
