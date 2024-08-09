@@ -17,19 +17,19 @@ export default async function sitemap() {
       url: `${appUrl}/tv`,
       lastModified: new Date(),
       changeFrequency: "hourly",
-      priority: 0.9,
+      priority: 1,
     },
     {
       url: `${appUrl}/search`,
       lastModified: new Date(),
       changeFrequency: "hourly",
-      priority: 0.9,
+      priority: 1,
     },
     {
       url: `${appUrl}/tv/search`,
       lastModified: new Date(),
       changeFrequency: "hourly",
-      priority: 0.9,
+      priority: 1,
     },
   ];
 
