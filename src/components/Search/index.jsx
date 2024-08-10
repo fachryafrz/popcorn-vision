@@ -296,7 +296,7 @@ export default function Search({
       <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
         {/* Options */}
         <section
-          className={`sticky top-[66px] z-[99] -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
+          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
           <div className={`w-full lg:hidden`}>

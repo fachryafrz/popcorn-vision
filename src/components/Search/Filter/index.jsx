@@ -147,7 +147,7 @@ export default function Filters({
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
-      className={`fixed inset-x-0 top-[66px] z-[100] flex h-[calc(100dvh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100dvh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
+      className={`fixed inset-x-0 top-[66px] z-50 flex h-[calc(100dvh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100dvh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
         isFilterActive ? `translate-x-0` : `-translate-x-full`
       }`}
     >
