@@ -26,27 +26,13 @@ export async function generateMetadata({ params, type = "movie" }) {
 
   let backdrops;
 
-  // if (images.backdrops.length > 0) {
-  //   backdrops = {
-  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${images.backdrops[0].file_path}`,
-  //   };
-  // } else if (film.backdrop_path) {
-  //   backdrops = {
-  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.backdrop_path}`,
-  //   };
-  // } else if (film.poster_path) {
-  //   backdrops = {
-  //     images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${film.poster_path}`,
-  //   };
-  // }
-
   let path =
     images.backdrops.length > 0
       ? images.backdrops[0].file_path
       : film.backdrop_path || film.poster_path;
   if (path) {
     backdrops = {
-      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
+      images: `https://image.tmdb.org/t/p/w500${path}`,
     };
   }
 
@@ -185,8 +171,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
   images.backdrops.slice(0, dataCount).map((image) => {
     imagesArray.push({
       "@type": "ImageObject",
-      contentUrl: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
-      url: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${image.file_path}`,
+      contentUrl: `https://image.tmdb.org/t/p/w500${image.file_path}`,
+      url: `https://image.tmdb.org/t/p/w500${image.file_path}`,
     });
   });
 

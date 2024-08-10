@@ -18,7 +18,7 @@ export async function generateMetadata({ params }) {
       : film.backdrop_path || film.poster_path;
   if (path) {
     profiles = {
-      images: `${process.env.NEXT_PUBLIC_API_IMAGE_500}${path}`,
+      images: `https://image.tmdb.org/t/p/w500${path}`,
     };
   }
 
