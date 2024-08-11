@@ -38,7 +38,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           <Reveal delay={0.1}>
             <Link
               href={`/search?vote_count=${film.vote_average.toFixed(1) * 10}..100`}
-              className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm"
+              className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
             >
               <IonIcon icon={star} className="aspect-square h-full !w-5" />
               <span className="!text-white">
@@ -68,7 +68,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
                       ? `/search?with_genres=${genre.id}`
                       : `/tv/search?with_genres=${genre.id}`
                   }
-                  className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
+                  className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm transition-all hocus:bg-opacity-50`}
                 >
                   {genre.name}
                 </Link>
@@ -123,7 +123,7 @@ function FilmRuntime({ film }) {
     <div className="flex items-center gap-1">
       <Link
         href={`/search?with_runtime=${film.runtime}..300`}
-        className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
+        className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm transition-all hocus:bg-opacity-50`}
       >
         {`${formatRuntime(film.runtime)}`}{" "}
       </Link>

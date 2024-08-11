@@ -315,7 +315,7 @@ export default function Search({
               >
                 <button
                   onClick={() => router.push(`${pathname}`)}
-                  className={`btn btn-circle btn-ghost bg-secondary bg-opacity-20 hocus:btn-error md:btn-block lg:btn-sm hocus:text-white md:!h-full md:px-4 lg:w-fit`}
+                  className={`btn btn-circle btn-ghost bg-secondary bg-opacity-20 hocus:btn-error md:btn-block lg:btn-sm hocus:text-white md:!h-full md:px-2 md:pr-4 lg:w-fit`}
                 >
                   <IonIcon icon={closeCircle} className={`text-2xl`} />
                   <span className={`hidden whitespace-nowrap text-sm md:block`}>
