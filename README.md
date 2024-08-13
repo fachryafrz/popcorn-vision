@@ -1,6 +1,6 @@
 # Popcorn Vision
 
-[![Popcorn Vision](/public/popcorn-vision.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](/public/screenshots/github.png)](https://popcornvision.vercel.app)
 
 [![Website](https://img.shields.io/badge/Popcorn%20Vision-Discover%20your%20favorite%20film%20now!-blue)](https://popcornvision.vercel.app)
 
