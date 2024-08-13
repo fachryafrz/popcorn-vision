@@ -55,6 +55,8 @@ export default function UserProfileSort() {
       );
 
       setOrder(orderOption);
+    } else {
+      setOrder(orderOptions[1]);
     }
   }, [searchParams]);
 
