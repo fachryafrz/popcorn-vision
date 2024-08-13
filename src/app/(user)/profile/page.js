@@ -131,7 +131,7 @@ export default async function page() {
       <User user={user} />
 
       <div className={`flex flex-col`}>
-        <div className={`flex items-center justify-end px-4`}>
+        <div className={`flex items-center justify-end px-4 pt-4`}>
           <UserProfileSort />
         </div>
 

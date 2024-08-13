@@ -61,7 +61,7 @@ export default function UserProfileSort() {
   }, [searchParams]);
 
   return (
-    <div className={`flex items-center gap-4`}>
+    <div className={`flex items-center gap-x-4 gap-y-1 flex-wrap`}>
       <div className={`flex items-center gap-2`}>
         <span>Sort by:</span>
 
