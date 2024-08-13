@@ -28,6 +28,8 @@ import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
 import { askLocation } from "@/lib/navigator";
+import Confetti from "react-confetti-boom";
+import moment from "moment";
 
 export default function FilmInfo({
   film,
@@ -89,6 +91,13 @@ export default function FilmInfo({
     providersArray.find(
       (item) => item[0] === JSON.parse(userLocation).countryCode,
     );
+
+  // Confetti
+  const timeLeft = new Date(
+    new Date(!isTvPage ? filmReleaseDate : film.first_air_date) - new Date(),
+  );
+  const duration = moment.duration(timeLeft);
+  const daysLeft = duration.days();
 
   // Get account state
   const [accountStates, setAccountStates] = useState();
@@ -361,16 +370,28 @@ export default function FilmInfo({
               )}
 
               {(isUpcoming || isUpcomingNextEps) && (
-                <div
-                  className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : `xl:col-[1/3]`}`}
-                >
-                  <Countdown
-                    isTvPage={isTvPage}
-                    filmReleaseDate={filmReleaseDate}
-                    nextEps={nextEps}
-                    film={film}
-                  />
-                </div>
+                <>
+                  <div
+                    className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : `xl:col-[1/3]`}`}
+                  >
+                    <Countdown
+                      isTvPage={isTvPage}
+                      filmReleaseDate={filmReleaseDate}
+                      nextEps={nextEps}
+                      film={film}
+                    />
+                  </div>
+
+                  {daysLeft < 1 && (
+                    <div className={`pointer-events-none fixed inset-0`}>
+                      <Confetti
+                        mode={`fall`}
+                        particleCount={100}
+                        shapeSize={15}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </section>
           )}
