@@ -4,6 +4,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { fetchData } from "@/lib/fetch";
 import TileList from "../../../components/User/Profile/TileList";
+import UserProfileSort from "@/components/User/Profile/Sort";
 
 export const revalidate = 0;
 
@@ -129,52 +130,58 @@ export default async function page() {
     <>
       <User user={user} />
 
-      <div
-        className={`grid gap-2 p-4 md:grid-cols-2 xl:grid-cols-3 [&_section_ul]:max-h-[500px] [&_section_ul]:overflow-y-auto`}
-      >
-        {/* Movies */}
-        <TileList
-          title={`Favorite (Movie)`}
-          section={`favorite`}
-          films={favoriteMovies}
-          user={user}
-        />
-        <TileList
-          title={`Watchlist (Movie)`}
-          section={`watchlist`}
-          films={watchlistMovies}
-          user={user}
-        />
-        <TileList
-          title={`Rated (Movie)`}
-          section={`rated`}
-          films={ratedMovies}
-          user={user}
-        />
+      <div className={`flex flex-col`}>
+        <div className={`flex items-center justify-end px-4`}>
+          <UserProfileSort />
+        </div>
 
-        {/* TV Series */}
-        <TileList
-          title={`Favorite (TV Series)`}
-          section={`favorite`}
-          films={favoriteTv}
-          type={`tv`}
-          user={user}
-        />
-        <TileList
-          title={`Watchlist (TV Series)`}
-          section={`watchlist`}
-          films={watchlistTv}
-          type={`tv`}
-          user={user}
-        />
-        <TileList
-          title={`Rated (TV Series)`}
-          section={`rated`}
-          films={ratedTv}
-          type={`tv`}
-          user={user}
-          className={`md:col-span-2 xl:col-span-1`}
-        />
+        <div
+          className={`grid gap-2 p-4 md:grid-cols-2 xl:grid-cols-3 [&_section_ul]:max-h-[500px] [&_section_ul]:overflow-y-auto`}
+        >
+          {/* Movies */}
+          <TileList
+            title={`Favorite (Movie)`}
+            section={`favorite`}
+            films={favoriteMovies}
+            user={user}
+          />
+          <TileList
+            title={`Watchlist (Movie)`}
+            section={`watchlist`}
+            films={watchlistMovies}
+            user={user}
+          />
+          <TileList
+            title={`Rated (Movie)`}
+            section={`rated`}
+            films={ratedMovies}
+            user={user}
+          />
+
+          {/* TV Series */}
+          <TileList
+            title={`Favorite (TV Series)`}
+            section={`favorite`}
+            films={favoriteTv}
+            type={`tv`}
+            user={user}
+          />
+          <TileList
+            title={`Watchlist (TV Series)`}
+            section={`watchlist`}
+            films={watchlistTv}
+            type={`tv`}
+            user={user}
+          />
+          <TileList
+            title={`Rated (TV Series)`}
+            section={`rated`}
+            films={ratedTv}
+            type={`tv`}
+            user={user}
+            className={`md:col-span-2 xl:col-span-1`}
+          />
+        </div>
       </div>
     </>
   );

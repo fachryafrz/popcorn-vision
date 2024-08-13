@@ -49,7 +49,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
 
-    console.log(filteredSeasons)
+  console.log(filteredSeasons);
 
   return (
     <div className={`flex flex-col gap-2`}>
@@ -118,6 +118,7 @@ export function CollectionItem({
   index,
   type = "movie",
   shouldFetch = true,
+  userRating,
 }) {
   const [filmDetails, setFilmDetails] = useState();
 
@@ -171,12 +172,12 @@ export function CollectionItem({
           <div
             className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >
-            {item.vote_average > 1 && (
+            {(userRating || item.vote_average > 1) && (
               <span
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
-                {item.vote_average && formatRating(item.vote_average)}
+                {userRating ? `Your rating: ${userRating}` : formatRating(item.vote_average)}
               </span>
             )}
 
@@ -225,7 +226,9 @@ function FilmSeason({ film, item, index, setLoading }) {
     <>
       <button
         onClick={
-          item.episode_count > 0 && item.air_date ? handleViewSeason : () => setViewSeason(false)
+          item.episode_count > 0 && item.air_date
+            ? handleViewSeason
+            : () => setViewSeason(false)
         }
         className={`flex w-full items-center gap-2 bg-secondary bg-opacity-10 p-2 transition-all hocus:bg-opacity-30 ${
           viewSeason
