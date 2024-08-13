@@ -65,7 +65,7 @@ export default function FilmGrid({ id, films, title, genres, sort = "DESC" }) {
         </Reveal>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7 xs:grid-cols-3">
+      <div className="grid grid-cols-3 gap-2 md:!grid-cols-4 lg:!grid-cols-5 xl:!grid-cols-7">
         {filmsData.map((film) => {
           {
             /* 1024px */
