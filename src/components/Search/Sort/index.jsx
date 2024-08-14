@@ -124,12 +124,12 @@ export default function SearchSort({
 
   return (
     <div
+      onMouseOver={() => isQueryParams && handleNotAvailable()}
+      onMouseLeave={() => handleClearNotAvailable()}
       className={`flex flex-nowrap justify-center gap-2 lg:ml-auto lg:justify-end [&>div]:w-full lg:[&>div]:w-[145px]`}
     >
       {/* Sort by type */}
       <SortByType
-        handleNotAvailable={handleNotAvailable}
-        handleClearNotAvailable={handleClearNotAvailable}
         sortByTypeOptions={sortByTypeOptions}
         handleSortByTypeChange={handleSortByTypeChange}
         sortByType={sortByType}
@@ -139,8 +139,6 @@ export default function SearchSort({
 
       {/* Sort by order */}
       <SortByOrder
-        handleNotAvailable={handleNotAvailable}
-        handleClearNotAvailable={handleClearNotAvailable}
         sortByOrderOptions={sortByOrderOptions}
         handleSortByOrderChange={handleSortByOrderChange}
         sortByOrder={sortByOrder}

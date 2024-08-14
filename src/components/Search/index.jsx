@@ -343,7 +343,7 @@ export default function Search({
             </button>
             {/* </div> */}
 
-            <div className={`hidden w-full lg:block`}>
+            <div className={`hidden w-full lg:flex`}>
               <SearchSort
                 searchAPIParams={searchAPIParams}
                 handleNotAvailable={handleNotAvailable}

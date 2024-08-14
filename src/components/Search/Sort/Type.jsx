@@ -6,13 +6,9 @@ export default function SortByType({
   sortByType,
   inputStyles,
   isQueryParams,
-  handleNotAvailable,
-  handleClearNotAvailable,
 }) {
   return (
     <Select
-      onMouseOver={() => isQueryParams && handleNotAvailable()}
-      onMouseLeave={() => handleClearNotAvailable()}
       options={sortByTypeOptions}
       onChange={handleSortByTypeChange}
       value={sortByType}
