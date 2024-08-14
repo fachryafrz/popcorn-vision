@@ -45,7 +45,7 @@ export default function User({ user }) {
             <img
               src={profileImage}
               alt={user.name}
-              className={`pointer-events-none`}
+              draggable={false}
             />
           </div>
         </figure>

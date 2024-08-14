@@ -97,6 +97,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
               src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
               alt={!isTvPage ? film.title : film.name}
               className={`object-cover transition-all`}
+              draggable={false}
             />
           )}
 

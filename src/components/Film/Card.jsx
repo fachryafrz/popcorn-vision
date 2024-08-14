@@ -150,7 +150,8 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             <img
               src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
               alt={isItTvPage(film.title, film.name)}
-              className={`pointer-events-none object-cover`}
+              className={`object-cover`}
+              draggable={false}
             />
           )}
         </ImagePovi>

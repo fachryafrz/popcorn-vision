@@ -170,7 +170,8 @@ export function EpisodeModal({ film, seasons, episode }) {
               <img
                 src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
                 alt={episode.name}
-                className={`pointer-events-none object-cover`}
+                className={`object-cover`}
+                draggable={false}
               />
             )}
           </ImagePovi>

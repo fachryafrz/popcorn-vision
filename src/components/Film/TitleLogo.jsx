@@ -19,7 +19,8 @@ export default function TitleLogo({ film, images, setLoading }) {
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
           alt={title}
           title={title}
-          className="pointer-events-none max-h-[180px] max-w-fit bg-contain object-contain"
+          className=" max-h-[180px] max-w-fit bg-contain object-contain"
+          draggable={false}
         />
 
         {!images && (
