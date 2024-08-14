@@ -214,7 +214,12 @@ export default function Search({
         },
       })
         .then((res) => {
-          setFilms(res.results);
+          const uniqueFilms = res.results.filter(
+            (film, index, self) =>
+              index === self.findIndex((t) => t.id === film.id),
+          );
+
+          setFilms(uniqueFilms);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
           setCurrentSearchPage(1);
@@ -244,7 +249,13 @@ export default function Search({
           const filteredMovies = res.results.filter(
             (film) => film.media_type === "movie" || film.media_type === "tv",
           );
-          setFilms(filteredMovies);
+
+          const uniqueFilms = filteredMovies.filter(
+            (film, index, self) =>
+              index === self.findIndex((t) => t.id === film.id),
+          );
+
+          setFilms(uniqueFilms);
           setLoading(false);
           setTotalSearchPages(res.total_pages);
           setCurrentSearchPage(1);
