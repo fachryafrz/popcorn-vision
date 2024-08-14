@@ -271,7 +271,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
             {!loading && film.overview ? (
               <Reveal delay={0.1}>
-                <p className={`line-clamp-4 text-sm font-medium text-gray-400`}>
+                <p className={`line-clamp-3 text-sm font-medium text-gray-400`}>
                   {film.overview}
                 </p>
               </Reveal>
