@@ -6,9 +6,13 @@ export default function SortByOrder({
   sortByOrder,
   inputStyles,
   isQueryParams,
+  handleNotAvailable,
+  handleClearNotAvailable,
 }) {
   return (
     <Select
+      onMouseOver={() => isQueryParams && handleNotAvailable()}
+      onMouseLeave={() => handleClearNotAvailable()}
       options={sortByOrderOptions}
       onChange={handleSortByOrderChange}
       value={sortByOrder}
