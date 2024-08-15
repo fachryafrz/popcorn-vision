@@ -165,9 +165,9 @@ export default function Search({
         response = data;
       }
 
-      if (searchParams.get("query") && searchQuery) {
+      if (searchParams.get("query")) {
         const params = {
-          query: searchQuery,
+          query: searchParams.get("query"),
           page: nextPage,
         };
 
@@ -309,6 +309,10 @@ export default function Search({
           languagesData={languagesData}
           handleNotAvailable={handleNotAvailable}
           handleClearNotAvailable={handleClearNotAvailable}
+          userLocation={userLocation}
+          setUserLocation={setUserLocation}
+          locationError={locationError}
+          setLocationError={setLocationError}
         />
       </Suspense>
 

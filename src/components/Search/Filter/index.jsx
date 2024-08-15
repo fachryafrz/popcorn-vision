@@ -35,6 +35,10 @@ export default function Filters({
   languagesData,
   handleNotAvailable,
   handleClearNotAvailable,
+  userLocation,
+  setUserLocation,
+  locationError,
+  setLocationError,
 }) {
   const isTvPage = type === "tv";
 
@@ -128,7 +132,13 @@ export default function Filters({
       />
 
       {/* Streaming (Watch Providers) */}
-      <Streaming inputStyles={inputStyles} />
+      <Streaming
+        inputStyles={inputStyles}
+        userLocation={userLocation}
+        setUserLocation={setUserLocation}
+        locationError={locationError}
+        setLocationError={setLocationError}
+      />
 
       {/* Genre */}
       <Genre genresData={genresData} inputStyles={inputStyles} />
