@@ -32,7 +32,6 @@ export default function Filters({
   releaseDate,
   minYear,
   maxYear,
-  searchAPIParams,
   languagesData,
   handleNotAvailable,
   handleClearNotAvailable,
@@ -81,67 +80,14 @@ export default function Filters({
 
   // Use Effect for Search Params
   useEffect(() => {
-    // Options (o)
-    if (searchParams.get("o")) {
-      const optionsParams = searchParams.get("o");
-
-      const today = moment().format("YYYY-MM-DD");
-      const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
-      const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
-      const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
-
-      searchAPIParams["without_genres"] = 18;
-
-      if (optionsParams === "now_playing" || optionsParams === "on_the_air") {
-        if (!isTvPage) {
-          searchAPIParams["primary_release_date.gte"] = monthsAgo;
-          searchAPIParams["primary_release_date.lte"] = today;
-        } else {
-          searchAPIParams["first_air_date.gte"] = monthsAgo;
-          searchAPIParams["first_air_date.lte"] = today;
-        }
-      }
-
-      if (optionsParams === "upcoming") {
-        if (!isTvPage) {
-          searchAPIParams["primary_release_date.gte"] = tomorrow;
-          searchAPIParams["primary_release_date.lte"] = monthsLater;
-        } else {
-          searchAPIParams["first_air_date.gte"] = tomorrow;
-          searchAPIParams["first_air_date.lte"] = monthsLater;
-        }
-      }
-    }
-    // else {
-    //   delete searchAPIParams["without_genres"];
-    //   if (!isTvPage) {
-    //     delete searchAPIParams["primary_release_date.gte"];
-    //     delete searchAPIParams["primary_release_date.lte"];
-    //   } else {
-    //     delete searchAPIParams["first_air_date.gte"];
-    //     delete searchAPIParams["first_air_date.lte"];
-    //   }
-    // }
-
     // Search Query
     if (searchParams.get("query")) {
       const searchQuery = searchParams.get("query");
 
-      searchAPIParams["query"] = searchQuery;
-
       setSearchQuery(searchQuery);
     } else {
-      delete searchAPIParams["query"];
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    searchParams,
-    searchAPIParams,
-    minYear,
-    maxYear,
-    setSearchQuery,
-    isTvPage,
-  ]);
+  }, [searchParams, setSearchQuery]);
 
   return (
     <aside
@@ -163,7 +109,6 @@ export default function Filters({
       <section className={`flex flex-col gap-1 lg:hidden`}>
         <span className={`font-medium`}>Sort</span>
         <SearchSort
-          searchAPIParams={searchAPIParams}
           handleNotAvailable={handleNotAvailable}
           handleClearNotAvailable={handleClearNotAvailable}
           inputStyles={inputStyles}
@@ -172,63 +117,48 @@ export default function Filters({
       </section>
 
       {/* TV Series Status */}
-      {isTvPage && <TVSeriesStatus searchAPIParams={searchAPIParams} />}
+      {isTvPage && <TVSeriesStatus />}
 
       {/* Release Date */}
       <ReleaseDate
         isTvPage={isTvPage}
-        searchAPIParams={searchAPIParams}
         minYear={minYear}
         maxYear={maxYear}
         releaseDate={releaseDate}
       />
 
       {/* Streaming (Watch Providers) */}
-      <Streaming searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
+      <Streaming inputStyles={inputStyles} />
 
       {/* Genre */}
-      <Genre
-        searchAPIParams={searchAPIParams}
-        genresData={genresData}
-        inputStyles={inputStyles}
-      />
+      <Genre genresData={genresData} inputStyles={inputStyles} />
 
       {/* Networks */}
-      {isTvPage && (
-        <Network searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
-      )}
+      {isTvPage && <Network inputStyles={inputStyles} />}
 
       {/* Cast */}
-      {!isTvPage && (
-        <Cast searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
-      )}
+      {!isTvPage && <Cast inputStyles={inputStyles} />}
 
       {/* Crew */}
-      {!isTvPage && (
-        <Crew searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
-      )}
+      {!isTvPage && <Crew inputStyles={inputStyles} />}
 
       {/* Company */}
-      <Company searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
+      <Company inputStyles={inputStyles} />
 
       {/* Language */}
-      <Language
-        searchAPIParams={searchAPIParams}
-        inputStyles={inputStyles}
-        languagesData={languagesData}
-      />
+      <Language inputStyles={inputStyles} languagesData={languagesData} />
 
       {/* Keyword */}
-      <Keyword searchAPIParams={searchAPIParams} inputStyles={inputStyles} />
+      <Keyword inputStyles={inputStyles} />
 
       {/* TV Series Type */}
-      {isTvPage && <TVSeriesType searchAPIParams={searchAPIParams} />}
+      {isTvPage && <TVSeriesType />}
 
       {/* Runtime */}
-      <Runtime searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
+      <Runtime sliderStyles={sliderStyles} />
 
       {/* Rating */}
-      <Rating searchAPIParams={searchAPIParams} sliderStyles={sliderStyles} />
+      <Rating sliderStyles={sliderStyles} />
     </aside>
   );
 }

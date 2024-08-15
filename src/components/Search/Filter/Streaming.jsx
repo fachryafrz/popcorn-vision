@@ -5,7 +5,7 @@ import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Streaming({ searchAPIParams, inputStyles }) {
+export default function Streaming({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -103,17 +103,10 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
           },
       );
       setProvider(searchProvidersOptions);
-
-      searchAPIParams["with_watch_providers"] =
-        searchParams.get("watch_providers");
-      searchAPIParams["watch_region"] = JSON.parse(userLocation)?.countryCode;
     } else {
       setProvider(null);
-
-      delete searchAPIParams["with_watch_providers"];
-      delete searchAPIParams["watch_region"];
     }
-  }, [providersData, searchAPIParams, searchParams, userLocation]);
+  }, [providersData, searchParams, userLocation]);
 
   return (
     <section className={`flex flex-col gap-1`}>

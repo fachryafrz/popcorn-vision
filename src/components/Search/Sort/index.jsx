@@ -7,7 +7,6 @@ import SortByType from "./Type";
 import SortByOrder from "./Order";
 
 export default function SearchSort({
-  searchAPIParams,
   handleNotAvailable,
   handleClearNotAvailable,
   inputStyles,
@@ -106,15 +105,11 @@ export default function SearchSort({
       if (sortByOrder.value !== searchSortByOrder.value) {
         setSortByOrder(searchSortByOrder);
       }
-
-      searchAPIParams["sort_by"] = searchParams.get("sort_by");
     } else {
-      delete searchAPIParams["sort_by"];
       setSortByType(sortByTypeOptions[0]);
       setSortByOrder(sortByOrderOptions[1]);
     }
   }, [
-    searchAPIParams,
     searchParams,
     sortByOrder.value,
     sortByOrderOptions,

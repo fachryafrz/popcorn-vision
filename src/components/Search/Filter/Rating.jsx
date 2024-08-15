@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo } from "react";
 import moment from "moment";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Rating({ searchAPIParams, sliderStyles }) {
+export default function Rating({ sliderStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -50,24 +50,16 @@ export default function Rating({ searchAPIParams, sliderStyles }) {
   useEffect(() => {
     // Rating
     if (searchParams.get("vote_count")) {
-      const ratingParams = searchParams.get("vote_count").split(".");
-      const searchRating = [
-        parseInt(ratingParams[0]),
-        parseInt(ratingParams[2]),
-      ];
+      const [min, max] = searchParams.get("vote_count").split("..");
+      const searchRating = [parseInt(min), parseInt(max)];
 
       if (rating[0] !== searchRating[0] || rating[1] !== searchRating[1]) {
         setRating(searchRating);
         setRatingSlider(searchRating);
-
-        searchAPIParams["vote_count.gte"] = searchRating[0];
-        searchAPIParams["vote_count.lte"] = searchRating[1];
       }
     } else {
-      delete searchAPIParams["vote_count.gte"];
-      delete searchAPIParams["vote_count.lte"];
     }
-  }, [rating, searchAPIParams, searchParams]);
+  }, [rating, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

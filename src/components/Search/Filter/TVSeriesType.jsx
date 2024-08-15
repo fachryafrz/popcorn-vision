@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function TVSeriesType({ searchAPIParams }) {
+export default function TVSeriesType() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -68,12 +68,9 @@ export default function TVSeriesType({ searchAPIParams }) {
     if (searchParams.get("type")) {
       const typeParams = searchParams.get("type").split("|");
       setTvType(typeParams);
-
-      searchAPIParams["with_type"] = searchParams.get("type");
     } else {
-      delete searchAPIParams["with_type"];
     }
-  }, [searchAPIParams, searchParams]);
+  }, [searchParams]);
 
   return (
     <section className="@container">

@@ -1,8 +1,8 @@
 import { Slider } from "@mui/material";
-import { useEffect, useState, useMemo,  } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Runtime({ searchAPIParams, sliderStyles }) {
+export default function Runtime({ sliderStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -49,24 +49,16 @@ export default function Runtime({ searchAPIParams, sliderStyles }) {
   useEffect(() => {
     // Runtime
     if (searchParams.get("with_runtime")) {
-      const runtimeParams = searchParams.get("with_runtime").split(".");
-      const searchRuntime = [
-        parseInt(runtimeParams[0]),
-        parseInt(runtimeParams[2]),
-      ];
+      const [min, max] = searchParams.get("with_runtime").split("..");
+      const searchRuntime = [parseInt(min), parseInt(max)];
 
       if (runtime[0] !== searchRuntime[0] || runtime[1] !== searchRuntime[1]) {
         setRuntime(searchRuntime);
         setRuntimeSlider(searchRuntime);
-
-        searchAPIParams["with_runtime.gte"] = searchRuntime[0];
-        searchAPIParams["with_runtime.lte"] = searchRuntime[1];
       }
     } else {
-      delete searchAPIParams["with_runtime.gte"];
-      delete searchAPIParams["with_runtime.lte"];
     }
-  }, [runtime, searchAPIParams, searchParams]);
+  }, [runtime, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

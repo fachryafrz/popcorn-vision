@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Cast({ searchAPIParams, inputStyles }) {
+export default function Cast({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,8 +77,6 @@ export default function Cast({ searchAPIParams, inputStyles }) {
         });
       });
 
-      searchAPIParams["with_cast"] = searchParams.get("with_cast");
-
       Promise.all(fetchPromises)
         .then((responses) => {
           const uniqueCast = [...new Set(responses)]; // Remove duplicates if any
@@ -93,10 +91,8 @@ export default function Cast({ searchAPIParams, inputStyles }) {
         });
     } else {
       setCast(null);
-
-      delete searchAPIParams["with_cast"];
     }
-  }, [searchAPIParams, searchParams]);
+  }, [searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>
