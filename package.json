@@ -1,6 +1,6 @@
 {
   "name": "popcorn-vision",
-  "version": "1.37.150",
+  "version": "1.37.151",
   "private": true,
   "scripts": {
     "dev": "next dev",

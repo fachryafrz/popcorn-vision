@@ -2,7 +2,7 @@ import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { askLocation } from "@/lib/navigator";
+import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Streaming({ searchAPIParams, inputStyles }) {
@@ -50,7 +50,7 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
 
   // Use Effect for getting user location
   useEffect(() => {
-    askLocation(setUserLocation, setLocationError);
+    checkLocationPermission(setUserLocation, setLocationError);
   }, []);
 
   // Use Effect for fetching streaming providers based on user location
@@ -140,17 +140,19 @@ export default function Streaming({ searchAPIParams, inputStyles }) {
         />
       ) : (
         <button
-          onClick={() => askLocation(setUserLocation, setLocationError)}
+          onClick={() => requestLocation(setUserLocation, setLocationError)}
           className={`btn btn-outline btn-sm rounded-full`}
         >
-          Click to enable location
+          Enable location
         </button>
       )}
 
       {locationError && (
         <>
-        <p className="text-xs text-error font-medium">Oops! something isn&apos;t right</p>
-        
+          <p className="text-xs font-medium text-error">
+            Oops! something isn&apos;t right
+          </p>
+
           {/* <div className={`prose text-xs`}>
             <p>{locationError}</p>
             <p>Please follow these steps to enable location access:</p>

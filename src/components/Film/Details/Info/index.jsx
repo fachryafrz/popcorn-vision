@@ -27,7 +27,7 @@ import Countdown from "./Countdown";
 import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
-import { askLocation } from "@/lib/navigator";
+import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import Confetti from "react-confetti-boom";
 import moment from "moment";
 import dayjs from "dayjs";
@@ -152,7 +152,7 @@ export default function FilmInfo({
 
   // Use Effect for getting user location
   useEffect(() => {
-    askLocation(setUserLocation, setLocationError);
+    checkLocationPermission(setUserLocation, setLocationError);
   }, []);
 
   return (
@@ -297,11 +297,11 @@ export default function FilmInfo({
                   <span>Where to watch?</span>
                   <button
                     onClick={() =>
-                      askLocation(setUserLocation, setLocationError)
+                      requestLocation(setUserLocation, setLocationError)
                     }
                     className={`btn btn-outline btn-sm max-w-fit rounded-full`}
                   >
-                    Click to enable location
+                    Enable location
                   </button>
 
                   {locationError && (
