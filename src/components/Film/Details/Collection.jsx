@@ -49,8 +49,6 @@ export default function FilmCollection({ film, setLoading, collection }) {
   const filteredSeasons =
     isTvPage && film.seasons.filter((season) => season.season_number > 0);
 
-  console.log(filteredSeasons);
-
   return (
     <div className={`flex flex-col gap-2`}>
       <div id="collections" className="z-10 flex flex-col gap-2 py-2">
@@ -177,7 +175,9 @@ export function CollectionItem({
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
-                {userRating ? `Your rating: ${userRating}` : formatRating(item.vote_average)}
+                {userRating
+                  ? `Your rating: ${userRating}`
+                  : formatRating(item.vote_average)}
               </span>
             )}
 

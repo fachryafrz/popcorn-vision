@@ -30,6 +30,8 @@ import NextEpisode from "../TV/NextEpisode";
 import { askLocation } from "@/lib/navigator";
 import Confetti from "react-confetti-boom";
 import moment from "moment";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
 
 export default function FilmInfo({
   film,
@@ -93,11 +95,13 @@ export default function FilmInfo({
     );
 
   // Confetti
-  const timeLeft = new Date(
-    new Date(!isTvPage ? filmReleaseDate : film.first_air_date) - new Date(),
+  dayjs.extend(duration);
+  const now = dayjs();
+  const filmReleaseDateDayjs = dayjs(
+    !isTvPage ? filmReleaseDate : nextEps?.air_date,
   );
-  const duration = moment.duration(timeLeft);
-  const daysLeft = duration.days();
+  const timeLeft = dayjs.duration(filmReleaseDateDayjs.diff(now));
+  const daysLeft = timeLeft.days();
 
   // Get account state
   const [accountStates, setAccountStates] = useState();
@@ -332,10 +336,10 @@ export default function FilmInfo({
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
 
-          {/* Countdown */}
+          {/* Upcoming */}
           {filmReleaseDate !== "" && (
             <section
-              id={`Countdown`}
+              id={`Upcoming`}
               className={`mt-2 grid gap-2 xl:grid-cols-2`}
             >
               {lastEps && nextEps && (
@@ -372,7 +376,8 @@ export default function FilmInfo({
               {(isUpcoming || isUpcomingNextEps) && (
                 <>
                   <div
-                    className={`xl:row-[2/3] ${isTvPage && nextEps.episode_number > 1 ? `xl:col-[2/3]` : `xl:col-[1/3]`}`}
+                    id={`Countdown`}
+                    className={`xl:row-start-2 ${isTvPage && lastEps ? `xl:col-start-2` : `xl:col-start-1`}`}
                   >
                     <Countdown
                       isTvPage={isTvPage}
@@ -383,7 +388,10 @@ export default function FilmInfo({
                   </div>
 
                   {daysLeft < 1 && (
-                    <div className={`pointer-events-none fixed inset-0`}>
+                    <div
+                      id={`Confetti`}
+                      className={`pointer-events-none fixed inset-0`}
+                    >
                       <Confetti
                         mode={`fall`}
                         particleCount={100}
