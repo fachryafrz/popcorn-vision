@@ -3,11 +3,7 @@ import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Language({
-  searchAPIParams,
-  inputStyles,
-  languagesData,
-}) {
+export default function Language({ inputStyles, languagesData }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -84,16 +80,10 @@ export default function Language({
           },
       );
       setLanguage(searchLanguagesOptions);
-
-      searchAPIParams["with_original_language"] = searchParams.get(
-        "with_original_language",
-      );
     } else {
       setLanguage(null);
-
-      delete searchAPIParams["with_original_language"];
     }
-  }, [languagesData, searchAPIParams, searchParams]);
+  }, [languagesData, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

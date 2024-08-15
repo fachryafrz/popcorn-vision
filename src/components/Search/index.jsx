@@ -12,6 +12,8 @@ import { useInView } from "react-intersection-observer";
 import FilmCard from "@/components/Film/Card";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
+import axios from "axios";
+import { checkLocationPermission } from "@/lib/navigator";
 
 export default function Search({
   type = "movie",
@@ -44,16 +46,11 @@ export default function Search({
   const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
   const [currentSearchPage, setCurrentSearchPage] = useState(1);
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Pre-loaded Options
-  const searchAPIParams = useMemo(() => {
-    return {
-      include_adult: false,
-    };
-  }, []);
 
   // Is in viewport?
   const { ref: loadMoreBtn, inView, entry } = useInView();
@@ -150,36 +147,48 @@ export default function Search({
       let response;
       const nextPage = currentSearchPage + 1;
 
-      if (!searchParams.get("query") && releaseDate[0] && releaseDate[1]) {
-        response = await fetchData({
-          endpoint: `/discover/${type}`,
-          queryParams: {
-            ...searchAPIParams,
-            page: nextPage,
-          },
+      if (!searchParams.get("query")) {
+        const params = {
+          media_type: type,
+          page: nextPage,
+          ...Object.fromEntries(searchParams),
+        };
+
+        if (searchParams.get("watch_providers") && userLocation) {
+          params.watch_region = JSON.parse(userLocation).countryCode;
+        }
+
+        const { data } = await axios.get(`/api/search/filter`, {
+          params: params,
         });
+
+        response = data;
       }
 
-      if (searchParams.get("query") && searchQuery) {
-        response = await fetchData({
-          endpoint: `/search/${type}`,
-          queryParams: {
-            query: searchQuery,
-            language: "en-US",
-            page: nextPage,
-          },
+      if (searchParams.get("query")) {
+        const params = {
+          query: searchParams.get("query"),
+          page: nextPage,
+        };
+
+        const { data } = await axios.get(`/api/search/query`, {
+          params: params,
         });
+
+        const filteredFilms = data.results.filter(
+          (film) => film.media_type === "movie" || film.media_type === "tv",
+        );
+
+        response = { ...data, results: filteredFilms };
       }
 
-      const isDuplicate = (film) =>
-        films.some((prevFilm) => prevFilm.id === film.id);
-
-      const filteredFilms = response.results.filter(
-        (film) => !isDuplicate(film),
+      const uniqueFilms = response.results.filter(
+        (film, index, self) =>
+          index === self.findIndex((t) => t.id === film.id),
       );
 
       setLoading(false);
-      setFilms((prevMovies) => [...prevMovies, ...filteredFilms]);
+      setFilms((prevMovies) => [...prevMovies, ...uniqueFilms]);
       setTotalSearchResults(response.total_results);
       setTotalSearchPages(response.total_pages);
       setCurrentSearchPage(response.page);
@@ -202,82 +211,82 @@ export default function Search({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
+  // Use Effect for getting user location
+  useEffect(() => {
+    checkLocationPermission(setUserLocation, setLocationError);
+  }, []);
+
   // Use Effect for Search
   useEffect(() => {
     setLoading(true);
 
-    const performSearch = () => {
-      fetchData({
-        endpoint: `/discover/${type}`,
-        queryParams: {
-          ...searchAPIParams,
-        },
-      })
-        .then((res) => {
-          const uniqueFilms = res.results.filter(
-            (film, index, self) =>
-              index === self.findIndex((t) => t.id === film.id),
-          );
+    const searchByFilter = async () => {
+      const params = {
+        media_type: type,
+        ...Object.fromEntries(searchParams),
+      };
 
-          setFilms(uniqueFilms);
-          setLoading(false);
-          setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
-          setTotalSearchResults(res.total_results);
+      if (searchParams.get("watch_providers") && userLocation) {
+        params.watch_region = JSON.parse(userLocation).countryCode;
+      }
 
-          setTimeout(() => {
-            setNotFoundMessage("No film found");
-          }, 10000);
-        })
-        .catch((error) => {
-          console.error("Error fetching films:", error);
-        });
+      const { data } = await axios.get(`/api/search/filter`, {
+        params: params,
+      });
+
+      const uniqueFilms = data.results.filter(
+        (film, index, self) =>
+          index === self.findIndex((t) => t.id === film.id),
+      );
+
+      setFilms(uniqueFilms);
+      setLoading(false);
+      setTotalSearchPages(data.total_pages);
+      setCurrentSearchPage(1);
+      setTotalSearchResults(data.total_results);
+
+      setTimeout(() => {
+        setNotFoundMessage("No film found");
+      }, 10000);
     };
 
-    const performSearchQuery = () => {
-      fetchData({
-        endpoint: `/search/multi`,
-        queryParams: {
-          query: searchQuery,
-          include_adult: false,
-          language: "en-US",
-          page: 1,
-        },
-      })
-        .then((res) => {
-          // Filter movies based on release date
-          const filteredMovies = res.results.filter(
-            (film) => film.media_type === "movie" || film.media_type === "tv",
-          );
+    const searchByQuery = async () => {
+      const params = {
+        query: searchParams.get("query"),
+      };
 
-          const uniqueFilms = filteredMovies.filter(
-            (film, index, self) =>
-              index === self.findIndex((t) => t.id === film.id),
-          );
+      const { data } = await axios.get(`/api/search/query`, {
+        params: params,
+      });
 
-          setFilms(uniqueFilms);
-          setLoading(false);
-          setTotalSearchPages(res.total_pages);
-          setCurrentSearchPage(1);
-          setTotalSearchResults(res.total_results);
+      const filteredMovies = data.results.filter(
+        (film) => film.media_type === "movie" || film.media_type === "tv",
+      );
 
-          setTimeout(() => {
-            setNotFoundMessage("No film found");
-          }, 10000);
-        })
-        .catch((error) => {
-          console.error("Error fetching films:", error);
-        });
+      const uniqueFilms = filteredMovies.filter(
+        (film, index, self) =>
+          index === self.findIndex((t) => t.id === film.id),
+      );
+
+      setFilms(uniqueFilms);
+      setLoading(false);
+      setTotalSearchPages(data.total_pages);
+      setCurrentSearchPage(1);
+      setTotalSearchResults(data.total_results);
+
+      setTimeout(() => {
+        setNotFoundMessage("No film found");
+      }, 10000);
     };
 
-    if (!searchParams.get("query") && searchAPIParams) {
-      performSearch();
+    if (!searchParams.get("query")) {
+      searchByFilter();
     }
 
-    if (searchParams.get("query") && searchQuery) {
-      performSearchQuery();
+    if (searchParams.get("query")) {
+      searchByQuery();
     }
-  }, [searchAPIParams, searchParams, searchQuery, type]);
+  }, [searchParams, type, userLocation]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -297,10 +306,13 @@ export default function Search({
           releaseDate={releaseDate}
           minYear={minYear}
           maxYear={maxYear}
-          searchAPIParams={searchAPIParams}
           languagesData={languagesData}
           handleNotAvailable={handleNotAvailable}
           handleClearNotAvailable={handleClearNotAvailable}
+          userLocation={userLocation}
+          setUserLocation={setUserLocation}
+          locationError={locationError}
+          setLocationError={setLocationError}
         />
       </Suspense>
 
@@ -356,7 +368,6 @@ export default function Search({
 
             <div className={`hidden w-full lg:flex`}>
               <SearchSort
-                searchAPIParams={searchAPIParams}
                 handleNotAvailable={handleNotAvailable}
                 handleClearNotAvailable={handleClearNotAvailable}
                 inputStyles={inputStyles}

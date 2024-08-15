@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function TVSeriesStatus({ searchAPIParams }) {
+export default function TVSeriesStatus() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -67,13 +67,10 @@ export default function TVSeriesStatus({ searchAPIParams }) {
     if (searchParams.get("status")) {
       const statusParams = searchParams.get("status").split("|");
       setStatus(statusParams);
-
-      searchAPIParams["with_status"] = searchParams.get("status");
     } else {
-      delete searchAPIParams["with_status"];
       setStatus([]);
     }
-  }, [searchAPIParams, searchParams]);
+  }, [searchParams]);
 
   return (
     <section className="@container">

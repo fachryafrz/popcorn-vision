@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Company({ searchAPIParams, inputStyles }) {
+export default function Company({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,8 +77,6 @@ export default function Company({ searchAPIParams, inputStyles }) {
         });
       });
 
-      searchAPIParams["with_companies"] = searchParams.get("with_companies");
-
       Promise.all(fetchPromises)
         .then((responses) => {
           const uniqueCompany = [...new Set(responses)]; // Remove duplicates if any
@@ -93,10 +91,8 @@ export default function Company({ searchAPIParams, inputStyles }) {
         });
     } else {
       setCompany(null);
-
-      delete searchAPIParams["with_companies"];
     }
-  }, [searchAPIParams, searchParams]);
+  }, [searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

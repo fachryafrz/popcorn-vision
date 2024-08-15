@@ -3,7 +3,7 @@ import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Network({ searchAPIParams, inputStyles }) {
+export default function Network({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -67,14 +67,10 @@ export default function Network({ searchAPIParams, inputStyles }) {
           },
       );
       setNetwork(searchNetworksOptions);
-
-      searchAPIParams["with_networks"] = searchParams.get("with_networks");
     } else {
       setNetwork(null);
-
-      delete searchAPIParams["with_networks"];
     }
-  }, [networksData, searchAPIParams, searchParams]);
+  }, [networksData, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

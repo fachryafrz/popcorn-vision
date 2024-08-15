@@ -321,7 +321,7 @@ export function SearchBar({ placeholder = `Search` }) {
               setSearchInput("");
               router.push(`${isTvPage ? "/tv" : ""}/search`);
             }}
-            className={`flex h-full items-center mr-1`}
+            className={`mr-1 flex h-full items-center`}
           >
             <IonIcon
               icon={close}
@@ -330,9 +330,12 @@ export function SearchBar({ placeholder = `Search` }) {
           </button>
         )}
 
-        <kbd className={`kbd kbd-sm pointer-events-none mr-4 hidden xl:flex`}>
-          /
-        </kbd>
+        <Link
+          href={!isTvPage ? `/search` : `/tv/search`}
+          className={`mr-4 hidden xl:inline`}
+        >
+          <kbd className={`kbd kbd-sm`}>/</kbd>
+        </Link>
       </div>
 
       {/* {!isSearchPage && (

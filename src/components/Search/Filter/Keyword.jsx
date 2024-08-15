@@ -3,7 +3,7 @@ import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Keyword({ searchAPIParams, inputStyles }) {
+export default function Keyword({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -77,8 +77,6 @@ export default function Keyword({ searchAPIParams, inputStyles }) {
         });
       });
 
-      searchAPIParams["with_keywords"] = searchParams.get("with_keywords");
-
       Promise.all(fetchPromises)
         .then((responses) => {
           const uniqueKeyword = [...new Set(responses)]; // Remove duplicates if any
@@ -93,10 +91,8 @@ export default function Keyword({ searchAPIParams, inputStyles }) {
         });
     } else {
       setKeyword(null);
-
-      delete searchAPIParams["with_keywords"];
     }
-  }, [searchAPIParams, searchParams]);
+  }, [searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

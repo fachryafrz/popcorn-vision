@@ -3,7 +3,7 @@ import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Genre({ searchAPIParams, genresData, inputStyles }) {
+export default function Genre({ genresData, inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -76,14 +76,10 @@ export default function Genre({ searchAPIParams, genresData, inputStyles }) {
           },
       );
       setGenre(searchGenresOptions);
-
-      searchAPIParams["with_genres"] = searchParams.get("with_genres");
     } else {
       setGenre(null);
-
-      delete searchAPIParams["with_genres"];
     }
-  }, [genresData, searchAPIParams, searchParams]);
+  }, [genresData, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>

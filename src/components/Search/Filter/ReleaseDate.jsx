@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function ReleaseDate({
   isTvPage,
-  searchAPIParams,
+
   minYear,
   maxYear,
   releaseDate,
@@ -45,42 +45,18 @@ export default function ReleaseDate({
   useEffect(() => {
     // Datepicker
     if (searchParams.get("release_date")) {
-      const datepickerParams = searchParams.get("release_date").split("..");
-      const searchMinDatepicker = dayjs(datepickerParams[0]);
-      const searchMaxDatepicker = dayjs(datepickerParams[1]);
+      const [min, max] = searchParams.get("release_date").split("..");
+      const searchMinDatepicker = dayjs(min);
+      const searchMaxDatepicker = dayjs(max);
 
       setMinDatepicker(searchMinDatepicker);
       setMaxDatepicker(searchMaxDatepicker);
-
-      if (!isTvPage) {
-        searchAPIParams["primary_release_date.gte"] =
-          searchMinDatepicker.format("YYYY-MM-DD");
-        searchAPIParams["primary_release_date.lte"] =
-          searchMaxDatepicker.format("YYYY-MM-DD");
-      }
-
-      if (isTvPage) {
-        searchAPIParams["first_air_date.gte"] =
-          searchMinDatepicker.format("YYYY-MM-DD");
-        searchAPIParams["first_air_date.lte"] =
-          searchMaxDatepicker.format("YYYY-MM-DD");
-      }
     } else {
-      if (!isTvPage) {
-        delete searchAPIParams["primary_release_date.gte"];
-        delete searchAPIParams["primary_release_date.lte"];
-      }
-
-      if (isTvPage) {
-        delete searchAPIParams["first_air_date.gte"];
-        delete searchAPIParams["first_air_date.lte"];
-      }
-
       setMinDatepicker(today);
       setMaxDatepicker(endOfNextYear);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, searchAPIParams, minYear, maxYear, isTvPage]);
+  }, [searchParams, minYear, maxYear, isTvPage]);
 
   return (
     <section className={`flex flex-col gap-1`}>
