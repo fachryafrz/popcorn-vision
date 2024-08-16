@@ -193,9 +193,9 @@ export default function Search({
       setTotalSearchPages(response.total_pages);
       setCurrentSearchPage(response.page);
 
-      setTimeout(() => {
+      if (response.total_results === 0) {
         setNotFoundMessage("No film found");
-      }, 10000);
+      }
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
@@ -224,7 +224,7 @@ export default function Search({
         ...Object.fromEntries(searchParams),
       };
 
-      if (searchParams.get("watch_providers") && userLocation) {
+      if (searchParams.get("watch_providers")) {
         params.watch_region = JSON.parse(userLocation).countryCode;
       }
 
@@ -243,9 +243,9 @@ export default function Search({
       setCurrentSearchPage(1);
       setTotalSearchResults(data.total_results);
 
-      setTimeout(() => {
+      if (data.total_results === 0) {
         setNotFoundMessage("No film found");
-      }, 10000);
+      }
     };
 
     const searchByQuery = async () => {
@@ -272,12 +272,12 @@ export default function Search({
       setCurrentSearchPage(1);
       setTotalSearchResults(data.total_results);
 
-      setTimeout(() => {
+      if (data.total_results === 0) {
         setNotFoundMessage("No film found");
-      }, 10000);
+      }
     };
 
-    if (!searchParams.get("query")) {
+    if (!searchParams.get("query") && userLocation) {
       searchByFilter();
     }
 
