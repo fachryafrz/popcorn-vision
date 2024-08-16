@@ -6,19 +6,47 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
 
   const combinedProviders = [];
 
-  if (providerTypes.rent) combinedProviders.push(...providerTypes.rent);
-  if (providerTypes.buy) combinedProviders.push(...providerTypes.buy);
-  if (providerTypes.flatrate) combinedProviders.push(...providerTypes.flatrate);
-  if (providerTypes.ads) combinedProviders.push(...providerTypes.ads);
+  const formatProviderType = (providers, type) => {
+    return providers.map((provider) => {
+      return {
+        provider_id: provider.provider_id,
+        provider_name: provider.provider_name,
+        logo_path: provider.logo_path,
+        type: type,
+      };
+    });
+  };
 
-  const uniqueProviders = combinedProviders.filter(
-    (provider, index, self) =>
-      index === self.findIndex((t) => t.provider_id === provider.provider_id),
-  );
+  if (providerTypes.rent)
+    combinedProviders.push(...formatProviderType(providerTypes.rent, "Rent"));
+  if (providerTypes.buy)
+    combinedProviders.push(...formatProviderType(providerTypes.buy, "Buy"));
+  if (providerTypes.flatrate)
+    combinedProviders.push(
+      ...formatProviderType(providerTypes.flatrate, "Stream"),
+    );
+  if (providerTypes.ads)
+    combinedProviders.push(...formatProviderType(providerTypes.ads, "Ads"));
+
+  const groupedProviders = combinedProviders.reduce((acc, provider) => {
+    const existingProvider = acc.find(
+      (p) => p.provider_id === provider.provider_id,
+    );
+    if (existingProvider) {
+      // Jika provider dengan id yang sama sudah ada, gabungkan tipe mereka jika belum ada
+      if (!existingProvider.type.includes(provider.type)) {
+        existingProvider.type += `/${provider.type}`;
+      }
+    } else {
+      // Jika belum ada, tambahkan provider ke array
+      acc.push({ ...provider });
+    }
+    return acc;
+  }, []);
 
   return (
     <div className={`flex flex-wrap gap-2`}>
-      {uniqueProviders.map(
+      {groupedProviders.map(
         (item, i) =>
           item.logo_path && (
             <div key={item.provider_id}>
@@ -29,15 +57,19 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                   !isTvPage ? `/search` : `/tv/search`
                 }?watch_providers=${item.provider_id}`}
               >
-                <figure
-                  title={item.provider_name}
-                  style={{
-                    background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                    backgroundSize: `contain`,
-                    backgroundRepeat: `no-repeat`,
-                  }}
-                  className={`aspect-square w-[40px] rounded-xl`}
-                ></figure>
+                <div
+                  class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur"
+                  data-tip={`${item.provider_name} (${item.type})`}
+                >
+                  <figure
+                    style={{
+                      background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                      backgroundSize: `contain`,
+                      backgroundRepeat: `no-repeat`,
+                    }}
+                    className={`aspect-square w-[40px] rounded-xl`}
+                  ></figure>
+                </div>
               </Link>
               {/* </Reveal> */}
             </div>

@@ -14,15 +14,19 @@ export default function ProductionCompany({ item, i, isTvPage }) {
       >
         <Reveal delay={0.1 * i}>
           {item.logo_path ? (
-            <figure
-              title={item.name}
-              className={`aspect-[2/1] h-[60px] bg-center grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
-              style={{
-                backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                backgroundSize: `contain`,
-                backgroundRepeat: `no-repeat`,
-              }}
-            ></figure>
+            <div
+              class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur"
+              data-tip={item.name}
+            >
+              <figure
+                className={`aspect-[2/1] h-[60px] bg-center grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
+                style={{
+                  backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                  backgroundSize: `contain`,
+                  backgroundRepeat: `no-repeat`,
+                }}
+              ></figure>
+            </div>
           ) : (
             <span
               className={`block max-w-[120px] text-pretty text-center font-semibold`}
