@@ -196,8 +196,6 @@ export default function Search({
       setTimeout(() => {
         setNotFoundMessage("No film found");
       }, 10000);
-
-      setCurrentSearchPage(nextPage);
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
@@ -445,13 +443,12 @@ export default function Search({
 
         {!loading && totalSearchPages > currentSearchPage && (
           <section className={`mt-4 flex items-center justify-center`}>
-            <button
+            <div
               ref={loadMoreBtn}
-              onClick={fetchMoreFilms}
               className="pointer-events-none aspect-square w-[30px] text-white"
             >
               <span className="loading loading-spinner loading-md"></span>
-            </button>
+            </div>
           </section>
         )}
 

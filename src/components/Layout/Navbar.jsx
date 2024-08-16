@@ -318,7 +318,6 @@ export function SearchBar({ placeholder = `Search` }) {
           <button
             type="button"
             onClick={() => {
-              setSearchInput("");
               router.push(`${isTvPage ? "/tv" : ""}/search`);
             }}
             className={`mr-1 flex h-full items-center`}
