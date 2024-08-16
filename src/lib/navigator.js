@@ -1,8 +1,8 @@
 import { getLocation } from "./fetch";
 
 export function findLocation(setUserLocation, setError) {
-  if (sessionStorage.getItem("user-location")) {
-    setUserLocation(sessionStorage.getItem("user-location"));
+  if (localStorage.getItem("user-location")) {
+    setUserLocation(localStorage.getItem("user-location"));
   } else {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -15,7 +15,7 @@ export function findLocation(setUserLocation, setError) {
 
         // Asumsikan getLocation adalah fungsi yang mengembalikan lokasi berdasarkan koordinat
         getLocation({ latitude, longitude }).then((response) => {
-          sessionStorage.setItem("user-location", JSON.stringify(response));
+          localStorage.setItem("user-location", JSON.stringify(response));
           setUserLocation(JSON.stringify(response));
           setError(null); // Clear any previous errors
         });
