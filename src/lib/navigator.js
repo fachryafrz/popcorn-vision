@@ -33,9 +33,7 @@ export function checkLocationPermission(setUserLocation, setError) {
     if (result.state === "granted") {
       findLocation(setUserLocation, setError);
     } else if (result.state === "prompt") {
-      if (localStorage.getItem("user-location")) {
-        setUserLocation(localStorage.getItem("user-location"));
-      }
+      setError(true);
       // Don't do anything if the permission was prompt.
     } else if (result.state === "denied") {
       // Don't do anything if the permission was denied.

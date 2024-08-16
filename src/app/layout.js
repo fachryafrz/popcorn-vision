@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
-import UserLocation from "@/components/User/UserLocation";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
 

@@ -20,6 +20,7 @@ export default function Streaming({ inputStyles }) {
   const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const providersOptions = useMemo(() => {
     return providersData?.map((provider) => ({
@@ -63,9 +64,12 @@ export default function Streaming({ inputStyles }) {
         },
       }).then((res) => {
         setProvidersData(res.results);
+        setIsLoading(false);
       });
     }
-  }, [userLocation]);
+
+    if (locationError) setIsLoading(false);
+  }, [locationError, userLocation]);
 
   // Use Effect for cycling random options placeholder
   useEffect(() => {
@@ -110,7 +114,25 @@ export default function Streaming({ inputStyles }) {
   return (
     <section className={`flex flex-col gap-1`}>
       <span className={`font-medium`}>Streaming</span>
-      {userLocation ? (
+
+      {isLoading && (
+        <div className={`flex h-[42px] justify-center`}>
+          <span className={`loading loading-spinner`}></span>
+        </div>
+      )}
+
+      {!userLocation && !isLoading && (
+        <div className={`h-[42px]`}>
+          <button
+            onClick={() => requestLocation(setUserLocation, setLocationError)}
+            className={`btn btn-outline btn-sm h-full  w-full rounded-full`}
+          >
+            Enable location
+          </button>
+        </div>
+      )}
+
+      {userLocation && !isLoading && (
         <Select
           options={providersData && providersOptions}
           onChange={handleProviderChange}
@@ -130,22 +152,15 @@ export default function Streaming({ inputStyles }) {
           isDisabled={isQueryParams}
           isMulti
         />
-      ) : (
-        <button
-          onClick={() => requestLocation(setUserLocation, setLocationError)}
-          className={`btn btn-outline btn-sm rounded-full`}
-        >
-          Enable location
-        </button>
       )}
 
-      {locationError && (
-        <>
-          <p className="text-xs font-medium text-error">
+      {/* {locationError && ( */}
+      <>
+        {/* <p className="text-xs font-medium text-error">
             Oops! something isn&apos;t right
-          </p>
+          </p> */}
 
-          {/* <div className={`prose text-xs`}>
+        {/* <div className={`prose text-xs`}>
             <p>{locationError}</p>
             <p>Please follow these steps to enable location access:</p>
             <ol>
@@ -157,8 +172,8 @@ export default function Streaming({ inputStyles }) {
               <li>Reload the page and click the button again.</li>
             </ol>
           </div> */}
-        </>
-      )}
+      </>
+      {/* )} */}
     </section>
   );
 }

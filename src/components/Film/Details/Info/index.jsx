@@ -43,6 +43,7 @@ export default function FilmInfo({
 }) {
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const countryCode = userLocation && JSON.parse(userLocation).countryCode;
   const countryName = userLocation && JSON.parse(userLocation).countryName;
@@ -155,6 +156,11 @@ export default function FilmInfo({
     checkLocationPermission(setUserLocation, setLocationError);
   }, []);
 
+  useEffect(() => {
+    if (userLocation) setIsLoading(false);
+    if (locationError) setIsLoading(false);
+  }, [locationError, userLocation]);
+
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
       <div className="flex w-full flex-col items-center gap-4 md:items-start md:justify-center">
@@ -195,7 +201,6 @@ export default function FilmInfo({
                 ))}
               </section>
             )}
-
           {/* Film Release Date */}
           <FilmReleaseDate
             film={film}
@@ -204,7 +209,6 @@ export default function FilmInfo({
             filmReleaseDate={filmReleaseDate}
             releaseDateByCountry={releaseDateByCountry}
           />
-
           {/* TV Series Number of Season */}
           {isTvPage &&
             film.number_of_seasons > 0 &&
@@ -228,7 +232,6 @@ export default function FilmInfo({
                 </Reveal>
               </section>
             )}
-
           {/* Film Runtime */}
           {filmRuntime > 0 && (
             <section id={`Movie Runtime`}>
@@ -245,7 +248,6 @@ export default function FilmInfo({
               </Reveal>
             </section>
           )}
-
           {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`} className={`flex flex-wrap gap-1`}>
@@ -272,29 +274,25 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          {providers.results && providersIDArray ? (
-            <WatchProvider
-              providers={providers}
-              providersIDArray={providersIDArray}
-              userLocation={userLocation}
-              setUserLocation={setUserLocation}
-              isTvPage={isTvPage}
-            />
-          ) : userLocation ? (
-            providersIDArray && (
-              <Reveal>
-                <section id={`Film Providers`}>
-                  <span className={`text-sm italic text-gray-400`}>
-                    Where to watch? <br /> Hold on we&apos;re still finding...
-                  </span>
-                </section>
-              </Reveal>
-            )
-          ) : (
+          {providersArray.length > 0 && (
             <Reveal>
-              <section id={`Film Providers`}>
-                <div className={`flex flex-col text-sm italic text-gray-400`}>
-                  <span>Where to watch?</span>
+              <section
+                id={`Film Providers`}
+                className="flex flex-col justify-center gap-1 md:justify-start"
+              >
+                <span className={`text-sm italic text-gray-400`}>
+                  Where to watch?
+                </span>
+
+                {/* Loading spinner */}
+                {isLoading && (
+                  <div>
+                    <span className={`loading loading-spinner`}></span>
+                  </div>
+                )}
+
+                {/* Enable location button */}
+                {!userLocation && !isLoading && (
                   <button
                     onClick={() =>
                       requestLocation(setUserLocation, setLocationError)
@@ -303,39 +301,20 @@ export default function FilmInfo({
                   >
                     Enable location
                   </button>
+                )}
 
-                  {locationError && (
-                    <>
-                      <p className="text-xs font-medium text-error">
-                        Oops! something isn&apos;t right
-                      </p>
-
-                      {/* <div className={`prose`}>
-                        <p>{locationError}</p>
-                        <p>
-                          Please follow these steps to enable location access:
-                        </p>
-                        <ol>
-                          <li>
-                            Click the icon on the left side of the address bar
-                          </li>
-                          <li>Go to &quot;Site settings&quot;.</li>
-                          <li>
-                            Find &quot;Location&quot; and set it to
-                            &quot;Allow&quot;.
-                          </li>
-                          <li>Reload the page and click the button again.</li>
-                        </ol>
-                      </div> */}
-                    </>
-                  )}
-                </div>
+                {/* Provider list */}
+                {userLocation && !isLoading && (
+                  <WatchProvider
+                    providersIDArray={providersIDArray}
+                    isTvPage={isTvPage}
+                  />
+                )}
               </section>
             </Reveal>
           )}
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
-
           {/* Upcoming */}
           {filmReleaseDate !== "" && (
             <section
@@ -403,7 +382,6 @@ export default function FilmInfo({
               )}
             </section>
           )}
-
           {/* User Rating */}
           {user && !isUpcoming && filmReleaseDate !== "" && (
             <Reveal className={`mt-2`}>
@@ -420,7 +398,6 @@ export default function FilmInfo({
               </section>
             </Reveal>
           )}
-
           {/* Call to Action */}
           <section
             id={`Share`}
