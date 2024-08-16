@@ -114,9 +114,7 @@ export default async function Home({ type = "movie" }) {
           })}
           title={!isTvPage ? `Now Playing` : `On The Air`}
           genres={genres}
-          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?o=${
-            !isTvPage ? `now_playing` : `on_the_air`
-          }`}
+          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${monthsAgo}..${today}`}
         />
 
         {/* Upcoming */}
@@ -140,7 +138,7 @@ export default async function Home({ type = "movie" }) {
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
-          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?o=upcoming`}
+          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${tomorrow}..${monthsLater}`}
         />
 
         {/* Top Rated */}

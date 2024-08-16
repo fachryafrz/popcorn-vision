@@ -22,7 +22,6 @@ export async function GET(req) {
     vote_count,
     type,
     sort_by,
-    o,
   } = Object.fromEntries(url.searchParams);
 
   const params = {
@@ -68,34 +67,6 @@ export async function GET(req) {
   }
   if (type) params.with_type = type;
   if (sort_by) params.sort_by = sort_by;
-  if (o) {
-    const today = moment().format("YYYY-MM-DD");
-    const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
-    const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
-    const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
-
-    params.without_genres = 18;
-
-    if (o === "now_playing" || o === "on_the_air") {
-      if (media_type === "movie") {
-        params["primary_release_date.gte"] = monthsAgo;
-        params["primary_release_date.lte"] = today;
-      } else {
-        params["first_air_date.gte"] = monthsAgo;
-        params["first_air_date.lte"] = today;
-      }
-    }
-
-    if (o === "upcoming") {
-      if (media_type === "movie") {
-        params["primary_release_date.gte"] = tomorrow;
-        params["primary_release_date.lte"] = monthsLater;
-      } else {
-        params["first_air_date.gte"] = tomorrow;
-        params["first_air_date.lte"] = monthsLater;
-      }
-    }
-  }
 
   try {
     const { data } = await axios.get(
