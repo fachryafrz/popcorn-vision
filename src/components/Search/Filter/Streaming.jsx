@@ -2,16 +2,10 @@ import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { requestLocation } from "@/lib/navigator";
+import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function Streaming({
-  inputStyles,
-  userLocation,
-  setUserLocation,
-  locationError,
-  setLocationError,
-}) {
+export default function Streaming({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -21,6 +15,8 @@ export default function Streaming({
   );
   const isQueryParams = searchParams.get("query") ? true : false;
 
+  const [userLocation, setUserLocation] = useState(null);
+  const [locationError, setLocationError] = useState();
   const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
@@ -50,6 +46,11 @@ export default function Streaming({
     },
     [current, pathname, router],
   );
+
+  // Use Effect for getting user location
+  useEffect(() => {
+    checkLocationPermission(setUserLocation, setLocationError);
+  }, []);
 
   // Use Effect for fetching streaming providers based on user location
   useEffect(() => {

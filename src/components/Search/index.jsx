@@ -13,7 +13,6 @@ import FilmCard from "@/components/Film/Card";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
 import axios from "axios";
-import { checkLocationPermission } from "@/lib/navigator";
 
 export default function Search({
   type = "movie",
@@ -46,8 +45,6 @@ export default function Search({
   const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
   const [currentSearchPage, setCurrentSearchPage] = useState(1);
-  const [userLocation, setUserLocation] = useState(null);
-  const [locationError, setLocationError] = useState();
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -154,6 +151,8 @@ export default function Search({
           ...Object.fromEntries(searchParams),
         };
 
+        const userLocation = localStorage.getItem("user-location");
+
         if (searchParams.get("watch_providers") && userLocation) {
           params.watch_region = JSON.parse(userLocation).countryCode;
         }
@@ -209,11 +208,6 @@ export default function Search({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
-  // Use Effect for getting user location
-  useEffect(() => {
-    checkLocationPermission(setUserLocation, setLocationError);
-  }, []);
-
   // Use Effect for Search
   useEffect(() => {
     setLoading(true);
@@ -223,6 +217,8 @@ export default function Search({
         media_type: type,
         ...Object.fromEntries(searchParams),
       };
+
+      const userLocation = localStorage.getItem("user-location");
 
       if (searchParams.get("watch_providers") && userLocation) {
         params.watch_region = JSON.parse(userLocation).countryCode;
@@ -284,7 +280,7 @@ export default function Search({
     if (searchParams.get("query")) {
       searchByQuery();
     }
-  }, [searchParams, type, userLocation]);
+  }, [searchParams, type]);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -307,10 +303,6 @@ export default function Search({
           languagesData={languagesData}
           handleNotAvailable={handleNotAvailable}
           handleClearNotAvailable={handleClearNotAvailable}
-          userLocation={userLocation}
-          setUserLocation={setUserLocation}
-          locationError={locationError}
-          setLocationError={setLocationError}
         />
       </Suspense>
 
