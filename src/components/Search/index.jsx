@@ -224,7 +224,7 @@ export default function Search({
         ...Object.fromEntries(searchParams),
       };
 
-      if (searchParams.get("watch_providers")) {
+      if (searchParams.get("watch_providers") && userLocation) {
         params.watch_region = JSON.parse(userLocation).countryCode;
       }
 
@@ -277,7 +277,7 @@ export default function Search({
       }
     };
 
-    if (!searchParams.get("query") && userLocation) {
+    if (!searchParams.get("query")) {
       searchByFilter();
     }
 
