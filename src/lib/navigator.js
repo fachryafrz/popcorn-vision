@@ -1,6 +1,11 @@
 import { getLocation } from "./fetch";
 
 export function findLocation(setUserLocation, setError) {
+  // NOTE: Uncomment these lines to edit user location localStorage for development
+  // if (localStorage.getItem("user-location")) {
+  //   setUserLocation(localStorage.getItem("user-location"));
+  //   setError(null);
+  // } else {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLocation = {
@@ -26,6 +31,7 @@ export function findLocation(setUserLocation, setError) {
       }
     },
   );
+  // }
 }
 
 export function checkLocationPermission(setUserLocation, setError) {

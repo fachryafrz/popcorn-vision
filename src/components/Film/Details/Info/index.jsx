@@ -280,35 +280,51 @@ export default function FilmInfo({
                 id={`Film Providers`}
                 className="flex flex-col justify-center gap-1 md:justify-start"
               >
-                <span className={`text-sm italic text-gray-400`}>
-                  Where to watch?
-                </span>
-
                 {/* Loading spinner */}
                 {isLoading && (
-                  <div>
-                    <span className={`loading loading-spinner`}></span>
-                  </div>
+                  <>
+                    <span className={`text-sm italic text-gray-400`}>
+                      Where to watch?
+                    </span>
+
+                    <div className={`h-[40px]`}>
+                      <span className={`loading loading-spinner`}></span>
+                    </div>
+                  </>
                 )}
 
                 {/* Enable location button */}
-                {!userLocation && !isLoading && (
-                  <button
-                    onClick={() =>
-                      requestLocation(setUserLocation, setLocationError)
-                    }
-                    className={`btn btn-outline btn-sm max-w-fit rounded-full`}
-                  >
-                    Enable location
-                  </button>
+                {!providersIDArray && !isLoading && (
+                  <>
+                    <span className={`text-sm italic text-gray-400`}>
+                      Where to watch?
+                    </span>
+
+                    <div className={`h-[40px]`}>
+                      <button
+                        onClick={() =>
+                          requestLocation(setUserLocation, setLocationError)
+                        }
+                        className={`btn btn-outline btn-sm h-full max-w-fit rounded-full`}
+                      >
+                        Enable location
+                      </button>
+                    </div>
+                  </>
                 )}
 
                 {/* Provider list */}
-                {userLocation && !isLoading && (
-                  <WatchProvider
-                    providersIDArray={providersIDArray}
-                    isTvPage={isTvPage}
-                  />
+                {providersIDArray && !isLoading && (
+                  <>
+                    <span className={`text-sm italic text-gray-400`}>
+                      Where to watch?
+                    </span>
+
+                    <WatchProvider
+                      providersIDArray={providersIDArray}
+                      isTvPage={isTvPage}
+                    />
+                  </>
                 )}
               </section>
             </Reveal>
@@ -316,12 +332,12 @@ export default function FilmInfo({
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
           {/* Upcoming */}
-          {filmReleaseDate !== "" && (
+          {filmReleaseDate !== "" && nextEps && (
             <section
               id={`Upcoming`}
               className={`mt-2 grid gap-2 xl:grid-cols-2`}
             >
-              {lastEps && nextEps && (
+              {lastEps && (
                 <div
                   id={`TV Series Last Episode`}
                   className={`flex flex-col gap-2`}
