@@ -25,19 +25,19 @@ export default function UserRating({
     try {
       setIsLoading(true);
 
-      await axios
-        .post(url, {
-          type: !isTvPage ? "movie" : "tv",
-          id: film.id,
-          rating: value,
-          season_number: season,
-          episode_number: episode,
-        })
-        .then(({ data: { rated } }) => {
-          setIsLoading(false);
-          setIsAdded(rated);
-          setHoverRating(rated);
-        });
+      const {
+        data: { rated },
+      } = await axios.post(url, {
+        type: !isTvPage ? "movie" : "tv",
+        id: film.id,
+        rating: value,
+        season_number: season,
+        episode_number: episode,
+      });
+
+      setIsLoading(false);
+      setIsAdded(rated);
+      setHoverRating(rated);
     } catch (error) {
       console.error("Error adding rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
@@ -48,20 +48,20 @@ export default function UserRating({
     try {
       setIsLoading(true);
 
-      await axios
-        .delete(url, {
-          params: {
-            id: film.id,
-            type: !isTvPage ? `movie` : `tv`,
-            season_number: season,
-            episode_number: episode,
-          },
-        })
-        .then(({ data: { rated } }) => {
-          setIsLoading(false);
-          setIsAdded(rated);
-          setHoverRating(rated);
-        });
+      const {
+        data: { rated },
+      } = await axios.delete(url, {
+        params: {
+          id: film.id,
+          type: !isTvPage ? `movie` : `tv`,
+          season_number: season,
+          episode_number: episode,
+        },
+      });
+
+      setIsLoading(false);
+      setIsAdded(rated);
+      setHoverRating(rated);
     } catch (error) {
       console.error("Error deleting rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
@@ -75,8 +75,17 @@ export default function UserRating({
 
   return (
     <>
-      <div className={`flex items-center gap-2`}>
-        <span className={`mb-2 block text-sm font-medium italic`}>{title}</span>
+      <div className={`mb-2 flex items-center gap-2`}>
+        <span className={`block text-sm font-medium italic`}>{title}</span>
+
+        {isAdded?.value > 0 && (
+          <button
+            onClick={async () => await handleDeleteRating()}
+            className={`block text-sm font-medium italic text-primary-blue transition-all`}
+          >
+            Clear rating
+          </button>
+        )}
 
         {isLoading && <span class="loading loading-spinner loading-xs"></span>}
       </div>
@@ -109,15 +118,6 @@ export default function UserRating({
           );
         })}
       </div>
-
-      {isAdded?.value > 0 && (
-        <button
-          onClick={async () => await handleDeleteRating()}
-          className={`text-sm font-medium italic text-primary-blue transition-all`}
-        >
-          Clear rating
-        </button>
-      )}
     </>
   );
 }
