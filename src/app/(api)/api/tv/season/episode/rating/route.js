@@ -9,7 +9,7 @@ export async function POST(req) {
   const cookiesStore = cookies();
 
   try {
-    const addRating = await axios.post(
+    await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/rating`,
       {
         value: rating,
@@ -22,17 +22,25 @@ export async function POST(req) {
       },
     );
 
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
-      {
-        params: {
-          api_key: process.env.API_KEY,
-          session_id: cookiesStore.get("tmdb.session_id").value,
-        },
-      },
-    );
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
 
-    return NextResponse.json(data, { status: 200 });
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
+        {
+          params: {
+            api_key: process.env.API_KEY,
+            session_id: cookiesStore.get("tmdb.session_id").value,
+          },
+        },
+      );
+
+      return NextResponse.json(data, { status: 200 });
+    } catch (error) {
+      return NextResponse.json(error.response.data, {
+        status: error.response.status,
+      });
+    }
   } catch (error) {
     return NextResponse.json(error.response.data, {
       status: error.response.status,
@@ -48,7 +56,7 @@ export async function DELETE(req) {
   const cookiesStore = cookies();
 
   try {
-    const removeRating = await axios.delete(
+    await axios.delete(
       `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/rating`,
       {
         params: {
@@ -58,17 +66,25 @@ export async function DELETE(req) {
       },
     );
 
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
-      {
-        params: {
-          api_key: process.env.API_KEY,
-          session_id: cookiesStore.get("tmdb.session_id").value,
-        },
-      },
-    );
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
 
-    return NextResponse.json(data, { status: 200 });
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
+        {
+          params: {
+            api_key: process.env.API_KEY,
+            session_id: cookiesStore.get("tmdb.session_id").value,
+          },
+        },
+      );
+
+      return NextResponse.json(data, { status: 200 });
+    } catch (error) {
+      return NextResponse.json(error.response.data, {
+        status: error.response.status,
+      });
+    }
   } catch (error) {
     return NextResponse.json(error.response.data, {
       status: error.response.status,
