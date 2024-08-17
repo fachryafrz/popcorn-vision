@@ -116,9 +116,6 @@ export default function Filters({
         />
       </section>
 
-      {/* TV Series Status */}
-      {isTvPage && <TVSeriesStatus />}
-
       {/* Release Date */}
       <ReleaseDate
         isTvPage={isTvPage}
@@ -151,14 +148,17 @@ export default function Filters({
       {/* Keyword */}
       <Keyword inputStyles={inputStyles} />
 
-      {/* TV Series Type */}
-      {isTvPage && <TVSeriesType />}
-
       {/* Runtime */}
       <Runtime sliderStyles={sliderStyles} />
 
       {/* Rating */}
       <Rating sliderStyles={sliderStyles} />
+
+      {/* TV Series Status */}
+      {isTvPage && <TVSeriesStatus />}
+
+      {/* TV Series Type */}
+      {isTvPage && <TVSeriesType />}
     </aside>
   );
 }

@@ -87,7 +87,7 @@ export default function TVSeriesStatus() {
                   type={`checkbox`}
                   id={`status_${index}`}
                   name={`status`}
-                  className={`checkbox checkbox-md`}
+                  className={`checkbox checkbox-sm rounded-md`}
                   value={index}
                   checked={isChecked || status.includes(index.toString())}
                   onChange={handleStatusChange}
@@ -98,7 +98,7 @@ export default function TVSeriesStatus() {
                   htmlFor={`status_${index}`}
                   className={`${
                     isQueryParams ? `cursor-default` : `cursor-pointer`
-                  } flex w-full py-2 pl-2`}
+                  } flex w-full py-1 pl-2 text-sm font-medium`}
                 >
                   {statusName}
                 </label>

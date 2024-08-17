@@ -87,7 +87,7 @@ export default function TVSeriesType() {
                   type={`checkbox`}
                   id={`type_${index}`}
                   name={`type`}
-                  className={`checkbox checkbox-md`}
+                  className={`checkbox checkbox-sm rounded-md`}
                   value={index}
                   checked={isChecked || tvType.includes(index.toString())}
                   onChange={handleTypeChange}
@@ -98,7 +98,7 @@ export default function TVSeriesType() {
                   htmlFor={`type_${index}`}
                   className={`${
                     isQueryParams ? `cursor-default` : `cursor-pointer`
-                  } flex w-full py-2 pl-2`}
+                  } flex w-full py-1 pl-2 text-sm font-medium`}
                 >
                   {typeName}
                 </label>
