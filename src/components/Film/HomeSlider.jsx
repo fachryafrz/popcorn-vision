@@ -78,7 +78,7 @@ export default function HomeSlider({ films, genres, filmData }) {
           keyboard={true}
           spaceBetween={0}
           slidesPerView={1}
-          className={`relative h-[100dvh] min-h-[640px] after:absolute after:inset-y-0 after:right-0 after:z-50 after:hidden after:w-[10%] after:bg-gradient-to-l after:from-base-100 lg:h-[calc(100dvh+5rem)] 2xl:max-w-none 2xl:after:hidden`}
+          className={`relative h-[100dvh] min-h-[500px] after:absolute after:inset-y-0 after:right-0 after:z-50 after:hidden after:w-[10%] after:bg-gradient-to-l after:from-base-100 lg:h-[calc(100dvh+5rem)] 2xl:max-w-none 2xl:after:hidden`}
         >
           {films.map((film, i) => {
             const releaseDate = isItTvPage(
@@ -204,6 +204,41 @@ function HomeFilm({
 
   const releaseDate = isItTvPage(film.release_date, film.first_air_date);
 
+  // const fetchFilmDetails = useCallback(async () => {
+  //   await fetchData({
+  //     endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
+  //     queryParams: {
+  //       append_to_response: `images`,
+  //     },
+  //   }).then((res) => {
+  //     const { images } = res;
+  //     const { posters, backdrops } = images;
+
+  //     setFilmDetails(res);
+
+  //     if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
+  //       setFilmPoster(film.poster_path);
+  //     } else {
+  //       setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
+  //     }
+
+  //     if (
+  //       !backdrops.length ||
+  //       !backdrops.find((img) => img.iso_639_1 === null)
+  //     ) {
+  //       setFilmBackdrop(film.backdrop_path);
+  //     } else {
+  //       setFilmBackdrop(
+  //         backdrops.find((img) => img.iso_639_1 === null)?.file_path,
+  //       );
+  //     }
+  //   });
+  // }, [film, isItTvPage]);
+
+  // useEffect(() => {
+  //   fetchFilmDetails();
+  // }, [fetchFilmDetails]);
+
   return (
     <>
       <div className={`-z-10 h-full w-full`}>
@@ -229,7 +264,9 @@ function HomeFilm({
           />
         </Reveal>
       </div>
-      <div className={`absolute bottom-[calc(5rem)] z-50 mx-auto p-4 py-8`}>
+      <div
+        className={`absolute inset-0 z-50 mx-auto max-h-[100dvh] max-w-none p-4 pb-[2rem]`}
+      >
         {filmDetails && activeSlide === index && (
           <FilmSummary
             film={filmDetails}
