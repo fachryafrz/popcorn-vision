@@ -393,7 +393,7 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
                         <span
                           className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                         >
-                          {moment(item.air_date).format("ddd, MMMM D, YYYY")}
+                          {moment(item.air_date).format("MMM D, YYYY")}
                         </span>
                       )}
                     </>
