@@ -187,12 +187,12 @@ export default function Navbar() {
           <Reveal y={-20} delay={0.4}>
             <div
               id={`FilmSwitcher`}
-              className="flex w-fit place-content-center gap-1 rounded-full bg-gray-900 bg-opacity-[50%] p-1 backdrop-blur-sm"
+              className="flex w-fit place-content-center gap-1 rounded-full bg-secondary bg-opacity-50 p-1 backdrop-blur-sm"
             >
               <button
                 onClick={() => handleFilmTypeChange("movie")}
                 type={`button`}
-                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-secondary hocus:bg-opacity-20 md:px-4 ${
+                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
                   isMoviesPage &&
                   `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
@@ -203,7 +203,7 @@ export default function Navbar() {
               <button
                 onClick={() => handleFilmTypeChange("tv")}
                 type={`button`}
-                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-secondary hocus:bg-opacity-20 md:px-4 ${
+                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
                   isTvPage &&
                   `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
                 }`}
@@ -218,7 +218,7 @@ export default function Navbar() {
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
-              className={`btn btn-ghost btn-sm aspect-square h-[40px] rounded-full bg-secondary bg-opacity-20 !px-0 md:aspect-auto md:!px-3 lg:hidden`}
+              className={`btn btn-secondary btn-sm aspect-square h-[40px] rounded-full bg-opacity-60 border-none !px-0 md:aspect-auto md:!px-3 lg:hidden`}
             >
               <IonIcon icon={search} className="text-[1.25rem]" />
               <span className="hidden md:block">Search</span>
