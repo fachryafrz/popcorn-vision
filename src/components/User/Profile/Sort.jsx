@@ -61,12 +61,12 @@ export default function UserProfileSort() {
   }, [searchParams]);
 
   return (
-    <div className={`flex items-center gap-x-4 gap-y-1 flex-wrap`}>
+    <div className={`flex flex-wrap items-center gap-x-4 gap-y-1`}>
       <div className={`flex items-center gap-2`}>
         <span>Sort by:</span>
 
         <div className="dropdown dropdown-end dropdown-bottom dropdown-hover">
-          <button className="btn btn-primary btn-sm text-white">
+          <button className="btn btn-secondary btn-sm border-none bg-opacity-20 text-white hocus:bg-opacity-50">
             {sort?.label}
           </button>
           <ul
@@ -78,7 +78,7 @@ export default function UserProfileSort() {
                 <li key={option.value}>
                   <button
                     onClick={() => handleSort(option)}
-                    className={`btn btn-ghost no-animation btn-sm justify-start rounded-lg ${sort?.value === option.value ? `btn-active` : ``}`}
+                    className={`btn btn-secondary no-animation btn-sm justify-start rounded-lg border-none bg-opacity-0 ${sort?.value === option.value ? `btn-active !bg-opacity-30` : ``}`}
                   >
                     {option.label}
                   </button>
@@ -94,7 +94,7 @@ export default function UserProfileSort() {
 
         <button
           onClick={handleOrder}
-          className="btn btn-square btn-primary btn-sm text-white"
+          className="btn btn-square btn-secondary btn-sm border-none bg-opacity-20 text-white hocus:bg-opacity-50"
         >
           {order?.value === `asc` ? (
             <IonIcon icon={arrowUp} />

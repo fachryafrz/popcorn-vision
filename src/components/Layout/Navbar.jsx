@@ -187,7 +187,7 @@ export default function Navbar() {
           <Reveal y={-20} delay={0.4}>
             <div
               id={`FilmSwitcher`}
-              className="flex w-fit place-content-center gap-1 rounded-full bg-secondary bg-opacity-50 p-1 backdrop-blur-sm"
+              className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
             >
               <button
                 onClick={() => handleFilmTypeChange("movie")}
@@ -218,7 +218,7 @@ export default function Navbar() {
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
-              className={`btn btn-secondary btn-sm aspect-square h-[40px] rounded-full bg-opacity-60 border-none !px-0 md:aspect-auto md:!px-3 lg:hidden`}
+              className={`btn btn-secondary btn-sm aspect-square h-[40px] rounded-full border-none bg-opacity-20 !px-0 hocus:bg-opacity-50 md:aspect-auto md:!px-3 lg:hidden`}
             >
               <IonIcon icon={search} className="text-[1.25rem]" />
               <span className="hidden md:block">Search</span>
@@ -329,7 +329,7 @@ export function SearchBar({ placeholder = `Search` }) {
               />
             </button>
           )}
-  
+
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
             className={`hidden xl:inline`}
