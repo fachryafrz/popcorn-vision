@@ -49,16 +49,18 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
       {groupedProviders.map(
         (item, i) =>
           item.logo_path && (
-            <div key={item.provider_id}>
+            <>
               {/* NOTE: The delay causing component jump */}
               {/* <Reveal delay={i > 0 ? 0.1 * i : 0} key={item.provider_id}> */}
               <Link
+                key={item.provider_id}
                 href={`${
                   !isTvPage ? `/search` : `/tv/search`
                 }?watch_providers=${item.provider_id}`}
+                className={`flex`}
               >
                 <div
-                  class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur"
+                  class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden"
                   data-tip={`${item.provider_name} (${item.type})`}
                 >
                   <figure
@@ -72,7 +74,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                 </div>
               </Link>
               {/* </Reveal> */}
-            </div>
+            </>
           ),
       )}
     </div>

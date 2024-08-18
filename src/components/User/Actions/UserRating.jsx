@@ -19,7 +19,7 @@ export default function UserRating({
 
   const [isAdded, setIsAdded] = useState();
   const [hoverRating, setHoverRating] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleRating = async (value) => {
     try {
@@ -71,6 +71,7 @@ export default function UserRating({
   useEffect(() => {
     setIsAdded(rating);
     setHoverRating(rating);
+    setIsLoading(false);
   }, [rating]);
 
   return (

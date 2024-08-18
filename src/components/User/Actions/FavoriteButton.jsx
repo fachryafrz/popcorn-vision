@@ -15,21 +15,21 @@ export default function FavoriteButton({ film, getAccountStates, favorite }) {
   const [isAdded, setIsAdded] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleFavorite = async (favorite) => {
+  const handleFavorite = async (value) => {
     try {
       setIsLoading(true);
 
-      await axios
-        .post(`/api/account/favorite`, {
-          user_id: user.id,
-          media_type: !isTvPage ? "movie" : "tv",
-          media_id: film.id,
-          favorite: favorite,
-        })
-        .then(({ data: { favorite } }) => {
-          setIsLoading(false);
-          setIsAdded(favorite);
-        });
+      const {
+        data: { favorite },
+      } = await axios.post(`/api/account/favorite`, {
+        user_id: user.id,
+        media_type: !isTvPage ? "movie" : "tv",
+        media_id: film.id,
+        favorite: value,
+      });
+
+      setIsLoading(false);
+      setIsAdded(favorite);
     } catch (error) {
       console.error("Error adding to favorite:", error);
       // Handle errors appropriately (e.g., display error message to user)

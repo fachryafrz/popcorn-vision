@@ -22,25 +22,27 @@ export async function POST(req) {
       },
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
+    // await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
 
-    try {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
-        {
-          params: {
-            api_key: process.env.API_KEY,
-            session_id: cookiesStore.get("tmdb.session_id").value,
-          },
-        },
-      );
+    // try {
+    //   const { data } = await axios.get(
+    //     `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
+    //     {
+    //       params: {
+    //         api_key: process.env.API_KEY,
+    //         session_id: cookiesStore.get("tmdb.session_id").value,
+    //       },
+    //     },
+    //   );
 
-      return NextResponse.json(data, { status: 200 });
-    } catch (error) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
+    //   return NextResponse.json(data, { status: 200 });
+    // } catch (error) {
+    //   return NextResponse.json(error.response.data, {
+    //     status: error.response.status,
+    //   });
+    // }
+
+    return NextResponse.json({ rated: { value: rating } }, { status: 200 });
   } catch (error) {
     return NextResponse.json(error.response.data, {
       status: error.response.status,
@@ -66,25 +68,27 @@ export async function DELETE(req) {
       },
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
+    // await new Promise((resolve) => setTimeout(resolve, 500)); // Delay 500ms
 
-    try {
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
-        {
-          params: {
-            api_key: process.env.API_KEY,
-            session_id: cookiesStore.get("tmdb.session_id").value,
-          },
-        },
-      );
+    // try {
+    //   const { data } = await axios.get(
+    //     `${process.env.NEXT_PUBLIC_API_URL}/tv/${id}/season/${season_number}/episode/${episode_number}/account_states`,
+    //     {
+    //       params: {
+    //         api_key: process.env.API_KEY,
+    //         session_id: cookiesStore.get("tmdb.session_id").value,
+    //       },
+    //     },
+    //   );
 
-      return NextResponse.json(data, { status: 200 });
-    } catch (error) {
-      return NextResponse.json(error.response.data, {
-        status: error.response.status,
-      });
-    }
+    //   return NextResponse.json(data, { status: 200 });
+    // } catch (error) {
+    //   return NextResponse.json(error.response.data, {
+    //     status: error.response.status,
+    //   });
+    // }
+
+    return NextResponse.json({ rated: { value: rating } }, { status: 200 });
   } catch (error) {
     return NextResponse.json(error.response.data, {
       status: error.response.status,

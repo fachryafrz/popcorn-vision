@@ -17,21 +17,20 @@ export default function WatchlistButton({ film, getAccountStates, watchlist }) {
   const [isAdded, setIsAdded] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleWatchlist = async (watchlist) => {
+  const handleWatchlist = async (value) => {
     try {
       setIsLoading(true);
 
-      await axios
-        .post(`/api/account/watchlist`, {
-          user_id: user.id,
-          media_type: !isTvPage ? "movie" : "tv",
-          media_id: film.id,
-          watchlist: watchlist,
-        })
-        .then(({ data: { watchlist } }) => {
-          setIsLoading(false);
-          setIsAdded(watchlist);
-        });
+      const {
+        data: { watchlist },
+      } = await axios.post(`/api/account/watchlist`, {
+        user_id: user.id,
+        media_type: !isTvPage ? "movie" : "tv",
+        media_id: film.id,
+        watchlist: value,
+      });
+      setIsLoading(false);
+      setIsAdded(watchlist);
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       // Handle errors appropriately (e.g., display error message to user)

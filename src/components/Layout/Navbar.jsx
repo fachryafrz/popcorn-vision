@@ -110,6 +110,8 @@ export default function Navbar() {
     !isTvPage ? `/search` : `/tv/search`,
   );
   let URLSearchQuery = searchParams.get("query");
+  const isThereAnyFilter =
+    Object.keys(Object.fromEntries(searchParams)).length > 0;
 
   const handleFilmTypeChange = (type) => {
     const isTvType = type === "tv";
@@ -117,11 +119,9 @@ export default function Navbar() {
     setFilmType(type);
 
     if (isSearchPage) {
-      if (URLSearchQuery) {
+      if (isThereAnyFilter) {
         router.push(
-          `${
-            !isTvType ? `/search` : `/tv/search`
-          }?query=${URLSearchQuery.replace(/\s+/g, "+")}`,
+          `${!isTvType ? `/search` : `/tv/search`}?${searchParams.toString()}`,
         );
       } else {
         router.push(`${!isTvType ? `/search` : `/tv/search`}`);

@@ -274,60 +274,62 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          {providersArray.length > 0 && (
+          {/* Loading spinner */}
+          {isLoading && (
             <Reveal>
               <section
                 id={`Film Providers`}
                 className="flex flex-col justify-center gap-1 md:justify-start"
               >
-                {/* Loading spinner */}
-                {isLoading && (
-                  <>
-                    <span className={`text-sm italic text-gray-400`}>
-                      Where to watch?
-                    </span>
+                <span className={`text-sm italic text-gray-400`}>
+                  Where to watch?
+                </span>
 
-                    <div className={`h-[40px]`}>
-                      <span className={`loading loading-spinner`}></span>
-                    </div>
-                  </>
-                )}
-
-                {/* Enable location button */}
-                {!providersIDArray && !isLoading && (
-                  <>
-                    <span className={`text-sm italic text-gray-400`}>
-                      Where to watch?
-                    </span>
-
-                    <div className={`h-[40px]`}>
-                      <button
-                        onClick={() =>
-                          requestLocation(setUserLocation, setLocationError)
-                        }
-                        className={`btn btn-outline btn-sm h-full max-w-fit rounded-full`}
-                      >
-                        Enable location
-                      </button>
-                    </div>
-                  </>
-                )}
-
-                {/* Provider list */}
-                {providersIDArray && !isLoading && (
-                  <>
-                    <span className={`text-sm italic text-gray-400`}>
-                      Where to watch?
-                    </span>
-
-                    <WatchProvider
-                      providersIDArray={providersIDArray}
-                      isTvPage={isTvPage}
-                    />
-                  </>
-                )}
+                <div className={`h-[40px]`}>
+                  <span className={`loading loading-spinner`}></span>
+                </div>
               </section>
             </Reveal>
+          )}
+
+          {/* Enable location button */}
+          {!userLocation && !isLoading && (
+            <section
+              id={`Film Providers`}
+              className="flex flex-col justify-center gap-1 md:justify-start"
+            >
+              <span className={`text-sm italic text-gray-400`}>
+                Where to watch?
+              </span>
+
+              <div className={`h-[40px]`}>
+                <button
+                  onClick={() =>
+                    requestLocation(setUserLocation, setLocationError)
+                  }
+                  className={`btn btn-outline btn-sm h-full max-w-fit rounded-full`}
+                >
+                  Enable location
+                </button>
+              </div>
+            </section>
+          )}
+
+          {/* Provider list */}
+          {providersIDArray && !isLoading && (
+            <section
+              id={`Film Providers`}
+              className="flex flex-col justify-center gap-1 md:justify-start"
+            >
+              <span className={`text-sm italic text-gray-400`}>
+                Where to watch?
+              </span>
+
+              <WatchProvider
+                providersIDArray={providersIDArray}
+                isTvPage={isTvPage}
+              />
+            </section>
           )}
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
@@ -335,7 +337,7 @@ export default function FilmInfo({
           {filmReleaseDate !== "" && nextEps && (
             <section
               id={`Upcoming`}
-              className={`mt-2 grid gap-2 xl:grid-cols-2`}
+              className={`mt-2 grid gap-2 md:grid-cols-2`}
             >
               {lastEps && (
                 <div
@@ -372,7 +374,7 @@ export default function FilmInfo({
                 <>
                   <div
                     id={`Countdown`}
-                    className={`xl:row-start-2 ${isTvPage && lastEps ? `xl:col-start-2` : `xl:col-start-1`}`}
+                    className={`md:row-start-2 ${isTvPage && lastEps ? `md:col-start-2` : `md:col-start-1`}`}
                   >
                     <Countdown
                       isTvPage={isTvPage}

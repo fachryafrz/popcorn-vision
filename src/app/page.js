@@ -147,7 +147,7 @@ export default async function Home({ type = "movie" }) {
             endpoint: `/discover/${type}`,
             queryParams: {
               ...defaultParams,
-              without_genres: 18,
+              // without_genres: 18,
               sort_by: "vote_count.desc",
             },
           })}
