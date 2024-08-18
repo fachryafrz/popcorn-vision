@@ -93,72 +93,76 @@ export default function Filters({
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
-      className={`fixed inset-x-0 top-[66px] z-50 flex h-[calc(100dvh-66px)] w-full flex-col gap-4 overflow-y-auto bg-[#2A313E] bg-opacity-[95%] p-4 backdrop-blur transition-all lg:sticky lg:h-[calc(100dvh-66px-1rem)] lg:max-w-[300px] lg:translate-x-0 lg:rounded-3xl ${
-        isFilterActive ? `translate-x-0` : `-translate-x-full`
+      className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all lg:static lg:max-h-none lg:max-w-[300px] ${
+        isFilterActive ? `translate-x-0` : `-translate-x-full lg:translate-x-0`
       }`}
     >
       {/* Close Button */}
       <button
         onClick={() => setIsFilterActive(false)}
-        className={`pointer-events-auto absolute right-4 top-2 z-50  aspect-square  lg:hidden`}
+        className={`absolute right-4 top-2 z-50 aspect-square lg:hidden`}
       >
         <IonIcon icon={close} className={`text-3xl`} />
       </button>
 
-      {/* Sort */}
-      <section className={`flex flex-col gap-1 lg:hidden`}>
-        <span className={`font-medium`}>Sort</span>
-        <SearchSort
-          handleNotAvailable={handleNotAvailable}
-          handleClearNotAvailable={handleClearNotAvailable}
-          inputStyles={inputStyles}
-          setIsFilterActive={setIsFilterActive}
+      <div
+        className={`flex h-full flex-col gap-4 overflow-y-auto bg-neutral bg-opacity-[95%] p-4 backdrop-blur lg:sticky lg:top-[calc(66px+3px)] lg:max-h-[calc(100dvh-66px-1rem-3px)] lg:rounded-2xl lg:outline lg:outline-neutral`}
+      >
+        {/* Sort */}
+        <section className={`flex flex-col gap-1 lg:hidden`}>
+          <span className={`font-medium`}>Sort</span>
+          <SearchSort
+            handleNotAvailable={handleNotAvailable}
+            handleClearNotAvailable={handleClearNotAvailable}
+            inputStyles={inputStyles}
+            setIsFilterActive={setIsFilterActive}
+          />
+        </section>
+
+        {/* Release Date */}
+        <ReleaseDate
+          isTvPage={isTvPage}
+          minYear={minYear}
+          maxYear={maxYear}
+          releaseDate={releaseDate}
         />
-      </section>
 
-      {/* Release Date */}
-      <ReleaseDate
-        isTvPage={isTvPage}
-        minYear={minYear}
-        maxYear={maxYear}
-        releaseDate={releaseDate}
-      />
+        {/* Streaming (Watch Providers) */}
+        <Streaming inputStyles={inputStyles} />
 
-      {/* Streaming (Watch Providers) */}
-      <Streaming inputStyles={inputStyles} />
+        {/* Genre */}
+        <Genre genresData={genresData} inputStyles={inputStyles} />
 
-      {/* Genre */}
-      <Genre genresData={genresData} inputStyles={inputStyles} />
+        {/* Networks */}
+        {isTvPage && <Network inputStyles={inputStyles} />}
 
-      {/* Networks */}
-      {isTvPage && <Network inputStyles={inputStyles} />}
+        {/* Cast */}
+        {!isTvPage && <Cast inputStyles={inputStyles} />}
 
-      {/* Cast */}
-      {!isTvPage && <Cast inputStyles={inputStyles} />}
+        {/* Crew */}
+        {!isTvPage && <Crew inputStyles={inputStyles} />}
 
-      {/* Crew */}
-      {!isTvPage && <Crew inputStyles={inputStyles} />}
+        {/* Company */}
+        <Company inputStyles={inputStyles} />
 
-      {/* Company */}
-      <Company inputStyles={inputStyles} />
+        {/* Language */}
+        <Language inputStyles={inputStyles} languagesData={languagesData} />
 
-      {/* Language */}
-      <Language inputStyles={inputStyles} languagesData={languagesData} />
+        {/* Keyword */}
+        <Keyword inputStyles={inputStyles} />
 
-      {/* Keyword */}
-      <Keyword inputStyles={inputStyles} />
+        {/* Runtime */}
+        <Runtime sliderStyles={sliderStyles} />
 
-      {/* Runtime */}
-      <Runtime sliderStyles={sliderStyles} />
+        {/* Rating */}
+        <Rating sliderStyles={sliderStyles} />
 
-      {/* Rating */}
-      <Rating sliderStyles={sliderStyles} />
+        {/* TV Series Status */}
+        {isTvPage && <TVSeriesStatus />}
 
-      {/* TV Series Status */}
-      {isTvPage && <TVSeriesStatus />}
-
-      {/* TV Series Type */}
-      {isTvPage && <TVSeriesType />}
+        {/* TV Series Type */}
+        {isTvPage && <TVSeriesType />}
+      </div>
     </aside>
   );
 }

@@ -57,15 +57,26 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: "#0278FD",
-          secondary: "#79808B",
+          primary: "#0278fd",
+          "primary-content": "#000516",
+          secondary: "#374151",
+          "secondary-content": "#d3d6da",
           accent: "#1d4ed8",
-          neutral: "#1c1917",
+          "accent-content": "#cfdefb",
+          neutral: "#1f2937",
+          "neutral-content": "#cdd0d3",
           "base-100": "#131720",
+          "base-200": "#0f121a",
+          "base-300": "#0b0e15",
+          "base-content": "#cacbcd",
           info: "#202735",
+          "info-content": "#cdcfd3",
           success: "#32e7c9",
-          warning: "#FCB406",
-          error: "#D44040",
+          "success-content": "#01130f",
+          warning: "#fcb406",
+          "warning-content": "#160c00",
+          error: "#d44040",
+          "error-content": "#100101",
         },
       },
     ],
@@ -74,6 +85,7 @@ module.exports = {
     require("daisyui"),
     require("@tailwindcss/typography"),
     require("@tailwindcss/container-queries"),
+    require("tailwind-scrollbar"),
     plugin(function ({ addVariant }) {
       addVariant("hocus", ["&:hover", "&:focus"]);
       [...Array(24).keys()].forEach((i) => {

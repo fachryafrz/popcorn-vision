@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 ::-webkit-search-cancel-button {
   @apply cursor-pointer;
 }
@@ -54,13 +58,9 @@
   @apply !border-white;
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @layer components {
   * {
-    @apply !outline-none;
+    @apply scrollbar scrollbar-track-transparent scrollbar-thumb-neutral-400;
   }
 
   img {

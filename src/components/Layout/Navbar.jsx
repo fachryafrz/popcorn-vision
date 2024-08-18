@@ -149,7 +149,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 bg-base-100 transition-all ${
+      className={`fixed inset-x-0 top-0 z-[60] bg-base-100 transition-all ${
         isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
       }`}
     >
@@ -293,7 +293,7 @@ export function SearchBar({ placeholder = `Search` }) {
       className={`form-control relative block w-full justify-self-center`}
     >
       <div
-        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
+        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] pl-0`}
       >
         <div
           className={`pointer-events-none absolute flex h-full items-center pl-4`}
@@ -314,27 +314,29 @@ export function SearchBar({ placeholder = `Search` }) {
           onChange={(e) => setSearchInput(e.target.value)}
         />
 
-        {URLSearchQuery && (
-          <button
-            type="button"
-            onClick={() => {
-              router.push(`${isTvPage ? "/tv" : ""}/search`);
-            }}
-            className={`mr-1 flex h-full items-center`}
+        <div className={`flex items-center gap-1`}>
+          {URLSearchQuery && (
+            <button
+              type="button"
+              onClick={() => {
+                router.push(`${isTvPage ? "/tv" : ""}/search`);
+              }}
+              className={`flex h-full items-center`}
+            >
+              <IonIcon
+                icon={close}
+                className={`pointer-events-none text-2xl text-gray-400`}
+              />
+            </button>
+          )}
+  
+          <Link
+            href={!isTvPage ? `/search` : `/tv/search`}
+            className={`hidden xl:inline`}
           >
-            <IonIcon
-              icon={close}
-              className={`pointer-events-none text-2xl text-gray-400`}
-            />
-          </button>
-        )}
-
-        <Link
-          href={!isTvPage ? `/search` : `/tv/search`}
-          className={`mr-4 hidden xl:inline`}
-        >
-          <kbd className={`kbd kbd-sm`}>/</kbd>
-        </Link>
+            <kbd className={`kbd kbd-sm`}>/</kbd>
+          </Link>
+        </div>
       </div>
 
       {/* {!isSearchPage && (
