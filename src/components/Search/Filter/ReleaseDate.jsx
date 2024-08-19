@@ -76,7 +76,7 @@ export default function ReleaseDate({
                   maxDate={dayjs(`${maxYear}-12-31`)}
                   defaultValue={minDatepicker}
                   value={minDatepicker}
-                  onChange={(newValue) => {
+                  onAccept={(newValue) => {
                     setMinDatepicker(newValue);
                     handleDatePickerChange([
                       dayjs(newValue).format("YYYY-MM-DD"),
@@ -86,6 +86,7 @@ export default function ReleaseDate({
                   slotProps={{
                     textField: { size: "small" },
                   }}
+                  closeOnSelect={false}
                   disabled={isQueryParams}
                   format="DD MMM YYYY"
                   sx={{
@@ -134,7 +135,7 @@ export default function ReleaseDate({
                   maxDate={dayjs(`${maxYear}-12-31`)}
                   defaultValue={maxDatepicker}
                   value={maxDatepicker}
-                  onChange={(newValue) => {
+                  onAccept={(newValue) => {
                     setMaxDatepicker(newValue);
                     handleDatePickerChange([
                       dayjs(minDatepicker).format("YYYY-MM-DD"),
@@ -144,6 +145,7 @@ export default function ReleaseDate({
                   slotProps={{
                     textField: { size: "small" },
                   }}
+                  closeOnSelect={false}
                   disabled={isQueryParams}
                   format="DD MMM YYYY"
                   sx={{
