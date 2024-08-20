@@ -45,5 +45,5 @@ export default async function sitemap({ id }) {
 
   sitemap.push(...moviesInSitemap);
 
-  return sitemap;
+  // return sitemap;
 }

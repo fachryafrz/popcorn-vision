@@ -45,5 +45,5 @@ export default async function sitemap({ id }) {
 
   sitemap.push(...tvShowsInSitemap);
 
-  return sitemap;
+  // return sitemap;
 }
