@@ -1,18 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
-import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { useEffect, useState, useMemo, Suspense } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
-import Reveal from "@/components/Layout/Reveal";
 import Filters from "@/components/Search/Filter";
-import { useInView } from "react-intersection-observer";
-import FilmCard from "@/components/Film/Card";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
 import axios from "axios";
+import FilmGrid from "../Film/Grid";
 
 export default function Search({
   type = "movie",
@@ -45,12 +42,10 @@ export default function Search({
   const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
   const [currentSearchPage, setCurrentSearchPage] = useState(1);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Is in viewport?
-  const { ref: loadMoreBtn, inView, entry } = useInView();
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -191,22 +186,10 @@ export default function Search({
       setTotalSearchResults(response.total_results);
       setTotalSearchPages(response.total_pages);
       setCurrentSearchPage(response.page);
-
-      if (response.total_results === 0) {
-        setNotFoundMessage("No film found");
-      }
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
   };
-
-  // Use Effect for load more button is in viewport
-  useEffect(() => {
-    if (inView) {
-      fetchMoreFilms();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView]);
 
   // Use Effect for Search
   useEffect(() => {
@@ -238,10 +221,6 @@ export default function Search({
       setTotalSearchPages(data.total_pages);
       setCurrentSearchPage(1);
       setTotalSearchResults(data.total_results);
-
-      if (data.total_results === 0) {
-        setNotFoundMessage("No film found");
-      }
     };
 
     const searchByQuery = async () => {
@@ -267,10 +246,6 @@ export default function Search({
       setTotalSearchPages(data.total_pages);
       setCurrentSearchPage(1);
       setTotalSearchResults(data.total_results);
-
-      if (data.total_results === 0) {
-        setNotFoundMessage("No film found");
-      }
     };
 
     if (!searchParams.get("query")) {
@@ -281,6 +256,16 @@ export default function Search({
       searchByQuery();
     }
   }, [searchParams, type]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", function () {
+      if (window.scrollY >= 1) {
+        setIsScrolled(true);
+      } else if (window.scrollY < 1) {
+        setIsScrolled(false);
+      }
+    });
+  }, []);
 
   return (
     <div className={`flex lg:px-4`}>
@@ -309,7 +294,7 @@ export default function Search({
       <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
         {/* Options */}
         <section
-          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
+          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  px-4 py-2 lg:flex-row lg:justify-between ${isScrolled ? `bg-opacity-85 backdrop-blur` : `bg-opacity-0`}`}
         >
           {/* Search bar */}
           <div className={`w-full lg:hidden`}>
@@ -367,81 +352,33 @@ export default function Search({
           </div>
         </section>
 
-        {loading ? (
+        {loading && (
           <>
             {/* Loading films */}
-            <section className={`mt-4 flex items-center justify-center`}>
-              <button className="pointer-events-none aspect-square w-[30px] text-white">
-                <span className="loading loading-spinner loading-md"></span>
-              </button>
-            </section>
-          </>
-        ) : films?.length > 0 ? (
-          <>
-            {/* Films list */}
-            <section
-              className={`grid grid-cols-3 gap-2 md:grid-cols-4 xl:grid-cols-6`}
-            >
-              {genresData &&
-                films?.map((film) => {
-                  {
-                    /* 1024px */
-                  }
-                  const lg = `          
-          lg-max:[&_>_a_#FilmPreview]:child-4n+1:left-0 lg-max:[&_>_a_#FilmPreview]:child-4n+1:translate-x-0
-
-          lg-max:[&_>_a_#FilmPreview]:child-4n:left-auto lg-max:[&_>_a_#FilmPreview]:child-4n:translate-x-0 lg-max:[&_>_a_#FilmPreview]:child-4n:right-0
-          `;
-
-                  {
-                    /* 1280px */
-                  }
-                  const xl = `
-          xl-max:[&_>_a_#FilmPreview]:child-5n+1:left-0 xl-max:[&_>_a_#FilmPreview]:child-5n+1:translate-x-0
-
-          xl-max:[&_>_a_#FilmPreview]:child-5n:left-auto xl-max:[&_>_a_#FilmPreview]:child-5n:translate-x-0 xl-max:[&_>_a_#FilmPreview]:child-5n:right-0
-          `;
-
-                  {
-                    /* 1536px */
-                  }
-                  const xl2 = `
-          2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
-
-          2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
-          `;
-
-                  return (
-                    <Reveal key={film.id} className={`${xl2}`}>
-                      <FilmCard
-                        film={film}
-                        isTvPage={
-                          isQueryParams ? film.media_type === "tv" : isTvPage
-                        }
-                      />
-                    </Reveal>
-                  );
-                })}
-            </section>
-          </>
-        ) : (
-          <>
-            {/* No film */}
-            <section>
-              <span>{notFoundMessage}</span>
+            <section className={`flex items-center justify-center`}>
+              <span className="loading loading-spinner loading-md"></span>
             </section>
           </>
         )}
 
-        {!loading && totalSearchPages > currentSearchPage && (
-          <section className={`mt-4 flex items-center justify-center`}>
-            <div
-              ref={loadMoreBtn}
-              className="pointer-events-none aspect-square w-[30px] text-white"
-            >
-              <span className="loading loading-spinner loading-md"></span>
-            </div>
+        {!loading && films?.length > 0 && (
+          <section>
+            <FilmGrid
+              films={films}
+              fetchMoreFilms={fetchMoreFilms}
+              currentSearchPage={currentSearchPage}
+              totalSearchPages={totalSearchPages}
+            />
           </section>
+        )}
+
+        {!loading && films?.length === 0 && (
+          <>
+            {/* No film */}
+            <section>
+              <span>No film found</span>
+            </section>
+          </>
         )}
 
         {notAvailable && (

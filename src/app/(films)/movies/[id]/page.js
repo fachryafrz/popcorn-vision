@@ -3,8 +3,8 @@ import FilmBackdrop from "../../../../components/Film/Details/Backdrop";
 import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import { isPlural } from "@/lib/isPlural";
-import FilmGrid from "@/components/Film/Grid";
 import FilmContent from "../../../../components/Film/Details/Content";
+import Recommendation from "@/components/Film/Recommendation";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -266,8 +266,9 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
       {/* Recommendations */}
       {recommendations.results.length > 0 && (
-        <FilmGrid
+        <Recommendation
           id={id}
+          film={film}
           films={recommendations}
           title={isPlural({
             text: "Recommendation",
