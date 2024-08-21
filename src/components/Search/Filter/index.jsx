@@ -16,6 +16,7 @@ import TVSeriesType from "./TVSeriesType";
 import Language from "./Language";
 import Keyword from "./Keyword";
 import SearchSort from "../Sort";
+import RatingCount from "./RatingCount";
 
 export default function Filters({
   type,
@@ -156,6 +157,9 @@ export default function Filters({
 
         {/* Rating */}
         <Rating sliderStyles={sliderStyles} />
+
+        {/* Rating Count */}
+        <RatingCount sliderStyles={sliderStyles} />
 
         {/* TV Series Status */}
         {isTvPage && <TVSeriesStatus />}

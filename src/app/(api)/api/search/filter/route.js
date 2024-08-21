@@ -20,6 +20,7 @@ export async function GET(req) {
     with_keywords,
     with_runtime,
     rating,
+    vote_count,
     type,
     sort_by,
   } = Object.fromEntries(url.searchParams);
@@ -64,6 +65,9 @@ export async function GET(req) {
     const [min, max] = rating.split("..");
     params["vote_average.gte"] = min;
     params["vote_average.lte"] = max;
+  }
+  if (vote_count) {
+    params["vote_count.gte"] = vote_count;
   }
   if (type) params.with_type = type;
   if (sort_by) params.sort_by = sort_by;
