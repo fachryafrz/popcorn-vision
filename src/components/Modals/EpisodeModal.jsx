@@ -21,6 +21,7 @@ import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
 import { useAuth } from "@/hooks/auth";
+import Countdown from "../Film/Details/Info/Countdown";
 
 export function EpisodeModal({ film, seasons, episode }) {
   const router = useRouter();
@@ -29,6 +30,8 @@ export function EpisodeModal({ film, seasons, episode }) {
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
+  const isAired = moment(episode.air_date).isBefore(moment());
+  const isUpcoming = moment(episode.air_date).isAfter(moment());
 
   const { user } = useAuth();
 
@@ -51,6 +54,7 @@ export function EpisodeModal({ film, seasons, episode }) {
   };
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
+  console.log(filteredSeasons);
 
   const handleCloseModal = () => {
     document.getElementById(`episodeModal`).close();
@@ -232,7 +236,7 @@ export function EpisodeModal({ film, seasons, episode }) {
               </section>
             </div>
 
-            {user && (
+            {user && isAired && (
               <section id={`Episode Rating`} className={`max-w-fit`}>
                 <UserRating
                   film={film}
@@ -245,7 +249,13 @@ export function EpisodeModal({ film, seasons, episode }) {
               </section>
             )}
 
-            {episode.overview != "" && (
+            {isUpcoming && (
+              <div>
+                <Countdown tvReleaseDate={episode.air_date} />
+              </div>
+            )}
+
+            {episode.overview !== "" && (
               <section id={`Episode Overview`}>
                 <h2 className={`text-xl font-bold text-white`}>Overview</h2>
                 <p className={`text-gray-400 md:text-lg`}>{episode.overview}</p>
@@ -317,8 +327,9 @@ export function EpisodeModal({ film, seasons, episode }) {
               onClick={handleNextEpisode}
               disabled={
                 parseInt(seasonParams) === filteredSeasons.length &&
-                parseInt(episodeParams) ===
-                  filteredSeasons[seasonParams - 1]?.episode_count
+                (parseInt(episodeParams) ===
+                  filteredSeasons[seasonParams - 1]?.episode_count ||
+                  parseInt(episodeParams) === film.number_of_episodes)
               }
               className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
             >

@@ -226,9 +226,7 @@ function FilmSeason({ film, item, index, setLoading }) {
     <>
       <button
         onClick={
-          item.episode_count > 0 && item.air_date
-            ? handleViewSeason
-            : () => setViewSeason(false)
+          item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
         }
         className={`flex w-full items-center gap-2 bg-secondary bg-opacity-10 p-2 transition-all hocus:bg-opacity-30 ${
           viewSeason
@@ -259,7 +257,7 @@ function FilmSeason({ film, item, index, setLoading }) {
             {item.name}
           </h3>
 
-          {item.episode_count > 0 && item.air_date ? (
+          {item.episode_count > 0 ? (
             <span className="line-clamp-1 text-xs font-medium text-gray-400">
               {`${item.episode_count} ${isPlural({
                 text: "Episode",
@@ -299,7 +297,7 @@ function FilmSeason({ film, item, index, setLoading }) {
           {item.overview}
         </p>
 
-        {item.episode_count > 0 && item.air_date && (
+        {item.episode_count > 0 && (
           <IonIcon
             icon={chevronDownOutline}
             class={`min-w-[18px] text-lg text-secondary transition-all ${
@@ -320,90 +318,106 @@ function FilmSeason({ film, item, index, setLoading }) {
 }
 
 function FilmEpisodes({ id, season, setLoading, viewSeason }) {
+  const [isLoading, setIsLoading] = useState(true);
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
     getEpisodes({ id, season }).then((res) => {
       setEpisodes(res);
+      setIsLoading(false);
     });
   }, [id, season]);
 
   return (
-    viewSeason &&
-    episodes && (
-      <Swiper
-        modules={[Navigation, Keyboard]}
-        keyboard={true}
-        navigation={{
-          enabled: true,
-          prevEl: `#prevEps`,
-          nextEl: `#nextEps`,
-        }}
-        slidesPerView={1}
-        spaceBetween={4}
-        breakpoints={{
-          1024: {
-            slidesPerView: 2,
-            slidesPerGroup: 2,
-          },
-        }}
-        className={`relative rounded-b-xl bg-secondary bg-opacity-10 !p-2`}
-      >
-        {episodes &&
-          episodes.map((item) => {
-            return (
-              <SwiperSlide key={item.id} className={`!h-auto`}>
-                <EpisodeCard
-                  filmID={id}
-                  setLoading={setLoading}
-                  episode={item}
-                  imgPath={item.still_path}
-                  title={item.name}
-                  overlay={`Episode ${item.episode_number}`}
-                  secondaryInfo={
-                    <>
-                      {item.vote_average > 1 && (
-                        <span
-                          className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                        >
-                          <IonIcon
-                            icon={star}
-                            className={`text-primary-yellow`}
-                          />
-                          {item.vote_average && formatRating(item.vote_average)}
-                        </span>
-                      )}
+    viewSeason && (
+      <div className={`rounded-b-xl bg-secondary bg-opacity-10 p-2`}>
+        {isLoading && (
+          <div className={`flex items-center justify-center`}>
+            <span className={`loading loading-spinner`}></span>
+          </div>
+        )}
 
-                      {item.runtime && (
-                        <span
-                          className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                        >
-                          {Math.floor(item.runtime / 60) >= 1
-                            ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                                item.runtime % 60,
-                              )}m`
-                            : `${item.runtime} ${isPlural({
-                                text: "minute",
-                                number: item.runtime % 60,
-                              })}`}
-                        </span>
-                      )}
+        {!isLoading && !episodes.length && (
+          <div className={`flex items-center justify-center text-gray-400`}>
+            No episode found
+          </div>
+        )}
 
-                      {item.air_date && (
-                        <span
-                          className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                        >
-                          {moment(item.air_date).format("MMM D, YYYY")}
-                        </span>
-                      )}
-                    </>
-                  }
-                />
-              </SwiperSlide>
-            );
-          })}
+        {!isLoading && episodes.length > 0 && (
+          <Swiper
+            modules={[Navigation, Keyboard]}
+            keyboard={true}
+            navigation={{
+              enabled: true,
+              prevEl: `#prevEps`,
+              nextEl: `#nextEps`,
+            }}
+            slidesPerView={1}
+            spaceBetween={4}
+            breakpoints={{
+              1024: {
+                slidesPerView: 2,
+                slidesPerGroup: 2,
+              },
+            }}
+            className={`relative`}
+          >
+            {episodes &&
+              episodes.map((item) => {
+                return (
+                  <SwiperSlide key={item.id} className={`!h-auto`}>
+                    <EpisodeCard
+                      filmID={id}
+                      setLoading={setLoading}
+                      episode={item}
+                      imgPath={item.still_path}
+                      title={item.name}
+                      overlay={`Episode ${item.episode_number}`}
+                      secondaryInfo={
+                        <>
+                          {item.vote_average > 1 && (
+                            <span
+                              className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                            >
+                              <IonIcon
+                                icon={star}
+                                className={`text-primary-yellow`}
+                              />
+                              {item.vote_average &&
+                                formatRating(item.vote_average)}
+                            </span>
+                          )}
 
-        {/* {episode && (
+                          {item.runtime && (
+                            <span
+                              className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                            >
+                              {Math.floor(item.runtime / 60) >= 1
+                                ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
+                                    item.runtime % 60,
+                                  )}m`
+                                : `${item.runtime} ${isPlural({
+                                    text: "minute",
+                                    number: item.runtime % 60,
+                                  })}`}
+                            </span>
+                          )}
+
+                          {item.air_date && (
+                            <span
+                              className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                            >
+                              {moment(item.air_date).format("MMM D, YYYY")}
+                            </span>
+                          )}
+                        </>
+                      }
+                    />
+                  </SwiperSlide>
+                );
+              })}
+
+            {/* {episode && (
         <EpisodeModal
           episode={episode}
           episodeModalRef={episodeModalRef}
@@ -411,23 +425,25 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
         />
       )} */}
 
-        <div
-          className={`pointer-events-none absolute inset-0 z-40 flex justify-between`}
-        >
-          <button
-            id={`prevEps`}
-            className={`pointer-events-auto flex items-center p-1`}
-          >
-            <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
-          </button>
-          <button
-            id={`nextEps`}
-            className={`pointer-events-auto flex items-center p-1`}
-          >
-            <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
-          </button>
-        </div>
-      </Swiper>
+            <div
+              className={`pointer-events-none absolute inset-0 z-40 flex justify-between`}
+            >
+              <button
+                id={`prevEps`}
+                className={`pointer-events-auto flex items-center p-1`}
+              >
+                <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
+              </button>
+              <button
+                id={`nextEps`}
+                className={`pointer-events-auto flex items-center p-1`}
+              >
+                <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
+              </button>
+            </div>
+          </Swiper>
+        )}
+      </div>
     )
   );
 }

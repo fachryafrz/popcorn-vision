@@ -334,7 +334,7 @@ export default function FilmInfo({
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
           {/* Upcoming */}
-          {filmReleaseDate !== "" && nextEps && (
+          {filmReleaseDate !== "" && (isUpcoming || isUpcomingNextEps) && (
             <section
               id={`Upcoming`}
               className={`mt-2 grid gap-2 md:grid-cols-2`}
@@ -374,13 +374,11 @@ export default function FilmInfo({
                 <>
                   <div
                     id={`Countdown`}
-                    className={`md:row-start-2 ${isTvPage && lastEps ? `md:col-start-2` : `md:col-start-1`}`}
+                    className={`md:col-span-2 md:row-start-2 ${isTvPage && lastEps ? `md:col-start-2` : `md:col-start-1`}`}
                   >
                     <Countdown
-                      isTvPage={isTvPage}
-                      filmReleaseDate={filmReleaseDate}
-                      nextEps={nextEps}
-                      film={film}
+                      movieReleaseDate={filmReleaseDate}
+                      tvReleaseDate={nextEps?.air_date}
                     />
                   </div>
 

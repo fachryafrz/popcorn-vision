@@ -1,18 +1,18 @@
 import Reveal from "@/components/Layout/Reveal";
 import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function Countdown({
-  isTvPage,
-  filmReleaseDate,
-  nextEps,
-  film,
+  movieReleaseDate,
+  tvReleaseDate,
 }) {
-  const dateStr = !isTvPage ? filmReleaseDate : film.first_air_date;
-  const date = new Date(dateStr);
-
-  const upcomingDate = !isTvPage ? filmReleaseDate : nextEps?.air_date;
+  const pathname = usePathname();
+  const isTvPage = pathname.startsWith("/tv");
+  
+  const upcomingDate = !isTvPage ? movieReleaseDate : tvReleaseDate;
+  const date = new Date(upcomingDate);
 
   const timeLeft = new Date(new Date(upcomingDate) - new Date());
 

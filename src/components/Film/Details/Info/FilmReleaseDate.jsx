@@ -35,7 +35,7 @@ export default function FilmReleaseDate({
                 <div className={`flex items-center gap-1`}>
                   <IonIcon icon={calendarOutline} />
 
-                  <time dateTime={film.first_air_date}>
+                  <time dateTime={film.last_air_date ?? film.first_air_date}>
                     {moment(film.first_air_date).format("dddd, MMMM D, YYYY")}
 
                     {film.last_air_date !== null &&
