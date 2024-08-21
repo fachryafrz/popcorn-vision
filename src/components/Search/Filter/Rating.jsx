@@ -13,8 +13,8 @@ export default function Rating({ sliderStyles }) {
   );
   const isQueryParams = searchParams.get("query") ? true : false;
 
-  const [rating, setRating] = useState([0, 100]);
-  const [ratingSlider, setRatingSlider] = useState([0, 100]);
+  const [rating, setRating] = useState([0, 10]);
+  const [ratingSlider, setRatingSlider] = useState([0, 10]);
 
   const ratingMarks = useMemo(
     () => [
@@ -23,7 +23,7 @@ export default function Rating({ sliderStyles }) {
         label: ratingSlider[0],
       },
       {
-        value: 100,
+        value: 10,
         label: ratingSlider[1],
       },
     ],
@@ -33,11 +33,11 @@ export default function Rating({ sliderStyles }) {
   const handleRatingChange = (event, newValue) => {
     const value = rating ? `${newValue[0]},${newValue[1]}` : "";
 
-    // NOTE: Using vote_count.gte & vote_count.lte
+    // NOTE: Using vote_average.gte & vote_average.lte
     if (!value) {
-      current.delete("vote_count");
+      current.delete("rating");
     } else {
-      current.set("vote_count", `${newValue[0]}..${newValue[1]}`);
+      current.set("rating", `${newValue[0]}..${newValue[1]}`);
     }
 
     const search = current.toString();
@@ -49,11 +49,12 @@ export default function Rating({ sliderStyles }) {
 
   useEffect(() => {
     // Rating
-    if (searchParams.get("vote_count")) {
-      const [min, max] = searchParams.get("vote_count").split("..");
-      const searchRating = [parseInt(min), parseInt(max)];
+    if (searchParams.get("rating")) {
+      const [min, max] = searchParams.get("rating").split("..");
+      const [ratingMin, ratingMax] = rating
+      const searchRating = [min, max];
 
-      if (rating[0] !== searchRating[0] || rating[1] !== searchRating[1]) {
+      if (ratingMin !== min || ratingMax !== max) {
         setRating(searchRating);
         setRatingSlider(searchRating);
       }
@@ -71,8 +72,9 @@ export default function Rating({ sliderStyles }) {
           onChange={(event, newValue) => setRatingSlider(newValue)}
           onChangeCommitted={handleRatingChange}
           valueLabelDisplay="off"
+          step={0.1}
           min={0}
-          max={100}
+          max={10}
           marks={ratingMarks}
           sx={sliderStyles}
           disabled={isQueryParams}

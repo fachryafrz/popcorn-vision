@@ -19,7 +19,7 @@ export async function GET(req) {
     with_original_language,
     with_keywords,
     with_runtime,
-    vote_count,
+    rating,
     type,
     sort_by,
   } = Object.fromEntries(url.searchParams);
@@ -60,10 +60,10 @@ export async function GET(req) {
     params["with_runtime.gte"] = min;
     params["with_runtime.lte"] = max;
   }
-  if (vote_count) {
-    const [min, max] = vote_count.split("..");
-    params["vote_count.gte"] = min;
-    params["vote_count.lte"] = max;
+  if (rating) {
+    const [min, max] = rating.split("..");
+    params["vote_average.gte"] = min;
+    params["vote_average.lte"] = max;
   }
   if (type) params.with_type = type;
   if (sort_by) params.sort_by = sort_by;
