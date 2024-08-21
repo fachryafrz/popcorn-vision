@@ -89,6 +89,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
     similar,
     release_dates: releaseDates,
   } = film;
+  const isThereRecommendations = recommendations.results.length > 0;
+  const isThereSimilar = similar.results.length > 0;
 
   let collection;
 
@@ -265,15 +267,20 @@ export default async function FilmDetail({ params, type = "movie" }) {
       )} */}
 
       {/* Recommendations */}
-      {recommendations.results.length > 0 && (
+      {(isThereRecommendations || isThereSimilar) && (
         <Recommendation
           id={id}
-          film={film}
-          films={recommendations}
-          title={isPlural({
-            text: "Recommendation",
-            number: recommendations.results.length,
-          })}
+          similar={similar}
+          recommendations={recommendations}
+          title={
+            isThereRecommendations && isThereSimilar
+              ? "Recommendation & Similar"
+              : isThereRecommendations && !isThereSimilar
+                ? "Recommendation"
+                : isThereSimilar && !isThereRecommendations
+                  ? "Similar"
+                  : ""
+          }
           genres={genres}
         />
       )}

@@ -8,39 +8,58 @@ import Reveal from "../Layout/Reveal";
 import { useInView } from "react-intersection-observer";
 import FilmGrid from "./Grid";
 
-export default function Recommendation({ film, films, title }) {
+export default function Recommendation({
+  id,
+  similar,
+  recommendations,
+  title,
+}) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [currentSearchPage, setCurrentSearchPage] = useState(films.page);
-  const [totalSearchPages, setTotalSearchPages] = useState(films.total_pages);
-  const [filmsData, setFilmsData] = useState(films.results);
+  const [currentSearchPage, setCurrentSearchPage] = useState(
+    recommendations.page,
+  );
+  const [totalSearchPages, setTotalSearchPages] = useState(
+    recommendations.total_pages,
+  );
+  const [filmsData, setFilmsData] = useState(
+    recommendations.results ?? similar.results,
+  );
+  const [isFinished, setIsFinished] = useState(false);
 
   const fetchMoreFilms = async () => {
     try {
-      const nextPage = currentSearchPage + 1;
+      let nextPage = currentSearchPage + 1;
+      let endpoint = !isFinished ? `recommendations` : `similar`;
 
       const response = await fetchData({
-        endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}/recommendations`,
+        endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`,
         queryParams: {
           language: "en-US",
           page: nextPage,
         },
       });
 
-      const isDuplicate = (film) =>
-        filmsData.some((prevFilm) => prevFilm.id === film.id);
-
-      const filteredFilms = response.results.filter(
-        (film) => !isDuplicate(film),
-      );
+      const filteredFilms = response.results.filter((film) => {
+        return !filmsData.some((existingFilm) => existingFilm.id === film.id);
+      });
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
       setCurrentSearchPage(response.page);
+      setTotalSearchPages(response.total_pages);
     } catch (error) {
       console.log(`Error fetching more films:`, error);
     }
   };
+
+  useEffect(() => {
+    if (currentSearchPage === totalSearchPages) {
+      setIsFinished(true);
+      setCurrentSearchPage(0);
+      setTotalSearchPages(similar.total_pages);
+    }
+  }, [currentSearchPage, similar, totalSearchPages]);
 
   return (
     <section
