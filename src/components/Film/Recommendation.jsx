@@ -11,7 +11,6 @@ import FilmGrid from "./Grid";
 export default function Recommendation({ film, films, title }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  console.log(film)
 
   const [currentSearchPage, setCurrentSearchPage] = useState(films.page);
   const [totalSearchPages, setTotalSearchPages] = useState(films.total_pages);
