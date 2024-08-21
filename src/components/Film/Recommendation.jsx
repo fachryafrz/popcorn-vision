@@ -18,15 +18,21 @@ export default function Recommendation({
   const isTvPage = pathname.startsWith("/tv");
 
   const [currentSearchPage, setCurrentSearchPage] = useState(
-    recommendations.page,
+    recommendations.page ? recommendations.page : similar.page,
   );
   const [totalSearchPages, setTotalSearchPages] = useState(
-    recommendations.total_pages,
+    recommendations.total_pages
+      ? recommendations.total_pages
+      : similar.total_pages,
   );
   const [filmsData, setFilmsData] = useState(
-    recommendations.results ?? similar.results,
+    recommendations.results.length > 0
+      ? recommendations.results
+      : similar.results,
   );
-  const [isFinished, setIsFinished] = useState(false);
+  const [isFinished, setIsFinished] = useState(
+    recommendations.results.length > 0 ? false : true,
+  );
 
   const fetchMoreFilms = async () => {
     try {
@@ -54,12 +60,12 @@ export default function Recommendation({
   };
 
   useEffect(() => {
-    if (currentSearchPage === totalSearchPages) {
+    if (currentSearchPage === totalSearchPages && !isFinished) {
       setIsFinished(true);
       setCurrentSearchPage(0);
       setTotalSearchPages(similar.total_pages);
     }
-  }, [currentSearchPage, similar, totalSearchPages]);
+  }, [currentSearchPage, isFinished, similar, totalSearchPages]);
 
   return (
     <section
