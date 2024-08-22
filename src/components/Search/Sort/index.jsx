@@ -121,7 +121,7 @@ export default function SearchSort({
     <div
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
-      className={`flex flex-nowrap justify-center gap-2 lg:ml-auto lg:justify-end [&>div]:w-full lg:[&>div]:w-[145px]`}
+      className={`flex flex-nowrap justify-center gap-2 lg:justify-end [&>div]:w-full lg:[&>div]:w-[145px]`}
     >
       {/* Sort by type */}
       <SortByType

@@ -10,6 +10,7 @@ import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
 import axios from "axios";
 import FilmGrid from "../Film/Grid";
+import numeral from "numeral";
 
 export default function Search({
   type = "movie",
@@ -342,12 +343,21 @@ export default function Search({
             {/* </div> */}
 
             <div className={`hidden w-full lg:flex`}>
-              <SearchSort
-                handleNotAvailable={handleNotAvailable}
-                handleClearNotAvailable={handleClearNotAvailable}
-                inputStyles={inputStyles}
-                setIsFilterActive={setIsFilterActive}
-              />
+              <div className={`ml-auto flex items-center gap-2`}>
+                <span className={`block text-xs font-medium`}>
+                  {!isQueryParams && films?.length
+                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
+                    : films?.length &&
+                      `Showing ${numeral(films.length).format("0,0")} Films`}
+                </span>
+
+                <SearchSort
+                  handleNotAvailable={handleNotAvailable}
+                  handleClearNotAvailable={handleClearNotAvailable}
+                  inputStyles={inputStyles}
+                  setIsFilterActive={setIsFilterActive}
+                />
+              </div>
             </div>
           </div>
         </section>
