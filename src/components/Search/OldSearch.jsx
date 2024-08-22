@@ -315,10 +315,10 @@ export default function Search() {
               <SwiperSlide key={index}>
                 <figure className="aspect-square">
                   <img
-                    loading="lazy"
                     src={`https://image.tmdb.org/t/p/w45${movie.backdrop_path}`}
                     alt={`${!isTvPage ? movie.title : movie.name}`}
                     className={`blur-3xl`}
+                    loading="lazy"
                   />
                 </figure>
               </SwiperSlide>

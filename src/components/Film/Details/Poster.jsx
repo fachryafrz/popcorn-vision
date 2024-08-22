@@ -98,6 +98,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
               alt={!isTvPage ? film.title : film.name}
               className={`object-cover transition-all`}
               draggable={false}
+              loading="lazy"
             />
           )}
 

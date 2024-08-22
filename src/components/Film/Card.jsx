@@ -154,6 +154,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
               alt={isItTvPage(film.title, film.name)}
               className={`object-cover`}
               draggable={false}
+              loading="lazy"
             />
           )}
         </ImagePovi>
@@ -178,6 +179,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
                     alt={isItTvPage(film.title, film.name)}
                     title={isItTvPage(film.title, film.name)}
                     className={`max-w-[200px] object-contain`}
+                    loading="lazy"
                   />
                 </figure>
               </Reveal>

@@ -158,10 +158,10 @@ export default function FilmMedia({ videos, images }) {
               <SwiperSlide key={index}>
                 <figure className="swiper-zoom-container">
                   <img
-                    loading="lazy"
                     src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                     alt={``}
                     className={`h-full w-full object-cover`}
+                    loading="lazy"
                   />
                 </figure>
               </SwiperSlide>

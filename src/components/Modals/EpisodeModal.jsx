@@ -176,6 +176,7 @@ export function EpisodeModal({ film, seasons, episode }) {
                 alt={episode.name}
                 className={`object-cover`}
                 draggable={false}
+                loading="lazy"
               />
             )}
           </ImagePovi>

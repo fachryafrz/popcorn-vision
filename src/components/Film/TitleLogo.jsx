@@ -21,6 +21,7 @@ export default function TitleLogo({ film, images, setLoading }) {
           title={title}
           className=" max-h-[180px] max-w-fit bg-contain object-contain"
           draggable={false}
+          loading="lazy"
         />
 
         {!images && (
