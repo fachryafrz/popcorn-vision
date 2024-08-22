@@ -71,15 +71,18 @@ export default function FilmCard({ film, isTvPage }) {
                 "--thickness": "3px",
               }}
             >
-              <span className={`text-xs text-white`}>
-                {formatRating(film.vote_average)}
-              </span>
+              <span
+                className={`after-content text-xs text-white`}
+                data-after-content={formatRating(film.vote_average)}
+              />
 
               <h3 className={`sr-only`}>{film.name}</h3>
             </div>
           </div>
         )}
       </ImagePovi>
+
+      <h3 className={`sr-only`}>{isItTvPage(film.title, film.name)}</h3>
 
       <FilmPreview
         film={film}
@@ -165,11 +168,6 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
         >
           {/* Logo */}
           <section id="Logo" className={`flex h-[75px] items-end`}>
-            {/* Loading */}
-            {/* {loading && (
-              <div className="h-[75px] w-[200px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg"></div>
-            )} */}
-
             {/* Logo Image */}
             {!loading && titleLogo && (
               <Reveal className={`h-full`} delay={0.1}>
@@ -179,6 +177,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
                     alt={isItTvPage(film.title, film.name)}
                     title={isItTvPage(film.title, film.name)}
                     className={`max-w-[200px] object-contain`}
+                    draggable={false}
                     loading="lazy"
                   />
                 </figure>
@@ -188,35 +187,26 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {/* Logo Text */}
             {!loading && !titleLogo && (
               <Reveal>
-                <h4
-                  className={`line-clamp-2 text-xl font-bold`}
+                <span
+                  className={`before-content line-clamp-2 text-xl font-bold`}
                   style={{ textWrap: `balance` }}
-                >
-                  {isItTvPage(film.title, film.name)}
-                </h4>
+                  data-before-content={isItTvPage(film.title, film.name)}
+                />
               </Reveal>
             )}
           </section>
 
           {/* Info */}
           <section className="flex flex-wrap items-center gap-0.5 text-xs font-medium">
-            {/* Loading */}
-            {/* {loading &&
-              [...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="h-[24px] w-[50px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-full"
-                ></div>
-              ))} */}
-
             {/* Rating */}
             {film.vote_average > 0 && !loading && (
               <Reveal delay={0.1}>
                 <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm">
                   <IonIcon icon={star} className="" />
-                  <span className="!text-white">
-                    {formatRating(film.vote_average)}
-                  </span>
+                  <span
+                    className="before-content !text-white"
+                    data-before-content={formatRating(film.vote_average)}
+                  />
                 </div>
               </Reveal>
             )}
@@ -225,9 +215,10 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {!isTvPage && filmRuntime > 0 && !loading && (
               <Reveal delay={0.15}>
                 <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                  <span className="!text-white">
-                    {formatRuntime(filmRuntime)}
-                  </span>
+                  <span
+                    className="before-content !text-white"
+                    data-before-content={formatRuntime(filmRuntime)}
+                  />
                 </div>
               </Reveal>
             )}
@@ -236,12 +227,15 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {isTvPage && filmDetails?.number_of_seasons > 0 && !loading && (
               <Reveal delay={0.2}>
                 <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                  <span className="!text-white">
-                    {`${filmDetails.number_of_seasons} ${isPlural({
-                      text: `Season`,
-                      number: filmDetails.number_of_seasons,
-                    })}`}
-                  </span>
+                  <span
+                    className="before-content !text-white"
+                    data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
+                      {
+                        text: `Season`,
+                        number: filmDetails.number_of_seasons,
+                      },
+                    )}`}
+                  />
                 </div>
               </Reveal>
             )}
@@ -250,9 +244,10 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
             {filmDetails?.genres.length > 0 && !loading && (
               <Reveal delay={0.25}>
                 <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                  <span className="!text-white">
-                    {filmDetails?.genres[0]?.name}
-                  </span>
+                  <span
+                    className="before-content !text-white"
+                    data-before-content={filmDetails?.genres[0]?.name}
+                  />
                 </div>
               </Reveal>
             )}
@@ -260,30 +255,19 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
 
           {/* Overview */}
           <section id="Overview">
-            {/* {loading && (
-              <div className={`flex flex-col gap-1`}>
-                {[...Array(4)].map((_, i, arr) => (
-                  <div
-                    key={i}
-                    className={`${
-                      i === arr.length - 1 ? `w-[80%]` : `w-full`
-                    } h-[16px] animate-pulse bg-gray-400 bg-opacity-20 backdrop-blur rounded-lg`}
-                  ></div>
-                ))}
-              </div>
-            )} */}
-
             {!loading && film.overview ? (
               <Reveal delay={0.1}>
-                <p className={`line-clamp-3 text-sm font-medium text-gray-400`}>
-                  {film.overview}
-                </p>
+                <span
+                  className={`before-content line-clamp-3 text-sm font-medium text-gray-400`}
+                  data-before-content={film.overview}
+                />
               </Reveal>
             ) : (
               <Reveal delay={0.1}>
-                <p className={`line-clamp-4 text-sm font-medium text-gray-400`}>
-                  No info.
-                </p>
+                <span
+                  className={`before-content line-clamp-4 text-sm font-medium text-gray-400`}
+                  data-before-content={`No info.`}
+                />
               </Reveal>
             )}
           </section>

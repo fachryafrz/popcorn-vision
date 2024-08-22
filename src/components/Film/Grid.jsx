@@ -60,9 +60,17 @@ export default function FilmGrid({
             /* 1536px */
           }
           const xl2 = `
-          2xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-0 2xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
+          @6xl:[&_#FilmPreview]:child-6n+1:left-0 @6xl:[&_#FilmPreview]:child-6n+1:translate-x-0
 
-          2xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto 2xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 2xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
+          @6xl:[&_#FilmPreview]:child-6n:left-auto @6xl:[&_#FilmPreview]:child-6n:translate-x-0 @6xl:[&_#FilmPreview]:child-6n:right-0
+
+          @7xl:[&_#FilmPreview]:child-6n+1:left-1/2 @7xl:[&_#FilmPreview]:child-6n+1:-translate-x-1/2
+
+          @7xl:[&_#FilmPreview]:child-6n:left-1/2 @7xl:[&_#FilmPreview]:child-6n:-translate-x-1/2 @7xl:[&_#FilmPreview]:child-6n:right-auto
+          
+          @7xl:[&_#FilmPreview]:child-7n+1:left-0 @7xl:[&_#FilmPreview]:child-7n+1:translate-x-0
+
+          @7xl:[&_#FilmPreview]:child-7n:!left-auto @7xl:[&_#FilmPreview]:child-7n:!translate-x-0 @7xl:[&_#FilmPreview]:child-7n:!right-0
           `;
 
           return (

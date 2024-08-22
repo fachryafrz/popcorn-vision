@@ -43,7 +43,12 @@ export default function LogoutButton({ user }) {
         ) : (
           <figure className="avatar">
             <div className="w-8 rounded-full">
-              <img src={profileImage} alt={user.name} loading="lazy" />
+              <img
+                src={profileImage}
+                alt={user.name}
+                draggable={false}
+                loading="lazy"
+              />
             </div>
           </figure>
         )}

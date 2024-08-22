@@ -78,4 +78,12 @@
   .prose * {
     @apply !text-gray-400;
   }
+
+  .before-content::before {
+    content: attr(data-before-content);
+  }
+
+  .after-content::after {
+    content: attr(data-after-content);
+  }
 }

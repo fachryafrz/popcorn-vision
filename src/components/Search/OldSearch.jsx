@@ -126,8 +126,8 @@ export default function Search() {
     router.replace(
       `/${!isTvPage ? "search" : "tv/search"}?query=${searchQuery.replace(
         /\s+/g,
-        "+"
-      )}`
+        "+",
+      )}`,
     );
 
     searchRef.current.blur();
@@ -147,7 +147,7 @@ export default function Search() {
     } else if (genres !== null) {
       searchMovies({ query: query, genres: genres });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [URLSearchQuery, URLSearchGenres, isTvPage]);
 
   // Fetch background movies
@@ -179,7 +179,7 @@ export default function Search() {
             params: {
               api_key: apiKey,
             },
-          }
+          },
         )
         .then((response) => {
           setGenres(response.data.genres);
@@ -211,7 +211,7 @@ export default function Search() {
               page: currentSearchPage,
               include_adult: false,
             },
-          }
+          },
         );
       } else {
         response = await axios.get(
@@ -226,7 +226,7 @@ export default function Search() {
               page: currentSearchPage,
               include_adult: false,
             },
-          }
+          },
         );
       }
 
@@ -285,7 +285,7 @@ export default function Search() {
       router.replace(
         !isTvPage
           ? `/search?genres=${selectedGenreIds}`
-          : `/tv/search?genres=${selectedGenreIds}`
+          : `/tv/search?genres=${selectedGenreIds}`,
       );
       setSelectedGenres(updatedGenres);
       setSelectedGenresName(updatedGenresName);
@@ -318,6 +318,7 @@ export default function Search() {
                     src={`https://image.tmdb.org/t/p/w45${movie.backdrop_path}`}
                     alt={`${!isTvPage ? movie.title : movie.name}`}
                     className={`blur-3xl`}
+                    draggable={false}
                     loading="lazy"
                   />
                 </figure>
@@ -327,7 +328,7 @@ export default function Search() {
         </Swiper>
         <div className={`relative z-10`}>
           <div
-            className={`px-4 py-4 -top-8 max-w-xl sm:mx-auto absolute inset-x-0 bg-gray-600 bg-opacity-[90%] backdrop-blur flex items-center gap-4 mx-4 rounded-2xl shadow-xl border-t-4 border-x-4 border-base-100 before:absolute before:w-4 before:h-4 before:bg-transparent before:top-3 before:-left-5 before:rounded-br-xl before:shadow-custom-left after:absolute after:w-4 after:h-4 after:bg-transparent after:top-3 after:-right-5 after:rounded-bl-xl after:shadow-custom-right`}
+            className={`absolute inset-x-0 -top-8 mx-4 flex max-w-xl items-center gap-4 rounded-2xl border-x-4 border-t-4 border-base-100 bg-gray-600 bg-opacity-[90%] px-4 py-4 shadow-xl backdrop-blur before:absolute before:-left-5 before:top-3 before:h-4 before:w-4 before:rounded-br-xl before:bg-transparent before:shadow-custom-left after:absolute after:-right-5 after:top-3 after:h-4 after:w-4 after:rounded-bl-xl after:bg-transparent after:shadow-custom-right sm:mx-auto`}
           >
             <IonIcon icon={Icons.search} className={`text-[1.25rem]`} />
             <form onSubmit={handleSubmit} className={`w-full`}>
@@ -337,21 +338,21 @@ export default function Search() {
                 autoFocus={true}
                 type="text"
                 placeholder="Search"
-                className={`text-white bg-transparent w-full`}
+                className={`w-full bg-transparent text-white`}
                 value={searchQuery ? searchQuery : ``}
               />
               <input type="submit" className="sr-only" />
             </form>
 
             <div
-              className={`hidden lg:block text-xs absolute right-4 top-[50%] -translate-y-[50%] gap-1 opacity-[50%] pointer-events-none`}
+              className={`pointer-events-none absolute right-4 top-[50%] hidden -translate-y-[50%] gap-1 text-xs opacity-[50%] lg:block`}
             >
               <span>Press </span>
               <kbd className={`kbd kbd-xs rounded`}>/</kbd>
             </div>
           </div>
-          <div className="pt-12 p-4 lg:px-[1.5rem] mx-auto max-w-7xl flex flex-col gap-2">
-            <h2 className="font-bold text-xl sm:text-3xl text-center">
+          <div className="mx-auto flex max-w-7xl flex-col gap-2 p-4 pt-12 lg:px-[1.5rem]">
+            <h2 className="text-center text-xl font-bold sm:text-3xl">
               {searchQuery ? `Results` : `Search`}{" "}
               {searchQuery && (
                 <React.Fragment>
@@ -359,7 +360,7 @@ export default function Search() {
                 </React.Fragment>
               )}
             </h2>
-            <div className="grid md:grid-cols-[1fr_auto] gap-2 sticky top-[4.5rem] z-10 px-2">
+            <div className="sticky top-[4.5rem] z-10 grid gap-2 px-2 md:grid-cols-[1fr_auto]">
               {/* Genres */}
               <Swiper
                 modules={[Navigation]}
@@ -370,7 +371,7 @@ export default function Search() {
                   prevEl: "#prev",
                   clickable: true,
                 }}
-                className={`w-full !p-1 rounded-xl bg-[#323946] bg-opacity-50 backdrop-blur relative`}
+                className={`relative w-full rounded-xl bg-[#323946] bg-opacity-50 !p-1 backdrop-blur`}
               >
                 {genres.map((item) => {
                   const activeGenre =
@@ -381,7 +382,7 @@ export default function Search() {
                     <SwiperSlide key={item.id} className="max-w-fit">
                       <button
                         onClick={() => handleGenreClick(item.id, item.name)}
-                        className={`font-medium py-2 px-4 rounded-lg bg-secondary bg-opacity-30 hocus:bg-opacity-50 ${
+                        className={`rounded-lg bg-secondary bg-opacity-30 px-4 py-2 font-medium hocus:bg-opacity-50 ${
                           activeGenre && `!bg-white !text-base-100`
                         }`}
                       >
@@ -392,22 +393,22 @@ export default function Search() {
                 })}
 
                 {/* Swiper Navigation */}
-                <div className="absolute inset-x-0 top-0 h-full z-20 flex justify-between pointer-events-none">
+                <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex h-full justify-between">
                   <button
                     id="prev"
-                    className="aspect-square h-full flex items-center relative before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100 pointer-events-auto cursor-pointer transition-all"
+                    className="pointer-events-auto relative flex aspect-square h-full cursor-pointer items-center transition-all before:absolute before:inset-0 before:bg-gradient-to-r before:from-base-100"
                   >
                     <IonIcon icon={Icons.chevronBack} />
                   </button>
                   <button
                     id="next"
-                    className="aspect-square h-full flex items-center justify-end relative before:absolute before:inset-0 before:bg-gradient-to-l before:from-base-100 pointer-events-auto cursor-pointer transition-all"
+                    className="pointer-events-auto relative flex aspect-square h-full cursor-pointer items-center justify-end transition-all before:absolute before:inset-0 before:bg-gradient-to-l before:from-base-100"
                   >
                     <IonIcon icon={Icons.chevronForward} />
                   </button>
                 </div>
               </Swiper>
-              <div className="flex justify-end items-center">
+              <div className="flex items-center justify-end">
                 <button
                   onClick={() => {
                     setSearchQuery("");
@@ -417,7 +418,7 @@ export default function Search() {
                     setTotalSearchPages(0);
                     router.replace(!isTvPage ? `/search` : `/tv/search`);
                   }}
-                  className={`max-w-fit items-center gap-2 bg-[#323946] bg-opacity-50 backdrop-blur p-2 px-4 rounded-xl hocus:bg-opacity-100 ${
+                  className={`max-w-fit items-center gap-2 rounded-xl bg-[#323946] bg-opacity-50 p-2 px-4 backdrop-blur hocus:bg-opacity-100 ${
                     selectedGenres.length > 0 || URLSearchGenres
                       ? `flex`
                       : `hidden`
@@ -432,13 +433,13 @@ export default function Search() {
               </div>
             </div>
             <div
-              className={`grid gap-2 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5`}
+              className={`grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-5`}
             >
               {films.map((film) => {
                 const filmGenres =
                   film.genre_ids && genres
                     ? film.genre_ids.map((genreId) =>
-                        genres.find((genre) => genre.id === genreId)
+                        genres.find((genre) => genre.id === genreId),
                       )
                     : [];
 
@@ -456,7 +457,7 @@ export default function Search() {
                 );
               })}
               {films.length < 1 && (
-                <p className="text-gray-400 text-center col-span-5">
+                <p className="col-span-5 text-center text-gray-400">
                   {searchQuery.length > 1 &&
                     searchMessage &&
                     `Sorry, we can't find that film.`}
@@ -465,7 +466,7 @@ export default function Search() {
             </div>
             {totalSearchPages > 1 && currentSearchPage !== totalSearchPages && (
               <div
-                className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10 mt-4`}
+                className={`mt-4 flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
               >
                 {/* <button
                   onClick={() => fetchMoreMovies((currentSearchPage += 1))}
@@ -475,7 +476,7 @@ export default function Search() {
                 </button> */}
                 <button
                   onClick={() => fetchMoreMovies((currentSearchPage += 1))}
-                  className="btn btn-ghost bg-white text-primary-blue rounded-full px-12 min-w-fit w-[25%] bg-opacity-5 border-none"
+                  className="btn btn-ghost w-[25%] min-w-fit rounded-full border-none bg-white bg-opacity-5 px-12 text-primary-blue"
                 >
                   Load more
                 </button>
@@ -484,8 +485,8 @@ export default function Search() {
 
             <button
               onClick={scrollToTop}
-              className={`fixed bottom-4 right-4 lg:right-6 2xl:right-[5.5rem] flex max-w-fit aspect-square p-4 rounded-full bg-base-100 bg-opacity-[50%] backdrop-blur border border-secondary hocus:bg-white hocus:bg-opacity-100 hocus:text-base-100 hocus:border-white transition-all opacity-0 pointer-events-none ${
-                showButton && `opacity-100 pointer-events-auto`
+              className={`pointer-events-none fixed bottom-4 right-4 flex aspect-square max-w-fit rounded-full border border-secondary bg-base-100 bg-opacity-[50%] p-4 opacity-0 backdrop-blur transition-all hocus:border-white hocus:bg-white hocus:bg-opacity-100 hocus:text-base-100 lg:right-6 2xl:right-[5.5rem] ${
+                showButton && `pointer-events-auto opacity-100`
               }`}
             >
               <IonIcon icon={Icons.arrowUp} />

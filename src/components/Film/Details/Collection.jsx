@@ -149,9 +149,10 @@ export function CollectionItem({
           film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}
       >
-        <span className={`px-1 text-sm font-medium text-gray-400`}>
-          {index + 1}
-        </span>
+        <span
+          className={`before-content px-1 text-sm font-medium text-gray-400`}
+          data-before-content={index + 1}
+        />
         <ImagePovi
           imgPath={
             item.poster_path &&
@@ -171,31 +172,34 @@ export function CollectionItem({
             className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >
             {(userRating || item.vote_average > 1) && (
-              <span
+              <div
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <IonIcon icon={star} className={`text-primary-yellow`} />
-                {userRating
-                  ? `Your rating: ${userRating}`
-                  : formatRating(item.vote_average)}
-              </span>
+                <span
+                  className={`before-content`}
+                  data-before-content={
+                    userRating
+                      ? `Your rating: ${userRating}`
+                      : formatRating(item.vote_average)
+                  }
+                />
+              </div>
             )}
 
             {filmDetails && filmRuntime > 0 && (
               <span
-                className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-              >
-                {formatRuntime(filmRuntime)}
-              </span>
+                className={`before-content flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+                data-before-content={formatRuntime(filmRuntime)}
+              />
             )}
           </div>
         </div>
-        <p
+        <span
           title={item.overview}
-          className="hidden w-full text-xs text-gray-400 @xs:line-clamp-3"
-        >
-          {item.overview}
-        </p>
+          className="before-content hidden w-full text-xs text-gray-400 @xs:line-clamp-3"
+          data-before-content={item.overview}
+        />
       </Link>
     </article>
   );

@@ -26,6 +26,8 @@ export default function ProductionCompany({ item, i, isTvPage }) {
                   backgroundRepeat: `no-repeat`,
                 }}
               ></figure>
+
+              <span className={`sr-only`}>{item.name}</span>
             </div>
           ) : (
             <span

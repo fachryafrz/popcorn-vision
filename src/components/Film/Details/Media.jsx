@@ -161,6 +161,7 @@ export default function FilmMedia({ videos, images }) {
                     src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
                     alt={``}
                     className={`h-full w-full object-cover`}
+                    draggable={false}
                     loading="lazy"
                   />
                 </figure>
