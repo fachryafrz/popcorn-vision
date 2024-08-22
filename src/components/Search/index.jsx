@@ -177,13 +177,15 @@ export default function Search({
         response = { ...data, results: filteredFilms };
       }
 
-      const uniqueFilms = response.results.filter(
+      const combinedFilms = [...films, ...response.results];
+      
+      const uniqueFilms = combinedFilms.filter(
         (film, index, self) =>
           index === self.findIndex((t) => t.id === film.id),
       );
 
       setLoading(false);
-      setFilms((prevMovies) => [...prevMovies, ...uniqueFilms]);
+      setFilms(uniqueFilms);
       setTotalSearchResults(response.total_results);
       setTotalSearchPages(response.total_pages);
       setCurrentSearchPage(response.page);
