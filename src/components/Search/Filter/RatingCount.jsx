@@ -31,7 +31,7 @@ export default function RatingCount({ sliderStyles }) {
   );
 
   const handleRatingChange = (event, newValue) => {
-    const value = rating ? newValue : "";
+    const value = newValue ? newValue : "";
 
     const ratingValue = [0, 10, 100, 1000, 10000][newValue];
 
