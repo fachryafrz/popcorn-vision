@@ -75,8 +75,6 @@ export default function FilmCard({ film, isTvPage }) {
                 className={`after-content text-xs text-white`}
                 data-after-content={formatRating(film.vote_average)}
               />
-
-              <h3 className={`sr-only`}>{film.name}</h3>
             </div>
           </div>
         )}
