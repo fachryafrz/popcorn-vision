@@ -17,62 +17,36 @@ export default function UserRating({
 }) {
   const { user } = useAuth();
 
-  const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
 
   const [isAdded, setIsAdded] = useState();
   const [hoverRating, setHoverRating] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleRating = useCallback(
-    async (value) => {
-      try {
-        setIsLoading(true);
+  const handleRating = async (value) => {
+    try {
+      setIsLoading(true);
 
-        const {
-          data: { rated },
-        } = await axios.post(url, {
-          type: !isTvPage ? "movie" : "tv",
-          id: film.id,
-          rating: value,
-          season_number: season,
-          episode_number: episode,
-        });
+      const {
+        data: { rated },
+      } = await axios.post(url, {
+        type: !isTvPage ? "movie" : "tv",
+        id: film.id,
+        rating: value,
+        season_number: season,
+        episode_number: episode,
+      });
 
-        setIsLoading(false);
-        setIsAdded(rated);
-        setHoverRating(rated);
-
-        if (!current.get("approved") || !current.get("denied")) {
-          current.delete("rating");
-          router.replace(`${pathname}?${current.toString()}`, {
-            scroll: false,
-          });
-        }
-      } catch (error) {
-        console.error("Error adding rating:", error);
-        setIsLoading(false);
-        // Handle errors appropriately (e.g., display error message to user)
-      }
-    },
-    [
-      episode,
-      film,
-      isTvPage,
-      pathname,
-      router,
-      searchParams,
-      current,
-      season,
-      url,
-    ],
-  );
+      setIsLoading(false);
+      setIsAdded(rated);
+      setHoverRating(rated);
+    } catch (error) {
+      console.error("Error adding rating:", error);
+      setIsLoading(false);
+      // Handle errors appropriately (e.g., display error message to user)
+    }
+  };
 
   const handleDeleteRating = async () => {
     try {
@@ -103,14 +77,6 @@ export default function UserRating({
     setHoverRating(rating);
     setIsLoading(false);
   }, [rating]);
-
-  useEffect(() => {
-    if (searchParams.get("rating")) {
-      const value = parseInt(searchParams.get("rating"));
-
-      handleRating(value);
-    }
-  }, [handleRating, searchParams]);
 
   return (
     <>
@@ -143,16 +109,6 @@ export default function UserRating({
                   setHoverRating({ value: starValue }); // Setel hoverRating kembali ke 0
                   handleRating(starValue);
                 } else {
-                  if (
-                    !searchParams.get("season") &&
-                    !searchParams.get("episode")
-                  ) {
-                    current.set("rating", starValue);
-
-                    router.replace(`${pathname}?${current.toString()}`, {
-                      scroll: false,
-                    });
-                  }
                   document.getElementById("loginAlert").showModal();
                 }
               }}
