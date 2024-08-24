@@ -1,10 +1,11 @@
 "use client";
 
+import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { star, starHalf, starOutline } from "ionicons/icons";
-import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function UserRating({
   film,
@@ -14,6 +15,8 @@ export default function UserRating({
   episode,
   title,
 }) {
+  const { user } = useAuth();
+
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -40,6 +43,7 @@ export default function UserRating({
       setHoverRating(rated);
     } catch (error) {
       console.error("Error adding rating:", error);
+      setIsLoading(false);
       // Handle errors appropriately (e.g., display error message to user)
     }
   };
@@ -101,8 +105,12 @@ export default function UserRating({
             <button
               key={index}
               onClick={async () => {
-                setHoverRating({ value: starValue }); // Setel hoverRating kembali ke 0
-                await handleRating(starValue);
+                if (user) {
+                  setHoverRating({ value: starValue }); // Setel hoverRating kembali ke 0
+                  handleRating(starValue);
+                } else {
+                  document.getElementById("loginAlert").showModal();
+                }
               }}
             >
               <IonIcon

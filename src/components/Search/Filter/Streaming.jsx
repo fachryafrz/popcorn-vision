@@ -125,7 +125,7 @@ export default function Streaming({ inputStyles }) {
         <div className={`h-[42px]`}>
           <button
             onClick={() => requestLocation(setUserLocation, setLocationError)}
-            className={`btn btn-outline btn-sm h-full  w-full rounded-full`}
+            className={`btn btn-ghost btn-sm flex h-full w-full items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
           >
             Enable location
           </button>

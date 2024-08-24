@@ -32,6 +32,7 @@ import Confetti from "react-confetti-boom";
 import moment from "moment";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import LoginAlert from "@/components/Modals/LoginAlert";
 
 export default function FilmInfo({
   film,
@@ -107,8 +108,8 @@ export default function FilmInfo({
   // Get account state
   const [accountStates, setAccountStates] = useState();
 
-  const getAccountStates = useCallback(
-    async ({ setValue, setHoverValue, setIsLoading, type }) => {
+  useEffect(() => {
+    const getAccountStates = async (setValue) => {
       await axios
         .get(`/api/account_states`, {
           params: {
@@ -117,39 +118,19 @@ export default function FilmInfo({
           },
         })
         .then(({ data: res }) => {
-          switch (type) {
-            case "favorite":
-              setValue(res.favorite);
-              break;
-            case "watchlist":
-              setValue(res.watchlist);
-              break;
-            case "rating":
-              setValue(res.rated);
-              setHoverValue(res.rated);
-              break;
-            default:
-              setValue(res);
-              break;
-          }
+          setValue(res);
         })
         .catch((error) => {
           console.error("Error getting account states:", error);
-        })
-        .finally(() => {
-          if (setIsLoading) {
-            setIsLoading(false);
-          }
         });
-    },
-    [film, isTvPage],
-  );
+    };
 
-  useEffect(() => {
-    getAccountStates({
-      setValue: setAccountStates,
-    });
-  }, [getAccountStates]);
+    if (user) {
+      getAccountStates(setAccountStates);
+    } else {
+      setAccountStates(null);
+    }
+  }, [film.id, isTvPage, user]);
 
   // Use Effect for getting user location
   useEffect(() => {
@@ -307,7 +288,7 @@ export default function FilmInfo({
                   onClick={() =>
                     requestLocation(setUserLocation, setLocationError)
                   }
-                  className={`btn btn-outline btn-sm h-full max-w-fit rounded-full`}
+                  className={`btn btn-ghost btn-sm flex h-full max-w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
                 >
                   Enable location
                 </button>
@@ -399,7 +380,7 @@ export default function FilmInfo({
             </section>
           )}
           {/* User Rating */}
-          {user && !isUpcoming && filmReleaseDate !== "" && (
+          {!isUpcoming && filmReleaseDate !== "" && (
             <Reveal className={`mt-2`}>
               <section
                 id={`${!isTvPage ? `Movie` : `TV Series`} Rating`}
@@ -419,29 +400,25 @@ export default function FilmInfo({
             id={`Share`}
             className={`mt-2 flex flex-wrap items-end gap-1`}
           >
-            {user && (
-              <div className={`flex flex-col gap-1 md:flex-row`}>
-                {/* Add to Favorite */}
-                {!isUpcoming && filmReleaseDate !== "" && (
-                  <Reveal className={`flex`}>
-                    <FavoriteButton
-                      film={film}
-                      getAccountStates={getAccountStates}
-                      favorite={accountStates?.favorite}
-                    />
-                  </Reveal>
-                )}
-
-                {/* Add to Watchlist */}
+            <div className={`flex flex-col gap-1 md:flex-row`}>
+              {/* Add to Favorite */}
+              {!isUpcoming && filmReleaseDate !== "" && (
                 <Reveal className={`flex`}>
-                  <WatchlistButton
+                  <FavoriteButton
                     film={film}
-                    getAccountStates={getAccountStates}
-                    watchlist={accountStates?.watchlist}
+                    favorite={accountStates?.favorite}
                   />
                 </Reveal>
-              </div>
-            )}
+              )}
+
+              {/* Add to Watchlist */}
+              <Reveal className={`flex`}>
+                <WatchlistButton
+                  film={film}
+                  watchlist={accountStates?.watchlist}
+                />
+              </Reveal>
+            </div>
 
             {/* Share */}
             <Reveal className={`relative ml-auto gap-4 sm:gap-0`}>

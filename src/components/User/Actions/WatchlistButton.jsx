@@ -5,12 +5,12 @@ import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
-import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-export default function WatchlistButton({ film, getAccountStates, watchlist }) {
+export default function WatchlistButton({ film, watchlist }) {
   const { user } = useAuth();
-  const cookies = useCookies();
+
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -33,6 +33,7 @@ export default function WatchlistButton({ film, getAccountStates, watchlist }) {
       setIsAdded(watchlist);
     } catch (error) {
       console.error("Error adding to watchlist:", error);
+      setIsLoading(false);
       // Handle errors appropriately (e.g., display error message to user)
     }
   };
@@ -43,7 +44,13 @@ export default function WatchlistButton({ film, getAccountStates, watchlist }) {
 
   return (
     <button
-      onClick={() => handleWatchlist(!isAdded)}
+      onClick={() => {
+        if (user) {
+          handleWatchlist(!isAdded);
+        } else {
+          document.getElementById("loginAlert").showModal();
+        }
+      }}
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
       {isLoading ? (

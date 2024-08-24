@@ -13,6 +13,8 @@ import { useEpisodeModal } from "@/zustand/episodeModal";
 import { usePersonModal } from "@/zustand/personModal";
 import ShareModal from "@/components/Modals/ShareModal";
 import PersonModal from "@/components/Modals/PersonModal";
+import LoginAlert from "@/components/Modals/LoginAlert";
+import { useAuth } from "@/hooks/auth";
 
 export default function FilmContent({
   film,
@@ -25,6 +27,8 @@ export default function FilmContent({
   isTvPage,
   releaseDates,
 }) {
+  const { user } = useAuth();
+
   const searchParams = useSearchParams();
 
   const { episode: episodeForModal, setEpisodeModal } = useEpisodeModal(
@@ -132,6 +136,8 @@ export default function FilmContent({
         {/* Misc */}
         <section className={`col-span-full`}>
           <ShareModal />
+
+          {!user && <LoginAlert />}
 
           {isTvPage && episodeForModal && (
             <EpisodeModal

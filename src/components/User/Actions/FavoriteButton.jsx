@@ -4,11 +4,12 @@ import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
-import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-export default function FavoriteButton({ film, getAccountStates, favorite }) {
+export default function FavoriteButton({ film, favorite }) {
   const { user } = useAuth();
+
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -32,6 +33,7 @@ export default function FavoriteButton({ film, getAccountStates, favorite }) {
       setIsAdded(favorite);
     } catch (error) {
       console.error("Error adding to favorite:", error);
+      setIsLoading(false);
       // Handle errors appropriately (e.g., display error message to user)
     }
   };
@@ -42,7 +44,13 @@ export default function FavoriteButton({ film, getAccountStates, favorite }) {
 
   return (
     <button
-      onClick={() => handleFavorite(!isAdded)}
+      onClick={() => {
+        if (user) {
+          handleFavorite(!isAdded);
+        } else {
+          document.getElementById("loginAlert").showModal();
+        }
+      }}
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
     >
       {isLoading ? (

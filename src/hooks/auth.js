@@ -1,11 +1,16 @@
 import useSWR from "swr";
-import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Axios from "axios";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const current = useMemo(
+    () => new URLSearchParams(Array.from(searchParams.entries())),
+    [searchParams],
+  );
 
   const {
     data: user,
@@ -33,7 +38,11 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const login = async ({ request_token }) => {
     Axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
       mutate();
-      router.replace(pathname);
+
+      current.delete("request_token");
+      current.delete("approved");
+      current.delete("denied");
+      router.replace(`${pathname}?${current.toString()}`, { scroll: false });
     });
   };
 
