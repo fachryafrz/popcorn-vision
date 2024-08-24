@@ -39,7 +39,7 @@ export default function LoginAlert() {
     >
       <div className="modal-box flex max-w-sm flex-col items-center">
         <h3 className="text-center text-lg font-bold">Login Required!</h3>
-        <p className="py-4 text-center">This action requires you to log in.</p>
+        <p className="py-4 text-center">This action requires you to login.</p>
         <button
           onClick={getToken}
           className={`btn btn-primary w-full rounded-full`}
