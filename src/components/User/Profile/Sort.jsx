@@ -6,7 +6,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const sortOptions = [
-  { label: "Date Rated", value: "created_at" },
+  { label: "Date Added", value: "created_at" },
   { label: "Rating", value: "rating" },
   { label: "Popularity", value: "popularity" },
   { label: "Release Date", value: "release_date" },
