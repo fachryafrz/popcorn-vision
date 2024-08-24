@@ -88,6 +88,7 @@ export default function LoginForm() {
             <div className="label">
               <Link
                 href={`https://www.themoviedb.org/reset-password`}
+                target="_blank"
                 className="label-text-alt italic text-primary-blue"
               >
                 Forgot your password?
