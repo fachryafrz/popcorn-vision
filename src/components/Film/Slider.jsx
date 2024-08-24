@@ -109,7 +109,10 @@ export default function FilmSlider({
         <div className="absolute left-0 right-0 top-0 flex h-[28px] max-w-7xl items-end justify-between px-4 xl:max-w-none">
           {/* <Reveal> */}
           <div className="flex items-end gap-4">
-            <p className="text-lg font-bold md:text-2xl">{title}</p>
+            <span
+              className="before-content text-lg font-bold md:text-2xl"
+              data-before-content={title}
+            />
 
             {viewAll !== "" && (
               <Link

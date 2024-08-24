@@ -127,7 +127,7 @@ export default async function page() {
   // };
 
   return (
-    <>
+    <section className={`py-4`}>
       <User user={user} />
 
       <div className={`flex flex-col`}>
@@ -183,6 +183,6 @@ export default async function page() {
           />
         </div>
       </div>
-    </>
+    </section>
   );
 }

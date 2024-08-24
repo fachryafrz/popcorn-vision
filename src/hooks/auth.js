@@ -6,11 +6,6 @@ import Axios from "axios";
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
 
   const {
     data: user,
@@ -35,14 +30,11 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     },
   );
 
-  const login = async ({ request_token }) => {
+  const login = async ({ request_token, setIsLoading }) => {
     Axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
       mutate();
-
-      current.delete("request_token");
-      current.delete("approved");
-      current.delete("denied");
-      router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+      setIsLoading(false);
+      router.replace(`${pathname}`, { scroll: false });
     });
   };
 

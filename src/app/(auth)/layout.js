@@ -5,10 +5,9 @@ import React from "react";
 
 export default function UserLayout({ children }) {
   const { user } = useAuth({
-    middleware: "auth",
+    middleware: "guest",
+    redirectIfAuthenticated: "/",
   });
 
-  if (user) {
-    return <>{children}</>;
-  }
+  return <>{children}</>;
 }
