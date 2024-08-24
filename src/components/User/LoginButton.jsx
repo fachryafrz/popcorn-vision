@@ -15,9 +15,11 @@ export default function LoginButton() {
   const getToken = async () => {
     await axios.get("/authentication/token/new").then(({ data }) => {
       const { request_token: REQUEST_TOKEN } = data;
-      console.log(REQUEST_TOKEN);
+
+      const redirect_to = encodeURIComponent(window.location.href);
+
       router.push(
-        `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${window.location.href}`,
+        `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${redirect_to}`,
       );
     });
   };
@@ -31,9 +33,9 @@ export default function LoginButton() {
     }
 
     if (searchParams.get("denied") === "true") {
-      router.replace(pathname);
+      router.replace(pathname, { scroll: false });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, router, searchParams]);
 
   return (

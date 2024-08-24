@@ -54,7 +54,6 @@ export function EpisodeModal({ film, seasons, episode }) {
   };
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
-  console.log(filteredSeasons);
 
   const handleCloseModal = () => {
     document.getElementById(`episodeModal`).close();
@@ -237,7 +236,7 @@ export function EpisodeModal({ film, seasons, episode }) {
               </section>
             </div>
 
-            {user && isAired && (
+            {isAired && (
               <section id={`Episode Rating`} className={`max-w-fit`}>
                 <UserRating
                   film={film}
