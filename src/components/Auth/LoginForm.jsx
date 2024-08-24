@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 
 export default function LoginForm() {
   const { login } = useAuth();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -30,12 +28,10 @@ export default function LoginForm() {
         request_token,
       };
 
-      const redirectTo = searchParams.get("redirect_to") || pathname;
-
       axios
         .post("/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
-          login({ request_token, setIsLoading, redirectTo });
+          login({ request_token, setIsLoading });
         })
         .catch(({ response: { data } }) => {
           const { status_message } = data;

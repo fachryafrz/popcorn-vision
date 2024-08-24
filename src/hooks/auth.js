@@ -30,11 +30,10 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     },
   );
 
-  const login = async ({ request_token, setIsLoading, redirectTo }) => {
+  const login = async ({ request_token, setIsLoading }) => {
     Axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
       mutate();
       setIsLoading(false);
-      router.replace(redirectTo, { scroll: false });
     });
   };
 
@@ -50,9 +49,9 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
   useEffect(() => {
     if (middleware === "guest" && redirectIfAuthenticated && user)
-      router.push(redirectIfAuthenticated);
+      router.replace(redirectIfAuthenticated);
     if (window.location.pathname === "/verify-email" && user?.email_verified_at)
-      router.push(redirectIfAuthenticated);
+      router.replace(redirectIfAuthenticated);
     if (middleware === "auth" && error) logout();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, error]);
