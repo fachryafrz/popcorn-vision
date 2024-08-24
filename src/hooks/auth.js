@@ -44,7 +44,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
 
     if (pathname === "/profile") {
-      router.replace("/");
+      router.replace("/login");
     }
   };
 
