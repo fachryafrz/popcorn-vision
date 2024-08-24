@@ -39,7 +39,7 @@ export default function FavoriteButton({ film, favorite }) {
         setIsLoading(false);
         setIsAdded(favorite);
 
-        if (!searchParams.get("approved") || !searchParams.get("denied")) {
+        if (!current.get("approved") || !current.get("denied")) {
           current.delete("favorite");
           router.replace(`${pathname}?${current.toString()}`, {
             scroll: false,

@@ -39,7 +39,7 @@ export default function WatchlistButton({ film, watchlist }) {
         setIsLoading(false);
         setIsAdded(watchlist);
 
-        if (!searchParams.get("approved") || !searchParams.get("denied")) {
+        if (!current.get("approved") || !current.get("denied")) {
           current.delete("watchlist");
           router.replace(`${pathname}?${current.toString()}`, {
             scroll: false,

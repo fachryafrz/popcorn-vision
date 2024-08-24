@@ -49,7 +49,7 @@ export default function UserRating({
         setIsAdded(rated);
         setHoverRating(rated);
 
-        if (!searchParams.get("approved") || !searchParams.get("denied")) {
+        if (!current.get("approved") || !current.get("denied")) {
           current.delete("rating");
           router.replace(`${pathname}?${current.toString()}`, {
             scroll: false,
