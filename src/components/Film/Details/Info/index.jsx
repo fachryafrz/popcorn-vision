@@ -288,7 +288,7 @@ export default function FilmInfo({
                   onClick={() =>
                     requestLocation(setUserLocation, setLocationError)
                   }
-                  className={`btn btn-outline btn-sm h-full max-w-fit rounded-full`}
+                  className={`btn btn-ghost btn-sm flex h-full max-w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
                 >
                   Enable location
                 </button>
