@@ -30,11 +30,11 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     },
   );
 
-  const login = async ({ request_token, setIsLoading }) => {
+  const login = async ({ request_token, setIsLoading, redirectTo }) => {
     Axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
       mutate();
       setIsLoading(false);
-      router.replace(`${pathname}`, { scroll: false });
+      router.replace(redirectTo, { scroll: false });
     });
   };
 

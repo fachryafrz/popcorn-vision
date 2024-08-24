@@ -3,10 +3,13 @@
 import { useAuth } from "@/hooks/auth";
 import axios from "@/lib/axios";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginForm() {
   const { login } = useAuth();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -27,10 +30,12 @@ export default function LoginForm() {
         request_token,
       };
 
+      const redirectTo = searchParams.get("redirect_to") || pathname;
+
       axios
         .post("/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
-          login({ request_token, setIsLoading });
+          login({ request_token, setIsLoading, redirectTo });
         })
         .catch(({ response: { data } }) => {
           const { status_message } = data;
