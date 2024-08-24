@@ -1,10 +1,7 @@
-import { useAuth } from "@/hooks/auth";
-import axios from "@/lib/axios";
 import { IonIcon } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
 import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 export default function LoginButton() {
   const pathname = usePathname();
