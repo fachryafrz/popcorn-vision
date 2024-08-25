@@ -346,12 +346,13 @@ export default function Search({
 
             <div className={`hidden w-full lg:flex`}>
               <div className={`ml-auto flex items-center gap-2`}>
-                <span className={`block text-xs font-medium`}>
-                  {!isQueryParams && films?.length
-                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
-                    : films?.length &&
-                      `Showing ${numeral(films.length).format("0,0")} Films`}
-                </span>
+                {films?.length > 0 && (
+                  <span className={`block text-xs font-medium`}>
+                    {!isQueryParams
+                      ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
+                      : `Showing ${numeral(films.length).format("0,0")} Films`}
+                  </span>
+                )}
 
                 <SearchSort
                   handleNotAvailable={handleNotAvailable}
