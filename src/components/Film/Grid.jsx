@@ -74,7 +74,7 @@ export default function FilmGrid({
           `;
 
           return (
-            <Reveal key={film.id} className={`${xl2}`}>
+            <Reveal key={film.id} y={0} className={`${xl2}`}>
               <FilmCard
                 film={film}
                 isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}

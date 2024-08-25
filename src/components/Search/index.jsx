@@ -178,7 +178,7 @@ export default function Search({
       }
 
       const combinedFilms = [...films, ...response.results];
-      
+
       const uniqueFilms = combinedFilms.filter(
         (film, index, self) =>
           index === self.findIndex((t) => t.id === film.id),
@@ -294,7 +294,7 @@ export default function Search({
         />
       </Suspense>
 
-      <div className={`flex w-full flex-col gap-2 p-4 lg:pr-0`}>
+      <div className={`flex w-full flex-col gap-2 p-4 @container lg:pr-0`}>
         {/* Options */}
         <section
           className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  px-4 py-2 lg:flex-row lg:justify-between ${isScrolled ? `bg-opacity-85 backdrop-blur` : `bg-opacity-0`}`}
@@ -367,8 +367,15 @@ export default function Search({
         {loading && (
           <>
             {/* Loading films */}
-            <section className={`flex items-center justify-center`}>
-              <span className="loading loading-spinner loading-md"></span>
+            <section
+              className={`grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7`}
+            >
+              {[...Array(20).keys()].map((a) => (
+                <span
+                  key={a}
+                  className="aspect-poster animate-pulse rounded-xl bg-gray-400 bg-opacity-20"
+                ></span>
+              ))}
             </section>
           </>
         )}

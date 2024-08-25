@@ -255,18 +255,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
       />
 
       {/* Recommendations */}
-      {/* {recommendations.results.length > 0 && (
-        <FilmSlider
-          films={recommendations}
-          title={isPlural({
-            text: "Recommendation",
-            number: recommendations.results.length,
-          })}
-          genres={genres}
-        />
-      )} */}
-
-      {/* Recommendations */}
       {(isThereRecommendations || isThereSimilar) && (
         <Recommendation
           id={id}
