@@ -28,11 +28,11 @@ export default function LogoutButton({ user }) {
   }, [user]);
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className="dropdown dropdown-end h-full w-full">
       <div
         tabIndex={0}
         role="button"
-        className={`btn aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-1 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 xl:aspect-auto`}
+        className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm`}
       >
         {!profileImage ? (
           <div className="avatar placeholder">
@@ -52,14 +52,10 @@ export default function LogoutButton({ user }) {
             </div>
           </figure>
         )}
-
-        {/* <div className={`hidden flex-col items-start xl:flex`}>
-          <span>{user.username}</span>
-        </div> */}
       </div>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box z-50 mt-2 w-52 bg-base-100 p-2 shadow"
+        className="menu dropdown-content rounded-box z-50 mt-3 w-52 bg-base-100 p-2 shadow"
       >
         <li>
           <button onClick={() => revalidateRedirect("/profile")}>

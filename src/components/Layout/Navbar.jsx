@@ -225,7 +225,7 @@ export default function Navbar() {
             </Link>
           </Reveal>
 
-          <Reveal y={-20} delay={0.6}>
+          <Reveal y={-20} delay={0.6} className={`h-[40px] w-[40px]`}>
             {!user ? <LoginButton /> : <LogoutButton user={user} />}
           </Reveal>
         </div>

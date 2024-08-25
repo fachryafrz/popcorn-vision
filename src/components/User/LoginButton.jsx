@@ -9,9 +9,9 @@ export default function LoginButton() {
   return (
     <Link
       href={`/login?redirect_to=${pathname}`}
-      className={`btn aspect-square h-auto min-h-0 rounded-full border-transparent bg-opacity-0 p-1 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm sm:m-0 xl:aspect-auto`}
+      className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
     >
-      <IonIcon icon={personCircleOutline} className={`!text-3xl`} />
+      <IonIcon icon={personCircleOutline} className={`!text-4xl`} />
       {/* <span className={`hidden xl:block`}>Login</span> */}
     </Link>
   );
