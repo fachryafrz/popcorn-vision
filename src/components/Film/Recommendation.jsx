@@ -73,7 +73,7 @@ export default function Recommendation({
       className={`mx-auto flex w-full max-w-none flex-col gap-2 p-4`}
     >
       <div className="flex items-end gap-4">
-        <Reveal>
+        <Reveal y={0}>
           <h2 className="text-lg font-bold md:text-2xl">{title}</h2>{" "}
         </Reveal>
       </div>
