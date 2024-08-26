@@ -316,10 +316,7 @@ export default function FilmInfo({
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
           {/* Upcoming */}
           {filmReleaseDate !== "" && (isUpcoming || isUpcomingNextEps) && (
-            <section
-              id={`Upcoming`}
-              className={`mt-2 grid gap-2 md:grid-cols-2`}
-            >
+            <section id={`Upcoming`} className={`grid gap-2 md:grid-cols-2`}>
               {lastEps && (
                 <div
                   id={`TV Series Last Episode`}
@@ -355,7 +352,7 @@ export default function FilmInfo({
                 <>
                   <div
                     id={`Countdown`}
-                    className={`md:col-span-2 md:row-start-2 ${isTvPage && lastEps ? `md:col-start-2` : `md:col-start-1`}`}
+                    className={`md:col-span-2 ${isTvPage ? `md:row-start-2` : `md:row-start-1`} ${isTvPage && lastEps ? `md:col-start-2 md:row-start-2` : `md:col-start-1`}`}
                   >
                     <Countdown
                       movieReleaseDate={filmReleaseDate}
@@ -381,7 +378,7 @@ export default function FilmInfo({
           )}
           {/* User Rating */}
           {!isUpcoming && filmReleaseDate !== "" && (
-            <Reveal className={`mt-2`}>
+            <Reveal>
               <section
                 id={`${!isTvPage ? `Movie` : `TV Series`} Rating`}
                 className={`max-w-fit`}
@@ -398,7 +395,7 @@ export default function FilmInfo({
           {/* Call to Action */}
           <section
             id={`Share`}
-            className={`mt-2 flex flex-wrap items-end gap-1`}
+            className={`flex flex-wrap items-end gap-1`}
           >
             <div className={`flex flex-col gap-1 md:flex-row`}>
               {/* Add to Favorite */}
