@@ -19,22 +19,13 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     (state) => state,
   );
 
-  const [filmPoster, setFilmPoster] = useState(film.poster_path);
+  const [filmPoster] = seasonPoster;
   const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
-    // Zustand
-    setSeasonPoster(null);
+    setSeasonPoster([film.poster_path]); // Zustand
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (seasonPoster) {
-      setFilmPoster(seasonPoster.poster_path);
-    } else {
-      setFilmPoster(film.poster_path);
-    }
-  }, [film, seasonPoster]);
 
   useEffect(() => {
     const isWindowAvailable = typeof window !== "undefined";

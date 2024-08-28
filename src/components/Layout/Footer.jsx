@@ -171,9 +171,9 @@ export default function Footer() {
             </Link>
           </span>
         </Reveal>
-        <Reveal>
+        {/* <Reveal>
           <span>{`v${packageJson.version}`}</span>
-        </Reveal>
+        </Reveal> */}
       </div>
     </footer>
   );

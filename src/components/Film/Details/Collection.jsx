@@ -214,17 +214,15 @@ function FilmSeason({ film, item, index, setLoading }) {
     setViewSeason(!viewSeason);
 
     if (!viewSeason) {
-      // Zustand
-      setSeasonPoster(item);
+      // Memperbarui array poster di Zustand
+      setSeasonPoster((prev) => [item.poster_path, ...prev]);
     } else {
-      // Zustand
-      setSeasonPoster(null);
+      // Reset state poster jika diperlukan
+      setSeasonPoster((prev) =>
+        prev.filter((poster) => poster !== item.poster_path),
+      );
     }
   };
-
-  // useEffect(() => {
-  //   setViewSeason(false);
-  // }, [film]);
 
   return (
     <>
