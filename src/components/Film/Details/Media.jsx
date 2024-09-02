@@ -55,7 +55,7 @@ export default function FilmMedia({ videos, images }) {
   }, [activeSlide, activeVideo]);
 
   return (
-    <div id="media" className="flex flex-col gap-2">
+    <div id="media" className="flex flex-col gap-2 -mx-4 md:mx-0">
       <div className="max-w-full">
         <Swiper
           onSwiper={(swiper) => setMediaSwiper(swiper)}
@@ -91,7 +91,7 @@ export default function FilmMedia({ videos, images }) {
             "--swiper-navigation-color": "#fff",
             "--swiper-pagination-color": "#fff",
           }}
-          className="relative aspect-video overflow-hidden rounded-xl"
+          className="relative aspect-video overflow-hidden md:rounded-xl"
         >
           <div
             id="navigation"

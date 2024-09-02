@@ -24,7 +24,7 @@ export default function FilmReviews({ reviews, film }) {
 
   return (
     <div id="reviews" className="relative flex flex-col gap-2">
-      <div className="sticky top-[66px] z-10 flex items-center gap-1 bg-base-100 bg-opacity-[85%] py-2 backdrop-blur">
+      <div className="sticky top-[66px] z-10 -mx-4 flex items-center gap-1 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur">
         <h2 className="m-0 text-xl font-bold text-white">
           {moreReviews.length > 1 ? `Reviews` : `Review`}
         </h2>{" "}
@@ -70,7 +70,7 @@ export default function FilmReviews({ reviews, film }) {
       {/* View all reviews */}
       {moreReviews.length > numReviews && (
         <div
-          className={`absolute inset-x-0 bottom-0 h-[200px] items-end justify-center bg-gradient-to-t from-base-100 text-primary-blue ${
+          className={`absolute inset-x-0 bottom-0 -mx-4 h-[200px] items-end justify-center bg-gradient-to-t from-base-100 text-primary-blue md:mx-0 ${
             showAllReviews ? `hidden` : `flex`
           }`}
         >

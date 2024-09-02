@@ -40,7 +40,7 @@ export default function ReviewCard({ review }) {
   }, [review]);
 
   return (
-    <div className="flex flex-col gap-2 rounded-xl bg-gray-400 bg-opacity-10 p-4">
+    <div className="-mx-4 flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 md:mx-0 md:rounded-xl">
       <div className="flex items-center gap-2">
         <Person
           name={review.author}

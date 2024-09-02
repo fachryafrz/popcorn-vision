@@ -48,7 +48,7 @@ export default function LoginForm() {
 
   return (
     <div
-      className={`flex w-full max-w-sm flex-col items-center gap-4 rounded-3xl bg-secondary bg-opacity-10 p-4`}
+      className={`flex w-full sm:max-w-sm flex-col items-center gap-4 sm:rounded-3xl bg-secondary bg-opacity-10 p-4`}
     >
       <form onSubmit={handleLogin} className={`w-full`}>
         <div className={`flex flex-col gap-2`}>

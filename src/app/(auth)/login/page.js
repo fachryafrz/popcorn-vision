@@ -5,7 +5,7 @@ import React from "react";
 export default function Login() {
   return (
     <section
-      className={`flex h-[calc(100dvh-66px-1rem)] flex-col items-center gap-2 px-4`}
+      className={`flex h-[calc(100dvh-66px-1rem)] flex-col items-center gap-2 sm:px-4`}
     >
       <div className={`mt-20 flex flex-col items-center gap-2`}>
         <figure
