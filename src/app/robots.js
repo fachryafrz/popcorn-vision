@@ -4,6 +4,6 @@ export default function robots() {
       userAgent: "*",
       disallow: ["/skeleton", "/welcome"],
     },
-    sitemap: process.env.NEXT_PUBLIC_APP_URL,
+    sitemap: `${process.env.NEXT_PUBLIC_APP_URL}/sitemap.xml`,
   };
 }
