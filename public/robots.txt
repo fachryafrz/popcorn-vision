@@ -1,6 +1,0 @@
-# https://www.robotstxt.org/robotstxt.html
-User-agent: *
-Disallow: /skeleton
-Disallow: /welcome
-
-Sitemap: https://popcornvision.vercel.app/sitemap.xml
