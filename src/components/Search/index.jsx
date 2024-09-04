@@ -400,15 +400,15 @@ export default function Search({
             </section>
           </>
         )}
-
-        {notAvailable && (
-          <div className="toast toast-start z-50 min-w-0 max-w-full whitespace-normal">
-            <div className="alert alert-error">
-              <span style={{ textWrap: `balance` }}>{notAvailable}</span>
-            </div>
-          </div>
-        )}
       </div>
+
+      {notAvailable && (
+        <div className="toast toast-start z-[60] min-w-0 max-w-full whitespace-normal">
+          <div className="alert alert-error">
+            <span style={{ textWrap: `balance` }}>{notAvailable}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

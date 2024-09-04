@@ -208,15 +208,19 @@ export function CollectionItem({
 function FilmSeason({ film, item, index, setLoading }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const { setSeasonPoster } = useSeasonPoster((state) => state);
+  const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
 
-  const handleViewSeason = async () => {
-    setViewSeason(!viewSeason);
+  const samePoster = poster.includes(item.poster_path);
 
-    if (!viewSeason) {
+  const handleViewSeason = async (viewSeason) => {
+    setViewSeason(viewSeason);
+
+    if (viewSeason && !samePoster) {
       // Memperbarui array poster di Zustand
       setSeasonPoster((prev) => [item.poster_path, ...prev]);
-    } else {
+    }
+
+    if (!viewSeason && poster.length > 1) {
       // Reset state poster jika diperlukan
       setSeasonPoster((prev) =>
         prev.filter((poster) => poster !== item.poster_path),
@@ -227,8 +231,10 @@ function FilmSeason({ film, item, index, setLoading }) {
   return (
     <>
       <button
-        onClick={
-          item.episode_count > 0 ? handleViewSeason : () => setViewSeason(false)
+        onClick={() =>
+          item.episode_count > 0
+            ? handleViewSeason(!viewSeason)
+            : setViewSeason(false)
         }
         className={`flex w-full items-center gap-2 bg-secondary bg-opacity-10 p-2 transition-all hocus:bg-opacity-30 ${
           viewSeason

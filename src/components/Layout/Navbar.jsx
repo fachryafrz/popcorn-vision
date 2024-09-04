@@ -258,17 +258,36 @@ export function SearchBar({ placeholder = `Search` }) {
   }, [URLSearchQuery]);
 
   useEffect(() => {
-    if (isSearchPage) {
-      searchRef?.current.focus();
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "/") {
-        e.preventDefault();
-        router.push(isTvPage ? "/tv/search" : "/search");
+    const onKeyDown = (event) => {
+      if (event.key === "/") {
+        if (document.activeElement !== searchRef.current) {
+          event.preventDefault();
+          searchRef.current.focus();
+        }
       }
-    });
-  }, [isTvPage, router, isSearchPage]);
+
+      if (event.key === "Escape") {
+        if (document.activeElement === searchRef.current) {
+          searchRef.current.blur();
+        }
+      }
+
+      if (event.defaultPrevented) {
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isSearchPage) {
+      searchRef.current.focus();
+    }
+  }, [isSearchPage]);
 
   return (
     <form
