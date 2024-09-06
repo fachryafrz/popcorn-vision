@@ -87,8 +87,8 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         <Reveal delay={0.2} className={`[&_a]:w-full`}>
           <Link
             href={isItTvPage(
-              `/movies/${film.id}-${slugify(film.title)}`,
-              `/tv/${film.id}-${slugify(film.name)}`,
+              `/movies/${film.id}${slugify(film.title)}`,
+              `/tv/${film.id}${slugify(film.name)}`,
             )}
             className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
           >

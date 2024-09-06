@@ -37,7 +37,7 @@ export default async function sitemap({ id }) {
   }
 
   const moviesInSitemap = movies.map((movie) => ({
-    url: `${appUrl}/movies/${movie.id}-${slugify(movie.title)}`,
+    url: `${appUrl}/movies/${movie.id}${slugify(movie.title)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,

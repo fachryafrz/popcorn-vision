@@ -64,7 +64,7 @@ export async function generateMetadata({ params, type = "movie" }) {
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
-  const isTvPage = type === "tv" ? true : false;
+  const isTvPage = type === "tv";
 
   const film = await fetchData({
     endpoint: `/${type}/${id}`,

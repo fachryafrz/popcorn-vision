@@ -37,7 +37,7 @@ export default async function sitemap({ id }) {
   }
 
   const tvShowsInSitemap = tvShows.map((show) => ({
-    url: `${appUrl}/tv/${show.id}-${slugify(show.name)}`,
+    url: `${appUrl}/tv/${show.id}${slugify(show.name)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,

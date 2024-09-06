@@ -39,8 +39,8 @@ export default function FilmCard({ film, isTvPage }) {
     <Link
       id="FilmCard"
       href={isItTvPage(
-        `/movies/${film.id}-${slugify(film.title)}`,
-        `/tv/${film.id}-${slugify(film.name)}`,
+        `/movies/${film.id}${slugify(film.title)}`,
+        `/tv/${film.id}${slugify(film.name)}`,
       )}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
