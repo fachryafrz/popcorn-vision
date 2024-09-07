@@ -1,6 +1,7 @@
 "use client";
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
+import { tmdb_session_id } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -80,7 +81,7 @@ export default function TileList({
         queryParams: {
           language: "en-US",
           page: nextPage,
-          session_id: cookies.get("tmdb.session_id"),
+          session_id: cookies.get(tmdb_session_id),
           sort_by: "created_at.desc",
         },
       });

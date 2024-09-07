@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { fetchData } from "@/lib/fetch";
 import TileList from "../../../components/User/Profile/TileList";
 import UserProfileSort from "@/components/User/Profile/Sort";
+import { tmdb_session_id } from "@/lib/constants";
 
 export const revalidate = 0;
 
@@ -16,7 +17,7 @@ export async function generateMetadata() {
     {
       params: {
         api_key: process.env.API_KEY,
-        session_id: cookiesStore.get("tmdb.session_id").value,
+        session_id: cookiesStore.get(tmdb_session_id).value,
       },
     },
   );
@@ -59,7 +60,7 @@ export default async function page() {
     {
       params: {
         api_key: process.env.API_KEY,
-        session_id: cookiesStore.get("tmdb.session_id").value,
+        session_id: cookiesStore.get(tmdb_session_id).value,
       },
     },
   );
@@ -67,21 +68,21 @@ export default async function page() {
   const favoriteMovies = await fetchData({
     endpoint: `/account/${user.id}/favorite/movies`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
   const watchlistMovies = await fetchData({
     endpoint: `/account/${user.id}/watchlist/movies`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
   const ratedMovies = await fetchData({
     endpoint: `/account/${user.id}/rated/movies`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
@@ -89,21 +90,21 @@ export default async function page() {
   const favoriteTv = await fetchData({
     endpoint: `/account/${user.id}/favorite/tv`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
   const watchlistTv = await fetchData({
     endpoint: `/account/${user.id}/watchlist/tv`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
   const ratedTv = await fetchData({
     endpoint: `/account/${user.id}/rated/tv`,
     queryParams: {
-      session_id: cookiesStore.get("tmdb.session_id").value,
+      session_id: cookiesStore.get(tmdb_session_id).value,
       sort_by: "created_at.desc",
     },
   });
@@ -114,7 +115,7 @@ export default async function page() {
   //       const filmData = await fetchData({
   //         endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
   //         queryParams: {
-  //           session_id: cookiesStore.get("tmdb.session_id").value,
+  //           session_id: cookiesStore.get(tmdb_session_id).value,
   //           sort_by: "created_at.desc",
   //         },
   //       });

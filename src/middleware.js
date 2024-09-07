@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchData } from "./lib/fetch";
 import { slugify } from "./lib/slugify";
 import { cookies } from "next/headers";
+import { tmdb_session_id } from "./lib/constants";
 
 // Example of default export
 export default async function middleware(request) {
@@ -31,7 +32,7 @@ export default async function middleware(request) {
   const isProfilePage = pathname.startsWith("/profile");
 
   if (isProfilePage) {
-    if (!cookiesStore.has("tmdb.session_id")) {
+    if (!cookiesStore.has(tmdb_session_id)) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
@@ -39,7 +40,7 @@ export default async function middleware(request) {
   if (isLoginPage) {
     const { searchParams } = request.nextUrl;
 
-    if (cookiesStore.has("tmdb.session_id")) {
+    if (cookiesStore.has(tmdb_session_id)) {
       return NextResponse.redirect(
         new URL(searchParams.get("redirect_to") || "/", request.url),
       );
@@ -48,5 +49,11 @@ export default async function middleware(request) {
 }
 
 export const config = {
-  matcher: ["/movies/:id/:path*", "/tv/:id/:path*", "/profile", "/login"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
 };
+
+// export const config = {
+//   matcher: ["/movies/:id/:path*", "/tv/:id/:path*", "/profile", "/login"],
+// };
