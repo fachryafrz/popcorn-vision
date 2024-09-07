@@ -1,3 +1,4 @@
+import { tmdb_session_id } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -15,7 +16,7 @@ export async function POST(req) {
       {
         params: {
           api_key: process.env.API_KEY,
-          session_id: cookiesStore.get("tmdb.session_id").value,
+          session_id: cookiesStore.get(tmdb_session_id).value,
         },
       },
     );
@@ -28,7 +29,7 @@ export async function POST(req) {
     //     {
     //       params: {
     //         api_key: process.env.API_KEY,
-    //         session_id: cookiesStore.get("tmdb.session_id").value,
+    //         session_id: cookiesStore.get(tmdb_session_id).value,
     //       },
     //     },
     //   );
@@ -59,7 +60,7 @@ export async function DELETE(req) {
       {
         params: {
           api_key: process.env.API_KEY,
-          session_id: cookiesStore.get("tmdb.session_id").value,
+          session_id: cookiesStore.get(tmdb_session_id).value,
         },
       },
     );
@@ -72,7 +73,7 @@ export async function DELETE(req) {
     //     {
     //       params: {
     //         api_key: process.env.API_KEY,
-    //         session_id: cookiesStore.get("tmdb.session_id").value,
+    //         session_id: cookiesStore.get(tmdb_session_id).value,
     //       },
     //     },
     //   );

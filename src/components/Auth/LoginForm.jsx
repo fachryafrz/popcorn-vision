@@ -1,13 +1,17 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import axios from "@/lib/axios";
+import axios from "axios";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect_to") || "/";
+
+  const { mutate } = useAuth();
 
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
@@ -19,7 +23,7 @@ export default function LoginForm() {
 
     setIsLoading(true);
 
-    await axios.get("/authentication/token/new").then(({ data }) => {
+    await axios.get("/api/authentication/token/new").then(({ data }) => {
       const { request_token } = data;
 
       const credentials = {
@@ -29,9 +33,14 @@ export default function LoginForm() {
       };
 
       axios
-        .post("/authentication/token/validate_with_login", credentials)
+        .post("/api/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
-          login({ request_token, setIsLoading });
+          // Login
+          axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
+            mutate();
+            setIsLoading(false);
+            router.push(redirectTo);
+          });
         })
         .catch(({ response: { data } }) => {
           const { status_message } = data;
@@ -48,7 +57,7 @@ export default function LoginForm() {
 
   return (
     <div
-      className={`flex w-full sm:max-w-sm flex-col items-center gap-4 sm:rounded-3xl bg-secondary bg-opacity-10 p-4`}
+      className={`flex w-full flex-col items-center gap-4 bg-secondary bg-opacity-10 p-4 sm:max-w-sm sm:rounded-3xl`}
     >
       <form onSubmit={handleLogin} className={`w-full`}>
         <div className={`flex flex-col gap-2`}>
@@ -102,6 +111,7 @@ export default function LoginForm() {
           >
             <button
               type="submit"
+              disabled={isLoading}
               className={`btn btn-primary btn-sm order-2 mt-2 h-[40px] w-[100px] rounded-full px-8`}
             >
               {isLoading && <span className={`loading loading-spinner`}></span>}
