@@ -2,14 +2,21 @@
 import { useAuth } from "@/hooks/auth";
 import { revalidateRedirect } from "@/lib/revalidateRedirect";
 import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { mutate } = useAuth();
 
-  const { logout } = useAuth();
+  const logout = async () => {
+    await axios.delete(`/api/auth/logout`).then(() => mutate(null));
+
+    if (pathname === "/profile") {
+      router.push("/login");
+    }
+  };
 
   const [profileImage, setProfileImage] = useState(null);
 

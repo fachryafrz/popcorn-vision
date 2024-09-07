@@ -8,7 +8,7 @@ export default function LoginButton() {
 
   return (
     <Link
-      href={`/login?redirect_to=${pathname}`}
+      href={pathname !== "/login" ? `/login?redirect_to=${pathname}` : "/login"}
       className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
     >
       <IonIcon icon={personCircleOutline} className={`!text-4xl`} />
