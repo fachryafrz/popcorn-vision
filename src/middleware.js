@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchData } from "./lib/fetch";
 import { slugify } from "./lib/slugify";
-import { cookies } from "next/headers";
 import { tmdb_session_id } from "./lib/constants";
 
 // Example of default export
@@ -20,10 +18,9 @@ export default async function middleware(request) {
     const film = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
     ).then((res) => res.json());
-    const slugifiedTitle = slugify(film.title ?? film.name);
     const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}${slugify(film.title ?? film.name)}`;
 
-    if (pathname !== correctPathname && slugifiedTitle !== "") {
+    if (pathname !== correctPathname) {
       return NextResponse.redirect(new URL(correctPathname, request.url));
     }
   }
@@ -31,18 +28,14 @@ export default async function middleware(request) {
   const isLoginPage = pathname.startsWith("/login");
   const isProfilePage = pathname.startsWith("/profile");
 
-  if (isProfilePage) {
-    if (!tmdbSessionID) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+  if (isProfilePage && !tmdbSessionID) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (isLoginPage) {
-    if (tmdbSessionID) {
-      const redirectTo = searchParams.get("redirect_to") || "/";
+  if (isLoginPage && tmdbSessionID) {
+    const redirectTo = searchParams.get("redirect_to") || "/";
 
-      return NextResponse.redirect(new URL(redirectTo, request.url));
-    }
+    return NextResponse.redirect(new URL(redirectTo, request.url));
   }
 }
 
