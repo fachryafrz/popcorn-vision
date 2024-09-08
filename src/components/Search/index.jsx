@@ -186,7 +186,7 @@ export default function Search({
 
       setLoading(false);
       setFilms(uniqueFilms);
-      setTotalSearchResults(response.total_results);
+      // setTotalSearchResults(response.total_results);
       setTotalSearchPages(response.total_pages);
       setCurrentSearchPage(response.page);
     } catch (error) {
