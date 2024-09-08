@@ -37,14 +37,14 @@
     },
     {
       "src": "screenshots/home_mobile.png",
-      "sizes": "469x832",
+      "sizes": "750x1332",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Home"
     },
     {
       "src": "screenshots/film_details_mobile.png",
-      "sizes": "469x832",
+      "sizes": "750x1332",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Film Details"

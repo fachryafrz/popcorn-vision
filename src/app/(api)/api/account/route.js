@@ -7,6 +7,13 @@ export async function GET() {
   const cookiesStore = cookies();
 
   try {
+    if (!cookiesStore.has(tmdb_session_id)) {
+      return NextResponse.json(
+        { message: "You are not authenticated" },
+        { status: 401 },
+      );
+    }
+
     const { data } = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/account`,
       {
