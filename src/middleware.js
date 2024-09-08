@@ -7,13 +7,15 @@ export default async function middleware(request) {
   const cookiesStore = request.cookies;
   const { pathname, searchParams } = request.nextUrl;
 
-  const isTvPage = pathname.startsWith("/tv");
-  const isMoviesPage = pathname.startsWith("/movies");
-  const isTvSearchPage = pathname.startsWith("/tv/search");
+  const isTvPage =
+    pathname.startsWith("/tv") &&
+    !pathname.startsWith("/tv/search") &&
+    pathname !== "/tv";
+  const isMoviesPage = pathname.startsWith("/movies") && pathname !== "/movies";
   const type = isTvPage ? "tv" : "movie";
   const tmdbSessionID = cookiesStore.has(tmdb_session_id);
 
-  if ((isMoviesPage || isTvPage) && !isTvSearchPage) {
+  if (isMoviesPage || isTvPage) {
     const id = pathname.split("-")[0].split("/").pop();
     const film = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
