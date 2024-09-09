@@ -11,6 +11,7 @@ import { closeCircle, filter } from "ionicons/icons";
 import axios from "axios";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
+import { fetchData } from "@/lib/fetch";
 
 export default function Search({
   type = "movie",
@@ -153,8 +154,10 @@ export default function Search({
           params.watch_region = JSON.parse(userLocation).countryCode;
         }
 
-        const { data } = await axios.get(`/api/search/filter`, {
-          params: params,
+        const data = await fetchData({
+          endpoint: `/api/search/filter`,
+          queryParams: params,
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
         });
 
         response = data;
@@ -166,8 +169,10 @@ export default function Search({
           page: nextPage,
         };
 
-        const { data } = await axios.get(`/api/search/query`, {
-          params: params,
+        const data = await fetchData({
+          endpoint: `/api/search/query`,
+          queryParams: params,
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
         });
 
         const filteredFilms = data.results.filter(
@@ -210,8 +215,10 @@ export default function Search({
         params.watch_region = JSON.parse(userLocation).countryCode;
       }
 
-      const { data } = await axios.get(`/api/search/filter`, {
-        params: params,
+      const data = await fetchData({
+        endpoint: `/api/search/filter`,
+        queryParams: params,
+        baseURL: process.env.NEXT_PUBLIC_APP_URL,
       });
 
       const uniqueFilms = data.results.filter(
@@ -231,8 +238,10 @@ export default function Search({
         query: searchParams.get("query"),
       };
 
-      const { data } = await axios.get(`/api/search/query`, {
-        params: params,
+      const data = await fetchData({
+        endpoint: `/api/search/query`,
+        queryParams: params,
+        baseURL: process.env.NEXT_PUBLIC_APP_URL,
       });
 
       const filteredMovies = data.results.filter(

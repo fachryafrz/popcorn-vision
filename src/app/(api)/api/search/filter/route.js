@@ -23,10 +23,11 @@ export async function GET(req) {
     vote_count,
     type,
     sort_by,
+    api_key,
   } = Object.fromEntries(url.searchParams);
 
   const params = {
-    api_key: process.env.API_KEY,
+    api_key: api_key,
     include_adult: false,
   };
 
