@@ -5,6 +5,7 @@ import { releaseStatus } from "@/lib/releaseStatus";
 import { isPlural } from "@/lib/isPlural";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
+import AdultModal from "@/components/Modals/AdultModal";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -88,6 +89,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     recommendations,
     similar,
     release_dates: releaseDates,
+    adult,
   } = film;
   const isThereRecommendations = recommendations.results.length > 0;
   const isThereSimilar = similar.results.length > 0;
@@ -273,6 +275,10 @@ export default async function FilmDetail({ params, type = "movie" }) {
         />
       )}
 
+      {/* Modals */}
+      {adult && <AdultModal adult={adult} />}
+
+      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

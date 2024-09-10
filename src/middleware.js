@@ -39,6 +39,10 @@ export default async function middleware(request) {
 
     return NextResponse.redirect(new URL(redirectTo, request.url));
   }
+
+  if (pathname === "/movies") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 }
 
 export const config = {

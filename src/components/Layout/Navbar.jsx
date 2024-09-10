@@ -283,12 +283,6 @@ export function SearchBar({ placeholder = `Search` }) {
     };
   }, []);
 
-  useEffect(() => {
-    if (isSearchPage) {
-      searchRef.current.focus();
-    }
-  }, [isSearchPage]);
-
   return (
     <form
       onSubmit={(e) => {
