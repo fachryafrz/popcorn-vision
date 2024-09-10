@@ -3,15 +3,15 @@
 
 import { IonIcon } from "@ionic/react";
 import {
-  logoFacebook,
+  logoGithub,
   logoInstagram,
+  logoLinkedin,
   logoTwitter,
-  logoYoutube,
 } from "ionicons/icons";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import packageJson from '../../../package.json';
+import packageJson from "../../../package.json";
 
 // JSON import
 import footer from "../../json/footer.json";
@@ -103,11 +103,11 @@ export default function Footer() {
             <div className="flex flex-wrap gap-2">
               <Reveal delay={0.05}>
                 <Link
-                  href="https://facebook.com/fachryafrz"
+                  href="https://github.com/fachryafrz"
                   target="_blank"
                   className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
-                  <IonIcon icon={logoFacebook} className="text-[1.25rem]" />
+                  <IonIcon icon={logoGithub} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
               <Reveal delay={0.1}>
@@ -130,11 +130,11 @@ export default function Footer() {
               </Reveal>
               <Reveal delay={0.2}>
                 <Link
-                  href="https://youtube.com/@fachryafrz"
+                  href="https://www.linkedin.com/in/fachryafrz"
                   target="_blank"
                   className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
                 >
-                  <IonIcon icon={logoYoutube} className="text-[1.25rem]" />
+                  <IonIcon icon={logoLinkedin} className="text-[1.25rem]" />
                 </Link>
               </Reveal>
             </div>
