@@ -23,7 +23,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
-    setSeasonPoster([film.poster_path]); // Zustand
+    setSeasonPoster(() => [film.poster_path]); // Zustand
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
