@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { fetchData, getTitleLogo } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 
 export default function TitleLogo({ film, images, setLoading }) {

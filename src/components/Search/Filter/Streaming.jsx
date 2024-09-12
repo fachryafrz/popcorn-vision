@@ -1,9 +1,9 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { axios } from "@/lib/axios";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
@@ -57,13 +57,12 @@ export default function Streaming({ inputStyles }) {
   useEffect(() => {
     // Fetch watch providers by user country code
     if (userLocation) {
-      fetchData({
-        endpoint: `/watch/providers/movie`,
-        queryParams: {
+      axios(`/watch/providers/movie`, {
+        params: {
           watch_region: JSON.parse(userLocation).countryCode,
         },
-      }).then((res) => {
-        setProvidersData(res.results);
+      }).then(({ data }) => {
+        setProvidersData(data.results);
         setIsLoading(false);
       });
     }

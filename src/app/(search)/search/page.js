@@ -1,6 +1,6 @@
 import React from "react";
 import Search from "@/components/Search/";
-import { fetchData } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata() {
   return {
@@ -34,23 +34,19 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const { genres: movieGenresData } = await fetchData({
-    endpoint: `/genre/movie/list`,
+  const {
+    data: { genres: movieGenresData },
+  } = await axios(`/genre/movie/list`);
+  const { data: languagesData } = await axios(`/configuration/languages`);
+  const {
+    data: { results: fetchMinYear },
+  } = await axios(`/discover/movie`, {
+    params: { sort_by: "primary_release_date.asc" },
   });
-  const languagesData = await fetchData({
-    endpoint: `/configuration/languages`,
-  });
-  const { results: fetchMinYear } = await fetchData({
-    endpoint: `/discover/movie`,
-    queryParams: {
-      sort_by: "primary_release_date.asc",
-    },
-  });
-  const { results: fetchMaxYear } = await fetchData({
-    endpoint: `/discover/movie`,
-    queryParams: {
-      sort_by: "primary_release_date.desc",
-    },
+  const {
+    data: { results: fetchMaxYear },
+  } = await axios(`/discover/movie`, {
+    params: { sort_by: "primary_release_date.desc" },
   });
 
   const defaultMaxYear = new Date().getFullYear() + 1;

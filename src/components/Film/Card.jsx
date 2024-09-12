@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { slugify } from "../../lib/slugify";
 import ImagePovi from "./ImagePovi";
-import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { motion as m } from "framer-motion";
@@ -13,6 +12,7 @@ import Reveal from "../Layout/Reveal";
 import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";
+import { axios } from "@/lib/axios";
 
 export default function FilmCard({ film, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
@@ -108,12 +108,9 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
   );
 
   const fetchTitleLogo = useCallback(async () => {
-    await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
-      queryParams: {
-        append_to_response: "images",
-      },
-    }).then((res) => {
+    await axios(`/${isItTvPage(`movie`, `tv`)}/${film.id}`, {
+      params: { append_to_response: "images" },
+    }).then(({ data: res }) => {
       const { images } = res;
       setTitleLogo(images.logos.find((img) => img.iso_639_1 === "en"));
       setFilmDetails(res);
@@ -124,7 +121,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
   }, [film, isItTvPage]);
 
   useEffect(() => {
-    if (isHovering && window.innerWidth >= 1280) {
+    if (isHovering && window.innerWidth >= 1536) {
       fetchTitleLogo();
     }
   }, [fetchTitleLogo, isHovering]);

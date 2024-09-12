@@ -1,12 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import FilmCard from "./Card";
-import { fetchData } from "@/lib/fetch";
+import React, { useEffect, useState } from "react";
 import Reveal from "../Layout/Reveal";
-import { useInView } from "react-intersection-observer";
 import FilmGrid from "./Grid";
+import { axios } from "@/lib/axios";
 
 export default function Recommendation({
   id,
@@ -39,13 +37,10 @@ export default function Recommendation({
       let nextPage = currentSearchPage + 1;
       let endpoint = !isFinished ? `recommendations` : `similar`;
 
-      const response = await fetchData({
-        endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`,
-        queryParams: {
-          language: "en-US",
-          page: nextPage,
-        },
-      });
+      const { data: response } = await axios(
+        `/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`,
+        { params: { language: "en-US", page: nextPage } },
+      );
 
       const filteredFilms = response.results.filter((film) => {
         return !filmsData.some((existingFilm) => existingFilm.id === film.id);

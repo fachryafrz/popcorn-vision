@@ -8,10 +8,9 @@ import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
-import axios from "axios";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
-import { fetchData } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 
 export default function Search({
   type = "movie",
@@ -154,9 +153,8 @@ export default function Search({
           params.watch_region = JSON.parse(userLocation).countryCode;
         }
 
-        const data = await fetchData({
-          endpoint: `/api/search/filter`,
-          queryParams: params,
+        const { data } = await axios(`/api/search/filter`, {
+          params,
           baseURL: process.env.NEXT_PUBLIC_APP_URL,
         });
 
@@ -169,9 +167,8 @@ export default function Search({
           page: nextPage,
         };
 
-        const data = await fetchData({
-          endpoint: `/api/search/query`,
-          queryParams: params,
+        const { data } = await axios(`/api/search/query`, {
+          params,
           baseURL: process.env.NEXT_PUBLIC_APP_URL,
         });
 
@@ -215,9 +212,8 @@ export default function Search({
         params.watch_region = JSON.parse(userLocation).countryCode;
       }
 
-      const data = await fetchData({
-        endpoint: `/api/search/filter`,
-        queryParams: params,
+      const { data } = await axios(`/api/search/filter`, {
+        params,
         baseURL: process.env.NEXT_PUBLIC_APP_URL,
       });
 
@@ -238,9 +234,8 @@ export default function Search({
         query: searchParams.get("query"),
       };
 
-      const data = await fetchData({
-        endpoint: `/api/search/query`,
-        queryParams: params,
+      const { data } = await axios(`/api/search/query`, {
+        params,
         baseURL: process.env.NEXT_PUBLIC_APP_URL,
       });
 

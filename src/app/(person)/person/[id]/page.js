@@ -2,13 +2,18 @@ import React from "react";
 import PersonProfile from "../../../../components/Person/Profile";
 import PersonDetails from "../../../../components/Person/Details";
 import PersonWorks from "../../../../components/Person/Works";
-import { getPerson } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id });
-  const images = await getPerson({ id, path: "/images" });
+  const { data: person } = await axios(`/person/${id}`, {
+    params: {
+      language: "en",
+      append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+    },
+  });
+  const { data: images } = await axios(`/person/${id}/images`);
 
   let profiles;
 
@@ -50,7 +55,12 @@ export async function generateMetadata({ params }) {
 export default async function Person({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id });
+  const { data: person } = await axios(`/person/${id}`, {
+    params: {
+      language: "en",
+      append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+    },
+  });
   const {
     combined_credits: combinedCredits,
     movie_credits: movieCredits,

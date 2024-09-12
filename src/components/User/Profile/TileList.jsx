@@ -2,7 +2,7 @@
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
 import { tmdb_session_id } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
+import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -75,16 +75,17 @@ export default function TileList({
     try {
       const nextPage = currentSearchPage + 1;
 
-      // NOTE: Session ID still visible in the Network DevTools
-      const response = await fetchData({
-        endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
-        queryParams: {
-          language: "en-US",
-          page: nextPage,
-          session_id: cookies.get(tmdb_session_id),
-          sort_by: "created_at.desc",
+      const { data: response } = await axios.get(
+        `/api/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
+        {
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+          params: {
+            language: "en-US",
+            page: nextPage,
+            sort_by: "created_at.desc",
+          },
         },
-      });
+      );
 
       const isDuplicate = (film) =>
         filmsData.some((prevFilm) => prevFilm.id === film.id);
@@ -147,7 +148,6 @@ export default function TileList({
               index={i}
               item={film}
               type={type}
-              shouldFetch={false}
               userRating={film.rating}
             />
           </li>

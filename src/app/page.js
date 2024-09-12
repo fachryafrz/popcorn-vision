@@ -4,8 +4,8 @@ import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
 import companies from "../json/companies.json";
 import providers from "../json/providers.json";
-import { fetchData, getTrending } from "@/lib/fetch";
 import moment from "moment";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata() {
   return {
@@ -47,19 +47,18 @@ export default async function Home({ type = "movie" }) {
   const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
 
   // API Requests
-  const { genres } = await fetchData({
-    endpoint: `/genre/${type}/list`,
-  });
-  const { results: trending } = await getTrending({ type });
+  const {
+    data: { genres },
+  } = await axios(`/genre/${type}/list`);
+  const {
+    data: { results: trending },
+  } = await axios(`/trending/${type}/day`);
 
   const fetchTrendingFilmsData = async () => {
     const data = await Promise.all(
       trending.slice(0, 5).map(async (item) => {
-        const filmData = await fetchData({
-          endpoint: `/${type}/${item.id}`,
-          queryParams: {
-            append_to_response: "images",
-          },
+        const { data: filmData } = await axios(`/${type}/${item.id}`, {
+          params: { append_to_response: "images" },
         });
 
         return filmData;
@@ -96,9 +95,8 @@ export default async function Home({ type = "movie" }) {
       <div className={`lg:-mt-[5rem]`}>
         {/* Now Playing */}
         <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: !isTvPage
+          films={await axios(`/discover/${type}`, {
+            params: !isTvPage
               ? {
                   ...defaultParams,
                   without_genres: 18,
@@ -111,7 +109,7 @@ export default async function Home({ type = "movie" }) {
                   "first_air_date.gte": monthsAgo,
                   "first_air_date.lte": today,
                 },
-          })}
+          }).then(({ data }) => data)}
           title={!isTvPage ? `Now Playing` : `On The Air`}
           genres={genres}
           viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${monthsAgo}..${today}`}
@@ -119,9 +117,8 @@ export default async function Home({ type = "movie" }) {
 
         {/* Upcoming */}
         <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: !isTvPage
+          films={await axios(`/discover/${type}`, {
+            params: !isTvPage
               ? {
                   ...defaultParams,
                   without_genres: 18,
@@ -134,7 +131,7 @@ export default async function Home({ type = "movie" }) {
                   "first_air_date.gte": tomorrow,
                   "first_air_date.lte": monthsLater,
                 },
-          })}
+          }).then(({ data }) => data)}
           title={`Upcoming`}
           genres={genres}
           sort={"ASC"}
@@ -143,14 +140,13 @@ export default async function Home({ type = "movie" }) {
 
         {/* Top Rated */}
         <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: {
+          films={await axios(`/discover/${type}`, {
+            params: {
               ...defaultParams,
               // without_genres: 18,
               sort_by: "vote_count.desc",
             },
-          })}
+          }).then(({ data }) => data)}
           title={`Top Rated`}
           genres={genres}
           viewAll={`${
@@ -168,13 +164,12 @@ export default async function Home({ type = "movie" }) {
           ? companies.slice(0, 3).map(async (company) => (
               <FilmSlider
                 key={company.id}
-                films={await fetchData({
-                  endpoint: `/discover/${type}`,
-                  queryParams: {
+                films={await axios(`/discover/${type}`, {
+                  params: {
                     ...defaultParams,
                     with_companies: company.id,
                   },
-                })}
+                }).then(({ data }) => data)}
                 title={company.name}
                 genres={genres}
                 viewAll={`${
@@ -185,13 +180,12 @@ export default async function Home({ type = "movie" }) {
           : providers.slice(0, 3).map(async (provider) => (
               <FilmSlider
                 key={provider.id}
-                films={await fetchData({
-                  endpoint: `/discover/${type}`,
-                  queryParams: {
+                films={await axios(`/discover/${type}`, {
+                  params: {
                     ...defaultParams,
                     with_networks: provider.id,
                   },
-                })}
+                }).then(({ data }) => data)}
                 title={provider.name}
                 genres={genres}
               />
@@ -206,13 +200,12 @@ export default async function Home({ type = "movie" }) {
         {genres.slice(0, 3).map(async (genre) => (
           <FilmSlider
             key={genre.id}
-            films={await fetchData({
-              endpoint: `/discover/${type}`,
-              queryParams: {
+            films={await axios(`/discover/${type}`, {
+              params: {
                 ...defaultParams,
                 with_genres: genre.id,
               },
-            })}
+            }).then(({ data }) => data)}
             title={genre.name}
             genres={genres}
             viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${

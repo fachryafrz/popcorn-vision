@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { usePathname } from "next/navigation";
-import { getMoreReviews } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 
 export default function FilmReviews({ reviews, film }) {
   const totalReviewPages = reviews.total_pages;
@@ -12,15 +12,22 @@ export default function FilmReviews({ reviews, film }) {
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+  const type = !isTvPage ? `movie` : `tv`;
 
   const handleShowAllReviews = () => {
     setShowAllReviews(true);
   };
 
-  // useEffect(() => {
-  //   setCurrentPage(1);
-  //   setShowAllReviews(false);
-  // }, [film]);
+  const getMoreReviews = async () => {
+    const nextPage = currentPage + 1;
+
+    const { data } = await axios(`/${type}/${film.id}/reviews`, {
+      params: { page: nextPage },
+    });
+
+    setCurrentPage(nextPage);
+    setMoreReviews((prev) => [...prev, ...data.results]);
+  };
 
   return (
     <div id="reviews" className="relative flex flex-col gap-2">
@@ -47,19 +54,7 @@ export default function FilmReviews({ reviews, film }) {
             className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
           >
             <button
-              onClick={() =>
-                getMoreReviews({
-                  film,
-                  type: !isTvPage ? `movie` : `tv`,
-                  currentPage,
-                }).then((data) => {
-                  setCurrentPage((prevPage) => prevPage + 1);
-                  setMoreReviews((prevReviews) => [
-                    ...prevReviews,
-                    ...data.results,
-                  ]);
-                })
-              }
+              onClick={getMoreReviews}
               className="btn btn-ghost w-[25%] min-w-fit rounded-full border-none bg-white bg-opacity-5 px-12 text-primary-blue"
             >
               Load more

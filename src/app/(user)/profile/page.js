@@ -1,24 +1,20 @@
 import React from "react";
 import User from "../../../components/User/Profile/User";
-import axios from "axios";
 import { cookies } from "next/headers";
-import { fetchData } from "@/lib/fetch";
 import TileList from "../../../components/User/Profile/TileList";
 import UserProfileSort from "@/components/User/Profile/Sort";
 import { tmdb_session_id } from "@/lib/constants";
+import { axios } from "@/lib/axios";
 
 export const revalidate = 0;
 
 export async function generateMetadata() {
   const cookiesStore = cookies();
 
-  const { data: user } = await axios.get(
+  const { data: user } = await axios(
     `${process.env.NEXT_PUBLIC_API_URL}/account`,
     {
-      params: {
-        api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(tmdb_session_id).value,
-      },
+      params: { session_id: cookiesStore.get(tmdb_session_id).value },
     },
   );
 
@@ -55,77 +51,41 @@ export async function generateMetadata() {
 export default async function page() {
   const cookiesStore = cookies();
 
-  const { data: user } = await axios.get(
+  const { data: user } = await axios(
     `${process.env.NEXT_PUBLIC_API_URL}/account`,
     {
-      params: {
-        api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(tmdb_session_id).value,
-      },
+      params: { session_id: cookiesStore.get(tmdb_session_id).value },
     },
   );
 
-  const favoriteMovies = await fetchData({
-    endpoint: `/account/${user.id}/favorite/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const watchlistMovies = await fetchData({
-    endpoint: `/account/${user.id}/watchlist/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const ratedMovies = await fetchData({
-    endpoint: `/account/${user.id}/rated/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
+  const params = {
+    session_id: cookiesStore.get(tmdb_session_id).value,
+    sort_by: "created_at.desc",
+  };
 
-  const favoriteTv = await fetchData({
-    endpoint: `/account/${user.id}/favorite/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const watchlistTv = await fetchData({
-    endpoint: `/account/${user.id}/watchlist/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const ratedTv = await fetchData({
-    endpoint: `/account/${user.id}/rated/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
-      sort_by: "created_at.desc",
-    },
-  });
+  const { data: favoriteMovies } = await axios(
+    `/account/${user.id}/favorite/movies`,
+    { params },
+  );
+  const { data: watchlistMovies } = await axios(
+    `/account/${user.id}/watchlist/movies`,
+    { params },
+  );
+  const { data: ratedMovies } = await axios(
+    `/account/${user.id}/rated/movies`,
+    { params },
+  );
 
-  // const fetchFilmsData = async ({ type = "movie", section, films }) => {
-  //   const data = await Promise.all(
-  //     films.results.map(async (item) => {
-  //       const filmData = await fetchData({
-  //         endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
-  //         queryParams: {
-  //           session_id: cookiesStore.get(tmdb_session_id).value,
-  //           sort_by: "created_at.desc",
-  //         },
-  //       });
-
-  //       return filmData;
-  //     }),
-  //   );
-
-  //   return data;
-  // };
+  const { data: favoriteTv } = await axios(`/account/${user.id}/favorite/tv`, {
+    params,
+  });
+  const { data: watchlistTv } = await axios(
+    `/account/${user.id}/watchlist/tv`,
+    { params },
+  );
+  const { data: ratedTv } = await axios(`/account/${user.id}/rated/tv`, {
+    params,
+  });
 
   return (
     <section className={`py-4`}>

@@ -16,9 +16,9 @@ export async function POST(request) {
     );
 
     return NextResponse.json(data, { status });
-  } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
+  } catch ({ response }) {
+    const { data, status } = response;
+
+    return NextResponse.json(data, { status });
   }
 }

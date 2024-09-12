@@ -1,17 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { IonIcon } from "@ionic/react";
-import { informationCircleOutline, star } from "ionicons/icons";
-import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
-import TitleLogo from "./TitleLogo";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import axios from "axios";
 import FilmSummary from "./Summary";
-import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
+import { axios } from "@/lib/axios";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -30,13 +25,8 @@ export default function Trending({ film, genres }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
 
   const fetchFilmDetails = useCallback(async () => {
-    await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
-      queryParams: {
-        append_to_response: `images`,
-      },
-    }).then((res) => {
-      setFilmDetails(res);
+    await axios(`/${isItTvPage(`movie`, `tv`)}/${film.id}`, {
+      params: { append_to_response: `images` },
     });
   }, [film, isItTvPage]);
 
@@ -58,7 +48,7 @@ export default function Trending({ film, genres }) {
         {/* Poster */}
         <Reveal
           y={0}
-          className={`z-30 aspect-poster h-full w-full overflow-hidden rounded-2xl max-w-[300px]`}
+          className={`z-30 aspect-poster h-full w-full max-w-[300px] overflow-hidden rounded-2xl`}
         >
           <ImagePovi
             imgPath={

@@ -1,4 +1,4 @@
-import { fetchData } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 import { slugify } from "@/lib/slugify";
 
 export const revalidate = 0;
@@ -35,22 +35,20 @@ export default async function sitemap() {
 
   // const movies = [];
   // for (let i = 1; i <= totalPages; i++) {
-  //   const { results } = await fetchData({
-  //     endpoint: `/discover/movie`,
-  //     queryParams: {
-  //       page: i,
-  //     },
+  //   const {
+  //     data: { results },
+  //   } = await axios(`/discover/movie`, {
+  //     params: { page: i },
   //   });
   //   movies.push(...results);
   // }
 
   // const tvShows = [];
   // for (let i = 1; i <= totalPages; i++) {
-  //   const { results } = await fetchData({
-  //     endpoint: `/discover/tv`,
-  //     queryParams: {
-  //       page: i,
-  //     },
+  //   const {
+  //     data: { results },
+  //   } = await axios(`/discover/tv`, {
+  //     params: { page: i },
   //   });
   //   tvShows.push(...results);
   // }

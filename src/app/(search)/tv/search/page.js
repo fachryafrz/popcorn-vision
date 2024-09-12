@@ -1,5 +1,5 @@
 import Search from "@/components/Search/";
-import { fetchData } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
 import React, { Suspense } from "react";
 
 export async function generateMetadata() {
@@ -34,23 +34,19 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const { genres: tvGenresData } = await fetchData({
-    endpoint: `/genre/tv/list`,
+  const {
+    data: { genres: tvGenresData },
+  } = await axios(`/genre/tv/list`);
+  const { data: languagesData } = await axios(`/configuration/languages`);
+  const {
+    data: { results: fetchMinYear },
+  } = await axios(`/discover/tv`, {
+    params: { sort_by: "first_air_date.asc" },
   });
-  const languagesData = await fetchData({
-    endpoint: `/configuration/languages`,
-  });
-  const { results: fetchMinYear } = await fetchData({
-    endpoint: `/discover/tv`,
-    queryParams: {
-      sort_by: "first_air_date.asc",
-    },
-  });
-  const { results: fetchMaxYear } = await fetchData({
-    endpoint: `/discover/tv`,
-    queryParams: {
-      sort_by: "first_air_date.desc",
-    },
+  const {
+    data: { results: fetchMaxYear },
+  } = await axios(`/discover/tv`, {
+    params: { sort_by: "first_air_date.desc" },
   });
 
   const defaultMaxYear = new Date().getFullYear() + 1;

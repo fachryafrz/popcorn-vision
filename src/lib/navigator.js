@@ -1,4 +1,13 @@
-import { getLocation } from "./fetch";
+import { axios } from "./axios";
+
+export async function getLocation({ latitude, longitude }) {
+  const { data } = await axios(`/data/reverse-geocode-client`, {
+    baseURL: "https://api.bigdatacloud.net",
+    params: { latitude, longitude, localityLanguage: "en" },
+  });
+
+  return data;
+}
 
 export function findLocation(setUserLocation, setError) {
   // NOTE: Uncomment these lines to edit user location localStorage for development

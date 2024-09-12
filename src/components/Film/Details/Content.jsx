@@ -8,13 +8,13 @@ import FilmOverview from "./Overview";
 import { EpisodeModal } from "../../Modals/EpisodeModal";
 
 import { useSearchParams } from "next/navigation";
-import { getEpisodeModal, getPerson } from "@/lib/fetch";
 import { useEpisodeModal } from "@/zustand/episodeModal";
 import { usePersonModal } from "@/zustand/personModal";
 import ShareModal from "@/components/Modals/ShareModal";
 import PersonModal from "@/components/Modals/PersonModal";
 import LoginAlert from "@/components/Modals/LoginAlert";
 import { useAuth } from "@/hooks/auth";
+import { axios } from "@/lib/axios";
 
 export default function FilmContent({
   film,
@@ -41,22 +41,36 @@ export default function FilmContent({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (searchParams.get("person")) {
-      getPerson({ id: searchParams.get("person") }).then((res) => {
-        // Zustand
-        setPersonModal(res);
+    const getPerson = async () => {
+      const person = searchParams.get("person");
+
+      const { data } = await axios(`/person/${person}`, {
+        params: {
+          language: "en",
+          append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+        },
       });
+
+      setPersonModal(data);
+    };
+
+    const getEpisodeModal = async () => {
+      const season = searchParams.get("season");
+      const episode = searchParams.get("episode");
+
+      const { data } = await axios(
+        `/tv/${film.id}/season/${season}/episode/${episode}`,
+      );
+
+      setEpisodeModal(data);
+    };
+
+    if (searchParams.get("person")) {
+      getPerson();
     }
 
     if (searchParams.get("season") && searchParams.get("episode")) {
-      getEpisodeModal({
-        filmID: film.id,
-        season: searchParams.get("season"),
-        eps: searchParams.get("episode"),
-      }).then((res) => {
-        // Zustand
-        setEpisodeModal(res);
-      });
+      getEpisodeModal();
     }
 
     // NOTE: Ga perlu tambahin setPersonModal dan setEpisodeModal karena tidak akan berfungsi

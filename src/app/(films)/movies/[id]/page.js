@@ -1,24 +1,19 @@
 import React from "react";
 import FilmBackdrop from "../../../../components/Film/Details/Backdrop";
-import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
-import { isPlural } from "@/lib/isPlural";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
 
-  const film = await fetchData({
-    endpoint: `/${type}/${id}`,
+  const { data: film } = await axios(`/${type}/${id}`);
+  const { data: images } = await axios(`/${type}/${id}/images`, {
+    params: { include_image_language: "en" },
   });
-  const images = await fetchData({
-    endpoint: `/${type}/${id}/images`,
-    queryParams: {
-      include_image_language: "en",
-    },
-  });
+
   const isTvPage = type !== "movie" ? true : false;
 
   const filmReleaseDate = film.release_date
@@ -67,18 +62,14 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const isTvPage = type === "tv";
 
-  const film = await fetchData({
-    endpoint: `/${type}/${id}`,
-    queryParams: {
+  const { data: film } = await axios(`/${type}/${id}`, {
+    params: {
       append_to_response:
         "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
     },
   });
-  const images = await fetchData({
-    endpoint: `/${type}/${id}/images`,
-    queryParams: {
-      include_image_language: "en",
-    },
+  const { data: images } = await axios(`/${type}/${id}/images`, {
+    params: { include_image_language: "en" },
   });
 
   const {
@@ -97,9 +88,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let collection;
 
   if (film.belongs_to_collection) {
-    collection = await fetchData({
-      endpoint: `/collection/${film.belongs_to_collection.id}`,
-    });
+    const { data } = await axios(
+      `/collection/${film.belongs_to_collection.id}`,
+    );
+
+    collection = data;
   }
 
   // This can cause double data from recommendation & similar
@@ -108,10 +101,12 @@ export default async function FilmDetail({ params, type = "movie" }) {
     results: [...recommendations.results, ...similar.results],
   };
 
-  const genres = await getGenres({ type });
+  const {
+    data: { genres },
+  } = await axios(`/genre/${type}/list`);
 
   // Schema.org JSON-LD
-  const dataCount = 2;
+  const DATA_COUNT = 2;
 
   let director = credits.crew.find((person) => person.job === "Director");
 
@@ -151,7 +146,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       });
 
   // Actors
-  credits.cast.slice(0, dataCount).map((actor) => {
+  credits.cast.slice(0, DATA_COUNT).map((actor) => {
     actorsArray.push({
       "@type": "Person",
       name: actor.name,
@@ -172,7 +167,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   });
 
   // Images
-  images.backdrops.slice(0, dataCount).map((image) => {
+  images.backdrops.slice(0, DATA_COUNT).map((image) => {
     imagesArray.push({
       "@type": "ImageObject",
       contentUrl: `https://image.tmdb.org/t/p/w500${image.file_path}`,
@@ -193,7 +188,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   });
 
   // Reviews
-  reviews.results.slice(0, dataCount).map((review) => {
+  reviews.results.slice(0, DATA_COUNT).map((review) => {
     if (review.author_details.rating) {
       reviewsArray.push({
         "@type": "Review",

@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { fetchData, getFilmSeason } from "@/lib/fetch";
 import { slugify } from "../../lib/slugify";
 import { formatRuntime } from "../../lib/formatRuntime";
 import { isPlural } from "../../lib/isPlural";

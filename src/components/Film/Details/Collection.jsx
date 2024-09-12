@@ -16,18 +16,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
-import { fetchData, getEpisodes } from "@/lib/fetch";
 import { slugify } from "@/lib/slugify";
 import EpisodeCard from "./TV/EpisodeCard";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";
-import { formatRuntime } from "@/lib/formatRuntime";
 
-// Zustand
 import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import moment from "moment";
+import { axios } from "@/lib/axios";
 
 export default function FilmCollection({ film, setLoading, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -115,31 +113,10 @@ export function CollectionItem({
   item,
   index,
   type = "movie",
-  shouldFetch = true,
   userRating,
 }) {
-  const [filmDetails, setFilmDetails] = useState();
-
   const isTv = type === "tv";
   const filmTitle = !isTv ? item.title : item.name;
-  const filmRuntime = !isTv
-    ? filmDetails?.runtime
-    : filmDetails?.episode_run_time.length > 0 &&
-      filmDetails?.episode_run_time[0];
-
-  useEffect(() => {
-    const fetchFilmDetails = async () => {
-      await fetchData({
-        endpoint: `/${type}/${item.id}`,
-      }).then((res) => {
-        setFilmDetails(res);
-      });
-    };
-
-    if (shouldFetch) {
-      fetchFilmDetails();
-    }
-  }, [item, shouldFetch, type]);
 
   return (
     <article>
@@ -185,13 +162,6 @@ export function CollectionItem({
                   }
                 />
               </div>
-            )}
-
-            {filmDetails && filmRuntime > 0 && (
-              <span
-                className={`before-content flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                data-before-content={formatRuntime(filmRuntime)}
-              />
             )}
           </div>
         </div>
@@ -330,10 +300,16 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
   const [episodes, setEpisodes] = useState([]);
 
   useEffect(() => {
-    getEpisodes({ id, season }).then((res) => {
-      setEpisodes(res);
+    const getEpisodes = async () => {
+      const {
+        data: { episodes },
+      } = await axios(`/tv/${id}/season/${season}`);
+
+      setEpisodes(episodes);
       setIsLoading(false);
-    });
+    };
+
+    getEpisodes();
   }, [id, season]);
 
   return (

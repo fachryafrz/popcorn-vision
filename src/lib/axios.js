@@ -19,6 +19,6 @@ export const axios = async (endpoint, options = {}) => {
     });
     return { data };
   } catch (error) {
-    console.error("Error retrieving data:", error);
+    throw error;
   }
 };

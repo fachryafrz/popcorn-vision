@@ -1,12 +1,15 @@
-import { getFilm } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import React from "react";
 import FilmDetail from "../../movies/[id]/page";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata({ params, type = `tv` }) {
   const { id } = params;
-  const film = await getFilm({ id, type });
-  const images = await getFilm({ id, type, path: "/images" });
+
+  const { data: film } = await axios(`/${type}/${id}`);
+  const { data: images } = await axios(`/${type}/${id}/images`, {
+    params: { include_image_language: "en" },
+  });
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);

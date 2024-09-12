@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { fetchData } from "@/lib/fetch";
-import axios from "axios";
+import { axios } from "@/lib/axios";
+import Axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -24,25 +24,26 @@ export default function LoginForm() {
 
     setIsLoading(true);
 
-    await fetchData({
-      endpoint: `/api/authentication/token/new`,
+    await axios(`/api/authentication/token/new`, {
       baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ request_token }) => {
+    }).then(({ data: { request_token } }) => {
       const credentials = {
         username,
         password,
         request_token,
       };
 
-      axios
-        .post("/api/authentication/token/validate_with_login", credentials)
+      // NOTE: Gabisa kalo pake axios server, gatau kenapa error nya tidak benar dan selalu status 500 atau 200
+      Axios.post("/api/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
           // Login
-          axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
-            mutate();
-            setIsLoading(false);
-            router.push(redirectTo);
-          });
+          Axios.post(`/api/authentication/login`, { request_token }).then(
+            ({ data }) => {
+              mutate();
+              setIsLoading(false);
+              router.push(redirectTo);
+            },
+          );
         })
         .catch(({ response: { data } }) => {
           const { status_message } = data;
