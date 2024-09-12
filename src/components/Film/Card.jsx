@@ -124,7 +124,7 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
   }, [film, isItTvPage]);
 
   useEffect(() => {
-    if (isHovering && window.innerWidth >= 1280) {
+    if (isHovering && window.innerWidth >= 1536) {
       fetchTitleLogo();
     }
   }, [fetchTitleLogo, isHovering]);
