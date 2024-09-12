@@ -18,7 +18,13 @@ export default function FilmGrid({
   const isQueryParams = searchParams.get("query") ? true : false;
 
   // Is in viewport?
-  const { ref: loadMoreBtn, inView, entry } = useInView();
+  const {
+    ref: loadMoreBtn,
+    inView,
+    entry,
+  } = useInView({
+    initialInView: true,
+  });
 
   // Use Effect for load more button is in viewport
   useEffect(() => {
