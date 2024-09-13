@@ -1,11 +1,7 @@
+import { USER_LOCATION } from "./constants";
 import { getLocation } from "./fetch";
 
 export function findLocation(setUserLocation, setError) {
-  // NOTE: Uncomment these lines to edit user location localStorage for development
-  // if (localStorage.getItem("user-location")) {
-  //   setUserLocation(localStorage.getItem("user-location"));
-  //   setError(null);
-  // } else {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLocation = {
@@ -17,7 +13,7 @@ export function findLocation(setUserLocation, setError) {
 
       // Asumsikan getLocation adalah fungsi yang mengembalikan lokasi berdasarkan koordinat
       getLocation({ latitude, longitude }).then((response) => {
-        localStorage.setItem("user-location", JSON.stringify(response));
+        localStorage.setItem(USER_LOCATION, JSON.stringify(response));
         setUserLocation(JSON.stringify(response));
         setError(null); // Clear any previous errors
       });

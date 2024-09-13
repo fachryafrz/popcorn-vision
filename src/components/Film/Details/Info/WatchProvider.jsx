@@ -51,7 +51,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
           item.logo_path && (
             <>
               {/* NOTE: The delay causing component jump */}
-              {/* <Reveal delay={i > 0 ? 0.1 * i : 0} key={item.provider_id}> */}
+
               <Link
                 key={item.provider_id}
                 href={`${
@@ -63,20 +63,21 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                   class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden"
                   data-tip={`${item.provider_name} (${item.type})`}
                 >
-                  <figure
-                    style={{
-                      background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                      backgroundSize: `contain`,
-                      backgroundRepeat: `no-repeat`,
-                    }}
-                    className={`aspect-square w-[40px] rounded-xl`}
-                  ></figure>
+                  <Reveal delay={i > 0 ? 0.1 * i : 0}>
+                    <figure
+                      style={{
+                        background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
+                        backgroundSize: `contain`,
+                        backgroundRepeat: `no-repeat`,
+                      }}
+                      className={`aspect-square w-[40px] rounded-xl`}
+                    ></figure>
+                  </Reveal>
                   <span className={`sr-only`}>
                     {item.provider_name} ({item.type})
                   </span>
                 </div>
               </Link>
-              {/* </Reveal> */}
             </>
           ),
       )}

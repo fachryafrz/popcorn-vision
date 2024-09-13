@@ -16,6 +16,7 @@ import packageJson from "../../../package.json";
 // JSON import
 import footer from "../../json/footer.json";
 import Reveal from "./Reveal";
+import { POPCORN } from "@/lib/constants";
 
 export default function Footer() {
   const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;
@@ -47,7 +48,7 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-center pb-8 text-center">
           <figure
             style={{
-              background: `url(/popcorn.png)`,
+              background: `url(${POPCORN})`,
               backgroundSize: `contain`,
             }}
             className={`aspect-square w-[200px]`}

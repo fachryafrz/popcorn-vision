@@ -31,7 +31,7 @@ export const metadata = {
   // },
   title: {
     default: process.env.NEXT_PUBLIC_APP_NAME,
-    template: "%s - " + process.env.NEXT_PUBLIC_APP_NAME,
+    template: `%s - ${process.env.NEXT_PUBLIC_APP_NAME}`,
   },
   description: process.env.NEXT_PUBLIC_APP_DESC,
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL),
@@ -100,7 +100,6 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="en" className="scroll-pt-20">
-      <link rel="icon" href="/favicon.ico" sizes="any" />
       <Suspense>
         <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       </Suspense>

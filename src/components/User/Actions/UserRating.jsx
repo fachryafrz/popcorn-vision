@@ -1,5 +1,6 @@
 "use client";
 
+import Reveal from "@/components/Layout/Reveal";
 import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
@@ -80,19 +81,25 @@ export default function UserRating({
 
   return (
     <>
-      <div className={`mb-2 flex items-center gap-2`}>
-        <span className={`block text-sm font-medium italic`}>{title}</span>
-
-        {isAdded?.value > 0 && (
-          <button
-            onClick={async () => await handleDeleteRating()}
-            className={`block text-sm font-medium italic text-primary-blue transition-all`}
-          >
-            Clear rating
-          </button>
-        )}
-
-        {isLoading && <span class="loading loading-spinner loading-xs"></span>}
+      <div>
+        <Reveal>
+          <div className={`mb-2 flex items-center gap-2`}>
+            <span className={`block text-sm font-medium italic`}>{title}</span>
+  
+            {isAdded?.value > 0 && (
+              <button
+                onClick={async () => await handleDeleteRating()}
+                className={`block text-sm font-medium italic text-primary-blue transition-all`}
+              >
+                Clear rating
+              </button>
+            )}
+  
+            {isLoading && (
+              <span class="loading loading-spinner loading-xs"></span>
+            )}
+          </div>
+        </Reveal>
       </div>
 
       <div
@@ -113,16 +120,18 @@ export default function UserRating({
                 }
               }}
             >
-              <IonIcon
-                icon={
-                  hoverRating?.value >= starValue
-                    ? star
-                    : hoverRating?.value >= starValue - 0.5
-                      ? starHalf
-                      : starOutline
-                }
-                onMouseEnter={() => setHoverRating({ value: starValue })}
-              />
+              <Reveal delay={0.075 * index}>
+                <IonIcon
+                  icon={
+                    hoverRating?.value >= starValue
+                      ? star
+                      : hoverRating?.value >= starValue - 0.5
+                        ? starHalf
+                        : starOutline
+                  }
+                  onMouseEnter={() => setHoverRating({ value: starValue })}
+                />
+              </Reveal>
             </button>
           );
         })}

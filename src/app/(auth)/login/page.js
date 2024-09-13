@@ -1,5 +1,5 @@
 import LoginForm from "@/components/Auth/LoginForm";
-import Link from "next/link";
+import { POPCORN } from "@/lib/constants";
 import React from "react";
 
 export default function Login() {
@@ -10,7 +10,7 @@ export default function Login() {
       <div className={`mt-20 flex flex-col items-center gap-2`}>
         <figure
           style={{
-            background: `url(/popcorn.png)`,
+            background: `url(${POPCORN})`,
             backgroundSize: `contain`,
           }}
           className={`aspect-square w-[130px]`}

@@ -38,8 +38,6 @@ export default function FilmContent({
     (state) => state,
   );
 
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     if (searchParams.get("person")) {
       getPerson({ id: searchParams.get("person") }).then((res) => {
@@ -105,8 +103,6 @@ export default function FilmContent({
             reviews={reviews}
             credits={credits}
             providers={providers}
-            loading={loading}
-            setLoading={setLoading}
             releaseDates={releaseDates}
           />
         </section>
@@ -121,8 +117,6 @@ export default function FilmContent({
             credits={credits}
             providers={providers}
             collection={collection}
-            loading={loading}
-            setLoading={setLoading}
           />
         </section>
 
@@ -145,16 +139,11 @@ export default function FilmContent({
               episode={episodeForModal}
               seasons={film.seasons}
               person={personForModal}
-              loading={loading}
             />
           )}
 
           {personForModal && (
-            <PersonModal
-              person={personForModal}
-              loading={loading}
-              episode={episodeForModal}
-            />
+            <PersonModal person={personForModal} episode={episodeForModal} />
           )}
 
           {/* <div

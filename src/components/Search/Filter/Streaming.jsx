@@ -4,6 +4,7 @@ import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { USER_LOCATION } from "@/lib/constants";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function Streaming({ inputStyles }) {
   const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const providersOptions = useMemo(() => {
     return providersData?.map((provider) => ({
@@ -50,7 +51,14 @@ export default function Streaming({ inputStyles }) {
 
   // Use Effect for getting user location
   useEffect(() => {
-    checkLocationPermission(setUserLocation, setLocationError);
+    const userLocationInLocalStorage = localStorage.getItem(USER_LOCATION);
+
+    if (!userLocationInLocalStorage) {
+      setIsLoading(true);
+      checkLocationPermission(setUserLocation, setLocationError);
+    }
+
+    setUserLocation(userLocationInLocalStorage)
   }, []);
 
   // Use Effect for fetching streaming providers based on user location

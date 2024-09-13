@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { SAD_POPCORN_ENGINEER } from "@/lib/constants";
 import { IonIcon } from "@ionic/react";
 import { refresh } from "ionicons/icons";
 
@@ -12,7 +13,7 @@ export default function Error({ error, reset }) {
       >
         <figure
           style={{
-            background: `url(/sad_popcorn_engineer.png)`,
+            background: `url(${SAD_POPCORN_ENGINEER})`,
           }}
           className={`aspect-square w-[300px] !bg-contain`}
         ></figure>

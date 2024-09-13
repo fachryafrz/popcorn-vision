@@ -14,6 +14,7 @@ import Reveal from "./Reveal";
 import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
+import { POPCORN_APPLE } from "@/lib/constants";
 
 export default function Navbar() {
   const router = useRouter();
@@ -163,12 +164,13 @@ export default function Navbar() {
           >
             <figure
               style={{
-                background: `url(/apple-touch-icon.png)`,
+                background: `url(${POPCORN_APPLE})`,
               }}
               className={`aspect-square w-[50px] !bg-contain`}
             ></figure>
             <figcaption
-              className={`w-[70px] after:hidden after:h-full after:items-center after:leading-tight after:content-["Popcorn_Vision"] xs:after:flex`}
+              data-after-content={process.env.NEXT_PUBLIC_APP_NAME}
+              className={`!after-content w-[70px] after:hidden after:h-full after:items-center after:leading-tight xs:after:flex`}
             ></figcaption>
           </Link>
         </Reveal>

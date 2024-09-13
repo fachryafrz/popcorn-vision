@@ -2,7 +2,7 @@
 "use client";
 
 // React imports
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Ionic React icons
 import { IonIcon } from "@ionic/react";
@@ -29,17 +29,15 @@ import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
 import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import Confetti from "react-confetti-boom";
-import moment from "moment";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import LoginAlert from "@/components/Modals/LoginAlert";
+import { USER_LOCATION } from "@/lib/constants";
 
 export default function FilmInfo({
   film,
   images,
   credits,
   providers,
-  setLoading,
   releaseDates,
 }) {
   const [userLocation, setUserLocation] = useState(null);
@@ -134,7 +132,14 @@ export default function FilmInfo({
 
   // Use Effect for getting user location
   useEffect(() => {
-    checkLocationPermission(setUserLocation, setLocationError);
+    const userLocationInLocalStorage = localStorage.getItem(USER_LOCATION);
+
+    if (!userLocationInLocalStorage) {
+      setIsLoading(true);
+      checkLocationPermission(setUserLocation, setLocationError);
+    }
+
+    setUserLocation(userLocationInLocalStorage);
   }, []);
 
   useEffect(() => {
@@ -327,7 +332,6 @@ export default function FilmInfo({
                       film={film}
                       lastEps={lastEps}
                       nextEps={nextEps}
-                      setLoading={setLoading}
                     />
                   </Reveal>
                 </div>
@@ -339,11 +343,7 @@ export default function FilmInfo({
                   className={`flex flex-col gap-2`}
                 >
                   <Reveal>
-                    <NextEpisode
-                      film={film}
-                      nextEps={nextEps}
-                      setLoading={setLoading}
-                    />
+                    <NextEpisode film={film} nextEps={nextEps} />
                   </Reveal>
                 </div>
               )}
@@ -393,14 +393,11 @@ export default function FilmInfo({
             </Reveal>
           )}
           {/* Call to Action */}
-          <section
-            id={`Share`}
-            className={`flex flex-wrap items-end gap-1`}
-          >
+          <section id={`Share`} className={`flex flex-wrap items-end gap-1`}>
             <div className={`flex flex-col gap-1 md:flex-row`}>
               {/* Add to Favorite */}
               {!isUpcoming && filmReleaseDate !== "" && (
-                <Reveal className={`flex`}>
+                <Reveal delay={0.2} className={`flex`}>
                   <FavoriteButton
                     film={film}
                     favorite={accountStates?.favorite}
@@ -409,7 +406,7 @@ export default function FilmInfo({
               )}
 
               {/* Add to Watchlist */}
-              <Reveal className={`flex`}>
+              <Reveal delay={0.4} className={`flex`}>
                 <WatchlistButton
                   film={film}
                   watchlist={accountStates?.watchlist}
@@ -418,7 +415,7 @@ export default function FilmInfo({
             </div>
 
             {/* Share */}
-            <Reveal className={`relative ml-auto gap-4 sm:gap-0`}>
+            <Reveal delay={0.6} className={`relative ml-auto gap-4 sm:gap-0`}>
               <ShareButton />
             </Reveal>
           </section>

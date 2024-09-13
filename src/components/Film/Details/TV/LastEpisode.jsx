@@ -6,12 +6,11 @@ import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 import EpisodeCard from "./EpisodeCard";
 
-export default function LastEpisode({ film, lastEps, nextEps, setLoading }) {
+export default function LastEpisode({ film, lastEps, nextEps }) {
   return (
     <EpisodeCard
       className={`w-full`}
       filmID={film.id}
-      setLoading={setLoading}
       episode={lastEps}
       imgPath={lastEps.still_path}
       title={lastEps.name}

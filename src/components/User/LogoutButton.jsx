@@ -11,7 +11,7 @@ export default function LogoutButton({ user }) {
   const { mutate } = useAuth();
 
   const logout = async () => {
-    await axios.delete(`/api/auth/logout`).then(() => mutate(null));
+    await axios.delete(`/api/authentication/logout`).then(() => mutate(null));
 
     if (pathname === "/profile") {
       router.push("/login");

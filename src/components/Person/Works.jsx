@@ -1,6 +1,7 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
+import { POPCORN } from "@/lib/constants";
 import { formatRating } from "@/lib/formatRating";
 import { slugify } from "@/lib/slugify";
 import { sortFilms } from "@/lib/sortFilms";
@@ -90,7 +91,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                   index === self.findIndex((t) => t.id === item.id),
               )
               .map((film) => {
-                let popcorn = `url(/popcorn.png)`;
+                let popcorn = `url(${POPCORN})`;
                 let filmPoster = `url(https://image.tmdb.org/t/p/w300${film.poster_path})`;
 
                 return (
