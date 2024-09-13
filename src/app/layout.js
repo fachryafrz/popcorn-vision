@@ -105,8 +105,6 @@ export default function RootLayout({ children }) {
         <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       </Suspense>
       <body className="bg-base-100 text-white">
-        <SpeedInsights />
-
         <CookiesProvider>
           {/* Navbar */}
           <Suspense>
@@ -127,6 +125,8 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         /> */}
+
+        <SpeedInsights />
       </body>
     </html>
   );
