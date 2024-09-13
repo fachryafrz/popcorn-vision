@@ -16,7 +16,6 @@
     "@mui/x-date-pickers": "^7.10.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.9",
-    "@vercel/speed-insights": "^1.0.12",
     "axios": "^1.6.7",
     "dayjs": "^1.11.11",
     "debounce": "^2.0.0",

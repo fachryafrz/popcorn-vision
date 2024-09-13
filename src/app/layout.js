@@ -6,7 +6,6 @@ import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const viewport = {
   width: "device-width",
