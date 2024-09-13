@@ -12,6 +12,7 @@ import axios from "axios";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
 import { fetchData } from "@/lib/fetch";
+import { USER_LOCATION } from "@/lib/constants";
 
 export default function Search({
   type = "movie",
@@ -148,7 +149,7 @@ export default function Search({
           ...Object.fromEntries(searchParams),
         };
 
-        const userLocation = localStorage.getItem("user-location");
+        const userLocation = localStorage.getItem(USER_LOCATION);
 
         if (searchParams.get("watch_providers") && userLocation) {
           params.watch_region = JSON.parse(userLocation).countryCode;
@@ -209,7 +210,7 @@ export default function Search({
         ...Object.fromEntries(searchParams),
       };
 
-      const userLocation = localStorage.getItem("user-location");
+      const userLocation = localStorage.getItem(USER_LOCATION);
 
       if (searchParams.get("watch_providers") && userLocation) {
         params.watch_region = JSON.parse(userLocation).countryCode;

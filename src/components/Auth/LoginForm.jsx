@@ -38,7 +38,7 @@ export default function LoginForm() {
         .post("/api/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
           // Login
-          axios.post(`/api/auth/login`, { request_token }).then(({ data }) => {
+          axios.post(`/api/authentication/login`, { request_token }).then(({ data }) => {
             mutate();
             setIsLoading(false);
             router.push(redirectTo);

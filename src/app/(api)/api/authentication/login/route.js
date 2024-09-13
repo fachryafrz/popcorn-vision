@@ -1,4 +1,4 @@
-import { tmdb_session_id } from "@/lib/constants";
+import { TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -20,7 +20,7 @@ export async function POST(req) {
       },
     );
 
-    cookiesStore.set(tmdb_session_id, data.session_id, {
+    cookiesStore.set(TMDB_SESSION_ID, data.session_id, {
       expires: Date.now() + 1000 * 60 * 60 * 24 * 365,
       // maxAge: 60 * 60 * 24 * 365,
     });

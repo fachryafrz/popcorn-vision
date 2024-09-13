@@ -1,7 +1,7 @@
 "use client";
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
-import { tmdb_session_id } from "@/lib/constants";
+import { TMDB_SESSION_ID } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";

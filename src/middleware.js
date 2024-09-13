@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { slugify } from "./lib/slugify";
-import { tmdb_session_id } from "./lib/constants";
+import { TMDB_SESSION_ID } from "./lib/constants";
 
 // Example of default export
 export default async function middleware(request) {
@@ -13,7 +13,7 @@ export default async function middleware(request) {
     pathname !== "/tv";
   const isMoviesPage = pathname.startsWith("/movies") && pathname !== "/movies";
   const type = isTvPage ? "tv" : "movie";
-  const tmdbSessionID = cookiesStore.has(tmdb_session_id);
+  const tmdbSessionID = cookiesStore.has(TMDB_SESSION_ID);
 
   if (isMoviesPage || isTvPage) {
     const id = pathname.split("-")[0].split("/").pop();

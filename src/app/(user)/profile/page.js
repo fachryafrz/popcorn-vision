@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { fetchData } from "@/lib/fetch";
 import TileList from "../../../components/User/Profile/TileList";
 import UserProfileSort from "@/components/User/Profile/Sort";
-import { tmdb_session_id } from "@/lib/constants";
+import { POPCORN, POPCORN_APPLE, TMDB_SESSION_ID } from "@/lib/constants";
 
 export const revalidate = 0;
 
@@ -17,7 +17,7 @@ export async function generateMetadata() {
     {
       params: {
         api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(tmdb_session_id).value,
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       },
     },
   );
@@ -33,7 +33,7 @@ export async function generateMetadata() {
       description: process.env.NEXT_PUBLIC_APP_DESC,
       url: process.env.NEXT_PUBLIC_APP_URL,
       siteName: process.env.NEXT_PUBLIC_APP_NAME,
-      images: "/popcorn.png",
+      images: POPCORN,
       locale: "en_US",
       type: "website",
     },
@@ -42,12 +42,12 @@ export async function generateMetadata() {
       title: process.env.NEXT_PUBLIC_APP_NAME,
       description: process.env.NEXT_PUBLIC_APP_DESC,
       creator: "@fachryafrz",
-      images: "/popcorn.png",
+      images: POPCORN,
     },
     icons: {
-      icon: "/popcorn.png",
-      shortcut: "/popcorn.png",
-      apple: "/apple-touch-icon.png",
+      icon: POPCORN,
+      shortcut: POPCORN,
+      apple: POPCORN_APPLE,
     },
   };
 }
@@ -60,7 +60,7 @@ export default async function page() {
     {
       params: {
         api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(tmdb_session_id).value,
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       },
     },
   );
@@ -68,21 +68,21 @@ export default async function page() {
   const favoriteMovies = await fetchData({
     endpoint: `/account/${user.id}/favorite/movies`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
   const watchlistMovies = await fetchData({
     endpoint: `/account/${user.id}/watchlist/movies`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
   const ratedMovies = await fetchData({
     endpoint: `/account/${user.id}/rated/movies`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
@@ -90,21 +90,21 @@ export default async function page() {
   const favoriteTv = await fetchData({
     endpoint: `/account/${user.id}/favorite/tv`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
   const watchlistTv = await fetchData({
     endpoint: `/account/${user.id}/watchlist/tv`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
   const ratedTv = await fetchData({
     endpoint: `/account/${user.id}/rated/tv`,
     queryParams: {
-      session_id: cookiesStore.get(tmdb_session_id).value,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
       sort_by: "created_at.desc",
     },
   });
@@ -115,7 +115,7 @@ export default async function page() {
   //       const filmData = await fetchData({
   //         endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
   //         queryParams: {
-  //           session_id: cookiesStore.get(tmdb_session_id).value,
+  //           session_id: cookiesStore.get(TMDB_SESSION_ID).value,
   //           sort_by: "created_at.desc",
   //         },
   //       });

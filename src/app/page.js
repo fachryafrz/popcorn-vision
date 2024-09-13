@@ -6,6 +6,7 @@ import companies from "../json/companies.json";
 import providers from "../json/providers.json";
 import { fetchData, getTrending } from "@/lib/fetch";
 import moment from "moment";
+import { POPCORN } from "@/lib/constants";
 
 export async function generateMetadata() {
   return {
@@ -18,7 +19,7 @@ export async function generateMetadata() {
       description: process.env.NEXT_PUBLIC_APP_DESC,
       url: process.env.NEXT_PUBLIC_APP_URL,
       siteName: process.env.NEXT_PUBLIC_APP_NAME,
-      images: "/popcorn.png",
+      images: POPCORN,
       locale: "en_US",
       type: "website",
     },
@@ -27,12 +28,7 @@ export async function generateMetadata() {
       title: process.env.NEXT_PUBLIC_APP_NAME,
       description: process.env.NEXT_PUBLIC_APP_DESC,
       creator: "@fachryafrz",
-      images: "/popcorn.png",
-    },
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
+      images: POPCORN,
     },
   };
 }

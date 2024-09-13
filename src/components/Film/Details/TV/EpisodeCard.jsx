@@ -13,8 +13,6 @@ export default function EpisodeCard({
   title,
   secondaryInfo,
   thirdInfo,
-  setLoading,
-  filmID,
   overlay,
 }) {
   const router = useRouter();

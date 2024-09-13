@@ -28,8 +28,9 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import moment from "moment";
+import { POPCORN } from "@/lib/constants";
 
-export default function FilmCollection({ film, setLoading, collection }) {
+export default function FilmCollection({ film, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
     const dateA = new Date(a.release_date);
     const dateB = new Date(b.release_date);
@@ -65,7 +66,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
             collections
               .slice(0, showAllCollection ? collections.length : numCollection)
               .map((item, index) => {
-                let popcorn = `url(/popcorn.png)`;
+                let popcorn = `url(${POPCORN})`;
                 let filmPoster = `url(https://image.tmdb.org/t/p/w500${item.poster_path})`;
 
                 return (
@@ -82,12 +83,7 @@ export default function FilmCollection({ film, setLoading, collection }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
-                    <FilmSeason
-                      film={film}
-                      item={item}
-                      index={index}
-                      setLoading={setLoading}
-                    />
+                    <FilmSeason film={film} item={item} index={index} />
                   </li>
                 );
               })}
@@ -205,7 +201,7 @@ export function CollectionItem({
   );
 }
 
-function FilmSeason({ film, item, index, setLoading }) {
+function FilmSeason({ film, item, index }) {
   const [viewSeason, setViewSeason] = useState(false);
 
   const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
@@ -315,17 +311,12 @@ function FilmSeason({ film, item, index, setLoading }) {
         )}
       </button>
 
-      <FilmEpisodes
-        id={film.id}
-        season={index + 1}
-        setLoading={setLoading}
-        viewSeason={viewSeason}
-      />
+      <FilmEpisodes id={film.id} season={index + 1} viewSeason={viewSeason} />
     </>
   );
 }
 
-function FilmEpisodes({ id, season, setLoading, viewSeason }) {
+function FilmEpisodes({ id, season, viewSeason }) {
   const [isLoading, setIsLoading] = useState(true);
   const [episodes, setEpisodes] = useState([]);
 
@@ -376,7 +367,6 @@ function FilmEpisodes({ id, season, setLoading, viewSeason }) {
                   <SwiperSlide key={item.id} className={`!h-auto`}>
                     <EpisodeCard
                       filmID={id}
-                      setLoading={setLoading}
                       episode={item}
                       imgPath={item.still_path}
                       title={item.name}

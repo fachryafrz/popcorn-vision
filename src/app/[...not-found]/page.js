@@ -1,5 +1,6 @@
 "use client";
 
+import { SAD_POPCORN } from "@/lib/constants";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { useRouter } from "next/navigation";
@@ -24,7 +25,7 @@ export default function NotFound() {
       <h2 className={`sr-only`}>Not Found</h2>
       <figure
         style={{
-          background: `url(/sad_popcorn.png)`,
+          background: `url(${SAD_POPCORN})`,
           backgroundSize: `contain`,
         }}
         className={`aspect-square w-[200px]`}

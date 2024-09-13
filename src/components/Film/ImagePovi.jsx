@@ -1,3 +1,4 @@
+import { POPCORN } from "@/lib/constants";
 import React from "react";
 
 export default function ImagePovi({
@@ -6,13 +7,12 @@ export default function ImagePovi({
   children,
   position = `center`,
 }) {
-  const popcorn = `/popcorn.png`;
 
   return (
     <figure
       className={`bg-base-100 ${className}`}
       style={{
-        backgroundImage: imgPath === null ? `url(${popcorn})` : `url(${imgPath})`,
+        backgroundImage: imgPath === null ? `url(${POPCORN})` : `url(${imgPath})`,
         backgroundSize: imgPath === null ? `contain` : `cover`,
         backgroundPosition: position,
         backgroundRepeat: `no-repeat`,

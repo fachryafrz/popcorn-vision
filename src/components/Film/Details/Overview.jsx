@@ -26,8 +26,6 @@ export default function FilmOverview({
   images,
   reviews,
   collection,
-  loading,
-  setLoading,
 }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -58,12 +56,7 @@ export default function FilmOverview({
 
       {/* Collection */}
       {isTvPage || film.belongs_to_collection !== null ? (
-        <FilmCollection
-          film={film}
-          loading={loading}
-          setLoading={setLoading}
-          collection={collection}
-        />
+        <FilmCollection film={film} collection={collection} />
       ) : null}
 
       {/* Reviews */}
