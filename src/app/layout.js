@@ -1,4 +1,4 @@
-export const revalidate = 1800; // 30 minutes in seconds
+export const revalidate = 86400; // 1 day in seconds
 
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
@@ -104,8 +104,6 @@ export default function RootLayout({ children }) {
         <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       </Suspense>
       <body className="bg-base-100 text-white">
-        <SpeedInsights />
-
         <CookiesProvider>
           {/* Navbar */}
           <Suspense>
