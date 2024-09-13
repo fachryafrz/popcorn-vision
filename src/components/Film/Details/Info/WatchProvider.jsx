@@ -71,6 +71,9 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                     }}
                     className={`aspect-square w-[40px] rounded-xl`}
                   ></figure>
+                  <span className={`sr-only`}>
+                    {item.provider_name} ({item.type})
+                  </span>
                 </div>
               </Link>
               {/* </Reveal> */}
