@@ -6,6 +6,7 @@ import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const viewport = {
   width: "device-width",
@@ -104,6 +105,8 @@ export default function RootLayout({ children }) {
         <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
       </Suspense>
       <body className="bg-base-100 text-white">
+        <SpeedInsights />
+
         <CookiesProvider>
           {/* Navbar */}
           <Suspense>
