@@ -5,6 +5,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
 import { usePathname, useRouter } from "next/navigation";
+import { slugify } from "@/lib/slugify";
 
 export default function Person({
   id,
@@ -20,9 +21,11 @@ export default function Person({
   let profilePath = profile_path;
 
   const handleActorClick = () => {
-    router.replace(`${pathname}/?person=${id}`, {
-      scroll: false,
-    });
+    // router.replace(`${pathname}/?person=${id}`, {
+    //   scroll: false,
+    // });
+
+    router.push(`/person/${id}${slugify(name)}`, { scroll: false });
   };
 
   return (

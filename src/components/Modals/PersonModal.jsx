@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
@@ -10,6 +12,7 @@ import { useEpisodeModal } from "@/zustand/episodeModal";
 import PersonProfile from "../Person/Profile";
 import PersonDetails from "../Person/Details";
 import PersonWorks from "../Person/Works";
+import { delay } from "@/lib/delay";
 
 export default function PersonModal({ person }) {
   const router = useRouter();
@@ -18,32 +21,58 @@ export default function PersonModal({ person }) {
   const { episode: episodeForModal } = useEpisodeModal((state) => state);
   const { setPersonModal } = usePersonModal((state) => state);
 
-  const combinedCredits = person.combined_credits;
-  const movieCredits = person.movie_credits;
-  const tvCredits = person.tv_credits;
-  const images = person.images;
+  const {
+    combined_credits: combinedCredits,
+    movie_credits: movieCredits,
+    tv_credits: tvCredits,
+    images,
+  } = person;
 
   const [films, setFilms] = useState();
 
-  const handleCloseModal = () => {
+  // const handleCloseModal = () => {
+  //   document.getElementById(`personModal`).close();
+
+  //   if (episodeForModal) {
+  //     router.replace(
+  //       `${pathname}/?season=${episodeForModal.season_number}&episode=${episodeForModal.episode_number}`,
+  //       {
+  //         scroll: false,
+  //       },
+  //     );
+  //     document.getElementById(`episodeModal`).showModal();
+  //   } else {
+  //     router.replace(pathname, { scroll: false });
+  //   }
+  //   setTimeout(() => {
+  //     // Zustand
+  //     setPersonModal(null);
+  //   }, 100);
+  // };
+
+  const handleCloseModal = async () => {
     document.getElementById(`personModal`).close();
 
-    if (episodeForModal) {
-      router.replace(
-        `${pathname}/?season=${episodeForModal.season_number}&episode=${episodeForModal.episode_number}`,
-        {
-          scroll: false,
-        },
-      );
-      document.getElementById(`episodeModal`).showModal();
-    } else {
-      router.replace(pathname, { scroll: false });
-    }
-    setTimeout(() => {
-      // Zustand
-      setPersonModal(null);
-    }, 100);
+    await delay(100);
+
+    // if (episodeForModal) {
+    //   router.replace(
+    //     `${pathname}/?season=${episodeForModal.season_number}&episode=${episodeForModal.episode_number}`,
+    //     { scroll: false },
+    //   );
+    //   document.getElementById(`episodeModal`).showModal();
+    // } else {
+      router.back();
+    // }
   };
+
+  useEffect(() => {
+    document.getElementById(`personModal`).showModal();
+  }, []);
+
+  useEffect(() => {
+    if (episodeForModal) document.getElementById(`episodeModal`).close();
+  }, [episodeForModal]);
 
   useEffect(() => {
     if (movieCredits && tvCredits) {
