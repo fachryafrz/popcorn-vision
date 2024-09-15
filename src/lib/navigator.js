@@ -1,7 +1,7 @@
 import { USER_LOCATION } from "./constants";
 import { getLocation } from "./fetch";
 
-export function findLocation(setUserLocation, setError) {
+export function findLocation(setLocation, setError) {
   navigator.geolocation.getCurrentPosition(
     (position) => {
       const userLocation = {
@@ -14,7 +14,7 @@ export function findLocation(setUserLocation, setError) {
       // Asumsikan getLocation adalah fungsi yang mengembalikan lokasi berdasarkan koordinat
       getLocation({ latitude, longitude }).then((response) => {
         localStorage.setItem(USER_LOCATION, JSON.stringify(response));
-        setUserLocation(JSON.stringify(response));
+        setLocation(JSON.stringify(response));
         setError(null); // Clear any previous errors
       });
     },
@@ -30,10 +30,10 @@ export function findLocation(setUserLocation, setError) {
   // }
 }
 
-export function checkLocationPermission(setUserLocation, setError) {
+export function checkLocationPermission(setLocation, setError) {
   navigator.permissions.query({ name: "geolocation" }).then((result) => {
     if (result.state === "granted") {
-      findLocation(setUserLocation, setError);
+      findLocation(setLocation, setError);
     } else if (result.state === "prompt") {
       setError(true);
       // Don't do anything if the permission was prompt.
@@ -43,8 +43,8 @@ export function checkLocationPermission(setUserLocation, setError) {
   });
 }
 
-export function requestLocation(setUserLocation, setError) {
+export function requestLocation(setLocation, setError) {
   if (navigator.geolocation) {
-    findLocation(setUserLocation, setError);
+    findLocation(setLocation, setError);
   }
 }

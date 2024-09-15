@@ -32,6 +32,7 @@ import Confetti from "react-confetti-boom";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import { USER_LOCATION } from "@/lib/constants";
+import moment from "moment";
 
 export default function FilmInfo({
   film,
@@ -40,12 +41,14 @@ export default function FilmInfo({
   providers,
   releaseDates,
 }) {
-  const [userLocation, setUserLocation] = useState(null);
+  const [location, setLocation] = useState(null);
   const [locationError, setLocationError] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [accountStates, setAccountStates] = useState();
 
-  const countryCode = userLocation && JSON.parse(userLocation).countryCode;
-  const countryName = userLocation && JSON.parse(userLocation).countryName;
+  const parsedUserLocation = location && JSON.parse(location);
+  const countryCode = parsedUserLocation?.countryCode;
+  const countryName = parsedUserLocation?.countryName;
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -59,40 +62,34 @@ export default function FilmInfo({
     (item) => item.iso_3166_1 === countryCode,
   );
 
+  const validTypes = [1, 2, 3, 4, 5, 6];
   const filteredReleaseDateByCountry = releaseDateByCountry?.release_dates
-    .filter(
-      (item) =>
-        item.type === 1 ||
-        item.type === 3 ||
-        item.type === 2 ||
-        item.type === 4 ||
-        item.type === 5 ||
-        item.type === 6,
-    )
+    .filter((item) => validTypes.includes(item.type))
     .reduce((earliest, current) => {
-      return new Date(current.release_date) < new Date(earliest.release_date)
+      return moment(current.release_date).isBefore(earliest.release_date)
         ? current
         : earliest;
     });
 
   const filmReleaseDate = releaseDateByCountry
     ? filteredReleaseDateByCountry?.release_date
-    : film.release_date;
+    : film?.release_date;
 
-  const isUpcoming =
-    new Date(!isTvPage ? filmReleaseDate : film.first_air_date) > new Date();
-  const isUpcomingNextEps = new Date(nextEps?.air_date) > new Date();
+  const isUpcoming = moment(
+    !isTvPage ? filmReleaseDate : film?.first_air_date,
+  ).isAfter(moment());
+
+  const isUpcomingNextEps = moment(nextEps?.air_date).isAfter(moment());
 
   const filmRuntime = !isTvPage
-    ? film.runtime
-    : film.episode_run_time.length > 0 && film.episode_run_time[0];
+    ? film?.runtime
+    : film?.episode_run_time.length > 0 && film?.episode_run_time[0];
 
   const providersArray = Object.entries(providers.results);
-  const providersIDArray =
-    userLocation &&
-    providersArray.find(
-      (item) => item[0] === JSON.parse(userLocation).countryCode,
-    );
+
+  const providersIDArray = parsedUserLocation
+    ? providersArray.find((item) => item[0] === parsedUserLocation.countryCode)
+    : null;
 
   // Confetti
   dayjs.extend(duration);
@@ -104,8 +101,6 @@ export default function FilmInfo({
   const daysLeft = timeLeft.days();
 
   // Get account state
-  const [accountStates, setAccountStates] = useState();
-
   useEffect(() => {
     const getAccountStates = async (setValue) => {
       await axios
@@ -130,22 +125,22 @@ export default function FilmInfo({
     }
   }, [film.id, isTvPage, user]);
 
-  // Use Effect for getting user location
+  // Effect for user location
   useEffect(() => {
     const userLocationInLocalStorage = localStorage.getItem(USER_LOCATION);
 
     if (!userLocationInLocalStorage) {
       setIsLoading(true);
-      checkLocationPermission(setUserLocation, setLocationError);
+      checkLocationPermission(setLocation, setLocationError);
+    } else {
+      setLocation(userLocationInLocalStorage);
+      setIsLoading(false);
     }
-
-    setUserLocation(userLocationInLocalStorage);
   }, []);
 
   useEffect(() => {
-    if (userLocation) setIsLoading(false);
-    if (locationError) setIsLoading(false);
-  }, [locationError, userLocation]);
+    if (location || locationError) setIsLoading(false);
+  }, [locationError, location]);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -279,7 +274,7 @@ export default function FilmInfo({
           )}
 
           {/* Enable location button */}
-          {!userLocation && !isLoading && (
+          {!location && !isLoading && (
             <section
               id={`Film Providers`}
               className="flex flex-col justify-center gap-1 md:justify-start"
@@ -290,9 +285,7 @@ export default function FilmInfo({
 
               <div className={`h-[40px]`}>
                 <button
-                  onClick={() =>
-                    requestLocation(setUserLocation, setLocationError)
-                  }
+                  onClick={() => requestLocation(setLocation, setLocationError)}
                   className={`btn btn-ghost btn-sm flex h-full max-w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
                 >
                   Enable location
