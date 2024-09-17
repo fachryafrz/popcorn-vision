@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { slugify } from "@/lib/slugify";
+import slug from "slug";
 
 export async function generateSitemaps() {
   const sitemap = [];
@@ -37,7 +37,7 @@ export default async function sitemap({ id }) {
   }
 
   const moviesInSitemap = movies.map((movie) => ({
-    url: `${appUrl}/movies/${movie.id}${slugify(movie.title)}`,
+    url: `${appUrl}/movies/${movie.id}${slug(movie.title)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,

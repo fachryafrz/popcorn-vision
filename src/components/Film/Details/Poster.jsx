@@ -4,12 +4,12 @@
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
-import { slugify } from "@/lib/slugify";
 import Reveal from "@/components/Layout/Reveal";
 
 // Zustand
 import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
+import slug from "slug";
 
 export default function FilmPoster({ film, videos, images, reviews }) {
   const pathname = usePathname();
@@ -32,7 +32,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     if (!isWindowAvailable) return;
 
     // NOTE: Can't use window.location.href
-    const currentURL = `/${!isTvPage ? `movies` : `tv`}/${film.id}${slugify(
+    const currentURL = `/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(
       !isTvPage ? film.title : film.name,
     )}`;
 

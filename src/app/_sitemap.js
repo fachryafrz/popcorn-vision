@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { slugify } from "@/lib/slugify";
+import slug from "slug";
 
 export const revalidate = 0;
 

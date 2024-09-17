@@ -3,13 +3,13 @@
 import ImagePovi from "@/components/Film/ImagePovi";
 import { POPCORN } from "@/lib/constants";
 import { formatRating } from "@/lib/formatRating";
-import { slugify } from "@/lib/slugify";
 import { sortFilms } from "@/lib/sortFilms";
 import { usePersonModal } from "@/zustand/personModal";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import slug from "slug";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -112,7 +112,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                       <Link
                         href={`/${isItTvPage(`movies`, `tv`)}/${
                           film.id
-                        }-${slugify(isItTvPage(film.title, film.name))}`}
+                        }-${slug(isItTvPage(film.title, film.name))}`}
                         className={`transition-all active:scale-100 hocus:scale-[1.01]`}
                       >
                         <ImagePovi

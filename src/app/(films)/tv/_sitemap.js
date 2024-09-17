@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { slugify } from "@/lib/slugify";
+import slug from "slug";
 
 export async function generateSitemaps() {
   const sitemap = [];
@@ -37,7 +37,7 @@ export default async function sitemap({ id }) {
   }
 
   const tvShowsInSitemap = tvShows.map((show) => ({
-    url: `${appUrl}/tv/${show.id}${slugify(show.name)}`,
+    url: `${appUrl}/tv/${show.id}-${slug(show.name)}`,
     lastModified: new Date(),
     changeFrequency: "hourly",
     priority: 0.8,

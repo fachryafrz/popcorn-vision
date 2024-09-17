@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
-import { slugify } from "../../lib/slugify";
 import ImagePovi from "./ImagePovi";
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
@@ -13,6 +12,7 @@ import Reveal from "../Layout/Reveal";
 import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";
+import slug from "slug";
 
 export default function FilmCard({ film, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
@@ -38,10 +38,11 @@ export default function FilmCard({ film, isTvPage }) {
   return (
     <Link
       id="FilmCard"
-      href={isItTvPage(
-        `/movies/${film.id}${slugify(film.title)}`,
-        `/tv/${film.id}${slugify(film.name)}`,
-      )}
+      href={
+        !isTvPage
+          ? `/movies/${film.id}-${slug(film.title)}`
+          : `/tv/${film.id}-${slug(film.name)}`
+      }
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
       className={`relative`}

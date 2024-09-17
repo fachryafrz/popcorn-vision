@@ -17,7 +17,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
 import { fetchData, getEpisodes } from "@/lib/fetch";
-import { slugify } from "@/lib/slugify";
 import EpisodeCard from "./TV/EpisodeCard";
 import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
@@ -29,6 +28,7 @@ import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import moment from "moment";
 import { POPCORN } from "@/lib/constants";
+import slug from "slug";
 
 export default function FilmCollection({ film, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -140,7 +140,7 @@ export function CollectionItem({
   return (
     <article>
       <Link
-        href={`/${type === "movie" ? "movies" : "tv"}/${item.id}${slugify(filmTitle)}`}
+        href={`/${type === "movie" ? "movies" : "tv"}/${item.id}-${slug(filmTitle)}`}
         className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all @container hocus:bg-opacity-30 ${
           film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
         }`}

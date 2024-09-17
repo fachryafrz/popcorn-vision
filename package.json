@@ -37,6 +37,7 @@
     "react-youtube": "^10.1.0",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.0",
+    "slug": "^9.1.0",
     "swiper": "^11.0.6",
     "swr": "^2.2.5",
     "zustand": "^4.5.2"

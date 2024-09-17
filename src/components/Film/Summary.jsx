@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { fetchData, getFilmSeason } from "@/lib/fetch";
-import { slugify } from "../../lib/slugify";
 import { formatRuntime } from "../../lib/formatRuntime";
 import { isPlural } from "../../lib/isPlural";
 import Reveal from "../Layout/Reveal";
@@ -86,10 +84,11 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
         <Reveal delay={0.2} className={`[&_a]:w-full`}>
           <Link
-            href={isItTvPage(
-              `/movies/${film.id}${slugify(film.title)}`,
-              `/tv/${film.id}${slugify(film.name)}`,
-            )}
+            href={
+              !isTvPage
+                ? `/movies/${film.id}-${slug(film.title)}`
+                : `/tv/${film.id}-${slug(film.name)}`
+            }
             className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
           >
             Details
