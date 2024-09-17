@@ -8,6 +8,7 @@ import { formatRuntime } from "../../lib/formatRuntime";
 import { isPlural } from "../../lib/isPlural";
 import Reveal from "../Layout/Reveal";
 import { formatRating } from "@/lib/formatRating";
+import slug from "slug";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
