@@ -38,11 +38,7 @@ export default function FilmCard({ film, isTvPage }) {
   return (
     <Link
       id="FilmCard"
-      href={
-        !isTvPage
-          ? `/movies/${film.id}-${slug(film.title)}`
-          : `/tv/${film.id}-${slug(film.name)}`
-      }
+      href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
       className={`relative`}

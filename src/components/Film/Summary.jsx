@@ -85,11 +85,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
         <Reveal delay={0.2} className={`[&_a]:w-full`}>
           <Link
-            href={
-              !isTvPage
-                ? `/movies/${film.id}-${slug(film.title)}`
-                : `/tv/${film.id}-${slug(film.name)}`
-            }
+            href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
             className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
           >
             Details
