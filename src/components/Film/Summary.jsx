@@ -77,7 +77,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       </div>
 
       <Reveal delay={0.1}>
-        <p className="hidden md:line-clamp-2 lg:line-clamp-3">
+        <p aria-hidden className="hidden md:line-clamp-2 lg:line-clamp-3">
           {film.overview}
         </p>
       </Reveal>

@@ -282,6 +282,10 @@ export default function Search({
 
   return (
     <div className={`flex lg:px-4`}>
+      <h1 className="sr-only">
+        {!isTvPage ? `Search Movies` : `Search TV Series`}
+      </h1>
+
       <Suspense>
         <Filters
           type={type}

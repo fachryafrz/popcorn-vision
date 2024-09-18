@@ -84,7 +84,7 @@ export default function UserRating({
       <div>
         <Reveal>
           <div className={`mb-2 flex items-center gap-2`}>
-            <span className={`block text-sm font-medium italic`}>{title}</span>
+            <span aria-hidden className={`block text-sm font-medium italic`}>{title}</span>
   
             {isAdded?.value > 0 && (
               <button

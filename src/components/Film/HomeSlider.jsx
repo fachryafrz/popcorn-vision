@@ -30,6 +30,8 @@ import FilmSummary from "./Summary";
 import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
+import moment from "moment";
+import slug from "slug";
 
 export default function HomeSlider({ films, genres, filmData }) {
   const pathname = usePathname();
@@ -47,7 +49,29 @@ export default function HomeSlider({ films, genres, filmData }) {
 
   return (
     <section name="Home Slider" className={`relative -mt-[66px] pb-[2rem]`}>
-      <h2 className="sr-only">Discover Movies</h2>
+      <h2 className="sr-only">
+        Highlighted {!isTvPage ? `Movies` : `TV Series`}
+      </h2>
+      <ul className="sr-only">
+        {films.map((film, i) => {
+          return (
+            <li key={film.id}>
+              <Link
+                href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
+              >
+                <h3>
+                  {film.title ?? film.name} (
+                  {moment(film.release_date ?? film.first_air_date).format(
+                    "YYYY",
+                  )}
+                  )
+                </h3>
+              </Link>
+              <p>{film.overview}</p>
+            </li>
+          );
+        })}
+      </ul>
       <div>
         <Swiper
           onSwiper={(swiper) => setMainSwiper(swiper)}
@@ -107,9 +131,7 @@ export default function HomeSlider({ films, genres, filmData }) {
         </Swiper>
       </div>
 
-      <div
-        className={`absolute bottom-20 pb-8 right-0 hidden w-fit lg:block`}
-      >
+      <div className={`absolute bottom-20 right-0 hidden w-fit pb-8 lg:block`}>
         <Swiper
           onSwiper={setThumbsSwiper}
           watchSlidesProgress={true}
@@ -227,9 +249,7 @@ function HomeFilm({
           />
         </Reveal>
       </div>
-      <div
-        className={`absolute z-50 bottom-0 w-full lg:bottom-20 p-4`}
-      >
+      <div className={`absolute bottom-0 z-50 w-full p-4 lg:bottom-20`}>
         {filmDetails && activeSlide === index && (
           <FilmSummary
             film={filmDetails}

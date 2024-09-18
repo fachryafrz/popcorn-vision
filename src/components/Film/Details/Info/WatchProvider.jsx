@@ -73,7 +73,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                       className={`aspect-square w-[40px] rounded-xl`}
                     ></figure>
                   </Reveal>
-                  <span className={`sr-only`}>
+                  <span aria-hidden className={`sr-only`}>
                     {item.provider_name} ({item.type})
                   </span>
                 </div>

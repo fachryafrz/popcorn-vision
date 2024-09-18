@@ -41,6 +41,10 @@ export default function ReviewCard({ review }) {
 
   return (
     <div className="-mx-4 flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 md:mx-0 md:rounded-xl">
+      <h3 className="sr-only">
+        {`${review.author} (${review.author_details.rating ? `Rated: ${review.author_details.rating}` : `Not rated`})`}
+      </h3>
+
       <div className="flex items-center gap-2">
         <Person
           name={review.author}

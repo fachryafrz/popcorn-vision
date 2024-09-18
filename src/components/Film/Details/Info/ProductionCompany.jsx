@@ -26,19 +26,15 @@ export default function ProductionCompany({ item, i, isTvPage }) {
                   backgroundRepeat: `no-repeat`,
                 }}
               ></figure>
-
-              <span className={`sr-only`}>{item.name}</span>
             </div>
           ) : (
             <span
-              className={`block max-w-[120px] text-pretty text-center font-semibold`}
-            >
-              {item.name}
-            </span>
+              data-before-content={item.name}
+              className={`before-content block max-w-[120px] text-pretty text-center font-semibold`}
+            />
           )}
         </Reveal>
       </Link>
-      <span className={`sr-only`}>{item.name}</span>
     </>
   );
 }

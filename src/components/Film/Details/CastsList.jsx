@@ -7,8 +7,12 @@ import {
 } from "ionicons/icons";
 import Person from "../../Person/Person";
 import Reveal from "@/components/Layout/Reveal";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function CastsList({ credits }) {
+  const pathname = usePathname()
+
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
 
@@ -34,32 +38,38 @@ export default function CastsList({ credits }) {
           </button>
         )}
       </div>
-      <div className="flex max-h-[calc(100dvh-7.5rem)] flex-col overflow-x-auto overflow-y-auto md:!overflow-x-clip md:rounded-bl-3xl">
+      <ul className="flex max-h-[calc(100dvh-7.5rem)] flex-col overflow-x-auto overflow-y-auto md:!overflow-x-clip md:rounded-bl-3xl">
         {credits &&
           credits.cast &&
           credits.cast
             .slice(0, showAllActors ? credits.cast.length : numActors)
             .map((actor, i) => {
               return (
-                <Reveal
-                  key={actor.id}
-                  delay={showAllActors ? 0 : 0.1 * i}
-                  className={`[&_button]:w-full`}
-                >
-                  <Person
-                    id={actor.id}
-                    showAllActors={showAllActors}
-                    name={actor.name}
-                    role={actor.character}
-                    profile_path={
-                      actor.profile_path === null
-                        ? null
-                        : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                    }
-                    before={`as`}
-                    personRole={`actor`}
-                  />{" "}
-                </Reveal>
+                <li key={actor.id}>
+                  <Reveal
+                    delay={showAllActors ? 0 : 0.1 * i}
+                    className={`[&_button]:w-full`}
+                  >
+                    <Link href={`${pathname}/?person=${actor.id}`}>
+                      <h3 className="sr-only">
+                        {`${actor.name} (${actor.character})`}
+                      </h3>
+                    </Link>
+                    <Person
+                      id={actor.id}
+                      showAllActors={showAllActors}
+                      name={actor.name}
+                      role={actor.character}
+                      profile_path={
+                        actor.profile_path === null
+                          ? null
+                          : `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                      }
+                      before={`as`}
+                      personRole={`actor`}
+                    />{" "}
+                  </Reveal>
+                </li>
               );
             })}
 
@@ -83,7 +93,7 @@ export default function CastsList({ credits }) {
             </button>{" "}
           </Reveal>
         )}
-      </div>
+      </ul>
     </div>
   );
 }

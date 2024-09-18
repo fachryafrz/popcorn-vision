@@ -77,7 +77,7 @@ export default function FilmCard({ film, isTvPage }) {
         )}
       </ImagePovi>
 
-      <h3 className={`sr-only`}>{isItTvPage(film.title, film.name)}</h3>
+      <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
 
       <FilmPreview
         film={film}
