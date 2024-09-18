@@ -278,7 +278,7 @@ export default function FilmInfo({
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`}>
               <p className="sr-only">
-                {isPlural({ text: `Genre`, number: film.genres.length })}
+                {isPlural({ text: `Genre`, number: film.genres.length })}:
               </p>
               <ul className={`flex flex-wrap gap-1`}>
                 {film.genres.map((item, i) => {
