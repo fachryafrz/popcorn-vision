@@ -12,6 +12,8 @@ import FilmSummary from "./Summary";
 import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
+import moment from "moment";
+import slug from "slug";
 
 export default function Trending({ film, genres }) {
   const pathname = usePathname();
@@ -46,7 +48,16 @@ export default function Trending({ film, genres }) {
 
   return (
     <div className="mx-auto max-w-7xl md:px-4">
-      <h2 className="sr-only">{`Trending Movie`}</h2>
+      <Link
+        href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
+        className="sr-only"
+      >
+        <h2>{`Trending ${!isTvPage ? `Movie` :`TV Series`}: ${film.title ?? film.name} (${moment(
+          film.release_date ?? film.first_air_date,
+        ).format("YYYY")})`}</h2>
+      </Link>
+      <p className="sr-only">{film.overview}</p>
+
       {/* <Reveal> */}
       <div className="relative flex flex-col items-center gap-8 overflow-hidden p-8 before:invisible before:absolute before:inset-0 before:z-10 before:bg-gradient-to-t before:from-black before:via-black before:via-30% before:opacity-[100%] after:absolute after:inset-0 after:z-20 after:bg-gradient-to-t after:from-black md:flex-row md:rounded-[3rem] md:p-[3rem] md:before:visible md:before:bg-gradient-to-r md:after:bg-gradient-to-r">
         {/* Backdrop */}
@@ -58,7 +69,7 @@ export default function Trending({ film, genres }) {
         {/* Poster */}
         <Reveal
           y={0}
-          className={`z-30 aspect-poster h-full w-full overflow-hidden rounded-2xl max-w-[300px]`}
+          className={`z-30 aspect-poster h-full w-full max-w-[300px] overflow-hidden rounded-2xl`}
         >
           <ImagePovi
             imgPath={

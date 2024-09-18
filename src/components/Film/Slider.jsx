@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { sortFilms } from "../../lib/sortFilms";
 import Reveal from "../Layout/Reveal";
+import slug from "slug";
+import moment from "moment";
 
 export default function FilmSlider({
   films,
@@ -30,6 +32,26 @@ export default function FilmSlider({
   return (
     <section id={title} className={`mx-auto w-full max-w-none`}>
       <h2 className="sr-only">{title}</h2>
+      <ul className="sr-only">
+        {sortedFilms.map((film) => {
+          return (
+            <li key={film.id}>
+              <Link
+                href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
+              >
+                <h3>
+                  {film.title ?? film.name} (
+                  {moment(film.release_date ?? film.first_air_date).format(
+                    "YYYY",
+                  )}
+                  )
+                </h3>
+              </Link>
+              <p>{film.overview}</p>
+            </li>
+          );
+        })}
+      </ul>
 
       <Swiper
         modules={[Navigation]}

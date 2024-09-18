@@ -83,6 +83,17 @@ export default function FilmCollection({ film, collection }) {
               .map((item, index) => {
                 return (
                   <li key={item.id}>
+                    <h3 className="sr-only">
+                      {item.name} (
+                      {`${item.episode_count} ${isPlural({
+                        text: "Episode",
+                        number: item.episode_count,
+                      })}`}
+                      )
+                    </h3>
+                    {item.overview && (
+                      <p className="sr-only">{item.overview}</p>
+                    )}
                     <FilmSeason film={film} item={item} index={index} />
                   </li>
                 );
@@ -117,7 +128,7 @@ export function CollectionItem({
   const [filmDetails, setFilmDetails] = useState();
 
   const isTv = type === "tv";
-  const filmTitle = !isTv ? item.title : item.name;
+  const filmTitle = item.title ?? item.name;
   const filmRuntime = !isTv
     ? filmDetails?.runtime
     : filmDetails?.episode_run_time.length > 0 &&
@@ -157,13 +168,17 @@ export function CollectionItem({
           className={`flex aspect-poster min-w-[50px] max-w-[50px] items-center overflow-hidden rounded-lg bg-base-100`}
         />
         <div className="flex w-full flex-col items-start gap-1">
-          <h3
-            className="line-clamp-2 text-start font-medium"
+          <span
+            className="before-content line-clamp-2 text-start font-medium"
             title={filmTitle}
             style={{ textWrap: "balance" }}
-          >
-            {filmTitle}
+            data-before-content={filmTitle}
+          />
+
+          <h3 className="sr-only">
+            {filmTitle} ({moment(film.release_date).format("YYYY")})
           </h3>
+
           <div
             className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
           >

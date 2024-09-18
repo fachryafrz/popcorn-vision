@@ -83,6 +83,7 @@ export default async function Home({ type = "movie" }) {
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
+      <p className="sr-only">{process.env.NEXT_PUBLIC_APP_DESC}</p>
       <HomeSlider
         films={trending.slice(0, 5)}
         genres={genres}

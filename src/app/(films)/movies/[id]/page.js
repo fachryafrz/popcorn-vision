@@ -6,6 +6,7 @@ import { isPlural } from "@/lib/isPlural";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
+import moment from "moment";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -240,6 +241,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
     <div
       className={`relative flex flex-col bg-base-100 pb-[2rem] text-white md:-mt-[66px] md:pb-[5rem]`}
     >
+      <h1 className="sr-only">
+        {film.title ?? film.name} (
+        {moment(film.release_date ?? film.first_air_date).format("YYYY")})
+      </h1>
+
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />
 

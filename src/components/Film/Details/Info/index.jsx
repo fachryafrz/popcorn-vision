@@ -144,6 +144,55 @@ export default function FilmInfo({
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
+      {/* Reading Mode */}
+      <p className="sr-only">Produced by:</p>
+      <ul className="sr-only">
+        {film.production_companies.map((item) => {
+          return (
+            <li key={item.id}>
+              <Link href={`/search?with_companies=${item.id}`}>
+                <p>{item.name}</p>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      {!isTvPage ? (
+        <p className="sr-only">
+          {`Released on: ${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${releaseDateByCountry ? `(${countryName})` : ``}`}
+        </p>
+      ) : (
+        <>
+          {film.first_air_date && (
+            <p className="sr-only">
+              {`First aired: ${moment(film.first_air_date).format("dddd, MMMM D, YYYY")}`}
+            </p>
+          )}
+          {film.last_air_date && (
+            <p className="sr-only">
+              {`Last aired: ${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
+            </p>
+          )}
+        </>
+      )}
+
+      {isTvPage && (
+        <p className="sr-only">{`Chapter: ${film.number_of_seasons} ${isPlural({
+          text: "Season",
+          number: film.number_of_seasons,
+        })} (${film.number_of_episodes} ${isPlural({
+          text: "Episode",
+          number: film.number_of_episodes,
+        })})`}</p>
+      )}
+
+      {filmRuntime && (
+        <p className="sr-only">
+          {`Runtime: ${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 && `(${formatRuntime(filmRuntime)})`}`}
+        </p>
+      )}
+
       <div className="flex w-full flex-col items-center gap-4 md:items-start md:justify-center">
         {/* Film Title Logo */}
         {images.logos.length > 0 ? (
@@ -167,21 +216,18 @@ export default function FilmInfo({
           className={`flex w-full flex-col gap-4 text-sm md:gap-2 lg:text-base`}
         >
           {/* Film Production Company */}
-          {film.production_companies?.length > 0 &&
-            film.production_companies.find(
-              (company) => company.logo_path !== null,
-            ) && (
-              <section
-                id={`Production Companies`}
-                className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
-              >
-                {film.production_companies.map((item, i) => (
-                  <div key={item.id} className={`grid place-content-center`}>
-                    <ProductionCompany item={item} i={i} isTvPage={isTvPage} />
-                  </div>
-                ))}
-              </section>
-            )}
+          {film.production_companies?.length > 0 && (
+            <section
+              id={`Production Companies`}
+              className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
+            >
+              {film.production_companies.map((item, i) => (
+                <div key={item.id} className={`grid place-content-center`}>
+                  <ProductionCompany item={item} i={i} isTvPage={isTvPage} />
+                </div>
+              ))}
+            </section>
+          )}
           {/* Film Release Date */}
           <FilmReleaseDate
             film={film}
@@ -199,7 +245,7 @@ export default function FilmInfo({
                   <div className={`flex items-center gap-1`}>
                     <IonIcon icon={tvOutline} />
 
-                    <span>
+                    <span aria-hidden>
                       {`${film.number_of_seasons} ${isPlural({
                         text: "Season",
                         number: film.number_of_seasons,
@@ -220,38 +266,64 @@ export default function FilmInfo({
                 <div className={`flex items-center gap-1`}>
                   <IonIcon icon={timeOutline} />
                   <time>
-                    {`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })}`}
+                    <span
+                      aria-hidden
+                    >{`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 && `(${formatRuntime(filmRuntime)})`}`}</span>
                   </time>
-                  {Math.floor(filmRuntime / 60) >= 1 && (
-                    <span>{`(${formatRuntime(filmRuntime)})`}</span>
-                  )}
                 </div>
               </Reveal>
             </section>
           )}
           {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
-            <section id={`Film Genres`} className={`flex flex-wrap gap-1`}>
-              {film.genres.map((item, i) => {
-                return (
-                  <Reveal delay={0.2 * i} key={item.id}>
-                    <Link
-                      href={
-                        !isTvPage
-                          ? `/search?with_genres=${item.id}`
-                          : `/tv/search?with_genres=${item.id}`
-                      }
-                      className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
-                    >
-                      {item.name}
-                    </Link>
-                  </Reveal>
-                );
-              })}
+            <section id={`Film Genres`}>
+              <p className="sr-only">
+                {isPlural({ text: `Genre`, number: film.genres.length })}
+              </p>
+              <ul className={`flex flex-wrap gap-1`}>
+                {film.genres.map((item, i) => {
+                  return (
+                    <li key={item.id}>
+                      <Reveal delay={0.2 * i}>
+                        <Link
+                          href={
+                            !isTvPage
+                              ? `/search?with_genres=${item.id}`
+                              : `/tv/search?with_genres=${item.id}`
+                          }
+                          className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
+                        >
+                          <p>{item.name}</p>
+                        </Link>
+                      </Reveal>
+                    </li>
+                  );
+                })}
+              </ul>
             </section>
           )}
 
           {/* Film Director / Creator */}
+          {!isTvPage ? (
+            <p className="sr-only">
+              {`Directed by: ${credits.crew.find((person) => person.job === "Director").name}`}
+            </p>
+          ) : (
+            <>
+              <p className="sr-only">Created by:</p>
+              <ul className="sr-only">
+                {film.created_by.map((person) => {
+                  return (
+                    <li key={person.id}>
+                      <Link href={`${pathname}/?person=${person.id}`}>
+                        <p>{person.name}</p>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
@@ -262,7 +334,7 @@ export default function FilmInfo({
                 id={`Film Providers`}
                 className="flex flex-col justify-center gap-1 md:justify-start"
               >
-                <span className={`text-sm italic text-gray-400`}>
+                <span aria-hidden className={`text-sm italic text-gray-400`}>
                   Where to watch?
                 </span>
 
@@ -279,7 +351,7 @@ export default function FilmInfo({
               id={`Film Providers`}
               className="flex flex-col justify-center gap-1 md:justify-start"
             >
-              <span className={`text-sm italic text-gray-400`}>
+              <span aria-hidden className={`text-sm italic text-gray-400`}>
                 Where to watch?
               </span>
 
@@ -300,7 +372,7 @@ export default function FilmInfo({
               id={`Film Providers`}
               className="flex flex-col justify-center gap-1 md:justify-start"
             >
-              <span className={`text-sm italic text-gray-400`}>
+              <span aria-hidden className={`text-sm italic text-gray-400`}>
                 Where to watch?
               </span>
 

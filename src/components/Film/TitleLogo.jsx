@@ -33,12 +33,12 @@ export default function TitleLogo({ film, images, setLoading }) {
     </Reveal>
   ) : (
     <Reveal delay={0.1} className={`w-full`}>
-      <h1
+      <span aria-hidden
         className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
         style={{ textWrap: `balance` }}
       >
         {title}
-      </h1>
+      </span>
     </Reveal>
   );
 }

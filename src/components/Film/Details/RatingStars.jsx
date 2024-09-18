@@ -11,7 +11,7 @@ const RatingStars = ({ rating }) => {
   const hasHalfStar = rating % 2 !== 0; // Indicates if there is a half star
 
   if (rating < 1) {
-    return <div className="text-sm italic">Not rated</div>;
+    return <div aria-hidden className="text-sm italic">Not rated</div>;
   }
 
   const renderStars = () => {

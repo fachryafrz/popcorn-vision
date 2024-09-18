@@ -45,7 +45,7 @@ export default function Countdown({
   }, [date]);
 
   return (
-    <div className={`flex flex-wrap justify-start gap-2 text-center`}>
+    <div aria-hidden className={`flex flex-wrap justify-start gap-2 text-center`}>
       {countdown.years > 0 && (
         <Reveal>
           <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
