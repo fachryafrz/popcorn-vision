@@ -3,8 +3,6 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export const revalidate = true;
-
 export async function POST(req) {
   const { id, season_number, episode_number, rating } = await req.json();
   const cookiesStore = cookies();
