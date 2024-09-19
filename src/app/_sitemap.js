@@ -1,8 +1,6 @@
 import { fetchData } from "@/lib/fetch";
 import slug from "slug";
 
-export const revalidate = 0;
-
 export default async function sitemap() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
   const totalPages = 5;

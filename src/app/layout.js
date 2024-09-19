@@ -1,5 +1,3 @@
-export const revalidate = 86400; // 1 day in seconds
-
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
