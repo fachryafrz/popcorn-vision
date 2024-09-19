@@ -122,31 +122,9 @@ export function CollectionItem({
   item,
   index,
   type = "movie",
-  shouldFetch = true,
   userRating,
 }) {
-  const [filmDetails, setFilmDetails] = useState();
-
-  const isTv = type === "tv";
   const filmTitle = item.title ?? item.name;
-  const filmRuntime = !isTv
-    ? filmDetails?.runtime
-    : filmDetails?.episode_run_time.length > 0 &&
-      filmDetails?.episode_run_time[0];
-
-  useEffect(() => {
-    const fetchFilmDetails = async () => {
-      await fetchData({
-        endpoint: `/${type}/${item.id}`,
-      }).then((res) => {
-        setFilmDetails(res);
-      });
-    };
-
-    if (shouldFetch) {
-      fetchFilmDetails();
-    }
-  }, [item, shouldFetch, type]);
 
   return (
     <article>
@@ -176,7 +154,8 @@ export function CollectionItem({
           />
 
           <h3 className="sr-only">
-            {filmTitle} ({moment(film.release_date).format("YYYY")})
+            {filmTitle}{" "}
+            {`${item.release_date && `(${moment(item.release_date).format("YYYY")})`}`}
           </h3>
 
           <div
@@ -198,12 +177,16 @@ export function CollectionItem({
               </div>
             )}
 
-            {filmDetails && filmRuntime > 0 && (
+            <div
+              className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+            >
               <span
-                className={`before-content flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-                data-before-content={formatRuntime(filmRuntime)}
+                className={`before-content`}
+                data-before-content={moment(item.release_date).format(
+                  "MMM DD, YYYY",
+                )}
               />
-            )}
+            </div>
           </div>
         </div>
         <span

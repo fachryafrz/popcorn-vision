@@ -148,7 +148,6 @@ export default function TileList({
               index={i}
               item={film}
               type={type}
-              shouldFetch={false}
               userRating={film.rating}
             />
           </li>

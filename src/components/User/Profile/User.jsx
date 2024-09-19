@@ -52,11 +52,11 @@ export default function User({ user }) {
         </figure>
       )}
 
-      <div className={`flex flex-col gap-2`}>
-        <h1 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h1>
-        <span className={`text-md font-medium text-gray-400 md:text-xl`}>
+      <div className={`flex flex-col-reverse gap-2`}>
+        <h1 className={`text-md font-medium text-gray-400 md:text-xl`}>
           {user.name}
-        </span>
+        </h1>
+        <h2 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h2>
       </div>
     </div>
   );
