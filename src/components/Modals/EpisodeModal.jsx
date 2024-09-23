@@ -20,7 +20,6 @@ import moment from "moment";
 import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
-import { useAuth } from "@/hooks/auth";
 import Countdown from "../Film/Details/Info/Countdown";
 
 export function EpisodeModal({ film, seasons, episode }) {
@@ -33,24 +32,15 @@ export function EpisodeModal({ film, seasons, episode }) {
   const isAired = moment(episode.air_date).isBefore(moment());
   const isUpcoming = moment(episode.air_date).isAfter(moment());
 
-  const { user } = useAuth();
-
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
   const { setEpisodeModal } = useEpisodeModal((state) => state);
 
-  const handleShowAllGuestStars = () => {
-    setShowAllGuestStars(true);
-  };
-
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
 
-    dialogElement.scrollTo({
-      top: 0,
-      behavior: `smooth`,
-    });
+    dialogElement.scrollTo({ top: 0 });
   };
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
@@ -59,28 +49,21 @@ export function EpisodeModal({ film, seasons, episode }) {
     document.getElementById(`episodeModal`).close();
     router.replace(pathname, { scroll: false });
 
-    setTimeout(() => {
-      // Zustand
-      setEpisodeModal(null);
-    }, 100);
+    setTimeout(() => setEpisodeModal(null), 100);
   };
 
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
       router.replace(
         `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
-        {
-          scroll: false,
-        },
+        { scroll: false },
       );
       return;
     }
 
     router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
-      {
-        scroll: false,
-      },
+      { scroll: false },
     );
 
     scrollToTop();
@@ -101,9 +84,7 @@ export function EpisodeModal({ film, seasons, episode }) {
 
     router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
-      {
-        scroll: false,
-      },
+      { scroll: false },
     );
 
     scrollToTop();
@@ -298,7 +279,7 @@ export function EpisodeModal({ film, seasons, episode }) {
                     className={`btn btn-ghost mx-auto w-[25%] min-w-fit rounded-full border-none bg-white bg-opacity-5 px-12 text-primary-blue ${
                       showAllGuestStars ? `hidden` : `flex`
                     }`}
-                    onClick={handleShowAllGuestStars}
+                    onClick={() => setShowAllGuestStars(true)}
                   >
                     View all
                   </button>
