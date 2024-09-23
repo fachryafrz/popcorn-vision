@@ -8,7 +8,7 @@ import { usePersonModal } from "@/zustand/personModal";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import slug from "slug";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -20,7 +20,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
   const { setPersonModal } = usePersonModal((state) => state);
 
-  const isTvPage = creditsSwitcher === `TV` ? true : false;
+  const isTvPage = creditsSwitcher === "TV";
   const personJob = person.known_for_department;
   const personMovies =
     personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
@@ -32,11 +32,6 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
       films: personJob === "Acting" ? films?.cast : films?.crew,
       isTvPage,
     });
-
-  const isItTvPage = (movie, tv) => {
-    const type = !isTvPage ? movie : tv;
-    return type;
-  };
 
   useEffect(() => {
     if (personMovies.length < 1) {
@@ -91,9 +86,6 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                   index === self.findIndex((t) => t.id === item.id),
               )
               .map((film) => {
-                let popcorn = `url(${POPCORN})`;
-                let filmPoster = `url(https://image.tmdb.org/t/p/w300${film.poster_path})`;
-
                 return (
                   <SwiperSlide
                     key={film.id}
@@ -110,9 +102,9 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                       }}
                     >
                       <Link
-                        href={`/${isItTvPage(`movies`, `tv`)}/${
+                        href={`/${!isTvPage ? `movies` : `tv`}/${
                           film.id
-                        }-${slug(isItTvPage(film.title, film.name))}`}
+                        }-${slug(film.title ?? film.name)}`}
                         className={`transition-all active:scale-100 hocus:scale-[1.01]`}
                       >
                         <ImagePovi
@@ -151,11 +143,11 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
                         <div className="mt-2">
                           <h3
-                            title={isItTvPage(film.title, film.name)}
+                            title={film.title ?? film.name}
                             className="line-clamp-2 text-sm font-bold sm:text-base"
                             style={{ textWrap: `balance` }}
                           >
-                            {isItTvPage(film.title, film.name)}
+                            {film.title ?? film.name}
                           </h3>
 
                           {film.character && film.character !== "Self" && (
