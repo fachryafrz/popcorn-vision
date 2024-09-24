@@ -48,9 +48,11 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         )}
 
         {!isTvPage ? (
-          <Reveal delay={0.2}>
-            <FilmRuntime film={film} />
-          </Reveal>
+          film.runtime && (
+            <Reveal delay={0.2}>
+              <FilmRuntime film={film} />
+            </Reveal>
+          )
         ) : (
           <Reveal delay={0.2}>
             <FilmSeason film={film} />
