@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -7,10 +7,7 @@ export default function Network({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [networksData, setNetworksData] = useState(tmdbNetworks);
@@ -29,25 +26,22 @@ export default function Network({ inputStyles }) {
     }, 2000);
   };
 
-  const handleNetworkChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleNetworkChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_networks");
-      } else {
-        const joinedValue = value.join("|");
-        current.set("with_networks", joinedValue);
-      }
+    if (value.length === 0) {
+      current.delete("with_networks");
+    } else {
+      const joinedValue = value.join("|");
+      current.set("with_networks", joinedValue);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Network

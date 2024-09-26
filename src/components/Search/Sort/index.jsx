@@ -1,7 +1,4 @@
-import { IonIcon } from "@ionic/react";
-import { closeCircle, filter } from "ionicons/icons";
-import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
-import Select from "react-select";
+import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import SortByType from "./Type";
 import SortByOrder from "./Order";
@@ -15,10 +12,7 @@ export default function SearchSort({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const sortByTypeOptions = useMemo(
@@ -50,42 +44,36 @@ export default function SearchSort({
   });
 
   // Handle Select Change
-  const handleSortByTypeChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
+  const handleSortByTypeChange = (selectedOption) => {
+    const value = selectedOption.value;
 
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${value}.${sortByOrder.value}`);
-      }
+    if (!value) {
+      current.delete("sort_by");
+    } else {
+      current.set("sort_by", `${value}.${sortByOrder.value}`);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByOrder],
-  );
-  const handleSortByOrderChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.value;
+    router.push(`${pathname}${query}`);
+  };
+  const handleSortByOrderChange = (selectedOption) => {
+    const value = selectedOption.value;
 
-      if (!value) {
-        current.delete("sort_by");
-      } else {
-        current.set("sort_by", `${sortByType.value}.${value}`);
-      }
+    if (!value) {
+      current.delete("sort_by");
+    } else {
+      current.set("sort_by", `${sortByType.value}.${value}`);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router, sortByType],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Sort by

@@ -1,16 +1,12 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import moment from "moment";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function RatingCount({ sliderStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [rating, setRating] = useState(0);

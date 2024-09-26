@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -16,7 +16,7 @@ export default function Crew({ inputStyles }) {
   const [crew, setCrew] = useState([]);
 
   const timerRef = useRef(null);
-  const crewsLoadOptions = useCallback((inputValue, callback) => {
+  const crewsLoadOptions = (inputValue, callback) => {
     const fetchDataWithDelay = async () => {
       // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -46,26 +46,23 @@ export default function Crew({ inputStyles }) {
     timerRef.current = setTimeout(() => {
       fetchDataWithDelay();
     }, 1000);
-  }, []);
+  };
 
-  const handleCrewChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleCrewChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_crew");
-      } else {
-        current.set("with_crew", value);
-      }
+    if (value.length === 0) {
+      current.delete("with_crew");
+    } else {
+      current.set("with_crew", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Crew

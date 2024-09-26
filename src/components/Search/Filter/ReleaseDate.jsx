@@ -4,21 +4,12 @@ import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function ReleaseDate({
-  isTvPage,
-
-  minYear,
-  maxYear,
-  releaseDate,
-}) {
+export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const isQueryParams = searchParams.get("query");
 
   const today = dayjs();
   const endOfNextYear = today.add(1, "year").endOf("year");
@@ -27,12 +18,12 @@ export default function ReleaseDate({
   const [maxDatepicker, setMaxDatepicker] = useState(endOfNextYear);
 
   const handleDatePickerChange = (newValue) => {
-    const value = releaseDate ? `${newValue[0]}..${newValue[1]}` : "";
+    const value = `${newValue[0]}..${newValue[1]}`;
 
     if (!value) {
       current.delete("release_date");
     } else {
-      current.set("release_date", `${newValue[0]}..${newValue[1]}`);
+      current.set("release_date", value);
     }
 
     const search = current.toString();

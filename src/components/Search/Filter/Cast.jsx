@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -7,10 +7,7 @@ export default function Cast({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [cast, setCast] = useState([]);
@@ -48,24 +45,21 @@ export default function Cast({ inputStyles }) {
     }, 1000);
   }, []);
 
-  const handleCastChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleCastChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_cast");
-      } else {
-        current.set("with_cast", value);
-      }
+    if (value.length === 0) {
+      current.delete("with_cast");
+    } else {
+      current.set("with_cast", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Cast

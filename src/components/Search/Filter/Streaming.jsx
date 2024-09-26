@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { checkLocationPermission, requestLocation } from "@/lib/navigator";
@@ -10,10 +10,7 @@ export default function Streaming({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [userLocation, setUserLocation] = useState(null);
@@ -30,24 +27,21 @@ export default function Streaming({ inputStyles }) {
     }));
   }, [providersData]);
 
-  const handleProviderChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleProviderChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("watch_providers");
-      } else {
-        current.set("watch_providers", value);
-      }
+    if (value.length === 0) {
+      current.delete("watch_providers");
+    } else {
+      current.set("watch_providers", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   // Use Effect for getting user location
   useEffect(() => {
@@ -58,7 +52,7 @@ export default function Streaming({ inputStyles }) {
       checkLocationPermission(setUserLocation, setLocationError);
     }
 
-    setUserLocation(userLocationInLocalStorage)
+    setUserLocation(userLocationInLocalStorage);
   }, []);
 
   // Use Effect for fetching streaming providers based on user location

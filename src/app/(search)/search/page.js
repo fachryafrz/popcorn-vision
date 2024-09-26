@@ -1,7 +1,7 @@
-import React from "react";
 import Search from "@/components/Search/";
 import { fetchData } from "@/lib/fetch";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
+import dayjs from "dayjs";
 
 export async function generateMetadata() {
   return {
@@ -41,22 +41,25 @@ export default async function page() {
   const languagesData = await fetchData({
     endpoint: `/configuration/languages`,
   });
-  const { results: fetchMinYear } = await fetchData({
+  const {
+    results: [fetchMinYear],
+  } = await fetchData({
     endpoint: `/discover/movie`,
     queryParams: {
       sort_by: "primary_release_date.asc",
     },
   });
-  const { results: fetchMaxYear } = await fetchData({
+  const {
+    results: [fetchMaxYear],
+  } = await fetchData({
     endpoint: `/discover/movie`,
     queryParams: {
       sort_by: "primary_release_date.desc",
     },
   });
 
-  const defaultMaxYear = new Date().getFullYear() + 1;
-  const minYear = new Date(fetchMinYear[0].release_date).getFullYear();
-  const maxYear = new Date(fetchMaxYear[0].release_date).getFullYear();
+  const minYear = dayjs(fetchMinYear.release_date).year();
+  const maxYear = dayjs(fetchMaxYear.release_date).year();
 
   return (
     <Search
@@ -64,7 +67,7 @@ export default async function page() {
       genresData={movieGenresData}
       languagesData={languagesData}
       minYear={minYear}
-      maxYear={maxYear > defaultMaxYear ? defaultMaxYear : maxYear}
+      maxYear={maxYear}
     />
   );
 }

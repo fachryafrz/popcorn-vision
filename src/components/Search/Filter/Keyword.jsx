@@ -1,5 +1,5 @@
 import { fetchData } from "@/lib/fetch";
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -7,16 +7,13 @@ export default function Keyword({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
   const [keyword, setKeyword] = useState([]);
 
   const timerRef = useRef(null);
-  const keywordsLoadOptions = useCallback((inputValue, callback) => {
+  const keywordsLoadOptions = (inputValue, callback) => {
     const fetchDataWithDelay = async () => {
       // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -46,26 +43,23 @@ export default function Keyword({ inputStyles }) {
     timerRef.current = setTimeout(() => {
       fetchDataWithDelay();
     }, 1000);
-  }, []);
+  };
 
-  const handleKeywordChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleKeywordChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_keywords");
-      } else {
-        current.set("with_keywords", value);
-      }
+    if (value.length === 0) {
+      current.delete("with_keywords");
+    } else {
+      current.set("with_keywords", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Keyword

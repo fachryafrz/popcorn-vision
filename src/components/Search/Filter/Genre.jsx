@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -25,24 +25,21 @@ export default function Genre({ genresData, inputStyles }) {
   }, [genresData]);
 
   // Handle Select Change
-  const handleGenreChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleGenreChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_genres");
-      } else {
-        current.set("with_genres", value);
-      }
+    if (value.length === 0) {
+      current.delete("with_genres");
+    } else {
+      current.set("with_genres", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   // Use Effect for cycling random options placeholder
   useEffect(() => {

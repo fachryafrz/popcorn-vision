@@ -187,10 +187,12 @@ export default function FilmInfo({
         })})`}</p>
       )}
 
-      {filmRuntime && (
+      {filmRuntime ? (
         <p className="sr-only">
           {`Runtime: ${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 && `(${formatRuntime(filmRuntime)})`}`}
         </p>
+      ) : (
+        ""
       )}
 
       <div className="flex w-full flex-col items-center gap-4 md:items-start md:justify-center">

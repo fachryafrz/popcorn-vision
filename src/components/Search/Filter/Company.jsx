@@ -48,24 +48,21 @@ export default function Company({ inputStyles }) {
     }, 1000);
   }, []);
 
-  const handleCompanyChange = useCallback(
-    (selectedOption) => {
-      const value = selectedOption.map((option) => option.value);
+  const handleCompanyChange = (selectedOption) => {
+    const value = selectedOption.map((option) => option.value);
 
-      if (value.length === 0) {
-        current.delete("with_companies");
-      } else {
-        current.set("with_companies", value);
-      }
+    if (value.length === 0) {
+      current.delete("with_companies");
+    } else {
+      current.set("with_companies", value);
+    }
 
-      const search = current.toString();
+    const search = current.toString();
 
-      const query = search ? `?${search}` : "";
+    const query = search ? `?${search}` : "";
 
-      router.push(`${pathname}${query}`);
-    },
-    [current, pathname, router],
-  );
+    router.push(`${pathname}${query}`);
+  };
 
   useEffect(() => {
     // Company

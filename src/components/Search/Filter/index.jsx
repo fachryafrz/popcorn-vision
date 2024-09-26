@@ -17,20 +17,14 @@ import Language from "./Language";
 import Keyword from "./Keyword";
 import SearchSort from "../Sort";
 import RatingCount from "./RatingCount";
+import { useSearchParams } from "next/navigation";
 
 export default function Filters({
   type,
-  isQueryParams,
-  router,
-  pathname,
-  searchParams,
-  current,
   inputStyles,
   genresData,
-  setSearchQuery,
   isFilterActive,
   setIsFilterActive,
-  releaseDate,
   minYear,
   maxYear,
   languagesData,
@@ -38,6 +32,8 @@ export default function Filters({
   handleClearNotAvailable,
 }) {
   const isTvPage = type === "tv";
+  const searchParams = useSearchParams();
+  const isQueryParams = searchParams.get("query");
 
   // Handle MUI Slider, Select & Input Styles
   const sliderStyles = useMemo(() => {
@@ -79,17 +75,6 @@ export default function Filters({
     };
   }, []);
 
-  // Use Effect for Search Params
-  useEffect(() => {
-    // Search Query
-    if (searchParams.get("query")) {
-      const searchQuery = searchParams.get("query");
-
-      setSearchQuery(searchQuery);
-    } else {
-    }
-  }, [searchParams, setSearchQuery]);
-
   return (
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
@@ -121,12 +106,7 @@ export default function Filters({
         </section>
 
         {/* Release Date */}
-        <ReleaseDate
-          isTvPage={isTvPage}
-          minYear={minYear}
-          maxYear={maxYear}
-          releaseDate={releaseDate}
-        />
+        <ReleaseDate isTvPage={isTvPage} minYear={minYear} maxYear={maxYear} />
 
         {/* Streaming (Watch Providers) */}
         <Streaming inputStyles={inputStyles} />

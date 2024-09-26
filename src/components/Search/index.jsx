@@ -25,30 +25,19 @@ export default function Search({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
-  const isQueryParams = searchParams.get("query") ? true : false;
+
+  const isQueryParams = searchParams.get("query");
   const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   // State
   const [loading, setLoading] = useState(true);
   const [films, setFilms] = useState();
-  // const [genresData, setGenresData] = useState([]);
   const [notAvailable, setNotAvailable] = useState("");
-  const [notFoundMessage, setNotFoundMessage] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
-  // const [minYear, setMinYear] = useState();
-  // const [maxYear, setMaxYear] = useState();
-  const [releaseDate, setReleaseDate] = useState([minYear, maxYear]);
   const [totalSearchResults, setTotalSearchResults] = useState();
   const [totalSearchPages, setTotalSearchPages] = useState({});
   const [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  // Filters
-  const [searchQuery, setSearchQuery] = useState("");
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -289,17 +278,10 @@ export default function Search({
       <Suspense>
         <Filters
           type={type}
-          isQueryParams={isQueryParams}
-          router={router}
-          pathname={pathname}
-          searchParams={searchParams}
-          current={current}
           inputStyles={inputStyles}
           genresData={genresData}
-          setSearchQuery={setSearchQuery}
           isFilterActive={isFilterActive}
           setIsFilterActive={setIsFilterActive}
-          releaseDate={releaseDate}
           minYear={minYear}
           maxYear={maxYear}
           languagesData={languagesData}
