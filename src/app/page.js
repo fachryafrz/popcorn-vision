@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import HomeSlider from "@/components/Film/HomeSlider";
 import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
@@ -7,6 +7,13 @@ import providers from "../json/providers.json";
 import { fetchData, getTrending } from "@/lib/fetch";
 import moment from "moment";
 import { POPCORN } from "@/lib/constants";
+import NowPlaying from "@/components/Layout/Home/NowPlaying";
+import SkeletonSlider from "@/components/Skeleton/main/Slider";
+import Upcoming from "@/components/Layout/Home/Upcoming";
+import TopRated from "@/components/Layout/Home/TopRated";
+import SkeletonTrending from "@/components/Skeleton/main/Trending";
+import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
+import HomeSliderFetch from "@/components/Layout/Home/HomeSliderFetch";
 
 export async function generateMetadata() {
   return {
@@ -48,23 +55,6 @@ export default async function Home({ type = "movie" }) {
   });
   const { results: trending } = await getTrending({ type });
 
-  const fetchTrendingFilmsData = async () => {
-    const data = await Promise.all(
-      trending.slice(0, 5).map(async (item) => {
-        const filmData = await fetchData({
-          endpoint: `/${type}/${item.id}`,
-          queryParams: {
-            append_to_response: "images",
-          },
-        });
-
-        return filmData;
-      }),
-    );
-
-    return data;
-  };
-
   const defaultParams = !isTvPage
     ? {
         region: "US",
@@ -84,80 +74,37 @@ export default async function Home({ type = "movie" }) {
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
       <p className="sr-only">{process.env.NEXT_PUBLIC_APP_DESC}</p>
-      <HomeSlider
-        films={trending.slice(0, 5)}
-        genres={genres}
-        filmData={await fetchTrendingFilmsData()}
-      />
+      <div className="-mt-[66px]">
+        <Suspense fallback={<SkeletonHomeSlider />}>
+          <HomeSliderFetch trending={trending} type={type} genres={genres} />
+        </Suspense>
+      </div>
 
       <div className={`lg:-mt-[5rem]`}>
         {/* Now Playing */}
-        <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: !isTvPage
-              ? {
-                  ...defaultParams,
-                  without_genres: 18,
-                  "primary_release_date.gte": monthsAgo,
-                  "primary_release_date.lte": today,
-                }
-              : {
-                  ...defaultParams,
-                  without_genres: 18,
-                  "first_air_date.gte": monthsAgo,
-                  "first_air_date.lte": today,
-                },
-          })}
-          title={!isTvPage ? `Now Playing` : `On The Air`}
-          genres={genres}
-          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${monthsAgo}..${today}`}
-        />
+        <Suspense fallback={<SkeletonSlider />}>
+          <NowPlaying
+            type={type}
+            defaultParams={defaultParams}
+            genres={genres}
+          />
+        </Suspense>
 
         {/* Upcoming */}
-        <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: !isTvPage
-              ? {
-                  ...defaultParams,
-                  without_genres: 18,
-                  "primary_release_date.gte": tomorrow,
-                  "primary_release_date.lte": monthsLater,
-                }
-              : {
-                  ...defaultParams,
-                  without_genres: 18,
-                  "first_air_date.gte": tomorrow,
-                  "first_air_date.lte": monthsLater,
-                },
-          })}
-          title={`Upcoming`}
-          genres={genres}
-          sort={"ASC"}
-          viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${tomorrow}..${monthsLater}`}
-        />
+        <Suspense fallback={<SkeletonSlider />}>
+          <Upcoming type={type} defaultParams={defaultParams} genres={genres} />
+        </Suspense>
 
         {/* Top Rated */}
-        <FilmSlider
-          films={await fetchData({
-            endpoint: `/discover/${type}`,
-            queryParams: {
-              ...defaultParams,
-              // without_genres: 18,
-              sort_by: "vote_count.desc",
-            },
-          })}
-          title={`Top Rated`}
-          genres={genres}
-          viewAll={`${
-            !isTvPage ? `/search` : `/tv/search`
-          }?sort_by=vote_count.desc`}
-        />
+        <Suspense fallback={<SkeletonSlider />}>
+          <TopRated type={type} defaultParams={defaultParams} genres={genres} />
+        </Suspense>
 
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
-          <Trending film={trending[5]} genres={genres} />
+          <Suspense fallback={<SkeletonTrending />}>
+            <Trending film={trending[5]} genres={genres} type={type} />
+          </Suspense>
         </section>
 
         {/* Companies / Providers */}
@@ -195,8 +142,13 @@ export default async function Home({ type = "movie" }) {
             ))}
 
         {/* Trending */}
-        <section id="Trending" className="py-[2rem]">
-          <Trending film={trending[6]} genres={genres} />
+        <section
+          id={`Trending ${trending[6].title ?? trending[6].name}`}
+          className="py-[2rem]"
+        >
+          <Suspense fallback={<SkeletonTrending />}>
+            <Trending film={trending[6]} genres={genres} type={type} />
+          </Suspense>
         </section>
 
         {/* Genres */}
@@ -220,7 +172,9 @@ export default async function Home({ type = "movie" }) {
 
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
-          <Trending film={trending[7]} genres={genres} />
+          <Suspense fallback={<SkeletonTrending />}>
+            <Trending film={trending[7]} genres={genres} type={type} />
+          </Suspense>
         </section>
       </div>
     </>
