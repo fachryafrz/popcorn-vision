@@ -13,6 +13,7 @@ import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
+import useSWR from "swr";
 
 export default function FilmCard({ film, isTvPage }) {
   const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
@@ -90,12 +91,6 @@ export default function FilmCard({ film, isTvPage }) {
 }
 
 function FilmPreview({ film, genres, isHovering, isTvPage }) {
-  const [loading, setLoading] = useState(true);
-  const [titleLogo, setTitleLogo] = useState();
-  const [filmDetails, setFilmDetails] = useState();
-  const [releaseDate, setReleaseDate] = useState();
-  const [filmRuntime, setFilmRuntime] = useState();
-
   const isItTvPage = useCallback(
     (movie, tv) => {
       const type = !isTvPage ? movie : tv;
@@ -104,27 +99,37 @@ function FilmPreview({ film, genres, isHovering, isTvPage }) {
     [isTvPage],
   );
 
-  const fetchTitleLogo = useCallback(async () => {
-    await fetchData({
+  const fetchFilmDetails = async () => {
+    const res = await fetchData({
       endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
       queryParams: {
         append_to_response: "images",
       },
-    }).then((res) => {
-      const { images } = res;
-      setTitleLogo(images.logos.find((img) => img.iso_639_1 === "en"));
-      setFilmDetails(res);
-      setReleaseDate(isItTvPage(res.release_date, res.first_air_date));
-      setFilmRuntime(isItTvPage(res.runtime, res.episode_run_time));
-      setLoading(false);
     });
-  }, [film, isItTvPage]);
+    const { images } = res;
+    return {
+      titleLogo: images.logos.find((img) => img.iso_639_1 === "en"),
+      filmDetails: res,
+      releaseDate: isItTvPage(res.release_date, res.first_air_date),
+      filmRuntime: isItTvPage(res.runtime, res.episode_run_time),
+    };
+  };
 
-  useEffect(() => {
-    if (isHovering && window.innerWidth >= 1536) {
-      fetchTitleLogo();
-    }
-  }, [fetchTitleLogo, isHovering]);
+  const {
+    data,
+    error,
+    isLoading: loading,
+  } = useSWR(
+    isHovering && window.innerWidth >= 1536 ? [film.id, isItTvPage(`movie`, `tv`)] : null,
+    fetchFilmDetails,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  const { titleLogo, filmDetails, releaseDate, filmRuntime } = data || {};
 
   return (
     !loading && (
