@@ -209,23 +209,30 @@ function FilmSeason({ film, item, index }) {
   const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
 
   const samePoster = poster.includes(item.poster_path);
-  const lastPoster = poster[poster.length - 1];
 
   const handleViewSeason = async (viewSeason) => {
     setViewSeason(viewSeason);
 
-    if (viewSeason && !samePoster && item.poster_path) {
-      // Memperbarui array poster di Zustand
+    if (viewSeason && item.poster_path) {
+      // Update the poster array
       setSeasonPoster((prev) => [item.poster_path, ...prev]);
     }
 
-    if (!viewSeason && poster.length > 1 && lastPoster !== item.poster_path) {
-      // Reset state poster jika diperlukan
-      setSeasonPoster((prev) =>
-        prev.filter((poster) => poster !== item.poster_path),
-      );
+    if (!viewSeason && poster.length > 1) {
+      // Reset poster
+      setSeasonPoster((prev) => {
+        const firstIndex = prev.indexOf(item.poster_path);
+        if (firstIndex !== -1) {
+          return prev.filter((poster, index) => index !== firstIndex);
+        }
+        return prev;
+      });
     }
   };
+
+  useEffect(() => {
+    console.log(poster);
+  }, [poster]);
 
   return (
     <>
