@@ -209,16 +209,17 @@ function FilmSeason({ film, item, index }) {
   const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
 
   const samePoster = poster.includes(item.poster_path);
+  const lastPoster = poster[poster.length - 1];
 
   const handleViewSeason = async (viewSeason) => {
     setViewSeason(viewSeason);
 
-    if (viewSeason && !samePoster) {
+    if (viewSeason && !samePoster && item.poster_path) {
       // Memperbarui array poster di Zustand
       setSeasonPoster((prev) => [item.poster_path, ...prev]);
     }
 
-    if (!viewSeason && poster.length > 1) {
+    if (!viewSeason && poster.length > 1 && lastPoster !== item.poster_path) {
       // Reset state poster jika diperlukan
       setSeasonPoster((prev) =>
         prev.filter((poster) => poster !== item.poster_path),
