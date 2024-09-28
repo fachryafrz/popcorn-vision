@@ -1,50 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
-"use client";
-
-import { IonIcon } from "@ionic/react";
-import { informationCircleOutline, star } from "ionicons/icons";
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
-import TitleLogo from "./TitleLogo";
-import { usePathname } from "next/navigation";
-import axios from "axios";
 import FilmSummary from "./Summary";
-import { fetchData, getFilm } from "@/lib/fetch";
+import { fetchData } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
 
-export default function Trending({ film, genres }) {
-  const pathname = usePathname();
-  const isTvPage = pathname.startsWith("/tv");
-  const [filmDetails, setFilmDetails] = useState();
+export default async function Trending({ film, genres, type }) {
+  const isTvPage = type === "tv";
 
-  const isItTvPage = useCallback(
-    (movie, tv) => {
-      const type = !isTvPage ? movie : tv;
-      return type;
-    },
-    [isTvPage],
-  );
-
-  const filmTitle = !isTvPage ? film.title : film.name;
-  const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
-
-  const fetchFilmDetails = useCallback(async () => {
-    await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
-      queryParams: {
-        append_to_response: `images`,
-      },
-    }).then((res) => {
-      setFilmDetails(res);
-    });
-  }, [film, isItTvPage]);
-
-  useEffect(() => {
-    fetchFilmDetails();
-  }, [fetchFilmDetails]);
+  const filmDetails = await fetchData({
+    endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}`,
+    queryParams: { append_to_response: `images` },
+  });
 
   return (
     <div className="mx-auto max-w-7xl md:px-4">
@@ -52,7 +20,7 @@ export default function Trending({ film, genres }) {
         href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
         className="sr-only"
       >
-        <h2>{`Trending ${!isTvPage ? `Movie` :`TV Series`}: ${film.title ?? film.name} (${moment(
+        <h2>{`Trending ${!isTvPage ? `Movie` : `TV Series`}: ${film.title ?? film.name} (${moment(
           film.release_date ?? film.first_air_date,
         ).format("YYYY")})`}</h2>
       </Link>

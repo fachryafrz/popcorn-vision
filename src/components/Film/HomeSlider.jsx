@@ -4,10 +4,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 
-// Ionic React imports
-import { IonIcon } from "@ionic/react";
-import { star, informationCircleOutline, playOutline } from "ionicons/icons";
-
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import {
@@ -23,11 +19,8 @@ import "swiper/css/autoplay";
 import "swiper/css/effect-fade";
 
 // Components
-import TitleLogo from "./TitleLogo";
 import { usePathname } from "next/navigation";
-import axios from "axios";
 import FilmSummary from "./Summary";
-import { fetchData, getFilm } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
@@ -48,7 +41,7 @@ export default function HomeSlider({ films, genres, filmData }) {
   };
 
   return (
-    <section name="Home Slider" className={`relative -mt-[66px] pb-[2rem]`}>
+    <section id="Home Slider" className={`relative pb-[2rem]`}>
       <h2 className="sr-only">
         Highlighted {!isTvPage ? `Movies` : `TV Series`}
       </h2>

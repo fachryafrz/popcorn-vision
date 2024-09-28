@@ -1,4 +1,6 @@
-import React, { useCallback } from "react";
+"use client";
+
+import { useCallback } from "react";
 import TitleLogo from "./TitleLogo";
 import { IonIcon } from "@ionic/react";
 import { chevronForward, star } from "ionicons/icons";
