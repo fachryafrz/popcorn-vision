@@ -230,10 +230,6 @@ function FilmSeason({ film, item, index }) {
     }
   };
 
-  useEffect(() => {
-    console.log(poster);
-  }, [poster]);
-
   return (
     <>
       <button
