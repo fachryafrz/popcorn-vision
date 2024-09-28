@@ -339,7 +339,7 @@ function FilmEpisodes({ id, season }) {
         </div>
       )}
 
-      {!isLoading && episodes.length && (
+      {!isLoading && episodes.length > 0 && (
         <>
           <Swiper
             modules={[Navigation, Keyboard]}
