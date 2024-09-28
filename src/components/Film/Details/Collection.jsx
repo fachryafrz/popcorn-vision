@@ -179,16 +179,18 @@ export function CollectionItem({
               </div>
             )}
 
-            <div
-              className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
-            >
-              <span
-                className={`before-content`}
-                data-before-content={moment(item.release_date).format(
-                  "MMM DD, YYYY",
-                )}
-              />
-            </div>
+            {item.release_date && (
+              <div
+                className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
+              >
+                <span
+                  className={`before-content`}
+                  data-before-content={moment(item.release_date).format(
+                    "MMM DD, YYYY",
+                  )}
+                />
+              </div>
+            )}
           </div>
         </div>
         <span
