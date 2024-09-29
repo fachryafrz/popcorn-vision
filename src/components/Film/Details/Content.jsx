@@ -1,16 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import FilmPoster from "./Poster";
 import CastsList from "./CastsList";
 import FilmInfo from "./Info";
 import FilmOverview from "./Overview";
 import { EpisodeModal } from "../../Modals/EpisodeModal";
-
 import { useSearchParams } from "next/navigation";
-import { getEpisodeModal, getPerson } from "@/lib/fetch";
-import { useEpisodeModal } from "@/zustand/episodeModal";
-import { usePersonModal } from "@/zustand/personModal";
 import ShareModal from "@/components/Modals/ShareModal";
 import PersonModal from "@/components/Modals/PersonModal";
 import LoginAlert from "@/components/Modals/LoginAlert";
@@ -30,49 +25,9 @@ export default function FilmContent({
   const { user } = useAuth();
 
   const searchParams = useSearchParams();
-
-  const { episode: episodeForModal, setEpisodeModal } = useEpisodeModal(
-    (state) => state,
-  );
-  const { person: personForModal, setPersonModal } = usePersonModal(
-    (state) => state,
-  );
-
-  useEffect(() => {
-    if (searchParams.get("person")) {
-      getPerson({ id: searchParams.get("person") }).then((res) => {
-        // Zustand
-        setPersonModal(res);
-      });
-    }
-
-    if (searchParams.get("season") && searchParams.get("episode")) {
-      getEpisodeModal({
-        filmID: film.id,
-        season: searchParams.get("season"),
-        eps: searchParams.get("episode"),
-      }).then((res) => {
-        // Zustand
-        setEpisodeModal(res);
-      });
-    }
-
-    // NOTE: Ga perlu tambahin setPersonModal dan setEpisodeModal karena tidak akan berfungsi
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [film.id, searchParams]);
-
-  useEffect(() => {
-    if (episodeForModal) {
-      // document.getElementById(`episodeModal`).scrollTo(0, 0);
-      document.getElementById(`episodeModal`).showModal();
-    }
-
-    if (personForModal) {
-      if (episodeForModal) document.getElementById(`episodeModal`).close();
-      document.getElementById(`personModal`).scrollTo(0, 0);
-      document.getElementById(`personModal`).showModal();
-    }
-  }, [episodeForModal, personForModal]);
+  const seasonParams = searchParams.get("season");
+  const episodeParams = searchParams.get("episode");
+  const personParams = searchParams.get("person");
 
   return (
     <div className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}>
@@ -133,49 +88,11 @@ export default function FilmContent({
 
           {!user && <LoginAlert />}
 
-          {isTvPage && episodeForModal && (
-            <EpisodeModal
-              film={film}
-              episode={episodeForModal}
-              seasons={film.seasons}
-              person={personForModal}
-            />
+          {isTvPage && seasonParams && episodeParams && (
+            <EpisodeModal film={film} />
           )}
 
-          {personForModal && (
-            <PersonModal person={personForModal} episode={episodeForModal} />
-          )}
-
-          {/* <div
-            role={`alert`}
-            id={`featureNotAvailable`}
-            className={`alert alert-error fixed bottom-4 right-4 z-50 flex w-[calc(100%-2rem)] transition-all sm:w-fit`}
-            style={{
-              transform: `translateY(calc(100% + 1rem))`,
-            }}
-          >
-            <button
-              onClick={() => {
-                const alert = document.getElementById(`featureNotAvailable`);
-                alert.style.transform = `translateY(calc(100% + 1rem))`;
-              }}
-            >
-              <svg
-                xmlns={`http://www.w3.org/2000/svg`}
-                className={`h-6 w-6 shrink-0 stroke-current`}
-                fill={`none`}
-                viewBox={`0 0 24 24`}
-              >
-                <path
-                  strokeLinecap={`round`}
-                  strokeLinejoin={`round`}
-                  strokeWidth={`2`}
-                  d={`M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z`}
-                />
-              </svg>
-            </button>
-            <span>Sorry! Feature not yet available.</span>
-          </div> */}
+          {personParams && <PersonModal />}
         </section>
       </div>
     </div>
