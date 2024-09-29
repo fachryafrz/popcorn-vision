@@ -81,6 +81,7 @@ export default function FilmSlider({
           },
         }}
         className={`relative !px-4 !pb-[2rem] !pt-[2.5rem] before:pointer-events-none before:absolute before:inset-0 before:z-10 before:hidden before:max-w-[2rem] before:bg-gradient-to-r before:from-base-100 after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:hidden after:!h-full after:!w-[2rem] after:bg-gradient-to-l after:from-base-100 lg:!pb-[3rem] xl:before:hidden xl:after:hidden`}
+        wrapperClass={`@container`}
       >
         {sortedFilms.map((film) => {
           {
@@ -96,13 +97,17 @@ export default function FilmSlider({
             /* 1280px */
           }
           const xl = `
-          xl-max:[&_>_a_#FilmPreview]:child-6n+1:left-auto xl-max:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
-          xl-max:[&_>_a_#FilmPreview]:child-6n:left-auto xl-max:[&_>_a_#FilmPreview]:child-6n:translate-x-0 xl-max:[&_>_a_#FilmPreview]:child-6n:right-0
+          @6xl:[&_>_a_#FilmPreview]:child-6n+1:left-0 @6xl:[&_>_a_#FilmPreview]:child-6n+1:translate-x-0
 
-          xl-max:[&_>_a_#FilmPreview]:child-18:!left-1/2 xl-max:[&_>_a_#FilmPreview]:child-18:!-translate-x-1/2
-          xl-max:[&_>_a_#FilmPreview]:child-19:!left-1/2 xl-max:[&_>_a_#FilmPreview]:child-19:!-translate-x-1/2
-        
-          xl:[&_>_a_#FilmPreview]:last:!left-auto xl:[&_>_a_#FilmPreview]:last:!translate-x-0 xl:[&_>_a_#FilmPreview]:last:!right-0
+          @6xl:[&_>_a_#FilmPreview]:child-6n:left-auto @6xl:[&_>_a_#FilmPreview]:child-6n:translate-x-0 @6xl:[&_>_a_#FilmPreview]:child-6n:right-0
+
+          @7xl:[&_>_a_#FilmPreview]:child-6n+1:left-1/2 @7xl:[&_>_a_#FilmPreview]:child-6n+1:-translate-x-1/2
+
+          @7xl:[&_>_a_#FilmPreview]:child-6n:left-1/2 @7xl:[&_>_a_#FilmPreview]:child-6n:-translate-x-1/2 @7xl:[&_>_a_#FilmPreview]:child-6n:right-auto
+          
+          @7xl:[&_>_a_#FilmPreview]:child-7n+1:left-0 @7xl:[&_>_a_#FilmPreview]:child-7n+1:translate-x-0
+
+          @7xl:[&_>_a_#FilmPreview]:child-7n:!left-auto @7xl:[&_>_a_#FilmPreview]:child-7n:!translate-x-0 @7xl:[&_>_a_#FilmPreview]:child-7n:!right-0
           `;
 
           {
@@ -119,7 +124,7 @@ export default function FilmSlider({
           return (
             <SwiperSlide
               key={film.id}
-              className={`max-w-[calc(100%/2.2)] pr-2 transition-all sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)] ${xl} ${xl2}`}
+              className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6.2)] @7xl:max-w-[calc(100%/7.2)] ${xl}`}
             >
               {/* <Reveal> */}
               <FilmCard film={film} isTvPage={isTvPage} />

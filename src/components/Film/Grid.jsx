@@ -65,7 +65,7 @@ export default function FilmGrid({
           {
             /* 1536px */
           }
-          const xl2 = `
+          const xl = `
           @6xl:[&_#FilmPreview]:child-6n+1:left-0 @6xl:[&_#FilmPreview]:child-6n+1:translate-x-0
 
           @6xl:[&_#FilmPreview]:child-6n:left-auto @6xl:[&_#FilmPreview]:child-6n:translate-x-0 @6xl:[&_#FilmPreview]:child-6n:right-0
@@ -80,7 +80,7 @@ export default function FilmGrid({
           `;
 
           return (
-            <Reveal key={film.id} y={0} className={`${xl2}`}>
+            <Reveal key={film.id} y={0} className={`${xl}`}>
               <FilmCard
                 film={film}
                 isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}

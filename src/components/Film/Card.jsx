@@ -111,7 +111,7 @@ function FilmPreview({ film, isHovering, isTvPage }) {
   };
 
   const { data } = useSWR(
-    isHovering && window.innerWidth >= 1536
+    isHovering && window.innerWidth >= 1280
       ? [film.id, isItTvPage(`movie`, `tv`)]
       : null,
     fetchFilmDetails,

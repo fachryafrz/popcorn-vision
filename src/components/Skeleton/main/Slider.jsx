@@ -32,12 +32,12 @@ export default function SkeletonSlider() {
         allowSlidePrev={false}
         allowTouchMove={false}
         className={`relative w-full !bg-opacity-0 !px-4 !pb-[2rem] !pt-[2.5rem] lg:!pb-[3rem]`}
-        wrapperClass={`!bg-opacity-0`}
+        wrapperClass={`!bg-opacity-0 @container`}
       >
         {[...Array(itemCount).keys()].map((b) => (
           <SwiperSlide
             key={b}
-            className={`max-w-[calc(100%/2.2)] !bg-opacity-0 pr-2 transition-all sm:max-w-[calc(100%/3.2)] md:max-w-[calc(100%/4.2)] lg:max-w-[calc(100%/5.2)] xl:max-w-[calc(100%/6.2)] 2xl:max-w-[calc(100%/7.2)]`}
+            className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6.2)] @7xl:max-w-[calc(100%/7.2)]`}
           >
             {/* Poster */}
             <div className={`aspect-poster`}></div>

@@ -40,6 +40,36 @@ export default async function middleware(request) {
     return NextResponse.redirect(new URL(redirectTo, request.url));
   }
 
+  if (
+    isLoginPage &&
+    searchParams.get("request_token") &&
+    searchParams.get("approved")
+  ) {
+    const { request_token, approved } = Object.fromEntries(searchParams);
+    const redirect_to = searchParams.get("redirect_to");
+
+    const session = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/authentication/session/new?api_key=${process.env.API_KEY}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ request_token }),
+      },
+    ).then((res) => res.json());
+
+    const response = NextResponse.redirect(
+      new URL(redirect_to || "/", request.url),
+    );
+
+    response.cookies.set(TMDB_SESSION_ID, session.session_id, {
+      maxAge: 60 * 60 * 24 * 365,
+    });
+
+    return response;
+  }
+
   if (pathname === "/movies") {
     return NextResponse.redirect(new URL("/", request.url));
   }

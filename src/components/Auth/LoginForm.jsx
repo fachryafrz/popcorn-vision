@@ -19,6 +19,19 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    await fetchData({
+      endpoint: `/api/authentication/token/new`,
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }).then(({ request_token: REQUEST_TOKEN }) => {
+      router.push(
+        `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${window.location.href}`,
+      );
+    });
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -38,11 +51,13 @@ export default function LoginForm() {
         .post("/api/authentication/token/validate_with_login", credentials)
         .then(({ data: { request_token } }) => {
           // Login
-          axios.post(`/api/authentication/login`, { request_token }).then(({ data }) => {
-            mutate();
-            setIsLoading(false);
-            router.push(redirectTo);
-          });
+          axios
+            .post(`/api/authentication/login`, { request_token })
+            .then(({ data }) => {
+              mutate();
+              setIsLoading(false);
+              router.push(redirectTo);
+            });
         })
         .catch(({ response: { data } }) => {
           const { status_message } = data;
@@ -120,13 +135,12 @@ export default function LoginForm() {
               {!isLoading && <span>Login</span>}
             </button>
 
-            <Link
-              href={`https://www.themoviedb.org/signup`}
-              target="_blank"
+            <button
+              onClick={handleRegister}
               className={`order-1 flex text-sm text-base-content underline hocus:no-underline`}
             >
               Doesn&apos;t have an account?
-            </Link>
+            </button>
           </div>
         </div>
       </form>
