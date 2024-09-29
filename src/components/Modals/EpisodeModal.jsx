@@ -401,7 +401,7 @@ function EpisodeModalSkeleton() {
           {/* Overview */}
           <section className={`flex flex-col gap-2 !bg-opacity-0`}>
             {/* Overview Title */}
-            <div className={`h-7 w-40 rounded-md`}></div>
+            <div className={`h-7 w-[88px] rounded-md`}></div>
 
             {/* Overview Content */}
             <div className={`flex flex-col gap-1 !bg-opacity-0`}>
