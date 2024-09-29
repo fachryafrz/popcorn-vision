@@ -1,7 +1,7 @@
 export default function SkeletonHomeSlider() {
   return (
     <section
-      className={`relative flex h-[100dvh] min-h-[640px] items-start before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 lg:h-[120dvh] [&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20`}
+      className={`relative flex h-[100dvh] items-start before:absolute before:inset-0 before:bg-gradient-to-t before:from-base-100 lg:h-[120dvh] [&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20`}
     >
       <div
         className={`flex h-full max-h-[100dvh] w-full items-end !bg-opacity-0`}
