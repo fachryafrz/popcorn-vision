@@ -4,7 +4,6 @@ import ImagePovi from "@/components/Film/ImagePovi";
 import { POPCORN } from "@/lib/constants";
 import { formatRating } from "@/lib/formatRating";
 import { sortFilms } from "@/lib/sortFilms";
-import { usePersonModal } from "@/zustand/personModal";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Link from "next/link";
@@ -17,8 +16,6 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
   const [creditsSwitcher, setCreditsSwitcher] = useState(`Movies`);
   const [films, setFilms] = useState();
   const [mediaSwiper, setMediaSwiper] = useState();
-
-  const { setPersonModal } = usePersonModal((state) => state);
 
   const isTvPage = creditsSwitcher === "TV";
   const personJob = person.known_for_department;
@@ -94,11 +91,6 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                     <article
                       onClick={() => {
                         document.getElementById(`personModal`).close();
-
-                        setTimeout(() => {
-                          // Zustand
-                          setPersonModal(null);
-                        }, 100);
                       }}
                     >
                       <Link
