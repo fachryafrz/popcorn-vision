@@ -4,6 +4,7 @@ import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
+import GoogleAdsense from "@/components/User/GoogleAdsense";
 
 export const viewport = {
   width: "device-width",
@@ -96,10 +97,14 @@ export default function RootLayout({ children }) {
   //   },
   // };
 
+  const gtagId = process.env.GA_MEASUREMENT_ID;
+  const adsenseId = process.env.ADSENSE_ID;
+
   return (
     <html lang="en" className="scroll-pt-20">
       <Suspense>
-        <GoogleAnalytics GA_MEASUREMENT_ID="G-L0V4DXC6HK" />
+        <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
+        <GoogleAdsense pId={adsenseId} />
       </Suspense>
       <body className="bg-base-100 text-white">
         <CookiesProvider>
