@@ -8,25 +8,25 @@ export default async function sitemap() {
     {
       url: `${appUrl}`,
       lastModified: new Date(),
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${appUrl}/tv`,
       lastModified: new Date(),
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${appUrl}/search`,
       lastModified: new Date(),
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 1,
     },
     {
       url: `${appUrl}/tv/search`,
       lastModified: new Date(),
-      changeFrequency: "hourly",
+      changeFrequency: "daily",
       priority: 1,
     },
   ];
