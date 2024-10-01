@@ -1,10 +1,9 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import FilmCard from "./Card";
 import Reveal from "../Layout/Reveal";
-import { useInView } from "react-intersection-observer";
 
 export default function FilmGrid({
   films,
@@ -17,22 +16,29 @@ export default function FilmGrid({
   const isTvPage = pathname.startsWith("/tv");
   const isQueryParams = searchParams.get("query") ? true : false;
 
-  // Is in viewport?
-  const {
-    ref: loadMoreBtn,
-    inView,
-    entry,
-  } = useInView({
-    initialInView: true,
-  });
+  const loadMoreRef = useRef(null);
 
-  // Use Effect for load more button is in viewport
   useEffect(() => {
-    if (inView) {
-      fetchMoreFilms();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchMoreFilms();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inView]);
+
+    return () => {
+      if (loadMoreRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [fetchMoreFilms]);
 
   return (
     <div
@@ -91,11 +97,8 @@ export default function FilmGrid({
       </div>
 
       {totalSearchPages > currentSearchPage && (
-        <div className={`mt-4 flex items-center justify-center`}>
-          <span
-            ref={loadMoreBtn}
-            className="loading loading-spinner loading-md"
-          ></span>
+        <div ref={loadMoreRef} className={`mt-4 flex items-center justify-center`}>
+          <span className="loading loading-spinner loading-md"></span>
         </div>
       )}
     </div>

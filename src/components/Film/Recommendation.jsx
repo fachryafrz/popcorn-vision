@@ -1,11 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import FilmCard from "./Card";
+import React, { useEffect, useState } from "react";
 import { fetchData } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";
-import { useInView } from "react-intersection-observer";
 import FilmGrid from "./Grid";
 
 export default function Recommendation({
