@@ -129,19 +129,7 @@ export default function UserRating({
                         ? starHalf
                         : starOutline
                   }
-
-                  onClick={() => {
-                    if (!user)
-                      document.getElementById("loginAlert").showModal();
-
-                    setHoverState({ value: starValue }); // Setel hoverRating kembali ke 0
-                    handleRating(starValue);
-                  }}
-                  checked={hoverState?.value === starValue}
-                  className={`mask ${(index % 2) + 1 === 1 ? `mask-half-1` : `mask-half-2`} mask-star-2 !translate-y-0 bg-primary-yellow`}
-
                   onMouseEnter={() => setHoverRating({ value: starValue })}
-
                 />
               </Reveal>
             </button>
