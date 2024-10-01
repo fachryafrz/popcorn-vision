@@ -143,7 +143,7 @@ export default function UserRating({
                     handleRating(starValue);
                   }}
                   checked={hoverState?.value === starValue}
-                  className={`mask mask-half-${(index % 2) + 1} mask-star-2 !translate-y-0 bg-primary-yellow`}
+                  className={`mask ${(index % 2) + 1 === 1 ? `mask-half-1` : `mask-half-2`} mask-star-2 !translate-y-0 bg-primary-yellow`}
                 />
               );
             })}
