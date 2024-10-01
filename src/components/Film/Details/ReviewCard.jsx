@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import RatingStars from "./RatingStars";
 import Person from "../../Person/Person";
 import moment from "moment";
 
@@ -65,7 +64,7 @@ export default function ReviewCard({ review }) {
         <div
           className={`mb-auto ml-auto flex items-start whitespace-nowrap text-primary-yellow`}
         >
-          <RatingStars rating={review.author_details.rating} />
+          <RatingStars id={review.id} rating={review.author_details.rating} />
         </div>
       </div>
 
@@ -92,5 +91,35 @@ export default function ReviewCard({ review }) {
         </button>
       </div>
     </div>
+  );
+}
+
+function RatingStars({ id, rating }) {
+  return (
+    <>
+      <div className="rating rating-half rating-sm">
+        <input
+          type="radio"
+          name={`review-rating-${id}`}
+          checked={!rating}
+          className="rating-hidden sr-only cursor-default"
+          disabled
+        />
+        {[...Array(10)].map((_, index) => {
+          const starValue = index + 1;
+
+          return (
+            <input
+              key={starValue}
+              type="radio"
+              name={`review-rating-${id}`}
+              checked={rating === starValue}
+              className={`mask mask-half-${(index % 2) + 1} mask-star-2 cursor-default bg-primary-yellow`}
+              disabled
+            />
+          );
+        })}
+      </div>
+    </>
   );
 }
