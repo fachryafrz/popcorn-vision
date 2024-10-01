@@ -21,8 +21,8 @@ export default function UserRating({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [ratingState, setRatingState] = useState(rating);
-  const [hoverState, setHoverState] = useState(rating);
+  const [isAdded, setIsAdded] = useState();
+  const [hoverRating, setHoverRating] = useState();
   const [isLoading, setIsLoading] = useState(true);
 
   const handleRating = async (value) => {
@@ -40,8 +40,8 @@ export default function UserRating({
       });
 
       setIsLoading(false);
-      setRatingState(rated);
-      setHoverState(rated);
+      setIsAdded(rated);
+      setHoverRating(rated);
     } catch (error) {
       console.error("Error adding rating:", error);
       setIsLoading(false);
@@ -65,8 +65,8 @@ export default function UserRating({
       });
 
       setIsLoading(false);
-      setRatingState(rated);
-      setHoverState(rated);
+      setIsAdded(rated);
+      setHoverRating(rated);
     } catch (error) {
       console.error("Error deleting rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
@@ -74,9 +74,9 @@ export default function UserRating({
   };
 
   useEffect(() => {
+    setIsAdded(rating);
+    setHoverRating(rating);
     setIsLoading(false);
-    setRatingState(rating);
-    setHoverState(rating);
   }, [rating]);
 
   return (
@@ -84,11 +84,9 @@ export default function UserRating({
       <div>
         <Reveal>
           <div className={`mb-2 flex items-center gap-2`}>
-            <span aria-hidden className={`block text-sm font-medium italic`}>
-              {title}
-            </span>
-
-            {ratingState?.value > 0 && (
+            <span aria-hidden className={`block text-sm font-medium italic`}>{title}</span>
+  
+            {isAdded?.value > 0 && (
               <button
                 onClick={async () => await handleDeleteRating()}
                 className={`block text-sm font-medium italic text-primary-blue transition-all`}
@@ -96,7 +94,7 @@ export default function UserRating({
                 Clear rating
               </button>
             )}
-
+  
             {isLoading && (
               <span class="loading loading-spinner loading-xs"></span>
             )}
@@ -106,35 +104,32 @@ export default function UserRating({
 
       <div
         className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl xs:text-xl`}
+        onMouseLeave={() => setHoverRating({ value: isAdded?.value })}
       >
-        <Reveal delay={0.05}>
-          <div className="rating rating-half">
-            <input
-              type="radio"
-              name={
-                !episode && !season
-                  ? `rating-${film.id}`
-                  : `rating-season-${season}-episode-${episode}`
-              }
-              checked={!ratingState?.value}
-              className="rating-hidden sr-only"
-            />
-            {[...Array(10)].map((_, index) => {
-              const starValue = index + 1;
+        {[...Array(10)].map((_, index) => {
+          const starValue = index + 1;
+          return (
+            <button
+              key={index}
+              onClick={async () => {
+                if (user) {
+                  setHoverRating({ value: starValue }); // Setel hoverRating kembali ke 0
+                  handleRating(starValue);
+                } else {
+                  document.getElementById("loginAlert").showModal();
+                }
+              }}
+            >
+              <Reveal delay={0.075 * index}>
+                <IonIcon
+                  icon={
+                    hoverRating?.value >= starValue
+                      ? star
+                      : hoverRating?.value >= starValue - 0.5
+                        ? starHalf
+                        : starOutline
+                  }
 
-              return (
-                <input
-                  key={starValue}
-                  type="radio"
-                  name={
-                    !episode && !season
-                      ? `rating-${film.id}`
-                      : `rating-season-${season}-episode-${episode}`
-                  }
-                  onMouseEnter={() => setHoverState({ value: starValue })}
-                  onMouseLeave={() =>
-                    setHoverState({ value: ratingState?.value })
-                  }
                   onClick={() => {
                     if (!user)
                       document.getElementById("loginAlert").showModal();
@@ -144,11 +139,14 @@ export default function UserRating({
                   }}
                   checked={hoverState?.value === starValue}
                   className={`mask ${(index % 2) + 1 === 1 ? `mask-half-1` : `mask-half-2`} mask-star-2 !translate-y-0 bg-primary-yellow`}
+
+                  onMouseEnter={() => setHoverRating({ value: starValue })}
+
                 />
-              );
-            })}
-          </div>
-        </Reveal>
+              </Reveal>
+            </button>
+          );
+        })}
       </div>
     </>
   );
