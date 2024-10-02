@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 "use client";
 
 import { IonIcon } from "@ionic/react";
@@ -8,11 +7,11 @@ import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, filter } from "ionicons/icons";
-import axios from "axios";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
 import { fetchData } from "@/lib/fetch";
 import { USER_LOCATION } from "@/lib/constants";
+import useSWR from "swr";
 
 export default function Search({
   type = "movie",
@@ -30,14 +29,111 @@ export default function Search({
   const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   // State
-  const [loading, setLoading] = useState(true);
-  const [films, setFilms] = useState();
   const [notAvailable, setNotAvailable] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [totalSearchResults, setTotalSearchResults] = useState();
-  const [totalSearchPages, setTotalSearchPages] = useState({});
-  const [currentSearchPage, setCurrentSearchPage] = useState(1);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userLocation, setUserLocation] = useState(null);
+
+  // SWR configuration
+  const fetcher = async (url) => {
+    const response = await fetchData({
+      endpoint: url,
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    });
+    return response;
+  };
+
+  // Prepare SWR key
+  const getKey = () => {
+    if (isQueryParams) {
+      return `/api/search/query?query=${searchParams.get("query")}`;
+    } else {
+      const params = new URLSearchParams({
+        media_type: type,
+        ...Object.fromEntries(searchParams),
+      });
+
+      if (searchParams.get("watch_providers") && userLocation) {
+        params.append("watch_region", userLocation.country_code);
+      }
+
+      return `/api/search/filter?${params.toString()}`;
+    }
+  };
+
+  // Use SWR for data fetching
+  const {
+    data,
+    isLoading: loading,
+    mutate,
+  } = useSWR(getKey, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+
+  // Process data
+  const films = useMemo(() => {
+    if (!data) return [];
+    const results = isQueryParams
+      ? data.results.filter(
+          (film) => film.media_type === "movie" || film.media_type === "tv",
+        )
+      : data.results;
+    return results.filter(
+      (film, index, self) => index === self.findIndex((t) => t.id === film.id),
+    );
+  }, [data, isQueryParams]);
+
+  const totalSearchResults = data?.total_results;
+  const totalSearchPages = data?.total_pages;
+  const currentSearchPage = data?.page || 1;
+
+  // Handle not available
+  const handleNotAvailable = () => {
+    setNotAvailable(
+      "Filters cannot be applied, please clear the search input.",
+    );
+  };
+  const handleClearNotAvailable = () => {
+    setNotAvailable("");
+  };
+
+  // Fetch more films
+  const fetchMoreFilms = async () => {
+    const nextPage = currentSearchPage + 1;
+    const newKey = `${getKey()}&page=${nextPage}`;
+
+    try {
+      const newData = await fetcher(newKey);
+      mutate((prevData) => {
+        if (!prevData) return newData;
+        return {
+          ...newData,
+          results: [...prevData.results, ...newData.results],
+        };
+      }, false);
+    } catch (error) {
+      console.log(`Error fetching more films:`, error);
+    }
+  };
+
+  // Handle scroll effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY >= 1);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Load user location from localStorage
+  useEffect(() => {
+    const storedLocation = localStorage.getItem(USER_LOCATION);
+    if (storedLocation) {
+      setUserLocation(JSON.parse(storedLocation));
+    }
+  }, []);
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
@@ -115,162 +211,6 @@ export default function Search({
     };
   }, []);
 
-  // Handle not available
-  const handleNotAvailable = () => {
-    setNotAvailable(
-      "Filters cannot be applied, please clear the search input.",
-    );
-  };
-  const handleClearNotAvailable = () => {
-    setNotAvailable("");
-  };
-
-  // Fetch more films based on search or selected genres
-  const fetchMoreFilms = async () => {
-    try {
-      let response;
-      const nextPage = currentSearchPage + 1;
-
-      if (!searchParams.get("query")) {
-        const params = {
-          media_type: type,
-          page: nextPage,
-          ...Object.fromEntries(searchParams),
-        };
-
-        // NOTE: Di search page harus pakai localStorage agar ketika di refresh tidak error
-        const userLocation = localStorage.getItem(USER_LOCATION);
-
-        if (searchParams.get("watch_providers") && userLocation) {
-          params.watch_region = JSON.parse(userLocation).country_code;
-        }
-
-        const data = await fetchData({
-          endpoint: `/api/search/filter`,
-          queryParams: params,
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
-        });
-
-        response = data;
-      }
-
-      if (searchParams.get("query")) {
-        const params = {
-          query: searchParams.get("query"),
-          page: nextPage,
-        };
-
-        const data = await fetchData({
-          endpoint: `/api/search/query`,
-          queryParams: params,
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
-        });
-
-        const filteredFilms = data.results.filter(
-          (film) => film.media_type === "movie" || film.media_type === "tv",
-        );
-
-        response = { ...data, results: filteredFilms };
-      }
-
-      const combinedFilms = [...films, ...response.results];
-
-      const uniqueFilms = combinedFilms.filter(
-        (film, index, self) =>
-          index === self.findIndex((t) => t.id === film.id),
-      );
-
-      setLoading(false);
-      setFilms(uniqueFilms);
-      // setTotalSearchResults(response.total_results);
-      setTotalSearchPages(response.total_pages);
-      setCurrentSearchPage(response.page);
-    } catch (error) {
-      console.log(`Error fetching more films:`, error);
-    }
-  };
-
-  // Use Effect for Search
-  useEffect(() => {
-    setLoading(true);
-
-    const searchByFilter = async () => {
-      const params = {
-        media_type: type,
-        ...Object.fromEntries(searchParams),
-      };
-
-      // NOTE: Di search page harus pakai localStorage agar ketika di refresh tidak error
-      const userLocation = localStorage.getItem(USER_LOCATION);
-
-      if (searchParams.get("watch_providers") && userLocation) {
-        params.watch_region = JSON.parse(userLocation).country_code;
-      }
-
-      const data = await fetchData({
-        endpoint: `/api/search/filter`,
-        queryParams: params,
-        baseURL: process.env.NEXT_PUBLIC_APP_URL,
-      });
-
-      const uniqueFilms = data.results.filter(
-        (film, index, self) =>
-          index === self.findIndex((t) => t.id === film.id),
-      );
-
-      setFilms(uniqueFilms);
-      setLoading(false);
-      setTotalSearchPages(data.total_pages);
-      setCurrentSearchPage(1);
-      setTotalSearchResults(data.total_results);
-    };
-
-    const searchByQuery = async () => {
-      const params = {
-        query: searchParams.get("query"),
-      };
-
-      const data = await fetchData({
-        endpoint: `/api/search/query`,
-        queryParams: params,
-        baseURL: process.env.NEXT_PUBLIC_APP_URL,
-      });
-
-      const filteredMovies = data.results.filter(
-        (film) => film.media_type === "movie" || film.media_type === "tv",
-      );
-
-      const uniqueFilms = filteredMovies.filter(
-        (film, index, self) =>
-          index === self.findIndex((t) => t.id === film.id),
-      );
-
-      setFilms(uniqueFilms);
-      setLoading(false);
-      setTotalSearchPages(data.total_pages);
-      setCurrentSearchPage(1);
-      setTotalSearchResults(data.total_results);
-    };
-
-    if (!searchParams.get("query")) {
-      searchByFilter();
-    }
-
-    if (searchParams.get("query")) {
-      searchByQuery();
-    }
-  }, [searchParams, type]);
-
-  useEffect(() => {
-    window.addEventListener("scroll", function () {
-      if (window.scrollY >= 1) {
-        setIsScrolled(true);
-      } else if (window.scrollY < 1) {
-        setIsScrolled(false);
-      }
-    });
-  }, []);
-
   return (
     <div className={`flex lg:px-4`}>
       <h1 className="sr-only">
@@ -302,10 +242,6 @@ export default function Search({
             <SearchBar placeholder={`Tap to search`} />
           </div>
 
-          {/* <div className={`lg:w-full`}>
-            <h1 className={`text-2xl font-bold capitalize`}>Search</h1>
-          </div> */}
-
           {/* Clear filters */}
           {isThereAnyFilter > 0 && (
             <Suspense>
@@ -328,7 +264,6 @@ export default function Search({
           <div
             className={`flex min-w-fit flex-wrap items-center justify-between gap-2 lg:w-full`}
           >
-            {/* <div className={`flex items-center justify-center gap-2`}> */}
             {/* Filter button */}
             <button
               onClick={() =>
@@ -340,7 +275,6 @@ export default function Search({
               <span className="hidden md:block">Filters</span>
               <IonIcon icon={filter} className={`text-xl`} />
             </button>
-            {/* </div> */}
 
             <div className={`hidden w-full lg:flex`}>
               <div className={`ml-auto flex items-center gap-2`}>
@@ -442,8 +376,6 @@ function ButtonFilter({
   return (
     <button
       onClick={() => {
-        // setVariable(defaultValue);
-        // if (setVariableSlider) setVariableSlider(defaultValue);
         current.delete(searchParam);
         const updatedSearchParams = new URLSearchParams(current.toString());
         router.push(`${pathname}?${updatedSearchParams}`);
