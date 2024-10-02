@@ -11,6 +11,7 @@ export default function Streaming({ inputStyles }) {
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
+  const isTvPage = pathname.startsWith("/tv");
 
   const { location } = useLocation();
 
@@ -47,14 +48,14 @@ export default function Streaming({ inputStyles }) {
     if (!location) return;
 
     fetchData({
-      endpoint: `/watch/providers/movie`,
+      endpoint: `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
       queryParams: {
         watch_region: location.country_code,
       },
     }).then((res) => {
       setProvidersData(res.results);
     });
-  }, [location]);
+  }, [location, isTvPage]);
 
   // Use Effect for cycling random options placeholder
   useEffect(() => {
