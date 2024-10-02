@@ -2,9 +2,8 @@ import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { USER_LOCATION } from "@/lib/constants";
+import { useLocation } from "@/zustand/location";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
@@ -13,12 +12,11 @@ export default function Streaming({ inputStyles }) {
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const isQueryParams = searchParams.get("query") ? true : false;
 
-  const [userLocation, setUserLocation] = useState(null);
-  const [locationError, setLocationError] = useState();
+  const { location } = useLocation();
+
   const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
-  const [isLoading, setIsLoading] = useState(false);
 
   const providersOptions = useMemo(() => {
     return providersData?.map((provider) => ({
@@ -43,35 +41,20 @@ export default function Streaming({ inputStyles }) {
     router.push(`${pathname}${query}`);
   };
 
-  // Use Effect for getting user location
-  useEffect(() => {
-    const userLocationInLocalStorage = localStorage.getItem(USER_LOCATION);
-
-    if (!userLocationInLocalStorage) {
-      setIsLoading(true);
-      checkLocationPermission(setUserLocation, setLocationError);
-    }
-
-    setUserLocation(userLocationInLocalStorage);
-  }, []);
-
   // Use Effect for fetching streaming providers based on user location
   useEffect(() => {
     // Fetch watch providers by user country code
-    if (userLocation) {
-      fetchData({
-        endpoint: `/watch/providers/movie`,
-        queryParams: {
-          watch_region: JSON.parse(userLocation).countryCode,
-        },
-      }).then((res) => {
-        setProvidersData(res.results);
-        setIsLoading(false);
-      });
-    }
+    if (!location) return;
 
-    if (locationError) setIsLoading(false);
-  }, [locationError, userLocation]);
+    fetchData({
+      endpoint: `/watch/providers/movie`,
+      queryParams: {
+        watch_region: location.country_code,
+      },
+    }).then((res) => {
+      setProvidersData(res.results);
+    });
+  }, [location]);
 
   // Use Effect for cycling random options placeholder
   useEffect(() => {
@@ -111,30 +94,19 @@ export default function Streaming({ inputStyles }) {
     } else {
       setProvider(null);
     }
-  }, [providersData, searchParams, userLocation]);
+  }, [providersData, searchParams]);
 
   return (
     <section className={`flex flex-col gap-1`}>
       <span className={`font-medium`}>Streaming</span>
 
-      {isLoading && (
+      {!location && (
         <div className={`flex h-[42px] justify-center`}>
           <span className={`loading loading-spinner`}></span>
         </div>
       )}
 
-      {!userLocation && !isLoading && (
-        <div className={`h-[42px]`}>
-          <button
-            onClick={() => requestLocation(setUserLocation, setLocationError)}
-            className={`btn btn-ghost btn-sm flex h-full w-full items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
-          >
-            Enable location
-          </button>
-        </div>
-      )}
-
-      {userLocation && !isLoading && (
+      {location && (
         <Select
           options={providersData && providersOptions}
           onChange={handleProviderChange}
@@ -155,27 +127,6 @@ export default function Streaming({ inputStyles }) {
           isMulti
         />
       )}
-
-      {/* {locationError && ( */}
-      <>
-        {/* <p className="text-xs font-medium text-error">
-            Oops! something isn&apos;t right
-          </p> */}
-
-        {/* <div className={`prose text-xs`}>
-            <p>{locationError}</p>
-            <p>Please follow these steps to enable location access:</p>
-            <ol>
-              <li>Click the icon on the left side of the address bar</li>
-              <li>Go to &quot;Site settings&quot;.</li>
-              <li>
-                Find &quot;Location&quot; and set it to &quot;Allow&quot;.
-              </li>
-              <li>Reload the page and click the button again.</li>
-            </ol>
-          </div> */}
-      </>
-      {/* )} */}
     </section>
   );
 }

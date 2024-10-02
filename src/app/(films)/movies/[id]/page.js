@@ -67,13 +67,6 @@ export async function generateMetadata({ params, type = "movie" }) {
 export default async function FilmDetail({ params, type = "movie" }) {
   const { id } = params;
 
-  const header = headers();
-  const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-  
-  // Fetch user country based on IP
-  const response = await fetch(`https://ipapi.co/${ip}/json/`);
-  const locationData = await response.json();
-
   const isTvPage = type === "tv";
 
   const film = await fetchData({
@@ -259,7 +252,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
       {/* Film Contents */}
       <FilmContent
-        locationData={locationData}
         film={film}
         videos={videos}
         images={images}

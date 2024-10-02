@@ -15,6 +15,7 @@ import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
 import { POPCORN_APPLE } from "@/lib/constants";
+import { useLocation } from "@/zustand/location";
 
 export default function Navbar() {
   const router = useRouter();

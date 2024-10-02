@@ -12,7 +12,6 @@ import LoginAlert from "@/components/Modals/LoginAlert";
 import { useAuth } from "@/hooks/auth";
 
 export default function FilmContent({
-  locationData,
   film,
   videos,
   images,
@@ -24,8 +23,6 @@ export default function FilmContent({
   releaseDates,
 }) {
   const { user } = useAuth();
-
-  console.log(locationData);
 
   const searchParams = useSearchParams();
   const seasonParams = searchParams.get("season");
