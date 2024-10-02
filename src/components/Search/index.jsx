@@ -75,10 +75,9 @@ export default function Search({
   // Process data
   const films = useMemo(() => {
     if (!data) return [];
+    const mediaTypes = ["movie", "tv"];
     const results = isQueryParams
-      ? data.results.filter(
-          (film) => film.media_type === "movie" || film.media_type === "tv",
-        )
+      ? data.results.filter((film) => mediaTypes.includes(film.media_type))
       : data.results;
     return results.filter(
       (film, index, self) => index === self.findIndex((t) => t.id === film.id),
@@ -104,18 +103,14 @@ export default function Search({
     const nextPage = currentSearchPage + 1;
     const newKey = `${getKey()}&page=${nextPage}`;
 
-    try {
-      const newData = await fetcher(newKey);
-      mutate((prevData) => {
-        if (!prevData) return newData;
-        return {
-          ...newData,
-          results: [...prevData.results, ...newData.results],
-        };
-      }, false);
-    } catch (error) {
-      console.log(`Error fetching more films:`, error);
-    }
+    const newData = await fetcher(newKey);
+    mutate((prevData) => {
+      if (!prevData) return newData;
+      return {
+        ...newData,
+        results: [...prevData.results, ...newData.results],
+      };
+    }, false);
   };
 
   // Handle scroll effect
