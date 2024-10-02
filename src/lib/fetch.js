@@ -155,3 +155,10 @@ export async function getEpisodeModal({ filmID, season, eps }) {
 
   return res;
 }
+
+export async function getLocationData(ip) {
+  const response = await fetch(`https://ipapi.com/ip_api.php?ip=${ip}`);
+  const locationData = await response.json();
+
+  return locationData;
+}
