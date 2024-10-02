@@ -97,6 +97,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                         href={`/${!isTvPage ? `movies` : `tv`}/${
                           film.id
                         }-${slug(film.title ?? film.name)}`}
+                        prefetch={true}
                         className={`transition-all active:scale-100 hocus:scale-[1.01]`}
                       >
                         <ImagePovi

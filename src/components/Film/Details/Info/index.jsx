@@ -150,7 +150,7 @@ export default function FilmInfo({
         {film.production_companies.map((item) => {
           return (
             <li key={item.id}>
-              <Link href={`/search?with_companies=${item.id}`}>
+              <Link href={`/search?with_companies=${item.id}`} prefetch={true}>
                 <p>{item.name}</p>
               </Link>
             </li>
@@ -293,6 +293,7 @@ export default function FilmInfo({
                               ? `/search?with_genres=${item.id}`
                               : `/tv/search?with_genres=${item.id}`
                           }
+                          prefetch={true}
                           className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
                         >
                           <p>{item.name}</p>
@@ -317,7 +318,10 @@ export default function FilmInfo({
                 {film.created_by.map((person) => {
                   return (
                     <li key={person.id}>
-                      <Link href={`${pathname}/?person=${person.id}`}>
+                      <Link
+                        href={`${pathname}/?person=${person.id}`}
+                        prefetch={true}
+                      >
                         <p>{person.name}</p>
                       </Link>
                     </li>

@@ -50,7 +50,7 @@ export default function CastsList({ credits }) {
                     delay={showAllActors ? 0 : 0.1 * i}
                     className={`[&_button]:w-full`}
                   >
-                    <Link href={`${pathname}/?person=${actor.id}`}>
+                    <Link href={`${pathname}/?person=${actor.id}`} prefetch={true}>
                       <h3 className="sr-only">
                         {`${actor.name} (${actor.character})`}
                       </h3>

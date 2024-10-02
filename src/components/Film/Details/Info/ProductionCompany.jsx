@@ -11,6 +11,7 @@ export default function ProductionCompany({ item, i, isTvPage }) {
             ? `/search?with_companies=${item.id}`
             : `/tv/search?with_companies=${item.id}`
         }
+        prefetch={true}
       >
         <Reveal delay={0.1 * i}>
           {item.logo_path ? (
