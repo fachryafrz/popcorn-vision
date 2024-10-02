@@ -159,6 +159,7 @@ export default function Navbar() {
           <Link
             id={`Home`}
             href={!isTvPage ? `/` : `/tv`}
+            prefetch={true}
             className="flex max-w-fit items-center gap-1 font-semibold leading-none tracking-wide"
             aria-labelledby={`Home`}
           >
@@ -220,6 +221,7 @@ export default function Navbar() {
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
+              prefetch={true}
               className={`btn btn-secondary btn-sm aspect-square h-[40px] rounded-full border-none bg-opacity-20 !px-0 hocus:bg-opacity-50 md:aspect-auto md:!px-3 lg:hidden`}
             >
               <IonIcon icon={search} className="text-[1.25rem]" />
@@ -347,6 +349,7 @@ export function SearchBar({ placeholder = `Search` }) {
 
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
+            prefetch={true}
             className={`hidden xl:inline`}
           >
             <kbd className={`kbd kbd-sm`}>/</kbd>

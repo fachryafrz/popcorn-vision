@@ -42,6 +42,7 @@ export default function FilmCard({ film, isTvPage }) {
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
       onMouseEnter={handleMouseOver}
       onMouseLeave={handleMouseLeave}
+      prefetch={true}
       className={`relative`}
     >
       <ImagePovi
