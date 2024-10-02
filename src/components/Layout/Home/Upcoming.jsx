@@ -12,13 +12,12 @@ export default async function Upcoming({ type, defaultParams, genres }) {
     queryParams: !isTvPage
       ? {
           ...defaultParams,
-          without_genres: 18,
+          without_genres: 10749,
           "primary_release_date.gte": tomorrow,
           "primary_release_date.lte": monthsLater,
         }
       : {
           ...defaultParams,
-          without_genres: 18,
           "first_air_date.gte": tomorrow,
           "first_air_date.lte": monthsLater,
         },
