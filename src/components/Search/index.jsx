@@ -138,10 +138,11 @@ export default function Search({
           ...Object.fromEntries(searchParams),
         };
 
+        // NOTE: Di search page harus pakai localStorage agar ketika di refresh tidak error
         const userLocation = localStorage.getItem(USER_LOCATION);
 
         if (searchParams.get("watch_providers") && userLocation) {
-          params.watch_region = JSON.parse(userLocation).countryCode;
+          params.watch_region = JSON.parse(userLocation).country_code;
         }
 
         const data = await fetchData({
@@ -199,10 +200,11 @@ export default function Search({
         ...Object.fromEntries(searchParams),
       };
 
+      // NOTE: Di search page harus pakai localStorage agar ketika di refresh tidak error
       const userLocation = localStorage.getItem(USER_LOCATION);
 
       if (searchParams.get("watch_providers") && userLocation) {
-        params.watch_region = JSON.parse(userLocation).countryCode;
+        params.watch_region = JSON.parse(userLocation).country_code;
       }
 
       const data = await fetchData({
