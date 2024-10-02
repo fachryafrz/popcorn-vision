@@ -2,6 +2,7 @@
 import { useAuth } from "@/hooks/auth";
 import { revalidateRedirect } from "@/lib/revalidateRedirect";
 import axios from "axios";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -65,9 +66,11 @@ export default function LogoutButton({ user }) {
         className="menu dropdown-content rounded-box z-50 mt-3 w-52 bg-base-100 p-2 shadow"
       >
         <li>
-          <button onClick={() => revalidateRedirect("/profile")}>
+          {/* <button onClick={() => revalidateRedirect("/profile")}> */}
+          <Link href="/profile" prefetch={true}>
             <span>Profile</span>
-          </button>
+          </Link>
+          {/* </button> */}
         </li>
         <li>
           <button onClick={logout}>
