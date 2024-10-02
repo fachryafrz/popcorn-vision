@@ -101,10 +101,7 @@ export default async function RootLayout({ children }) {
 
   const header = headers();
   const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-
-  // Fetch user country based on IP
-  const response = await fetch(`https://ipapi.co/${ip}/json/`);
-  const locationData = await response.json();
+  ***REMOVED***
 
   const gtagId = process.env.GA_MEASUREMENT_ID;
   const adsenseId = process.env.ADSENSE_ID;
@@ -123,7 +120,7 @@ export default async function RootLayout({ children }) {
           </Suspense>
 
           {/* User Location */}
-          <UserLocation locationData={locationData} />
+          <UserLocation ip={ip} />
 
           {/* Main Content */}
           <main className={`mt-[66px] pb-8`}>{children}</main>
