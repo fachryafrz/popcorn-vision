@@ -27,12 +27,11 @@ import Countdown from "./Countdown";
 import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
-import { checkLocationPermission, requestLocation } from "@/lib/navigator";
 import Confetti from "react-confetti-boom";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import { USER_LOCATION } from "@/lib/constants";
 import moment from "moment";
+import { useLocation } from "@/zustand/location";
 
 export default function FilmInfo({
   film,
@@ -41,18 +40,16 @@ export default function FilmInfo({
   providers,
   releaseDates,
 }) {
-  const [location, setLocation] = useState(null);
-  const [locationError, setLocationError] = useState();
-  const [isLoading, setIsLoading] = useState(true);
   const [accountStates, setAccountStates] = useState();
 
-  const parsedUserLocation = location && JSON.parse(location);
-  const countryCode = parsedUserLocation?.countryCode;
-  const countryName = parsedUserLocation?.countryName;
+  const { user } = useAuth();
+  const { location } = useLocation();
+
+  const countryCode = location?.country_code;
+  const countryName = location?.country_name;
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  const { user } = useAuth();
 
   const nextEps = film.next_episode_to_air;
   const lastEps = film.last_episode_to_air;
@@ -87,8 +84,8 @@ export default function FilmInfo({
 
   const providersArray = Object.entries(providers.results);
 
-  const providersIDArray = parsedUserLocation
-    ? providersArray.find((item) => item[0] === parsedUserLocation.countryCode)
+  const providersIDArray = location
+    ? providersArray.find((item) => item[0] === countryCode)
     : null;
 
   // Confetti
@@ -124,23 +121,6 @@ export default function FilmInfo({
       setAccountStates(null);
     }
   }, [film.id, isTvPage, user]);
-
-  // Effect for user location
-  useEffect(() => {
-    const userLocationInLocalStorage = localStorage.getItem(USER_LOCATION);
-
-    if (!userLocationInLocalStorage) {
-      setIsLoading(true);
-      checkLocationPermission(setLocation, setLocationError);
-    } else {
-      setLocation(userLocationInLocalStorage);
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (location || locationError) setIsLoading(false);
-  }, [locationError, location]);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -333,47 +313,7 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          {/* Loading spinner */}
-          {isLoading && (
-            <Reveal>
-              <section
-                id={`Film Providers`}
-                className="flex flex-col justify-center gap-1 md:justify-start"
-              >
-                <span aria-hidden className={`text-sm italic text-gray-400`}>
-                  Where to watch?
-                </span>
-
-                <div className={`h-[40px]`}>
-                  <span className={`loading loading-spinner`}></span>
-                </div>
-              </section>
-            </Reveal>
-          )}
-
-          {/* Enable location button */}
-          {!location && !isLoading && (
-            <section
-              id={`Film Providers`}
-              className="flex flex-col justify-center gap-1 md:justify-start"
-            >
-              <span aria-hidden className={`text-sm italic text-gray-400`}>
-                Where to watch?
-              </span>
-
-              <div className={`h-[40px]`}>
-                <button
-                  onClick={() => requestLocation(setLocation, setLocationError)}
-                  className={`btn btn-ghost btn-sm flex h-full max-w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
-                >
-                  Enable location
-                </button>
-              </div>
-            </section>
-          )}
-
-          {/* Provider list */}
-          {providersIDArray && !isLoading && (
+          {providersIDArray && (
             <section
               id={`Film Providers`}
               className="flex flex-col justify-center gap-1 md:justify-start"

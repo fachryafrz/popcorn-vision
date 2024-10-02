@@ -7,6 +7,7 @@ import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
 import moment from "moment";
+import { headers } from "next/headers";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
