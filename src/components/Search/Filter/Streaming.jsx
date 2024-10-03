@@ -1,9 +1,10 @@
 import { fetchData } from "@/lib/fetch";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocation } from "@/zustand/location";
+import useSWR from "swr";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
@@ -15,7 +16,26 @@ export default function Streaming({ inputStyles }) {
 
   const { location } = useLocation();
 
-  const [providersData, setProvidersData] = useState([]);
+  const fetcher = async () => {
+    const { results } = await fetchData({
+      endpoint: `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
+      queryParams: {
+        watch_region: location.country_code,
+      },
+    });
+    return results;
+  };
+  const { data: providersData } = useSWR(
+    `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  // const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
 
@@ -41,21 +61,6 @@ export default function Streaming({ inputStyles }) {
 
     router.push(`${pathname}${query}`);
   };
-
-  // Use Effect for fetching streaming providers based on user location
-  useEffect(() => {
-    // Fetch watch providers by user country code
-    if (!location) return;
-
-    fetchData({
-      endpoint: `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
-      queryParams: {
-        watch_region: location.country_code,
-      },
-    }).then((res) => {
-      setProvidersData(res.results);
-    });
-  }, [location, isTvPage]);
 
   // Use Effect for cycling random options placeholder
   useEffect(() => {
@@ -103,7 +108,9 @@ export default function Streaming({ inputStyles }) {
 
       {!location && (
         <div className={`flex h-[42px] justify-center`}>
-          <span className={`loading loading-spinner`}></span>
+          <span
+            className={`block w-full animate-pulse rounded-full bg-gray-400 bg-opacity-20`}
+          />
         </div>
       )}
 

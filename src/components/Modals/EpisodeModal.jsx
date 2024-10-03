@@ -123,6 +123,11 @@ export function EpisodeModal({ film }) {
       ? `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`
       : null,
     fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 
   useEffect(() => {
