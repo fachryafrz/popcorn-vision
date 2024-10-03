@@ -25,6 +25,7 @@ import UserRating from "../User/Actions/UserRating";
 import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
 import { fetchData } from "@/lib/fetch";
+import { useAuth } from "@/hooks/auth";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
@@ -34,6 +35,7 @@ export function EpisodeModal({ film }) {
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
 
+  const { user } = useAuth();
   const { seasons } = film;
 
   const getEpisodeModal = async () => {
@@ -57,7 +59,7 @@ export function EpisodeModal({ film }) {
   const isAired = moment(episode?.air_date).isBefore(moment());
   const isUpcoming = moment(episode?.air_date).isAfter(moment());
 
-  const [accountStates, setAccountStates] = useState();
+  // const [accountStates, setAccountStates] = useState();
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
   const numGuestStars = 6;
 
@@ -115,33 +117,20 @@ export function EpisodeModal({ film }) {
     // document.getElementById(`episodeModal`).close();
   };
 
+  const fetcher = (url) => axios.get(url).then(({ data }) => data);
+  const { data: accountStates } = useSWR(
+    user
+      ? `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`
+      : null,
+    fetcher,
+  );
+
   useEffect(() => {
     if (!episode) return;
 
     setShowAllGuestStars(false);
     document.getElementById(`episodeModal`).showModal();
-
-    const getAccountStates = async () => {
-      try {
-        const { data } = await axios.get(
-          `/api/tv/season/episode/account_states`,
-          {
-            params: {
-              id: film.id,
-              season_number: episode?.season_number,
-              episode_number: episode?.episode_number,
-            },
-          },
-        );
-
-        setAccountStates(data);
-      } catch (error) {
-        console.error("Error getting account states:", error);
-      }
-    };
-
-    getAccountStates();
-  }, [episode, film]);
+  }, [episode]);
 
   return (
     <dialog

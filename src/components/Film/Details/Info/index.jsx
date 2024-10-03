@@ -32,6 +32,7 @@ import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import moment from "moment";
 import { useLocation } from "@/zustand/location";
+import useSWR from "swr";
 
 export default function FilmInfo({
   film,
@@ -40,8 +41,6 @@ export default function FilmInfo({
   providers,
   releaseDates,
 }) {
-  const [accountStates, setAccountStates] = useState();
-
   const { user } = useAuth();
   const { location } = useLocation();
 
@@ -97,30 +96,14 @@ export default function FilmInfo({
   const timeLeft = dayjs.duration(filmReleaseDateDayjs.diff(now));
   const daysLeft = timeLeft.days();
 
-  // Get account state
-  useEffect(() => {
-    const getAccountStates = async (setValue) => {
-      await axios
-        .get(`/api/account_states`, {
-          params: {
-            id: film.id,
-            type: !isTvPage ? `movie` : `tv`,
-          },
-        })
-        .then(({ data: res }) => {
-          setValue(res);
-        })
-        .catch((error) => {
-          console.error("Error getting account states:", error);
-        });
-    };
-
-    if (user) {
-      getAccountStates(setAccountStates);
-    } else {
-      setAccountStates(null);
-    }
-  }, [film.id, isTvPage, user]);
+  // Get account state using SWR
+  const fetcher = (url) => axios.get(url).then(({ data }) => data);
+  const { data: accountStates } = useSWR(
+    user
+      ? `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`
+      : null,
+    fetcher,
+  );
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">

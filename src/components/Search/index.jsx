@@ -10,8 +10,8 @@ import { closeCircle, filter } from "ionicons/icons";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
 import { fetchData } from "@/lib/fetch";
-import { USER_LOCATION } from "@/lib/constants";
 import useSWR from "swr";
+import { useLocation } from "@/zustand/location";
 
 export default function Search({
   type = "movie",
@@ -32,7 +32,9 @@ export default function Search({
   const [notAvailable, setNotAvailable] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [userLocation, setUserLocation] = useState(null);
+
+  // Global State
+  const { location } = useLocation();
 
   // SWR configuration
   const fetcher = async (url) => {
@@ -53,8 +55,8 @@ export default function Search({
         ...Object.fromEntries(searchParams),
       });
 
-      if (searchParams.get("watch_providers") && userLocation) {
-        params.append("watch_region", userLocation.country_code);
+      if (searchParams.get("watch_providers") && location) {
+        params.append("watch_region", location.country_code);
       }
 
       return `/api/search/filter?${params.toString()}`;
@@ -120,14 +122,6 @@ export default function Search({
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Load user location from localStorage
-  useEffect(() => {
-    const storedLocation = localStorage.getItem(USER_LOCATION);
-    if (storedLocation) {
-      setUserLocation(JSON.parse(storedLocation));
-    }
   }, []);
 
   // Handle React-Select Input Styles
