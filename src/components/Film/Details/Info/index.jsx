@@ -103,6 +103,11 @@ export default function FilmInfo({
       ? `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`
       : null,
     fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 
   return (
