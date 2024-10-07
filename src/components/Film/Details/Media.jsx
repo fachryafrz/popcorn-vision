@@ -26,8 +26,11 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
+import { useEffect, useState } from "react";
 
 export default function FilmMedia({ videos, images }) {
+  const [youtubeParams, setYoutubeParams] = useState();
+
   const filteredVideos = videos?.results.filter((result) => {
     const isYouTubeOfficial =
       result.site === "YouTube" && result.official === true;
@@ -36,6 +39,18 @@ export default function FilmMedia({ videos, images }) {
 
     return isYouTubeOfficial && isEnglish && isValidType;
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams({
+      rel: 0,
+      start: 0,
+      enablejsapi: 1,
+      origin: window.location.origin,
+      widget_referrer: window.location.href,
+    }).toString();
+
+    setYoutubeParams(params);
+  }, []);
 
   return (
     <div id="media" className="-mx-4 flex flex-col gap-2 md:mx-0">
@@ -88,13 +103,7 @@ export default function FilmMedia({ videos, images }) {
                 <LiteYouTubeEmbed
                   id={vid.key}
                   title={vid.name}
-                  params={new URLSearchParams({
-                    rel: 0,
-                    start: 0,
-                    enablejsapi: 1,
-                    origin: window.location.origin,
-                    widget_referrer: window.location.href,
-                  }).toString()}
+                  params={youtubeParams}
                   poster="maxresdefault"
                   // thumbnail={`https://img.youtube.com/vi/${vid.key}/maxresdefault.jpg`}
                   webp={true}

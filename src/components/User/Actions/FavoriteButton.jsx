@@ -58,7 +58,7 @@ export default function FavoriteButton({ film, favorite }) {
       ) : (
         <IonIcon
           icon={!isAdded ? starOutline : star}
-          className={`text-xl ${isAdded ? `!text-yellow-500` : ``}`}
+          className={`text-xl ${isAdded ? `!text-primary-yellow` : ``}`}
         />
       )}
       <span>Favorite</span>
