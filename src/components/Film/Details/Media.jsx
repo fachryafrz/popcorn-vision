@@ -99,6 +99,8 @@ export default function FilmMedia({ videos, images }) {
                   lazyImage={true}
                   noCookie={false}
                   className={`h-full w-full`}
+                  mobileResolution="maxresdefault"
+                  desktopResolution="maxresdefault"
                 />
               </SwiperSlide>
             );
