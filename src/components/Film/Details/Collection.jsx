@@ -168,7 +168,12 @@ export function CollectionItem({
               <div
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
-                <IonIcon icon={star} className={`text-primary-yellow`} />
+                <div className="rating rating-xs">
+                  <input
+                    class="mask mask-star-2 bg-primary-yellow"
+                    checked={true}
+                  />
+                </div>
                 <span
                   className={`before-content`}
                   data-before-content={
@@ -288,7 +293,12 @@ function FilmSeason({ film, item, index }) {
               <span
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm`}
               >
-                <IonIcon icon={star} className={`text-primary-yellow`} />
+                <div className="rating rating-xs">
+                  <input
+                    class="mask mask-star-2 bg-primary-yellow"
+                    checked={true}
+                  />
+                </div>
                 {item.vote_average && formatRating(item.vote_average)}
               </span>
             )}
@@ -379,10 +389,12 @@ function FilmEpisodes({ id, season }) {
                           <span
                             className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
-                            <IonIcon
-                              icon={star}
-                              className={`text-primary-yellow`}
-                            />
+                            <div className="rating rating-xs">
+                              <input
+                                class="mask mask-star-2 bg-primary-yellow"
+                                checked={true}
+                              />
+                            </div>
                             {item.vote_average &&
                               formatRating(item.vote_average)}
                           </span>

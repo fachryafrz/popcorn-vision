@@ -136,7 +136,9 @@ export default function TileList({
   }, [searchParams]);
 
   return (
-    <section className={`rounded-xl bg-gray-400 bg-opacity-5 p-2 py-4`}>
+    <section
+      className={`-mx-4 bg-gray-400 bg-opacity-5 p-2 py-4 md:mx-0 md:rounded-xl`}
+    >
       <h2 className={`mb-4 text-center text-lg font-bold md:text-2xl`}>
         {title}
       </h2>
