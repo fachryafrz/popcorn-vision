@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
-import { useEffect, useState } from "react";
+import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -23,20 +23,8 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/autoplay";
 import "swiper/css/zoom";
-import Reveal from "@/components/Layout/Reveal";
-import YouTube from "react-youtube";
-import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 
 export default function FilmMedia({ videos, images }) {
-  const [mediaSwiper, setMediaSwiper] = useState();
-  const [activeSlide, setActiveSlide] = useState(0);
-  // const [activeVideo, setActiveVideo] = useState({
-  //   index: null,
-  //   video: null,
-  // });
-
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-
   const filteredVideos = videos?.results.filter((result) => {
     const isYouTubeOfficial =
       result.site === "YouTube" && result.official === true;
@@ -46,24 +34,10 @@ export default function FilmMedia({ videos, images }) {
     return isYouTubeOfficial && isEnglish && isValidType;
   });
 
-  // useEffect(() => {
-  //   if (activeVideo.index !== activeSlide) {
-  //     activeVideo.video?.pauseVideo();
-  //   } else {
-  //     activeVideo.video?.playVideo();
-  //   }
-  // }, [activeSlide, activeVideo]);
-
   return (
     <div id="media" className="-mx-4 flex flex-col gap-2 md:mx-0">
       <div className="max-w-full">
         <Swiper
-          onSwiper={(swiper) => setMediaSwiper(swiper)}
-          onSlideChange={() => {
-            if (mediaSwiper) {
-              setActiveSlide(mediaSwiper.activeIndex);
-            }
-          }}
           modules={[
             FreeMode,
             Navigation,
@@ -73,20 +47,13 @@ export default function FilmMedia({ videos, images }) {
             Mousewheel,
             Zoom,
           ]}
-          // zoom={true}
           effect="fade"
           spaceBetween={16}
-          // mousewheel={true}
           navigation={{
             enabled: true,
             nextEl: "#next",
             prevEl: "#prev",
           }}
-          // autoplay={{
-          //   delay: 3000,
-          //   disableOnInteraction: true,
-          //   pauseOnMouseEnter: true,
-          // }}
           style={{
             "--swiper-navigation-color": "#fff",
             "--swiper-pagination-color": "#fff",
@@ -112,65 +79,28 @@ export default function FilmMedia({ videos, images }) {
               <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
             </button>
           </div>
-          {filteredVideos
-            // .reverse()
-            // .slice(0, 10)
-            .map((vid, index) => {
-              return (
-                <SwiperSlide key={vid.key}>
-                  {/* <link
-                    href={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                  />
-                  <meta content={vid.name} />
-                  <meta
-                    content={`https://i.ytimg.com/vi_webp/${vid.key}/maxresdefault.webp`}
-                  />
-                  <meta content={vid.published_at} />
-                  <iframe
-                    src={`https://youtube.com/embed/${vid.key}?rel=0&start=0`}
-                    title="YouTube video player"
-                    loading="lazy"
-                    frameBorder="0"
-                    allowFullScreen
-                    className={`w-full h-full`}
-                  ></iframe> */}
-
-                  {/* <YouTube
-                    videoId={vid.key}
-                    className={`h-full w-full`}
-                    iframeClassName={`w-full h-full`}
-                    // onReady={(e) => console.log(`Ready`, e)}
-                    // onPlay={(e) => setActiveVideo({ index, video: e.target })}
-                    // onPause={(e) => console.log(`Pause`, e)}
-                    opts={{
-                      playerVars: {
-                        rel: 0,
-                        start: 0,
-                      },
-                    }}
-                    loading="lazy"
-                    title={vid.name}
-                  /> */}
-
-                  <LiteYoutubeEmbed
-                    id={vid.key}
-                    imageAltText={vid.name}
-                    iframeTitle={vid.name}
-                    mute={false}
-                    params={{
-                      rel: 0,
-                      start: 0,
-                      origin: window.location.origin,
-                      enablejsapi: 1,
-                      widget_referrer: window.location.href,
-                    }}
-                    lazyImage={true}
-                    noCookie={false}
-                    className={`h-full w-full`}
-                  />
-                </SwiperSlide>
-              );
-            })}
+          {filteredVideos.map((vid, index) => {
+            return (
+              <SwiperSlide key={vid.key}>
+                <LiteYoutubeEmbed
+                  id={vid.key}
+                  imageAltText={vid.name}
+                  iframeTitle={vid.name}
+                  mute={false}
+                  params={{
+                    rel: 0,
+                    start: 0,
+                    origin: window.location.origin,
+                    enablejsapi: 1,
+                    widget_referrer: window.location.href,
+                  }}
+                  lazyImage={true}
+                  noCookie={false}
+                  className={`h-full w-full`}
+                />
+              </SwiperSlide>
+            );
+          })}
 
           {images.slice(0, 10).map((img, index) => {
             return (
