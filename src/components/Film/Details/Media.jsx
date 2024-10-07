@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -25,37 +25,37 @@ import "swiper/css/autoplay";
 import "swiper/css/zoom";
 import Reveal from "@/components/Layout/Reveal";
 import YouTube from "react-youtube";
+import { LiteYoutubeEmbed } from "react-lite-yt-embed";
 
 export default function FilmMedia({ videos, images }) {
   const [mediaSwiper, setMediaSwiper] = useState();
   const [activeSlide, setActiveSlide] = useState(0);
-  const [activeVideo, setActiveVideo] = useState({
-    index: null,
-    video: null,
+  // const [activeVideo, setActiveVideo] = useState({
+  //   index: null,
+  //   video: null,
+  // });
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  const filteredVideos = videos?.results.filter((result) => {
+    const isYouTubeOfficial =
+      result.site === "YouTube" && result.official === true;
+    const isEnglish = result.iso_639_1 === "en";
+    const isValidType = ["Trailer", "Teaser", "Clip"].includes(result.type);
+
+    return isYouTubeOfficial && isEnglish && isValidType;
   });
 
-  const filteredVideos =
-    videos &&
-    videos.results.filter(
-      (result) =>
-        (result.site === "YouTube" &&
-          result.official === true &&
-          result.iso_639_1 === "en" &&
-          result.type === "Trailer") ||
-        result.type === "Teaser" ||
-        result.type === "Clip",
-    );
-
-  useEffect(() => {
-    if (activeVideo.index !== activeSlide) {
-      activeVideo.video?.pauseVideo();
-    } else {
-      activeVideo.video?.playVideo();
-    }
-  }, [activeSlide, activeVideo]);
+  // useEffect(() => {
+  //   if (activeVideo.index !== activeSlide) {
+  //     activeVideo.video?.pauseVideo();
+  //   } else {
+  //     activeVideo.video?.playVideo();
+  //   }
+  // }, [activeSlide, activeVideo]);
 
   return (
-    <div id="media" className="flex flex-col gap-2 -mx-4 md:mx-0">
+    <div id="media" className="-mx-4 flex flex-col gap-2 md:mx-0">
       <div className="max-w-full">
         <Swiper
           onSwiper={(swiper) => setMediaSwiper(swiper)}
@@ -135,12 +135,12 @@ export default function FilmMedia({ videos, images }) {
                     className={`w-full h-full`}
                   ></iframe> */}
 
-                  <YouTube
+                  {/* <YouTube
                     videoId={vid.key}
                     className={`h-full w-full`}
                     iframeClassName={`w-full h-full`}
                     // onReady={(e) => console.log(`Ready`, e)}
-                    onPlay={(e) => setActiveVideo({ index, video: e.target })}
+                    // onPlay={(e) => setActiveVideo({ index, video: e.target })}
                     // onPause={(e) => console.log(`Pause`, e)}
                     opts={{
                       playerVars: {
@@ -148,6 +148,25 @@ export default function FilmMedia({ videos, images }) {
                         start: 0,
                       },
                     }}
+                    loading="lazy"
+                    title={vid.name}
+                  /> */}
+
+                  <LiteYoutubeEmbed
+                    id={vid.key}
+                    imageAltText={vid.name}
+                    iframeTitle={vid.name}
+                    mute={false}
+                    params={{
+                      rel: 0,
+                      start: 0,
+                      origin: window.location.origin,
+                      enablejsapi: 1,
+                      widget_referrer: window.location.href,
+                    }}
+                    lazyImage={true}
+                    noCookie={false}
+                    className={`h-full w-full`}
                   />
                 </SwiperSlide>
               );
