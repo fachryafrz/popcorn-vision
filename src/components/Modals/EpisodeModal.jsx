@@ -38,10 +38,8 @@ export function EpisodeModal({ film }) {
   const { user } = useAuth();
   const { seasons } = film;
 
-  const getEpisodeModal = async () => {
-    const res = await fetchData({
-      endpoint: `/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
-    });
+  const getEpisodeModal = async (url) => {
+    const res = await fetchData({ endpoint: url });
 
     return res;
   };

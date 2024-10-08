@@ -2,50 +2,43 @@ import Reveal from "@/components/Layout/Reveal";
 import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 import { usePathname } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-export default function Countdown({
-  movieReleaseDate,
-  tvReleaseDate,
-}) {
+export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-  
+
   const upcomingDate = !isTvPage ? movieReleaseDate : tvReleaseDate;
-  const date = new Date(upcomingDate);
 
-  const timeLeft = new Date(new Date(upcomingDate) - new Date());
+  const calculateTimeLeft = useCallback(() => {
+    const date = new Date(upcomingDate);
+    const timeLeft = new Date(date - new Date());
+    const duration = moment.duration(timeLeft);
+    return {
+      years: duration.years(),
+      months: duration.months(),
+      days: duration.days(),
+      hours: duration.hours(),
+      minutes: duration.minutes(),
+      seconds: duration.seconds(),
+    };
+  }, [upcomingDate]);
 
-  const duration = moment.duration(timeLeft);
-  const yearsLeft = duration.years();
-  const monthsLeft = duration.months();
-  const daysLeft = duration.days();
-  const hoursLeft = duration.hours();
-  const minutesLeft = duration.minutes();
-  const secondsLeft = duration.seconds();
-
-  const countdownValue = {
-    years: yearsLeft,
-    months: monthsLeft,
-    days: daysLeft,
-    hours: hoursLeft,
-    minutes: minutesLeft,
-    seconds: secondsLeft,
-  };
-
-  const [countdown, setCountdown] = useState(countdownValue);
+  const [countdown, setCountdown] = useState(calculateTimeLeft());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown(countdownValue);
+    const timer = setInterval(() => {
+      setCountdown(calculateTimeLeft());
     }, 1000);
 
-    return () => clearInterval(interval);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]);
+    return () => clearInterval(timer);
+  }, [calculateTimeLeft]);
 
   return (
-    <div aria-hidden className={`flex flex-wrap justify-start gap-2 text-center`}>
+    <div
+      aria-hidden
+      className={`flex flex-wrap justify-start gap-2 text-center`}
+    >
       {countdown.years > 0 && (
         <Reveal>
           <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
