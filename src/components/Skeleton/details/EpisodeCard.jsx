@@ -27,8 +27,8 @@ export default function SkeletonEpisodeCard() {
           slidesPerGroup: 2,
         },
       }}
-      className={`relative`}
-    >
+      className={`relative !px-2`}
+      >
       {episodes.map((item) => {
         return (
           <SwiperSlide key={item.id} className={`!h-auto`}>

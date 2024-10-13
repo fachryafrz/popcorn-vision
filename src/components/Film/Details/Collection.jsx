@@ -170,8 +170,9 @@ export function CollectionItem({
               >
                 <div className="rating rating-xs">
                   <input
-                    class="mask mask-star-2 bg-primary-yellow"
+                    class="mask mask-star-2 pointer-events-none bg-primary-yellow"
                     checked={true}
+                    disabled
                   />
                 </div>
                 <span
@@ -295,8 +296,9 @@ function FilmSeason({ film, item, index }) {
               >
                 <div className="rating rating-xs">
                   <input
-                    class="mask mask-star-2 bg-primary-yellow"
+                    class="mask mask-star-2 pointer-events-none bg-primary-yellow"
                     checked={true}
+                    disabled
                   />
                 </div>
                 {item.vote_average && formatRating(item.vote_average)}
@@ -345,7 +347,7 @@ function FilmEpisodes({ id, season }) {
   );
 
   return (
-    <div className={`rounded-b-xl bg-secondary bg-opacity-10 p-2`}>
+    <div className={`rounded-b-xl bg-secondary bg-opacity-10 py-2`}>
       {isLoading && <SkeletonEpisodeCard />}
 
       {!isLoading && !episodes.length && (
@@ -372,7 +374,7 @@ function FilmEpisodes({ id, season }) {
                 slidesPerGroup: 2,
               },
             }}
-            className={`relative`}
+            className={`relative !px-2`}
           >
             {episodes.map((item) => {
               return (
@@ -391,8 +393,9 @@ function FilmEpisodes({ id, season }) {
                           >
                             <div className="rating rating-xs">
                               <input
-                                class="mask mask-star-2 bg-primary-yellow"
+                                class="mask mask-star-2 pointer-events-none bg-primary-yellow"
                                 checked={true}
+                                disabled
                               />
                             </div>
                             {item.vote_average &&
@@ -430,17 +433,17 @@ function FilmEpisodes({ id, season }) {
             })}
 
             <div
-              className={`pointer-events-none absolute inset-0 z-40 flex justify-between`}
+              className={`pointer-events-none absolute inset-0 z-40 flex items-center justify-between`}
             >
               <button
                 id={`prevEps-${id}-${season}`}
-                className={`pointer-events-auto flex items-center p-1`}
+                className={`pointer-events-auto flex items-center p-2`}
               >
                 <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
               </button>
               <button
                 id={`nextEps-${id}-${season}`}
-                className={`pointer-events-auto flex items-center p-1`}
+                className={`pointer-events-auto flex items-center p-2`}
               >
                 <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
               </button>

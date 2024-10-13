@@ -30,12 +30,9 @@ export default function FilmContent({
   const personParams = searchParams.get("person");
 
   return (
-    <div className={`z-10 mb-4 mt-[30%] md:mt-[200px]`}>
+    <div className={`z-10 mt-[30%] md:mt-[200px]`}>
       <div
-        className={`mx-auto grid max-w-none grid-cols-1 gap-4 px-4 md:grid-cols-12 lg:grid-cols-24`}
-        style={{
-          gridTemplateRows: `auto [lastline]`,
-        }}
+        className={`mx-auto grid max-w-none grid-cols-1 gap-4 px-4 pb-4 md:grid-cols-12 lg:grid-cols-24`}
       >
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
@@ -83,7 +80,7 @@ export default function FilmContent({
         </section>
 
         {/* Misc */}
-        <section className={`col-span-full`}>
+        <section className={`col-span-full fixed`}>
           <ShareModal />
 
           {!user && <LoginAlert />}
