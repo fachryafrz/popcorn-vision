@@ -1,29 +1,22 @@
-/* eslint-disable @next/next/no-img-element */
-
 import Link from "next/link";
-import React, { useCallback, useEffect, useState } from "react";
 import ImagePovi from "./ImagePovi";
-import { fetchData } from "@/lib/fetch";
-import { IonIcon } from "@ionic/react";
-import { star } from "ionicons/icons";
-import { AnimatePresence, motion as m } from "framer-motion";
-import { formatRuntime } from "../../lib/formatRuntime";
-import Reveal from "../Layout/Reveal";
-import { isPlural } from "../../lib/isPlural";
 import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
-import useSWR from "swr";
+import { useHoverCard } from "@/zustand/hoverCard";
 
 export default function FilmCard({ film, isTvPage }) {
-  const releaseDate = !isTvPage ? film.release_date : film.first_air_date;
-  const options = { year: "numeric", month: "short" };
+  // Global State
+  const { setHoverCard, setPosition } = useHoverCard();
 
-  const [isHovering, setIsHovering] = useState(false);
-
-  const handleMouseOver = debounce(() => setIsHovering(true), 250);
+  // Functions
+  const handleMouseOver = debounce((e, film) => {
+    setHoverCard(film);
+    setPosition(e.target.getBoundingClientRect());
+  }, 400);
   const handleMouseLeave = () => {
-    setIsHovering(false);
+    setHoverCard(null);
+    setPosition(null);
     handleMouseOver.clear();
   };
 
@@ -32,15 +25,11 @@ export default function FilmCard({ film, isTvPage }) {
     return type;
   };
 
-  useEffect(() => {
-    setIsHovering(false);
-  }, []);
-
   return (
     <Link
       id="FilmCard"
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-      onMouseEnter={handleMouseOver}
+      onMouseEnter={(e) => handleMouseOver(e, film)}
       onMouseLeave={handleMouseLeave}
       prefetch={true}
       className={`relative`}
@@ -80,188 +69,6 @@ export default function FilmCard({ film, isTvPage }) {
       </ImagePovi>
 
       <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
-
-      <FilmPreview film={film} isHovering={isHovering} isTvPage={isTvPage} />
     </Link>
-  );
-}
-
-function FilmPreview({ film, isHovering, isTvPage }) {
-  const isItTvPage = useCallback(
-    (movie, tv) => {
-      const type = !isTvPage ? movie : tv;
-      return type;
-    },
-    [isTvPage],
-  );
-
-  const fetchFilmDetails = async () => {
-    const res = await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${film.id}`,
-      queryParams: {
-        append_to_response: "images",
-      },
-    });
-    const { images } = res;
-    return {
-      titleLogo: images.logos.find((img) => img.iso_639_1 === "en"),
-      filmDetails: res,
-      releaseDate: isItTvPage(res.release_date, res.first_air_date),
-      filmRuntime: isItTvPage(res.runtime, res.episode_run_time),
-    };
-  };
-
-  const { data } = useSWR(
-    isHovering && window.innerWidth >= 1536
-      ? [film.id, isItTvPage(`movie`, `tv`)]
-      : null,
-    fetchFilmDetails,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
-
-  const { titleLogo, filmDetails, releaseDate, filmRuntime } = data || {};
-
-  return (
-    <AnimatePresence>
-      {data && (
-        <m.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          id="FilmPreview"
-          className={`pointer-events-auto absolute left-1/2 top-1/2 z-[60] hidden w-[300px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
-        >
-          {data && (
-            <>
-              {/* Backdrop */}
-              <ImagePovi
-                imgPath={
-                  film.backdrop_path &&
-                  `https://image.tmdb.org/t/p/w92${film.backdrop_path}`
-                }
-                className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
-              >
-                {film.backdrop_path && (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
-                    alt={isItTvPage(film.title, film.name)}
-                    className={`object-cover`}
-                    draggable={false}
-                    loading="lazy"
-                  />
-                )}
-              </ImagePovi>
-
-              <div
-                className={`relative z-10 -mt-[75px] flex flex-col gap-2 p-3 pb-4`}
-              >
-                {/* Logo */}
-                <section id="Logo" className={`flex h-[75px] items-end`}>
-                  {/* Logo Image */}
-                  {titleLogo && (
-                    <Reveal className={`h-full`} delay={0.1}>
-                      <figure className={`h-full`}>
-                        <img
-                          src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
-                          alt={isItTvPage(film.title, film.name)}
-                          title={isItTvPage(film.title, film.name)}
-                          className={`max-w-[200px] object-contain`}
-                          draggable={false}
-                          loading="lazy"
-                        />
-                      </figure>
-                    </Reveal>
-                  )}
-
-                  {/* Logo Text */}
-                  {!titleLogo && (
-                    <Reveal>
-                      <span
-                        className={`before-content line-clamp-2 text-xl font-bold`}
-                        style={{ textWrap: `balance` }}
-                        data-before-content={isItTvPage(film.title, film.name)}
-                      />
-                    </Reveal>
-                  )}
-                </section>
-
-                {/* Info */}
-                <section className="flex flex-wrap items-center gap-0.5 text-xs font-medium">
-                  {/* Rating */}
-                  {film.vote_average > 0 && (
-                    <Reveal delay={0.1}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm">
-                        <IonIcon icon={star} className="" />
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={formatRating(film.vote_average)}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-
-                  {/* Runtime */}
-                  {!isTvPage && filmRuntime > 0 && (
-                    <Reveal delay={0.15}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={formatRuntime(filmRuntime)}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-
-                  {/* Seasons */}
-                  {isTvPage && filmDetails?.number_of_seasons > 0 && (
-                    <Reveal delay={0.2}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
-                            {
-                              text: `Season`,
-                              number: filmDetails.number_of_seasons,
-                            },
-                          )}`}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-
-                  {/* Genres */}
-                  {filmDetails?.genres.length > 0 && (
-                    <Reveal delay={0.25}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={filmDetails?.genres[0]?.name}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-                </section>
-
-                {/* Overview */}
-                <section id="Overview">
-                  {film.overview && (
-                    <Reveal delay={0.1}>
-                      <span
-                        className={`before-content line-clamp-3 text-sm font-medium text-gray-400`}
-                        data-before-content={film.overview}
-                      />
-                    </Reveal>
-                  )}
-                </section>
-              </div>
-            </>
-          )}
-        </m.div>
-      )}
-    </AnimatePresence>
   );
 }
