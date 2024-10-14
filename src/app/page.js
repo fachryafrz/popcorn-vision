@@ -80,7 +80,7 @@ export default async function Home({ type = "movie" }) {
         </Suspense>
       </div>
 
-      <div className={`lg:-mt-[5rem]`}>
+      <div className={`lg:-mt-[5rem] flex flex-col gap-4`}>
         {/* Now Playing */}
         <Suspense fallback={<SkeletonSlider />}>
           <NowPlaying

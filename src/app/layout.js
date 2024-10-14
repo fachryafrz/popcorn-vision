@@ -7,6 +7,7 @@ import { CookiesProvider } from "next-client-cookies/server";
 import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
+import HoverCard from "@/components/Modals/HoverCard";
 
 export const viewport = {
   width: "device-width",
@@ -124,6 +125,9 @@ export default async function RootLayout({ children }) {
 
           {/* Main Content */}
           <main className={`mt-[66px] pb-8`}>{children}</main>
+
+          {/* Modal */}
+          <HoverCard />
 
           {/* Footer */}
           <Footer />
