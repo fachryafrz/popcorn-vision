@@ -11,7 +11,7 @@ export default function Streaming({ inputStyles }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const isQueryParams = searchParams.get("query");
   const isTvPage = pathname.startsWith("/tv");
 
   const { location } = useLocation();

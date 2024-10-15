@@ -11,7 +11,7 @@ export default function Company({ inputStyles }) {
     () => new URLSearchParams(Array.from(searchParams.entries())),
     [searchParams],
   );
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const isQueryParams = searchParams.get("query");
 
   const [company, setCompany] = useState([]);
 
