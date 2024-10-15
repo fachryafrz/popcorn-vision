@@ -97,18 +97,13 @@ export default function FilmInfo({
   const daysLeft = timeLeft.days();
 
   // Get account state using SWR
+  const swrKey = `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
-  const { data: accountStates } = useSWR(
-    user
-      ? `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`
-      : null,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -383,6 +378,7 @@ export default function FilmInfo({
                 className={`max-w-fit`}
               >
                 <UserRating
+                  swrKey={swrKey}
                   film={film}
                   url={`/api/account/rating`}
                   rating={accountStates?.rated}
@@ -398,6 +394,7 @@ export default function FilmInfo({
               {!isUpcoming && filmReleaseDate !== "" && (
                 <Reveal delay={0.2} className={`flex`}>
                   <FavoriteButton
+                    swrKey={swrKey}
                     film={film}
                     favorite={accountStates?.favorite}
                   />
@@ -407,6 +404,7 @@ export default function FilmInfo({
               {/* Add to Watchlist */}
               <Reveal delay={0.4} className={`flex`}>
                 <WatchlistButton
+                  swrKey={swrKey}
                   film={film}
                   watchlist={accountStates?.watchlist}
                 />

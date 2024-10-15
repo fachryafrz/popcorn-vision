@@ -6,9 +6,17 @@ import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSWRConfig } from "swr";
 
-export default function FavoriteButton({ film, favorite }) {
+export default function FavoriteButton({
+  swrKey,
+  film,
+  favorite,
+  withText = true,
+  className,
+}) {
   const { user } = useAuth();
+  const { mutate } = useSWRConfig();
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -31,6 +39,8 @@ export default function FavoriteButton({ film, favorite }) {
 
       setIsLoading(false);
       setIsAdded(favorite);
+
+      mutate(swrKey);
     } catch (error) {
       console.error("Error adding to favorite:", error);
       setIsLoading(false);
@@ -51,7 +61,7 @@ export default function FavoriteButton({ film, favorite }) {
           document.getElementById("loginAlert").showModal();
         }
       }}
-      className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
+      className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm ${className}`}
     >
       {isLoading ? (
         <span class="loading loading-spinner w-[20px]"></span>
@@ -61,7 +71,7 @@ export default function FavoriteButton({ film, favorite }) {
           className={`text-xl ${isAdded ? `!text-primary-yellow` : ``}`}
         />
       )}
-      <span>Favorite</span>
+      {withText && <span>Favorite</span>}
     </button>
   );
 }
