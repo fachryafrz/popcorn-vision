@@ -7,7 +7,7 @@ export default function Runtime({ sliderStyles }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const isQueryParams = searchParams.get("query");
 
   const [runtime, setRuntime] = useState([0, 300]);
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
