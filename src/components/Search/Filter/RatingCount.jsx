@@ -7,7 +7,7 @@ export default function RatingCount({ sliderStyles }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const isQueryParams = searchParams.get("query");
 
   const [rating, setRating] = useState(0);
   const [ratingSlider, setRatingSlider] = useState(0);
