@@ -13,9 +13,18 @@ import { formatRating } from "@/lib/formatRating";
 import useSWR from "swr";
 import { useHoverCard } from "@/zustand/hoverCard";
 import ImagePovi from "../Film/ImagePovi";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import slug from "slug";
+import FavoriteButton from "../User/Actions/FavoriteButton";
+import axios from "axios";
+import { useAuth } from "@/hooks/auth";
+import WatchlistButton from "../User/Actions/WatchlistButton";
 
 export default function HoverCard() {
+  const { user } = useAuth();
+
+  const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -23,7 +32,8 @@ export default function HoverCard() {
   const filmPreviewRef = useRef();
 
   // Global State
-  const { card, setHoverCard, position, setPosition } = useHoverCard();
+  const { card, setHoverCard, position, setPosition, handleMouseLeave } =
+    useHoverCard();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,8 +44,14 @@ export default function HoverCard() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setHoverCard(null);
+    setPosition(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -59,7 +75,7 @@ export default function HoverCard() {
   };
 
   const { data } = useSWR(
-    card && window.innerWidth >= 1536
+    card && position && window.innerWidth >= 1536
       ? [card.id, isItTvPage(`movie`, `tv`)]
       : null,
     fetchFilmDetails,
@@ -72,6 +88,18 @@ export default function HoverCard() {
 
   const { titleLogo, filmDetails, releaseDate, filmRuntime } = data || {};
 
+  const swrKey = `/api/account_states?id=${card?.id}&type=${!isTvPage ? "movie" : "tv"}`;
+  const fetcher = (url) => axios.get(url).then(({ data }) => data);
+  const { data: accountStates } = useSWR(
+    user && card ? swrKey : null,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
   return (
     <AnimatePresence>
       {data && (
@@ -81,9 +109,10 @@ export default function HoverCard() {
           exit={{ opacity: 0 }}
           ref={filmPreviewRef}
           id="film-preview"
-          className={`pointer-events-none fixed z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
+          onMouseLeave={handleMouseLeave}
+          className={`pointer-events-auto fixed z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
           style={{
-            top: position.top + position.height / 2 - 176,
+            top: position.top + position.height / 2 - 200,
             left:
               position.left > 17
                 ? position.right < 1470
@@ -93,9 +122,14 @@ export default function HoverCard() {
             right: position.right < 1470 ? `unset` : 16,
           }}
         >
-          {data && (
-            <>
-              {/* Backdrop */}
+          <>
+            {/* Backdrop */}
+
+            <Link
+              href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
+            >
+              <span className={`sr-only`}>{card.title ?? card.name}</span>
+
               <ImagePovi
                 imgPath={
                   card.backdrop_path &&
@@ -113,111 +147,157 @@ export default function HoverCard() {
                   />
                 )}
               </ImagePovi>
+            </Link>
 
-              <div
-                className={`relative z-10 -mt-[75px] flex flex-col gap-2 p-3 pb-4`}
-              >
-                {/* Logo */}
-                <section id="Logo" className={`flex h-[75px] items-end`}>
-                  {/* Logo Image */}
-                  {titleLogo && (
-                    <Reveal className={`h-full`} delay={0.1}>
-                      <figure className={`h-full`}>
-                        <img
-                          src={`https://image.tmdb.org/t/p/w185${titleLogo.file_path}`}
-                          alt={isItTvPage(card.title, card.name)}
-                          title={isItTvPage(card.title, card.name)}
-                          className={`max-w-[200px] object-contain`}
-                          draggable={false}
-                          loading="lazy"
-                        />
-                      </figure>
-                    </Reveal>
-                  )}
-
-                  {/* Logo Text */}
-                  {!titleLogo && (
-                    <Reveal>
-                      <span
-                        className={`before-content line-clamp-2 text-xl font-bold`}
-                        style={{ textWrap: `balance` }}
-                        data-before-content={isItTvPage(card.title, card.name)}
+            <div
+              className={`relative z-10 -mt-[90px] flex flex-col gap-2 p-3 pb-4`}
+            >
+              {/* Logo */}
+              <section id="Logo" className={`flex h-[90px] items-end`}>
+                {/* Logo Image */}
+                {titleLogo && (
+                  <Reveal className={`h-full`} delay={0.1}>
+                    <figure className={`h-full`}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w300${titleLogo.file_path}`}
+                        alt={isItTvPage(card.title, card.name)}
+                        title={isItTvPage(card.title, card.name)}
+                        className={`max-w-[250px] object-contain`}
+                        draggable={false}
+                        loading="lazy"
                       />
-                    </Reveal>
-                  )}
-                </section>
+                    </figure>
+                  </Reveal>
+                )}
 
-                {/* Info */}
-                <section className="flex flex-wrap items-center gap-0.5 text-xs font-medium">
-                  {/* Rating */}
-                  {card.vote_average > 0 && (
-                    <Reveal delay={0.1}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm">
-                        <IonIcon icon={star} className="" />
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={formatRating(card.vote_average)}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
+                {/* Logo Text */}
+                {!titleLogo && (
+                  <Reveal>
+                    <span
+                      className={`before-content line-clamp-2 text-start text-xl font-bold`}
+                      style={{ textWrap: `balance` }}
+                      data-before-content={isItTvPage(card.title, card.name)}
+                    />
+                  </Reveal>
+                )}
+              </section>
 
-                  {/* Runtime */}
-                  {!isTvPage && filmRuntime > 0 && (
-                    <Reveal delay={0.15}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={formatRuntime(filmRuntime)}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-
-                  {/* Seasons */}
-                  {isTvPage && filmDetails?.number_of_seasons > 0 && (
-                    <Reveal delay={0.2}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
-                            {
-                              text: `Season`,
-                              number: filmDetails.number_of_seasons,
-                            },
-                          )}`}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-
-                  {/* Genres */}
-                  {filmDetails?.genres.length > 0 && (
-                    <Reveal delay={0.25}>
-                      <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                        <span
-                          className="before-content !text-white"
-                          data-before-content={filmDetails?.genres[0]?.name}
-                        />
-                      </div>
-                    </Reveal>
-                  )}
-                </section>
-
-                {/* Overview */}
-                <section id="Overview">
-                  {card.overview && (
-                    <Reveal delay={0.1}>
+              {/* Info */}
+              <section className="flex flex-wrap items-center gap-0.5 text-sm font-medium">
+                {/* Rating */}
+                {card.vote_average > 0 && (
+                  <Reveal delay={0.1}>
+                    <Link
+                      href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${card.vote_average.toFixed(1)}..10`}
+                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    >
+                      <IonIcon icon={star} className="" />
                       <span
-                        className={`before-content line-clamp-3 text-sm font-medium text-gray-400`}
-                        data-before-content={card.overview}
+                        className="before-content !text-white"
+                        data-before-content={formatRating(card.vote_average)}
                       />
-                    </Reveal>
-                  )}
-                </section>
-              </div>
-            </>
-          )}
+                    </Link>
+                  </Reveal>
+                )}
+
+                {/* Runtime */}
+                {!isTvPage && filmRuntime > 0 && (
+                  <Reveal delay={0.15}>
+                    <Link
+                      href={`/search?with_runtime=${filmDetails?.runtime}..300`}
+                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    >
+                      <span
+                        className="before-content !text-white"
+                        data-before-content={formatRuntime(filmRuntime)}
+                      />
+                    </Link>
+                  </Reveal>
+                )}
+
+                {/* Seasons */}
+                {isTvPage && filmDetails?.number_of_seasons > 0 && (
+                  <Reveal delay={0.2}>
+                    <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
+                      <span
+                        className="before-content !text-white"
+                        data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
+                          {
+                            text: `Season`,
+                            number: filmDetails.number_of_seasons,
+                          },
+                        )}`}
+                      />
+                    </div>
+                  </Reveal>
+                )}
+
+                {/* Genres */}
+                {filmDetails?.genres.length > 0 && (
+                  <Reveal delay={0.25}>
+                    <Link
+                      href={
+                        !isTvPage
+                          ? `/search?with_genres=${filmDetails?.genres[0]?.id}`
+                          : `/tv/search?with_genres=${filmDetails?.genres[0]?.id}`
+                      }
+                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    >
+                      <span
+                        className="before-content !text-white"
+                        data-before-content={filmDetails?.genres[0]?.name}
+                      />
+                    </Link>
+                  </Reveal>
+                )}
+              </section>
+
+              {/* Overview */}
+              <section id="Overview">
+                {card.overview && (
+                  <Reveal delay={0.1}>
+                    <span
+                      className={`line-clamp-3 text-start text-sm font-medium text-gray-400`}
+                    >
+                      {card.overview}
+                    </span>
+                  </Reveal>
+                )}
+              </section>
+
+              {/* CTA */}
+              <section className={`flex items-center gap-1`}>
+                <Reveal delay={0.1} className={`flex-1`}>
+                  <Link
+                    href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
+                    className={`btn btn-primary w-full rounded-full`}
+                  >
+                    <span>Details</span>
+                  </Link>
+                </Reveal>
+
+                <Reveal delay={0.15}>
+                  <FavoriteButton
+                    swrKey={swrKey}
+                    film={card}
+                    favorite={accountStates?.favorite}
+                    withText={false}
+                    className={`!btn-square`}
+                  />
+                </Reveal>
+
+                <Reveal delay={0.2}>
+                  <WatchlistButton
+                    swrKey={swrKey}
+                    film={card}
+                    watchlist={accountStates?.watchlist}
+                    withText={false}
+                    className={`!btn-square`}
+                  />
+                </Reveal>
+              </section>
+            </div>
+          </>
         </m.div>
       )}
     </AnimatePresence>

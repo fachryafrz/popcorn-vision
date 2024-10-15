@@ -7,18 +7,18 @@ import { useHoverCard } from "@/zustand/hoverCard";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
-  const { setHoverCard, setPosition } = useHoverCard();
+  const { setHoverCard, setPosition, handleMouseOver } = useHoverCard();
 
   // Functions
-  const handleMouseOver = debounce((e, film) => {
-    setHoverCard(film);
-    setPosition(e.target.getBoundingClientRect());
-  }, 400);
-  const handleMouseLeave = () => {
-    setHoverCard(null);
-    setPosition(null);
-    handleMouseOver.clear();
-  };
+  // const handleMouseOver = debounce((e, film) => {
+  //   setHoverCard(film);
+  //   setPosition(e.target.getBoundingClientRect());
+  // }, 400);
+  // const handleMouseLeave = () => {
+  //   setHoverCard(null);
+  //   setPosition(null);
+  //   handleMouseOver.clear();
+  // };
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -30,10 +30,12 @@ export default function FilmCard({ film, isTvPage }) {
       id="FilmCard"
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
       onMouseEnter={(e) => handleMouseOver(e, film)}
-      onMouseLeave={handleMouseLeave}
+      // onMouseLeave={handleMouseLeave}
       prefetch={true}
       className={`relative`}
     >
+      <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
+
       <ImagePovi
         imgPath={
           film.poster_path &&
@@ -67,8 +69,6 @@ export default function FilmCard({ film, isTvPage }) {
           </div>
         )}
       </ImagePovi>
-
-      <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
     </Link>
   );
 }

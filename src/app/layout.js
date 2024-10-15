@@ -8,6 +8,7 @@ import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import HoverCard from "@/components/Modals/HoverCard";
+import Modal from "@/components/Modals";
 
 export const viewport = {
   width: "device-width",
@@ -127,7 +128,7 @@ export default async function RootLayout({ children }) {
           <main className={`mt-[66px] pb-8`}>{children}</main>
 
           {/* Modal */}
-          <HoverCard />
+          <Modal />
 
           {/* Footer */}
           <Footer />
