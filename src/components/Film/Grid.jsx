@@ -14,7 +14,7 @@ export default function FilmGrid({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
-  const isQueryParams = searchParams.get("query") ? true : false;
+  const isQueryParams = searchParams.get("query");
 
   const loadMoreRef = useRef(null);
 
@@ -25,7 +25,7 @@ export default function FilmGrid({
           fetchMoreFilms();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.5 }
     );
 
     if (loadMoreRef.current) {
