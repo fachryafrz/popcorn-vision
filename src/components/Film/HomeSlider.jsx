@@ -41,7 +41,7 @@ export default function HomeSlider({ films, genres, filmData }) {
   };
 
   return (
-    <section id="Home Slider" className={`relative pb-[2rem]`}>
+    <section id="Home Slider" className={`relative pb-4 lg:pb-8`}>
       <h2 className="sr-only">
         Highlighted {!isTvPage ? `Movies` : `TV Series`}
       </h2>

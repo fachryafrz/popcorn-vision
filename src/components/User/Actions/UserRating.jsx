@@ -7,8 +7,10 @@ import axios from "axios";
 import { trashOutline } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSWRConfig } from "swr";
 
 export default function UserRating({
+  swrKey,
   film,
   rating,
   url,
@@ -17,6 +19,7 @@ export default function UserRating({
   title,
 }) {
   const { user } = useAuth();
+  const { mutate } = useSWRConfig();
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -42,6 +45,8 @@ export default function UserRating({
       setIsLoading(false);
       setRatingState(rated);
       setHoverState(rated);
+
+      mutate(swrKey);
     } catch (error) {
       console.error("Error adding rating:", error);
       setIsLoading(false);

@@ -7,9 +7,17 @@ import { bookmark, bookmarkOutline } from "ionicons/icons";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useSWRConfig } from "swr";
 
-export default function WatchlistButton({ film, watchlist }) {
+export default function WatchlistButton({
+  swrKey,
+  film,
+  watchlist,
+  withText = true,
+  className,
+}) {
   const { user } = useAuth();
+  const { mutate } = useSWRConfig()
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -31,6 +39,8 @@ export default function WatchlistButton({ film, watchlist }) {
       });
       setIsLoading(false);
       setIsAdded(watchlist);
+
+      mutate(swrKey)
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       setIsLoading(false);
@@ -51,7 +61,7 @@ export default function WatchlistButton({ film, watchlist }) {
           document.getElementById("loginAlert").showModal();
         }
       }}
-      className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
+      className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm ${className}`}
     >
       {isLoading ? (
         <span class="loading loading-spinner w-[20px]"></span>
@@ -62,7 +72,7 @@ export default function WatchlistButton({ film, watchlist }) {
         />
       )}
       {/* <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span> */}
-      <span>Watchlist</span>
+      {withText && <span>Watchlist</span>}
     </button>
   );
 }
