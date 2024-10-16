@@ -115,18 +115,13 @@ export function EpisodeModal({ film }) {
     // document.getElementById(`episodeModal`).close();
   };
 
+  const swrKey = `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
-  const { data: accountStates } = useSWR(
-    user
-      ? `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`
-      : null,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 
   useEffect(() => {
     if (!episode) return;
@@ -240,6 +235,7 @@ export function EpisodeModal({ film }) {
                 {isAired && (
                   <section id={`Episode Rating`} className={`max-w-fit`}>
                     <UserRating
+                      swrKey={swrKey}
                       film={film}
                       url={`/api/tv/season/episode/rating`}
                       season={episode.season_number}
@@ -381,14 +377,14 @@ function EpisodeModalSkeleton() {
           className={`relative z-10 -mt-[75px] flex flex-col gap-6 p-4 sm:p-8 [&_*]:animate-pulse [&_*]:bg-gray-400 [&_*]:bg-opacity-20`}
         >
           {/* Title */}
-          <div className={`mx-auto h-10 w-40 rounded-md`}></div>
+          <section className={`mx-auto h-10 w-40 rounded-md`}></section>
 
           {/* Info */}
-          <div className={`flex flex-col gap-2 !bg-opacity-0`}>
+          <section className={`flex flex-col gap-2 !bg-opacity-0`}>
             <div className={`h-6 w-40 rounded-md`}></div>
             <div className={`h-6 w-40 rounded-md`}></div>
             <div className={`h-6 w-40 rounded-md`}></div>
-          </div>
+          </section>
 
           {/* Overview */}
           <section className={`flex flex-col gap-2 !bg-opacity-0`}>
@@ -400,6 +396,35 @@ function EpisodeModalSkeleton() {
               <div className={`h-6 w-full rounded-md`}></div>
               <div className={`h-6 w-full rounded-md`}></div>
               <div className={`h-6 w-[90%] rounded-md`}></div>
+            </div>
+          </section>
+
+          {/* Guest Stars */}
+          <section className={`flex flex-col gap-2 !bg-opacity-0`}>
+            {/* Title */}
+            <div className={`h-7 w-[88px] rounded-md`}></div>
+
+            <div className={`grid grid-cols-2 gap-2 !bg-opacity-0`}>
+              {/* Card */}
+              {[...Array(6)].map((_, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-2 !bg-opacity-0`}
+                  >
+                    {/* Profile Image */}
+                    <div
+                      className={`aspect-square w-[50px] rounded-full`}
+                    ></div>
+
+                    {/* Name & Role */}
+                    <div className={`flex-1 !bg-opacity-0`}>
+                      <div className={`mb-1 h-5 w-32 rounded-md`}></div>
+                      <div className={`h-4 w-40 rounded-md`}></div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </section>
         </div>

@@ -72,6 +72,8 @@ export default function UserRating({
       setIsLoading(false);
       setRatingState(rated);
       setHoverState(rated);
+
+      mutate(swrKey);
     } catch (error) {
       console.error("Error deleting rating:", error);
       // Handle errors appropriately (e.g., display error message to user)
