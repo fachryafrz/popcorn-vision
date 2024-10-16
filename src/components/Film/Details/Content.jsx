@@ -80,10 +80,8 @@ export default function FilmContent({
         </section>
 
         {/* Misc */}
-        <section className={`col-span-full fixed`}>
+        <section className={`fixed col-span-full`}>
           <ShareModal />
-
-          {!user && <LoginAlert />}
 
           {isTvPage && seasonParams && episodeParams && (
             <EpisodeModal film={film} />
