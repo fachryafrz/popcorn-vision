@@ -7,18 +7,7 @@ import { useHoverCard } from "@/zustand/hoverCard";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
-  const { setHoverCard, setPosition, handleMouseOver } = useHoverCard();
-
-  // Functions
-  // const handleMouseOver = debounce((e, film) => {
-  //   setHoverCard(film);
-  //   setPosition(e.target.getBoundingClientRect());
-  // }, 400);
-  // const handleMouseLeave = () => {
-  //   setHoverCard(null);
-  //   setPosition(null);
-  //   handleMouseOver.clear();
-  // };
+  const { handleMouseOver } = useHoverCard();
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -27,7 +16,7 @@ export default function FilmCard({ film, isTvPage }) {
 
   return (
     <Link
-      id="FilmCard"
+      id="film-card"
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
       onMouseEnter={(e) => handleMouseOver(e, film)}
       // onMouseLeave={handleMouseLeave}
