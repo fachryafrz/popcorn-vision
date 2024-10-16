@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
@@ -28,30 +28,15 @@ export default function HoverCard() {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
+  // State
+  const [sameWidthAsWindow, setSameWidthAsWindow] = useState(false);
+
   // Ref
   const filmPreviewRef = useRef();
 
   // Global State
   const { card, setHoverCard, position, setPosition, handleMouseLeave } =
     useHoverCard();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setHoverCard(null);
-      setPosition(null);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    setHoverCard(null);
-    setPosition(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -75,7 +60,7 @@ export default function HoverCard() {
   };
 
   const { data } = useSWR(
-    card && position && window.innerWidth >= 1536
+    card && position && window.innerWidth >= 1280
       ? [card.id, isItTvPage(`movie`, `tv`)]
       : null,
     fetchFilmDetails,
@@ -100,6 +85,28 @@ export default function HoverCard() {
     },
   );
 
+  useEffect(() => {
+    const handleScroll = () => {
+      handleMouseLeave();
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    handleMouseLeave();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  useEffect(() => {
+    setSameWidthAsWindow(
+      Number((position?.right + 38).toFixed(0)) >= window.innerWidth,
+    );
+  }, [position]);
+
   return (
     <AnimatePresence>
       {data && (
@@ -114,12 +121,12 @@ export default function HoverCard() {
           style={{
             top: position.top + position.height / 2 - 200,
             left:
-              position.left > 17
-                ? position.right < 1470
+              Number(position.left.toFixed(0)) > 16
+                ? !sameWidthAsWindow
                   ? position.left + position.width / 2 - 150
                   : `unset`
                 : 16,
-            right: position.right < 1470 ? `unset` : 16,
+            right: !sameWidthAsWindow ? `unset` : 16,
           }}
         >
           <>
@@ -149,19 +156,20 @@ export default function HoverCard() {
               </ImagePovi>
             </Link>
 
-            <div
-              className={`relative z-10 -mt-[90px] flex flex-col gap-2 p-3 pb-4`}
-            >
+            <div className={`relative z-10 flex flex-col gap-2 p-3 pb-4`}>
               {/* Logo */}
-              <section id="Logo" className={`flex h-[90px] items-end`}>
+              <section id="Logo" className={`flex items-end`}>
                 {/* Logo Image */}
                 {titleLogo && (
-                  <Reveal className={`h-full`} delay={0.1}>
+                  <Reveal
+                    className={`pointer-events-none -mt-20 h-20`}
+                    delay={0.1}
+                  >
                     <figure className={`h-full`}>
                       <img
                         src={`https://image.tmdb.org/t/p/w300${titleLogo.file_path}`}
                         alt={isItTvPage(card.title, card.name)}
-                        title={isItTvPage(card.title, card.name)}
+                        // title={isItTvPage(card.title, card.name)}
                         className={`max-w-[250px] object-contain`}
                         draggable={false}
                         loading="lazy"
@@ -172,12 +180,12 @@ export default function HoverCard() {
 
                 {/* Logo Text */}
                 {!titleLogo && (
-                  <Reveal>
+                  <Reveal className={`-mt-20`}>
                     <span
-                      className={`before-content line-clamp-2 text-start text-xl font-bold`}
-                      style={{ textWrap: `balance` }}
-                      data-before-content={isItTvPage(card.title, card.name)}
-                    />
+                      className={`line-clamp-2 text-pretty text-start text-xl font-bold`}
+                    >
+                      {card.title ?? card.name}
+                    </span>
                   </Reveal>
                 )}
               </section>
