@@ -404,7 +404,7 @@ function EpisodeModalSkeleton() {
             {/* Title */}
             <div className={`h-7 w-[88px] rounded-md`}></div>
 
-            <div className={`grid grid-cols-2 gap-2 !bg-opacity-0`}>
+            <div className={`grid gap-2 !bg-opacity-0 sm:grid-cols-2`}>
               {/* Card */}
               {[...Array(6)].map((_, index) => {
                 return (
