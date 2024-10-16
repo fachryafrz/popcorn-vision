@@ -50,6 +50,8 @@ export default function FilmInfo({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
+  const director = credits.crew.find((person) => person.job === "Director");
+
   const nextEps = film.next_episode_to_air;
   const lastEps = film.last_episode_to_air;
 
@@ -270,28 +272,28 @@ export default function FilmInfo({
           )}
 
           {/* Film Director / Creator */}
-          {!isTvPage ? (
-            <p className="sr-only">
-              {`Directed by: ${credits.crew.find((person) => person.job === "Director").name}`}
-            </p>
+          {!isTvPage && director ? (
+            <p className="sr-only">{`Directed by: ${director.name}`}</p>
           ) : (
-            <>
-              <p className="sr-only">Created by:</p>
-              <ul className="sr-only">
-                {film.created_by.map((person) => {
-                  return (
-                    <li key={person.id}>
-                      <Link
-                        href={`${pathname}/?person=${person.id}`}
-                        prefetch={true}
-                      >
-                        <p>{person.name}</p>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </>
+            film.created_by?.length > 0 && (
+              <>
+                <p className="sr-only">Created by:</p>
+                <ul className="sr-only">
+                  {film.created_by.map((person) => {
+                    return (
+                      <li key={person.id}>
+                        <Link
+                          href={`${pathname}/?person=${person.id}`}
+                          prefetch={true}
+                        >
+                          <p>{person.name}</p>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </>
+            )
           )}
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
