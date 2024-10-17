@@ -20,6 +20,7 @@ import FavoriteButton from "../User/Actions/FavoriteButton";
 import axios from "axios";
 import { useAuth } from "@/hooks/auth";
 import WatchlistButton from "../User/Actions/WatchlistButton";
+import moment from "moment";
 
 export default function HoverCard() {
   const { user } = useAuth();
@@ -37,6 +38,8 @@ export default function HoverCard() {
   // Global State
   const { card, setHoverCard, position, setPosition, handleMouseLeave } =
     useHoverCard();
+
+  const isUpcoming = moment(card?.release_date).isAfter(moment());
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -284,15 +287,17 @@ export default function HoverCard() {
                   </Link>
                 </Reveal>
 
-                <Reveal delay={0.15}>
-                  <FavoriteButton
-                    swrKey={swrKey}
-                    film={card}
-                    favorite={accountStates?.favorite}
-                    withText={false}
-                    className={`!btn-square`}
-                  />
-                </Reveal>
+                {!isUpcoming && (
+                  <Reveal delay={0.15}>
+                    <FavoriteButton
+                      swrKey={swrKey}
+                      film={card}
+                      favorite={accountStates?.favorite}
+                      withText={false}
+                      className={`!btn-square`}
+                    />
+                  </Reveal>
+                )}
 
                 <Reveal delay={0.2}>
                   <WatchlistButton

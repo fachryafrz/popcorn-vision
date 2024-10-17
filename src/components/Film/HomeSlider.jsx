@@ -25,6 +25,7 @@ import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
+import { POPCORN } from "@/lib/constants";
 
 export default function HomeSlider({ films, genres, filmData }) {
   const pathname = usePathname();
@@ -150,14 +151,12 @@ export default function HomeSlider({ films, genres, filmData }) {
                 ></figure> */}
 
                 {/* NOTE: This is film backdrop with logo */}
-                <Reveal>
-                  <SliderThumbs
-                    film={film}
-                    index={i}
-                    isTvPage={isTvPage}
-                    filmData={filmData}
-                  />
-                </Reveal>
+                <SliderThumbs
+                  film={film}
+                  index={i}
+                  isTvPage={isTvPage}
+                  filmData={filmData}
+                />
               </SwiperSlide>
             );
           })}
@@ -312,16 +311,29 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
   // }, [fetchBackdrop]);
 
   return (
-    filmBackdrop && (
-      <Reveal delay={0.1 * index}>
+    <Reveal delay={0.1 * index}>
+      {filmBackdrop ? (
         <figure
           className={`aspect-video rounded-lg`}
           style={{
             backgroundImage: `url(https://image.tmdb.org/t/p/w185${filmBackdrop})`,
             backgroundSize: `cover`,
+            backgroundPosition: `center`,
+            backgroundRepeat: `no-repeat`,
           }}
         ></figure>
-      </Reveal>
-    )
+      ) : (
+        <figure
+          className={`aspect-video rounded-lg`}
+          style={{
+            backgroundImage: `url(${POPCORN})`,
+            backgroundSize: `contain`,
+            backgroundPosition: `center`,
+            backgroundRepeat: `no-repeat`,
+            backgroundColor: "#131720",
+          }}
+        ></figure>
+      )}
+    </Reveal>
   );
 }
