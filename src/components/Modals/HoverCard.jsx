@@ -13,7 +13,7 @@ import { formatRating } from "@/lib/formatRating";
 import useSWR from "swr";
 import { useHoverCard } from "@/zustand/hoverCard";
 import ImagePovi from "../Film/ImagePovi";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import slug from "slug";
 import FavoriteButton from "../User/Actions/FavoriteButton";
@@ -27,6 +27,7 @@ export default function HoverCard() {
 
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams()
   const isTvPage = pathname.startsWith("/tv");
 
   // State
@@ -102,7 +103,7 @@ export default function HoverCard() {
   useEffect(() => {
     handleMouseLeave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   useEffect(() => {
     setSameWidthAsWindow(
