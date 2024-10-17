@@ -7,7 +7,6 @@ import { CookiesProvider } from "next-client-cookies/server";
 import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
-import HoverCard from "@/components/Modals/HoverCard";
 import Modal from "@/components/Modals";
 
 export const viewport = {
