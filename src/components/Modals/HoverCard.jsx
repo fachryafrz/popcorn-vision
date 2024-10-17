@@ -13,7 +13,7 @@ import { formatRating } from "@/lib/formatRating";
 import useSWR from "swr";
 import { useHoverCard } from "@/zustand/hoverCard";
 import ImagePovi from "../Film/ImagePovi";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import slug from "slug";
 import FavoriteButton from "../User/Actions/FavoriteButton";
@@ -25,10 +25,8 @@ import moment from "moment";
 export default function HoverCard() {
   const { user } = useAuth();
 
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()
-  const isTvPage = pathname.startsWith("/tv");
 
   // State
   const [sameWidthAsWindow, setSameWidthAsWindow] = useState(false);
@@ -40,6 +38,7 @@ export default function HoverCard() {
   const { card, setHoverCard, position, setPosition, handleMouseLeave } =
     useHoverCard();
 
+  const isTvPage = card?.media_type === "tv" || pathname.startsWith("/tv");
   const isUpcoming = moment(card?.release_date).isAfter(moment());
 
   const isItTvPage = (movie, tv) => {
@@ -88,6 +87,8 @@ export default function HoverCard() {
       revalidateOnReconnect: false,
     },
   );
+
+  useEffect(() =>{console.log(card)},[card])
 
   useEffect(() => {
     const handleScroll = () => {
