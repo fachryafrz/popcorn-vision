@@ -50,13 +50,13 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           </Reveal>
         )}
 
-        {!isTvPage ? (
-          film.runtime && (
-            <Reveal delay={0.2}>
-              <FilmRuntime film={film} />
-            </Reveal>
-          )
-        ) : (
+        {!isTvPage && !!film.runtime && (
+          <Reveal delay={0.2}>
+            <FilmRuntime film={film} />
+          </Reveal>
+        )}
+
+        {isTvPage && film.number_of_seasons && (
           <Reveal delay={0.2}>
             <FilmSeason film={film} />
           </Reveal>

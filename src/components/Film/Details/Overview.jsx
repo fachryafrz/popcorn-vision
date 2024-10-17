@@ -55,9 +55,9 @@ export default function FilmOverview({
       </div>
 
       {/* Collection */}
-      {isTvPage || film.belongs_to_collection !== null ? (
+      {(isTvPage || film.belongs_to_collection) && (
         <FilmCollection film={film} collection={collection} />
-      ) : null}
+      )}
 
       {/* Reviews */}
       {reviews.results.length > 0 && (
