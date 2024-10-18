@@ -62,7 +62,7 @@ export async function getFilm({ id, type, path, params }) {
 
 export async function getTrending({ num, type }) {
   const res = await fetchData({
-    endpoint: `/trending/${type}/day`,
+    endpoint: `/trending/${type}/week`,
   });
 
   if (num) {
