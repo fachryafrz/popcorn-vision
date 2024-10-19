@@ -125,10 +125,10 @@ export default function HoverCard() {
             top:
               position.top < 80
                 ? 8
-                : position.top > 300
+                : position.bottom > 750
                   ? `unset`
                   : position.top + position.height / 2 - 200,
-            bottom: position.top > 300 ? 8 : `unset`,
+            bottom: position.bottom > 750 ? 8 : `unset`,
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
