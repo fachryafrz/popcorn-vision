@@ -26,7 +26,7 @@ export default function HoverCard() {
   const { user } = useAuth();
 
   const pathname = usePathname();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   // State
   const [sameWidthAsWindow, setSameWidthAsWindow] = useState(false);
@@ -87,8 +87,6 @@ export default function HoverCard() {
       revalidateOnReconnect: false,
     },
   );
-
-  useEffect(() =>{console.log(card)},[card])
 
   useEffect(() => {
     const handleScroll = () => {
