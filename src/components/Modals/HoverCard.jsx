@@ -122,7 +122,13 @@ export default function HoverCard() {
           onMouseLeave={handleMouseLeave}
           className={`pointer-events-auto fixed z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
           style={{
-            top: position.top + position.height / 2 - 200,
+            top:
+              position.top < 80
+                ? 8
+                : position.top > 300
+                  ? `unset`
+                  : position.top + position.height / 2 - 200,
+            bottom: position.top > 300 ? 8 : `unset`,
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
