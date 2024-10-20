@@ -1,17 +1,14 @@
 "use client";
 import { IonIcon } from "@ionic/react";
 import React, { useState } from "react";
-import {
-  chevronDownCircleOutline,
-  chevronUpCircleOutline,
-} from "ionicons/icons";
+import { chevronDownOutline, chevronUpOutline } from "ionicons/icons";
 import Person from "../../Person/Person";
 import Reveal from "@/components/Layout/Reveal";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function CastsList({ credits }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   const [showAllActors, setShowAllActors] = useState(false);
   const [numActors, setNumActors] = useState(5);
@@ -50,7 +47,10 @@ export default function CastsList({ credits }) {
                     delay={showAllActors ? 0 : 0.1 * i}
                     className={`[&_button]:w-full`}
                   >
-                    <Link href={`${pathname}/?person=${actor.id}`} prefetch={true}>
+                    <Link
+                      href={`${pathname}/?person=${actor.id}`}
+                      prefetch={true}
+                    >
                       <h3 className="sr-only">
                         {`${actor.name} (${actor.character})`}
                       </h3>
@@ -83,11 +83,7 @@ export default function CastsList({ credits }) {
             >
               {showAllActors ? "Show Less" : "Show All"}
               <IonIcon
-                icon={
-                  showAllActors
-                    ? chevronUpCircleOutline
-                    : chevronDownCircleOutline
-                }
+                icon={showAllActors ? chevronUpOutline : chevronDownOutline}
                 className="text-[1.25rem]"
               />
             </button>{" "}
