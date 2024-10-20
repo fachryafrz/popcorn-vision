@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -27,16 +27,6 @@ export default function ReviewCard({ review }) {
     imgUrlAPI && imgUrlAPI.startsWith("/http")
       ? imgUrlAPI.replace(/^\//, "")
       : `https://image.tmdb.org/t/p/w500${imgUrlAPI}`;
-
-  // Toggle the "Read More" state
-  const handleReadMore = () => {
-    setReadMore(!readMore);
-  };
-
-  useEffect(() => {
-    // Reset the "Read More" state when the review changes
-    setReadMore(false);
-  }, [review]);
 
   return (
     <div className="-mx-4 flex flex-col gap-2 bg-gray-400 bg-opacity-10 p-4 md:mx-0 md:rounded-xl">
@@ -79,12 +69,10 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div
-        className={`${words.length > maxLength ? `flex` : `hidden`} ${
-          readMore ? `sticky bottom-0` : ``
-        } items-center`}
+        className={`${words.length > maxLength ? `flex` : `hidden`} items-center`}
       >
         <button
-          onClick={handleReadMore}
+          onClick={() => setReadMore(!readMore)}
           className={`-mt-2 flex max-w-fit pr-1 pt-1 text-primary-blue hocus:font-medium`}
         >
           {readMore ? `Show less` : `Read more`}

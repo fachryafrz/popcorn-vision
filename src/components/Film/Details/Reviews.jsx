@@ -5,23 +5,15 @@ import { getMoreReviews } from "@/lib/fetch";
 import { isPlural } from "@/lib/isPlural";
 
 export default function FilmReviews({ reviews, film }) {
-  const totalReviewPages = reviews.total_pages;
+  const { total_pages } = reviews;
   let [currentPage, setCurrentPage] = useState(1);
   const [moreReviews, setMoreReviews] = useState(reviews.results);
   const [showAllReviews, setShowAllReviews] = useState(false);
-  const numReviews = 5;
+  const [isLoading, setIsLoading] = useState(false);
+  const NUM_REVIEWS = 5;
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
-
-  const handleShowAllReviews = () => {
-    setShowAllReviews(true);
-  };
-
-  // useEffect(() => {
-  //   setCurrentPage(1);
-  //   setShowAllReviews(false);
-  // }, [film]);
 
   return (
     <div id="reviews" className="relative flex flex-col gap-2">
@@ -35,7 +27,7 @@ export default function FilmReviews({ reviews, film }) {
       </div>
       <ul className="flex flex-col gap-2">
         {moreReviews
-          .slice(0, showAllReviews ? moreReviews.length : numReviews)
+          .slice(0, showAllReviews ? moreReviews.length : NUM_REVIEWS)
           .map((review) => {
             return (
               <li key={review.id}>
@@ -45,14 +37,21 @@ export default function FilmReviews({ reviews, film }) {
           })}
       </ul>
 
-      {totalReviewPages > 1 &&
+      {isLoading && (
+        <div className={`flex justify-center h-12`}>
+          <span className={`loading loading-spinner`}></span>
+        </div>
+      )}
+
+      {!isLoading &&
+        total_pages > 1 &&
         showAllReviews &&
-        currentPage !== totalReviewPages && (
-          <div
-            className={`flex items-center before:h-[1px] before:w-full before:bg-white before:opacity-10 after:h-[1px] after:w-full after:bg-white after:opacity-10`}
-          >
+        currentPage !== total_pages && (
+          <div className={`flex items-center justify-center`}>
             <button
-              onClick={() =>
+              onClick={() => {
+                setIsLoading(true);
+
                 getMoreReviews({
                   film,
                   type: !isTvPage ? `movie` : `tv`,
@@ -63,8 +62,9 @@ export default function FilmReviews({ reviews, film }) {
                     ...prevReviews,
                     ...data.results,
                   ]);
-                })
-              }
+                  setIsLoading(false);
+                });
+              }}
               className="btn btn-ghost w-[25%] min-w-fit rounded-full border-none bg-white bg-opacity-5 px-12 text-primary-blue"
             >
               Load more
@@ -73,13 +73,15 @@ export default function FilmReviews({ reviews, film }) {
         )}
 
       {/* View all reviews */}
-      {moreReviews.length > numReviews && (
+      {moreReviews.length > NUM_REVIEWS && (
         <div
           className={`absolute inset-x-0 bottom-0 -mx-4 h-[200px] items-end justify-center bg-gradient-to-t from-base-100 text-primary-blue md:mx-0 ${
             showAllReviews ? `hidden` : `flex`
           }`}
         >
-          <button onClick={handleShowAllReviews}>View all reviews</button>
+          <button onClick={() => setShowAllReviews(true)}>
+            View all reviews
+          </button>
         </div>
       )}
     </div>
