@@ -30,6 +30,7 @@ export default function HoverCard() {
 
   // State
   const [sameWidthAsWindow, setSameWidthAsWindow] = useState(false);
+  const [sameHeightAsWindow, setSameHeightAsWindow] = useState(false);
 
   // Ref
   const filmPreviewRef = useRef();
@@ -106,7 +107,11 @@ export default function HoverCard() {
 
   useEffect(() => {
     setSameWidthAsWindow(
-      Number((position?.right + 38).toFixed(0)) >= window.innerWidth,
+      Number((position?.right + 40).toFixed(0)) >= window.innerWidth,
+    );
+
+    setSameHeightAsWindow(
+      Number((position?.bottom + 80).toFixed(0)) >= window.innerHeight,
     );
   }, [position]);
 
@@ -125,10 +130,10 @@ export default function HoverCard() {
             top:
               position.top < 80
                 ? 8
-                : position.bottom > 750
+                : sameHeightAsWindow
                   ? `unset`
                   : position.top + position.height / 2 - 200,
-            bottom: position.bottom > 750 ? 8 : `unset`,
+            bottom: sameHeightAsWindow ? 8 : `unset`,
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
