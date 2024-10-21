@@ -16,7 +16,7 @@ export default function ProductionCompany({ item, i, isTvPage }) {
         <Reveal delay={0.1 * i}>
           {item.logo_path ? (
             <div
-              class="tooltip tooltip-bottom before:!max-w-[125px] before:!rounded-2xl before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur md:before:!max-w-none"
+              class="tooltip tooltip-bottom before:!hidden before:!rounded-2xl before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur md:before:!inline-block"
               data-tip={item.name}
             >
               <figure

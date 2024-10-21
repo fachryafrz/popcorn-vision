@@ -61,7 +61,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                 className={`flex`}
               >
                 <div
-                  class="tooltip tooltip-bottom before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden"
+                  class="tooltip tooltip-bottom before:!hidden before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden md:before:!inline-block"
                   data-tip={`${item.provider_name} (${item.type})`}
                 >
                   <Reveal delay={i > 0 ? 0.1 * i : 0}>
