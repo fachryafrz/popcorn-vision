@@ -28,7 +28,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
 
   return (
     <div
-      className={`flex h-full flex-col items-center justify-end gap-2 text-white md:max-w-[50%] md:items-start lg:max-w-[40%] lg:gap-2 [&_*]:z-10 ${className}`}
+      className={`flex h-full flex-col items-center justify-end gap-2 text-white md:max-w-[50%] md:items-start lg:max-w-[40%] lg:gap-2 [&_*]:z-10 ${className ? className : ``}`}
     >
       <TitleLogo
         film={film}

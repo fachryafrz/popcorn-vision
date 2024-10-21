@@ -13,13 +13,13 @@ export default function TitleLogo({ film, images, setLoading }) {
   const title = !isTvPage ? film.title : film.name;
 
   return titleLogo ? (
-    <Reveal delay={0.1} className={`w-full`}>
-      <figure className="mb-4 flex justify-center md:justify-start lg:max-w-[75%]">
+    <Reveal delay={0.1} className={`w-fit`}>
+      <figure className="mb-4 flex justify-center md:justify-start">
         <img
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
           alt={title}
           title={title}
-          className=" max-h-[180px] max-w-fit bg-contain object-contain"
+          className=" max-h-[180px] bg-contain object-contain"
           draggable={false}
           loading="lazy"
         />
