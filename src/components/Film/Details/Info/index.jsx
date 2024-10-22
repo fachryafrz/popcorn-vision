@@ -154,7 +154,7 @@ export default function FilmInfo({
 
       {filmRuntime ? (
         <p className="sr-only">
-          {`Runtime: ${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 && `(${formatRuntime(filmRuntime)})`}`}
+          {`Runtime: ${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
         </p>
       ) : (
         ""
@@ -209,8 +209,8 @@ export default function FilmInfo({
             film.number_of_episodes > 0 && (
               <section id={`TV Series Chapter`}>
                 <Reveal>
-                  <div className={`flex items-center gap-1`}>
-                    <IonIcon icon={tvOutline} />
+                  <div className={`flex items-start gap-1`}>
+                    <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
 
                     <span aria-hidden>
                       {`${film.number_of_seasons} ${isPlural({
@@ -230,12 +230,12 @@ export default function FilmInfo({
           {filmRuntime > 0 && (
             <section id={`Movie Runtime`}>
               <Reveal>
-                <div className={`flex items-center gap-1`}>
-                  <IonIcon icon={timeOutline} />
+                <div className={`flex items-start gap-1`}>
+                  <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
                   <time>
                     <span
                       aria-hidden
-                    >{`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 && `(${formatRuntime(filmRuntime)})`}`}</span>
+                    >{`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}</span>
                   </time>
                 </div>
               </Reveal>
