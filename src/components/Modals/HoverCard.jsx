@@ -39,7 +39,7 @@ export default function HoverCard() {
   const { card, setHoverCard, position, setPosition, handleMouseLeave } =
     useHoverCard();
 
-  const isTvPage = card?.media_type === "tv" || pathname.startsWith("/tv");
+  const isTvPage = card?.media_type === "tv" || !card?.title;
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;

@@ -34,7 +34,7 @@ export default function FilmCard({ film, isTvPage }) {
       >
         {film.vote_average > 0 && (
           <div
-            className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
+            className={`pointer-events-none absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
           >
             <div
               className={`radial-progress text-sm font-semibold ${
