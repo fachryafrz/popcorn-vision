@@ -40,7 +40,6 @@ export default function HoverCard() {
     useHoverCard();
 
   const isTvPage = card?.media_type === "tv" || pathname.startsWith("/tv");
-  const isUpcoming = moment(card?.release_date).isAfter(moment());
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -76,6 +75,10 @@ export default function HoverCard() {
   );
 
   const { titleLogo, filmDetails, releaseDate, filmRuntime } = data || {};
+
+  const isUpcoming = moment(
+    filmDetails?.release_date ?? filmDetails?.first_air_date,
+  ).isAfter(moment());
 
   const swrKey = `/api/account_states?id=${card?.id}&type=${!isTvPage ? "movie" : "tv"}`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
