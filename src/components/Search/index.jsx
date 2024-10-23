@@ -88,7 +88,7 @@ export default function Search({
 
   const totalSearchResults = data?.total_results;
   const totalSearchPages = data?.total_pages;
-  const currentSearchPage = data?.page || 1;
+  const currentSearchPage = data?.page || 0;
 
   // Handle not available
   const handleNotAvailable = () => {
@@ -206,20 +206,18 @@ export default function Search({
         {!isTvPage ? `Search Movies` : `Search TV Series`}
       </h1>
 
-      <Suspense>
-        <Filters
-          type={type}
-          inputStyles={inputStyles}
-          genresData={genresData}
-          isFilterActive={isFilterActive}
-          setIsFilterActive={setIsFilterActive}
-          minYear={minYear}
-          maxYear={maxYear}
-          languagesData={languagesData}
-          handleNotAvailable={handleNotAvailable}
-          handleClearNotAvailable={handleClearNotAvailable}
-        />
-      </Suspense>
+      <Filters
+        type={type}
+        inputStyles={inputStyles}
+        genresData={genresData}
+        isFilterActive={isFilterActive}
+        setIsFilterActive={setIsFilterActive}
+        minYear={minYear}
+        maxYear={maxYear}
+        languagesData={languagesData}
+        handleNotAvailable={handleNotAvailable}
+        handleClearNotAvailable={handleClearNotAvailable}
+      />
 
       <div className={`flex w-full flex-col gap-2 p-4 @container lg:pr-0`}>
         {/* Options */}
@@ -233,7 +231,8 @@ export default function Search({
 
           {/* Clear filters */}
           {isThereAnyFilter > 0 && (
-            <Suspense>
+            <>
+              {/* <Suspense> */}
               <div
                 className={`flex min-w-fit flex-row-reverse flex-wrap items-center gap-2 lg:h-[42px]`}
               >
@@ -247,7 +246,8 @@ export default function Search({
                   </span>
                 </button>
               </div>
-            </Suspense>
+              {/* </Suspense> */}
+            </>
           )}
 
           <div
@@ -286,40 +286,21 @@ export default function Search({
           </div>
         </section>
 
-        {loading && (
-          <>
-            {/* Loading films */}
-            <section
-              className={`grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7`}
-            >
-              {[...Array(20).keys()].map((a) => (
-                <span
-                  key={a}
-                  className="aspect-poster animate-pulse rounded-xl bg-gray-400 bg-opacity-20"
-                ></span>
-              ))}
-            </section>
-          </>
-        )}
+        <section>
+          <FilmGrid
+            films={films}
+            fetchMoreFilms={fetchMoreFilms}
+            currentSearchPage={currentSearchPage}
+            totalSearchPages={totalSearchPages}
+            loading={loading}
+          />
+        </section>
 
-        {!loading && films?.length > 0 && (
-          <section>
-            <FilmGrid
-              films={films}
-              fetchMoreFilms={fetchMoreFilms}
-              currentSearchPage={currentSearchPage}
-              totalSearchPages={totalSearchPages}
-            />
-          </section>
-        )}
-
+        {/* No film */}
         {!loading && films?.length === 0 && (
-          <>
-            {/* No film */}
-            <section>
-              <span>No film found</span>
-            </section>
-          </>
+          <section>
+            <span>No film found</span>
+          </section>
         )}
       </div>
 

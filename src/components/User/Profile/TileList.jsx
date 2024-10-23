@@ -1,6 +1,7 @@
 "use client";
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
+import SkeletonCollection from "@/components/Skeleton/Collection";
 import { TMDB_SESSION_ID } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
@@ -161,17 +162,12 @@ export default function TileList({
           </li>
         )}
 
-        {totalSearchPages > currentSearchPage && (
-          <li className={`mt-2 text-center`}>
-            <button
-              ref={loadMoreBtn}
-              onClick={fetchMoreFilms}
-              className="pointer-events-none aspect-square w-[30px] text-white"
-            >
-              <span className="loading loading-spinner loading-md"></span>
-            </button>
-          </li>
-        )}
+        {totalSearchPages > currentSearchPage &&
+          [...Array(3).keys()].map((_, i) => (
+            <li key={i} ref={i === 0 ? loadMoreBtn : null}>
+              <SkeletonCollection />
+            </li>
+          ))}
       </ul>
     </section>
   );

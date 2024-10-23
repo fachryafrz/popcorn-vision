@@ -3,6 +3,7 @@ import ReviewCard from "./ReviewCard";
 import { usePathname } from "next/navigation";
 import { getMoreReviews } from "@/lib/fetch";
 import { isPlural } from "@/lib/isPlural";
+import SkeletonReviewCard from "@/components/Skeleton/ReviewCard";
 
 export default function FilmReviews({ reviews, film }) {
   const { total_pages } = reviews;
@@ -37,11 +38,8 @@ export default function FilmReviews({ reviews, film }) {
           })}
       </ul>
 
-      {isLoading && (
-        <div className={`flex justify-center h-12`}>
-          <span className={`loading loading-spinner`}></span>
-        </div>
-      )}
+      {isLoading &&
+        [...Array(3).keys()].map((_, i) => <SkeletonReviewCard key={i} />)}
 
       {!isLoading &&
         total_pages > 1 &&
