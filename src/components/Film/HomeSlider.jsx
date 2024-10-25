@@ -224,22 +224,46 @@ function HomeFilm({
         <Reveal y={0} className={`h-full md:hidden`}>
           <ImagePovi
             imgPath={
-              filmPoster && `https://image.tmdb.org/t/p/w780${filmPoster}`
+              filmPoster && `https://image.tmdb.org/t/p/w300${filmPoster}`
             }
             position={`top`}
             className={`h-full`}
-          />
+          >
+            {filmPoster && (
+              <figure
+                className={`h-full bg-base-100`}
+                style={{
+                  backgroundImage: `url(https://image.tmdb.org/t/p/w1280${filmPoster})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "top",
+                  backgroundRepeat: "no-repeat",
+                }}
+              ></figure>
+            )}
+          </ImagePovi>
         </Reveal>
 
         {/* Backdrop */}
         <Reveal y={0} className={`hidden h-full md:block`}>
           <ImagePovi
             imgPath={
-              filmBackdrop && `https://image.tmdb.org/t/p/w1280${filmBackdrop}`
+              filmBackdrop && `https://image.tmdb.org/t/p/w300${filmBackdrop}`
             }
             position={`top`}
             className={`h-full`}
-          />
+          >
+            {filmBackdrop && (
+              <figure
+                className={`h-full bg-base-100`}
+                style={{
+                  backgroundImage: `url(https://image.tmdb.org/t/p/original${filmBackdrop})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "top",
+                  backgroundRepeat: "no-repeat",
+                }}
+              ></figure>
+            )}
+          </ImagePovi>
         </Reveal>
       </div>
       <div className={`absolute bottom-0 z-50 w-full p-4 lg:bottom-20`}>
