@@ -197,9 +197,15 @@ export function EpisodeModal({ film }) {
                   <section id={`Episode Air Date`}>
                     <div className={`flex items-center gap-2`}>
                       <IonIcon icon={calendarOutline} />
-                      <time dateTime={episode.air_date}>
-                        {moment(episode.air_date).format("dddd, MMMM D, YYYY")}
-                      </time>
+                      {episode.air_date ? (
+                        <time dateTime={episode.air_date}>
+                          {moment(episode.air_date).format(
+                            "dddd, MMMM D, YYYY",
+                          )}
+                        </time>
+                      ) : (
+                        <span>TBA</span>
+                      )}
                     </div>
                   </section>
 
@@ -218,13 +224,17 @@ export function EpisodeModal({ film }) {
                   <section id={`TV Series Average Episode Runtime`}>
                     <div className={`flex items-center gap-2`}>
                       <IonIcon icon={timeOutline} />
-                      <time>
-                        {episode.runtime ? episode.runtime : 0}{" "}
-                        {isPlural({
-                          text: "minute",
-                          number: episode.runtime % 60,
-                        })}
-                      </time>
+                      {episode.runtime ? (
+                        <span>
+                          {episode.runtime}{" "}
+                          {isPlural({
+                            text: "minute",
+                            number: episode.runtime % 60,
+                          })}
+                        </span>
+                      ) : (
+                        <span>TBA</span>
+                      )}
                       {Math.floor(episode.runtime / 60) >= 1 && (
                         <span>{`(${formatRuntime(episode.runtime)})`}</span>
                       )}
