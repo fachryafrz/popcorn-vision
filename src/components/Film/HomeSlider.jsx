@@ -222,47 +222,39 @@ function HomeFilm({
       <div className={`-z-10 h-full w-full`}>
         {/* Poster */}
         <Reveal y={0} className={`h-full md:hidden`}>
-          <ImagePovi
-            imgPath={
-              filmPoster && `https://image.tmdb.org/t/p/w300${filmPoster}`
-            }
-            position={`top`}
-            className={`h-full`}
-          >
-            {filmPoster && (
-              <figure
-                className={`h-full bg-base-100`}
-                style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/w1280${filmPoster})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "top",
-                  backgroundRepeat: "no-repeat",
-                }}
-              ></figure>
-            )}
+          <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+              role="presentation"
+              loading="lazy"
+              srcSet={`
+                    https://image.tmdb.org/t/p/w780${filmPoster} 300w,
+                  `}
+              sizes="100vw"
+              draggable={false}
+              alt={film.title ?? film.name}
+            />
           </ImagePovi>
         </Reveal>
 
         {/* Backdrop */}
         <Reveal y={0} className={`hidden h-full md:block`}>
           <ImagePovi
-            imgPath={
-              filmBackdrop && `https://image.tmdb.org/t/p/w300${filmBackdrop}`
-            }
+            imgPath={filmBackdrop}
             position={`top`}
             className={`h-full`}
           >
-            {filmBackdrop && (
-              <figure
-                className={`h-full bg-base-100`}
-                style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/original${filmBackdrop})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "top",
-                  backgroundRepeat: "no-repeat",
-                }}
-              ></figure>
-            )}
+            <img
+              src={`https://image.tmdb.org/t/p/w500${filmBackdrop}`}
+              role="presentation"
+              loading="lazy"
+              srcSet={`
+                    https://image.tmdb.org/t/p/w1280${filmBackdrop} 780w,
+                  `}
+              sizes="100vw"
+              draggable={false}
+              alt={film.title ?? film.name}
+            />
           </ImagePovi>
         </Reveal>
       </div>
@@ -337,15 +329,13 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
   return (
     <Reveal delay={0.1 * index}>
       {filmBackdrop ? (
-        <figure
-          className={`aspect-video rounded-lg`}
-          style={{
-            backgroundImage: `url(https://image.tmdb.org/t/p/w185${filmBackdrop})`,
-            backgroundSize: `cover`,
-            backgroundPosition: `center`,
-            backgroundRepeat: `no-repeat`,
-          }}
-        ></figure>
+        <img
+          src={`https://image.tmdb.org/t/p/w185${filmBackdrop}`}
+          role="presentation"
+          loading="lazy"
+          alt={film.title ?? film.name}
+          className="aspect-video rounded-lg"
+        />
       ) : (
         <figure
           className={`aspect-video rounded-lg`}

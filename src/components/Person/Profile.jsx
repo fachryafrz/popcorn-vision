@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -34,12 +35,22 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
     >
       {/* Profile Picture */}
       <ImagePovi
-        imgPath={
-          person.profile_path &&
-          `https://image.tmdb.org/t/p/h632${person.profile_path}`
-        }
+        imgPath={person.profile_path}
         className={`aspect-poster sm:flex-1`}
-      />
+      >
+        <img
+          src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
+          srcSet={`
+            https://image.tmdb.org/t/p/w500${person.profile_path} 500w,
+            https://image.tmdb.org/t/p/w780${person.profile_path} 780w
+          `}
+          sizes="100vw"
+          role="presentation"
+          loading="lazy"
+          draggable={false}
+          alt={name}
+        />
+      </ImagePovi>
 
       {/* Person Info */}
       <div className={`flex flex-col gap-4 p-4 pb-6`}>

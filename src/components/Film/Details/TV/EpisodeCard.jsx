@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -33,9 +34,21 @@ export default function EpisodeCard({
       className={`flex h-fit w-full flex-col items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${className}`}
     >
       <ImagePovi
-        imgPath={imgPath && `https://image.tmdb.org/t/p/w500${imgPath}`}
+        imgPath={imgPath}
         className={`relative aspect-video w-full overflow-hidden rounded-lg`}
       >
+        <img
+          src={`https://image.tmdb.org/t/p/w185${imgPath}`}
+          srcSet={`
+            https://image.tmdb.org/t/p/w780${imgPath} 780w
+          `}
+          sizes="100vw"
+          loading="lazy"
+          role="presentation"
+          draggable={false}
+          className="w-full"
+        />
+
         {overlay && (
           <span
             className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-[75%] p-1 px-2 text-sm font-medium backdrop-blur-sm`}

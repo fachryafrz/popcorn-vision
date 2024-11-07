@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React from "react";
@@ -33,10 +34,15 @@ export default function Person({
       <div
         className={`aspect-square !h-[50px] !w-[50px] flex-shrink-0 overflow-hidden rounded-full bg-base-100`}
       >
-        <ImagePovi
-          imgPath={profile_path}
-          className={`aspect-square w-[50px]`}
-        />
+        <ImagePovi imgPath={profile_path} className={`aspect-square w-[50px]`}>
+          <img
+            src={`https://image.tmdb.org/t/p/w185${profile_path}`}
+            role="presentation"
+            loading="lazy"
+            draggable={false}
+            alt={name}
+          />
+        </ImagePovi>
       </div>
 
       <div className="w-full self-center">

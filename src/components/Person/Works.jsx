@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -101,12 +102,22 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                         className={`transition-all active:scale-100 hocus:scale-[1.01]`}
                       >
                         <ImagePovi
-                          imgPath={
-                            film.poster_path &&
-                            `https://image.tmdb.org/t/p/w300${film.poster_path}`
-                          }
+                          imgPath={film.poster_path}
                           className={`relative aspect-poster overflow-hidden rounded-lg`}
                         >
+                          <img
+                            src={`https://image.tmdb.org/t/p/w185${film.poster_path}`}
+                            role="presentation"
+                            loading="lazy"
+                            srcSet={`
+                              https://image.tmdb.org/t/p/w185${film.poster_path} 185w,
+                              https://image.tmdb.org/t/p/w300${film.poster_path} 300w,
+                            `}
+                            sizes="100vw"
+                            draggable={false}
+                            alt={film.title ?? film.name}
+                          />
+
                           {film.vote_average > 0 && (
                             <div
                               className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}

@@ -50,7 +50,7 @@ export default function FilmOverview({
         )}
 
         {videos.results.length > 0 && images.backdrops.length > 0 && (
-          <FilmMedia videos={videos} images={images.backdrops} />
+          <FilmMedia film={film} videos={videos} images={images.backdrops} />
         )}
       </div>
 
