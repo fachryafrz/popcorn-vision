@@ -19,11 +19,7 @@ export default function FilmDirector({ credits, film, isTvPage }) {
                 <Person
                   id={director.id}
                   name={director.name}
-                  profile_path={
-                    director.profile_path === null
-                      ? null
-                      : `https://image.tmdb.org/t/p/w185${director.profile_path}`
-                  }
+                  profile_path={director.profile_path}
                   role={`Director`}
                 />
               </Reveal>

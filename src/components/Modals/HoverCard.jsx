@@ -155,21 +155,21 @@ export default function HoverCard() {
               <span className={`sr-only`}>{card.title ?? card.name}</span>
 
               <ImagePovi
-                imgPath={
-                  card.backdrop_path &&
-                  `https://image.tmdb.org/t/p/w92${card.backdrop_path}`
-                }
+                imgPath={card.backdrop_path}
                 className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
               >
-                {card.backdrop_path && (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w780${card.backdrop_path}`}
-                    alt={isItTvPage(card.title, card.name)}
-                    className={`object-cover`}
-                    draggable={false}
-                    loading="lazy"
-                  />
-                )}
+                <img
+                  src={`https://image.tmdb.org/t/p/w185${card.backdrop_path}`}
+                  srcSet={`
+                      https://image.tmdb.org/t/p/w500${card.backdrop_path} 500w
+                    `}
+                  sizes="100vw"
+                  role="presentation"
+                  alt={isItTvPage(card.title, card.name)}
+                  className={`object-cover`}
+                  draggable={false}
+                  loading="lazy"
+                />
               </ImagePovi>
             </Link>
 
@@ -190,6 +190,7 @@ export default function HoverCard() {
                         className={`max-w-[250px] object-contain`}
                         draggable={false}
                         loading="lazy"
+                        role="presentation"
                       />
                     </figure>
                   </Reveal>

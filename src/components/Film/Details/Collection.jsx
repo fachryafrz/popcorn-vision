@@ -142,12 +142,21 @@ export function CollectionItem({
           data-before-content={index + 1}
         />
         <ImagePovi
-          imgPath={
-            item.poster_path &&
-            `https://image.tmdb.org/t/p/w92${item.poster_path}`
-          }
+          imgPath={item.poster_path}
           className={`flex aspect-poster min-w-[50px] max-w-[50px] items-center overflow-hidden rounded-lg bg-base-100`}
-        />
+        >
+          <img
+            src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
+            role="presentation"
+            draggable={false}
+            loading="lazy"
+            srcSet={`
+              https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
+            `}
+            sizes="100vw"
+            alt={item.title ?? item.name}
+          />
+        </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">
           <span
             className="before-content line-clamp-2 text-start font-medium"
@@ -158,7 +167,7 @@ export function CollectionItem({
 
           <h3 className="sr-only">
             {filmTitle}{" "}
-            {`${item.release_date && `(${moment(item.release_date).format("YYYY")})`}`}
+            {`(${moment(item.release_date ?? item.first_air_date).format("YYYY")})`}
           </h3>
 
           <div
@@ -256,12 +265,21 @@ function FilmSeason({ film, item, index }) {
         </span>
 
         <ImagePovi
-          imgPath={
-            item.poster_path &&
-            `https://image.tmdb.org/t/p/w92${item.poster_path}`
-          }
+          imgPath={item.poster_path}
           className={`flex aspect-poster min-w-[50px] max-w-[50px] items-center overflow-hidden rounded-lg bg-base-100`}
-        />
+        >
+          <img
+            src={`https://image.tmdb.org/t/p/w92${item.poster_path}`}
+            role="presentation"
+            draggable={false}
+            loading="lazy"
+            srcSet={`
+              https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
+            `}
+            sizes="100vw"
+            alt={item.title ?? item.name}
+          />
+        </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">
           <h3
             title={`${item.name} (${item.episode_count} ${isPlural({

@@ -28,7 +28,7 @@ import "swiper/css/autoplay";
 import "swiper/css/zoom";
 import { useEffect, useState } from "react";
 
-export default function FilmMedia({ videos, images }) {
+export default function FilmMedia({ film, videos, images }) {
   const [youtubeParams, setYoutubeParams] = useState();
 
   const filteredVideos = videos?.results.filter((result) => {
@@ -117,8 +117,14 @@ export default function FilmMedia({ videos, images }) {
               <SwiperSlide key={index}>
                 <figure className="swiper-zoom-container">
                   <img
-                    src={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
-                    alt={``}
+                    src={`https://image.tmdb.org/t/p/w300${img.file_path}`}
+                    srcSet={`
+                      https://image.tmdb.org/t/p/w780${img.file_path} 780w,
+                      https://image.tmdb.org/t/p/w1280${img.file_path} 1280w,
+                      https://image.tmdb.org/t/p/original${img.file_path} 1536w
+                    `}
+                    sizes="100vw"
+                    alt={film.title ?? film.name}
                     className={`h-full w-full object-cover`}
                     draggable={false}
                     loading="lazy"
