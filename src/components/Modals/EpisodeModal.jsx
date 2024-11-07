@@ -156,21 +156,23 @@ export function EpisodeModal({ film }) {
               className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-2xl p-0`}
             >
               <ImagePovi
-                imgPath={
-                  episode.still_path &&
-                  `https://image.tmdb.org/t/p/w92${episode.still_path}`
-                }
+                imgPath={episode.still_path}
                 className={`relative z-0 aspect-video overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
               >
-                {episode.still_path && (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
-                    alt={episode.name}
-                    className={`object-cover`}
-                    draggable={false}
-                    loading="lazy"
-                  />
-                )}
+                <img
+                  src={`https://image.tmdb.org/t/p/w185${episode.still_path}`}
+                  srcSet={`
+                      https://image.tmdb.org/t/p/w500${episode.still_path} 500w,
+                      https://image.tmdb.org/t/p/w780${episode.still_path} 780w,
+                      https://image.tmdb.org/t/p/w1280${episode.still_path} 1280w
+                    `}
+                  sizes="100vw"
+                  role="presentation"
+                  alt={episode.name}
+                  className={`object-cover`}
+                  draggable={false}
+                  loading="lazy"
+                />
               </ImagePovi>
 
               <div
@@ -297,11 +299,7 @@ export function EpisodeModal({ film }) {
                               <Person
                                 id={item.id}
                                 name={item.name}
-                                profile_path={
-                                  item.profile_path === null
-                                    ? null
-                                    : `https://image.tmdb.org/t/p/w185${item.profile_path}`
-                                }
+                                profile_path={item.profile_path}
                                 role={item.character}
                               />
                             </div>

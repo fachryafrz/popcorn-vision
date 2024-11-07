@@ -80,18 +80,16 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     <Reveal key={filmPoster} y={0} className={`w-full`}>
       <div className="sticky top-20 flex w-full flex-col gap-2">
         <ImagePovi
-          imgPath={filmPoster && `https://image.tmdb.org/t/p/w45${filmPoster}`}
+          imgPath={filmPoster}
           className={`relative aspect-poster w-full self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
         >
-          {filmPoster && (
-            <img
-              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-              alt={!isTvPage ? film.title : film.name}
-              className={`object-cover transition-all`}
-              draggable={false}
-              loading="lazy"
-            />
-          )}
+          <img
+            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+            alt={!isTvPage ? film.title : film.name}
+            className={`object-cover transition-all`}
+            draggable={false}
+            loading="lazy"
+          />
 
           {film.vote_average > 0 && (
             <div

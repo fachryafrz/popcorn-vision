@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import ImagePovi from "./ImagePovi";
 import debounce from "debounce";
@@ -26,12 +27,21 @@ export default function FilmCard({ film, isTvPage }) {
       <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
 
       <ImagePovi
-        imgPath={
-          film.poster_path &&
-          `https://image.tmdb.org/t/p/w300${film.poster_path}`
-        }
+        imgPath={film.poster_path}
         className={`relative aspect-poster overflow-hidden rounded-xl`}
       >
+        <img
+          src={`https://image.tmdb.org/t/p/w185${film.poster_path}`}
+          role="presentation"
+          loading="lazy"
+          srcSet={`
+              https://image.tmdb.org/t/p/w300${film.poster_path} 100w,
+            `}
+          sizes="100vw"
+          draggable={false}
+          alt={film.title ?? film.name}
+        />
+
         {film.vote_average > 0 && (
           <div
             className={`pointer-events-none absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}

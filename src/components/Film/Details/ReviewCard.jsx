@@ -37,7 +37,7 @@ export default function ReviewCard({ review }) {
       <div className="flex items-center gap-2">
         <Person
           name={review.author}
-          profile_path={imgUrlAPI === null ? null : imgUrl}
+          profile_path={imgUrlAPI && imgUrl}
           role={moment(review.created_at).fromNow()}
           personRole={`author`}
           tooltip={

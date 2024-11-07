@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import FilmSummary from "./Summary";
 import { fetchData } from "@/lib/fetch";
@@ -31,22 +32,42 @@ export default async function Trending({ film, genres, type }) {
       <div className="relative flex flex-col items-center gap-8 overflow-hidden p-8 before:invisible before:absolute before:inset-0 before:z-10 before:bg-gradient-to-t before:from-black before:via-black before:via-30% before:opacity-[100%] after:absolute after:inset-0 after:z-20 after:bg-gradient-to-t after:from-black md:flex-row md:rounded-[3rem] md:p-[3rem] md:before:visible md:before:bg-gradient-to-r md:after:bg-gradient-to-r">
         {/* Backdrop */}
         <ImagePovi
-          imgPath={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
+          imgPath={film.backdrop_path}
           className={`absolute inset-0 z-0 blur-md md:left-[30%] md:blur-0`}
-        />
+        >
+          <img
+            src={`https://image.tmdb.org/t/p/w45${film.backdrop_path}`}
+            role="presentation"
+            loading="lazy"
+            srcSet={`
+              https://image.tmdb.org/t/p/w45${film.backdrop_path} 700w,
+              https://image.tmdb.org/t/p/w1280${film.backdrop_path} 1280w,
+            `}
+            sizes="100vw"
+            draggable={false}
+            alt={film.title ?? film.name}
+          />
+        </ImagePovi>
 
         {/* Poster */}
         <Reveal
           y={0}
           className={`z-30 aspect-poster h-full w-full max-w-[300px] overflow-hidden rounded-2xl`}
         >
-          <ImagePovi
-            imgPath={
-              film.poster_path &&
-              `https://image.tmdb.org/t/p/w780${film.poster_path}`
-            }
-            className={`h-full`}
-          />
+          <ImagePovi imgPath={film.poster_path} className={`h-full`}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
+              role="presentation"
+              loading="lazy"
+              srcSet={`
+              https://image.tmdb.org/t/p/w500${film.poster_path} 500w,
+              https://image.tmdb.org/t/p/w780${film.poster_path} 780w,
+            `}
+              sizes="100vw"
+              draggable={false}
+              alt={film.title ?? film.name}
+            />
+          </ImagePovi>
         </Reveal>
         <div className="z-30 flex flex-col items-center gap-2 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%]">
           {filmDetails && (

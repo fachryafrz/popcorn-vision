@@ -7,18 +7,17 @@ export default function ImagePovi({
   children,
   position = `center`,
 }) {
-
   return (
     <figure
       className={`bg-base-100 ${className}`}
       style={{
-        backgroundImage: imgPath === null ? `url(${POPCORN})` : `url(${imgPath})`,
-        backgroundSize: imgPath === null ? `contain` : `cover`,
+        backgroundImage: !imgPath && `url(${POPCORN})`,
+        backgroundSize: !imgPath && `contain`,
         backgroundPosition: position,
         backgroundRepeat: `no-repeat`,
       }}
     >
-      {children}
+      {imgPath ? children : null}
     </figure>
   );
 }

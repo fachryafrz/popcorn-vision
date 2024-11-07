@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { isPlural } from "@/lib/isPlural";
@@ -69,15 +70,14 @@ export default function PersonDetails({
                     key={image.id}
                     className={`max-w-[calc(100%/2.5)] transition-all sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
                   >
-                    <figure
+                    <img
+                      src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
+                      draggable={false}
+                      loading="lazy"
+                      role="presentation"
+                      alt={person.name}
                       className={`aspect-poster rounded-xl`}
-                      style={{
-                        backgroundImage: `url(https://image.tmdb.org/t/p/h632${image.file_path})`,
-                        backgroundSize: `contain`,
-                        backgroundRepeat: `no-repeat`,
-                        backgroundPosition: `center`,
-                      }}
-                    ></figure>
+                    />
                   </SwiperSlide>
                 );
               })}
