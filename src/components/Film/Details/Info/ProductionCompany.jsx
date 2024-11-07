@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Reveal from "@/components/Layout/Reveal";
 import Link from "next/link";
 import React from "react";
@@ -19,14 +20,14 @@ export default function ProductionCompany({ item, i, isTvPage }) {
               class="tooltip tooltip-bottom before:!hidden before:!rounded-2xl before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur md:before:!inline-block"
               data-tip={item.name}
             >
-              <figure
-                className={`aspect-[2/1] h-[60px] bg-center grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
-                style={{
-                  backgroundImage: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                  backgroundSize: `contain`,
-                  backgroundRepeat: `no-repeat`,
-                }}
-              ></figure>
+              <img
+                src={`https://image.tmdb.org/t/p/w300${item.logo_path}`}
+                draggable={false}
+                loading="lazy"
+                alt={item.name}
+                role="presentation"
+                className={`aspect-[2/1] h-[60px] bg-center object-contain grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
+              />
             </div>
           ) : (
             <span

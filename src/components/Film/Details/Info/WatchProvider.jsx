@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Reveal from "@/components/Layout/Reveal";
 import Link from "next/link";
 
@@ -65,14 +66,14 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                   data-tip={`${item.provider_name} (${item.type})`}
                 >
                   <Reveal delay={i > 0 ? 0.1 * i : 0}>
-                    <figure
-                      style={{
-                        background: `url(https://image.tmdb.org/t/p/w500${item.logo_path})`,
-                        backgroundSize: `contain`,
-                        backgroundRepeat: `no-repeat`,
-                      }}
+                    <img
+                      src={`https://image.tmdb.org/t/p/w185${item.logo_path}`}
+                      draggable={false}
+                      loading="lazy"
+                      alt={item.name}
+                      role="presentation"
                       className={`aspect-square w-[40px] rounded-xl`}
-                    ></figure>
+                    />
                   </Reveal>
                   <span aria-hidden className={`sr-only`}>
                     {item.provider_name} ({item.type})
