@@ -20,7 +20,7 @@ export default function FilmCard({ film, isTvPage }) {
       id="film-card"
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
       onMouseEnter={(e) => handleMouseOver(e, film)}
-      // onMouseLeave={handleMouseLeave}
+      onMouseLeave={() => handleMouseOver.clear()}
       prefetch={true}
       className={`relative`}
     >
