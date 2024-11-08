@@ -1,12 +1,12 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
-import { closeCircle, filter } from "ionicons/icons";
+import { closeCircle, optionsOutline } from "ionicons/icons";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
 import { fetchData } from "@/lib/fetch";
@@ -219,10 +219,12 @@ export default function Search({
         handleClearNotAvailable={handleClearNotAvailable}
       />
 
-      <div className={`flex w-full flex-col gap-2 p-4 @container lg:pr-0`}>
+      <div
+        className={`flex w-full flex-col gap-2 p-4 transition-all duration-300 @container lg:px-0 ${isFilterActive ? ` lg:ml-[300px] lg:pl-4` : ``}`}
+      >
         {/* Options */}
         <section
-          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  px-4 py-2 lg:flex-row lg:justify-between ${isScrolled ? `bg-opacity-85 backdrop-blur` : `bg-opacity-0`}`}
+          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
           <div className={`w-full lg:hidden`}>
@@ -251,22 +253,26 @@ export default function Search({
           )}
 
           <div
-            className={`flex min-w-fit flex-wrap items-center justify-between gap-2 lg:w-full`}
+            className={`flex min-w-fit items-center justify-between gap-2 lg:w-full`}
           >
             {/* Filter button */}
             <button
               onClick={() =>
-                isQueryParams ? handleNotAvailable() : setIsFilterActive(true)
+                isQueryParams
+                  ? handleNotAvailable()
+                  : isFilterActive
+                    ? setIsFilterActive(false)
+                    : setIsFilterActive(true)
               }
               onMouseLeave={() => handleClearNotAvailable()}
-              className={`btn btn-circle btn-secondary border-none bg-opacity-20 md:btn-block hocus:bg-opacity-50 md:px-4 lg:hidden`}
+              className={`btn btn-circle btn-secondary border-none bg-opacity-20 hocus:bg-opacity-50`}
             >
-              <span className="hidden md:block">Filters</span>
-              <IonIcon icon={filter} className={`text-xl`} />
+              {/* <span className="hidden md:block">Filters</span> */}
+              <IonIcon icon={optionsOutline} className={`text-xl`} />
             </button>
 
-            <div className={`hidden w-full lg:flex`}>
-              <div className={`ml-auto flex items-center gap-2`}>
+            <div className={`hidden flex-grow justify-end lg:flex`}>
+              <div className={`flex items-center gap-2`}>
                 {films?.length > 0 && (
                   <span className={`block text-xs font-medium`}>
                     {!isQueryParams
