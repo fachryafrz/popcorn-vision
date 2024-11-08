@@ -26,8 +26,9 @@ export default function Search({
   const searchParams = useSearchParams();
 
   const isQueryParams = searchParams.get("query");
-  const isThereAnyFilter =
-    Object.keys(Object.fromEntries(searchParams)).length && !isQueryParams;
+  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).filter(
+    (key) => key !== "query",
+  ).length;
 
   // State
   const [notAvailable, setNotAvailable] = useState("");
@@ -114,6 +115,16 @@ export default function Search({
         results: [...prevData.results, ...newData.results],
       };
     }, false);
+  };
+
+  const handleResetFilters = () => {
+    const nativeSearchParams = new URLSearchParams(searchParams);
+    nativeSearchParams.forEach((value, key) => {
+      if (key !== "query") {
+        nativeSearchParams.delete(key);
+      }
+    });
+    router.push(`${pathname}?${nativeSearchParams.toString()}`);
   };
 
   // Handle scroll effect
@@ -245,7 +256,7 @@ export default function Search({
                 className={`flex min-w-fit flex-row-reverse flex-wrap items-center gap-2 lg:h-[42px]`}
               >
                 <button
-                  onClick={() => router.push(`${pathname}`)}
+                  onClick={handleResetFilters}
                   className={`btn btn-circle btn-secondary border-none bg-opacity-20 hocus:btn-error md:btn-block lg:btn-sm hocus:text-white md:!h-full md:px-2 md:pr-4 lg:w-fit`}
                 >
                   <IonIcon icon={closeCircle} className={`text-2xl`} />
@@ -259,11 +270,9 @@ export default function Search({
             {/* Filter button */}
             <button
               onClick={() =>
-                isQueryParams
-                  ? handleNotAvailable()
-                  : isFilterActive
-                    ? setIsFilterActive(false)
-                    : setIsFilterActive(true)
+                isFilterActive
+                  ? setIsFilterActive(false)
+                  : setIsFilterActive(true)
               }
               onMouseLeave={() => handleClearNotAvailable()}
               className={`btn btn-secondary aspect-square rounded-full border-none bg-opacity-20 !px-0 lg:btn-sm hocus:bg-opacity-50 lg:h-[42px]`}
