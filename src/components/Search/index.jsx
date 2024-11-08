@@ -26,7 +26,8 @@ export default function Search({
   const searchParams = useSearchParams();
 
   const isQueryParams = searchParams.get("query");
-  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
+  const isThereAnyFilter =
+    Object.keys(Object.fromEntries(searchParams)).length && !isQueryParams;
 
   // State
   const [notAvailable, setNotAvailable] = useState("");
@@ -117,6 +118,12 @@ export default function Search({
 
   // Handle scroll effect
   useEffect(() => {
+    if (window.innerWidth < 1280) {
+      setIsFilterActive(false);
+    } else {
+      setIsFilterActive(true);
+    }
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY >= 1);
     };
@@ -227,14 +234,13 @@ export default function Search({
           className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
-          <div className={`w-full lg:hidden`}>
+          <div className={`flex-grow lg:hidden`}>
             <SearchBar placeholder={`Tap to search`} />
           </div>
 
-          {/* Clear filters */}
-          {isThereAnyFilter > 0 && (
-            <>
-              {/* <Suspense> */}
+          <div className={`flex gap-2 lg:flex-row-reverse`}>
+            {/* Clear filters */}
+            {isThereAnyFilter > 0 && (
               <div
                 className={`flex min-w-fit flex-row-reverse flex-wrap items-center gap-2 lg:h-[42px]`}
               >
@@ -248,13 +254,8 @@ export default function Search({
                   </span>
                 </button>
               </div>
-              {/* </Suspense> */}
-            </>
-          )}
+            )}
 
-          <div
-            className={`flex min-w-fit items-center justify-between gap-2 lg:w-full`}
-          >
             {/* Filter button */}
             <button
               onClick={() =>
@@ -265,29 +266,29 @@ export default function Search({
                     : setIsFilterActive(true)
               }
               onMouseLeave={() => handleClearNotAvailable()}
-              className={`btn btn-circle btn-secondary border-none bg-opacity-20 hocus:bg-opacity-50`}
+              className={`btn btn-secondary aspect-square rounded-full border-none bg-opacity-20 !px-0 lg:btn-sm hocus:bg-opacity-50 lg:h-[42px]`}
             >
               {/* <span className="hidden md:block">Filters</span> */}
               <IonIcon icon={optionsOutline} className={`text-xl`} />
             </button>
+          </div>
 
-            <div className={`hidden flex-grow justify-end lg:flex`}>
-              <div className={`flex items-center gap-2`}>
-                {films?.length > 0 && (
-                  <span className={`block text-xs font-medium`}>
-                    {!isQueryParams
-                      ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
-                      : `Showing ${numeral(films.length).format("0,0")} Films`}
-                  </span>
-                )}
+          <div className={`hidden flex-grow justify-end lg:flex`}>
+            <div className={`flex items-center gap-2`}>
+              {films?.length > 0 && (
+                <span className={`block text-xs font-medium`}>
+                  {!isQueryParams
+                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
+                    : `Showing ${numeral(films.length).format("0,0")} Films`}
+                </span>
+              )}
 
-                <SearchSort
-                  handleNotAvailable={handleNotAvailable}
-                  handleClearNotAvailable={handleClearNotAvailable}
-                  inputStyles={inputStyles}
-                  setIsFilterActive={setIsFilterActive}
-                />
-              </div>
+              <SearchSort
+                handleNotAvailable={handleNotAvailable}
+                handleClearNotAvailable={handleClearNotAvailable}
+                inputStyles={inputStyles}
+                setIsFilterActive={setIsFilterActive}
+              />
             </div>
           </div>
         </section>
