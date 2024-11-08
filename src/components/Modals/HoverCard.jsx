@@ -161,8 +161,8 @@ export default function HoverCard() {
                 <img
                   src={`https://image.tmdb.org/t/p/w185${card.backdrop_path}`}
                   srcSet={`
-                      https://image.tmdb.org/t/p/w500${card.backdrop_path} 500w
-                    `}
+                    https://image.tmdb.org/t/p/w780${card.backdrop_path} 100w
+                  `}
                   sizes="100vw"
                   role="presentation"
                   alt={isItTvPage(card.title, card.name)}
