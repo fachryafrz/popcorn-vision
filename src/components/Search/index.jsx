@@ -250,7 +250,7 @@ export default function Search({
                 >
                   <IonIcon icon={closeCircle} className={`text-2xl`} />
                   <span className={`hidden whitespace-nowrap text-sm md:block`}>
-                    Clear filters
+                    Reset
                   </span>
                 </button>
               </div>
