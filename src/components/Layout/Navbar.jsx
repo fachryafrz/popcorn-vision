@@ -315,13 +315,17 @@ export function SearchBar({ placeholder = `Search` }) {
       <div
         className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] pl-0`}
       >
-        <div
-          className={`pointer-events-none absolute flex h-full items-center pl-4`}
-        >
-          <IonIcon
-            icon={search}
-            className={`pointer-events-none text-lg text-gray-400`}
-          />
+        <div className={`absolute flex h-full items-center pl-4`}>
+          <Link
+            href={!isTvPage ? `/search` : `/tv/search`}
+            prefetch={true}
+            className={`flex`}
+          >
+            <IonIcon
+              icon={search}
+              className={`pointer-events-none text-lg text-gray-400`}
+            />
+          </Link>
         </div>
 
         <input
@@ -341,29 +345,15 @@ export function SearchBar({ placeholder = `Search` }) {
               onClick={handleClear}
               className={`flex h-full items-center`}
             >
-              <IonIcon
-                icon={close}
-                className={`pointer-events-none text-2xl text-gray-400`}
-              />
+              <IonIcon icon={close} className={`text-2xl text-gray-400`} />
             </button>
           )}
 
-          <Link
-            href={!isTvPage ? `/search` : `/tv/search`}
-            prefetch={true}
-            className={`hidden xl:inline`}
-          >
+          <div className={`pointer-events-none hidden xl:inline`}>
             <kbd className={`kbd kbd-sm`}>/</kbd>
-          </Link>
+          </div>
         </div>
       </div>
-
-      {/* {!isSearchPage && (
-        <Link
-          href={isTvPage ? "/tv/search" : "/search"}
-          className={`absolute inset-0 rounded-full transition-all hocus:bg-white hocus:bg-opacity-5`}
-        ></Link>
-      )} */}
     </form>
   );
 }
