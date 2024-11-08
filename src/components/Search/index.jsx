@@ -118,13 +118,11 @@ export default function Search({
   };
 
   const handleResetFilters = () => {
-    const nativeSearchParams = new URLSearchParams(searchParams);
-    nativeSearchParams.forEach((value, key) => {
-      if (key !== "query") {
-        nativeSearchParams.delete(key);
-      }
-    });
-    router.push(`${pathname}?${nativeSearchParams.toString()}`);
+    if (isQueryParams) {
+      router.push(`/search?query=${isQueryParams}`);
+    } else {
+      router.push(`/search`);
+    }
   };
 
   // Handle scroll effect
