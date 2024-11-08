@@ -236,11 +236,11 @@ export default function Search({
       />
 
       <div
-        className={`flex w-full flex-col gap-2 p-4 transition-all duration-300 @container lg:px-0 ${isFilterActive ? ` lg:ml-[300px] lg:pl-4` : ``}`}
+        className={`flex w-full flex-col gap-2 p-4 transition-all duration-300 @container lg:pr-0 ${!isFilterActive ? `lg:-ml-[300px] lg:pl-0` : `lg:pl-4`}`}
       >
         {/* Options */}
         <section
-          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100  bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
+          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
           <div className={`flex-grow lg:hidden`}>
