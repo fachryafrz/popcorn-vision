@@ -254,16 +254,12 @@ export function SearchBar({ placeholder = `Search` }) {
   let URLSearchQuery = searchParams.get("query");
 
   const handleClear = () => {
-    const nativeSearchParams = new URLSearchParams(searchParams);
-    nativeSearchParams.delete("query");
-
-    router.push(`${pathname}?${nativeSearchParams.toString()}`);
+    setSearchInput("");
+    searchRef.current.focus();
   };
 
   useEffect(() => {
-    if (!URLSearchQuery) {
-      setSearchInput("");
-    } else {
+    if (URLSearchQuery) {
       setSearchInput(URLSearchQuery);
     }
   }, [URLSearchQuery]);
@@ -339,7 +335,7 @@ export function SearchBar({ placeholder = `Search` }) {
         />
 
         <div className={`flex items-center gap-1`}>
-          {URLSearchQuery && (
+          {searchInput && (
             <button
               type="button"
               onClick={handleClear}
