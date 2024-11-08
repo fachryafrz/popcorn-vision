@@ -253,6 +253,13 @@ export function SearchBar({ placeholder = `Search` }) {
 
   let URLSearchQuery = searchParams.get("query");
 
+  const handleClear = () => {
+    const nativeSearchParams = new URLSearchParams(searchParams);
+    nativeSearchParams.delete("query");
+
+    router.push(`${pathname}?${nativeSearchParams.toString()}`);
+  };
+
   useEffect(() => {
     if (!URLSearchQuery) {
       setSearchInput("");
@@ -335,9 +342,7 @@ export function SearchBar({ placeholder = `Search` }) {
           {URLSearchQuery && (
             <button
               type="button"
-              onClick={() => {
-                router.push(`${isTvPage ? "/tv" : ""}/search`);
-              }}
+              onClick={handleClear}
               className={`flex h-full items-center`}
             >
               <IonIcon
