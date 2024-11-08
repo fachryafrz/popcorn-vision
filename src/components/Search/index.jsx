@@ -236,7 +236,7 @@ export default function Search({
       />
 
       <div
-        className={`flex w-full flex-col gap-2 p-4 transition-all duration-300 @container lg:pr-0 ${!isFilterActive ? `lg:-ml-[300px] lg:pl-0` : `lg:pl-4`}`}
+        className={`flex w-full flex-col gap-2 p-4 pb-0 transition-all duration-300 @container lg:pr-0 ${!isFilterActive ? `lg:-ml-[300px] lg:pl-0` : `lg:pl-4`}`}
       >
         {/* Options */}
         <section
