@@ -6,7 +6,7 @@ export default function FilmDirector({ credits, film, isTvPage }) {
   const director = credits.crew.find((person) => person.job === "Director");
 
   return (
-    <>
+    <div className={`-mx-2`}>
       {!isTvPage
         ? credits &&
           credits.crew.length > 0 &&
@@ -48,6 +48,6 @@ export default function FilmDirector({ credits, film, isTvPage }) {
               })}
             </section>
           )}
-    </>
+    </div>
   );
 }
