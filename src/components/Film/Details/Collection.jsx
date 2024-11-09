@@ -195,14 +195,14 @@ export function CollectionItem({
               </div>
             )}
 
-            {(item.release_date || item.air_date) && (
+            {(item.release_date || item.air_date || item.first_air_date) && (
               <div
                 className={`flex items-center gap-1 rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
               >
                 <span
                   className={`before-content`}
                   data-before-content={moment(
-                    item.release_date || item.air_date,
+                    item.release_date || item.air_date || item.first_air_date,
                   ).format("MMM DD, YYYY")}
                 />
               </div>
