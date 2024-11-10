@@ -154,21 +154,22 @@ export function CollectionItem({
               https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
             `}
             sizes="100vw"
-            alt={item.title ?? item.name}
+            alt=""
+            aria-hidden
           />
         </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">
-          <span
-            className="before-content line-clamp-2 text-start font-medium"
+          <p
+            className="line-clamp-2 text-start font-medium"
             title={filmTitle}
             style={{ textWrap: "balance" }}
-            data-before-content={filmTitle}
-          />
-
-          <h3 className="sr-only">
-            {filmTitle}{" "}
-            {`(${moment(item.release_date ?? item.first_air_date).format("YYYY")})`}
-          </h3>
+          >
+            {filmTitle}&nbsp;
+            <span className="sr-only">
+              ({moment(item.release_date ?? item.first_air_date).format("YYYY")}
+              )
+            </span>
+          </p>
 
           <div
             className={`flex flex-wrap items-center gap-1 text-xs font-medium text-gray-400`}
@@ -277,7 +278,8 @@ function FilmSeason({ film, item, index }) {
               https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
             `}
             sizes="100vw"
-            alt={item.title ?? item.name}
+            alt=""
+            aria-hidden
           />
         </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">

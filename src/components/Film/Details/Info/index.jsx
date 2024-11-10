@@ -109,57 +109,6 @@ export default function FilmInfo({
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
-      {/* Reading Mode */}
-      <p className="sr-only">Produced by:</p>
-      <ul className="sr-only">
-        {film.production_companies.map((item) => {
-          return (
-            <li key={item.id}>
-              <Link href={`/search?with_companies=${item.id}`} prefetch={true}>
-                <p>{item.name}</p>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-
-      {!isTvPage ? (
-        <p className="sr-only">
-          {`Released on: ${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${releaseDateByCountry ? `(${countryName})` : ``}`}
-        </p>
-      ) : (
-        <>
-          {film.first_air_date && (
-            <p className="sr-only">
-              {`First aired: ${moment(film.first_air_date).format("dddd, MMMM D, YYYY")}`}
-            </p>
-          )}
-          {film.last_air_date && (
-            <p className="sr-only">
-              {`Last aired: ${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
-            </p>
-          )}
-        </>
-      )}
-
-      {isTvPage && (
-        <p className="sr-only">{`Chapter: ${film.number_of_seasons} ${isPlural({
-          text: "Season",
-          number: film.number_of_seasons,
-        })} (${film.number_of_episodes} ${isPlural({
-          text: "Episode",
-          number: film.number_of_episodes,
-        })})`}</p>
-      )}
-
-      {filmRuntime ? (
-        <p className="sr-only">
-          {`Runtime: ${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
-        </p>
-      ) : (
-        ""
-      )}
-
       <div className="flex w-full flex-col items-center gap-4 md:items-start md:justify-center">
         {/* Film Title Logo */}
         {images.logos.length > 0 ? (
@@ -184,15 +133,18 @@ export default function FilmInfo({
         >
           {/* Film Production Company */}
           {film.production_companies?.length > 0 && (
-            <section
-              id={`Production Companies`}
-              className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
-            >
-              {film.production_companies.map((item, i) => (
-                <div key={item.id} className={`grid place-content-center`}>
-                  <ProductionCompany item={item} i={i} isTvPage={isTvPage} />
-                </div>
-              ))}
+            <section id={`Production Companies`}>
+              <p className="sr-only">Produced by:</p>
+
+              <ul
+                className={`flex flex-wrap justify-center gap-4 md:mb-4 md:justify-start`}
+              >
+                {film.production_companies.map((item, i) => (
+                  <li key={item.id} className={`grid place-content-center`}>
+                    <ProductionCompany item={item} i={i} isTvPage={isTvPage} />
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
           {/* Film Release Date */}
@@ -212,16 +164,16 @@ export default function FilmInfo({
                   <div className={`flex items-start gap-1`}>
                     <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
 
-                    <span aria-hidden>
+                    <p>
+                      <span className="sr-only">Chapter:&nbsp;</span>
                       {`${film.number_of_seasons} ${isPlural({
                         text: "Season",
                         number: film.number_of_seasons,
-                      })}`}{" "}
-                      {`(${film.number_of_episodes} ${isPlural({
+                      })} (${film.number_of_episodes} ${isPlural({
                         text: "Episode",
                         number: film.number_of_episodes,
                       })})`}
-                    </span>
+                    </p>
                   </div>
                 </Reveal>
               </section>
@@ -233,9 +185,10 @@ export default function FilmInfo({
                 <div className={`flex items-start gap-1`}>
                   <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
                   <time>
-                    <span
-                      aria-hidden
-                    >{`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}</span>
+                    <p>
+                      <span className="sr-only">Runtime:&nbsp;</span>
+                      {`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
+                    </p>
                   </time>
                 </div>
               </Reveal>
@@ -271,6 +224,7 @@ export default function FilmInfo({
             </section>
           )}
 
+          {/* NOTE: I don't remove this because Reading Mode can't access from button tag */}
           {/* Film Director / Creator */}
           {!isTvPage && director ? (
             <p className="sr-only">{`Directed by: ${director.name}`}</p>

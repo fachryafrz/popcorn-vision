@@ -242,10 +242,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
     <div
       className={`relative flex flex-col bg-base-100 pb-[2rem] text-white md:-mt-[66px] md:pb-[5rem]`}
     >
-      <h1 className="sr-only">
-        {film.title ?? film.name} (
-        {moment(film.release_date ?? film.first_air_date).format("YYYY")})
-      </h1>
+      <h1 className="sr-only">{film.title ?? film.name}</h1>
 
       {/* Movie Background/Backdrop */}
       <FilmBackdrop film={film} />

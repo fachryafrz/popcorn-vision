@@ -48,7 +48,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
           role="presentation"
           loading="lazy"
           draggable={false}
-          alt={name}
+          alt=""
+          aria-hidden
         />
       </ImagePovi>
 

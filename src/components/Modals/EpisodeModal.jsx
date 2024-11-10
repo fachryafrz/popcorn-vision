@@ -168,7 +168,8 @@ export function EpisodeModal({ film }) {
                     `}
                   sizes="100vw"
                   role="presentation"
-                  alt={episode.name}
+                  alt=""
+                  aria-hidden
                   className={`object-cover`}
                   draggable={false}
                   loading="lazy"

@@ -5,6 +5,7 @@ import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
 import { useHoverCard } from "@/zustand/hoverCard";
+import moment from "moment";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
@@ -24,12 +25,20 @@ export default function FilmCard({ film, isTvPage }) {
       prefetch={true}
       className={`relative`}
     >
-      <span className={`sr-only`}>{isItTvPage(film.title, film.name)}</span>
+      <h3 className={`sr-only`}>
+        {`${film.title ?? film.name} (${moment(film.release_date ?? film.first_air_date).format("YYYY")})`}
+      </h3>
 
       <ImagePovi
         imgPath={film.poster_path}
         className={`relative aspect-poster overflow-hidden rounded-xl`}
       >
+        {/* 
+          NOTE: alt="" is for decorative
+
+          source: https://stackoverflow.com/questions/52556295/role-presentation-or-aria-hidden-true-for-decorative-images 
+        */}
+
         <img
           src={`https://image.tmdb.org/t/p/w185${film.poster_path}`}
           role="presentation"
@@ -39,7 +48,8 @@ export default function FilmCard({ film, isTvPage }) {
             `}
           sizes="100vw"
           draggable={false}
-          alt={film.title ?? film.name}
+          alt=""
+          aria-hidden
         />
 
         {film.vote_average > 0 && (

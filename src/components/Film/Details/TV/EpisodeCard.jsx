@@ -47,6 +47,8 @@ export default function EpisodeCard({
           role="presentation"
           draggable={false}
           className="w-full"
+          alt=""
+          aria-hidden
         />
 
         {overlay && (

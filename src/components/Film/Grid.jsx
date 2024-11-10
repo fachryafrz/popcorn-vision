@@ -45,14 +45,16 @@ export default function FilmGrid({
     <div
       className={`relative z-10 mx-auto flex w-full max-w-none flex-col gap-2 @container`}
     >
-      <div className="grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7">
+      <ul className="grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7">
         {films?.map((film) => {
           return (
             <Reveal key={film.id} y={0}>
-              <FilmCard
-                film={film}
-                isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
-              />
+              <li>
+                <FilmCard
+                  film={film}
+                  isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
+                />
+              </li>
             </Reveal>
           );
         })}
@@ -65,7 +67,7 @@ export default function FilmGrid({
               className={`aspect-poster animate-pulse rounded-xl bg-gray-400 bg-opacity-20`}
             ></span>
           ))}
-      </div>
+      </ul>
     </div>
   );
 }
