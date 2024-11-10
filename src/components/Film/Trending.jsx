@@ -45,7 +45,8 @@ export default async function Trending({ film, genres, type }) {
             `}
             sizes="100vw"
             draggable={false}
-            alt={film.title ?? film.name}
+            alt=""
+            aria-hidden
           />
         </ImagePovi>
 
@@ -65,7 +66,8 @@ export default async function Trending({ film, genres, type }) {
             `}
               sizes="100vw"
               draggable={false}
-              alt={film.title ?? film.name}
+              alt=""
+              aria-hidden
             />
           </ImagePovi>
         </Reveal>

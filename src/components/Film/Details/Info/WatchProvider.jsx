@@ -70,7 +70,8 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                       src={`https://image.tmdb.org/t/p/w185${item.logo_path}`}
                       draggable={false}
                       loading="lazy"
-                      alt={item.name}
+                      alt=""
+                      aria-hidden
                       role="presentation"
                       className={`aspect-square w-[40px] rounded-xl`}
                     />

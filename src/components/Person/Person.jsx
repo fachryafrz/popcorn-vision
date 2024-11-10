@@ -40,7 +40,8 @@ export default function Person({
             role="presentation"
             loading="lazy"
             draggable={false}
-            alt={name}
+            alt=""
+            aria-hidden
           />
         </ImagePovi>
       </div>

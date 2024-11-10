@@ -11,6 +11,8 @@ export default function FilmReleaseDate({
   filmReleaseDate,
   releaseDateByCountry,
 }) {
+  const movieReleaseDate = `${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${releaseDateByCountry ? `(${countryName})` : ``}`;
+
   return (
     <>
       {!isTvPage
@@ -24,9 +26,10 @@ export default function FilmReleaseDate({
                   />
 
                   <time dateTime={filmReleaseDate}>
-                    <span
-                      aria-hidden
-                    >{`${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${releaseDateByCountry ? `(${countryName})` : ``}`}</span>
+                    <p>
+                      <span className="sr-only">Released on:&nbsp;</span>
+                      {movieReleaseDate}
+                    </p>
                   </time>
                 </div>
               </Reveal>
@@ -42,15 +45,24 @@ export default function FilmReleaseDate({
                   />
 
                   <time dateTime={film.last_air_date ?? film.first_air_date}>
-                    <span aria-hidden>
-                      {moment(film.first_air_date).format(
-                        "dddd, MMMM D, YYYY",
-                      ) +
-                        (film.last_air_date &&
-                        film.last_air_date !== film.first_air_date
-                          ? ` - ${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`
-                          : ``)}
-                    </span>
+                    <div className={`flex`}>
+                      <p>
+                        <span className="sr-only">First aired:&nbsp;</span>
+                        {moment(film.first_air_date).format(
+                          "dddd, MMMM D, YYYY",
+                        )}
+                      </p>
+
+                      <span>&nbsp;-&nbsp;</span>
+
+                      {film.last_air_date &&
+                        film.last_air_date !== film.first_air_date && (
+                          <p>
+                            <span className="sr-only">Last aired:&nbsp;</span>
+                            {`${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
+                          </p>
+                        )}
+                    </div>
                   </time>
                 </div>
               </Reveal>

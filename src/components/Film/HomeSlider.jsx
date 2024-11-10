@@ -232,7 +232,8 @@ function HomeFilm({
                   `}
               sizes="100vw"
               draggable={false}
-              alt={film.title ?? film.name}
+              alt=""
+              aria-hidden
             />
           </ImagePovi>
         </Reveal>
@@ -253,7 +254,8 @@ function HomeFilm({
                   `}
               sizes="100vw"
               draggable={false}
-              alt={film.title ?? film.name}
+              alt=""
+              aria-hidden
             />
           </ImagePovi>
         </Reveal>
@@ -333,7 +335,8 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
           src={`https://image.tmdb.org/t/p/w185${filmBackdrop}`}
           role="presentation"
           loading="lazy"
-          alt={film.title ?? film.name}
+          alt=""
+          aria-hidden
           className="aspect-video rounded-lg"
         />
       ) : (

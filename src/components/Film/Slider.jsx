@@ -60,7 +60,7 @@ export default function FilmSlider({
         {/* </Reveal> */}
       </div>
 
-      <ul className="sr-only">
+      {/* <ul className="sr-only">
         {sortedFilms.map((film) => {
           return (
             <li key={film.id}>
@@ -79,7 +79,7 @@ export default function FilmSlider({
             </li>
           );
         })}
-      </ul>
+      </ul> */}
 
       <Swiper
         modules={[Navigation]}
@@ -110,11 +110,13 @@ export default function FilmSlider({
         }}
         className={`relative !px-4 !py-4 !pr-2 before:pointer-events-none before:absolute before:inset-0 before:z-10 before:hidden before:max-w-[2rem] before:bg-gradient-to-r before:from-base-100 after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:hidden after:!h-full after:!w-[2rem] after:bg-gradient-to-l after:from-base-100 xl:before:hidden xl:after:hidden`}
         wrapperClass={`@container`}
+        wrapperTag="ul"
       >
         {sortedFilms.map((film) => {
           return (
             <SwiperSlide
               key={film.id}
+              tag="li"
               className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6)] @7xl:max-w-[calc(100%/7)]`}
             >
               {/* <Reveal> */}

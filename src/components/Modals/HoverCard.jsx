@@ -165,7 +165,8 @@ export default function HoverCard() {
                   `}
                   sizes="100vw"
                   role="presentation"
-                  alt={isItTvPage(card.title, card.name)}
+                  alt=""
+                  aria-hidden
                   className={`object-cover`}
                   draggable={false}
                   loading="lazy"
@@ -185,7 +186,8 @@ export default function HoverCard() {
                     <figure className={`h-full`}>
                       <img
                         src={`https://image.tmdb.org/t/p/w300${titleLogo.file_path}`}
-                        alt={isItTvPage(card.title, card.name)}
+                        alt=""
+                        aria-hidden
                         // title={isItTvPage(card.title, card.name)}
                         className={`max-w-[250px] object-contain`}
                         draggable={false}

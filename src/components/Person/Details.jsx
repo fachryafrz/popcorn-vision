@@ -75,7 +75,8 @@ export default function PersonDetails({
                       draggable={false}
                       loading="lazy"
                       role="presentation"
-                      alt={person.name}
+                      alt=""
+                      aria-hidden
                       className={`aspect-poster rounded-xl`}
                     />
                   </SwiperSlide>

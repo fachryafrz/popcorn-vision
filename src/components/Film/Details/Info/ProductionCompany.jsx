@@ -24,16 +24,17 @@ export default function ProductionCompany({ item, i, isTvPage }) {
                 src={`https://image.tmdb.org/t/p/w300${item.logo_path}`}
                 draggable={false}
                 loading="lazy"
-                alt={item.name}
+                alt=""
+                aria-hidden
                 role="presentation"
                 className={`aspect-[2/1] h-[60px] bg-center object-contain grayscale invert transition-all hocus:grayscale-0 hocus:invert-0`}
               />
+              <p className="sr-only">{item.name}</p>
             </div>
           ) : (
-            <span
-              data-before-content={item.name}
-              className={`before-content block max-w-[120px] text-pretty text-center font-semibold`}
-            />
+            <p className="max-w-[120px] text-pretty text-center font-semibold">
+              {item.name}
+            </p>
           )}
         </Reveal>
       </Link>

@@ -17,7 +17,8 @@ export default function TitleLogo({ film, images, setLoading }) {
       <figure className="mb-4 flex justify-center md:justify-start">
         <img
           src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-          alt={title}
+          alt=""
+          aria-hidden
           title={title}
           className=" max-h-[180px] bg-contain object-contain"
           draggable={false}
@@ -25,16 +26,17 @@ export default function TitleLogo({ film, images, setLoading }) {
           loading="lazy"
         />
 
-        {!images && (
+        {/* {!images && (
           <figcaption className="sr-only">
             <h3 style={{ textWrap: `balance` }}>{title}</h3>
           </figcaption>
-        )}
+        )} */}
       </figure>
     </Reveal>
   ) : (
     <Reveal delay={0.1} className={`w-full`}>
-      <span aria-hidden
+      <span
+        aria-hidden
         className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
         style={{ textWrap: `balance` }}
       >
