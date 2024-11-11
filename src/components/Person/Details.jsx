@@ -140,9 +140,9 @@ export default function PersonDetails({
         )}
 
         {personTV.length > 0 && (
-          <div id={`TV Series`} className={`flex flex-col gap-1`}>
+          <div id={`TV Shows`} className={`flex flex-col gap-1`}>
             <span className={`text-xl font-bold`}>{personTV.length}</span>
-            <span className={`text-gray-400`}>TV Series</span>
+            <span className={`text-gray-400`}>TV Shows</span>
           </div>
         )}
       </section>

@@ -215,7 +215,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    // "@type": !isTvPage ? "Movie" : "TVSeries", // Kalo TVSeries, ga bisa di test di Google Rich Results
+    // "@type": !isTvPage ? "Movie" : "TVShows", // Kalo TVShows, ga bisa di test di Google Rich Results
     "@type": "Movie",
     name: !isTvPage ? film.title : film.name,
     description: film.overview,

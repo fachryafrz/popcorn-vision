@@ -155,11 +155,11 @@ export default function FilmInfo({
             filmReleaseDate={filmReleaseDate}
             releaseDateByCountry={releaseDateByCountry}
           />
-          {/* TV Series Number of Season */}
+          {/* TV Shows Number of Season */}
           {isTvPage &&
             film.number_of_seasons > 0 &&
             film.number_of_episodes > 0 && (
-              <section id={`TV Series Chapter`}>
+              <section id={`TV Shows Chapter`}>
                 <Reveal>
                   <div className={`flex items-start gap-1`}>
                     <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
@@ -274,7 +274,7 @@ export default function FilmInfo({
             <section id={`Upcoming`} className={`grid gap-2 md:grid-cols-2`}>
               {lastEps && (
                 <div
-                  id={`TV Series Last Episode`}
+                  id={`TV Shows Last Episode`}
                   className={`flex flex-col gap-2`}
                 >
                   <Reveal>
@@ -289,7 +289,7 @@ export default function FilmInfo({
 
               {nextEps && (
                 <div
-                  id={`TV Series Next Episode`}
+                  id={`TV Shows Next Episode`}
                   className={`flex flex-col gap-2`}
                 >
                   <Reveal>
@@ -330,7 +330,7 @@ export default function FilmInfo({
           {!isUpcoming && filmReleaseDate !== "" && (
             <Reveal>
               <section
-                id={`${!isTvPage ? `Movie` : `TV Series`} Rating`}
+                id={`${!isTvPage ? `Movie` : `TV Shows`} Rating`}
                 className={`max-w-fit`}
               >
                 <UserRating

@@ -6,7 +6,7 @@ export function releaseStatus(status) {
       return "Post Production";
     case "In Production":
       return "In Production";
-    case "Returning Series":
+    case "Returning Shows":
     case "Planned":
       return "Coming soon";
     default:

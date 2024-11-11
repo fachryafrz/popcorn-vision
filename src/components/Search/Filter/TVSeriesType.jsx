@@ -61,7 +61,7 @@ export default function TVSeriesType() {
   };
 
   useEffect(() => {
-    // TV Series Type
+    // TV Shows Type
     if (searchParams.get("type")) {
       const typeParams = searchParams.get("type").split("|");
       setTvType(typeParams);
