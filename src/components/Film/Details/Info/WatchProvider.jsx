@@ -67,7 +67,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                 >
                   <Reveal delay={i > 0 ? 0.1 * i : 0}>
                     <img
-                      src={`https://image.tmdb.org/t/p/w185${item.logo_path}`}
+                      src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
                       draggable={false}
                       loading="lazy"
                       alt=""
