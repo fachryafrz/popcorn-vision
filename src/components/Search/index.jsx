@@ -219,7 +219,7 @@ export default function Search({
   return (
     <div className={`flex lg:px-4`}>
       <h1 className="sr-only">
-        {!isTvPage ? `Search Movies` : `Search TV Series`}
+        {!isTvPage ? `Search Movies` : `Search TV Shows`}
       </h1>
 
       <Filters
@@ -285,7 +285,7 @@ export default function Search({
               {films?.length > 0 && (
                 <span className={`block text-xs font-medium`}>
                   {!isQueryParams
-                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Series"}`
+                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Shows"}`
                     : `Showing ${numeral(films.length).format("0,0")} Films`}
                 </span>
               )}

@@ -141,10 +141,10 @@ export default function Filters({
         {/* Rating Count */}
         <RatingCount sliderStyles={sliderStyles} />
 
-        {/* TV Series Status */}
+        {/* TV Shows Status */}
         {isTvPage && <TVSeriesStatus />}
 
-        {/* TV Series Type */}
+        {/* TV Shows Type */}
         {isTvPage && <TVSeriesType />}
       </div>
     </aside>

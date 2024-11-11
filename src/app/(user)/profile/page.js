@@ -159,23 +159,23 @@ export default async function page() {
             user={user}
           />
 
-          {/* TV Series */}
+          {/* TV Shows */}
           <TileList
-            title={`Favorite (TV Series)`}
+            title={`Favorite (TV Shows)`}
             section={`favorite`}
             films={favoriteTv}
             type={`tv`}
             user={user}
           />
           <TileList
-            title={`Watchlist (TV Series)`}
+            title={`Watchlist (TV Shows)`}
             section={`watchlist`}
             films={watchlistTv}
             type={`tv`}
             user={user}
           />
           <TileList
-            title={`Rated (TV Series)`}
+            title={`Rated (TV Shows)`}
             section={`rated`}
             films={ratedTv}
             type={`tv`}

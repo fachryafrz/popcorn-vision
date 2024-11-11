@@ -27,7 +27,7 @@ export default function FilmDirector({ credits, film, isTvPage }) {
           )
         : film.created_by.length > 0 && (
             <section
-              id={`TV Series Creator`}
+              id={`TV Shows Creator`}
               className={`flex flex-wrap items-center`}
             >
               {film.created_by.map((item, i) => {

@@ -45,15 +45,15 @@ export default function Navbar() {
           popover: {
             title: "Find any films!",
             description:
-              "Allows you to quickly find your favorite Movies or TV Series. Type any titles to discover the content you're looking for.",
+              "Allows you to quickly find your favorite Movies or TV Shows. Type any titles to discover the content you're looking for.",
           },
         },
         {
           element: "#FilmSwitcher",
           popover: {
-            title: "Movies / TV Series?",
+            title: "Movies / TV Shows?",
             description:
-              "This film switcher enables you to toggle view between Movies and TV Series. Use it to filter and display content based on your viewing preferences.",
+              "This film switcher enables you to toggle view between Movies and TV Shows. Use it to filter and display content based on your viewing preferences.",
           },
         },
       ];
@@ -69,9 +69,9 @@ export default function Navbar() {
         {
           element: "#FilmSwitcher",
           popover: {
-            title: "Movies / TV Series?",
+            title: "Movies / TV Shows?",
             description:
-              "This film switcher enables you to toggle view between Movies and TV Series. Use it to filter and display content based on your viewing preferences.",
+              "This film switcher enables you to toggle view between Movies and TV Shows. Use it to filter and display content based on your viewing preferences.",
           },
         },
         {
@@ -79,7 +79,7 @@ export default function Navbar() {
           popover: {
             title: "Find any films!",
             description:
-              "Allows you to quickly find your favorite Movies or TV Series. Type in titles, genres, or names to discover the content you're looking for.",
+              "Allows you to quickly find your favorite Movies or TV Shows. Type in titles, genres, or names to discover the content you're looking for.",
           },
         },
       ];
@@ -185,7 +185,7 @@ export default function Navbar() {
           </Reveal>
         </div>
 
-        {/* Movie & TV Series Switcher */}
+        {/* Movie & TV Shows Switcher */}
         <div className="col-span-2 flex items-center gap-2 justify-self-end lg:col-[3/4]">
           <Reveal y={-20} delay={0.4}>
             <div
@@ -212,7 +212,7 @@ export default function Navbar() {
                 }`}
               >
                 <IonIcon icon={tvOutline} className="text-[1.25rem]" />
-                <span className="hidden md:block">TV Series</span>
+                <span className="hidden md:block">TV Shows</span>
               </button>
             </div>
           </Reveal>

@@ -5,7 +5,7 @@ import React, { Suspense } from "react";
 
 export async function generateMetadata() {
   return {
-    title: "Search TV Series",
+    title: "Search TV Shows",
     description: process.env.NEXT_PUBLIC_APP_DESC,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_APP_URL}/tv/search`,

@@ -14,7 +14,7 @@ export default function TVSeriesStatus() {
   const tvSeriesStatus = useMemo(
     () => [
       "All",
-      "Returning Series",
+      "Returning Shows",
       "Planned",
       "In Production",
       "Ended",
@@ -60,7 +60,7 @@ export default function TVSeriesStatus() {
   };
 
   useEffect(() => {
-    // TV Series Status
+    // TV Shows Status
     if (searchParams.get("status")) {
       const statusParams = searchParams.get("status").split("|");
       setStatus(statusParams);
