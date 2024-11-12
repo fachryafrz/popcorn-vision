@@ -44,7 +44,7 @@ export default function HomeSlider({ films, genres, filmData }) {
   return (
     <section id="Home Slider" className={`relative pb-4 lg:pb-8`}>
       <h2 className="sr-only">
-        Highlighted {!isTvPage ? `Movies` : `TV Series`}
+        Highlighted {!isTvPage ? `Movies` : `TV Shows`}
       </h2>
       <ul className="sr-only">
         {films.map((film, i) => {

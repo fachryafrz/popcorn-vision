@@ -212,9 +212,9 @@ export function EpisodeModal({ film }) {
                     </div>
                   </section>
 
-                  {/* TV Series Chapter */}
+                  {/* TV Shows Chapter */}
                   <section
-                    id={`TV Series Chapter`}
+                    id={`TV Shows Chapter`}
                     className={`flex items-center gap-2`}
                   >
                     <IonIcon icon={tvOutline} />
@@ -223,8 +223,8 @@ export function EpisodeModal({ film }) {
                     </span>
                   </section>
 
-                  {/* TV Series Average Episode Runtime */}
-                  <section id={`TV Series Average Episode Runtime`}>
+                  {/* TV Shows Average Episode Runtime */}
+                  <section id={`TV Shows Average Episode Runtime`}>
                     <div className={`flex items-center gap-2`}>
                       <IonIcon icon={timeOutline} />
                       {episode.runtime ? (

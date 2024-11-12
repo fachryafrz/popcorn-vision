@@ -47,8 +47,8 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
   return (
     <div>
-      <section id={`Movies & TV Series`}>
-        <h2 className="sr-only">{`Movies & TV Series`}</h2>
+      <section id={`Movies & TV Shows`}>
+        <h2 className="sr-only">{`Movies & TV Shows`}</h2>
 
         <Swiper
           onSwiper={(swiper) => setMediaSwiper(swiper)}
@@ -199,7 +199,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                       : `text-gray-600`
                   }`}
                 >
-                  TV Series
+                  TV Shows
                 </button>
               )}
             </div>

@@ -158,7 +158,7 @@ export default function TileList({
 
         {sortedFilms.length === 0 && (
           <li className={`text-center`}>
-            No {type === "tv" ? "TV Series" : "Movies"} found.
+            No {type === "tv" ? "TV Shows" : "Movies"} found.
           </li>
         )}
 
