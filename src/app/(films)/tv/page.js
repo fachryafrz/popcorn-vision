@@ -4,7 +4,7 @@ import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 
 export async function generateMetadata() {
   return {
-    title: "TV Series",
+    title: "TV Shows",
     description: process.env.NEXT_PUBLIC_APP_DESC,
     alternates: {
       canonical: `${process.env.NEXT_PUBLIC_APP_URL}/tv`,

@@ -36,7 +36,7 @@ export default function FilmReleaseDate({
             </section>
           )
         : film.first_air_date && (
-            <section id={`TV Series Air Date`}>
+            <section id={`TV Shows Air Date`}>
               <Reveal>
                 <div className={`flex items-start gap-1`}>
                   <IonIcon

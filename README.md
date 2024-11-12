@@ -6,7 +6,7 @@
 
 ## 🎥 I'm thrilled to introduce you to Popcorn Vision 📺
 
-Are you a movie buff or a TV series fanatic? Look no further! I'm excited to share with you my brand new website: Popcorn Vision! 🍿🌟
+Are you a movie buff or a TV shows fanatic? Look no further! I'm excited to share with you my brand new website: Popcorn Vision! 🍿🌟
 
 Popcorn Vision is your go-to destination for all things movies and TV shows. Whether you're searching for the latest blockbuster release or an underrated gem, we've got you covered.
 
@@ -16,7 +16,7 @@ Here's what you can expect from our fantastic platform:
 
 ### 🎬 Extensive Database:
 
-Explore a vast collection of movies and TV series. From timeless classics to the hottest releases, we've curated a diverse library that caters to every taste and preference.
+Explore a vast collection of movies and TV shows. From timeless classics to the hottest releases, we've curated a diverse library that caters to every taste and preference.
 
 ### 📝 Detailed Information:
 
@@ -28,7 +28,7 @@ Get the inside scoop with our insightful reviews. Discover what others think abo
 
 ### 👥 Cast and Crew:
 
-Learn more about the talented individuals who bring your favorite movies and TV series to life. From actors and actresses to directors and producers, we've got all the details you need.
+Learn more about the talented individuals who bring your favorite movies and TV shows to life. From actors and actresses to directors and producers, we've got all the details you need.
 
 ### 🔍 Easy Search Functionality:
 

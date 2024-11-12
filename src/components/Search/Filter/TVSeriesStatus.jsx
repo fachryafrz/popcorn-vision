@@ -60,7 +60,7 @@ export default function TVSeriesStatus() {
   };
 
   useEffect(() => {
-    // TV Series Status
+    // TV Shows Status
     if (searchParams.get("status")) {
       const statusParams = searchParams.get("status").split("|");
       setStatus(statusParams);

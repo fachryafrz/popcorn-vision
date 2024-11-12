@@ -22,7 +22,7 @@ export default async function Trending({ film, genres, type }) {
         prefetch={true}
         className="sr-only"
       >
-        <h2>{`Trending ${!isTvPage ? `Movie` : `TV Series`}: ${film.title ?? film.name} (${moment(
+        <h2>{`Trending ${!isTvPage ? `Movie` : `TV Shows`}: ${film.title ?? film.name} (${moment(
           film.release_date ?? film.first_air_date,
         ).format("YYYY")})`}</h2>
       </Link>
