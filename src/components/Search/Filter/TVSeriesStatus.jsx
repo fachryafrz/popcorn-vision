@@ -14,7 +14,7 @@ export default function TVSeriesStatus() {
   const tvSeriesStatus = useMemo(
     () => [
       "All",
-      "Returning Shows",
+      "Returning Series",
       "Planned",
       "In Production",
       "Ended",

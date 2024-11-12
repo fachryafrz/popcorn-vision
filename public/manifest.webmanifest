@@ -4,19 +4,34 @@
   "description": "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
   "icons": [
     {
-      "src": "/maskable/maskable_icon_x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/favicon/android-chrome-192x192.png",
-      "sizes": "192x192",
+      "src": "/favicon/povi-512.png",
       "type": "image/png"
     },
     {
-      "src": "/favicon/android-chrome-512x512.png",
-      "sizes": "512x512",
+      "purpose": "maskable",
+      "sizes": "192x192",
+      "src": "/maskable/maskable_icon_x192.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "192x192",
+      "src": "/favicon/povi-192.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "180x180",
+      "src": "/favicon/povi-180.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "32x32",
+      "src": "/favicon/povi-32.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "16x16",
+      "src": "/favicon/povi-16.png",
       "type": "image/png"
     }
   ],
