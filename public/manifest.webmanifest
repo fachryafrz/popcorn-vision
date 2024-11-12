@@ -10,8 +10,8 @@
     },
     {
       "purpose": "maskable",
-      "sizes": "192x192",
-      "src": "/maskable/maskable_icon_x192.png",
+      "sizes": "512x512",
+      "src": "/maskable/maskable_icon_x512.png",
       "type": "image/png"
     },
     {
