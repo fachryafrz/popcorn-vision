@@ -1,7 +1,7 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo, useLayoutEffect } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
@@ -33,7 +33,6 @@ export default function Search({
   // State
   const [notAvailable, setNotAvailable] = useState("");
   const [isFilterActive, setIsFilterActive] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
 
   // Global State
   const { location } = useLocation();
@@ -118,26 +117,14 @@ export default function Search({
   };
 
   const handleResetFilters = () => {
-    if (isQueryParams) {
-      router.push(`/search?query=${isQueryParams}`);
-    } else {
-      router.push(`/search`);
-    }
+    router.push(`/search${isQueryParams ? `?query=${isQueryParams}` : ""}`);
   };
 
   // Handle scroll effect
-  useEffect(() => {
-    if (window.innerWidth < 1280) {
-      setIsFilterActive(false);
-    } else {
+  useLayoutEffect(() => {
+    if (window.innerWidth >= 1280) {
       setIsFilterActive(true);
     }
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY >= 1);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Handle React-Select Input Styles
