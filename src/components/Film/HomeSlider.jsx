@@ -89,11 +89,11 @@ export default function HomeSlider({ films, genres, filmData }) {
           }}
           effect="fade"
           // loop={true} // NOTE: If this is enabled, the activeSlide will not work
-          autoplay={{
-            delay: 10000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          }}
+          // autoplay={{
+          //   delay: 10000,
+          //   disableOnInteraction: false,
+          //   pauseOnMouseEnter: true,
+          // }}
           keyboard={true}
           spaceBetween={0}
           slidesPerView={1}
@@ -220,43 +220,23 @@ function HomeFilm({
   return (
     <>
       <div className={`-z-10 h-full w-full`}>
-        {/* Poster */}
-        <Reveal y={0} className={`h-full md:hidden`}>
+        {/* Poster & Backdrop */}
+        <Reveal y={0} className={`h-full`}>
           <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-              role="presentation"
-              loading="lazy"
-              srcSet={`
-                    https://image.tmdb.org/t/p/w780${filmPoster} 300w,
-                  `}
-              sizes="100vw"
-              draggable={false}
-              alt=""
-              aria-hidden
-            />
-          </ImagePovi>
-        </Reveal>
-
-        {/* Backdrop */}
-        <Reveal y={0} className={`hidden h-full md:block`}>
-          <ImagePovi
-            imgPath={filmBackdrop}
-            position={`top`}
-            className={`h-full`}
-          >
-            <img
-              src={`https://image.tmdb.org/t/p/w500${filmBackdrop}`}
-              role="presentation"
-              loading="lazy"
-              srcSet={`
-                    https://image.tmdb.org/t/p/w1280${filmBackdrop} 780w,
-                  `}
-              sizes="100vw"
-              draggable={false}
-              alt=""
-              aria-hidden
-            />
+            <picture>
+              <source
+                media="(min-width: 640px)"
+                srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+              />
+              <img
+                src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+                role="presentation"
+                loading="lazy"
+                draggable={false}
+                alt=""
+                aria-hidden
+              />
+            </picture>
           </ImagePovi>
         </Reveal>
       </div>

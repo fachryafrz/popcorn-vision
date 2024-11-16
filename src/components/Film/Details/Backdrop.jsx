@@ -14,21 +14,28 @@ export default function FilmBackdrop({ film }) {
           position={`top`}
           className={`absolute inset-0 z-0 aspect-video max-h-[100dvh] w-full overflow-hidden before:absolute before:inset-0 before:z-0 before:bg-gradient-to-t before:from-base-100 md:min-h-[500px] md:opacity-[50%] lg:max-h-[120dvh]`}
         >
-          <img
-            src={`https://image.tmdb.org/t/p/w500${film.backdrop_path}`}
-            role="presentation"
-            loading="lazy"
-            srcSet={`
-                  https://image.tmdb.org/t/p/w500${film.backdrop_path} 500w,
-                  https://image.tmdb.org/t/p/w780${film.backdrop_path} 780w,
-                  https://image.tmdb.org/t/p/w1280${film.backdrop_path} 1280w,
-                  https://image.tmdb.org/t/p/original${film.backdrop_path} 1536w
-                `}
-            sizes="100vw"
-            draggable={false}
-            alt=""
-            aria-hidden
-          />
+          <picture>
+            <source
+              media="(min-width: 640px) and (max-width: 767px)"
+              srcset={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
+            />
+            <source
+              media="(min-width: 768px) and (max-width: 1535px)"
+              srcset={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
+            />
+            <source
+              media="(min-width: 1536px)"
+              srcset={`https://image.tmdb.org/t/p/original${film.backdrop_path}`}
+            />
+            <img
+              src={`https://image.tmdb.org/t/p/w500${film.backdrop_path}`}
+              role="presentation"
+              loading="lazy"
+              draggable={false}
+              alt=""
+              aria-hidden
+            />
+          </picture>
         </ImagePovi>
       </Reveal>
     </>

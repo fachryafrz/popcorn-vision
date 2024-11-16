@@ -39,12 +39,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
         className={`aspect-poster sm:flex-1`}
       >
         <img
-          src={`https://image.tmdb.org/t/p/w500${person.profile_path}`}
-          srcSet={`
-            https://image.tmdb.org/t/p/w500${person.profile_path} 500w,
-            https://image.tmdb.org/t/p/w780${person.profile_path} 780w
-          `}
-          sizes="100vw"
+          src={`https://image.tmdb.org/t/p/w780${person.profile_path}`}
           role="presentation"
           loading="lazy"
           draggable={false}

@@ -115,21 +115,23 @@ export default function FilmMedia({ film, videos, images }) {
           {images.slice(0, 10).map((img, index) => {
             return (
               <SwiperSlide key={index}>
-                <figure className="swiper-zoom-container">
+                <picture>
+                  <source
+                    media="(min-width: 780px) and (max-width: 1279px)"
+                    srcset={`https://image.tmdb.org/t/p/w780${img.file_path}`}
+                  />
+                  <source
+                    media="(min-width: 1280px)"
+                    srcset={`https://image.tmdb.org/t/p/w1280${img.file_path}`}
+                  />
                   <img
-                    src={`https://image.tmdb.org/t/p/w300${img.file_path}`}
-                    srcSet={`
-                      https://image.tmdb.org/t/p/w780${img.file_path} 780w,
-                      https://image.tmdb.org/t/p/w1280${img.file_path} 1280w,
-                      https://image.tmdb.org/t/p/original${img.file_path} 1536w
-                    `}
-                    sizes="100vw"
+                    src={`https://image.tmdb.org/t/p/w500${img.file_path}`}
                     alt={film.title ?? film.name}
                     className={`h-full w-full object-cover`}
                     draggable={false}
                     loading="lazy"
                   />
-                </figure>
+                </picture>
               </SwiperSlide>
             );
           })}

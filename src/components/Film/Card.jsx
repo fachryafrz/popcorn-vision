@@ -40,13 +40,9 @@ export default function FilmCard({ film, isTvPage }) {
         */}
 
         <img
-          src={`https://image.tmdb.org/t/p/w185${film.poster_path}`}
+          src={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
           role="presentation"
           loading="lazy"
-          srcSet={`
-              https://image.tmdb.org/t/p/w300${film.poster_path} 100w,
-            `}
-          sizes="100vw"
           draggable={false}
           alt=""
           aria-hidden

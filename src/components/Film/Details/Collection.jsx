@@ -150,10 +150,6 @@ export function CollectionItem({
             role="presentation"
             draggable={false}
             loading="lazy"
-            srcSet={`
-              https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
-            `}
-            sizes="100vw"
             alt=""
             aria-hidden
           />
@@ -274,10 +270,6 @@ function FilmSeason({ film, item, index }) {
             role="presentation"
             draggable={false}
             loading="lazy"
-            srcSet={`
-              https://image.tmdb.org/t/p/w92${item.poster_path} 92w,
-            `}
-            sizes="100vw"
             alt=""
             aria-hidden
           />
