@@ -106,14 +106,9 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                           className={`relative aspect-poster overflow-hidden rounded-lg`}
                         >
                           <img
-                            src={`https://image.tmdb.org/t/p/w185${film.poster_path}`}
+                            src={`https://image.tmdb.org/t/p/w300${film.poster_path}`}
                             role="presentation"
                             loading="lazy"
-                            srcSet={`
-                              https://image.tmdb.org/t/p/w185${film.poster_path} 185w,
-                              https://image.tmdb.org/t/p/w300${film.poster_path} 300w,
-                            `}
-                            sizes="100vw"
                             draggable={false}
                             alt=""
                             aria-hidden

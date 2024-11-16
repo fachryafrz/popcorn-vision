@@ -159,11 +159,7 @@ export default function HoverCard() {
                 className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
               >
                 <img
-                  src={`https://image.tmdb.org/t/p/w185${card.backdrop_path}`}
-                  srcSet={`
-                    https://image.tmdb.org/t/p/w780${card.backdrop_path} 100w
-                  `}
-                  sizes="100vw"
+                  src={`https://image.tmdb.org/t/p/w780${card.backdrop_path}`}
                   role="presentation"
                   alt=""
                   aria-hidden

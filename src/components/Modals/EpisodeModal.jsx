@@ -159,21 +159,25 @@ export function EpisodeModal({ film }) {
                 imgPath={episode.still_path}
                 className={`relative z-0 aspect-video overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
               >
-                <img
-                  src={`https://image.tmdb.org/t/p/w185${episode.still_path}`}
-                  srcSet={`
-                      https://image.tmdb.org/t/p/w500${episode.still_path} 500w,
-                      https://image.tmdb.org/t/p/w780${episode.still_path} 780w,
-                      https://image.tmdb.org/t/p/w1280${episode.still_path} 1280w
-                    `}
-                  sizes="100vw"
-                  role="presentation"
-                  alt=""
-                  aria-hidden
-                  className={`object-cover`}
-                  draggable={false}
-                  loading="lazy"
-                />
+                <picture>
+                  <source
+                    media="(min-width: 768px) and (max-width: 1279px)"
+                    srcset={`https://image.tmdb.org/t/p/w780${episode.still_path}`}
+                  />
+                  <source
+                    media="(min-width: 1280px)"
+                    srcset={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                  />
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${episode.still_path}`}
+                    role="presentation"
+                    alt=""
+                    aria-hidden
+                    className={`object-cover`}
+                    draggable={false}
+                    loading="lazy"
+                  />
+                </picture>
               </ImagePovi>
 
               <div

@@ -36,14 +36,9 @@ export default async function Trending({ film, genres, type }) {
           className={`absolute inset-0 z-0 blur-md md:left-[30%] md:blur-0`}
         >
           <img
-            src={`https://image.tmdb.org/t/p/w45${film.backdrop_path}`}
+            src={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
             role="presentation"
             loading="lazy"
-            srcSet={`
-              https://image.tmdb.org/t/p/w45${film.backdrop_path} 700w,
-              https://image.tmdb.org/t/p/w1280${film.backdrop_path} 1280w,
-            `}
-            sizes="100vw"
             draggable={false}
             alt=""
             aria-hidden
@@ -56,19 +51,20 @@ export default async function Trending({ film, genres, type }) {
           className={`z-30 aspect-poster h-full w-full max-w-[300px] overflow-hidden rounded-2xl`}
         >
           <ImagePovi imgPath={film.poster_path} className={`h-full`}>
-            <img
-              src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
-              role="presentation"
-              loading="lazy"
-              srcSet={`
-              https://image.tmdb.org/t/p/w500${film.poster_path} 500w,
-              https://image.tmdb.org/t/p/w780${film.poster_path} 780w,
-            `}
-              sizes="100vw"
-              draggable={false}
-              alt=""
-              aria-hidden
-            />
+            <picture>
+              <source
+                media="(min-width: 768px)"
+                srcset={`https://image.tmdb.org/t/p/w780${film.poster_path}`}
+              />
+              <img
+                src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}
+                role="presentation"
+                loading="lazy"
+                draggable={false}
+                alt=""
+                aria-hidden
+              />
+            </picture>
           </ImagePovi>
         </Reveal>
         <div className="z-30 flex flex-col items-center gap-2 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%]">

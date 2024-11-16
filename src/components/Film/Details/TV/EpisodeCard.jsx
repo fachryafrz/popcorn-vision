@@ -37,19 +37,21 @@ export default function EpisodeCard({
         imgPath={imgPath}
         className={`relative aspect-video w-full overflow-hidden rounded-lg`}
       >
-        <img
-          src={`https://image.tmdb.org/t/p/w185${imgPath}`}
-          srcSet={`
-            https://image.tmdb.org/t/p/w780${imgPath} 780w
-          `}
-          sizes="100vw"
-          loading="lazy"
-          role="presentation"
-          draggable={false}
-          className="w-full"
-          alt=""
-          aria-hidden
-        />
+        <picture>
+          <source
+            media="(min-width: 1024px)"
+            srcset={`https://image.tmdb.org/t/p/w780${imgPath}`}
+          />
+          <img
+            src={`https://image.tmdb.org/t/p/w500${imgPath}`}
+            loading="lazy"
+            role="presentation"
+            draggable={false}
+            className="w-full"
+            alt=""
+            aria-hidden
+          />
+        </picture>
 
         {overlay && (
           <span
