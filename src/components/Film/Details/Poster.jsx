@@ -33,7 +33,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
     // NOTE: Can't use window.location.href
     const currentURL = `/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(
-      !isTvPage ? film.title : film.name,
+      film.title ?? film.name,
     )}`;
 
     if (film.overview) {
