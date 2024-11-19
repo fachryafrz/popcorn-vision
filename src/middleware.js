@@ -20,7 +20,7 @@ export default async function middleware(request) {
     const film = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
     ).then((res) => res.json());
-    const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film.title ?? film.name)}`;
+    const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film?.title ?? film?.name)}`;
 
     if (pathname !== correctPathname) {
       return NextResponse.redirect(new URL(correctPathname, request.url));
