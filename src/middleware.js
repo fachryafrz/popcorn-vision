@@ -18,7 +18,7 @@ export default async function middleware(request) {
   if (isMoviesPage || isTvPage) {
     const id = pathname.split("-")[0].split("/").pop();
     const film = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}`,
+      `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
     ).then((res) => res.json());
     const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film?.title.toString() ?? film?.name?.toString() ?? "")}`;
     if (pathname !== correctPathname) {
