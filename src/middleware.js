@@ -15,17 +15,17 @@ export default async function middleware(request) {
   const type = isTvPage ? "tv" : "movie";
   const tmdbSessionID = cookiesStore.has(TMDB_SESSION_ID);
 
-  if (isMoviesPage || isTvPage) {
-    const id = pathname.split("-")[0].split("/").pop();
-    const film = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
-    ).then((res) => res.json());
-    const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film?.title ?? film?.name)}`;
+  // if (isMoviesPage || isTvPage) {
+  //   const id = pathname.split("-")[0].split("/").pop();
+  //   const film = await fetch(
+  //     `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
+  //   ).then((res) => res.json());
+  //   const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film?.title ?? film?.name)}`;
 
-    if (pathname !== correctPathname) {
-      return NextResponse.redirect(new URL(correctPathname, request.url));
-    }
-  }
+  //   if (pathname !== correctPathname) {
+  //     return NextResponse.redirect(new URL(correctPathname, request.url));
+  //   }
+  // }
 
   const isLoginPage = pathname.startsWith("/login");
   const isProfilePage = pathname.startsWith("/profile");
