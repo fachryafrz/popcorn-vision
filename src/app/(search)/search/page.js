@@ -35,28 +35,35 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const { genres: movieGenresData } = await fetchData({
-    endpoint: `/genre/movie/list`,
-  });
-  const languagesData = await fetchData({
-    endpoint: `/configuration/languages`,
-  });
-  const {
-    results: [fetchMinYear],
-  } = await fetchData({
-    endpoint: `/discover/movie`,
-    queryParams: {
-      sort_by: "primary_release_date.asc",
+  const [
+    { genres: movieGenresData },
+    languagesData,
+    {
+      results: [fetchMinYear],
     },
-  });
-  const {
-    results: [fetchMaxYear],
-  } = await fetchData({
-    endpoint: `/discover/movie`,
-    queryParams: {
-      sort_by: "primary_release_date.desc",
+    {
+      results: [fetchMaxYear],
     },
-  });
+  ] = await Promise.all([
+    fetchData({
+      endpoint: `/genre/movie/list`,
+    }),
+    fetchData({
+      endpoint: `/configuration/languages`,
+    }),
+    fetchData({
+      endpoint: `/discover/movie`,
+      queryParams: {
+        sort_by: "primary_release_date.asc",
+      },
+    }),
+    fetchData({
+      endpoint: `/discover/movie`,
+      queryParams: {
+        sort_by: "primary_release_date.desc",
+      },
+    }),
+  ]);
 
   const minYear = dayjs(fetchMinYear.release_date).year();
   const maxYear = dayjs(fetchMaxYear.release_date).year();

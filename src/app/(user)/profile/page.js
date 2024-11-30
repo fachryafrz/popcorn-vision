@@ -65,49 +65,57 @@ export default async function page() {
     },
   );
 
-  const favoriteMovies = await fetchData({
-    endpoint: `/account/${user.id}/favorite/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const watchlistMovies = await fetchData({
-    endpoint: `/account/${user.id}/watchlist/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const ratedMovies = await fetchData({
-    endpoint: `/account/${user.id}/rated/movies`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
-
-  const favoriteTv = await fetchData({
-    endpoint: `/account/${user.id}/favorite/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const watchlistTv = await fetchData({
-    endpoint: `/account/${user.id}/watchlist/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
-  const ratedTv = await fetchData({
-    endpoint: `/account/${user.id}/rated/tv`,
-    queryParams: {
-      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      sort_by: "created_at.desc",
-    },
-  });
+  const [
+    favoriteMovies,
+    watchlistMovies,
+    ratedMovies,
+    favoriteTv,
+    watchlistTv,
+    ratedTv,
+  ] = await Promise.all([
+    fetchData({
+      endpoint: `/account/${user.id}/favorite/movies`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+    fetchData({
+      endpoint: `/account/${user.id}/watchlist/movies`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+    fetchData({
+      endpoint: `/account/${user.id}/rated/movies`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+    fetchData({
+      endpoint: `/account/${user.id}/favorite/tv`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+    fetchData({
+      endpoint: `/account/${user.id}/watchlist/tv`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+    fetchData({
+      endpoint: `/account/${user.id}/rated/tv`,
+      queryParams: {
+        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+        sort_by: "created_at.desc",
+      },
+    }),
+  ]);
 
   // const fetchFilmsData = async ({ type = "movie", section, films }) => {
   //   const data = await Promise.all(

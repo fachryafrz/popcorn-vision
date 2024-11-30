@@ -35,24 +35,31 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const { genres: tvGenresData } = await fetchData({
-    endpoint: `/genre/tv/list`,
-  });
-  const languagesData = await fetchData({
-    endpoint: `/configuration/languages`,
-  });
-  const { results: fetchMinYear } = await fetchData({
-    endpoint: `/discover/tv`,
-    queryParams: {
-      sort_by: "first_air_date.asc",
-    },
-  });
-  const { results: fetchMaxYear } = await fetchData({
-    endpoint: `/discover/tv`,
-    queryParams: {
-      sort_by: "first_air_date.desc",
-    },
-  });
+  const [
+    { genres: tvGenresData },
+    languagesData,
+    { results: fetchMinYear },
+    { results: fetchMaxYear },
+  ] = await Promise.all([
+    fetchData({
+      endpoint: `/genre/tv/list`,
+    }),
+    fetchData({
+      endpoint: `/configuration/languages`,
+    }),
+    fetchData({
+      endpoint: `/discover/tv`,
+      queryParams: {
+        sort_by: "first_air_date.asc",
+      },
+    }),
+    fetchData({
+      endpoint: `/discover/tv`,
+      queryParams: {
+        sort_by: "first_air_date.desc",
+      },
+    }),
+  ]);
 
   const defaultMaxYear = new Date().getFullYear() + 1;
   const minYear = new Date(fetchMinYear[0].first_air_date).getFullYear();

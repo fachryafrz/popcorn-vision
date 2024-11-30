@@ -5,8 +5,11 @@ import FilmDetail from "../../movies/[id]/page";
 
 export async function generateMetadata({ params, type = `tv` }) {
   const { id } = params;
-  const film = await getFilm({ id, type });
-  const images = await getFilm({ id, type, path: "/images" });
+
+  const [film, images] = await Promise.all([
+    getFilm({ id, type }),
+    getFilm({ id, type, path: "/images" }),
+  ])
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
