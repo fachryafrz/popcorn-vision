@@ -50,10 +50,12 @@ export default async function Home({ type = "movie" }) {
   const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
 
   // API Requests
-  const { genres } = await fetchData({
-    endpoint: `/genre/${type}/list`,
-  });
-  const { results: trending } = await getTrending({ type });
+  const [{ genres }, { results: trending }] = await Promise.all([
+    fetchData({
+      endpoint: `/genre/${type}/list`,
+    }),
+    getTrending({ type }),
+  ]);
 
   const defaultParams = !isTvPage
     ? {
@@ -80,7 +82,7 @@ export default async function Home({ type = "movie" }) {
         </Suspense>
       </div>
 
-      <div className={`lg:-mt-[5rem] flex flex-col gap-4`}>
+      <div className={`flex flex-col gap-4 lg:-mt-[5rem]`}>
         {/* Now Playing */}
         <Suspense fallback={<SkeletonSlider />}>
           <NowPlaying

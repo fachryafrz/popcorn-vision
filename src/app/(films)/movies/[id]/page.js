@@ -2,25 +2,25 @@ import React from "react";
 import FilmBackdrop from "../../../../components/Film/Details/Backdrop";
 import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
-import { isPlural } from "@/lib/isPlural";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
 import moment from "moment";
-import { headers } from "next/headers";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
 
-  const film = await fetchData({
-    endpoint: `/${type}/${id}`,
-  });
-  const images = await fetchData({
-    endpoint: `/${type}/${id}/images`,
-    queryParams: {
-      include_image_language: "en",
-    },
-  });
+  const [film, images] = await Promise.all([
+    fetchData({
+      endpoint: `/${type}/${id}`,
+    }),
+    fetchData({
+      endpoint: `/${type}/${id}/images`,
+      queryParams: {
+        include_image_language: "en",
+      },
+    }),
+  ]);
   const isTvPage = type !== "movie" ? true : false;
 
   const filmReleaseDate = film.release_date
@@ -69,19 +69,22 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const isTvPage = type === "tv";
 
-  const film = await fetchData({
-    endpoint: `/${type}/${id}`,
-    queryParams: {
-      append_to_response:
-        "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
-    },
-  });
-  const images = await fetchData({
-    endpoint: `/${type}/${id}/images`,
-    queryParams: {
-      include_image_language: "en",
-    },
-  });
+  const [film, images, genres] = await Promise.all([
+    fetchData({
+      endpoint: `/${type}/${id}`,
+      queryParams: {
+        append_to_response:
+          "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
+      },
+    }),
+    fetchData({
+      endpoint: `/${type}/${id}/images`,
+      queryParams: {
+        include_image_language: "en",
+      },
+    }),
+    getGenres({ type }),
+  ]);
 
   const {
     credits,
@@ -109,8 +112,6 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let recommendationsAndSimilar = {
     results: [...recommendations.results, ...similar.results],
   };
-
-  const genres = await getGenres({ type });
 
   // Schema.org JSON-LD
   const DATA_COUNT = 2;

@@ -7,8 +7,10 @@ import { getPerson } from "@/lib/fetch";
 export async function generateMetadata({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id });
-  const images = await getPerson({ id, path: "/images" });
+  const [person, images] = await Promise.all([
+    getPerson({ id }),
+    getPerson({ id, path: "/images" }),
+  ]);
 
   let profiles;
 
@@ -50,7 +52,7 @@ export async function generateMetadata({ params }) {
 export default async function Person({ params }) {
   const { id } = params;
 
-  const person = await getPerson({ id });
+  const [person] = await Promise.all([getPerson({ id })]);
   const {
     combined_credits: combinedCredits,
     movie_credits: movieCredits,
