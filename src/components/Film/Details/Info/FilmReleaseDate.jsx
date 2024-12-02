@@ -53,14 +53,16 @@ export default function FilmReleaseDate({
                         )}
                       </p>
 
-                      <span>&nbsp;-&nbsp;</span>
-
                       {film.last_air_date &&
                         film.last_air_date !== film.first_air_date && (
-                          <p>
-                            <span className="sr-only">Last aired:&nbsp;</span>
-                            {`${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
-                          </p>
+                          <>
+                            <span>&nbsp;-&nbsp;</span>
+
+                            <p>
+                              <span className="sr-only">Last aired:&nbsp;</span>
+                              {`${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
+                            </p>
+                          </>
                         )}
                     </div>
                   </time>
