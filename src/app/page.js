@@ -181,13 +181,13 @@ export default async function Home({ type = "movie" }) {
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
       <p className="sr-only">{process.env.NEXT_PUBLIC_APP_DESC}</p>
       <div className="-mt-[66px]">
-        {/* <Suspense fallback={<SkeletonHomeSlider />}> */}
+        <Suspense fallback={<SkeletonHomeSlider />}>
           <HomeSlider
             films={trending.slice(0, 5)}
             genres={genres}
             filmData={homeSliderData}
           />
-        {/* </Suspense> */}
+        </Suspense>
       </div>
 
       <div className={`flex flex-col gap-4 lg:-mt-[5rem]`}>
