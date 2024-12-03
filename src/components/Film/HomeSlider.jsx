@@ -177,8 +177,8 @@ function HomeFilm({
   filmData,
 }) {
   const [filmDetails, setFilmDetails] = useState();
-  const [filmPoster, setFilmPoster] = useState();
-  const [filmBackdrop, setFilmBackdrop] = useState();
+  const [filmPoster, setFilmPoster] = useState(film.poster_path);
+  const [filmBackdrop, setFilmBackdrop] = useState(film.backdrop_path);
 
   useEffect(() => {
     if (filmData.length > 0) {
@@ -257,7 +257,7 @@ function HomeFilm({
 
 // NOTE: This is for the backdrop with the film title
 function SliderThumbs({ film, isTvPage, index, filmData }) {
-  const [filmBackdrop, setFilmBackdrop] = useState();
+  const [filmBackdrop, setFilmBackdrop] = useState(film.backdrop_path);
 
   useEffect(() => {
     if (filmData.length > 0) {
