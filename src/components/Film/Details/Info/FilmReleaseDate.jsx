@@ -45,7 +45,7 @@ export default function FilmReleaseDate({
                   />
 
                   <time dateTime={film.last_air_date ?? film.first_air_date}>
-                    <div className={`flex`}>
+                    <div className={`flex flex-wrap`}>
                       <p>
                         <span className="sr-only">First aired:&nbsp;</span>
                         {moment(film.first_air_date).format(
