@@ -7,13 +7,9 @@ import providers from "../json/providers.json";
 import { fetchData, getTrending } from "@/lib/fetch";
 import moment from "moment";
 import { POPCORN } from "@/lib/constants";
-import NowPlaying from "@/components/Layout/Home/NowPlaying";
 import SkeletonSlider from "@/components/Skeleton/main/Slider";
-import Upcoming from "@/components/Layout/Home/Upcoming";
-import TopRated from "@/components/Layout/Home/TopRated";
 import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
-import HomeSliderFetch from "@/components/Layout/Home/HomeSliderFetch";
 
 export async function generateMetadata() {
   return {
@@ -49,14 +45,6 @@ export default async function Home({ type = "movie" }) {
   const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
   const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
 
-  // API Requests
-  const [{ genres }, { results: trending }] = await Promise.all([
-    fetchData({
-      endpoint: `/genre/${type}/list`,
-    }),
-    getTrending({ type }),
-  ]);
-
   const defaultParams = !isTvPage
     ? {
         region: "US",
@@ -72,34 +60,168 @@ export default async function Home({ type = "movie" }) {
         sort_by: "popularity.desc",
       };
 
+  // API Requests
+  const [
+    genres,
+    trending,
+    nowPlaying,
+    upcoming,
+    topRated,
+    companiesFilms,
+    providersFilms,
+  ] = await Promise.all([
+    // Genres
+    fetchData({
+      endpoint: `/genre/${type}/list`,
+    }).then(({ genres }) => genres),
+
+    // Trending
+    getTrending({ type }).then(({ results }) => results),
+
+    // Now playing
+    fetchData({
+      endpoint: `/discover/${type}`,
+      queryParams: !isTvPage
+        ? {
+            ...defaultParams,
+            without_genres: 10749,
+            "primary_release_date.gte": monthsAgo,
+            "primary_release_date.lte": today,
+          }
+        : {
+            ...defaultParams,
+            "first_air_date.gte": monthsAgo,
+            "first_air_date.lte": today,
+          },
+    }),
+
+    // Upcoming
+    fetchData({
+      endpoint: `/discover/${type}`,
+      queryParams: !isTvPage
+        ? {
+            ...defaultParams,
+            without_genres: 10749,
+            "primary_release_date.gte": tomorrow,
+            "primary_release_date.lte": monthsLater,
+          }
+        : {
+            ...defaultParams,
+            "first_air_date.gte": tomorrow,
+            "first_air_date.lte": monthsLater,
+          },
+    }),
+
+    // Top Rated
+    fetchData({
+      endpoint: `/discover/${type}`,
+      queryParams: {
+        ...defaultParams,
+        // without_genres: 18,
+        sort_by: "vote_count.desc",
+      },
+    }),
+
+    // Companies Films
+    Promise.all(
+      companies.slice(0, 3).map((company) =>
+        fetchData({
+          endpoint: `/discover/${type}`,
+          queryParams: {
+            ...defaultParams,
+            with_companies: company.id,
+          },
+        }),
+      ),
+    ),
+
+    // Providers Films
+    Promise.all(
+      providers.slice(0, 3).map((provider) =>
+        fetchData({
+          endpoint: `/discover/${type}`,
+          queryParams: {
+            ...defaultParams,
+            with_networks: provider.id,
+          },
+        }),
+      ),
+    ),
+  ]);
+
+  const [homeSliderData, genresFilms] = await Promise.all([
+    // Home Slider Films
+    Promise.all(
+      trending.slice(0, 5).map((film) =>
+        fetchData({
+          endpoint: `/${type}/${film.id}`,
+          queryParams: {
+            append_to_response: "images",
+          },
+        }),
+      ),
+    ),
+
+    // Genres Films
+    Promise.all(
+      genres.slice(0, 3).map((genre) =>
+        fetchData({
+          endpoint: `/discover/${type}`,
+          queryParams: {
+            ...defaultParams,
+            with_genres: genre.id,
+          },
+        }),
+      ),
+    ),
+  ]);
+
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
       <p className="sr-only">{process.env.NEXT_PUBLIC_APP_DESC}</p>
       <div className="-mt-[66px]">
-        <Suspense fallback={<SkeletonHomeSlider />}>
-          <HomeSliderFetch trending={trending} type={type} genres={genres} />
-        </Suspense>
+        {/* <Suspense fallback={<SkeletonHomeSlider />}> */}
+          <HomeSlider
+            films={trending.slice(0, 5)}
+            genres={genres}
+            filmData={homeSliderData}
+          />
+        {/* </Suspense> */}
       </div>
 
       <div className={`flex flex-col gap-4 lg:-mt-[5rem]`}>
         {/* Now Playing */}
         <Suspense fallback={<SkeletonSlider />}>
-          <NowPlaying
-            type={type}
-            defaultParams={defaultParams}
+          <FilmSlider
+            films={nowPlaying}
+            title={!isTvPage ? `Now Playing` : `On The Air`}
             genres={genres}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${monthsAgo}..${today}`}
           />
         </Suspense>
 
         {/* Upcoming */}
         <Suspense fallback={<SkeletonSlider />}>
-          <Upcoming type={type} defaultParams={defaultParams} genres={genres} />
+          <FilmSlider
+            films={upcoming}
+            title={`Upcoming`}
+            genres={genres}
+            sort={"ASC"}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${tomorrow}..${monthsLater}`}
+          />
         </Suspense>
 
         {/* Top Rated */}
         <Suspense fallback={<SkeletonSlider />}>
-          <TopRated type={type} defaultParams={defaultParams} genres={genres} />
+          <FilmSlider
+            films={topRated}
+            title={`Top Rated`}
+            genres={genres}
+            viewAll={`${
+              !isTvPage ? `/search` : `/tv/search`
+            }?sort_by=vote_count.desc`}
+          />
         </Suspense>
 
         {/* Trending */}
@@ -111,37 +233,29 @@ export default async function Home({ type = "movie" }) {
 
         {/* Companies / Providers */}
         {!isTvPage
-          ? companies.slice(0, 3).map(async (company) => (
-              <FilmSlider
-                key={company.id}
-                films={await fetchData({
-                  endpoint: `/discover/${type}`,
-                  queryParams: {
-                    ...defaultParams,
-                    with_companies: company.id,
-                  },
-                })}
-                title={company.name}
-                genres={genres}
-                viewAll={`${
-                  !isTvPage ? `/search` : `/tv/search`
-                }?with_companies=${company.id}`}
-              />
-            ))
-          : providers.slice(0, 3).map(async (provider) => (
-              <FilmSlider
-                key={provider.id}
-                films={await fetchData({
-                  endpoint: `/discover/${type}`,
-                  queryParams: {
-                    ...defaultParams,
-                    with_networks: provider.id,
-                  },
-                })}
-                title={provider.name}
-                genres={genres}
-              />
-            ))}
+          ? companies
+              .slice(0, 3)
+              .map((company, index) => (
+                <FilmSlider
+                  key={company.id}
+                  films={companiesFilms[index]}
+                  title={company.name}
+                  genres={genres}
+                  viewAll={`${
+                    !isTvPage ? `/search` : `/tv/search`
+                  }?with_companies=${company.id}`}
+                />
+              ))
+          : providers
+              .slice(0, 3)
+              .map((provider, index) => (
+                <FilmSlider
+                  key={provider.id}
+                  films={providersFilms[index]}
+                  title={provider.name}
+                  genres={genres}
+                />
+              ))}
 
         {/* Trending */}
         <section
@@ -154,16 +268,10 @@ export default async function Home({ type = "movie" }) {
         </section>
 
         {/* Genres */}
-        {genres.slice(0, 3).map(async (genre) => (
+        {genres.slice(0, 3).map((genre, index) => (
           <FilmSlider
             key={genre.id}
-            films={await fetchData({
-              endpoint: `/discover/${type}`,
-              queryParams: {
-                ...defaultParams,
-                with_genres: genre.id,
-              },
-            })}
+            films={genresFilms[index]}
             title={genre.name}
             genres={genres}
             viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
