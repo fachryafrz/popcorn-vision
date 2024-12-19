@@ -119,13 +119,13 @@ export default function HoverCard() {
           ref={filmPreviewRef}
           id="film-preview"
           onMouseLeave={handleMouseLeave}
-          className={`pointer-events-auto absolute z-20 hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
+          className={`pointer-events-auto absolute z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
           style={{
-            top: position.top + window.scrollY - (isSearchPage ? 50 : 40),
+            top: position.top + window.scrollY + (position.height / 2 - 200),
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
-                  ? position.left + window.scrollX - 50
+                  ? position.left + window.scrollX + (position.width / 2 - 150)
                   : ``
                 : 16,
             right: !sameWidthAsWindow ? `` : 16,
