@@ -79,7 +79,7 @@ export default function Filters({
     <aside
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
-      className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all duration-300 lg:static lg:max-h-none lg:max-w-[300px] ${
+      className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all duration-300 lg:static lg:z-0 lg:max-h-none lg:max-w-[300px] ${
         isFilterActive ? `translate-x-0` : `-translate-x-[calc(100%+1.5rem)]`
       }`}
     >
