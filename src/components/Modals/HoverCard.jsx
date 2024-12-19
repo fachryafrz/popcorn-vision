@@ -34,6 +34,8 @@ export default function HoverCard() {
 
   // Ref
   const filmPreviewRef = useRef();
+  const isSearchPage =
+    pathname.startsWith("/search") || pathname.startsWith("/tv/search");
 
   // Global State
   const { card, setHoverCard, position, setPosition, handleMouseLeave } =
@@ -93,17 +95,6 @@ export default function HoverCard() {
   );
 
   useEffect(() => {
-    const handleScroll = () => {
-      handleMouseLeave();
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
     handleMouseLeave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, searchParams]);
@@ -128,22 +119,16 @@ export default function HoverCard() {
           ref={filmPreviewRef}
           id="film-preview"
           onMouseLeave={handleMouseLeave}
-          className={`pointer-events-auto fixed z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
+          className={`pointer-events-auto absolute z-20 hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
           style={{
-            top:
-              position.top < 80
-                ? 8
-                : sameHeightAsWindow
-                  ? `unset`
-                  : position.top + position.height / 2 - 200,
-            bottom: sameHeightAsWindow ? 8 : `unset`,
+            top: position.top + window.scrollY - (isSearchPage ? 50 : 40),
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
-                  ? position.left + position.width / 2 - 150
-                  : `unset`
+                  ? position.left + window.scrollX - 50
+                  : ``
                 : 16,
-            right: !sameWidthAsWindow ? `unset` : 16,
+            right: !sameWidthAsWindow ? `` : 16,
           }}
         >
           <>

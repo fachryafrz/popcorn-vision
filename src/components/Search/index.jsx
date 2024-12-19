@@ -204,7 +204,7 @@ export default function Search({
   }, []);
 
   return (
-    <div className={`flex lg:px-4`}>
+    <div className={`flex lg:px-4 ${isFilterActive ? `gap-4` :``}`}>
       <h1 className="sr-only">
         {!isTvPage ? `Search Movies` : `Search TV Shows`}
       </h1>
@@ -223,11 +223,11 @@ export default function Search({
       />
 
       <div
-        className={`flex w-full flex-col gap-2 p-4 pb-0 transition-all duration-300 @container lg:pr-0 ${!isFilterActive ? `lg:-ml-[300px] lg:pl-0` : `lg:pl-4`}`}
+        className={`flex w-full flex-col gap-2 px-4 transition-all duration-300 @container lg:px-0 ${!isFilterActive ? `lg:-ml-[300px]` : ``}`}
       >
         {/* Options */}
         <section
-          className={`sticky top-[66px] z-40 -mx-4 -mt-4 flex items-center gap-2 bg-base-100 bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
+          className={`sticky top-[66px] z-40 -mx-4 flex items-center gap-2 bg-base-100 bg-opacity-85 px-4 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
           <div className={`flex-grow lg:hidden`}>
