@@ -32,11 +32,11 @@ export default function Reveal({
   return (
     revealVariants && (
       <m.div
-        variants={revealVariants}
-        initial={`initial`}
-        whileInView={`animate`}
-        transition={{ duration: 0.5, type: "tween", delay: delay }}
-        viewport={{ once: once }}
+        // variants={revealVariants}
+        // initial={`initial`}
+        // whileInView={`animate`}
+        // transition={{ duration: 0.5, type: "tween", delay: delay }}
+        // viewport={{ once: once }}
         className={className}
       >
         {children}

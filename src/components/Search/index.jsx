@@ -1,7 +1,7 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { useState, useMemo, useLayoutEffect } from "react";
+import { useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
@@ -12,6 +12,7 @@ import numeral from "numeral";
 import { fetchData } from "@/lib/fetch";
 import useSWR from "swr";
 import { useLocation } from "@/zustand/location";
+import { useToggleFilter } from "@/zustand/toggleFilter";
 
 export default function Search({
   type = "movie",
@@ -32,10 +33,10 @@ export default function Search({
 
   // State
   const [notAvailable, setNotAvailable] = useState("");
-  const [isFilterActive, setIsFilterActive] = useState(false);
 
   // Global State
   const { location } = useLocation();
+  const { toggleFilter, setToggleFilter } = useToggleFilter();
 
   // SWR configuration
   const fetcher = async (url) => {
@@ -120,13 +121,6 @@ export default function Search({
     router.push(`/search${isQueryParams ? `?query=${isQueryParams}` : ""}`);
   };
 
-  // Handle scroll effect
-  useLayoutEffect(() => {
-    if (window.innerWidth >= 1280) {
-      setIsFilterActive(true);
-    }
-  }, []);
-
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
     return {
@@ -204,7 +198,7 @@ export default function Search({
   }, []);
 
   return (
-    <div className={`flex lg:px-4 ${isFilterActive ? `gap-4` :``}`}>
+    <div className={`flex lg:px-4 ${toggleFilter ? `gap-4` : ``}`}>
       <h1 className="sr-only">
         {!isTvPage ? `Search Movies` : `Search TV Shows`}
       </h1>
@@ -213,8 +207,6 @@ export default function Search({
         type={type}
         inputStyles={inputStyles}
         genresData={genresData}
-        isFilterActive={isFilterActive}
-        setIsFilterActive={setIsFilterActive}
         minYear={minYear}
         maxYear={maxYear}
         languagesData={languagesData}
@@ -223,7 +215,7 @@ export default function Search({
       />
 
       <div
-        className={`flex w-full flex-col gap-2 px-4 transition-all duration-300 @container lg:px-0 ${!isFilterActive ? `lg:-ml-[300px]` : ``}`}
+        className={`flex w-full flex-col gap-2 px-4 transition-all duration-300 @container lg:px-0 ${!toggleFilter ? `lg:-ml-[300px]` : ``}`}
       >
         {/* Options */}
         <section
@@ -255,9 +247,7 @@ export default function Search({
             {/* Filter button */}
             <button
               onClick={() =>
-                isFilterActive
-                  ? setIsFilterActive(false)
-                  : setIsFilterActive(true)
+                toggleFilter ? setToggleFilter(false) : setToggleFilter(true)
               }
               onMouseLeave={() => handleClearNotAvailable()}
               className={`btn btn-secondary aspect-square rounded-full border-none bg-opacity-20 !px-0 lg:btn-sm hocus:bg-opacity-50 lg:h-[42px]`}
@@ -281,7 +271,6 @@ export default function Search({
                 handleNotAvailable={handleNotAvailable}
                 handleClearNotAvailable={handleClearNotAvailable}
                 inputStyles={inputStyles}
-                setIsFilterActive={setIsFilterActive}
               />
             </div>
           </div>
