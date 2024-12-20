@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 export default function FilmBackdrop({ film }) {
   return (
     <>
-      <Reveal y={0} delay={1.2}>
+      <Reveal y={0} delay={0.5}>
         <ImagePovi
           imgPath={film.backdrop_path}
           position={`top`}
@@ -71,11 +71,11 @@ function Reveal({
   return (
     revealVariants && (
       <m.div
-        variants={revealVariants}
-        initial={`initial`}
-        animate={`animate`}
-        transition={{ duration: 0.5, type: "tween", delay: delay }}
-        viewport={{ once: once }}
+        // variants={revealVariants}
+        // initial={`initial`}
+        // animate={`animate`}
+        // transition={{ duration: 0.5, type: "tween", delay: delay }}
+        // viewport={{ once: once }}
         className={className}
       >
         {children}
