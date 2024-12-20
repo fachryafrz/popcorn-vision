@@ -1,7 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { useEffect, useMemo } from "react";
-import moment from "moment";
+import { useMemo } from "react";
 import TVSeriesStatus from "./TVSeriesStatus";
 import ReleaseDate from "./ReleaseDate";
 import Streaming from "./Streaming";
@@ -18,13 +17,12 @@ import Keyword from "./Keyword";
 import SearchSort from "../Sort";
 import RatingCount from "./RatingCount";
 import { useSearchParams } from "next/navigation";
+import { useToggleFilter } from "@/zustand/toggleFilter";
 
 export default function Filters({
   type,
   inputStyles,
   genresData,
-  isFilterActive,
-  setIsFilterActive,
   minYear,
   maxYear,
   languagesData,
@@ -34,6 +32,8 @@ export default function Filters({
   const isTvPage = type === "tv";
   const searchParams = useSearchParams();
   const isQueryParams = searchParams.get("query");
+
+  const { toggleFilter, setToggleFilter } = useToggleFilter();
 
   // Handle MUI Slider, Select & Input Styles
   const sliderStyles = useMemo(() => {
@@ -80,12 +80,12 @@ export default function Filters({
       onMouseOver={() => isQueryParams && handleNotAvailable()}
       onMouseLeave={() => handleClearNotAvailable()}
       className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all duration-300 lg:static lg:z-0 lg:max-h-none lg:max-w-[300px] ${
-        isFilterActive ? `translate-x-0` : `-translate-x-[calc(100%+1.5rem)]`
+        toggleFilter ? `translate-x-0` : `-translate-x-[calc(100%+1.5rem)]`
       }`}
     >
       {/* Close Button */}
       <button
-        onClick={() => setIsFilterActive(false)}
+        onClick={() => setToggleFilter(false)}
         className={`absolute right-4 top-2 z-50 aspect-square lg:hidden`}
       >
         <IonIcon icon={close} className={`text-3xl`} />
@@ -101,7 +101,6 @@ export default function Filters({
             handleNotAvailable={handleNotAvailable}
             handleClearNotAvailable={handleClearNotAvailable}
             inputStyles={inputStyles}
-            setIsFilterActive={setIsFilterActive}
           />
         </section>
 

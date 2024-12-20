@@ -15,6 +15,7 @@ import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
 import { POPCORN_APPLE } from "@/lib/constants";
+import { useToggleFilter } from "@/zustand/toggleFilter";
 
 export default function Navbar() {
   const router = useRouter();
@@ -22,10 +23,19 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const { user } = useAuth();
+  const { setToggleFilter } = useToggleFilter();
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [filmType, setFilmType] = useState("movie");
+
+  useEffect(() => {
+    if (window.innerWidth >= 1280) {
+      setToggleFilter(true);
+    } else {
+      setToggleFilter(false);
+    }
+  }, []);
 
   useEffect(() => {
     let steps;
