@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 // Swiper imports
@@ -176,45 +176,20 @@ function HomeFilm({
   setLoading,
   filmData,
 }) {
-  const [filmDetails, setFilmDetails] = useState();
-  const [filmPoster, setFilmPoster] = useState(film.poster_path);
-  const [filmBackdrop, setFilmBackdrop] = useState(film.backdrop_path);
+  const matchFilm = filmData.filter((f) => f.id === film.id);
 
-  useEffect(() => {
-    if (filmData.length > 0) {
-      const matchFilm = filmData.filter((f) => f.id === film.id);
+  const { images } = matchFilm[0];
+  const { posters, backdrops } = images;
 
-      const { images } = matchFilm[0];
-      const { posters, backdrops } = images;
-
-      setFilmDetails(matchFilm[0]);
-
-      if (!posters.length || !posters.find((img) => img.iso_639_1 === null)) {
-        setFilmPoster(film.poster_path);
-      } else {
-        setFilmPoster(posters.find((img) => img.iso_639_1 === null)?.file_path);
-      }
-
-      if (
-        !backdrops.length ||
-        !backdrops.find((img) => img.iso_639_1 === null)
-      ) {
-        setFilmBackdrop(film.backdrop_path);
-      } else {
-        setFilmBackdrop(
-          backdrops.find((img) => img.iso_639_1 === null)?.file_path,
-        );
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filmData, film]);
-
-  const isItTvPage = useCallback(
-    (movie, tv) => {
-      const type = !isTvPage ? movie : tv;
-      return type;
-    },
-    [isTvPage],
+  // State
+  const [filmDetails, setFilmDetails] = useState(matchFilm[0]);
+  const [filmPoster, setFilmPoster] = useState(
+    posters.find((img) => img.iso_639_1 === null)?.file_path ??
+      film.poster_path,
+  );
+  const [filmBackdrop, setFilmBackdrop] = useState(
+    backdrops.find((img) => img.iso_639_1 === null)?.file_path ??
+      film.backdrop_path,
   );
 
   return (
@@ -222,22 +197,23 @@ function HomeFilm({
       <div className={`-z-10 h-full w-full`}>
         {/* Poster & Backdrop */}
         <Reveal y={0} className={`h-full`}>
-          <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}>
-            <picture>
-              <source
-                media="(min-width: 640px)"
-                srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
-              />
-              <img
-                src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-                role="presentation"
-                loading="lazy"
-                draggable={false}
-                alt=""
-                aria-hidden
-              />
-            </picture>
-          </ImagePovi>
+          {/* <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}> */}
+          <picture>
+            <source
+              media="(min-width: 640px)"
+              srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+            />
+            <img
+              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+              role="presentation"
+              loading="lazy"
+              draggable={false}
+              alt=""
+              aria-hidden
+              className="object-top"
+            />
+          </picture>
+          {/* </ImagePovi> */}
         </Reveal>
       </div>
       <div className={`absolute bottom-0 z-50 w-full p-4 lg:bottom-20`}>
@@ -257,59 +233,19 @@ function HomeFilm({
 
 // NOTE: This is for the backdrop with the film title
 function SliderThumbs({ film, isTvPage, index, filmData }) {
-  const [filmBackdrop, setFilmBackdrop] = useState(film.backdrop_path);
+  const matchFilm = filmData.filter((f) => f.id === film.id);
 
-  useEffect(() => {
-    if (filmData.length > 0) {
-      const matchFilm = filmData.filter((f) => f.id === film.id);
+  const images = matchFilm[0]?.images;
+  const { backdrops } = images;
+  const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
 
-      const images = matchFilm[0]?.images;
-      const { backdrops } = images;
-
-      const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
-
-      if (!backdrops.length || !backdropWithTitle) {
-        setFilmBackdrop(film.backdrop_path);
-      } else {
-        setFilmBackdrop(backdropWithTitle?.file_path);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filmData, film]);
-
-  const isItTvPage = useCallback(
-    (movie, tv) => {
-      const type = !isTvPage ? movie : tv;
-      return type;
-    },
-    [isTvPage],
+  const [filmBackdrop, setFilmBackdrop] = useState(
+    backdropWithTitle?.file_path ?? film.backdrop_path,
   );
 
-  // const fetchBackdrop = useCallback(async () => {
-  //   await getFilm({
-  //     id: film.id,
-  //     type: isItTvPage(`movie`, `tv`),
-  //     path: "/images",
-  //     params: {
-  //       include_image_language: "en",
-  //     },
-  //   }).then((res) => {
-  //     let { backdrops } = res;
-
-  //     if (!backdrops.length) {
-  //       setFilmBackdrop(film.backdrop_path);
-  //     } else {
-  //       setFilmBackdrop(backdrops[0].file_path);
-  //     }
-  //   });
-  // }, [film.backdrop_path, film.id, isItTvPage]);
-
-  // useEffect(() => {
-  //   fetchBackdrop();
-  // }, [fetchBackdrop]);
-
   return (
-    <Reveal delay={0.1 * index}>
+    <>
+      {/* <Reveal delay={0.1 * index}> */}
       {filmBackdrop ? (
         <img
           src={`https://image.tmdb.org/t/p/w185${filmBackdrop}`}
@@ -331,6 +267,7 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
           }}
         ></figure>
       )}
-    </Reveal>
+      {/* </Reveal> */}
+    </>
   );
 }
