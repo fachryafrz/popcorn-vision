@@ -179,7 +179,7 @@ export default function FilmInfo({
               </section>
             )}
           {/* Film Runtime */}
-          {filmRuntime > 0 && (
+          {filmRuntime > 0 ? (
             <section id={`Movie Runtime`}>
               <Reveal>
                 <div className={`flex items-start gap-1`}>
@@ -193,6 +193,13 @@ export default function FilmInfo({
                 </div>
               </Reveal>
             </section>
+          ) : (
+            !isTvPage && (
+              <div className={`flex items-start gap-1`}>
+                <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
+                <span>TBA</span>
+              </div>
+            )
           )}
           {/* Film Genres */}
           {film.genres && film.genres.length > 0 && (
