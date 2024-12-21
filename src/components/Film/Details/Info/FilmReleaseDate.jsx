@@ -15,8 +15,9 @@ export default function FilmReleaseDate({
 
   return (
     <>
-      {!isTvPage
-        ? filmReleaseDate && (
+      {filmReleaseDate || film.first_air_date ? (
+        !isTvPage ? (
+          filmReleaseDate && (
             <section id={`Movie Release Date`}>
               <Reveal>
                 <div className={`flex items-start gap-1`}>
@@ -35,7 +36,8 @@ export default function FilmReleaseDate({
               </Reveal>
             </section>
           )
-        : film.first_air_date && (
+        ) : (
+          film.first_air_date && (
             <section id={`TV Shows Air Date`}>
               <Reveal>
                 <div className={`flex items-start gap-1`}>
@@ -69,7 +71,11 @@ export default function FilmReleaseDate({
                 </div>
               </Reveal>
             </section>
-          )}{" "}
+          )
+        )
+      ) : (
+        <span>TBA</span>
+      )}
     </>
   );
 }
