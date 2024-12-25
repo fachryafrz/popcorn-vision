@@ -38,7 +38,7 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         {film.vote_average > 0 && (
           <Reveal delay={0.1}>
             <Link
-              href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${film.vote_average.toFixed(1)}..10`}
+              href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(film.vote_average)}..10`}
               prefetch={true}
               className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
             >

@@ -197,7 +197,7 @@ export default function HoverCard() {
                 {card.vote_average > 0 && (
                   <Reveal delay={0.1}>
                     <Link
-                      href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${card.vote_average.toFixed(1)}..10`}
+                      href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
                       className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
                     >
                       <IonIcon icon={star} className="" />
