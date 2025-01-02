@@ -51,6 +51,7 @@ export default async function Home({ type = "movie" }) {
         include_adult: false,
         language: "en-US",
         sort_by: "popularity.desc",
+        with_original_language: "en",
       }
     : {
         region: "US",
@@ -58,6 +59,7 @@ export default async function Home({ type = "movie" }) {
         include_null_first_air_dates: false,
         language: "en-US",
         sort_by: "popularity.desc",
+        with_original_language: "en",
       };
 
   // API Requests
