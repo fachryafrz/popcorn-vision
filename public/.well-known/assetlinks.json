@@ -1,12 +1,8 @@
-[
-  {
-    "relation": ["delegate_permission/common.handle_all_urls"],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "app.vercel.popcornvision.twa",
-      "sha256_cert_fingerprints": [
-        "66:0E:3A:76:67:DB:CA:F9:BC:ED:C1:2C:28:1C:D4:B9:13:F6:C3:62:99:12:54:F8:DD:2E:74:44:81:7A:84:4E"
-      ]
-    }
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.popcornvision.twa",
+    "sha256_cert_fingerprints": ["AD:E2:FF:E7:1A:97:BA:A4:FA:50:69:23:F6:A1:14:05:E0:E4:0C:F3:82:3F:33:3B:34:E1:B1:B7:8C:41:7A:04"]
   }
-]
+}]
