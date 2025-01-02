@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "app.vercel.popcornvision.twa",
-    "sha256_cert_fingerprints": ["CA:E8:4A:5D:8B:62:23:B2:BC:DF:6F:45:AC:DF:78:0F:1C:C7:6F:69:19:0B:69:13:B5:DA:C9:9F:E1:19:F4:29"]
+    "sha256_cert_fingerprints": ["E4:9E:71:4C:0D:47:FD:97:98:12:FA:D0:8F:D3:E7:F8:62:E9:EB:1E:62:74:A9:C5:5A:CB:AD:5E:C8:03:58:19"]
   }
 }]
