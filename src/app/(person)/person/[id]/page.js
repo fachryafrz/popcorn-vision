@@ -31,7 +31,7 @@ export async function generateMetadata({ params }) {
       canonical: `/${`person`}/${person.id}`,
     },
     openGraph: {
-      title: `${person.name} - Popcorn Vision`,
+      title: `${person.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: person.biography,
       url: `${process.env.NEXT_PUBLIC_APP_URL}/${`person`}/${person.id}`,
       siteName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${person.name} - Popcorn Vision`,
+      title: `${person.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: person.biography,
       creator: "@fachryafrz",
       ...profiles,

@@ -145,7 +145,7 @@ export default function Footer() {
       <div className="flex flex-col justify-center border-t border-secondary border-opacity-25 p-4 text-center">
         <Reveal>
           <span style={{ textWrap: `balance` }}>
-            {`Popcorn Vision © ${
+            {`${process.env.NEXT_PUBLIC_APP_NAME} © ${
               createdYear == currentYear
                 ? `${createdMonth} ${createdYear}`
                 : `${createdMonth} ${createdYear} - ${currentMonth} ${currentYear}`

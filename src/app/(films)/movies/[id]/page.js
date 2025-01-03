@@ -46,7 +46,7 @@ export async function generateMetadata({ params, type = "movie" }) {
       canonical: `/${`movies`}/${film.id}`,
     },
     openGraph: {
-      title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.title} (${filmReleaseDate}) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
       url: `${process.env.NEXT_PUBLIC_APP_URL}/${`movies`}/${film.id}`,
       siteName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -56,7 +56,7 @@ export async function generateMetadata({ params, type = "movie" }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${film.title} (${filmReleaseDate}) - Popcorn Vision`,
+      title: `${film.title} (${filmReleaseDate}) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
       ...backdrops,

@@ -6,10 +6,10 @@ export default function ShareButton() {
   const handleShare = async () => {
     try {
       await navigator.share({
-        title: "Shared via Popcorn Vision",
-        text: "",
+        title: `Shared via ${process.env.NEXT_PUBLIC_APP_NAME}`,
+        // text: "",
         url: window.location.href,
-        files: [],
+        // files: [],
       });
     } catch (error) {
       console.error("Error sharing content:", error);
