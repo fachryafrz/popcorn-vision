@@ -136,14 +136,14 @@ export function EpisodeModal({ film }) {
       id={`episodeModal`}
       className={`modal modal-bottom place-items-center overflow-y-auto backdrop:bg-black backdrop:bg-opacity-75 backdrop:backdrop-blur`}
     >
-      <div className={`relative w-full max-w-3xl p-4 pt-24 sm:py-8`}>
+      <div
+        className={`relative mt-12 w-full max-w-3xl pb-4 md:my-8 md:px-4 md:pb-0`}
+      >
         {!episode && <EpisodeModalSkeleton />}
 
         {episode && (
           <>
-            <div
-              className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}
-            >
+            <div className={`pointer-events-none absolute inset-0 md:px-4`}>
               <button
                 onClick={handleCloseModal}
                 className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
@@ -153,7 +153,7 @@ export function EpisodeModal({ film }) {
             </div>
 
             <div
-              className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-2xl p-0`}
+              className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-3xl p-0`}
             >
               <ImagePovi
                 imgPath={episode.still_path}
@@ -331,7 +331,7 @@ export function EpisodeModal({ film }) {
 
         {/* Pagination */}
         <div
-          className={`pointer-events-none inset-0 mt-4 grid grid-cols-2 gap-2 lg:fixed lg:mx-auto lg:flex lg:items-center lg:justify-between lg:p-4 lg:pr-8 [&_button]:pointer-events-auto`}
+          className={`pointer-events-none inset-0 mt-4 grid grid-cols-2 gap-2 px-4 md:px-0 lg:fixed lg:mx-auto lg:flex lg:items-center lg:justify-between lg:p-4 lg:pr-8 [&_button]:pointer-events-auto`}
         >
           <button
             onClick={handlePrevEpisode}
@@ -369,7 +369,7 @@ export function EpisodeModal({ film }) {
 function EpisodeModalSkeleton() {
   return (
     <>
-      <div className={`pointer-events-none absolute inset-0 p-4 pt-24 sm:py-8`}>
+      <div className={`pointer-events-none absolute inset-0 md:px-4`}>
         <button
           className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
         >
@@ -378,7 +378,7 @@ function EpisodeModalSkeleton() {
       </div>
 
       <div
-        className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-2xl p-0`}
+        className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-3xl p-0`}
       >
         {/* Image */}
         <div
