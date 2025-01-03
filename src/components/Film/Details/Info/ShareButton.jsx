@@ -7,9 +7,9 @@ export default function ShareButton() {
     try {
       await navigator.share({
         title: "Shared via Popcorn Vision",
-        text: null,
+        text: "",
         url: window.location.href,
-        files: null,
+        files: [],
       });
     } catch (error) {
       console.error("Error sharing content:", error);
