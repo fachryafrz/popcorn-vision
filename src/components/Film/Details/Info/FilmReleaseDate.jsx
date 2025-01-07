@@ -74,7 +74,11 @@ export default function FilmReleaseDate({
           )
         )
       ) : (
-        <span>TBA</span>
+        <div className={`flex items-start gap-1`}>
+          <IonIcon icon={calendarOutline} className={`mt-1 min-w-[14px]`} />
+
+          <span>TBA</span>
+        </div>
       )}
     </>
   );
