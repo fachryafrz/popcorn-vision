@@ -8,7 +8,8 @@ import {
   logoLinkedin,
   logoTwitter,
 } from "ionicons/icons";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import packageJson from "../../../package.json";

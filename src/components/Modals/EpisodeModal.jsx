@@ -26,9 +26,11 @@ import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
 import { fetchData } from "@/lib/fetch";
 import { useAuth } from "@/hooks/auth";
+import { useTransitionRouter } from "next-view-transitions";
 
 export function EpisodeModal({ film }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const seasonParams = searchParams.get("season");

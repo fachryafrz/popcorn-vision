@@ -6,6 +6,7 @@ import { TMDB_SESSION_ID } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
+import { useTransitionRouter } from "next-view-transitions";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -17,7 +18,8 @@ export default function TileList({
   type = "movie",
   user,
 }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");

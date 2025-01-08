@@ -1,8 +1,10 @@
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function TVSeriesStatus() {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));

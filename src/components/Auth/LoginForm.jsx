@@ -3,12 +3,14 @@
 import { useAuth } from "@/hooks/auth";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LoginForm() {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect_to") || "/";
 

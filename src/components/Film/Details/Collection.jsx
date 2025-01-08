@@ -8,7 +8,8 @@ import {
   chevronForwardCircle,
   star,
 } from "ionicons/icons";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";

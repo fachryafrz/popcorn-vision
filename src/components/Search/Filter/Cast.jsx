@@ -2,9 +2,11 @@ import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function Cast({ inputStyles }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));

@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import ImagePovi from "./ImagePovi";
 import debounce from "debounce";
 import { formatRating } from "@/lib/formatRating";

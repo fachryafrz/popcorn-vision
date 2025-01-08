@@ -1,10 +1,12 @@
 "use client";
 
+import { useTransitionRouter } from "next-view-transitions";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function AdultModal({ adult }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
 
   useEffect(() => {
     if (adult) {

@@ -22,6 +22,7 @@ import axios from "axios";
 // Components
 import FilmCard from "../components/FilmCard";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function Search() {
   // Movie related state
@@ -49,7 +50,8 @@ export default function Search() {
   const isTvPage = pathname.startsWith("/tv");
 
   const apiKey = "";
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
 
   const URLSearchQuery = useSearchParams().get("query");
   const URLSearchGenres = useSearchParams().get("genres");

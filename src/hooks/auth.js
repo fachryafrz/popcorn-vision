@@ -2,9 +2,11 @@ import useSWR from "swr";
 import { useEffect, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Axios from "axios";
+import { useTransitionRouter } from "next-view-transitions";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
 
   const {

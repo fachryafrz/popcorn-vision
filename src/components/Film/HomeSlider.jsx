@@ -2,7 +2,8 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";

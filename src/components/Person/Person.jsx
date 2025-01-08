@@ -6,6 +6,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
 import { usePathname, useRouter } from "next/navigation";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function Person({
   id,
@@ -15,7 +16,8 @@ export default function Person({
   personRole,
   tooltip = false,
 }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
 
   const handleActorClick = () => {

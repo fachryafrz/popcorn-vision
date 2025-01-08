@@ -8,6 +8,7 @@ import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
+import { ViewTransitions } from "next-view-transitions";
 
 export const viewport = {
   width: "device-width",
@@ -108,36 +109,38 @@ export default async function RootLayout({ children }) {
   const adsenseId = process.env.ADSENSE_ID;
 
   return (
-    <html lang="en" className="scroll-pt-20">
-      <Suspense>
-        <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
-        {/* <GoogleAdsense pId={adsenseId} /> */}
-      </Suspense>
-      <body className="bg-base-100 text-white">
-        <CookiesProvider>
-          {/* Navbar */}
-          <Suspense>
-            <Navbar />
-          </Suspense>
+    <ViewTransitions>
+      <html lang="en" className="scroll-pt-20">
+        <Suspense>
+          <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
+          {/* <GoogleAdsense pId={adsenseId} /> */}
+        </Suspense>
+        <body className="bg-base-100 text-white">
+          <CookiesProvider>
+            {/* Navbar */}
+            <Suspense>
+              <Navbar />
+            </Suspense>
 
-          {/* User Location */}
-          <UserLocation ip={ip} />
+            {/* User Location */}
+            <UserLocation ip={ip} />
 
-          {/* Main Content */}
-          <main className={`mt-[66px] pb-8`}>{children}</main>
+            {/* Main Content */}
+            <main className={`mt-[66px] pb-8`}>{children}</main>
 
-          {/* Modal */}
-          <Modal />
+            {/* Modal */}
+            <Modal />
 
-          {/* Footer */}
-          <Footer />
-        </CookiesProvider>
+            {/* Footer */}
+            <Footer />
+          </CookiesProvider>
 
-        {/* <script
+          {/* <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         /> */}
-      </body>
-    </html>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

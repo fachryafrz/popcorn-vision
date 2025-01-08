@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Reveal from "@/components/Layout/Reveal";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 
 export default function WatchProvider({ providersIDArray, isTvPage }) {
   const [providerCountry, providerTypes] = providersIDArray;

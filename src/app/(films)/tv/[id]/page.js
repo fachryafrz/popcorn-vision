@@ -9,7 +9,7 @@ export async function generateMetadata({ params, type = `tv` }) {
   const [film, images] = await Promise.all([
     getFilm({ id, type }),
     getFilm({ id, type, path: "/images" }),
-  ])
+  ]);
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);

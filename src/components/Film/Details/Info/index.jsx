@@ -10,7 +10,8 @@ import { timeOutline, tvOutline } from "ionicons/icons";
 
 import TitleLogo from "@/components/Film/TitleLogo";
 import { usePathname } from "next/navigation";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import Reveal from "@/components/Layout/Reveal";

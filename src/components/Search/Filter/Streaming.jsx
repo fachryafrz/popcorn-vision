@@ -5,9 +5,11 @@ import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function Streaming({ inputStyles }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));

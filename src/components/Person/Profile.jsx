@@ -11,12 +11,14 @@ import {
   locationOutline,
 } from "ionicons/icons";
 import moment from "moment";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 export default function PersonProfile({ person, combinedCredits, isModal }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith(`/tv`);
 

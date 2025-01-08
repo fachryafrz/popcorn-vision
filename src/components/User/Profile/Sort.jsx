@@ -2,6 +2,7 @@
 
 import { IonIcon } from "@ionic/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
+import { useTransitionRouter } from "next-view-transitions";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -18,7 +19,8 @@ const orderOptions = [
 ];
 
 export default function UserProfileSort() {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

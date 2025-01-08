@@ -3,12 +3,14 @@
 import { SAD_POPCORN } from "@/lib/constants";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
+import { useTransitionRouter } from "next-view-transitions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function NotFound() {
   const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
 
   const handleSearchQuery = (e) => {
     setSearchQuery(e.target.value);

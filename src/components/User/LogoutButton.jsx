@@ -2,11 +2,13 @@
 import { useAuth } from "@/hooks/auth";
 import { revalidateRedirect } from "@/lib/revalidateRedirect";
 import axios from "axios";
+import { useTransitionRouter } from "next-view-transitions";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const { mutate } = useAuth();
 

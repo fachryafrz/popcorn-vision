@@ -3,7 +3,8 @@
 
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search, close } from "ionicons/icons";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +19,8 @@ import { POPCORN_APPLE } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 
 export default function Navbar() {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -249,7 +251,8 @@ export default function Navbar() {
 }
 
 export function SearchBar({ placeholder = `Search` }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchRef = useRef(null);

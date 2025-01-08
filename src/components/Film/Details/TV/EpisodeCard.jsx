@@ -4,7 +4,8 @@ import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import Link from "next/link";
+// import Link from "next/link";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function EpisodeCard({
@@ -16,7 +17,8 @@ export default function EpisodeCard({
   thirdInfo,
   overlay,
 }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
 
   return (

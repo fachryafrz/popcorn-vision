@@ -1,6 +1,7 @@
 import { IonIcon } from "@ionic/react";
 import { personCircleOutline } from "ionicons/icons";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 

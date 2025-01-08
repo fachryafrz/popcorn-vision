@@ -13,6 +13,7 @@ import { fetchData } from "@/lib/fetch";
 import useSWR from "swr";
 import { useLocation } from "@/zustand/location";
 import { useToggleFilter } from "@/zustand/toggleFilter";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function Search({
   type = "movie",
@@ -22,7 +23,8 @@ export default function Search({
   maxYear,
 }) {
   const isTvPage = type === "tv";
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -328,7 +330,8 @@ function ButtonFilter({
   setVariableSlider = null,
   searchParam,
 }) {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));

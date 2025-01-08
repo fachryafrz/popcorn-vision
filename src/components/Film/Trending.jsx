@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import FilmSummary from "./Summary";
 import { fetchData } from "@/lib/fetch";
 import Reveal from "../Layout/Reveal";

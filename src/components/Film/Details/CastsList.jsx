@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { chevronDownOutline, chevronUpOutline } from "ionicons/icons";
 import Person from "../../Person/Person";
 import Reveal from "@/components/Layout/Reveal";
-import Link from "next/link";
+// import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { usePathname } from "next/navigation";
 
 export default function CastsList({ credits }) {

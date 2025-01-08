@@ -10,9 +10,11 @@ import PersonDetails from "../Person/Details";
 import PersonWorks from "../Person/Works";
 import useSWR from "swr";
 import { fetchData } from "@/lib/fetch";
+import { useTransitionRouter } from "next-view-transitions";
 
 export default function PersonModal() {
-  const router = useRouter();
+  // const router = useRouter();
+  const router = useTransitionRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const personParams = searchParams.get("person");
