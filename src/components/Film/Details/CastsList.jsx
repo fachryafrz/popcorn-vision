@@ -47,15 +47,18 @@ export default function CastsList({ credits }) {
                       {`${actor.name} (${actor.character})`}
                     </h3>
                   </Link>
-                  <Person
-                    id={actor.id}
-                    showAllActors={showAllActors}
-                    name={actor.name}
-                    role={actor.character}
-                    profile_path={actor.profile_path}
-                    before={`as`}
-                    personRole={`actor`}
-                  />{" "}
+
+                  <div className={`[&_button]:w-full`}>
+                    <Person
+                      id={actor.id}
+                      showAllActors={showAllActors}
+                      name={actor.name}
+                      role={actor.character}
+                      profile_path={actor.profile_path}
+                      before={`as`}
+                      personRole={`actor`}
+                    />
+                  </div>
                 </li>
               );
             })}
