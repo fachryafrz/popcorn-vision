@@ -155,7 +155,13 @@ export default function FilmInfo({
             film.number_of_episodes > 0 && (
               <section id={`TV Shows Chapter`}>
                 <div className={`flex items-start gap-1`}>
-                  <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
+                  <IonIcon
+                    icon={tvOutline}
+                    style={{
+                      fontSize: 14,
+                      marginTop: 4,
+                    }}
+                  />
 
                   <p>
                     <span className="sr-only">Chapter:&nbsp;</span>
@@ -174,7 +180,13 @@ export default function FilmInfo({
           {filmRuntime > 0 ? (
             <section id={`Movie Runtime`}>
               <div className={`flex items-start gap-1`}>
-                <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
+                <IonIcon
+                  icon={timeOutline}
+                  style={{
+                    fontSize: 14,
+                    marginTop: 4,
+                  }}
+                />
                 <time>
                   <p>
                     <span className="sr-only">Runtime:&nbsp;</span>
@@ -186,7 +198,13 @@ export default function FilmInfo({
           ) : (
             !isTvPage && (
               <div className={`flex items-start gap-1`}>
-                <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
+                <IonIcon
+                  icon={timeOutline}
+                  style={{
+                    fontSize: 14,
+                    marginTop: 4,
+                  }}
+                />
                 <span>TBA</span>
               </div>
             )
@@ -328,7 +346,7 @@ export default function FilmInfo({
                 film={film}
                 url={`/api/account/rating`}
                 rating={accountStates?.rated}
-                title={`How was ${!isTvPage ? film.title : film.name}`}
+                title={`What did you think of ${!isTvPage ? film.title : film.name}?`}
               />
             </section>
           )}

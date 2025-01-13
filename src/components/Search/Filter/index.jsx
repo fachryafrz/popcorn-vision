@@ -88,7 +88,12 @@ export default function Filters({
         onClick={() => setToggleFilter(false)}
         className={`absolute right-4 top-2 z-50 aspect-square lg:hidden`}
       >
-        <IonIcon icon={close} className={`text-3xl`} />
+        <IonIcon
+          icon={close}
+          style={{
+            fontSize: 34,
+          }}
+        />
       </button>
 
       <div
