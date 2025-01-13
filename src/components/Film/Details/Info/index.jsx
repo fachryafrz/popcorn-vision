@@ -1,9 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-// React imports
-import { useEffect, useState } from "react";
-
 // Ionic React icons
 import { IonIcon } from "@ionic/react";
 import { timeOutline, tvOutline } from "ionicons/icons";
@@ -13,7 +10,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
-import Reveal from "@/components/Layout/Reveal";
 import WatchlistButton from "../../../User/Actions/WatchlistButton";
 import FavoriteButton from "../../../User/Actions/FavoriteButton";
 import { useAuth } from "@/hooks/auth";
@@ -117,15 +113,13 @@ export default function FilmInfo({
             images={images.logos.find((img) => img.iso_639_1 === "en")}
           />
         ) : (
-          <Reveal>
-            <h1
-              title={!isTvPage ? film.title : film.name}
-              className="line-clamp-3 max-w-fit text-center text-3xl font-bold !leading-normal md:text-start md:text-5xl"
-              style={{ textWrap: `balance` }}
-            >
-              {!isTvPage ? film.title : film.name}
-            </h1>
-          </Reveal>
+          <h1
+            title={!isTvPage ? film.title : film.name}
+            className="line-clamp-3 max-w-fit text-center text-3xl font-bold !leading-normal md:text-start md:text-5xl"
+            style={{ textWrap: `balance` }}
+          >
+            {!isTvPage ? film.title : film.name}
+          </h1>
         )}
 
         <div
@@ -160,38 +154,34 @@ export default function FilmInfo({
             film.number_of_seasons > 0 &&
             film.number_of_episodes > 0 && (
               <section id={`TV Shows Chapter`}>
-                <Reveal>
-                  <div className={`flex items-start gap-1`}>
-                    <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
+                <div className={`flex items-start gap-1`}>
+                  <IonIcon icon={tvOutline} className={`mt-1 min-w-[14px]`} />
 
-                    <p>
-                      <span className="sr-only">Chapter:&nbsp;</span>
-                      {`${film.number_of_seasons} ${isPlural({
-                        text: "Season",
-                        number: film.number_of_seasons,
-                      })} (${film.number_of_episodes} ${isPlural({
-                        text: "Episode",
-                        number: film.number_of_episodes,
-                      })})`}
-                    </p>
-                  </div>
-                </Reveal>
+                  <p>
+                    <span className="sr-only">Chapter:&nbsp;</span>
+                    {`${film.number_of_seasons} ${isPlural({
+                      text: "Season",
+                      number: film.number_of_seasons,
+                    })} (${film.number_of_episodes} ${isPlural({
+                      text: "Episode",
+                      number: film.number_of_episodes,
+                    })})`}
+                  </p>
+                </div>
               </section>
             )}
           {/* Film Runtime */}
           {filmRuntime > 0 ? (
             <section id={`Movie Runtime`}>
-              <Reveal>
-                <div className={`flex items-start gap-1`}>
-                  <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
-                  <time>
-                    <p>
-                      <span className="sr-only">Runtime:&nbsp;</span>
-                      {`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
-                    </p>
-                  </time>
-                </div>
-              </Reveal>
+              <div className={`flex items-start gap-1`}>
+                <IonIcon icon={timeOutline} className={`mt-1 min-w-[14px]`} />
+                <time>
+                  <p>
+                    <span className="sr-only">Runtime:&nbsp;</span>
+                    {`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
+                  </p>
+                </time>
+              </div>
             </section>
           ) : (
             !isTvPage && (
@@ -211,19 +201,17 @@ export default function FilmInfo({
                 {film.genres.map((item, i) => {
                   return (
                     <li key={item.id}>
-                      <Reveal delay={0.2 * i}>
-                        <Link
-                          href={
-                            !isTvPage
-                              ? `/search?with_genres=${item.id}`
-                              : `/tv/search?with_genres=${item.id}`
-                          }
-                          prefetch={true}
-                          className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
-                        >
-                          <p>{item.name}</p>
-                        </Link>
-                      </Reveal>
+                      <Link
+                        href={
+                          !isTvPage
+                            ? `/search?with_genres=${item.id}`
+                            : `/tv/search?with_genres=${item.id}`
+                        }
+                        prefetch={true}
+                        className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
+                      >
+                        <p>{item.name}</p>
+                      </Link>
                     </li>
                   );
                 })}
@@ -284,13 +272,11 @@ export default function FilmInfo({
                   id={`TV Shows Last Episode`}
                   className={`flex flex-col gap-2`}
                 >
-                  <Reveal>
-                    <LastEpisode
-                      film={film}
-                      lastEps={lastEps}
-                      nextEps={nextEps}
-                    />
-                  </Reveal>
+                  <LastEpisode
+                    film={film}
+                    lastEps={lastEps}
+                    nextEps={nextEps}
+                  />
                 </div>
               )}
 
@@ -299,9 +285,7 @@ export default function FilmInfo({
                   id={`TV Shows Next Episode`}
                   className={`flex flex-col gap-2`}
                 >
-                  <Reveal>
-                    <NextEpisode film={film} nextEps={nextEps} />
-                  </Reveal>
+                  <NextEpisode film={film} nextEps={nextEps} />
                 </div>
               )}
 
@@ -335,49 +319,44 @@ export default function FilmInfo({
           )}
           {/* User Rating */}
           {!isUpcoming && filmReleaseDate !== "" && (
-            <Reveal>
-              <section
-                id={`${!isTvPage ? `Movie` : `TV Shows`} Rating`}
-                className={`max-w-fit`}
-              >
-                <UserRating
-                  swrKey={swrKey}
-                  film={film}
-                  url={`/api/account/rating`}
-                  rating={accountStates?.rated}
-                  title={`How was ${!isTvPage ? film.title : film.name}`}
-                />
-              </section>
-            </Reveal>
+            <section
+              id={`${!isTvPage ? `Movie` : `TV Shows`} Rating`}
+              className={`max-w-fit`}
+            >
+              <UserRating
+                swrKey={swrKey}
+                film={film}
+                url={`/api/account/rating`}
+                rating={accountStates?.rated}
+                title={`How was ${!isTvPage ? film.title : film.name}`}
+              />
+            </section>
           )}
           {/* Call to Action */}
-          <section id={`Share`} className={`flex flex-wrap items-end gap-1`}>
+          <section
+            id={`Share`}
+            className={`flex flex-wrap items-end justify-between gap-1`}
+          >
             <div className={`flex flex-col gap-1 md:flex-row`}>
               {/* Add to Favorite */}
               {!isUpcoming && filmReleaseDate !== "" && (
-                <Reveal delay={0.2} className={`flex`}>
-                  <FavoriteButton
-                    swrKey={swrKey}
-                    film={film}
-                    favorite={accountStates?.favorite}
-                  />
-                </Reveal>
+                <FavoriteButton
+                  swrKey={swrKey}
+                  film={film}
+                  favorite={accountStates?.favorite}
+                />
               )}
 
               {/* Add to Watchlist */}
-              <Reveal delay={0.4} className={`flex`}>
-                <WatchlistButton
-                  swrKey={swrKey}
-                  film={film}
-                  watchlist={accountStates?.watchlist}
-                />
-              </Reveal>
+              <WatchlistButton
+                swrKey={swrKey}
+                film={film}
+                watchlist={accountStates?.watchlist}
+              />
             </div>
 
             {/* Share */}
-            <Reveal delay={0.6} className={`relative ml-auto gap-4 sm:gap-0`}>
-              <ShareButton />
-            </Reveal>
+            <ShareButton />
           </section>
         </div>
       </div>

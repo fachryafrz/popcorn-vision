@@ -7,7 +7,6 @@ import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { formatRuntime } from "../../lib/formatRuntime";
-import Reveal from "../Layout/Reveal";
 import { isPlural } from "../../lib/isPlural";
 import { formatRating } from "@/lib/formatRating";
 import useSWR from "swr";
@@ -150,7 +149,8 @@ export default function HoverCard() {
                   aria-hidden
                   className={`object-cover`}
                   draggable={false}
-                  loading="lazy"
+                  width={780}
+                  height={520}
                 />
               </ImagePovi>
             </Link>
@@ -160,10 +160,7 @@ export default function HoverCard() {
               <section id="Logo" className={`flex items-end`}>
                 {/* Logo Image */}
                 {titleLogo && (
-                  <Reveal
-                    className={`pointer-events-none -mt-20 h-20`}
-                    delay={0.1}
-                  >
+                  <div className={`pointer-events-none -mt-20 h-20`}>
                     <figure className={`h-full`}>
                       <img
                         src={`https://image.tmdb.org/t/p/w300${titleLogo.file_path}`}
@@ -172,22 +169,23 @@ export default function HoverCard() {
                         // title={isItTvPage(card.title, card.name)}
                         className={`max-w-[250px] object-contain`}
                         draggable={false}
-                        loading="lazy"
                         role="presentation"
+                        width={300}
+                        height={300}
                       />
                     </figure>
-                  </Reveal>
+                  </div>
                 )}
 
                 {/* Logo Text */}
                 {!titleLogo && (
-                  <Reveal className={`-mt-20`}>
+                  <div className={`-mt-20`}>
                     <span
                       className={`line-clamp-2 text-pretty text-start text-xl font-bold`}
                     >
                       {card.title ?? card.name}
                     </span>
-                  </Reveal>
+                  </div>
                 )}
               </section>
 
@@ -195,117 +193,103 @@ export default function HoverCard() {
               <section className="flex flex-wrap items-center gap-0.5 text-sm font-medium">
                 {/* Rating */}
                 {card.vote_average > 0 && (
-                  <Reveal delay={0.1}>
-                    <Link
-                      href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
-                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
-                    >
-                      <IonIcon icon={star} className="" />
-                      <span
-                        className="before-content !text-white"
-                        data-before-content={formatRating(card.vote_average)}
-                      />
-                    </Link>
-                  </Reveal>
+                  <Link
+                    href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
+                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                  >
+                    <IonIcon icon={star} className="" />
+                    <span
+                      className="before-content !text-white"
+                      data-before-content={formatRating(card.vote_average)}
+                    />
+                  </Link>
                 )}
 
                 {/* Runtime */}
                 {!isTvPage && filmRuntime > 0 && (
-                  <Reveal delay={0.15}>
-                    <Link
-                      href={`/search?with_runtime=${filmDetails?.runtime}..300`}
-                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
-                    >
-                      <span
-                        className="before-content !text-white"
-                        data-before-content={formatRuntime(filmRuntime)}
-                      />
-                    </Link>
-                  </Reveal>
+                  <Link
+                    href={`/search?with_runtime=${filmDetails?.runtime}..300`}
+                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                  >
+                    <span
+                      className="before-content !text-white"
+                      data-before-content={formatRuntime(filmRuntime)}
+                    />
+                  </Link>
                 )}
 
                 {/* Seasons */}
                 {isTvPage && filmDetails?.number_of_seasons > 0 && (
-                  <Reveal delay={0.2}>
-                    <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
-                      <span
-                        className="before-content !text-white"
-                        data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
-                          {
-                            text: `Season`,
-                            number: filmDetails.number_of_seasons,
-                          },
-                        )}`}
-                      />
-                    </div>
-                  </Reveal>
+                  <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
+                    <span
+                      className="before-content !text-white"
+                      data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
+                        {
+                          text: `Season`,
+                          number: filmDetails.number_of_seasons,
+                        },
+                      )}`}
+                    />
+                  </div>
                 )}
 
                 {/* Genres */}
                 {filmDetails?.genres.length > 0 && (
-                  <Reveal delay={0.25}>
-                    <Link
-                      href={
-                        !isTvPage
-                          ? `/search?with_genres=${filmDetails?.genres[0]?.id}`
-                          : `/tv/search?with_genres=${filmDetails?.genres[0]?.id}`
-                      }
-                      className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
-                    >
-                      <span
-                        className="before-content !text-white"
-                        data-before-content={filmDetails?.genres[0]?.name}
-                      />
-                    </Link>
-                  </Reveal>
+                  <Link
+                    href={
+                      !isTvPage
+                        ? `/search?with_genres=${filmDetails?.genres[0]?.id}`
+                        : `/tv/search?with_genres=${filmDetails?.genres[0]?.id}`
+                    }
+                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                  >
+                    <span
+                      className="before-content !text-white"
+                      data-before-content={filmDetails?.genres[0]?.name}
+                    />
+                  </Link>
                 )}
               </section>
 
               {/* Overview */}
               <section id="Overview">
                 {card.overview && (
-                  <Reveal delay={0.1}>
-                    <span
-                      className={`line-clamp-3 text-start text-sm font-medium text-gray-400`}
-                    >
-                      {card.overview}
-                    </span>
-                  </Reveal>
+                  <span
+                    className={`line-clamp-3 text-start text-sm font-medium text-gray-400`}
+                  >
+                    {card.overview}
+                  </span>
                 )}
               </section>
 
               {/* CTA */}
               <section className={`flex items-center gap-1`}>
-                <Reveal delay={0.1} className={`flex-1`}>
+                <div className={`flex-1`}>
                   <Link
                     href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
                     className={`btn btn-primary w-full rounded-full`}
                   >
                     <span>Details</span>
                   </Link>
-                </Reveal>
+                </div>
 
                 {!isUpcoming && (
-                  <Reveal delay={0.15}>
-                    <FavoriteButton
-                      swrKey={swrKey}
-                      film={card}
-                      favorite={accountStates?.favorite}
-                      withText={false}
-                      className={`!btn-square`}
-                    />
-                  </Reveal>
-                )}
-
-                <Reveal delay={0.2}>
-                  <WatchlistButton
+                  <FavoriteButton
                     swrKey={swrKey}
                     film={card}
-                    watchlist={accountStates?.watchlist}
+                    favorite={accountStates?.favorite}
                     withText={false}
                     className={`!btn-square`}
                   />
-                </Reveal>
+                )}
+
+                <WatchlistButton
+                  swrKey={swrKey}
+                  film={card}
+                  watchlist={accountStates?.watchlist}
+                  withText={false}
+                  className={`!btn-square`}
+                />
               </section>
             </div>
           </>

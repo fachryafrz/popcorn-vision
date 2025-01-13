@@ -1,4 +1,3 @@
-import Reveal from "@/components/Layout/Reveal";
 import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 import { usePathname } from "next/navigation";
@@ -40,59 +39,47 @@ export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
       className={`flex flex-wrap justify-start gap-2 text-center`}
     >
       {countdown.years > 0 && (
-        <Reveal>
-          <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-            <span className="countdown font-mono text-4xl sm:text-5xl">
-              <span style={{ "--value": countdown.years }}></span>
-            </span>
-            {isPlural({ text: "year", number: countdown.years })}
-          </div>
-        </Reveal>
+        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+          <span className="countdown font-mono text-4xl sm:text-5xl">
+            <span style={{ "--value": countdown.years }}></span>
+          </span>
+          {isPlural({ text: "year", number: countdown.years })}
+        </div>
       )}
       {countdown.months > 0 && (
-        <Reveal delay={0.1}>
-          <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-            <span className="countdown font-mono text-4xl sm:text-5xl">
-              <span style={{ "--value": countdown.months }}></span>
-            </span>
-            {isPlural({ text: "month", number: countdown.months })}
-          </div>
-        </Reveal>
+        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+          <span className="countdown font-mono text-4xl sm:text-5xl">
+            <span style={{ "--value": countdown.months }}></span>
+          </span>
+          {isPlural({ text: "month", number: countdown.months })}
+        </div>
       )}
       {countdown.days > 0 && (
-        <Reveal delay={0.2}>
-          <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-            <span className="countdown font-mono text-4xl sm:text-5xl">
-              <span style={{ "--value": countdown.days }}></span>
-            </span>
-            {isPlural({ text: "day", number: countdown.days })}
-          </div>
-        </Reveal>
+        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+          <span className="countdown font-mono text-4xl sm:text-5xl">
+            <span style={{ "--value": countdown.days }}></span>
+          </span>
+          {isPlural({ text: "day", number: countdown.days })}
+        </div>
       )}
-      <Reveal delay={0.3}>
-        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-          <span className="countdown font-mono text-4xl sm:text-5xl">
-            <span style={{ "--value": countdown.hours }}></span>
-          </span>
-          {isPlural({ text: "hour", number: countdown.hours })}
-        </div>
-      </Reveal>
-      <Reveal delay={0.4}>
-        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-          <span className="countdown font-mono text-4xl sm:text-5xl">
-            <span style={{ "--value": countdown.minutes }}></span>
-          </span>
-          min
-        </div>
-      </Reveal>
-      <Reveal delay={0.5}>
-        <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
-          <span className="countdown font-mono text-4xl sm:text-5xl">
-            <span style={{ "--value": countdown.seconds }}></span>
-          </span>
-          sec
-        </div>
-      </Reveal>
+      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+        <span className="countdown font-mono text-4xl sm:text-5xl">
+          <span style={{ "--value": countdown.hours }}></span>
+        </span>
+        {isPlural({ text: "hour", number: countdown.hours })}
+      </div>
+      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+        <span className="countdown font-mono text-4xl sm:text-5xl">
+          <span style={{ "--value": countdown.minutes }}></span>
+        </span>
+        min
+      </div>
+      <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
+        <span className="countdown font-mono text-4xl sm:text-5xl">
+          <span style={{ "--value": countdown.seconds }}></span>
+        </span>
+        sec
+      </div>
     </div>
   );
 }

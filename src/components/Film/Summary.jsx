@@ -8,7 +8,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { formatRuntime } from "../../lib/formatRuntime";
 import { isPlural } from "../../lib/isPlural";
-import Reveal from "../Layout/Reveal";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
 
@@ -36,72 +35,54 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
       />
       <div className="flex flex-wrap items-center justify-center gap-1 font-medium text-white">
         {film.vote_average > 0 && (
-          <Reveal delay={0.1}>
-            <Link
-              href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(film.vote_average)}..10`}
-              prefetch={true}
-              className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
-            >
-              <IonIcon icon={star} className="aspect-square h-full !w-5" />
-              <span className="!text-white">
-                {formatRating(film.vote_average)}
-              </span>
-            </Link>
-          </Reveal>
+          <Link
+            href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(film.vote_average)}..10`}
+            prefetch={true}
+            className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
+          >
+            <IonIcon icon={star} className="aspect-square h-full !w-5" />
+            <span className="!text-white">
+              {formatRating(film.vote_average)}
+            </span>
+          </Link>
         )}
 
-        {!isTvPage && !!film.runtime && (
-          <Reveal delay={0.2}>
-            <FilmRuntime film={film} />
-          </Reveal>
-        )}
+        {!isTvPage && !!film.runtime && <FilmRuntime film={film} />}
 
-        {isTvPage && film.number_of_seasons && (
-          <Reveal delay={0.2}>
-            <FilmSeason film={film} />
-          </Reveal>
-        )}
+        {isTvPage && film.number_of_seasons && <FilmSeason film={film} />}
 
         {film.genres?.slice(0, 1).map(
           (genre) =>
             genre && (
-              <Reveal key={genre.id} delay={0.3}>
-                <Link
-                  href={
-                    !isTvPage
-                      ? `/search?with_genres=${genre.id}`
-                      : `/tv/search?with_genres=${genre.id}`
-                  }
-                  prefetch={true}
-                  className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm transition-all hocus:bg-opacity-50`}
-                >
-                  {genre.name}
-                </Link>
-              </Reveal>
+              <Link
+                key={genre.id}
+                href={
+                  !isTvPage
+                    ? `/search?with_genres=${genre.id}`
+                    : `/tv/search?with_genres=${genre.id}`
+                }
+                prefetch={true}
+                className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm transition-all hocus:bg-opacity-50`}
+              >
+                {genre.name}
+              </Link>
             ),
         )}
       </div>
 
-      <Reveal delay={0.1}>
-        <p aria-hidden className="hidden md:line-clamp-2 lg:line-clamp-3">
-          {film.overview}
-        </p>
-      </Reveal>
+      <p aria-hidden className="hidden md:line-clamp-2 lg:line-clamp-3">
+        {film.overview}
+      </p>
 
       <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
-        <Reveal delay={0.2} className={`[&_a]:w-full`}>
-          <Link
-            href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-            prefetch={true}
-            className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
-          >
-            Details
-            <IonIcon
-              icon={chevronForward}
-              className="aspect-square text-base"
-            />
-          </Link>
-        </Reveal>
+        <Link
+          href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
+          prefetch={true}
+          className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
+        >
+          Details
+          <IonIcon icon={chevronForward} className="aspect-square text-base" />
+        </Link>
       </div>
     </div>
   );

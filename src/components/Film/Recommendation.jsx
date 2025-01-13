@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { fetchData } from "@/lib/fetch";
-import Reveal from "../Layout/Reveal";
 import FilmGrid from "./Grid";
 
 export default function Recommendation({
@@ -71,9 +70,7 @@ export default function Recommendation({
       className={`mx-auto flex w-full max-w-none flex-col gap-2 p-4`}
     >
       <div className="flex items-end gap-4">
-        <Reveal y={0}>
-          <h2 className="text-lg font-bold md:text-2xl">{title}</h2>{" "}
-        </Reveal>
+        <h2 className="text-lg font-bold md:text-2xl">{title}</h2>{" "}
       </div>
 
       <FilmGrid
