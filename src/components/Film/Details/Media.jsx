@@ -87,14 +87,24 @@ export default function FilmMedia({ film, videos, images }) {
               className={`z-40 flex items-center p-2 text-white`}
               aria-labelledby={`next-slide`}
             >
-              <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
+              <IonIcon
+                icon={chevronForwardCircle}
+                style={{
+                  fontSize: 30,
+                }}
+              />
             </button>
             <button
               id="prev"
               className={`z-40 flex items-center p-2 text-white`}
               aria-labelledby={`previous-slide`}
             >
-              <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
+              <IonIcon
+                icon={chevronBackCircle}
+                style={{
+                  fontSize: 30,
+                }}
+              />
             </button>
           </div>
           {filteredVideos.map((vid, index) => {

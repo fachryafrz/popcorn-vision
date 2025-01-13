@@ -69,13 +69,23 @@ export default function LogoutButton({ user }) {
       >
         <li>
           <button onClick={() => revalidateRedirect("/profile")}>
-            <IonIcon icon={personOutline} className={`!text-xl`} />
+            <IonIcon
+              icon={personOutline}
+              style={{
+                fontSize: 20,
+              }}
+            />
             <span className={`whitespace-nowrap`}>{user.username}</span>
           </button>
         </li>
         <li>
           <button onClick={logout} className={`text-error`}>
-            <IonIcon icon={logOutOutline} className={`!text-2xl`} />
+            <IonIcon
+              icon={logOutOutline}
+              style={{
+                fontSize: 24,
+              }}
+            />
             <span>Logout</span>
           </button>
         </li>

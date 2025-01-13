@@ -19,7 +19,12 @@ export default function LoginButton() {
         prefetch={true}
         className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
       >
-        <IonIcon icon={personCircleOutline} className={`!text-4xl`} />
+        <IonIcon
+          icon={personCircleOutline}
+          style={{
+            fontSize: 36,
+          }}
+        />
         {/* <span className={`hidden xl:block`}>Login</span> */}
       </Link>
     </Suspense>
