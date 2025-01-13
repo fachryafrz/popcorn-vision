@@ -113,6 +113,8 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                             draggable={false}
                             alt=""
                             aria-hidden
+                            width={100}
+                            height={150}
                           />
 
                           {film.vote_average > 0 && (

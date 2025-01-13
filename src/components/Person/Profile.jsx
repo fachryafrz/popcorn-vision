@@ -43,10 +43,11 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
         <img
           src={`https://image.tmdb.org/t/p/w780${person.profile_path}`}
           role="presentation"
-          loading="lazy"
           draggable={false}
           alt=""
           aria-hidden
+          width={780}
+          height={1170}
         />
       </ImagePovi>
 

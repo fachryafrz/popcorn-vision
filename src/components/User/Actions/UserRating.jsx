@@ -1,6 +1,5 @@
 "use client";
 
-import Reveal from "@/components/Layout/Reveal";
 import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
@@ -89,75 +88,71 @@ export default function UserRating({
   return (
     <>
       <div>
-        <Reveal>
-          <div className={`mb-2 flex items-center gap-2`}>
-            <span aria-hidden className={`block text-sm font-medium italic`}>
-              {title}
-            </span>
-          </div>
-        </Reveal>
+        <div className={`mb-2 flex items-center gap-2`}>
+          <span aria-hidden className={`block text-sm font-medium italic`}>
+            {title}
+          </span>
+        </div>
       </div>
 
       <div
         className={`flex gap-1 text-lg text-primary-yellow sm:text-2xl xs:text-xl`}
       >
-        <Reveal delay={0.05}>
-          <div className={`flex items-center gap-2`}>
-            <div className="rating rating-half">
-              <input
-                type="radio"
-                name={
-                  !episode && !season
-                    ? `rating-${film.id}`
-                    : `rating-season-${season}-episode-${episode}`
-                }
-                checked={!ratingState?.value}
-                className="rating-hidden sr-only"
-              />
-              {[...Array(10)].map((_, index) => {
-                const starValue = index + 1;
+        <div className={`flex items-center gap-2`}>
+          <div className="rating rating-half">
+            <input
+              type="radio"
+              name={
+                !episode && !season
+                  ? `rating-${film.id}`
+                  : `rating-season-${season}-episode-${episode}`
+              }
+              checked={!ratingState?.value}
+              className="rating-hidden sr-only"
+            />
+            {[...Array(10)].map((_, index) => {
+              const starValue = index + 1;
 
-                return (
-                  <input
-                    key={starValue}
-                    type="radio"
-                    name={
-                      !episode && !season
-                        ? `rating-${film.id}`
-                        : `rating-season-${season}-episode-${episode}`
-                    }
-                    onMouseEnter={() => setHoverState({ value: starValue })}
-                    onMouseLeave={() =>
-                      setHoverState({ value: ratingState?.value })
-                    }
-                    onClick={() => {
-                      if (!user)
-                        document.getElementById("loginAlert").showModal();
+              return (
+                <input
+                  key={starValue}
+                  type="radio"
+                  name={
+                    !episode && !season
+                      ? `rating-${film.id}`
+                      : `rating-season-${season}-episode-${episode}`
+                  }
+                  onMouseEnter={() => setHoverState({ value: starValue })}
+                  onMouseLeave={() =>
+                    setHoverState({ value: ratingState?.value })
+                  }
+                  onClick={() => {
+                    if (!user)
+                      document.getElementById("loginAlert").showModal();
 
-                      setHoverState({ value: starValue }); // Setel hoverRating kembali ke 0
-                      handleRating(starValue);
-                    }}
-                    checked={hoverState?.value === starValue}
-                    className={`mask ${(index % 2) + 1 === 1 ? `mask-half-1` : `mask-half-2`} mask-star-2 !translate-y-0 bg-primary-yellow`}
-                  />
-                );
-              })}
-            </div>
-
-            {!isLoading && ratingState?.value > 0 && (
-              <button
-                onClick={async () => await handleDeleteRating()}
-                className={`flex aspect-square font-medium italic text-primary-red transition-all`}
-              >
-                <IonIcon icon={trashOutline} className={`text-2xl`} />
-              </button>
-            )}
-
-            {isLoading && (
-              <span class="loading loading-spinner text-white"></span>
-            )}
+                    setHoverState({ value: starValue }); // Setel hoverRating kembali ke 0
+                    handleRating(starValue);
+                  }}
+                  checked={hoverState?.value === starValue}
+                  className={`mask ${(index % 2) + 1 === 1 ? `mask-half-1` : `mask-half-2`} mask-star-2 !translate-y-0 bg-primary-yellow`}
+                />
+              );
+            })}
           </div>
-        </Reveal>
+
+          {!isLoading && ratingState?.value > 0 && (
+            <button
+              onClick={async () => await handleDeleteRating()}
+              className={`flex aspect-square font-medium italic text-primary-red transition-all`}
+            >
+              <IonIcon icon={trashOutline} className={`text-2xl`} />
+            </button>
+          )}
+
+          {isLoading && (
+            <span class="loading loading-spinner text-white"></span>
+          )}
+        </div>
       </div>
     </>
   );

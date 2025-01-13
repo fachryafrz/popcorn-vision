@@ -46,7 +46,8 @@ export default function User({ user }) {
               src={profileImage}
               alt={user.name}
               draggable={false}
-              loading="lazy"
+              width={500}
+              height={500}
             />
           </div>
         </figure>

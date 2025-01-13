@@ -4,7 +4,6 @@
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
-import Reveal from "@/components/Layout/Reveal";
 
 // Zustand
 import { formatRating } from "@/lib/formatRating";
@@ -26,6 +25,10 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     setSeasonPoster(() => [film.poster_path]); // Zustand
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setSeasonPoster(() => []);
+  }, [pathname]);
 
   useEffect(() => {
     const isWindowAvailable = typeof window !== "undefined";
@@ -77,47 +80,47 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   }, [film, images, isTvPage, reviews, videos]);
 
   return (
-    <Reveal key={filmPoster} y={0} className={`w-full`}>
-      <div className="sticky top-20 flex w-full flex-col gap-2">
-        <ImagePovi
-          imgPath={filmPoster}
-          className={`relative aspect-poster w-full self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
-        >
-          <img
-            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-            alt={!isTvPage ? film.title : film.name}
-            className={`object-cover transition-all`}
-            draggable={false}
-            loading="lazy"
-          />
+    <div className="sticky top-20 flex-1 h-fit">
+      <ImagePovi
+        imgPath={filmPoster ?? film.poster_path}
+        className={`relative mx-auto aspect-poster w-[60svw] md:w-auto self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
+      >
+        <img
+          src={`https://image.tmdb.org/t/p/w500${filmPoster ?? film.poster_path}`}
+          alt={!isTvPage ? film.title : film.name}
+          className={`object-cover transition-all`}
+          draggable={false}
+          width={300}
+          height={450}
+        />
 
-          {film.vote_average > 0 && (
+        {film.vote_average > 0 && (
+          <div
+            className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
+          >
             <div
-              className={`absolute left-0 top-0 m-2 rounded-full bg-base-100 bg-opacity-50 p-1 backdrop-blur-sm`}
+              className={`radial-progress text-sm font-semibold ${
+                film.vote_average > 0 && film.vote_average < 3
+                  ? `text-primary-red`
+                  : film.vote_average >= 3 && film.vote_average < 7
+                    ? `text-primary-yellow`
+                    : `text-green-500`
+              }`}
+              style={{
+                "--value": film.vote_average * 10,
+                "--size": "36px",
+                "--thickness": "3px",
+              }}
             >
-              <div
-                className={`radial-progress text-sm font-semibold ${
-                  film.vote_average > 0 && film.vote_average < 3
-                    ? `text-primary-red`
-                    : film.vote_average >= 3 && film.vote_average < 7
-                      ? `text-primary-yellow`
-                      : `text-green-500`
-                }`}
-                style={{
-                  "--value": film.vote_average * 10,
-                  "--size": "36px",
-                  "--thickness": "3px",
-                }}
-              >
-                <span className={`text-white`}>
-                  {formatRating(film.vote_average)}
-                </span>
-              </div>
+              <span className={`text-white`}>
+                {formatRating(film.vote_average)}
+              </span>
             </div>
-          )}
-        </ImagePovi>
+          </div>
+        )}
+      </ImagePovi>
 
-        {/* {film.status !== "Released" && film.status !== "Returning Series" && (
+      {/* {film.status !== "Released" && film.status !== "Returning Series" && (
           <span
             className={`btn pointer-events-none rounded-full border-transparent bg-primary-blue bg-opacity-10 text-primary-blue backdrop-blur-sm`}
           >
@@ -131,7 +134,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
           </span>
         )} */}
 
-        {/* {quickNav.length && (
+      {/* {quickNav.length && (
           <ul className={`hidden lg:flex gap-1 flex-wrap`}>
             {quickNav.map((link, i) => {
               return (
@@ -142,7 +145,6 @@ export default function FilmPoster({ film, videos, images, reviews }) {
             })}
           </ul>
         )} */}
-      </div>
-    </Reveal>
+    </div>
   );
 }

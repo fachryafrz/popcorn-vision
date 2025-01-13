@@ -8,7 +8,6 @@ import { EpisodeModal } from "../../Modals/EpisodeModal";
 import { useSearchParams } from "next/navigation";
 import ShareModal from "@/components/Modals/ShareModal";
 import PersonModal from "@/components/Modals/PersonModal";
-import LoginAlert from "@/components/Modals/LoginAlert";
 import { useAuth } from "@/hooks/auth";
 
 export default function FilmContent({
@@ -36,7 +35,7 @@ export default function FilmContent({
       >
         {/* Poster */}
         <section className={`md:col-[1/4] lg:col-[1/6] lg:row-[1/3]`}>
-          <div className={`mx-auto flex h-full w-[60svw] md:m-0 md:w-auto`}>
+          <div className={`flex h-full w-full md:m-0 md:w-auto`}>
             <FilmPoster
               film={film}
               videos={videos}

@@ -1,8 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { usePathname } from "next/navigation";
-import { fetchData, getTitleLogo } from "@/lib/fetch";
-import Reveal from "../Layout/Reveal";
 
 export default function TitleLogo({ film, images, setLoading }) {
   const [titleLogo, setTitleLogo] = useState(images);
@@ -13,35 +11,32 @@ export default function TitleLogo({ film, images, setLoading }) {
   const title = !isTvPage ? film.title : film.name;
 
   return titleLogo ? (
-    <Reveal delay={0.1} className={`w-fit`}>
-      <figure className="mb-4 flex justify-center md:justify-start">
-        <img
-          src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
-          alt=""
-          aria-hidden
-          title={title}
-          className=" max-h-[180px] bg-contain object-contain"
-          draggable={false}
-          role="presentation"
-          loading="lazy"
-        />
+    <figure className="mb-4 flex justify-center md:justify-start">
+      <img
+        src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
+        alt=""
+        aria-hidden
+        title={title}
+        className=" max-h-[180px] bg-contain object-contain"
+        draggable={false}
+        role="presentation"
+        width={400}
+        height={180}
+      />
 
-        {/* {!images && (
+      {/* {!images && (
           <figcaption className="sr-only">
             <h3 style={{ textWrap: `balance` }}>{title}</h3>
           </figcaption>
         )} */}
-      </figure>
-    </Reveal>
+    </figure>
   ) : (
-    <Reveal delay={0.1} className={`w-full`}>
-      <span
-        aria-hidden
-        className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
-        style={{ textWrap: `balance` }}
-      >
-        {title}
-      </span>
-    </Reveal>
+    <span
+      aria-hidden
+      className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
+      style={{ textWrap: `balance` }}
+    >
+      {title}
+    </span>
   );
 }

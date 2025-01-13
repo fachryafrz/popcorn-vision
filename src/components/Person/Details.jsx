@@ -77,6 +77,8 @@ export default function PersonDetails({
                       role="presentation"
                       alt=""
                       aria-hidden
+                      width={500}
+                      height={750}
                       className={`aspect-poster rounded-xl`}
                     />
                   </SwiperSlide>

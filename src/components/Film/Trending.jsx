@@ -3,7 +3,6 @@
 import { Link } from "next-view-transitions";
 import FilmSummary from "./Summary";
 import { fetchData } from "@/lib/fetch";
-import Reveal from "../Layout/Reveal";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
@@ -29,7 +28,6 @@ export default async function Trending({ film, genres, type }) {
       </Link>
       <p className="sr-only">{film.overview}</p>
 
-      {/* <Reveal> */}
       <div className="relative flex flex-col items-center gap-8 overflow-hidden p-8 before:invisible before:absolute before:inset-0 before:z-10 before:bg-gradient-to-t before:from-black before:via-black before:via-30% before:opacity-[100%] after:absolute after:inset-0 after:z-20 after:bg-gradient-to-t after:from-black md:flex-row md:rounded-[3rem] md:p-[3rem] md:before:visible md:before:bg-gradient-to-r md:after:bg-gradient-to-r">
         {/* Backdrop */}
         <ImagePovi
@@ -43,12 +41,13 @@ export default async function Trending({ film, genres, type }) {
             draggable={false}
             alt=""
             aria-hidden
+            width={1280}
+            height={720}
           />
         </ImagePovi>
 
         {/* Poster */}
-        <Reveal
-          y={0}
+        <div
           className={`z-30 aspect-poster h-full w-full max-w-[300px] overflow-hidden rounded-2xl`}
         >
           <ImagePovi imgPath={film.poster_path} className={`h-full`}>
@@ -64,10 +63,12 @@ export default async function Trending({ film, genres, type }) {
                 draggable={false}
                 alt=""
                 aria-hidden
+                width={500}
+                height={750}
               />
             </picture>
           </ImagePovi>
-        </Reveal>
+        </div>
         <div className="z-30 flex flex-col items-center gap-2 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%]">
           {filmDetails && (
             <FilmSummary
@@ -79,7 +80,6 @@ export default async function Trending({ film, genres, type }) {
           )}
         </div>
       </div>
-      {/* </Reveal> */}
     </div>
   );
 }

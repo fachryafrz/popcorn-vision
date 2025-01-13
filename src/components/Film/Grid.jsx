@@ -3,7 +3,6 @@
 import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import FilmCard from "./Card";
-import Reveal from "../Layout/Reveal";
 
 export default function FilmGrid({
   films,
@@ -48,14 +47,12 @@ export default function FilmGrid({
       <ul className="grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7">
         {films?.map((film) => {
           return (
-            <Reveal key={film.id} y={0}>
-              <li>
-                <FilmCard
-                  film={film}
-                  isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
-                />
-              </li>
-            </Reveal>
+            <li key={film.id}>
+              <FilmCard
+                film={film}
+                isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
+              />
+            </li>
           );
         })}
 
