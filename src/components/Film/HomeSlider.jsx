@@ -21,8 +21,6 @@ import "swiper/css/effect-fade";
 // Components
 import { usePathname } from "next/navigation";
 import FilmSummary from "./Summary";
-import Reveal from "../Layout/Reveal";
-import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
 import { POPCORN } from "@/lib/constants";
@@ -196,25 +194,24 @@ function HomeFilm({
     <>
       <div className={`-z-10 h-full w-full`}>
         {/* Poster & Backdrop */}
-        <Reveal y={0} className={`h-full`}>
-          {/* <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}> */}
-          <picture>
-            <source
-              media="(min-width: 640px)"
-              srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
-            />
-            <img
-              src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
-              role="presentation"
-              loading="lazy"
-              draggable={false}
-              alt=""
-              aria-hidden
-              className="object-top"
-            />
-          </picture>
-          {/* </ImagePovi> */}
-        </Reveal>
+        {/* <ImagePovi imgPath={filmPoster} position={`top`} className={`h-full`}> */}
+        <picture>
+          <source
+            media="(min-width: 640px)"
+            srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+          />
+          <img
+            src={`https://image.tmdb.org/t/p/w500${filmPoster}`}
+            role="presentation"
+            draggable={false}
+            alt=""
+            aria-hidden
+            className="object-top"
+            width={500}
+            height={750}
+          />
+        </picture>
+        {/* </ImagePovi> */}
       </div>
       <div className={`absolute bottom-0 z-50 w-full p-4 lg:bottom-20`}>
         {filmDetails && activeSlide === index && (
@@ -245,14 +242,14 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
 
   return (
     <>
-      {/* <Reveal delay={0.1 * index}> */}
       {filmBackdrop ? (
         <img
           src={`https://image.tmdb.org/t/p/w185${filmBackdrop}`}
           role="presentation"
-          loading="lazy"
           alt=""
           aria-hidden
+          width={185}
+          height={104}
           className="aspect-video rounded-lg"
         />
       ) : (
@@ -267,7 +264,6 @@ function SliderThumbs({ film, isTvPage, index, filmData }) {
           }}
         ></figure>
       )}
-      {/* </Reveal> */}
     </>
   );
 }

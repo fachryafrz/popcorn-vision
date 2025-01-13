@@ -1,9 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 import { useAuth } from "@/hooks/auth";
 import { revalidateRedirect } from "@/lib/revalidateRedirect";
+import { IonIcon } from "@ionic/react";
 import axios from "axios";
+import { logOutOutline, personOutline } from "ionicons/icons";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {
   const router = useRouter();
@@ -39,7 +41,7 @@ export default function LogoutButton({ user }) {
       <div
         tabIndex={0}
         role="button"
-        className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hover:border-transparent hover:bg-opacity-[30%] hover:backdrop-blur-sm`}
+        className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
       >
         {!profileImage ? (
           <div className="avatar placeholder">
@@ -54,7 +56,8 @@ export default function LogoutButton({ user }) {
                 src={profileImage}
                 alt={user.name}
                 draggable={false}
-                loading="lazy"
+                width={64}
+                height={64}
               />
             </div>
           </figure>
@@ -62,15 +65,17 @@ export default function LogoutButton({ user }) {
       </div>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box z-50 mt-3 w-52 bg-base-100 p-2 shadow"
+        className="menu dropdown-content rounded-box z-50 mt-3 max-w-52 bg-base-200 p-2 font-medium shadow"
       >
         <li>
           <button onClick={() => revalidateRedirect("/profile")}>
-            <span>Profile</span>
+            <IonIcon icon={personOutline} className={`!text-xl`} />
+            <span className={`whitespace-nowrap`}>{user.username}</span>
           </button>
         </li>
         <li>
-          <button onClick={logout}>
+          <button onClick={logout} className={`text-error`}>
+            <IonIcon icon={logOutOutline} className={`!text-2xl`} />
             <span>Logout</span>
           </button>
         </li>

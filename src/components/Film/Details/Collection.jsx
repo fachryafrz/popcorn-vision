@@ -152,6 +152,8 @@ export function CollectionItem({
             loading="lazy"
             alt=""
             aria-hidden
+            width={50}
+            height={75}
           />
         </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">
@@ -272,6 +274,8 @@ function FilmSeason({ film, item, index }) {
             loading="lazy"
             alt=""
             aria-hidden
+            width={50}
+            height={75}
           />
         </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">

@@ -175,7 +175,8 @@ export function EpisodeModal({ film }) {
                     aria-hidden
                     className={`object-cover`}
                     draggable={false}
-                    loading="lazy"
+                    width={500}
+                    height={750}
                   />
                 </picture>
               </ImagePovi>

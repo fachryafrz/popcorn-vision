@@ -1,5 +1,3 @@
-import Reveal from "@/components/Layout/Reveal";
-import React from "react";
 import Person from "../../../Person/Person";
 
 export default function FilmDirector({ credits, film, isTvPage }) {
@@ -15,14 +13,12 @@ export default function FilmDirector({ credits, film, isTvPage }) {
               id={`Movie Director`}
               className={`flex items-center gap-2`}
             >
-              <Reveal>
-                <Person
-                  id={director.id}
-                  name={director.name}
-                  profile_path={director.profile_path}
-                  role={`Director`}
-                />
-              </Reveal>
+              <Person
+                id={director.id}
+                name={director.name}
+                profile_path={director.profile_path}
+                role={`Director`}
+              />
             </section>
           )
         : film.created_by.length > 0 && (
@@ -32,14 +28,13 @@ export default function FilmDirector({ credits, film, isTvPage }) {
             >
               {film.created_by.map((item, i) => {
                 return (
-                  <Reveal key={item.id}>
-                    <Person
-                      id={item.id}
-                      name={item.name}
-                      profile_path={item.profile_path}
-                      role={`Creator`}
-                    />
-                  </Reveal>
+                  <Person
+                    key={item.id}
+                    id={item.id}
+                    name={item.name}
+                    profile_path={item.profile_path}
+                    role={`Creator`}
+                  />
                 );
               })}
             </section>
