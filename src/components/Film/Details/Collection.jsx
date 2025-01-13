@@ -339,9 +339,12 @@ function FilmSeason({ film, item, index }) {
         {item.episode_count > 0 && (
           <IonIcon
             icon={chevronDownOutline}
-            class={`min-w-[18px] text-lg text-secondary transition-all ${
+            className={`text-secondary transition-all ${
               viewSeason ? `-rotate-180` : ``
             }`}
+            style={{
+              fontSize: 18,
+            }}
           />
         )}
       </button>
@@ -455,13 +458,23 @@ function FilmEpisodes({ id, season }) {
                 id={`prevEps-${id}-${season}`}
                 className={`pointer-events-auto flex items-center p-2`}
               >
-                <IonIcon icon={chevronBackCircle} className={`text-3xl`} />
+                <IonIcon
+                  icon={chevronBackCircle}
+                  style={{
+                    fontSize: 30,
+                  }}
+                />
               </button>
               <button
                 id={`nextEps-${id}-${season}`}
                 className={`pointer-events-auto flex items-center p-2`}
               >
-                <IonIcon icon={chevronForwardCircle} className={`text-3xl`} />
+                <IonIcon
+                  icon={chevronForwardCircle}
+                  style={{
+                    fontSize: 30,
+                  }}
+                />
               </button>
             </div>
           </Swiper>

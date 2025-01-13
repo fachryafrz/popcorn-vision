@@ -50,13 +50,23 @@ export default function FilmSlider({
             className={`prev-${slug(title)} h-[1.5rem]`}
             aria-label="Move slider left"
           >
-            <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
+            <IonIcon
+              icon={chevronBack}
+              style={{
+                fontSize: 24,
+              }}
+            ></IonIcon>
           </button>
           <button
             className={`next-${slug(title)} h-[1.5rem]`}
             aria-label="Move slider right"
           >
-            <IonIcon icon={chevronForward} className="text-[1.5rem]"></IonIcon>
+            <IonIcon
+              icon={chevronForward}
+              style={{
+                fontSize: 24,
+              }}
+            ></IonIcon>
           </button>
         </div>
       </div>

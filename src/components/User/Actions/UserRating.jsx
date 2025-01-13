@@ -145,7 +145,12 @@ export default function UserRating({
               onClick={async () => await handleDeleteRating()}
               className={`flex aspect-square font-medium italic text-primary-red transition-all`}
             >
-              <IonIcon icon={trashOutline} className={`text-2xl`} />
+              <IonIcon
+                icon={trashOutline}
+                style={{
+                  fontSize: 24,
+                }}
+              />
             </button>
           )}
 

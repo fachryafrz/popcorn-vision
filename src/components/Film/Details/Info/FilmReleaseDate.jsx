@@ -20,7 +20,10 @@ export default function FilmReleaseDate({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={calendarOutline}
-                  className={`mt-1 min-w-[14px]`}
+                  style={{
+                    fontSize: 14,
+                    marginTop: 4,
+                  }}
                 />
 
                 <time dateTime={filmReleaseDate}>
@@ -38,7 +41,10 @@ export default function FilmReleaseDate({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={calendarOutline}
-                  className={`mt-1 min-w-[14px]`}
+                  style={{
+                    fontSize: 14,
+                    marginTop: 4,
+                  }}
                 />
 
                 <time dateTime={film.last_air_date ?? film.first_air_date}>
@@ -67,7 +73,13 @@ export default function FilmReleaseDate({
         )
       ) : (
         <div className={`flex items-start gap-1`}>
-          <IonIcon icon={calendarOutline} className={`mt-1 min-w-[14px]`} />
+          <IonIcon
+            icon={calendarOutline}
+            style={{
+              fontSize: 14,
+              marginTop: 4,
+            }}
+          />
 
           <span>TBA</span>
         </div>

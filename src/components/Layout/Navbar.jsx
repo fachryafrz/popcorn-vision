@@ -214,7 +214,12 @@ export default function Navbar() {
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
-              <IonIcon icon={filmOutline} className="text-[1.25rem]" />
+              <IonIcon
+                icon={filmOutline}
+                style={{
+                  fontSize: 20,
+                }}
+              />
               <span className="hidden md:block">Movies</span>
             </button>
             <button
@@ -225,7 +230,12 @@ export default function Navbar() {
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
-              <IonIcon icon={tvOutline} className="text-[1.25rem]" />
+              <IonIcon
+                icon={tvOutline}
+                style={{
+                  fontSize: 20,
+                }}
+              />
               <span className="hidden md:block">TV Shows</span>
             </button>
           </div>
@@ -237,7 +247,12 @@ export default function Navbar() {
               prefetch={true}
               className={`btn btn-secondary btn-sm aspect-square h-[40px] rounded-full border-none bg-opacity-20 !px-0 hocus:bg-opacity-50 md:aspect-auto md:!px-3 lg:hidden`}
             >
-              <IonIcon icon={search} className="text-[1.25rem]" />
+              <IonIcon
+                icon={search}
+                style={{
+                  fontSize: 20,
+                }}
+              />
               <span className="hidden md:block">Search</span>
             </Link>
           </div>
@@ -358,7 +373,13 @@ export function SearchBar({ placeholder = `Search` }) {
               onClick={handleClear}
               className={`flex h-full items-center`}
             >
-              <IonIcon icon={close} className={`text-2xl text-gray-400`} />
+              <IonIcon
+                icon={close}
+                className={`text-gray-400`}
+                style={{
+                  fontSize: 24,
+                }}
+              />
             </button>
           )}
 

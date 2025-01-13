@@ -203,7 +203,12 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
             <div className={`flex items-center gap-4`}>
               <button className="prev h-[1.5rem]" aria-label="Move slider left">
-                <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
+                <IonIcon
+                  icon={chevronBack}
+                  style={{
+                    fontSize: 24,
+                  }}
+                ></IonIcon>
               </button>
               <button
                 className="next h-[1.5rem]"
@@ -211,7 +216,9 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
               >
                 <IonIcon
                   icon={chevronForward}
-                  className="text-[1.5rem]"
+                  style={{
+                    fontSize: 24,
+                  }}
                 ></IonIcon>
               </button>
             </div>

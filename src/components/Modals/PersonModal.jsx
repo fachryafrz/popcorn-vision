@@ -75,7 +75,12 @@ export default function PersonModal() {
               onClick={handleCloseModal}
               className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
             >
-              <IonIcon icon={close} className={`text-3xl`} />
+              <IonIcon
+                icon={close}
+                style={{
+                  fontSize: 30,
+                }}
+              />
             </button>
           </div>
 

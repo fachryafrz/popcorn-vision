@@ -83,7 +83,7 @@ export default function ShareModal() {
         <div className="divider">or</div>
 
         <div
-          className={`flex w-full flex-col items-center gap-2 rounded-full border border-white border-opacity-50 bg-black bg-opacity-50 p-2 text-sm sm:flex-row`}
+          className={`flex w-full items-center gap-2 rounded-full border border-white border-opacity-50 bg-black bg-opacity-50 p-2 text-sm sm:flex-row`}
         >
           <label htmlFor={`copyURL`}></label>
           <input

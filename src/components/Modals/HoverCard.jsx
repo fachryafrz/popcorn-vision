@@ -197,7 +197,7 @@ export default function HoverCard() {
                     href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
                     className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
-                    <IonIcon icon={star} className="" />
+                    <IonIcon icon={star} />
                     <span
                       className="before-content !text-white"
                       data-before-content={formatRating(card.vote_average)}

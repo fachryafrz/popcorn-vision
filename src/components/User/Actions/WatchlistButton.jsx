@@ -17,7 +17,7 @@ export default function WatchlistButton({
   className,
 }) {
   const { user } = useAuth();
-  const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig();
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -40,7 +40,7 @@ export default function WatchlistButton({
       setIsLoading(false);
       setIsAdded(watchlist);
 
-      mutate(swrKey)
+      mutate(swrKey);
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       setIsLoading(false);
@@ -68,7 +68,9 @@ export default function WatchlistButton({
       ) : (
         <IonIcon
           icon={!isAdded ? bookmarkOutline : bookmark}
-          className={`text-xl`}
+          style={{
+            fontSize: 20,
+          }}
         />
       )}
       {/* <span>{!isAdded ? "Add to Watchlist" : "Remove from Watchlist"}</span> */}

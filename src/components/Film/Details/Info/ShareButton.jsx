@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { arrowRedoOutline } from "ionicons/icons";
-import React from "react";
+import { isMobile } from "react-device-detect";
 
 export default function ShareButton() {
   const handleShare = async () => {
@@ -19,22 +19,36 @@ export default function ShareButton() {
   return (
     <>
       {/* Mobile Share Button */}
-      <button
-        onClick={handleShare}
-        className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm sm:hidden`}
-      >
-        <IonIcon icon={arrowRedoOutline} className={`text-xl`} />
-        <span>Share</span>
-      </button>
+      {isMobile && (
+        <button
+          onClick={handleShare}
+          className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm `}
+        >
+          <IonIcon
+            icon={arrowRedoOutline}
+            style={{
+              fontSize: 20,
+            }}
+          />
+          <span>Share</span>
+        </button>
+      )}
 
       {/* Desktop Share Button */}
-      <button
-        className={`btn btn-ghost hidden items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm sm:flex`}
-        onClick={() => document.getElementById("shareModal").showModal()}
-      >
-        <IonIcon icon={arrowRedoOutline} className={`text-xl`} />
-        <span>Share</span>
-      </button>
+      {!isMobile && (
+        <button
+          className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm`}
+          onClick={() => document.getElementById("shareModal").showModal()}
+        >
+          <IonIcon
+            icon={arrowRedoOutline}
+            style={{
+              fontSize: 20,
+            }}
+          />
+          <span>Share</span>
+        </button>
+      )}
     </>
   );
 }
