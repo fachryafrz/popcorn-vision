@@ -1,7 +1,6 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Runtime({ sliderStyles }) {
   const router = useRouter();

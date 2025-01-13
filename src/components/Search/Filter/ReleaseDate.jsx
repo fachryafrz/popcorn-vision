@@ -2,8 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
   const router = useRouter();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function AdultModal({ adult }) {

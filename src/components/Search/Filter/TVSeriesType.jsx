@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function TVSeriesType() {
   const router = useRouter();

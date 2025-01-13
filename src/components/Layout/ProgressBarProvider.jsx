@@ -7,6 +7,7 @@ export default function Providers({ children }) {
     <>
       {children}
       <ProgressBar
+        height="2px"
         color="#0278FD"
         options={{ showSpinner: false }}
         shallowRouting

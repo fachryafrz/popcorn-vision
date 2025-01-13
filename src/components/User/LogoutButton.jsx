@@ -4,8 +4,7 @@ import { revalidateRedirect } from "@/lib/revalidateRedirect";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { logOutOutline, personOutline } from "ionicons/icons";
-import { usePathname } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {

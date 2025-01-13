@@ -2,8 +2,7 @@
 
 import { IonIcon } from "@ionic/react";
 import { useState, useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/Navbar";
 import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
