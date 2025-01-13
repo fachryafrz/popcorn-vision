@@ -4,9 +4,8 @@ import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { bookmark, bookmarkOutline } from "ionicons/icons";
-import { useCookies } from "next-client-cookies";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 
 export default function WatchlistButton({
@@ -17,7 +16,7 @@ export default function WatchlistButton({
   className,
 }) {
   const { user } = useAuth();
-  const { mutate } = useSWRConfig()
+  const { mutate } = useSWRConfig();
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
@@ -40,7 +39,7 @@ export default function WatchlistButton({
       setIsLoading(false);
       setIsAdded(watchlist);
 
-      mutate(swrKey)
+      mutate(swrKey);
     } catch (error) {
       console.error("Error adding to watchlist:", error);
       setIsLoading(false);

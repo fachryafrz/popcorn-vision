@@ -2,7 +2,8 @@
 
 import { IonIcon } from "@ionic/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 import { useEffect, useState } from "react";
 
 const sortOptions = [

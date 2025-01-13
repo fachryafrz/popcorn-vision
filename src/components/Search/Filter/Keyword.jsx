@@ -1,7 +1,8 @@
 import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useRef } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 
 export default function Keyword({ inputStyles }) {
   const router = useRouter();

@@ -5,7 +5,8 @@ import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 
 export default function Person({
   id,
