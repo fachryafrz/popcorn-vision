@@ -74,7 +74,9 @@ export default function CastsList({ credits }) {
               {showAllActors ? "Show Less" : "Show All"}
               <IonIcon
                 icon={showAllActors ? chevronUpOutline : chevronDownOutline}
-                className="text-[1.25rem]"
+                style={{
+                  fontSize: 20,
+                }}
               />
             </button>{" "}
           </div>

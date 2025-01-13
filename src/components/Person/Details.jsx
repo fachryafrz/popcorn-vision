@@ -105,7 +105,9 @@ export default function PersonDetails({
                 >
                   <IonIcon
                     icon={chevronBack}
-                    className="text-[1.5rem]"
+                    style={{
+                      fontSize: 24,
+                    }}
                   ></IonIcon>
                 </button>
                 <button
@@ -114,7 +116,9 @@ export default function PersonDetails({
                 >
                   <IonIcon
                     icon={chevronForward}
-                    className="text-[1.5rem]"
+                    style={{
+                      fontSize: 24,
+                    }}
                   ></IonIcon>
                 </button>
               </div>

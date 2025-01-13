@@ -148,7 +148,12 @@ export function EpisodeModal({ film }) {
                 onClick={handleCloseModal}
                 className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
               >
-                <IonIcon icon={close} className={`text-3xl`} />
+                <IonIcon
+                  icon={close}
+                  style={{
+                    fontSize: 30,
+                  }}
+                />
               </button>
             </div>
 
@@ -259,7 +264,7 @@ export function EpisodeModal({ film }) {
                       season={episode.season_number}
                       episode={episode.episode_number}
                       rating={accountStates?.rated}
-                      title={`What did you think of ${episode.name}`}
+                      title={`What did you think of ${episode.name}?`}
                     />
                   </section>
                 )}
@@ -341,7 +346,12 @@ export function EpisodeModal({ film }) {
             }
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >
-            <IonIcon icon={chevronBack} className={`text-lg`} />
+            <IonIcon
+              icon={chevronBack}
+              style={{
+                fontSize: 18,
+              }}
+            />
             <span>Previous</span>
           </button>
           <button
@@ -355,7 +365,12 @@ export function EpisodeModal({ film }) {
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >
             <span>Next</span>
-            <IonIcon icon={chevronForward} className={`text-lg`} />
+            <IonIcon
+              icon={chevronForward}
+              style={{
+                fontSize: 18,
+              }}
+            />
           </button>
         </div>
       </div>
@@ -374,7 +389,12 @@ function EpisodeModalSkeleton() {
         <button
           className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
         >
-          <IonIcon icon={close} className={`text-3xl`} />
+          <IonIcon
+            icon={close}
+            style={{
+              fontSize: 30,
+            }}
+          />
         </button>
       </div>
 

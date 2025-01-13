@@ -68,7 +68,10 @@ export default function FavoriteButton({
       ) : (
         <IonIcon
           icon={!isAdded ? starOutline : star}
-          className={`text-xl ${isAdded ? `!text-primary-yellow` : ``}`}
+          className={`${isAdded ? `!text-primary-yellow` : ``}`}
+          style={{
+            fontSize: 20,
+          }}
         />
       )}
       {withText && <span>Favorite</span>}

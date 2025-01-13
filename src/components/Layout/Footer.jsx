@@ -99,28 +99,48 @@ export default function Footer() {
               target="_blank"
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
-              <IonIcon icon={logoGithub} className="text-[1.25rem]" />
+              <IonIcon
+                icon={logoGithub}
+                style={{
+                  fontSize: 20,
+                }}
+              />
             </Link>
             <Link
               href="https://twitter.com/fachryafrz"
               target="_blank"
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
-              <IonIcon icon={logoTwitter} className="text-[1.25rem]" />
+              <IonIcon
+                icon={logoTwitter}
+                style={{
+                  fontSize: 20,
+                }}
+              />
             </Link>
             <Link
               href="https://instagram.com/fachryafrz"
               target="_blank"
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
-              <IonIcon icon={logoInstagram} className="text-[1.25rem]" />
+              <IonIcon
+                icon={logoInstagram}
+                style={{
+                  fontSize: 20,
+                }}
+              />
             </Link>
             <Link
               href="https://www.linkedin.com/in/fachryafrz"
               target="_blank"
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
-              <IonIcon icon={logoLinkedin} className="text-[1.25rem]" />
+              <IonIcon
+                icon={logoLinkedin}
+                style={{
+                  fontSize: 20,
+                }}
+              />
             </Link>
           </div>
         </div>

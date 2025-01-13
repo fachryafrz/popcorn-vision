@@ -236,7 +236,12 @@ export default function Search({
                   onClick={handleResetFilters}
                   className={`btn btn-circle btn-secondary border-none bg-opacity-20 hocus:btn-error md:btn-block lg:btn-sm hocus:text-white md:!h-full md:px-2 md:pr-4 lg:w-fit`}
                 >
-                  <IonIcon icon={closeCircle} className={`text-2xl`} />
+                  <IonIcon
+                    icon={closeCircle}
+                    style={{
+                      fontSize: 24,
+                    }}
+                  />
                   <span className={`hidden whitespace-nowrap text-sm md:block`}>
                     Reset
                   </span>
@@ -253,7 +258,12 @@ export default function Search({
               className={`btn btn-secondary aspect-square rounded-full border-none bg-opacity-20 !px-0 lg:btn-sm hocus:bg-opacity-50 lg:h-[42px]`}
             >
               {/* <span className="hidden md:block">Filters</span> */}
-              <IonIcon icon={optionsOutline} className={`text-xl`} />
+              <IonIcon
+                icon={optionsOutline}
+                style={{
+                  fontSize: 20,
+                }}
+              />
             </button>
           </div>
 

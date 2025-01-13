@@ -40,7 +40,12 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
             prefetch={true}
             className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-3 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
           >
-            <IonIcon icon={star} className="aspect-square h-full !w-5" />
+            <IonIcon
+              icon={star}
+              style={{
+                fontSize: 20,
+              }}
+            />
             <span className="!text-white">
               {formatRating(film.vote_average)}
             </span>
@@ -81,7 +86,12 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
           className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
         >
           Details
-          <IonIcon icon={chevronForward} className="aspect-square text-base" />
+          <IonIcon
+            icon={chevronForward}
+            style={{
+              fontSize: 16,
+            }}
+          />
         </Link>
       </div>
     </div>
