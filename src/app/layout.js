@@ -8,6 +8,7 @@ import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
+import Providers from "@/components/Layout/ProgressBarProvider";
 
 export const viewport = {
   width: "device-width",
@@ -114,25 +115,32 @@ export default async function RootLayout({ children }) {
         {/* <GoogleAdsense pId={adsenseId} /> */}
       </Suspense>
       <body className="bg-base-100 text-white">
-        <CookiesProvider>
-          {/* Navbar */}
-          <Suspense>
-            <Navbar />
-          </Suspense>
+        <Providers>
+          <CookiesProvider>
+            {/* Navbar */}
+            <Suspense>
+              <Navbar />
+            </Suspense>
 
-          {/* User Location */}
-          <UserLocation ip={ip} />
+            {/* User Location */}
+            <UserLocation ip={ip} />
+            {/* User Location */}
+            <UserLocation ip={ip} />
 
-          {/* Main Content */}
-          <main className={`mt-[66px] pb-8`}>{children}</main>
+            {/* Main Content */}
+            <main className={`mt-[66px] pb-8`}>{children}</main>
+            {/* Main Content */}
+            <main className={`mt-[66px] pb-8`}>{children}</main>
 
-          {/* Modal */}
-          <Modal />
+            {/* Modal */}
+            <Modal />
+            {/* Modal */}
+            <Modal />
 
-          {/* Footer */}
-          <Footer />
-        </CookiesProvider>
-
+            {/* Footer */}
+            <Footer />
+          </CookiesProvider>
+        </Providers>
         {/* <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
