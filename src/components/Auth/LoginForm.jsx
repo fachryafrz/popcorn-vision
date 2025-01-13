@@ -4,9 +4,8 @@ import { useAuth } from "@/hooks/auth";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useRouter } from 'next-nprogress-bar';
 
 export default function LoginForm() {
   const router = useRouter();

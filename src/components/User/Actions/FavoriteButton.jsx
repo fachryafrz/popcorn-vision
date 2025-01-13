@@ -4,8 +4,8 @@ import { useAuth } from "@/hooks/auth";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
-import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useSWRConfig } from "swr";
 
 export default function FavoriteButton({

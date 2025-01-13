@@ -5,8 +5,7 @@ import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter } from "next/navigation";
 
 export default function EpisodeCard({
   className,

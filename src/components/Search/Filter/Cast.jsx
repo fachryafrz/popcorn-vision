@@ -1,8 +1,7 @@
 import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Cast({ inputStyles }) {
   const router = useRouter();

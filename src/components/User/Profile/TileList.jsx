@@ -6,9 +6,8 @@ import { TMDB_SESSION_ID } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useRouter } from 'next-nprogress-bar';
-import { useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function TileList({
