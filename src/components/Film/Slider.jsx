@@ -13,7 +13,6 @@ import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { sortFilms } from "../../lib/sortFilms";
-import Reveal from "../Layout/Reveal";
 import slug from "slug";
 import moment from "moment";
 
@@ -32,7 +31,6 @@ export default function FilmSlider({
   return (
     <section id={title} className={`mx-auto w-full max-w-none`}>
       <div className="relative z-10 flex h-[28px] max-w-7xl items-end justify-between px-4 xl:max-w-none">
-        {/* <Reveal> */}
         <div className="flex items-end gap-4">
           <h2 className={`text-lg font-bold md:text-2xl`}>{title}</h2>
 
@@ -46,18 +44,21 @@ export default function FilmSlider({
             </Link>
           )}
         </div>
-        {/* </Reveal> */}
 
-        {/* <Reveal> */}
         <div className={`flex items-center gap-4`}>
-          <button className={`prev-${slug(title)} h-[1.5rem]`} aria-label="Move slider left">
+          <button
+            className={`prev-${slug(title)} h-[1.5rem]`}
+            aria-label="Move slider left"
+          >
             <IonIcon icon={chevronBack} className="text-[1.5rem]"></IonIcon>
           </button>
-          <button className={`next-${slug(title)} h-[1.5rem]`} aria-label="Move slider right">
+          <button
+            className={`next-${slug(title)} h-[1.5rem]`}
+            aria-label="Move slider right"
+          >
             <IonIcon icon={chevronForward} className="text-[1.5rem]"></IonIcon>
           </button>
         </div>
-        {/* </Reveal> */}
       </div>
 
       {/* <ul className="sr-only">
@@ -119,9 +120,7 @@ export default function FilmSlider({
               tag="li"
               className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6)] @7xl:max-w-[calc(100%/7)]`}
             >
-              {/* <Reveal> */}
               <FilmCard film={film} isTvPage={isTvPage} />
-              {/* </Reveal> */}
             </SwiperSlide>
           );
         })}

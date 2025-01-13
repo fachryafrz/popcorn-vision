@@ -50,6 +50,8 @@ export default function EpisodeCard({
             className="w-full"
             alt=""
             aria-hidden
+            width={500}
+            height={750}
           />
         </picture>
 
