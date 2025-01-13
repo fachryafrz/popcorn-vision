@@ -157,9 +157,9 @@ export default function FilmInfo({
                 <div className={`flex items-start gap-1`}>
                   <IonIcon
                     icon={tvOutline}
-                    className={`mt-1`}
                     style={{
                       fontSize: 14,
+                      marginTop: 4,
                     }}
                   />
 
@@ -182,9 +182,9 @@ export default function FilmInfo({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={timeOutline}
-                  className={`mt-1`}
                   style={{
                     fontSize: 14,
+                    marginTop: 4,
                   }}
                 />
                 <time>
@@ -200,9 +200,9 @@ export default function FilmInfo({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={timeOutline}
-                  className={`mt-1`}
                   style={{
                     fontSize: 14,
+                    marginTop: 4,
                   }}
                 />
                 <span>TBA</span>

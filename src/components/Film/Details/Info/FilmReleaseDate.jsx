@@ -20,9 +20,9 @@ export default function FilmReleaseDate({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={calendarOutline}
-                  className={`mt-1`}
                   style={{
                     fontSize: 14,
+                    marginTop: 4,
                   }}
                 />
 
@@ -41,9 +41,9 @@ export default function FilmReleaseDate({
               <div className={`flex items-start gap-1`}>
                 <IonIcon
                   icon={calendarOutline}
-                  className={`mt-1`}
                   style={{
                     fontSize: 14,
+                    marginTop: 4,
                   }}
                 />
 
@@ -75,9 +75,9 @@ export default function FilmReleaseDate({
         <div className={`flex items-start gap-1`}>
           <IonIcon
             icon={calendarOutline}
-            className={`mt-1`}
             style={{
               fontSize: 14,
+              marginTop: 4,
             }}
           />
 
