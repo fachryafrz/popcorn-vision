@@ -1,6 +1,6 @@
 import useSWR from "swr";
-import { useEffect, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 import Axios from "axios";
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {

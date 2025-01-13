@@ -12,8 +12,8 @@ import {
 } from "ionicons/icons";
 import moment from "moment";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import { usePathname } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 
 export default function PersonProfile({ person, combinedCredits, isModal }) {
   const router = useRouter();

@@ -6,7 +6,8 @@ import { filmOutline, tvOutline, search, close } from "ionicons/icons";
 import Link from "next/link";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next-nprogress-bar";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";

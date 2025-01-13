@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 
 export default function Network({ inputStyles }) {
   const router = useRouter();

@@ -3,7 +3,7 @@
 import { SAD_POPCORN } from "@/lib/constants";
 import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 import { useState } from "react";
 
 export default function NotFound() {
