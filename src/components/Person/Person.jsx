@@ -42,6 +42,8 @@ export default function Person({
             draggable={false}
             alt=""
             aria-hidden
+            width={185}
+            height={185}
           />
         </ImagePovi>
       </div>

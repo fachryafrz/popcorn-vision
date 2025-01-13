@@ -10,7 +10,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
-import Reveal from "./Reveal";
 import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
@@ -26,7 +25,7 @@ export default function Navbar() {
   const { setToggleFilter } = useToggleFilter();
 
   const [searchInput, setSearchInput] = useState("");
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(true);
   const [filmType, setFilmType] = useState("movie");
 
   useEffect(() => {
@@ -149,13 +148,21 @@ export default function Navbar() {
   }, [URLSearchQuery]);
 
   useEffect(() => {
-    window.addEventListener("scroll", function () {
+    const handleIsScrolled = () => {
       if (window.scrollY >= 1) {
         setIsScrolled(true);
       } else if (window.scrollY < 1) {
         setIsScrolled(false);
       }
-    });
+    };
+
+    handleIsScrolled();
+
+    window.addEventListener("scroll", handleIsScrolled);
+
+    return () => {
+      window.removeEventListener("scroll", handleIsScrolled);
+    };
   }, []);
 
   return (
@@ -165,7 +172,7 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto grid max-w-none grid-cols-3 px-4 py-2">
-        <Reveal y={-20} className={`flex items-center`}>
+        <div className={`flex items-center`}>
           <Link
             id={`Home`}
             href={!isTvPage ? `/` : `/tv`}
@@ -184,50 +191,46 @@ export default function Navbar() {
               className={`!after-content w-[70px] after:hidden after:h-full after:items-center after:leading-tight xs:after:flex`}
             ></figcaption>
           </Link>
-        </Reveal>
+        </div>
 
         {/* Search bar */}
         <div className={`hidden lg:block`}>
-          <Reveal y={-20} delay={0.2}>
-            <Suspense>
-              <SearchBar />
-            </Suspense>
-          </Reveal>
+          <Suspense>
+            <SearchBar />
+          </Suspense>
         </div>
 
         {/* Movie & TV Shows Switcher */}
         <div className="col-span-2 flex items-center gap-2 justify-self-end lg:col-[3/4]">
-          <Reveal y={-20} delay={0.4}>
-            <div
-              id={`FilmSwitcher`}
-              className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
+          <div
+            id={`FilmSwitcher`}
+            className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
+          >
+            <button
+              onClick={() => handleFilmTypeChange("movie")}
+              type={`button`}
+              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
+                isMoviesPage &&
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
             >
-              <button
-                onClick={() => handleFilmTypeChange("movie")}
-                type={`button`}
-                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
-                  isMoviesPage &&
-                  `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-                }`}
-              >
-                <IonIcon icon={filmOutline} className="text-[1.25rem]" />
-                <span className="hidden md:block">Movies</span>
-              </button>
-              <button
-                onClick={() => handleFilmTypeChange("tv")}
-                type={`button`}
-                className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
-                  isTvPage &&
-                  `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-                }`}
-              >
-                <IonIcon icon={tvOutline} className="text-[1.25rem]" />
-                <span className="hidden md:block">TV Shows</span>
-              </button>
-            </div>
-          </Reveal>
+              <IonIcon icon={filmOutline} className="text-[1.25rem]" />
+              <span className="hidden md:block">Movies</span>
+            </button>
+            <button
+              onClick={() => handleFilmTypeChange("tv")}
+              type={`button`}
+              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
+                isTvPage &&
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
+            >
+              <IonIcon icon={tvOutline} className="text-[1.25rem]" />
+              <span className="hidden md:block">TV Shows</span>
+            </button>
+          </div>
 
-          <Reveal y={-20} delay={0.6} className={`lg:hidden`}>
+          <div className={`lg:hidden`}>
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
@@ -237,11 +240,11 @@ export default function Navbar() {
               <IonIcon icon={search} className="text-[1.25rem]" />
               <span className="hidden md:block">Search</span>
             </Link>
-          </Reveal>
+          </div>
 
-          <Reveal y={-20} delay={0.6} className={`h-[40px] w-[40px]`}>
+          <div className={`h-[40px] w-[40px]`}>
             {!user ? <LoginButton /> : <LogoutButton user={user} />}
-          </Reveal>
+          </div>
         </div>
       </nav>
     </header>

@@ -3,7 +3,6 @@ import { IonIcon } from "@ionic/react";
 import React, { useState } from "react";
 import { chevronDownOutline, chevronUpOutline } from "ionicons/icons";
 import Person from "../../Person/Person";
-import Reveal from "@/components/Layout/Reveal";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -20,12 +19,9 @@ export default function CastsList({ credits }) {
   return (
     <div className={`sticky top-20 flex max-w-full flex-col self-start`}>
       <div className="flex items-center justify-between">
-        <Reveal>
-          <h2 className="text-xl font-bold">
-            Casts & Credits {/* ({credits.cast.length}) */}
-          </h2>{" "}
-        </Reveal>
-
+        <h2 className="text-xl font-bold">
+          Casts & Credits {/* ({credits.cast.length}) */}
+        </h2>{" "}
         {credits && credits.cast && credits.cast.length > numActors && (
           <button
             onClick={handleShowAllActors}
@@ -43,18 +39,16 @@ export default function CastsList({ credits }) {
             .map((actor, i) => {
               return (
                 <li key={actor.id}>
-                  <Reveal
-                    delay={showAllActors ? 0 : 0.1 * i}
-                    className={`[&_button]:w-full`}
+                  <Link
+                    href={`${pathname}/?person=${actor.id}`}
+                    prefetch={true}
                   >
-                    <Link
-                      href={`${pathname}/?person=${actor.id}`}
-                      prefetch={true}
-                    >
-                      <h3 className="sr-only">
-                        {`${actor.name} (${actor.character})`}
-                      </h3>
-                    </Link>
+                    <h3 className="sr-only">
+                      {`${actor.name} (${actor.character})`}
+                    </h3>
+                  </Link>
+
+                  <div className={`[&_button]:w-full`}>
                     <Person
                       id={actor.id}
                       showAllActors={showAllActors}
@@ -63,14 +57,14 @@ export default function CastsList({ credits }) {
                       profile_path={actor.profile_path}
                       before={`as`}
                       personRole={`actor`}
-                    />{" "}
-                  </Reveal>
+                    />
+                  </div>
                 </li>
               );
             })}
 
         {credits && credits.cast && credits.cast.length > numActors && (
-          <Reveal className={`sticky bottom-0 mt-2 hidden md:block`} y={0}>
+          <div className={`sticky bottom-0 mt-2 hidden md:block`}>
             <button
               onClick={handleShowAllActors}
               className={`btn btn-secondary flex w-full rounded-full !border-none !bg-opacity-0 text-primary-blue backdrop-blur-lg hocus:!bg-opacity-10 ${
@@ -83,7 +77,7 @@ export default function CastsList({ credits }) {
                 className="text-[1.25rem]"
               />
             </button>{" "}
-          </Reveal>
+          </div>
         )}
       </ul>
     </div>
