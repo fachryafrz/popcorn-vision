@@ -6,6 +6,11 @@
   @apply cursor-pointer;
 }
 
+* {
+  scrollbar-color: color-mix(in oklch, currentColor 35%, transparent)
+    transparent;
+}
+
 .swiper-button-disabled {
   @apply !opacity-25;
 }
@@ -59,10 +64,6 @@
 }
 
 @layer components {
-  * {
-    @apply scrollbar scrollbar-track-transparent scrollbar-thumb-neutral-400;
-  }
-
   img {
     @apply h-full w-full bg-cover bg-no-repeat object-cover align-middle italic;
   }
