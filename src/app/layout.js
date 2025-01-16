@@ -111,7 +111,7 @@ export default async function RootLayout({ children }) {
     <html lang="en" className="scroll-pt-20">
       <Suspense>
         <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
-        {/* <GoogleAdsense pId={adsenseId} /> */}
+        <GoogleAdsense pId={adsenseId} />
       </Suspense>
       <body className="bg-base-100 text-white">
         <CookiesProvider>
