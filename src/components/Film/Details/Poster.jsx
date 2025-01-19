@@ -14,20 +14,13 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const { poster: seasonPoster, setSeasonPoster } = useSeasonPoster(
-    (state) => state,
-  );
+  const { poster: seasonPoster, setSeasonPoster } = useSeasonPoster();
 
   const [filmPoster] = seasonPoster;
   const [quickNav, setQuickNav] = useState([]);
 
   useEffect(() => {
     setSeasonPoster(() => [film.poster_path]); // Zustand
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    setSeasonPoster(() => []);
   }, [pathname]);
 
   useEffect(() => {
@@ -80,10 +73,10 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   }, [film, images, isTvPage, reviews, videos]);
 
   return (
-    <div className="sticky top-20 flex-1 h-fit">
+    <div className="sticky top-20 h-fit flex-1">
       <ImagePovi
         imgPath={filmPoster ?? film.poster_path}
-        className={`relative mx-auto aspect-poster w-[60svw] md:w-auto self-start overflow-hidden rounded-xl bg-base-100 shadow-xl`}
+        className={`relative mx-auto aspect-poster w-[60svw] self-start overflow-hidden rounded-xl bg-base-100 shadow-xl md:w-auto`}
       >
         <img
           src={`https://image.tmdb.org/t/p/w500${filmPoster ?? film.poster_path}`}
