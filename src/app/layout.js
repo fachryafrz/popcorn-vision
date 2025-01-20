@@ -102,7 +102,6 @@ export default async function RootLayout({ children }) {
 
   const header = headers();
   const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-  ***REMOVED***
 
   const gtagId = process.env.GA_MEASUREMENT_ID;
   const adsenseId = process.env.ADSENSE_ID;
