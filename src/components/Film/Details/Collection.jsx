@@ -221,7 +221,7 @@ export function CollectionItem({
 function FilmSeason({ film, item, index }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
+  const { poster, setSeasonPoster } = useSeasonPoster();
 
   const samePoster = poster.includes(item.poster_path);
 

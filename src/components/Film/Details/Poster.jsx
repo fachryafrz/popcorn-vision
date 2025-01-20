@@ -18,10 +18,13 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
   const [filmPoster] = seasonPoster;
   const [quickNav, setQuickNav] = useState([]);
+  const imgPath = !isTvPage ? film.poster_path : filmPoster ?? film.poster_path;
 
   useEffect(() => {
-    setSeasonPoster(() => [film.poster_path]); // Zustand
-  }, [pathname]);
+    if (!isTvPage) return;
+
+    setSeasonPoster(() => [film.poster_path]);
+  }, []);
 
   useEffect(() => {
     const isWindowAvailable = typeof window !== "undefined";
@@ -75,11 +78,11 @@ export default function FilmPoster({ film, videos, images, reviews }) {
   return (
     <div className="sticky top-20 h-fit flex-1">
       <ImagePovi
-        imgPath={filmPoster ?? film.poster_path}
+        imgPath={imgPath}
         className={`relative mx-auto aspect-poster w-[60svw] self-start overflow-hidden rounded-xl bg-base-100 shadow-xl md:w-auto`}
       >
         <img
-          src={`https://image.tmdb.org/t/p/w500${filmPoster ?? film.poster_path}`}
+          src={`https://image.tmdb.org/t/p/w500${imgPath}`}
           alt={!isTvPage ? film.title : film.name}
           className={`object-cover transition-all`}
           draggable={false}

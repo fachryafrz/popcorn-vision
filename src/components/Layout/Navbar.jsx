@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
 import { POPCORN_APPLE } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
+import { useSeasonPoster } from "@/zustand/seasonPoster";
 
 export default function Navbar() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function Navbar() {
 
   const { user } = useAuth();
   const { setToggleFilter } = useToggleFilter();
+  const { setSeasonPoster } = useSeasonPoster();
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(true);
@@ -35,6 +37,10 @@ export default function Navbar() {
       setToggleFilter(false);
     }
   }, []);
+
+  useEffect(() => {
+    setSeasonPoster(() => []);
+  }, [pathname]);
 
   useEffect(() => {
     let steps;
