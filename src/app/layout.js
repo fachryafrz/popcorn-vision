@@ -7,6 +7,12 @@ import { CookiesProvider } from "next-client-cookies/server";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
+});
 
 export const viewport = {
   width: "device-width",
@@ -109,7 +115,7 @@ export default async function RootLayout({ children }) {
       <Suspense>
         <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
       </Suspense>
-      <body className="bg-base-100 text-white">
+      <body className={`bg-base-100 text-white ${roboto.className}`}>
         <CookiesProvider>
           {/* Navbar */}
           <Suspense>
