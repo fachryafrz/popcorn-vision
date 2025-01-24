@@ -92,8 +92,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
         >
           {!person.deathday && person.birthday && (
             <section id={`Birth Date`}>
-              <div className={`flex items-center gap-2`}>
-                <IonIcon icon={calendarOutline} />
+              <div className={`flex items-start gap-2`}>
+                <IonIcon icon={calendarOutline} className={`mt-1`} />
 
                 <time dateTime={person.birthday}>{birthday}</time>
               </div>
@@ -102,19 +102,17 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
           {person.place_of_birth && (
             <section id={`Place of Birth`}>
-              <div className={`flex items-center gap-2`}>
-                <IonIcon icon={locationOutline} />
-                <span title={person.place_of_birth} className={`line-clamp-1`}>
-                  {person.place_of_birth}
-                </span>
+              <div className={`flex items-start gap-2`}>
+                <IonIcon icon={locationOutline} className={`mt-1`} />
+                <span>{person.place_of_birth}</span>
               </div>
             </section>
           )}
 
           {person.known_for_department && (
             <section id={`Known For`}>
-              <div className={`flex items-center gap-2`}>
-                <IonIcon icon={briefcaseOutline} />
+              <div className={`flex items-start gap-2`}>
+                <IonIcon icon={briefcaseOutline} className={`mt-1`} />
                 <span>{person.known_for_department}</span>
               </div>
             </section>
@@ -122,8 +120,8 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
 
           {personWorks.length > 0 && (
             <section id={`Films`}>
-              <div className={`flex items-center gap-2`}>
-                <IonIcon icon={filmOutline} />
+              <div className={`flex items-start gap-2`}>
+                <IonIcon icon={filmOutline} className={`mt-1`} />
                 <span>{`${personWorks.length} ${isPlural({
                   text: "Film",
                   number: personWorks.length,

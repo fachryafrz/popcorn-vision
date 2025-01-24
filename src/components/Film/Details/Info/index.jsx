@@ -114,8 +114,7 @@ export default function FilmInfo({
           />
         ) : (
           <h1
-            title={!isTvPage ? film.title : film.name}
-            className="line-clamp-3 max-w-fit text-center text-3xl font-bold !leading-normal md:text-start md:text-5xl"
+            className="max-w-fit text-center text-3xl font-bold !leading-normal md:text-start md:text-5xl"
             style={{ textWrap: `balance` }}
           >
             {!isTvPage ? film.title : film.name}

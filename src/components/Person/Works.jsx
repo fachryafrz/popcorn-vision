@@ -145,8 +145,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
 
                         <div className="mt-2">
                           <h3
-                            title={film.title ?? film.name}
-                            className="line-clamp-2 text-sm font-bold sm:text-base"
+                            className="text-sm font-bold sm:text-base"
                             style={{ textWrap: `balance` }}
                           >
                             {film.title ?? film.name}

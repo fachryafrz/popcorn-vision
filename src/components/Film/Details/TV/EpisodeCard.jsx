@@ -65,11 +65,7 @@ export default function EpisodeCard({
       </ImagePovi>
 
       <div className="flex w-full flex-col items-start gap-1">
-        <h3
-          className="line-clamp-1 text-start font-medium lg:line-clamp-2"
-          title={title}
-          style={{ textWrap: `balance` }}
-        >
+        <h3 className="text-start font-medium" style={{ textWrap: `balance` }}>
           {title}
         </h3>
 

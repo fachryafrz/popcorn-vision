@@ -157,11 +157,7 @@ export function CollectionItem({
           />
         </ImagePovi>
         <div className="flex w-full flex-col items-start gap-1">
-          <p
-            className="line-clamp-2 text-start font-medium"
-            title={filmTitle}
-            style={{ textWrap: "balance" }}
-          >
+          <p className="text-start font-medium" style={{ textWrap: "balance" }}>
             {filmTitle}&nbsp;
             <span className="sr-only">
               ({moment(item.release_date ?? item.first_air_date).format("YYYY")}
@@ -209,8 +205,7 @@ export function CollectionItem({
           </div>
         </div>
         <span
-          title={item.overview}
-          className="before-content hidden w-full text-xs text-gray-400 @xs:line-clamp-3"
+          className="before-content hidden w-full text-xs text-gray-400 @xl:line-clamp-3"
           data-before-content={item.overview}
         />
       </Link>
@@ -281,11 +276,7 @@ function FilmSeason({ film, item, index }) {
 
         <div className="flex flex-1 flex-col items-start gap-1">
           <h3
-            title={`${item.name} (${item.episode_count} ${isPlural({
-              text: "Episode",
-              number: item.episode_count,
-            })})`}
-            className="line-clamp-1 text-start font-medium md:line-clamp-2"
+            className="text-start font-medium"
             style={{ textWrap: `balance` }}
           >
             {item.name}
@@ -386,7 +377,7 @@ function FilmEpisodes({ id, season }) {
             slidesPerView={1}
             spaceBetween={4}
             breakpoints={{
-              1024: {
+              768: {
                 slidesPerView: 2,
                 slidesPerGroup: 2,
               },

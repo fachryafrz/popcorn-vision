@@ -185,7 +185,7 @@ export default function Navbar() {
         isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
       }`}
     >
-      <nav className="mx-auto grid max-w-none grid-cols-3 px-4 py-2">
+      <nav className="mx-auto grid max-w-none grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 md:!grid-cols-3">
         <div className={`flex items-center`}>
           <Link
             id={`Home`}
@@ -208,53 +208,15 @@ export default function Navbar() {
         </div>
 
         {/* Search bar */}
-        <div className={`hidden lg:block`}>
+        <div className={`hidden sm:block`}>
           <Suspense>
             <SearchBar />
           </Suspense>
         </div>
 
         {/* Movie & TV Shows Switcher */}
-        <div className="col-span-2 flex items-center gap-2 justify-self-end lg:col-[3/4]">
-          <div
-            id={`FilmSwitcher`}
-            className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
-          >
-            <button
-              onClick={() => handleFilmTypeChange("movie")}
-              type={`button`}
-              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
-                isMoviesPage &&
-                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-              }`}
-            >
-              <IonIcon
-                icon={filmOutline}
-                style={{
-                  fontSize: 20,
-                }}
-              />
-              <span className="hidden md:block">Movies</span>
-            </button>
-            <button
-              onClick={() => handleFilmTypeChange("tv")}
-              type={`button`}
-              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 md:px-4 ${
-                isTvPage &&
-                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
-              }`}
-            >
-              <IonIcon
-                icon={tvOutline}
-                style={{
-                  fontSize: 20,
-                }}
-              />
-              <span className="hidden md:block">TV Shows</span>
-            </button>
-          </div>
-
-          <div className={`lg:hidden`}>
+        <div className="col-span-2 flex items-center gap-2 justify-self-end sm:col-span-1 lg:col-[3/4]">
+          <div className={`sm:hidden`}>
             <Link
               id={`SearchBarMobile`}
               href={!isTvPage ? `/search` : `/tv/search`}
@@ -267,8 +229,46 @@ export default function Navbar() {
                   fontSize: 20,
                 }}
               />
-              <span className="hidden md:block">Search</span>
+              <span className="hidden lg:block">Search</span>
             </Link>
+          </div>
+
+          <div
+            id={`FilmSwitcher`}
+            className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
+          >
+            <button
+              onClick={() => handleFilmTypeChange("movie")}
+              type={`button`}
+              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
+                isMoviesPage &&
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
+            >
+              <IonIcon
+                icon={filmOutline}
+                style={{
+                  fontSize: 20,
+                }}
+              />
+              <span className="hidden lg:block">Movies</span>
+            </button>
+            <button
+              onClick={() => handleFilmTypeChange("tv")}
+              type={`button`}
+              className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
+                isTvPage &&
+                `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
+              }`}
+            >
+              <IonIcon
+                icon={tvOutline}
+                style={{
+                  fontSize: 20,
+                }}
+              />
+              <span className="hidden lg:block">TV Shows</span>
+            </button>
           </div>
 
           <div className={`h-[40px] w-[40px]`}>

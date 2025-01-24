@@ -49,13 +49,11 @@ export default function Person({
       </div>
 
       <div className="w-full self-center">
-        <h3 title={name} className={`font-medium md:line-clamp-2`}>
-          {name}
-        </h3>
+        <h3 className={`font-medium`}>{name}</h3>
 
         {!tooltip && role !== "" ? (
-          <span className={`line-clamp-2 text-xs font-medium text-gray-400`}>
-            <span title={role}>{role}</span>
+          <span className={`text-xs font-medium text-gray-400`}>
+            <span>{role}</span>
           </span>
         ) : (
           role !== "" && tooltip

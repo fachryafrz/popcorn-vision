@@ -201,7 +201,6 @@ export function EpisodeModal({ film }) {
                 className={`relative z-10 -mt-[75px] flex flex-col gap-6 p-4 sm:p-8`}
               >
                 <h1
-                  title={episode.name}
                   className={`text-center text-3xl font-bold sm:text-4xl`}
                   style={{ textWrap: `balance` }}
                 >

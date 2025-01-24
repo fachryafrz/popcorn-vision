@@ -166,7 +166,6 @@ export default function HoverCard() {
                         src={`https://image.tmdb.org/t/p/w300${titleLogo.file_path}`}
                         alt=""
                         aria-hidden
-                        // title={isItTvPage(card.title, card.name)}
                         className={`max-w-[250px] object-contain`}
                         draggable={false}
                         role="presentation"
