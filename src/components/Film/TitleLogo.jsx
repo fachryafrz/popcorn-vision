@@ -16,7 +16,6 @@ export default function TitleLogo({ film, images, setLoading }) {
         src={`https://image.tmdb.org/t/p/w500${titleLogo.file_path}`}
         alt=""
         aria-hidden
-        title={title}
         className=" max-h-[180px] bg-contain object-contain"
         draggable={false}
         role="presentation"
@@ -31,12 +30,16 @@ export default function TitleLogo({ film, images, setLoading }) {
         )} */}
     </figure>
   ) : (
-    <span
-      aria-hidden
-      className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
-      style={{ textWrap: `balance` }}
-    >
-      {title}
-    </span>
+    <>
+      {/* This fallback is for FilmSummary component */}
+
+      <span
+        aria-hidden
+        className="line-clamp-2 text-center text-3xl font-bold !leading-normal md:text-left lg:text-5xl"
+        style={{ textWrap: `balance` }}
+      >
+        {title}
+      </span>
+    </>
   );
 }
