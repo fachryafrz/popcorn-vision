@@ -123,11 +123,10 @@ export function EpisodeModal({ film }) {
   });
 
   useEffect(() => {
-    if (!episode) return;
+    if (!seasonParams || !episodeParams) return;
 
-    setShowAllGuestStars(false);
     document.getElementById(`episodeModal`).showModal();
-  }, [episode]);
+  }, [episodeParams, seasonParams]);
 
   return (
     <dialog
