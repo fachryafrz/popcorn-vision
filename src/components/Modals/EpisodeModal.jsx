@@ -128,6 +128,19 @@ export function EpisodeModal({ film }) {
     document.getElementById(`episodeModal`).showModal();
   }, [episodeParams, seasonParams]);
 
+  const handleKeyDown = (e) => {
+    if (e.key !== "Escape") return;
+    handleCloseModal();
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   return (
     <dialog
       ref={dialogRef}
