@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@/hooks/auth";
 import LoginAlert from "./LoginAlert";
 import HoverCard from "./HoverCard";
+import { userStore } from "@/zustand/userStore";
 
 export default function Modal() {
-  const { user } = useAuth();
+  const { user } = userStore();
 
   return (
     <>

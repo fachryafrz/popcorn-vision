@@ -8,7 +8,6 @@ import { EpisodeModal } from "../../Modals/EpisodeModal";
 import { useSearchParams } from "next/navigation";
 import ShareModal from "@/components/Modals/ShareModal";
 import PersonModal from "@/components/Modals/PersonModal";
-import { useAuth } from "@/hooks/auth";
 
 export default function FilmContent({
   film,
@@ -21,8 +20,6 @@ export default function FilmContent({
   isTvPage,
   releaseDates,
 }) {
-  const { user } = useAuth();
-
   const searchParams = useSearchParams();
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");

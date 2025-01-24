@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/auth";
+import { userStore } from "@/zustand/userStore";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { trashOutline } from "ionicons/icons";
@@ -17,7 +17,7 @@ export default function UserRating({
   episode,
   title,
 }) {
-  const { user } = useAuth();
+  const { user } = userStore();
   const { mutate } = useSWRConfig();
 
   const pathname = usePathname();

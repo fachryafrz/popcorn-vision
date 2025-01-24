@@ -17,7 +17,7 @@ import { isPlural } from "@/lib/isPlural";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import moment from "moment";
 import Person from "@/components/Person/Person";
 import axios from "axios";
@@ -25,17 +25,16 @@ import UserRating from "../User/Actions/UserRating";
 import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
 import { fetchData } from "@/lib/fetch";
-import { useAuth } from "@/hooks/auth";
+import { userStore } from "@/zustand/userStore";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
 
-  const { user } = useAuth();
+  const { user } = userStore();
   const { seasons } = film;
 
   const getEpisodeModal = async (url) => {
@@ -124,11 +123,23 @@ export function EpisodeModal({ film }) {
   });
 
   useEffect(() => {
-    if (!episode) return;
+    if (!seasonParams || !episodeParams) return;
 
-    setShowAllGuestStars(false);
     document.getElementById(`episodeModal`).showModal();
-  }, [episode]);
+  }, [episodeParams, seasonParams]);
+
+  const handleKeyDown = (e) => {
+    if (e.key !== "Escape") return;
+    handleCloseModal();
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <dialog
