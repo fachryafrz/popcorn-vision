@@ -95,7 +95,7 @@ export default function Footer() {
           </p>
           <div className="flex flex-wrap gap-2">
             <Link
-              href="https://github.com/fachryafrz"
+              href="https://github.com/fachryafrz/popcorn-vision"
               target="_blank"
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >

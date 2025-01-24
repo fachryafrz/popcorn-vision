@@ -221,7 +221,7 @@ export function CollectionItem({
 function FilmSeason({ film, item, index }) {
   const [viewSeason, setViewSeason] = useState(false);
 
-  const { poster, setSeasonPoster } = useSeasonPoster((state) => state);
+  const { poster, setSeasonPoster } = useSeasonPoster();
 
   const samePoster = poster.includes(item.poster_path);
 
@@ -278,7 +278,8 @@ function FilmSeason({ film, item, index }) {
             height={75}
           />
         </ImagePovi>
-        <div className="flex w-full flex-col items-start gap-1">
+
+        <div className="flex flex-1 flex-col items-start gap-1">
           <h3
             title={`${item.name} (${item.episode_count} ${isPlural({
               text: "Episode",
@@ -329,10 +330,7 @@ function FilmSeason({ film, item, index }) {
           </div>
         </div>
 
-        <p
-          title={item.overview}
-          className="hidden w-full text-start text-xs text-gray-400 sm:line-clamp-3"
-        >
+        <p className="hidden flex-1 text-start text-xs text-gray-400 sm:line-clamp-3">
           {item.overview}
         </p>
 

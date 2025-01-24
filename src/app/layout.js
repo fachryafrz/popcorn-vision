@@ -4,10 +4,15 @@ import Footer from "@/components/Layout/Footer";
 import GoogleAnalytics from "@/components/User/GoogleAnalytics";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
-import GoogleAdsense from "@/components/User/GoogleAdsense";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
+import { Roboto } from "next/font/google";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
+});
 
 export const viewport = {
   width: "device-width",
@@ -102,18 +107,15 @@ export default async function RootLayout({ children }) {
 
   const header = headers();
   const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-  ***REMOVED***
 
   const gtagId = process.env.GA_MEASUREMENT_ID;
-  const adsenseId = process.env.ADSENSE_ID;
 
   return (
     <html lang="en" className="scroll-pt-20">
       <Suspense>
         <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
-        <GoogleAdsense pId={adsenseId} />
       </Suspense>
-      <body className="bg-base-100 text-white">
+      <body className={`bg-base-100 text-white ${roboto.className}`}>
         <CookiesProvider>
           {/* Navbar */}
           <Suspense>

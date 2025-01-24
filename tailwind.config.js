@@ -85,7 +85,6 @@ module.exports = {
     require("daisyui"),
     require("@tailwindcss/typography"),
     require("@tailwindcss/container-queries"),
-    require("tailwind-scrollbar"),
     plugin(function ({ addVariant }) {
       addVariant("hocus", ["&:hover", "&:focus"]);
       [...Array(24).keys()].forEach((i) => {
