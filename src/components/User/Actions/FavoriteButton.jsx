@@ -1,11 +1,11 @@
 "use client";
 
-import { useAuth } from "@/hooks/auth";
+import { userStore } from "@/zustand/userStore";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { star, starOutline } from "ionicons/icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 
 export default function FavoriteButton({
@@ -15,7 +15,7 @@ export default function FavoriteButton({
   withText = true,
   className,
 }) {
-  const { user } = useAuth();
+  const { user } = userStore();
   const { mutate } = useSWRConfig();
 
   const pathname = usePathname();

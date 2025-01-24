@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
@@ -17,12 +17,12 @@ import Link from "next/link";
 import slug from "slug";
 import FavoriteButton from "../User/Actions/FavoriteButton";
 import axios from "axios";
-import { useAuth } from "@/hooks/auth";
 import WatchlistButton from "../User/Actions/WatchlistButton";
 import moment from "moment";
+import { userStore } from "@/zustand/userStore";
 
 export default function HoverCard() {
-  const { user } = useAuth();
+  const { user } = userStore();
 
   const pathname = usePathname();
   const searchParams = useSearchParams();

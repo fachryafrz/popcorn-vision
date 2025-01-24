@@ -12,7 +12,6 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import { isPlural } from "@/lib/isPlural";
 import WatchlistButton from "../../../User/Actions/WatchlistButton";
 import FavoriteButton from "../../../User/Actions/FavoriteButton";
-import { useAuth } from "@/hooks/auth";
 import axios from "axios";
 import UserRating from "../../../User/Actions/UserRating";
 import ProductionCompany from "./ProductionCompany";
@@ -29,6 +28,7 @@ import duration from "dayjs/plugin/duration";
 import moment from "moment";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
+import { userStore } from "@/zustand/userStore";
 
 export default function FilmInfo({
   film,
@@ -37,7 +37,7 @@ export default function FilmInfo({
   providers,
   releaseDates,
 }) {
-  const { user } = useAuth();
+  const { user } = userStore();
   const { location } = useLocation();
 
   const countryCode = location?.country_code;

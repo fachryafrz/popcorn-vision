@@ -16,6 +16,7 @@ import LogoutButton from "../User/LogoutButton";
 import { POPCORN_APPLE } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
+import { userStore } from "@/zustand/userStore";
 
 export default function Navbar() {
   const router = useRouter();
@@ -23,12 +24,19 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const { user } = useAuth();
+  const { setUser } = userStore();
   const { setToggleFilter } = useToggleFilter();
   const { setSeasonPoster } = useSeasonPoster();
 
   const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(true);
   const [filmType, setFilmType] = useState("movie");
+
+  useEffect(() => {
+    if (!user) setUser(null);
+
+    setUser(user);
+  }, [user]);
 
   useEffect(() => {
     if (window.innerWidth >= 1280) {
