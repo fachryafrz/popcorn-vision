@@ -17,7 +17,7 @@ import { POPCORN_APPLE } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
-import Typewriter from "typewriter-effect";
+import Typewriter from "typewriter-effect/dist/core";
 
 export default function Navbar() {
   const router = useRouter();
@@ -308,6 +308,40 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   }, [URLSearchQuery]);
 
   useEffect(() => {
+    let input = searchRef.current;
+
+    const customNodeCreator = (character) => {
+      // Add character to input placeholder
+      input.placeholder = input.placeholder + character;
+
+      // Return null to skip internal adding of dom node
+      return null;
+    };
+
+    const onRemoveNode = ({ character }) => {
+      if (input.placeholder) {
+        // Remove last character from input placeholder
+        input.placeholder = input.placeholder.slice(0, -1);
+      }
+    };
+
+    const typewriter = new Typewriter(null, {
+      delay: 50,
+      onCreateTextNode: customNodeCreator,
+      onRemoveNode: onRemoveNode,
+    });
+
+    typewriter
+      .typeString("Search a movie or tv show title")
+      .pauseFor(5e3)
+      .deleteAll()
+      .typeString("Click search icon to explore filters!")
+      .pauseFor(5e3)
+      .deleteAll()
+      .typeString(placeholder)
+      .pauseFor(10e3)
+      .start();
+
     const onKeyDown = (event) => {
       if (event.key === "/") {
         if (document.activeElement !== searchRef.current) {
@@ -356,7 +390,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       className={`form-control relative block w-full justify-self-center`}
     >
       <div
-        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] pl-0`}
+        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
       >
         <div
           className={`pointer-events-none absolute ml-4 flex h-full items-center [&_*]:pointer-events-auto`}
@@ -381,56 +415,12 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           type={`text`}
           ref={searchRef}
           tabIndex={isSearchPage ? 0 : -1}
-          className={`h-full w-full bg-transparent pl-10 pr-4`}
+          className={`h-full w-full flex-1 bg-transparent pl-10 pr-0`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
 
-        {!searchInput && (
-          <div
-            className={`pointer-events-none absolute ml-10 flex h-full items-center text-gray-400`}
-          >
-            <div className={`hidden sm:block`}>
-              <Typewriter
-                onInit={(typewriter) => {
-                  typewriter
-                    .typeString("Search a movie or tv show title")
-                    .pauseFor(5e3)
-                    .deleteAll()
-                    .typeString("Click search icon to explore filters!")
-                    .pauseFor(5e3)
-                    .deleteAll()
-                    .typeString(placeholder)
-                    .pauseFor(10e3)
-                    .start();
-                }}
-                options={{
-                  cursor: "",
-                  delay: 50,
-                }}
-              />
-            </div>
-            <div className={`sm:hidden`}>
-              <Typewriter
-                onInit={(typewriter) => {
-                  typewriter
-                    .typeString("Search")
-                    .pauseFor(5e3)
-                    .deleteAll()
-                    .typeString(placeholder)
-                    .pauseFor(10e3)
-                    .start();
-                }}
-                options={{
-                  cursor: "",
-                  delay: 50,
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className={`flex items-center gap-1`}>
+        <div className={`absolute right-4 flex items-center gap-1`}>
           {searchInput && (
             <button
               type="button"
