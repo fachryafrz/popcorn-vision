@@ -186,7 +186,7 @@ export default function Navbar() {
         isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
       }`}
     >
-      <nav className="mx-auto grid max-w-none grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 md:!grid-cols-3">
+      <nav className="mx-auto grid max-w-none grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 lg:!grid-cols-3">
         <div className={`flex items-center`}>
           <Link
             id={`Home`}
@@ -390,23 +390,43 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           <div
             className={`pointer-events-none absolute ml-10 flex h-full items-center text-gray-400`}
           >
-            <Typewriter
-              onInit={(typewriter) => {
-                typewriter
-                  .typeString("Search")
-                  .pauseFor(5e3)
-                  .deleteAll()
-                  .typeString(placeholder)
-                  .pauseFor(10e3)
-                  .deleteAll()
-                  .start();
-              }}
-              options={{
-                cursor: "",
-                delay: 50,
-                loop: true,
-              }}
-            />
+            <div className={`hidden sm:block`}>
+              <Typewriter
+                onInit={(typewriter) => {
+                  typewriter
+                    .typeString("Search a movie or tv show title")
+                    .pauseFor(5e3)
+                    .deleteAll()
+                    .typeString("Click search icon to explore filters!")
+                    .pauseFor(5e3)
+                    .deleteAll()
+                    .typeString(placeholder)
+                    .pauseFor(10e3)
+                    .start();
+                }}
+                options={{
+                  cursor: "",
+                  delay: 50,
+                }}
+              />
+            </div>
+            <div className={`sm:hidden`}>
+              <Typewriter
+                onInit={(typewriter) => {
+                  typewriter
+                    .typeString("Search")
+                    .pauseFor(5e3)
+                    .deleteAll()
+                    .typeString(placeholder)
+                    .pauseFor(10e3)
+                    .start();
+                }}
+                options={{
+                  cursor: "",
+                  delay: 50,
+                }}
+              />
+            </div>
           </div>
         )}
 

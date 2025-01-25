@@ -100,7 +100,7 @@ export default function Filters({
         className={`flex h-full flex-col gap-4 overflow-y-auto bg-neutral bg-opacity-[95%] p-4 backdrop-blur lg:sticky lg:top-[calc(66px+3px)] lg:max-h-[calc(100dvh-66px-1rem-3px)] lg:rounded-2xl lg:outline lg:outline-neutral`}
       >
         {/* Sort */}
-        <section className={`flex flex-col gap-1 lg:hidden`}>
+        <section className={`flex flex-col gap-1 sm:hidden`}>
           <span className={`font-medium`}>Sort</span>
           <SearchSort
             handleNotAvailable={handleNotAvailable}

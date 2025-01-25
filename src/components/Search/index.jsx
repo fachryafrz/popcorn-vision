@@ -222,7 +222,7 @@ export default function Search({
           className={`sticky top-[66px] z-40 -mx-3 flex items-center gap-2 bg-base-100 bg-opacity-85 px-3 py-2 backdrop-blur lg:flex-row lg:justify-between`}
         >
           {/* Search bar */}
-          <div className={`flex-grow lg:hidden`}>
+          <div className={`flex-grow sm:hidden`}>
             <SearchBar placeholder={`Tap to search`} />
           </div>
 
@@ -267,7 +267,7 @@ export default function Search({
             </button>
           </div>
 
-          <div className={`hidden flex-grow justify-end lg:flex`}>
+          <div className={`hidden flex-grow justify-end sm:flex`}>
             <div className={`flex items-center gap-2`}>
               {films?.length > 0 && (
                 <span className={`block text-xs font-medium`}>
