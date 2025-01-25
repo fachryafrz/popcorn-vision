@@ -19,12 +19,8 @@ export default function FilmBackdrop({ film }) {
             srcset={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
           />
           <source
-            media="(min-width: 768px) and (max-width: 1535px)"
+            media="(min-width: 768px)"
             srcset={`https://image.tmdb.org/t/p/w1280${film.backdrop_path}`}
-          />
-          <source
-            media="(min-width: 1536px)"
-            srcset={`https://image.tmdb.org/t/p/original${film.backdrop_path}`}
           />
           <img
             src={`https://image.tmdb.org/t/p/w500${film.backdrop_path}`}
