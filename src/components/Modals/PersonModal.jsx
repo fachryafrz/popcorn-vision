@@ -181,7 +181,9 @@ function PersonModalSkeleton() {
             {/* Person Info */}
             <div className={`flex flex-1 flex-col gap-4 p-4 pb-6`}>
               {/* Name */}
-              <div className={`${loadingClass} h-9 w-full`}></div>
+              <div
+                className={`${loadingClass} mx-auto h-9 w-full max-w-[200px]`}
+              ></div>
 
               {/* Info */}
               <div className={`flex flex-col gap-1`}>
@@ -238,14 +240,36 @@ function PersonModalSkeleton() {
             >
               <div className={`${loadingClass} h-[32px] w-[110px]`}></div>
 
-              <div className={`flex flex-col gap-1`}>
-                {[...Array(7)].map((_, index) => (
-                  <div
-                    key={index}
-                    className={`${loadingClass} h-5 w-full rounded-md`}
-                  ></div>
-                ))}
-                <div className={`${loadingClass} h-5 w-[90%] rounded-md`}></div>
+              <div className={`space-y-6`}>
+                <div className={`flex flex-col gap-1`}>
+                  {[...Array(4)].map((_, index) => (
+                    <div
+                      key={index}
+                      className={`${loadingClass} h-5 w-full rounded-md`}
+                    ></div>
+                  ))}
+                  <div className={`${loadingClass} h-5 w-[80%] rounded-md`}></div>
+                </div>
+  
+                <div className={`flex flex-col gap-1`}>
+                  {[...Array(4)].map((_, index) => (
+                    <div
+                      key={index}
+                      className={`${loadingClass} h-5 w-full rounded-md`}
+                    ></div>
+                  ))}
+                  <div className={`${loadingClass} h-5 w-[50%] rounded-md`}></div>
+                </div>
+  
+                <div className={`flex flex-col gap-1`}>
+                  {[...Array(4)].map((_, index) => (
+                    <div
+                      key={index}
+                      className={`${loadingClass} h-5 w-full rounded-md`}
+                    ></div>
+                  ))}
+                  <div className={`${loadingClass} h-5 w-[30%] rounded-md`}></div>
+                </div>
               </div>
             </section>
           </div>
