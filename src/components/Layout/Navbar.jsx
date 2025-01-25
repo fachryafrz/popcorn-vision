@@ -17,6 +17,7 @@ import { POPCORN_APPLE } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
+import Typewriter from "typewriter-effect";
 
 export default function Navbar() {
   const router = useRouter();
@@ -280,7 +281,7 @@ export default function Navbar() {
   );
 }
 
-export function SearchBar({ placeholder = `Search` }) {
+export function SearchBar({ placeholder = `Type / to search` }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -357,7 +358,7 @@ export function SearchBar({ placeholder = `Search` }) {
       <div
         className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] pl-0`}
       >
-        <div className={`absolute flex h-full items-center pl-4`}>
+        <div className={`absolute ml-4 flex h-full items-center`}>
           <Link
             href={!isTvPage ? `/search` : `/tv/search`}
             prefetch={true}
@@ -365,7 +366,11 @@ export function SearchBar({ placeholder = `Search` }) {
           >
             <IonIcon
               icon={search}
-              className={`pointer-events-none text-lg text-gray-400`}
+              className={`pointer-events-none`}
+              style={{
+                fontSize: 18,
+                color: `rgb(156 163 175)`,
+              }}
             />
           </Link>
         </div>
@@ -374,11 +379,34 @@ export function SearchBar({ placeholder = `Search` }) {
           type={`text`}
           ref={searchRef}
           tabIndex={isSearchPage ? 0 : -1}
-          placeholder={placeholder}
           className={`h-full w-full bg-transparent pl-10 pr-4`}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
         />
+
+        {!searchInput && (
+          <div
+            className={`pointer-events-none absolute ml-10 flex h-full items-center text-gray-400`}
+          >
+            <Typewriter
+              onInit={(typewriter) => {
+                typewriter
+                  .typeString("Search")
+                  .pauseFor(5e3)
+                  .deleteAll()
+                  .typeString(placeholder)
+                  .pauseFor(10e3)
+                  .deleteAll()
+                  .start();
+              }}
+              options={{
+                cursor: "",
+                delay: 50,
+                loop: true,
+              }}
+            />
+          </div>
+        )}
 
         <div className={`flex items-center gap-1`}>
           {searchInput && (
@@ -396,10 +424,6 @@ export function SearchBar({ placeholder = `Search` }) {
               />
             </button>
           )}
-
-          <div className={`pointer-events-none hidden xl:inline`}>
-            <kbd className={`kbd kbd-sm`}>/</kbd>
-          </div>
         </div>
       </div>
     </form>

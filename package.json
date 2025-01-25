@@ -42,6 +42,7 @@
     "slug": "^9.1.0",
     "swiper": "^11.0.6",
     "swr": "^2.2.5",
+    "typewriter-effect": "^2.21.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
