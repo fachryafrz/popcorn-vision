@@ -1,8 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.vercel.popcornvision.twa",
-    "sha256_cert_fingerprints": ["E4:9E:71:4C:0D:47:FD:97:98:12:FA:D0:8F:D3:E7:F8:62:E9:EB:1E:62:74:A9:C5:5A:CB:AD:5E:C8:03:58:19"]
-  }
-}]
