@@ -304,6 +304,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
   const [searchInput, setSearchInput] = useState("");
   const [isFocus, setIsFocus] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const isTvPage = pathname.startsWith("/tv");
@@ -331,11 +332,8 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     [],
   );
 
-  // State untuk query yang sudah didebounce
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-
   // SWR fetch
-  const { data: autocompleteResults, mutate } = useSWR(
+  const { data: autocompleteResults, isLoading } = useSWR(
     debouncedQuery ? `/api/search/query?query=${debouncedQuery}` : null,
     (endpoint) =>
       fetchData({
@@ -488,6 +486,10 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   useEffect(() => {
     setIsFocus(false);
   }, [pathname]);
+
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [debouncedQuery]);
 
   return (
     <>
