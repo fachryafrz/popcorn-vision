@@ -304,6 +304,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
   const [searchInput, setSearchInput] = useState("");
   const [isFocus, setIsFocus] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
@@ -317,10 +318,58 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     searchRef.current.focus();
   };
 
-  useEffect(() => {
-    if (URLSearchQuery) {
-      setSearchInput(URLSearchQuery);
+  // Debounce dengan library debounce
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const trimmedValue = value.trim();
+      if (trimmedValue) {
+        setDebouncedQuery(trimmedValue.replace(/\s+/g, "+"));
+      } else {
+        setDebouncedQuery("");
+      }
+    }, 500),
+    [],
+  );
+
+  // State untuk query yang sudah didebounce
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  // SWR fetch
+  const { data: autocompleteResults, mutate } = useSWR(
+    debouncedQuery ? `/api/search/query?query=${debouncedQuery}` : null,
+    (endpoint) =>
+      fetchData({
+        baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        endpoint,
+      }),
+  );
+
+  // Autocomplete data
+  const autocompleteData = autocompleteResults?.results?.slice(0, 5) || [];
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+
+    const query = searchInput.trim();
+
+    const basePath = isTvPage ? "/tv" : "";
+    const searchPath = `${basePath}/search`;
+    const formattedQuery = query.replace(/\s+/g, "+");
+    const searchQuery = `query=${formattedQuery}`;
+
+    if (!query) {
+      router.push(`${searchPath}`);
+    } else {
+      router.push(`${searchPath}?${searchQuery}`);
     }
+
+    searchRef?.current.blur();
+  };
+
+  useEffect(() => {
+    if (!URLSearchQuery) return;
+
+    setSearchInput(URLSearchQuery);
   }, [URLSearchQuery]);
 
   useEffect(() => {
@@ -371,9 +420,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           searchRef.current.blur();
         }
       }
-
-      if (event.defaultPrevented) {
-      }
     };
 
     document.addEventListener("keydown", onKeyDown);
@@ -383,31 +429,54 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     };
   }, []);
 
-  // Debounce dengan library debounce
-  const debouncedSearch = useCallback(
-    debounce((value) => {
-      const trimmedValue = value.trim();
-      if (trimmedValue) {
-        setDebouncedQuery(trimmedValue.replace(/\s+/g, "+"));
-      } else {
-        setDebouncedQuery("");
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isFocus || autocompleteData.length === 0) return;
+
+      const totalItems =
+        autocompleteData.length +
+        (autocompleteResults.results.length > 5 ? 1 : 0);
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setHighlightedIndex((prevIndex) =>
+          prevIndex === totalItems - 1 ? 0 : prevIndex + 1,
+        );
       }
-    }, 500),
-    [],
-  );
 
-  // State untuk query yang sudah didebounce
-  const [debouncedQuery, setDebouncedQuery] = useState("");
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((prevIndex) =>
+          prevIndex <= 0 ? totalItems - 1 : prevIndex - 1,
+        );
+      }
 
-  // SWR fetch
-  const { data: autocompleteResults, mutate } = useSWR(
-    debouncedQuery ? `/api/search/query?query=${debouncedQuery}` : null,
-    (endpoint) =>
-      fetchData({
-        baseURL: process.env.NEXT_PUBLIC_APP_URL,
-        endpoint,
-      }),
-  );
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (
+          highlightedIndex >= 0 &&
+          highlightedIndex < autocompleteData.length
+        ) {
+          const selectedItem = autocompleteData[highlightedIndex];
+          router.push(
+            `/${selectedItem.media_type === "movie" ? "movies" : "tv"}/${
+              selectedItem.id
+            }-${slug(selectedItem.title ?? selectedItem.name)}`,
+          );
+        } else if (highlightedIndex === autocompleteData.length) {
+          handleSubmit(); // "Show All" dipilih
+        }
+
+        searchRef.current.blur();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [autocompleteData, highlightedIndex, isFocus]);
 
   // Cleanup debounce
   useEffect(() => {
@@ -415,28 +484,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       debouncedSearch.clear();
     };
   }, []);
-
-  // Autocomplete data
-  const autocompleteData = autocompleteResults?.results?.slice(0, 5) || [];
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const query = searchInput.trim();
-
-    const basePath = isTvPage ? "/tv" : "";
-    const searchPath = `${basePath}/search`;
-    const formattedQuery = query.replace(/\s+/g, "+");
-    const searchQuery = `query=${formattedQuery}`;
-
-    if (!query) {
-      router.push(`${searchPath}`);
-    } else {
-      router.push(`${searchPath}?${searchQuery}`);
-    }
-
-    searchRef?.current.blur();
-  };
 
   useEffect(() => {
     setIsFocus(false);
@@ -520,13 +567,17 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           <ul
             className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-90 p-2 backdrop-blur`}
           >
-            {autocompleteData.map((film) => {
+            {autocompleteData.map((film, index) => {
               return (
                 <li key={film.id}>
                   <Link
                     href={`/${film.media_type === "movie" ? "movies" : "tv"}/${film.id}-${slug(film.title ?? film.name)}`}
                     prefetch={true}
-                    className={`flex items-center gap-4 rounded-lg p-2 hocus:bg-white hocus:bg-opacity-10`}
+                    className={`flex items-center gap-4 rounded-lg p-2 ${
+                      index === highlightedIndex
+                        ? `bg-white bg-opacity-10`
+                        : `hocus:bg-white hocus:bg-opacity-10`
+                    }`}
                     tabIndex={-1}
                   >
                     {/* Poster */}
@@ -563,7 +614,8 @@ export function SearchBar({ placeholder = `Type / to search` }) {
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className={`flex w-full items-center justify-center gap-4 rounded-lg p-2 text-center font-medium text-primary-blue hocus:bg-white hocus:bg-opacity-10`}
+                  className={`flex w-full items-center justify-center gap-4 rounded-lg p-2 text-center font-medium text-primary-blue ${highlightedIndex === autocompleteData.length ? `bg-white bg-opacity-10` : `hocus:bg-white hocus:bg-opacity-10`}`}
+                  tabIndex={-1}
                 >
                   Show all
                 </button>
