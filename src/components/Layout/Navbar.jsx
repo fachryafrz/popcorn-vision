@@ -343,7 +343,15 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   );
 
   // Autocomplete data
-  const autocompleteData = autocompleteResults?.results?.slice(0, 10) || [];
+  const autocompleteData =
+    autocompleteResults?.results?.slice(0, 10).filter((item, index, self) => {
+      const title = (item.title ?? item.name).toLowerCase();
+
+      return (
+        index ===
+        self.findIndex((i) => (i.title ?? i.name).toLowerCase() === title)
+      );
+    }) || [];
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
@@ -562,52 +570,39 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           <ul
             className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-95 p-2 backdrop-blur`}
           >
-            {autocompleteData
-              .filter((item, index, self) => {
-                const title = (item.title ?? item.name).toLowerCase();
+            {autocompleteData.map((film, index) => {
+              return (
+                <li key={film.id}>
+                  <Link
+                    href={`${isTvPage ? "/tv" : ""}/search?query=${(film.title ?? film.name).toLowerCase().replace(/\s+/g, "+")}`}
+                    prefetch={true}
+                    className={`flex items-center gap-4 rounded-lg p-2 py-1 ${
+                      index === highlightedIndex ? `bg-white bg-opacity-10` : ``
+                    }`}
+                    onClick={() => setIsFocus(false)}
+                    onMouseEnter={() => setHighlightedIndex(index)}
+                    onMouseLeave={() => setHighlightedIndex(-1)}
+                    tabIndex={-1}
+                  >
+                    {/* Title */}
+                    <div className={`flex gap-2`}>
+                      <IonIcon
+                        icon={search}
+                        className={`pointer-events-none mt-1`}
+                        style={{
+                          fontSize: 18,
+                          color: `rgb(156 163 175)`,
+                        }}
+                      />
 
-                return (
-                  index ===
-                  self.findIndex(
-                    (i) => (i.title ?? i.name).toLowerCase() === title,
-                  )
-                );
-              })
-              .map((film, index) => {
-                return (
-                  <li key={film.id}>
-                    <Link
-                      href={`${isTvPage ? "/tv" : ""}/search?query=${(film.title ?? film.name).toLowerCase().replace(/\s+/g, "+")}`}
-                      prefetch={true}
-                      className={`flex items-center gap-4 rounded-lg p-2 py-1 ${
-                        index === highlightedIndex
-                          ? `bg-white bg-opacity-10`
-                          : ``
-                      }`}
-                      onClick={() => setIsFocus(false)}
-                      onMouseEnter={() => setHighlightedIndex(index)}
-                      onMouseLeave={() => setHighlightedIndex(-1)}
-                      tabIndex={-1}
-                    >
-                      {/* Title */}
-                      <div className={`flex gap-2`}>
-                        <IonIcon
-                          icon={search}
-                          className={`pointer-events-none mt-1`}
-                          style={{
-                            fontSize: 18,
-                            color: `rgb(156 163 175)`,
-                          }}
-                        />
-
-                        <span className={`flex-1`}>
-                          {(film.title ?? film.name).toLowerCase()}
-                        </span>
-                      </div>
-                    </Link>
-                  </li>
-                );
-              })}
+                      <span className={`flex-1`}>
+                        {(film.title ?? film.name).toLowerCase()}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
