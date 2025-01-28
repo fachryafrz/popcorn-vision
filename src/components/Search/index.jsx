@@ -27,9 +27,7 @@ export default function Search({
   const searchParams = useSearchParams();
 
   const isQueryParams = searchParams.get("query");
-  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).filter(
-    (key) => key !== "query",
-  ).length;
+  const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   // State
   const [notAvailable, setNotAvailable] = useState("");
@@ -118,7 +116,7 @@ export default function Search({
   };
 
   const handleResetFilters = () => {
-    router.push(`/search${isQueryParams ? `?query=${isQueryParams}` : ""}`);
+    router.push(`${isTvPage ? `/tv` : ``}/search`);
   };
 
   // Handle React-Select Input Styles
