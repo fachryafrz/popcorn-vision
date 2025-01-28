@@ -4,7 +4,13 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search, close } from "ionicons/icons";
 import Link from "next/link";
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, {
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -18,6 +24,12 @@ import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
 import Typewriter from "typewriter-effect/dist/core";
+import slug from "slug";
+import { fetchData } from "@/lib/fetch";
+import moment from "moment";
+import debounce from "debounce";
+import useSWR from "swr";
+import ImagePovi from "../Film/ImagePovi";
 
 export default function Navbar() {
   const router = useRouter();
@@ -181,11 +193,14 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-[60] bg-base-100 transition-all ${
-        isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
-      }`}
-    >
+    <header className={`fixed inset-x-0 top-0 z-[60]`}>
+      {/* For blur effect, I did this way in order to make autocomplete blur work */}
+      <div
+        className={`absolute inset-0 -z-10 bg-base-100 transition-all ${
+          isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
+        }`}
+      ></div>
+
       <nav className="mx-auto grid max-w-none grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 lg:!grid-cols-3">
         <div className={`flex items-center`}>
           <Link
@@ -288,6 +303,9 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   const searchRef = useRef(null);
 
   const [searchInput, setSearchInput] = useState("");
+  const [isFocus, setIsFocus] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const isTvPage = pathname.startsWith("/tv");
   const isSearchPage = pathname.startsWith(
@@ -301,10 +319,55 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     searchRef.current.focus();
   };
 
-  useEffect(() => {
-    if (URLSearchQuery) {
-      setSearchInput(URLSearchQuery);
+  // Debounce dengan library debounce
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      const trimmedValue = value.trim();
+      if (trimmedValue) {
+        setDebouncedQuery(trimmedValue.replace(/\s+/g, "+"));
+      } else {
+        setDebouncedQuery("");
+      }
+    }, 500),
+    [],
+  );
+
+  // SWR fetch
+  const { data: autocompleteResults, isLoading } = useSWR(
+    debouncedQuery ? `/api/search/query?query=${debouncedQuery}` : null,
+    (endpoint) =>
+      fetchData({
+        baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        endpoint,
+      }),
+  );
+
+  // Autocomplete data
+  const autocompleteData = autocompleteResults?.results?.slice(0, 5) || [];
+
+  const handleSubmit = (e) => {
+    if (e) e.preventDefault();
+
+    const query = searchInput.trim();
+
+    const basePath = isTvPage ? "/tv" : "";
+    const searchPath = `${basePath}/search`;
+    const formattedQuery = query.replace(/\s+/g, "+");
+    const searchQuery = `query=${formattedQuery}`;
+
+    if (!query) {
+      router.push(`${searchPath}`);
+    } else {
+      router.push(`${searchPath}?${searchQuery}`);
     }
+
+    searchRef?.current.blur();
+  };
+
+  useEffect(() => {
+    if (!URLSearchQuery) return;
+
+    setSearchInput(URLSearchQuery);
   }, [URLSearchQuery]);
 
   useEffect(() => {
@@ -326,6 +389,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     };
 
     const typewriter = new Typewriter(null, {
+      loop: true,
       delay: 50,
       onCreateTextNode: customNodeCreator,
       onRemoveNode: onRemoveNode,
@@ -339,7 +403,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       .pauseFor(5e3)
       .deleteAll()
       .typeString(placeholder)
-      .pauseFor(10e3)
+      .pauseFor(15e3)
       .start();
 
     const onKeyDown = (event) => {
@@ -355,9 +419,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           searchRef.current.blur();
         }
       }
-
-      if (event.defaultPrevented) {
-      }
     };
 
     document.addEventListener("keydown", onKeyDown);
@@ -367,77 +428,205 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     };
   }, []);
 
-  return (
-    <form
-      onSubmit={(e) => {
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isFocus || autocompleteData.length === 0) return;
+
+      const totalItems =
+        autocompleteData.length +
+        (autocompleteResults.results.length > 5 ? 1 : 0);
+
+      if (e.key === "ArrowDown") {
         e.preventDefault();
-        const query = e.target[0].value.trim();
+        setHighlightedIndex((prevIndex) =>
+          prevIndex === totalItems - 1 ? 0 : prevIndex + 1,
+        );
+      }
 
-        const basePath = isTvPage ? "/tv" : "";
-        const searchPath = `${basePath}/search`;
-        const formattedQuery = query.replace(/\s+/g, "+");
-        const searchQuery = `query=${formattedQuery}`;
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setHighlightedIndex((prevIndex) =>
+          prevIndex <= 0 ? totalItems - 1 : prevIndex - 1,
+        );
+      }
 
-        if (!query) {
-          router.push(`${searchPath}`);
-        } else {
-          router.push(`${searchPath}?${searchQuery}`);
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (
+          highlightedIndex >= 0 &&
+          highlightedIndex < autocompleteData.length
+        ) {
+          const selectedItem = autocompleteData[highlightedIndex];
+          router.push(
+            `/${selectedItem.media_type === "movie" ? "movies" : "tv"}/${
+              selectedItem.id
+            }-${slug(selectedItem.title ?? selectedItem.name)}`,
+          );
+        } else if (highlightedIndex === autocompleteData.length) {
+          handleSubmit(); // "Show All" dipilih
         }
 
-        searchRef?.current.blur();
-      }}
-      id={`SearchBar`}
-      className={`form-control relative block w-full justify-self-center`}
-    >
-      <div
-        className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
+        searchRef.current.blur();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [autocompleteData, highlightedIndex, isFocus]);
+
+  // Cleanup debounce
+  useEffect(() => {
+    return () => {
+      debouncedSearch.clear();
+    };
+  }, []);
+
+  useEffect(() => {
+    setIsFocus(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [debouncedQuery]);
+
+  return (
+    <>
+      <form
+        onSubmit={handleSubmit}
+        id={`SearchBar`}
+        className={`form-control relative block w-full justify-self-center`}
       >
         <div
-          className={`pointer-events-none absolute ml-4 flex h-full items-center [&_*]:pointer-events-auto`}
+          className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
         >
-          <Link
-            href={!isTvPage ? `/search` : `/tv/search`}
-            prefetch={true}
-            className={`flex`}
+          <div
+            className={`pointer-events-none absolute ml-4 flex h-full items-center [&_*]:pointer-events-auto`}
           >
-            <IonIcon
-              icon={search}
-              className={`pointer-events-none`}
-              style={{
-                fontSize: 18,
-                color: `rgb(156 163 175)`,
-              }}
-            />
-          </Link>
-        </div>
-
-        <input
-          type={`text`}
-          ref={searchRef}
-          tabIndex={isSearchPage ? 0 : -1}
-          className={`h-full w-full flex-1 bg-transparent pl-10 pr-0`}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-
-        <div className={`absolute right-4 flex items-center gap-1`}>
-          {searchInput && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className={`flex h-full items-center`}
+            <Link
+              href={!isTvPage ? `/search` : `/tv/search`}
+              prefetch={true}
+              className={`flex`}
             >
               <IonIcon
-                icon={close}
-                className={`text-gray-400`}
+                icon={search}
+                className={`pointer-events-none`}
                 style={{
-                  fontSize: 24,
+                  fontSize: 18,
+                  color: `rgb(156 163 175)`,
                 }}
               />
-            </button>
-          )}
+            </Link>
+          </div>
+
+          <input
+            type={`text`}
+            ref={searchRef}
+            tabIndex={isSearchPage ? 0 : -1}
+            className={`h-full w-full flex-1 bg-transparent pl-10 pr-0`}
+            value={searchInput}
+            onChange={(e) => {
+              setSearchInput(e.target.value);
+              debouncedSearch(e.target.value);
+            }}
+            onFocus={() => {
+              setIsFocus(true);
+              debouncedSearch.flush(); // Immediate search saat focus
+            }}
+            onBlur={(e) => {
+              // Cegah blur jika klik di dalam autocomplete
+              if (e.relatedTarget?.closest(".autocomplete-suggestions")) return;
+              setIsFocus(false);
+            }}
+          />
+
+          <div className={`absolute right-4 flex items-center gap-1`}>
+            {searchInput && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className={`flex h-full items-center`}
+              >
+                <IonIcon
+                  icon={close}
+                  className={`text-gray-400`}
+                  style={{
+                    fontSize: 24,
+                  }}
+                />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
+
+      {/* Autocomplete suggestions */}
+      {isFocus && autocompleteData.length > 0 && (
+        <div
+          className={`absolute left-1/2 mt-2 w-full max-w-xl -translate-x-1/2`}
+        >
+          <ul
+            className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-90 p-2 backdrop-blur`}
+          >
+            {autocompleteData.map((film, index) => {
+              return (
+                <li key={film.id}>
+                  <Link
+                    href={`/${film.media_type === "movie" ? "movies" : "tv"}/${film.id}-${slug(film.title ?? film.name)}`}
+                    prefetch={true}
+                    className={`flex items-center gap-4 rounded-lg p-2 ${
+                      index === highlightedIndex
+                        ? `bg-white bg-opacity-10`
+                        : `hocus:bg-white hocus:bg-opacity-10`
+                    }`}
+                    tabIndex={-1}
+                  >
+                    {/* Poster */}
+                    <ImagePovi
+                      imgPath={film.poster_path}
+                      className={`aspect-poster w-[50px] overflow-hidden rounded-lg`}
+                    >
+                      <img
+                        src={`https://image.tmdb.org/t/p/w92${film.poster_path}`}
+                        alt=""
+                        role="presentation"
+                        loading="lazy"
+                        draggable={false}
+                      />
+                    </ImagePovi>
+
+                    {/* Title */}
+                    <div className={`flex flex-col`}>
+                      <span className={`text-lg font-medium`}>
+                        {`${film.title ?? film.name} ${film.release_date || film.first_air_date ? `(${moment(film.release_date ?? film.first_air_date).format("YYYY")})` : ``}`}
+                      </span>
+
+                      <span className={`text-gray-400`}>
+                        {film.media_type === "movie" ? "Movie" : "TV Show"}
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+
+            {autocompleteResults.results.length > 5 && (
+              <li>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className={`flex w-full items-center justify-center gap-4 rounded-lg p-2 text-center font-medium text-primary-blue ${highlightedIndex === autocompleteData.length ? `bg-white bg-opacity-10` : `hocus:bg-white hocus:bg-opacity-10`}`}
+                  tabIndex={-1}
+                >
+                  Show all
+                </button>
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </>
   );
 }

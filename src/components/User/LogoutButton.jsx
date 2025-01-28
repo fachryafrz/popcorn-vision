@@ -65,7 +65,7 @@ export default function LogoutButton({ user }) {
       </div>
       <ul
         tabIndex={0}
-        className="menu dropdown-content rounded-box z-50 mt-3 max-w-52 bg-base-200 p-2 font-medium shadow"
+        className="menu dropdown-content rounded-box z-50 mt-3 max-w-52 bg-base-200 bg-opacity-90 p-2 font-medium shadow backdrop-blur"
       >
         <li>
           <button onClick={() => revalidateRedirect("/profile")}>
