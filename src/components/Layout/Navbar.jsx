@@ -384,7 +384,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   }, []);
 
   // Debounce dengan library debounce
-  const debouncedSearch = useRef(
+  const debouncedSearch = useCallback(
     debounce((value) => {
       const trimmedValue = value.trim();
       if (trimmedValue) {
@@ -393,7 +393,8 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         setDebouncedQuery("");
       }
     }, 500),
-  ).current;
+    [],
+  );
 
   // State untuk query yang sudah didebounce
   const [debouncedQuery, setDebouncedQuery] = useState("");
@@ -436,6 +437,10 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
     searchRef?.current.blur();
   };
+
+  useEffect(() => {
+    setIsFocus(false);
+  }, [pathname]);
 
   return (
     <>
@@ -480,10 +485,10 @@ export function SearchBar({ placeholder = `Type / to search` }) {
               setIsFocus(true);
               debouncedSearch.flush(); // Immediate search saat focus
             }}
-            onBlur={() => {
-              setTimeout(() => {
-                setIsFocus(false);
-              }, 150);
+            onBlur={(e) => {
+              // Cegah blur jika klik di dalam autocomplete
+              if (e.relatedTarget?.closest(".autocomplete-suggestions")) return;
+              setIsFocus(false);
             }}
           />
 
@@ -513,7 +518,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           className={`absolute left-1/2 mt-2 w-full max-w-xl -translate-x-1/2`}
         >
           <ul
-            className={`rounded-box bg-base-200 bg-opacity-90 p-2 backdrop-blur`}
+            className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-90 p-2 backdrop-blur`}
           >
             {autocompleteData.map((film) => {
               return (
@@ -522,6 +527,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
                     href={`/${film.media_type === "movie" ? "movies" : "tv"}/${film.id}-${slug(film.title ?? film.name)}`}
                     prefetch={true}
                     className={`flex items-center gap-4 rounded-lg p-2 hocus:bg-white hocus:bg-opacity-10`}
+                    tabIndex={-1}
                   >
                     {/* Poster */}
                     <ImagePovi
