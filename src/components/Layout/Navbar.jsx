@@ -343,7 +343,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   );
 
   // Autocomplete data
-  const autocompleteData = autocompleteResults?.results?.slice(0, 5) || [];
+  const autocompleteData = autocompleteResults?.results?.slice(0, 10) || [];
 
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
@@ -432,9 +432,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     const handleKeyDown = (e) => {
       if (!isFocus || autocompleteData.length === 0) return;
 
-      const totalItems =
-        autocompleteData.length +
-        (autocompleteResults.results.length > 5 ? 1 : 0);
+      const totalItems = autocompleteData.length;
 
       if (e.key === "ArrowDown") {
         e.preventDefault();
@@ -458,12 +456,10 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         ) {
           const selectedItem = autocompleteData[highlightedIndex];
           router.push(
-            `/${selectedItem.media_type === "movie" ? "movies" : "tv"}/${
-              selectedItem.id
-            }-${slug(selectedItem.title ?? selectedItem.name)}`,
+            `${isTvPage ? "/tv" : ""}/search?query=${(selectedItem.title ?? selectedItem.name).toLowerCase().replace(/\s+/g, "+")}`,
           );
-        } else if (highlightedIndex === autocompleteData.length) {
-          handleSubmit(); // "Show All" dipilih
+        } else {
+          handleSubmit(e);
         }
 
         searchRef.current.blur();
@@ -485,15 +481,11 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   }, []);
 
   useEffect(() => {
-    setIsFocus(false);
-  }, [pathname]);
-
-  useEffect(() => {
     setHighlightedIndex(-1);
   }, [debouncedQuery]);
 
   return (
-    <>
+    <div className={`relative`}>
       <form
         onSubmit={handleSubmit}
         id={`SearchBar`}
@@ -525,7 +517,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             type={`text`}
             ref={searchRef}
             tabIndex={isSearchPage ? 0 : -1}
-            className={`h-full w-full flex-1 bg-transparent pl-10 pr-0`}
+            className={`h-full w-full flex-1 bg-transparent pl-10`}
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
@@ -542,7 +534,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             }}
           />
 
-          <div className={`absolute right-4 flex items-center gap-1`}>
+          <div className={`mr-4`}>
             {searchInput && (
               <button
                 type="button"
@@ -568,65 +560,57 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           className={`absolute left-1/2 mt-2 w-full max-w-xl -translate-x-1/2`}
         >
           <ul
-            className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-90 p-2 backdrop-blur`}
+            className={`autocomplete-suggestions rounded-box bg-base-200 bg-opacity-95 p-2 backdrop-blur`}
           >
-            {autocompleteData.map((film, index) => {
-              return (
-                <li key={film.id}>
-                  <Link
-                    href={`/${film.media_type === "movie" ? "movies" : "tv"}/${film.id}-${slug(film.title ?? film.name)}`}
-                    prefetch={true}
-                    className={`flex items-center gap-4 rounded-lg p-2 ${
-                      index === highlightedIndex
-                        ? `bg-white bg-opacity-10`
-                        : `hocus:bg-white hocus:bg-opacity-10`
-                    }`}
-                    tabIndex={-1}
-                  >
-                    {/* Poster */}
-                    <ImagePovi
-                      imgPath={film.poster_path}
-                      className={`aspect-poster w-[50px] overflow-hidden rounded-lg`}
+            {autocompleteData
+              .filter((item, index, self) => {
+                const title = (item.title ?? item.name).toLowerCase();
+
+                return (
+                  index ===
+                  self.findIndex(
+                    (i) => (i.title ?? i.name).toLowerCase() === title,
+                  )
+                );
+              })
+              .map((film, index) => {
+                return (
+                  <li key={film.id}>
+                    <Link
+                      href={`${isTvPage ? "/tv" : ""}/search?query=${(film.title ?? film.name).toLowerCase().replace(/\s+/g, "+")}`}
+                      prefetch={true}
+                      className={`flex items-center gap-4 rounded-lg p-2 py-1 ${
+                        index === highlightedIndex
+                          ? `bg-white bg-opacity-10`
+                          : ``
+                      }`}
+                      onClick={() => setIsFocus(false)}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                      onMouseLeave={() => setHighlightedIndex(-1)}
+                      tabIndex={-1}
                     >
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${film.poster_path}`}
-                        alt=""
-                        role="presentation"
-                        loading="lazy"
-                        draggable={false}
-                      />
-                    </ImagePovi>
+                      {/* Title */}
+                      <div className={`flex gap-2`}>
+                        <IonIcon
+                          icon={search}
+                          className={`pointer-events-none mt-1`}
+                          style={{
+                            fontSize: 18,
+                            color: `rgb(156 163 175)`,
+                          }}
+                        />
 
-                    {/* Title */}
-                    <div className={`flex flex-col`}>
-                      <span className={`text-lg font-medium`}>
-                        {`${film.title ?? film.name} ${film.release_date || film.first_air_date ? `(${moment(film.release_date ?? film.first_air_date).format("YYYY")})` : ``}`}
-                      </span>
-
-                      <span className={`text-gray-400`}>
-                        {film.media_type === "movie" ? "Movie" : "TV Show"}
-                      </span>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-
-            {autocompleteResults.results.length > 5 && (
-              <li>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className={`flex w-full items-center justify-center gap-4 rounded-lg p-2 text-center font-medium text-primary-blue ${highlightedIndex === autocompleteData.length ? `bg-white bg-opacity-10` : `hocus:bg-white hocus:bg-opacity-10`}`}
-                  tabIndex={-1}
-                >
-                  Show all
-                </button>
-              </li>
-            )}
+                        <span className={`flex-1`}>
+                          {(film.title ?? film.name).toLowerCase()}
+                        </span>
+                      </div>
+                    </Link>
+                  </li>
+                );
+              })}
           </ul>
         </div>
       )}
-    </>
+    </div>
   );
 }
