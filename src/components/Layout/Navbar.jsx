@@ -389,6 +389,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     };
 
     const typewriter = new Typewriter(null, {
+      loop: true,
       delay: 50,
       onCreateTextNode: customNodeCreator,
       onRemoveNode: onRemoveNode,
@@ -402,7 +403,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       .pauseFor(5e3)
       .deleteAll()
       .typeString(placeholder)
-      .pauseFor(10e3)
+      .pauseFor(15e3)
       .start();
 
     const onKeyDown = (event) => {
