@@ -2,7 +2,6 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
-import { isPlural } from "@/lib/isPlural";
 import { IonIcon } from "@ionic/react";
 import {
   briefcaseOutline,
@@ -13,6 +12,7 @@ import {
 import moment from "moment";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import pluralize from "pluralize";
 import React from "react";
 
 export default function PersonProfile({ person, combinedCredits, isModal }) {
@@ -122,10 +122,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
             <section id={`Films`}>
               <div className={`flex items-start gap-2`}>
                 <IonIcon icon={filmOutline} className={`mt-1`} />
-                <span>{`${personWorks.length} ${isPlural({
-                  text: "Film",
-                  number: personWorks.length,
-                })}`}</span>
+                <span>{pluralize("Film", personWorks.length, true)}</span>
               </div>
             </section>
           )}

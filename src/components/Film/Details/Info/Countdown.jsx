@@ -1,6 +1,6 @@
-import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 import { usePathname } from "next/navigation";
+import pluralize from "pluralize";
 import { useCallback, useEffect, useState } from "react";
 
 export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
@@ -43,7 +43,7 @@ export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
           <span className="countdown font-mono text-4xl sm:text-5xl">
             <span style={{ "--value": countdown.years }}></span>
           </span>
-          {isPlural({ text: "year", number: countdown.years })}
+          {pluralize("year", countdown.years)}
         </div>
       )}
       {countdown.months > 0 && (
@@ -51,7 +51,7 @@ export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
           <span className="countdown font-mono text-4xl sm:text-5xl">
             <span style={{ "--value": countdown.months }}></span>
           </span>
-          {isPlural({ text: "month", number: countdown.months })}
+          {pluralize("month", countdown.months)}
         </div>
       )}
       {countdown.days > 0 && (
@@ -59,14 +59,14 @@ export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
           <span className="countdown font-mono text-4xl sm:text-5xl">
             <span style={{ "--value": countdown.days }}></span>
           </span>
-          {isPlural({ text: "day", number: countdown.days })}
+          {pluralize("day", countdown.days)}
         </div>
       )}
       <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
         <span className="countdown font-mono text-4xl sm:text-5xl">
           <span style={{ "--value": countdown.hours }}></span>
         </span>
-        {isPlural({ text: "hour", number: countdown.hours })}
+        {pluralize("hour", countdown.hours)}
       </div>
       <div className="flex flex-col rounded-xl bg-secondary bg-opacity-10 p-2 text-neutral-content backdrop-blur">
         <span className="countdown font-mono text-4xl sm:text-5xl">
