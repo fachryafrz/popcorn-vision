@@ -3,7 +3,7 @@
 import { IonIcon } from "@ionic/react";
 import { useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { SearchBar } from "@/components/Layout/Navbar";
+import { SearchBar } from "@/components/Layout/SearchBar";
 import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, optionsOutline } from "ionicons/icons";
