@@ -7,78 +7,97 @@ import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import useSWR from "swr";
 
-export default function TileList({
-  title,
-  section,
-  films,
-  type = "movie",
-  user,
-}) {
+export default function TileList({ title, section, type = "movie", user }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
   const cookies = useCookies();
 
+  const {
+    data: films,
+    isLoading,
+    mutate,
+  } = useSWR(
+    `/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
+    (endpoint) =>
+      fetchData({
+        endpoint,
+        queryParams: {
+          session_id: cookies.get(TMDB_SESSION_ID),
+          sort_by: "created_at.desc",
+        },
+      }),
+  );
+
   const { ref: loadMoreBtn, inView, entry } = useInView();
-  const [currentSearchPage, setCurrentSearchPage] = useState(films.page);
-  const [totalSearchPages, setTotalSearchPages] = useState(films.total_pages);
-  const [filmsData, setFilmsData] = useState(films.results);
+  const [currentSearchPage, setCurrentSearchPage] = useState(0);
+  const [totalSearchPages, setTotalSearchPages] = useState();
+  const [filmsData, setFilmsData] = useState();
   const [sort, setSort] = useState();
   const [order, setOrder] = useState();
 
-  const sortedFilms = [...filmsData].sort((a, b) => {
-    if (sort === "created_at") {
-      if (order === "asc") {
-        return -1;
-      } else if (order === "desc") {
-        return 1;
+  useEffect(() => {
+    setCurrentSearchPage(films?.page);
+    setTotalSearchPages(films?.total_pages);
+    setFilmsData(films?.results);
+  }, [films]);
+
+  const sortedFilms =
+    filmsData &&
+    [...filmsData].sort((a, b) => {
+      if (sort === "created_at") {
+        if (order === "asc") {
+          return -1;
+        } else if (order === "desc") {
+          return 1;
+        }
       }
-    }
 
-    if (sort === "rating") {
-      const ratingA = a.rating ?? a.vote_average;
-      const ratingB = b.rating ?? b.vote_average;
+      if (sort === "rating") {
+        const ratingA = a.rating ?? a.vote_average;
+        const ratingB = b.rating ?? b.vote_average;
 
-      if (order === "asc") {
-        return ratingA - ratingB;
-      } else if (order === "desc") {
-        return ratingB - ratingA;
+        if (order === "asc") {
+          return ratingA - ratingB;
+        } else if (order === "desc") {
+          return ratingB - ratingA;
+        }
       }
-    }
 
-    if (sort === "popularity") {
-      const popularityA = a.popularity;
-      const popularityB = b.popularity;
+      if (sort === "popularity") {
+        const popularityA = a.popularity;
+        const popularityB = b.popularity;
 
-      if (order === "asc") {
-        return popularityA - popularityB;
-      } else if (order === "desc") {
-        return popularityB - popularityA;
+        if (order === "asc") {
+          return popularityA - popularityB;
+        } else if (order === "desc") {
+          return popularityB - popularityA;
+        }
       }
-    }
 
-    if (sort === "release_date") {
-      const dateA = new Date(!isTvPage ? a.release_date : a.first_air_date);
-      const dateB = new Date(!isTvPage ? b.release_date : b.first_air_date);
+      if (sort === "release_date") {
+        const dateA = new Date(!isTvPage ? a.release_date : a.first_air_date);
+        const dateB = new Date(!isTvPage ? b.release_date : b.first_air_date);
 
-      if (order === "asc") {
-        return dateA - dateB;
-      } else if (order === "desc") {
-        return dateB - dateA;
+        if (order === "asc") {
+          return dateA - dateB;
+        } else if (order === "desc") {
+          return dateB - dateA;
+        }
       }
-    }
-  });
+    });
 
   const fetchMoreFilms = async () => {
     try {
       const nextPage = currentSearchPage + 1;
 
       const { data: response } = await axios.get(
-        `/api/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
+        `/api/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
         {
           params: {
             language: "en-US",
@@ -89,18 +108,18 @@ export default function TileList({
       );
 
       const isDuplicate = (film) =>
-        filmsData.some((prevFilm) => prevFilm.id === film.id);
+        filmsData?.some((prevFilm) => prevFilm.id === film.id);
 
       const filteredFilms = response.results.filter(
         (film) => !isDuplicate(film),
       );
 
-      const updatedFilms = [...filmsData, ...filteredFilms];
+      const updatedFilms = filmsData && [...filmsData, ...filteredFilms];
 
       // let newFilms = response.results.filter((film) => !isDuplicate(film));
 
       // // Sort new films based on current sort and order criteria
-      // newFilms = newFilms.sort((a, b) => {
+      // newFilms = newFilms?.sort((a, b) => {
       //   // Sorting logic here, similar to what you have in the sortedFilms array
       // });
 
@@ -116,9 +135,9 @@ export default function TileList({
   };
 
   useEffect(() => {
-    if (inView) {
-      fetchMoreFilms();
-    }
+    if (!inView) return;
+
+    fetchMoreFilms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);
 
@@ -145,7 +164,14 @@ export default function TileList({
       </h2>
 
       <ul className={`flex flex-col gap-1`}>
-        {sortedFilms.map((film, i) => (
+        {isLoading &&
+          [...Array(5).keys()].map((_, i) => (
+            <li key={i}>
+              <SkeletonCollection />
+            </li>
+          ))}
+
+        {sortedFilms?.map((film, i) => (
           <li key={film.id}>
             <CollectionItem
               index={i}
@@ -156,7 +182,7 @@ export default function TileList({
           </li>
         ))}
 
-        {sortedFilms.length === 0 && (
+        {sortedFilms?.length === 0 && (
           <li className={`text-center`}>
             No {type === "tv" ? "TV Shows" : "Movies"} found.
           </li>

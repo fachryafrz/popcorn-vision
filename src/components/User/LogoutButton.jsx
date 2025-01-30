@@ -4,6 +4,7 @@ import { revalidateRedirect } from "@/lib/revalidateRedirect";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { logOutOutline, personOutline } from "ionicons/icons";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -68,7 +69,7 @@ export default function LogoutButton({ user }) {
         className="menu dropdown-content rounded-box z-50 mt-3 max-w-52 bg-base-200 bg-opacity-90 p-2 font-medium shadow backdrop-blur"
       >
         <li>
-          <button onClick={() => revalidateRedirect("/profile")}>
+          <Link href={`/profile`}>
             <IonIcon
               icon={personOutline}
               style={{
@@ -76,7 +77,7 @@ export default function LogoutButton({ user }) {
               }}
             />
             <span className={`whitespace-nowrap`}>{user.username}</span>
-          </button>
+          </Link>
         </li>
         <li>
           <button onClick={logout} className={`text-error`}>

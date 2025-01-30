@@ -65,76 +65,6 @@ export default async function page() {
     },
   );
 
-  const [
-    favoriteMovies,
-    watchlistMovies,
-    ratedMovies,
-    favoriteTv,
-    watchlistTv,
-    ratedTv,
-  ] = await Promise.all([
-    fetchData({
-      endpoint: `/account/${user.id}/favorite/movies`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-    fetchData({
-      endpoint: `/account/${user.id}/watchlist/movies`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-    fetchData({
-      endpoint: `/account/${user.id}/rated/movies`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-    fetchData({
-      endpoint: `/account/${user.id}/favorite/tv`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-    fetchData({
-      endpoint: `/account/${user.id}/watchlist/tv`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-    fetchData({
-      endpoint: `/account/${user.id}/rated/tv`,
-      queryParams: {
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-        sort_by: "created_at.desc",
-      },
-    }),
-  ]);
-
-  // const fetchFilmsData = async ({ type = "movie", section, films }) => {
-  //   const data = await Promise.all(
-  //     films.results.map(async (item) => {
-  //       const filmData = await fetchData({
-  //         endpoint: `/account/${user.id}/${section}/${type === "movie" ? "movies" : "tv"}`,
-  //         queryParams: {
-  //           session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-  //           sort_by: "created_at.desc",
-  //         },
-  //       });
-
-  //       return filmData;
-  //     }),
-  //   );
-
-  //   return data;
-  // };
-
   return (
     <section className={`py-4`}>
       <User user={user} />
@@ -151,41 +81,31 @@ export default async function page() {
           <TileList
             title={`Favorite (Movie)`}
             section={`favorite`}
-            films={favoriteMovies}
             user={user}
           />
           <TileList
             title={`Watchlist (Movie)`}
             section={`watchlist`}
-            films={watchlistMovies}
             user={user}
           />
-          <TileList
-            title={`Rated (Movie)`}
-            section={`rated`}
-            films={ratedMovies}
-            user={user}
-          />
+          <TileList title={`Rated (Movie)`} section={`rated`} user={user} />
 
           {/* TV Shows */}
           <TileList
             title={`Favorite (TV Shows)`}
             section={`favorite`}
-            films={favoriteTv}
             type={`tv`}
             user={user}
           />
           <TileList
             title={`Watchlist (TV Shows)`}
             section={`watchlist`}
-            films={watchlistTv}
             type={`tv`}
             user={user}
           />
           <TileList
             title={`Rated (TV Shows)`}
             section={`rated`}
-            films={ratedTv}
             type={`tv`}
             user={user}
             className={`md:col-span-2 xl:col-span-1`}
