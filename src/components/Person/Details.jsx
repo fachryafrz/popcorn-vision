@@ -1,9 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { isPlural } from "@/lib/isPlural";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
+import pluralize from "pluralize";
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -89,12 +89,7 @@ export default function PersonDetails({
               <div className="flex items-end gap-2">
                 <h3 className={`text-2xl font-bold`}>Images</h3>
                 <span className={`block text-base font-normal text-gray-400`}>
-                  (
-                  {`${images?.profiles.length - 1} ${isPlural({
-                    text: "photo",
-                    number: images?.profiles.length - 1,
-                  })}`}
-                  )
+                  ({pluralize("photo", images?.profiles.length - 1, true)})
                 </span>
               </div>
 

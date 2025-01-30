@@ -18,7 +18,6 @@ import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
 import { fetchData, getEpisodes } from "@/lib/fetch";
 import EpisodeCard from "./TV/EpisodeCard";
-import { isPlural } from "@/lib/isPlural";
 import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";
 import { formatRuntime } from "@/lib/formatRuntime";
@@ -31,6 +30,7 @@ import { POPCORN } from "@/lib/constants";
 import slug from "slug";
 import useSWR from "swr";
 import SkeletonEpisodeCard from "@/components/Skeleton/details/EpisodeCard";
+import pluralize from "pluralize";
 
 export default function FilmCollection({ film, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -87,11 +87,7 @@ export default function FilmCollection({ film, collection }) {
                   <li key={item.id}>
                     <h3 className="sr-only">
                       {item.name} (
-                      {`${item.episode_count} ${isPlural({
-                        text: "Episode",
-                        number: item.episode_count,
-                      })}`}
-                      )
+                      {pluralize("Episode", item.episode_count, true)})
                     </h3>
                     {item.overview && (
                       <p className="sr-only">{item.overview}</p>
@@ -284,10 +280,7 @@ function FilmSeason({ film, item, index }) {
 
           {item.episode_count > 0 ? (
             <span className="line-clamp-1 text-xs font-medium text-gray-400">
-              {`${item.episode_count} ${isPlural({
-                text: "Episode",
-                number: item.episode_count,
-              })}`}
+              {pluralize("Episode", item.episode_count, true)}
             </span>
           ) : (
             <span className="line-clamp-1 text-xs font-medium text-gray-400">
@@ -415,14 +408,9 @@ function FilmEpisodes({ id, season }) {
                           <span
                             className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
-                            {Math.floor(item.runtime / 60) >= 1
-                              ? `${Math.floor(item.runtime / 60)}h ${Math.floor(
-                                  item.runtime % 60,
-                                )}m`
-                              : `${item.runtime} ${isPlural({
-                                  text: "minute",
-                                  number: item.runtime % 60,
-                                })}`}
+                            {item.runtime > 60
+                              ? formatRuntime(item.runtime)
+                              : pluralize("minute", item.runtime % 60, true)}
                           </span>
                         )}
 

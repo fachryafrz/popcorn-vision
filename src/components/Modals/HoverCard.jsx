@@ -7,7 +7,6 @@ import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { AnimatePresence, motion as m } from "framer-motion";
 import { formatRuntime } from "../../lib/formatRuntime";
-import { isPlural } from "../../lib/isPlural";
 import { formatRating } from "@/lib/formatRating";
 import useSWR from "swr";
 import { useHoverCard } from "@/zustand/hoverCard";
@@ -20,6 +19,7 @@ import axios from "axios";
 import WatchlistButton from "../User/Actions/WatchlistButton";
 import moment from "moment";
 import { userStore } from "@/zustand/userStore";
+import pluralize from "pluralize";
 
 export default function HoverCard() {
   const { user } = userStore();
@@ -222,12 +222,7 @@ export default function HoverCard() {
                   <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
                     <span
                       className="before-content !text-white"
-                      data-before-content={`${filmDetails.number_of_seasons} ${isPlural(
-                        {
-                          text: `Season`,
-                          number: filmDetails.number_of_seasons,
-                        },
-                      )}`}
+                      data-before-content={pluralize("Season", filmDetails.number_of_seasons, true)}
                     />
                   </div>
                 )}

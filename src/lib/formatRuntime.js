@@ -1,4 +1,4 @@
-import { isPlural } from "./isPlural";
+import pluralize from "pluralize";
 
 export function formatRuntime(runtime) {
   if (runtime > 60) {
@@ -6,6 +6,6 @@ export function formatRuntime(runtime) {
     const minutes = runtime % 60;
     return `${hours}h ${minutes}m`;
   } else {
-    return `${runtime} ${isPlural({ text: "min", number: runtime })}`;
+    return pluralize("min", runtime, true);
   }
 }

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { usePathname } from "next/navigation";
 import { getMoreReviews } from "@/lib/fetch";
-import { isPlural } from "@/lib/isPlural";
 import SkeletonReviewCard from "@/components/Skeleton/ReviewCard";
+import pluralize from "pluralize";
 
 export default function FilmReviews({ reviews, film }) {
   const { total_pages } = reviews;
@@ -20,7 +20,7 @@ export default function FilmReviews({ reviews, film }) {
     <div id="reviews" className="relative flex flex-col gap-2">
       <div className="sticky top-[66px] z-10 -mx-4 flex items-center gap-1 bg-base-100 bg-opacity-[85%] px-4 py-2 backdrop-blur md:-mx-2 md:px-2">
         <h2 className="m-0 text-xl font-bold text-white">
-          {`${isPlural({ text: `Review`, number: moreReviews.length })} `}
+          {pluralize("Review", reviews.total_results)}{" "}
           <span className={`text-sm font-normal text-gray-400`}>
             ({reviews.total_results})
           </span>
