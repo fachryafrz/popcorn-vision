@@ -13,7 +13,6 @@ import {
 } from "ionicons/icons";
 import { useEffect, useRef, useState } from "react";
 import { formatRuntime } from "@/lib/formatRuntime";
-import { isPlural } from "@/lib/isPlural";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
@@ -26,6 +25,7 @@ import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
 import { fetchData } from "@/lib/fetch";
 import { userStore } from "@/zustand/userStore";
+import pluralize from "pluralize";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
@@ -249,17 +249,10 @@ export function EpisodeModal({ film }) {
                       <IonIcon icon={timeOutline} />
                       {episode.runtime ? (
                         <span>
-                          {episode.runtime}{" "}
-                          {isPlural({
-                            text: "minute",
-                            number: episode.runtime % 60,
-                          })}
+                          {`${pluralize("minute", episode.runtime, true)} ${episode.runtime > 60 ? `(${formatRuntime(episode.runtime)})` : ""}`}
                         </span>
                       ) : (
                         <span>TBA</span>
-                      )}
-                      {Math.floor(episode.runtime / 60) >= 1 && (
-                        <span>{`(${formatRuntime(episode.runtime)})`}</span>
                       )}
                     </div>
                   </section>

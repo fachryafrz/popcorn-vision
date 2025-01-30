@@ -7,9 +7,9 @@ import { chevronForward, star } from "ionicons/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { formatRuntime } from "../../lib/formatRuntime";
-import { isPlural } from "../../lib/isPlural";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
+import pluralize from "pluralize";
 
 export default function FilmSummary({ film, genres, className, btnClass }) {
   const pathname = usePathname();
@@ -106,7 +106,7 @@ function FilmSeason({ film }) {
       <span
         className={`block rounded-full bg-secondary bg-opacity-20 p-1 px-3 backdrop-blur-sm`}
       >
-        {`${season} ${isPlural({ text: "Season", number: season })}`}{" "}
+        {pluralize("Season", season, true)}
       </span>
     </div>
   );

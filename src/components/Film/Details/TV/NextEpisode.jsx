@@ -2,9 +2,10 @@ import React from "react";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { formatRating } from "@/lib/formatRating";
-import { isPlural } from "@/lib/isPlural";
 import moment from "moment";
 import EpisodeCard from "./EpisodeCard";
+import pluralize from "pluralize";
+import { formatRuntime } from "@/lib/formatRuntime";
 
 export default function NextEpisode({ film, nextEps }) {
   return (
@@ -37,14 +38,9 @@ export default function NextEpisode({ film, nextEps }) {
             <span
               className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
             >
-              {Math.floor(nextEps.runtime / 60) >= 1
-                ? `${Math.floor(
-                    nextEps.runtime / 60,
-                  )}h ${Math.floor(nextEps.runtime % 60)}m`
-                : `${nextEps.runtime} ${isPlural({
-                    text: "minute",
-                    number: nextEps.runtime % 60,
-                  })}`}
+              {nextEps.runtime > 60
+                ? formatRuntime(nextEps.runtime)
+                : pluralize("minute", nextEps.runtime, true)}
             </span>
           )}
 

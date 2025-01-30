@@ -9,7 +9,6 @@ import TitleLogo from "@/components/Film/TitleLogo";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { formatRuntime } from "@/lib/formatRuntime";
-import { isPlural } from "@/lib/isPlural";
 import WatchlistButton from "../../../User/Actions/WatchlistButton";
 import FavoriteButton from "../../../User/Actions/FavoriteButton";
 import axios from "axios";
@@ -29,6 +28,7 @@ import moment from "moment";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
+import pluralize from "pluralize";
 
 export default function FilmInfo({
   film,
@@ -164,13 +164,11 @@ export default function FilmInfo({
 
                   <p>
                     <span className="sr-only">Chapter:&nbsp;</span>
-                    {`${film.number_of_seasons} ${isPlural({
-                      text: "Season",
-                      number: film.number_of_seasons,
-                    })} (${film.number_of_episodes} ${isPlural({
-                      text: "Episode",
-                      number: film.number_of_episodes,
-                    })})`}
+                    {`${pluralize("Season", film.number_of_seasons, true)} (${pluralize(
+                      "Episode",
+                      film.number_of_episodes,
+                      true,
+                    )})`}
                   </p>
                 </div>
               </section>
@@ -189,7 +187,7 @@ export default function FilmInfo({
                 <time>
                   <p>
                     <span className="sr-only">Runtime:&nbsp;</span>
-                    {`${filmRuntime} ${isPlural({ text: "minute", number: filmRuntime % 60 })} ${Math.floor(filmRuntime / 60) >= 1 ? `(${formatRuntime(filmRuntime)})` : ``}`}
+                    {`${pluralize("minute", filmRuntime, true)} ${filmRuntime > 60 ? `(${formatRuntime(filmRuntime)})` : ``}`}
                   </p>
                 </time>
               </div>
@@ -212,7 +210,7 @@ export default function FilmInfo({
           {film.genres && film.genres.length > 0 && (
             <section id={`Film Genres`}>
               <p className="sr-only">
-                {isPlural({ text: `Genre`, number: film.genres.length })}:
+                {pluralize("Genre", film.genres.length)}:
               </p>
               <ul className={`flex flex-wrap gap-1`}>
                 {film.genres.map((item, i) => {

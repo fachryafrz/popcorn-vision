@@ -13,6 +13,7 @@ import { fetchData } from "@/lib/fetch";
 import useSWR from "swr";
 import { useLocation } from "@/zustand/location";
 import { useToggleFilter } from "@/zustand/toggleFilter";
+import pluralize from "pluralize";
 
 export default function Search({
   type = "movie",
@@ -273,8 +274,8 @@ export default function Search({
               {films?.length > 0 && (
                 <span className={`block text-xs font-medium`}>
                   {!isQueryParams
-                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? "Movies" : "TV Shows"}`
-                    : `Showing ${numeral(films.length).format("0,0")} Films`}
+                    ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? pluralize("Movie", films.length) : pluralize("TV Show", films.length)}`
+                    : `Showing ${numeral(films.length).format("0,0")} ${pluralize("Result", films.length)}`}
                 </span>
               )}
 
