@@ -128,31 +128,26 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       .typeString(placeholder)
       .pauseFor(15e3)
       .start();
-
-    const onKeyDown = (event) => {
-      if (event.key === "/") {
-        if (document.activeElement !== searchRef.current) {
-          event.preventDefault();
-          searchRef.current.focus();
-        }
-      }
-
-      if (event.key === "Escape") {
-        if (document.activeElement === searchRef.current) {
-          searchRef.current.blur();
-        }
-      }
-    };
-
-    document.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", onKeyDown);
-    };
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // START: For selecting and deselecting search box
+      if (e.key === "/") {
+        if (document.activeElement !== searchRef.current) {
+          e.preventDefault();
+          searchRef.current.focus();
+        }
+      }
+
+      if (e.key === "Escape") {
+        if (document.activeElement === searchRef.current) {
+          searchRef.current.blur();
+        }
+      }
+      // END: For selecting and deselecting search box
+
+      // START: Keyboard navigation for autocomplete
       if (!isFocus || autocompleteData.length === 0) return;
 
       const totalItems = autocompleteData.length;
@@ -162,6 +157,11 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         setHighlightedIndex((prevIndex) =>
           prevIndex === totalItems - 1 ? 0 : prevIndex + 1,
         );
+        const selectedItem =
+          autocompleteData[
+            highlightedIndex === totalItems - 1 ? 0 : highlightedIndex + 1
+          ];
+        setSearchInput((selectedItem.title ?? selectedItem.name).toLowerCase());
       }
 
       if (e.key === "ArrowUp") {
@@ -169,6 +169,11 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         setHighlightedIndex((prevIndex) =>
           prevIndex <= 0 ? totalItems - 1 : prevIndex - 1,
         );
+        const selectedItem =
+          autocompleteData[
+            highlightedIndex <= 0 ? totalItems - 1 : highlightedIndex - 1
+          ];
+        setSearchInput((selectedItem.title ?? selectedItem.name).toLowerCase());
       }
 
       if (e.key === "Enter") {
@@ -187,6 +192,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
         searchRef.current.blur();
       }
+      // END: Keyboard navigation for autocomplete
     };
 
     document.addEventListener("keydown", handleKeyDown);
