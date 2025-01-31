@@ -1,7 +1,7 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/SearchBar";
 import Filters from "@/components/Search/Filter";
@@ -26,45 +26,43 @@ export default function Search({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
   const isQueryParams = searchParams.get("query");
   const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
-  // State
+  // State Management
   const [notAvailable, setNotAvailable] = useState("");
-
-  // Global State
   const { location } = useLocation();
   const { toggleFilter, setToggleFilter } = useToggleFilter();
 
-  // SWR configuration
-  const fetcher = async (url) => {
-    const response = await fetchData({
-      endpoint: url,
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    });
-    return response;
-  };
+  // Fetcher for SWR
+  const fetcher = useCallback(
+    async (url) =>
+      await fetchData({
+        endpoint: url,
+        baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      }),
+    [],
+  );
 
-  // Prepare SWR key
-  const getKey = () => {
+  // Generate SWR Key
+  const getKey = useCallback(() => {
     if (isQueryParams) {
       return `/api/search/query?query=${searchParams.get("query")}`;
-    } else {
-      const params = new URLSearchParams({
-        media_type: type,
-        ...Object.fromEntries(searchParams),
-      });
-
-      if (searchParams.get("watch_providers") && location) {
-        params.append("watch_region", location.country_code);
-      }
-
-      return `/api/search/filter?${params.toString()}`;
     }
-  };
 
-  // Use SWR for data fetching
+    const params = new URLSearchParams({
+      media_type: type,
+      ...Object.fromEntries(searchParams),
+    });
+
+    if (searchParams.get("watch_providers") && location) {
+      params.append("watch_region", location.country_code);
+    }
+
+    return `/api/search/filter?${params.toString()}`;
+  }, [isQueryParams, searchParams, type, location]);
+
+  // SWR Data Fetching
   const {
     data,
     isLoading: loading,
@@ -75,50 +73,58 @@ export default function Search({
     revalidateOnReconnect: false,
   });
 
-  // Process data
+  // Process and Deduplicate Films
   const films = useMemo(() => {
     if (!data) return [];
+
     const mediaTypes = ["movie", "tv"];
     const results = isQueryParams
       ? data.results.filter((film) => mediaTypes.includes(film.media_type))
       : data.results;
+
+    // Deduplicate films by ID
     return results.filter(
       (film, index, self) => index === self.findIndex((t) => t.id === film.id),
     );
   }, [data, isQueryParams]);
 
-  const totalSearchResults = data?.total_results;
-  const totalSearchPages = data?.total_pages;
-  const currentSearchPage = data?.page || 0;
+  // Extract Pagination Data
+  const totalSearchResults = data?.total_results || 0;
+  const totalSearchPages = data?.total_pages || 0;
+  const currentSearchPage = data?.page || 1;
 
-  // Handle not available
-  const handleNotAvailable = () => {
+  // Handle Not Available State
+  const handleNotAvailable = useCallback(() => {
     setNotAvailable(
       "Filters cannot be applied, please clear the search input.",
     );
-  };
-  const handleClearNotAvailable = () => {
-    setNotAvailable("");
-  };
+  }, []);
 
-  // Fetch more films
-  const fetchMoreFilms = async () => {
+  const handleClearNotAvailable = useCallback(() => {
+    setNotAvailable("");
+  }, []);
+
+  // Fetch More Films
+  const fetchMoreFilms = useCallback(async () => {
+    if (currentSearchPage >= totalSearchPages) return;
+
     const nextPage = currentSearchPage + 1;
     const newKey = `${getKey()}&page=${nextPage}`;
-
     const newData = await fetcher(newKey);
-    mutate((prevData) => {
-      if (!prevData) return newData;
-      return {
-        ...newData,
-        results: [...prevData.results, ...newData.results],
-      };
-    }, false);
-  };
 
-  const handleResetFilters = () => {
-    router.push(`${isTvPage ? `/tv` : ``}/search`);
-  };
+    mutate(
+      (prevData) => ({
+        ...newData,
+        results: [...(prevData?.results || []), ...newData.results],
+      }),
+      false,
+    );
+  }, [currentSearchPage, totalSearchPages, getKey, fetcher, mutate]);
+
+  // Reset Filters
+  const handleResetFilters = useCallback(() => {
+    router.push(`${isTvPage ? "/tv" : ""}/search`);
+  }, [isTvPage, router]);
 
   // Handle React-Select Input Styles
   const inputStyles = useMemo(() => {
