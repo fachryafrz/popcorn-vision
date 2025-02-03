@@ -171,7 +171,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                 <button
                   onClick={() => {
                     setCreditsSwitcher(`Movies`);
-                    mediaSwiper.slideTo(0);
+                    mediaSwiper.slideTo(0, 0);
                   }}
                   className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `Movies`
@@ -187,7 +187,7 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
                 <button
                   onClick={() => {
                     setCreditsSwitcher(`TV`);
-                    mediaSwiper.slideTo(0);
+                    mediaSwiper.slideTo(0, 0);
                   }}
                   className={`text-lg font-bold transition-all hocus:text-gray-500 sm:text-2xl ${
                     creditsSwitcher === `TV`
