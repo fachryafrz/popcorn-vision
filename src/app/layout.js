@@ -74,19 +74,19 @@ export const metadata = {
     },
   },
   category: "entertainment",
-  robots: {
-    index: false,
-    follow: false,
-    nocache: false,
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: false,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+  // robots: {
+  //   index: true,
+  //   follow: false,
+  //   nocache: false,
+  //   googleBot: {
+  //     index: true,
+  //     follow: false,
+  //     noimageindex: true,
+  //     "max-video-preview": -1,
+  //     "max-image-preview": "large",
+  //     "max-snippet": -1,
+  //   },
+  // },
 };
 
 export default async function RootLayout({ children }) {
