@@ -9,7 +9,6 @@ import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -143,7 +142,6 @@ export default async function RootLayout({ children }) {
         /> */}
 
         <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );

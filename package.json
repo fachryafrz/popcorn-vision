@@ -17,7 +17,6 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.9",
     "@vercel/analytics": "^1.4.1",
-    "@vercel/speed-insights": "^1.1.0",
     "axios": "^1.6.7",
     "dayjs": "^1.11.11",
     "debounce": "^2.0.0",
