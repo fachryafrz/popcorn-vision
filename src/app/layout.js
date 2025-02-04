@@ -33,10 +33,6 @@ export const metadata = {
   ],
   creator: "Fachry Dwi Afriza",
   publisher: "Fachry Dwi Afriza",
-  // viewport: {
-  //   width: "device-width",
-  //   initialScale: 1,
-  // },
   title: {
     default: process.env.NEXT_PUBLIC_APP_NAME,
     template: `%s - ${process.env.NEXT_PUBLIC_APP_NAME}`,
@@ -56,7 +52,6 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-  // themeColor: "#202735",
   manifest: "/manifest.webmanifest",
   twitter: {
     card: "summary_large_image",
@@ -74,19 +69,19 @@ export const metadata = {
     },
   },
   category: "entertainment",
-  // robots: {
-  //   index: true,
-  //   follow: false,
-  //   nocache: false,
-  //   googleBot: {
-  //     index: true,
-  //     follow: false,
-  //     noimageindex: true,
-  //     "max-video-preview": -1,
-  //     "max-image-preview": "large",
-  //     "max-snippet": -1,
-  //   },
-  // },
+  robots: {
+    index: false,
+    follow: false,
+    nocache: false,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default async function RootLayout({ children }) {
