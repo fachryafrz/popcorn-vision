@@ -1,7 +1,7 @@
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
-import GoogleAnalytics from "@/components/User/GoogleAnalytics";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
 import { headers } from "next/headers";
@@ -108,9 +108,6 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" className="scroll-pt-20">
-      <Suspense>
-        <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
-      </Suspense>
       <body className={`bg-base-100 text-white ${roboto.className}`}>
         <CookiesProvider>
           {/* Navbar */}
@@ -136,6 +133,7 @@ export default async function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         /> */}
 
+        <GoogleAnalytics gaId={gtagId} />
         <Analytics />
       </body>
     </html>
