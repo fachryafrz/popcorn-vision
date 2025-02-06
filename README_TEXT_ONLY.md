@@ -1,6 +1,6 @@
 # Popcorn Vision - Movie & TV Show Discovery Platform
 
-Are you a movie buff or a TV show fanatic? Look no further! I'm excited to share with you my brand new website: **Popcorn Vision**! 🍿🌟
+Are you a movie buff or a TV show fanatic? Look no further! I'm excited to share with you about **Popcorn Vision**! 🍿🌟
 
 Popcorn Vision is your go-to destination for all things movies and TV shows. Whether you're searching for the latest blockbuster release or an underrated gem, we've got you covered.
 
