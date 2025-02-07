@@ -70,16 +70,13 @@ export const metadata = {
   },
   category: "entertainment",
   robots: {
-    index: false,
+    index: true,
     follow: false,
-    nocache: false,
+    noimageindex: true,
     googleBot: {
-      index: false,
+      index: true,
       follow: false,
       noimageindex: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
     },
   },
 };
