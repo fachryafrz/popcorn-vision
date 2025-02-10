@@ -72,22 +72,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  // const jsonLd = {
-  //   "@context": "https://schema.org",
-  //   "@type": "WebSite",
-  //   name: process.env.NEXT_PUBLIC_APP_NAME,
-  //   alternateName: process.env.NEXT_PUBLIC_APP_NAME,
-  //   url: process.env.NEXT_PUBLIC_APP_URL,
-  //   potentialAction: {
-  //     "@type": "SearchAction",
-  //     target: {
-  //       "@type": "EntryPoint",
-  //       urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={title}`,
-  //     },
-  //     "query-input": "required name=title maxlength=100",
-  //   },
-  // };
-
   const header = headers();
   const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
 
@@ -114,11 +98,6 @@ export default async function RootLayout({ children }) {
           {/* Footer */}
           <Footer />
         </CookiesProvider>
-
-        {/* <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        /> */}
 
         <GoogleAnalytics gaId={gtagId} />
         <Analytics />

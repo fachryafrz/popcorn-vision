@@ -10,6 +10,7 @@ import { POPCORN } from "@/lib/constants";
 import SkeletonSlider from "@/components/Skeleton/main/Slider";
 import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
+import Script from "next/script";
 
 export async function generateMetadata() {
   return {
@@ -178,6 +179,30 @@ export default async function Home({ type = "movie" }) {
     ),
   ]);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": process.env.NEXT_PUBLIC_APP_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    name: process.env.NEXT_PUBLIC_APP_NAME,
+    description: process.env.NEXT_PUBLIC_APP_DESC,
+    potentialAction: [
+      {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`,
+        },
+        "query-input": {
+          "@type": "PropertyValueSpecification",
+          valueRequired: true,
+          valueName: "search_term_string",
+        },
+      },
+    ],
+    inLanguage: "en-US",
+  };
+
   return (
     <>
       <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
@@ -289,6 +314,12 @@ export default async function Home({ type = "movie" }) {
           </Suspense>
         </section>
       </div>
+
+      <Script
+        id="json-ld"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     </>
   );
 }
