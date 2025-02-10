@@ -29,6 +29,8 @@ import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
+import { useEffect } from "react";
+import { useConfetti } from "@/zustand/confetti";
 
 export default function FilmInfo({
   film,
@@ -39,6 +41,7 @@ export default function FilmInfo({
 }) {
   const { user } = userStore();
   const { location } = useLocation();
+  const { setConfetti } = useConfetti();
 
   const countryCode = location?.country_code;
   const countryName = location?.country_name;
@@ -86,13 +89,21 @@ export default function FilmInfo({
     : null;
 
   // Confetti
-  dayjs.extend(duration);
-  const now = dayjs();
-  const filmReleaseDateDayjs = dayjs(
-    !isTvPage ? filmReleaseDate : nextEps?.air_date,
-  );
-  const timeLeft = dayjs.duration(filmReleaseDateDayjs.diff(now));
-  const daysLeft = timeLeft.days();
+  const calculateDaysLeft = () => {
+    dayjs.extend(duration);
+    const now = dayjs();
+    const filmReleaseDateDayjs = dayjs(
+      !isTvPage ? filmReleaseDate : nextEps?.air_date,
+    );
+    const timeLeft = dayjs.duration(filmReleaseDateDayjs.diff(now));
+    const daysLeft = timeLeft.days();
+
+    if (isUpcoming || isUpcomingNextEps) {
+      return daysLeft < 1;
+    }
+
+    return false;
+  };
 
   // Get account state using SWR
   const swrKey = `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`;
@@ -102,6 +113,15 @@ export default function FilmInfo({
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+
+  // Confetti
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setConfetti(calculateDaysLeft());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
@@ -315,19 +335,6 @@ export default function FilmInfo({
                       tvReleaseDate={nextEps?.air_date}
                     />
                   </div>
-
-                  {daysLeft < 1 && (
-                    <div
-                      id={`Confetti`}
-                      className={`pointer-events-none fixed inset-0`}
-                    >
-                      <Confetti
-                        mode={`fall`}
-                        particleCount={100}
-                        shapeSize={15}
-                      />
-                    </div>
-                  )}
                 </>
               )}
             </section>

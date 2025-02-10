@@ -9,6 +9,7 @@ import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
+import Confetti from "@/components/Layout/Confetti";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -98,6 +99,9 @@ export default async function RootLayout({ children }) {
           {/* Footer */}
           <Footer />
         </CookiesProvider>
+
+        {/* Confetti */}
+        <Confetti />
 
         <GoogleAnalytics gaId={gtagId} />
         <Analytics />
