@@ -69,16 +69,6 @@ export const metadata = {
     },
   },
   category: "entertainment",
-  robots: {
-    index: true,
-    follow: false,
-    noimageindex: true,
-    googleBot: {
-      index: true,
-      follow: false,
-      noimageindex: true,
-    },
-  },
 };
 
 export default async function RootLayout({ children }) {
