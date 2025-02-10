@@ -181,8 +181,8 @@ export default async function Home({ type = "movie" }) {
 
   const jsonLd = {
     "@type": "WebSite",
-    "@id":
-      "https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app",
+    // "@id":
+    //   "https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app",
     url: "https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app",
     name: "Popcorn Vision",
     description:
