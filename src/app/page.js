@@ -182,18 +182,16 @@ export default async function Home({ type = "movie" }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id":
-      "https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app",
-    url: "https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app",
-    name: "Popcorn Vision",
-    description:
-      "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+    "@id": process.env.NEXT_PUBLIC_APP_URL,
+    url: process.env.NEXT_PUBLIC_APP_URL,
+    name: process.env.NEXT_PUBLIC_APP_NAME,
+    description: process.env.NEXT_PUBLIC_APP_DESC,
     potentialAction: [
       {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: `https://popcorn-vision-git-refactor-optimization-fachryafrz-projects.vercel.app/search?query={search_term_string}`,
+          urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`,
         },
         "query-input": {
           "@type": "PropertyValueSpecification",
