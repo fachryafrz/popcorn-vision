@@ -3,8 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
-import LiteYouTubeEmbed from "react-lite-youtube-embed";
-import "react-lite-youtube-embed/dist/LiteYouTubeEmbed.css";
+import { YouTubeEmbed } from "@next/third-parties/google";
 
 // Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -110,13 +109,12 @@ export default function FilmMedia({ film, videos, images }) {
           {filteredVideos.map((vid, index) => {
             return (
               <SwiperSlide key={vid.key}>
-                <LiteYouTubeEmbed
-                  id={vid.key}
-                  title={vid.name}
+                <YouTubeEmbed
+                  videoid={vid.key}
+                  width={"100%"}
+                  height={"100%"}
                   params={youtubeParams}
-                  poster="maxresdefault"
-                  // thumbnail={`https://img.youtube.com/vi/${vid.key}/maxresdefault.jpg`}
-                  webp={true}
+                  style={`max-width: 100%; max-height: 100%; background-image: url('https://i.ytimg.com/vi/${vid.key}/maxresdefault.jpg');`}
                 />
               </SwiperSlide>
             );

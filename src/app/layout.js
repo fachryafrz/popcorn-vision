@@ -1,13 +1,14 @@
 import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
-import GoogleAnalytics from "@/components/User/GoogleAnalytics";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Suspense } from "react";
 import { CookiesProvider } from "next-client-cookies/server";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -32,10 +33,6 @@ export const metadata = {
   ],
   creator: "Fachry Dwi Afriza",
   publisher: "Fachry Dwi Afriza",
-  // viewport: {
-  //   width: "device-width",
-  //   initialScale: 1,
-  // },
   title: {
     default: process.env.NEXT_PUBLIC_APP_NAME,
     template: `%s - ${process.env.NEXT_PUBLIC_APP_NAME}`,
@@ -55,7 +52,6 @@ export const metadata = {
     locale: "en_US",
     type: "website",
   },
-  // themeColor: "#202735",
   manifest: "/manifest.webmanifest",
   twitter: {
     card: "summary_large_image",
@@ -73,19 +69,6 @@ export const metadata = {
     },
   },
   category: "entertainment",
-  // robots: {
-  //   index: true,
-  //   follow: true,
-  //   nocache: false,
-  //   googleBot: {
-  //     index: true,
-  //     follow: true,
-  //     noimageindex: false,
-  //     "max-video-preview": -1,
-  //     "max-image-preview": "large",
-  //     "max-snippet": -1,
-  //   },
-  // },
 };
 
 export default async function RootLayout({ children }) {
@@ -112,9 +95,6 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en" className="scroll-pt-20">
-      <Suspense>
-        <GoogleAnalytics GA_MEASUREMENT_ID={gtagId} />
-      </Suspense>
       <body className={`bg-base-100 text-white ${roboto.className}`}>
         <CookiesProvider>
           {/* Navbar */}
@@ -139,6 +119,9 @@ export default async function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         /> */}
+
+        <GoogleAnalytics gaId={gtagId} />
+        <Analytics />
       </body>
     </html>
   );

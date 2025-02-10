@@ -7,12 +7,12 @@ export default async function middleware(request) {
   const cookiesStore = request.cookies;
   const { pathname, searchParams } = request.nextUrl;
 
-  const isTvPage =
-    pathname.startsWith("/tv") &&
-    !pathname.startsWith("/tv/search") &&
-    pathname !== "/tv";
-  const isMoviesPage = pathname.startsWith("/movies") && pathname !== "/movies";
-  const type = isTvPage ? "tv" : "movie";
+  // const isTvPage =
+  //   pathname.startsWith("/tv") &&
+  //   !pathname.startsWith("/tv/search") &&
+  //   pathname !== "/tv";
+  // const isMoviesPage = pathname.startsWith("/movies") && pathname !== "/movies";
+  // const type = isTvPage ? "tv" : "movie";
   const tmdbSessionID = cookiesStore.has(TMDB_SESSION_ID);
 
   // if (isMoviesPage || isTvPage) {
@@ -70,13 +70,11 @@ export default async function middleware(request) {
     return response;
   }
 
-  if (pathname === "/movies") {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
+  // if (pathname === "/movies") {
+  //   return NextResponse.redirect(new URL("/", request.url));
+  // }
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
-  ],
+  matcher: ["/login", "/profile"],
 };
