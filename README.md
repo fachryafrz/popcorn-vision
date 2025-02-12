@@ -25,7 +25,7 @@ Popcorn Vision is a movie and TV show discovery platform that allows users to br
   - 👥 Actor
   - 👥 Crew
   - 🎞️ Company
-  - 🌐 Language
+  - 🌏 Language
   - 🌟 Keyword
   - ⌛️ Runtime
   - 🌟 Rating
