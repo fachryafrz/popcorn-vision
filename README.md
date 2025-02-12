@@ -1,53 +1,82 @@
 [![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/home.png)](https://popcornvision.vercel.app)
 
-[![Website](https://img.shields.io/badge/Popcorn%20Vision-Discover%20your%20favorite%20film%20now!-blue)](https://popcornvision.vercel.app)
+# Popcorn Vision - Movie & TV Show Discovery
 
-# 🎥 Popcorn Vision - Movie & TV Show Discovery Platform 📺
+Popcorn Vision is a movie and TV show discovery platform that allows users to browse and search for movies and TV shows, authenticate with TMDB API, and save their favorite movies and TV shows.
 
-Are you a movie buff or a TV show fanatic? Look no further! I'm excited to share with you about **Popcorn Vision**! 🍿🌟
+## ✨ Features
 
-Popcorn Vision is your go-to destination for all things movies and TV shows. Whether you're searching for the latest blockbuster release or an underrated gem, we've got you covered.
+- 🔑 Authentication with TMDB API:
+  - 🔑 Login
+  - 🌟 Save favorite movies and TV shows
+  - 🔖 Add movies and TV shows to watchlist
+  - 🌟 Rate movies and TV shows
+- 📚 Extensive film database
+- 📝 Detailed information:
+  - 📝 Synopsis
+  - 🎬 Watch movies and TV shows trailer
+  - 👥 Cast and Crew details
+  - 📺 TV show seasons and episodes
+- 🔍 Advanced search with filters:
+  - 📅 Release date
+  - 🌐 Streaming platform
+  - 🎬 Genre
+  - 📺 TV show network
+  - 👥 Actor
+  - 👥 Crew
+  - 🎞️ Company
+  - 🌏 Language
+  - 🌟 Keyword
+  - ⌛️ Runtime
+  - 🌟 Rating
+  - 🌟 Rating count
+  - 📺 TV show status
+  - 📺 TV show type
 
-No more switching between apps for movie or TV show information! With Popcorn Vision, not only can you enjoy our website, but we also offer a convenient app for all your devices! 📱
+## 🛠️ Tech Stack
 
-Here’s what you can expect from Popcorn Vision:
+- **Next.js 14** - React-based framework
+- **React** - JavaScript framework
+- **DaisyUI** - Tailwind CSS component library
+- **Tailwind CSS** - Styling and UI design
+- **Material UI** - UI component library
+- **TMDB API** - The biggest movie database
 
-## 🎬 Extensive Database:
+## 🚀 Fork the repository
 
-Explore a vast collection of movies and TV shows. From timeless classics to the hottest releases, we’ve curated a diverse library that caters to every taste and preference.
+### 1. Fork
 
-## 📝 Detailed Information:
+Click the **Fork** button at the top-right corner of this page to create a copy of this repository in your account.
 
-Dive deep into your favorite titles with our comprehensive movie and TV show details. Get all the information you need, from synopses to cast and crew, to help you decide what to watch next.
+### 2. Clone Your Forked Repository
 
-[![Movie Details](https://fachryafrz.vercel.app/projects/popcorn-vision/movie-details.png)](https://popcornvision.vercel.app)
-_Explore detailed movie information, including synopsis, cast, crew, and more._
+```sh
+git clone https://github.com/{your-username}/popcorn-vision.git
 
-[![TV Show Details](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-details.png)](https://popcornvision.vercel.app)
-_Discover in-depth details about your favorite TV shows, including seasons, episodes, and more._
+cd popcorn-vision
 
-[![TV Show Episode Details](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-episode-details.png)](https://popcornvision.vercel.app)
-_Get episode-specific details for your favorite TV shows, including cast, plot, and more._
+npm install
 
-## 🔍 Advanced Search with Filters:
+cp .env.example .env
 
-Find exactly what you're looking for with our powerful search feature and filters. Narrow down your search based on various criteria such as release date, genre, streaming platform, TV show network, actor, crew, company, language, keyword, runtime, rating, rating count, TV show status, and TV show type.
+npm run dev
+```
 
-[![Search Page with Filters](https://fachryafrz.vercel.app/projects/popcorn-vision/search.png)](https://popcornvision.vercel.app)
-_Refine your search using multiple filters for a more personalized experience._
+## 🤝 Contributing
 
-## ⭐️ Reviews and Ratings:
+Contributions are welcome! Please fork the repository, make your changes, and submit a pull request. We'll review and merge your contributions as we continue to improve Popcorn Vision.
 
-Get the inside scoop with our insightful reviews and ratings. Discover what others think about a particular movie or TV show and find out if it's worth your time. Don't waste hours on mediocre content when we can guide you to the best!
+## 📜 License
 
-## 👥 Cast and Crew:
+This project is licensed under the [MIT License](LICENSE.md).
 
-Learn more about the talented individuals who bring your favorite movies and TV shows to life. From actors and actresses to directors and producers, we’ve got all the details you need.
+## 📬 Contact
 
-🎉 Visit our website at [Popcorn Vision](https://popcornvision.vercel.app) and discover a world of movies and TV shows like never before.
+For any questions or feedback, reach out at [fachrydwiafriza@gmail.com](mailto:fachrydwiafriza@gmail.com).
 
-Ready to immerse yourself in the magic of cinema? Let **Popcorn Vision** be your trusted companion. 🍿🔍📺
+## 📸 Screenshots
 
-## License
-
-This project is licensed under the [MIT License](LICENSE.md). Feel free to use, modify, and distribute the code.
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/movie-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-episode-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/search.png)](https://popcornvision.vercel.app)
