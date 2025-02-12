@@ -6,6 +6,11 @@ Popcorn Vision is a movie and TV show discovery platform that allows users to br
 
 ## ✨ Features
 
+- 🔑 Authentication with TMDB API:
+  - 🔑 Login
+  - 🌟 Save favorite movies and TV shows
+  - 🔖 Add movies and TV shows to watchlist
+  - 🌟 Rate movies and TV shows
 - 📚 Extensive film database
 - 📝 Detailed information:
   - 📝 Synopsis
@@ -27,11 +32,6 @@ Popcorn Vision is a movie and TV show discovery platform that allows users to br
   - 🌟 Rating count
   - 📺 TV show status
   - 📺 TV show type
-- 🔑 Authentication with TMDB API:
-  - 🔑 Login
-  - 🌟 Save favorite movies and TV shows
-  - 🔖 Add movies and TV shows to watchlist
-  - 🌟 Rate movies and TV shows
 
 ## 🛠️ Tech Stack
 
