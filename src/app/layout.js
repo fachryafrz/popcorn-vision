@@ -8,7 +8,6 @@ import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
-import { Analytics } from "@vercel/analytics/react";
 import Confetti from "@/components/Layout/Confetti";
 
 const roboto = Roboto({
@@ -114,7 +113,6 @@ export default async function RootLayout({ children }) {
         <Confetti />
 
         <GoogleAnalytics gaId={gtagId} />
-        <Analytics />
       </body>
     </html>
   );
