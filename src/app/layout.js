@@ -70,11 +70,11 @@ export const metadata = {
   },
   category: "entertainment",
   robots: {
-    index: true,
+    index: false,
     follow: false,
     noimageindex: true,
     googleBot: {
-      index: true,
+      index: false,
       follow: false,
       noimageindex: true,
     },
