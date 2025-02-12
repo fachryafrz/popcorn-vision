@@ -74,3 +74,9 @@ This project is licensed under the [MIT License](LICENSE.md).
 
 For any questions or feedback, reach out at [fachrydwiafriza@gmail.com](mailto:fachrydwiafriza@gmail.com).
 
+## 📸 Screenshots
+
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/movie-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-episode-details.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/search.png)](https://popcornvision.vercel.app)
