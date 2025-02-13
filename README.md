@@ -70,10 +70,6 @@ Contributions are welcome! Please fork the repository, make your changes, and su
 
 This project is licensed under the [MIT License](LICENSE.md).
 
-## 📬 Contact
-
-For any questions or feedback, reach out at [fachrydwiafriza@gmail.com](mailto:fachrydwiafriza@gmail.com).
-
 ## 📸 Screenshots
 
 [![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/movie-details.png)](https://popcornvision.vercel.app)
