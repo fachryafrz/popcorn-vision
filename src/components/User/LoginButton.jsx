@@ -9,24 +9,22 @@ export default function LoginButton() {
   const searchParams = useSearchParams().toString();
 
   return (
-    <Suspense>
-      <Link
-        href={
-          pathname !== `/login`
-            ? `/login?redirect_to=${pathname}${searchParams ? `?${searchParams}` : ``}`
-            : `/login`
-        }
-        prefetch={true}
-        className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
-      >
-        <IonIcon
-          icon={personCircleOutline}
-          style={{
-            fontSize: 36,
-          }}
-        />
-        {/* <span className={`hidden xl:block`}>Login</span> */}
-      </Link>
-    </Suspense>
+    <Link
+      href={
+        pathname !== `/login`
+          ? `/login?redirect_to=${pathname}${searchParams ? `?${searchParams}` : ``}`
+          : `/login`
+      }
+      prefetch={true}
+      className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
+    >
+      <IonIcon
+        icon={personCircleOutline}
+        style={{
+          fontSize: 36,
+        }}
+      />
+      {/* <span className={`hidden xl:block`}>Login</span> */}
+    </Link>
   );
 }

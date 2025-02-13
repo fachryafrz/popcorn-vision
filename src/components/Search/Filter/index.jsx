@@ -1,3 +1,5 @@
+"use client";
+
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
 import { useMemo } from "react";
@@ -18,20 +20,19 @@ import SearchSort from "../Sort";
 import RatingCount from "./RatingCount";
 import { useSearchParams } from "next/navigation";
 import { useToggleFilter } from "@/zustand/toggleFilter";
+import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
 
 export default function Filters({
   type,
-  inputStyles,
   genresData,
   minYear,
   maxYear,
   languagesData,
-  handleNotAvailable,
-  handleClearNotAvailable,
 }) {
   const isTvPage = type === "tv";
   const searchParams = useSearchParams();
   const isQueryParams = searchParams.get("query");
+  const { setFiltersNotAvailable } = useFiltersNotAvailable();
 
   const { toggleFilter, setToggleFilter } = useToggleFilter();
 
@@ -75,10 +76,86 @@ export default function Filters({
     };
   }, []);
 
+  // Handle React-Select Input Styles
+  const inputStyles = useMemo(() => {
+    return {
+      placeholder: (styles) => ({
+        ...styles,
+        fontSize: "14px",
+        whiteSpace: "nowrap",
+      }),
+      control: (styles) => ({
+        ...styles,
+        color: "#fff",
+        backgroundColor: "#131720",
+        borderWidth: "1px",
+        borderColor: "#79808B",
+        borderRadius: "1.5rem",
+        cursor: "text",
+      }),
+      input: (styles, { isDisabled }) => ({
+        ...styles,
+        color: "#fff",
+      }),
+      dropdownIndicator: (styles) => ({
+        ...styles,
+        display: "none",
+      }),
+      indicatorSeparator: (styles) => ({
+        ...styles,
+        display: "none",
+      }),
+      menu: (styles) => ({
+        ...styles,
+        backgroundColor: "#131720",
+      }),
+      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        return {
+          ...styles,
+          color: "#fff",
+          backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#131720",
+          cursor: "pointer",
+          "&:hover": {
+            backgroundColor: "rgba(255,255,255,0.05)",
+          },
+        };
+      },
+      multiValue: (styles) => ({
+        ...styles,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        borderRadius: "9999px",
+      }),
+      multiValueLabel: (styles) => ({
+        ...styles,
+        color: "#fff",
+      }),
+      multiValueRemove: (styles) => ({
+        ...styles,
+        color: "#fff",
+        borderRadius: "9999px",
+        "&:hover": {
+          backgroundColor: "rgba(255,255,255,0.1)",
+        },
+      }),
+      clearIndicator: (styles) => ({
+        ...styles,
+        display: "block",
+        "&:hover": {
+          color: "#fff",
+        },
+        cursor: "pointer",
+      }),
+      singleValue: (styles) => ({
+        ...styles,
+        color: "#fff",
+      }),
+    };
+  }, []);
+
   return (
     <aside
-      onMouseOver={() => isQueryParams && handleNotAvailable()}
-      onMouseLeave={() => handleClearNotAvailable()}
+      onMouseOver={() => isQueryParams && setFiltersNotAvailable(true)}
+      onMouseLeave={() => setFiltersNotAvailable(false)}
       className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all duration-300 lg:static lg:z-0 lg:max-h-none lg:max-w-[300px] ${
         toggleFilter ? `translate-x-0` : `-translate-x-[calc(100%+1.5rem)]`
       }`}
@@ -102,11 +179,7 @@ export default function Filters({
         {/* Sort */}
         <section className={`flex flex-col gap-1 sm:hidden`}>
           <span className={`font-medium`}>Sort</span>
-          <SearchSort
-            handleNotAvailable={handleNotAvailable}
-            handleClearNotAvailable={handleClearNotAvailable}
-            inputStyles={inputStyles}
-          />
+          <SearchSort />
         </section>
 
         {/* Release Date */}

@@ -213,9 +213,7 @@ export default function Navbar() {
 
         {/* Search bar */}
         <div className={`hidden sm:block`}>
-          <Suspense>
-            <SearchBar />
-          </Suspense>
+          <SearchBar />
         </div>
 
         {/* Movie & TV Shows Switcher */}

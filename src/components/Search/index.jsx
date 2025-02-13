@@ -1,10 +1,9 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SearchBar } from "@/components/Layout/SearchBar";
-import Filters from "@/components/Search/Filter";
 import SearchSort from "@/components/Search/Sort";
 import { closeCircle, optionsOutline } from "ionicons/icons";
 import FilmGrid from "../Film/Grid";
@@ -14,24 +13,17 @@ import useSWR from "swr";
 import { useLocation } from "@/zustand/location";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import pluralize from "pluralize";
+import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
 
-export default function Search({
-  type = "movie",
-  genresData,
-  languagesData,
-  minYear,
-  maxYear,
-}) {
+export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
   const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { filtersNotAvailable, setFiltersNotAvailable } =
+    useFiltersNotAvailable();
 
   const isQueryParams = searchParams.get("query");
   const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
-
-  // State
-  const [notAvailable, setNotAvailable] = useState("");
 
   // Global State
   const { location } = useLocation();
@@ -90,16 +82,6 @@ export default function Search({
   const totalSearchResults = data?.total_results;
   const totalSearchPages = data?.total_pages;
   const currentSearchPage = data?.page || 0;
-
-  // Handle not available
-  const handleNotAvailable = () => {
-    setNotAvailable(
-      "Filters cannot be applied, please clear the search input.",
-    );
-  };
-  const handleClearNotAvailable = () => {
-    setNotAvailable("");
-  };
 
   // Fetch more films
   const fetchMoreFilms = async () => {
@@ -197,24 +179,9 @@ export default function Search({
   }, []);
 
   return (
-    <div className={`flex lg:px-4 ${toggleFilter ? `gap-4` : ``}`}>
-      <h1 className="sr-only">
-        {!isTvPage ? `Search Movies` : `Search TV Shows`}
-      </h1>
-
-      <Filters
-        type={type}
-        inputStyles={inputStyles}
-        genresData={genresData}
-        minYear={minYear}
-        maxYear={maxYear}
-        languagesData={languagesData}
-        handleNotAvailable={handleNotAvailable}
-        handleClearNotAvailable={handleClearNotAvailable}
-      />
-
+    <>
       <div
-        className={`flex w-full flex-col gap-2 px-4 transition-all duration-300 @container lg:px-0 ${!toggleFilter ? `lg:-ml-[300px]` : ``}`}
+        className={`flex w-full flex-col gap-2 px-4 transition-all duration-300 @container lg:px-0 ${!toggleFilter ? `lg:-ml-[calc(300px+1rem)]` : ``}`}
       >
         {/* Options */}
         <section
@@ -256,7 +223,7 @@ export default function Search({
               onClick={() =>
                 toggleFilter ? setToggleFilter(false) : setToggleFilter(true)
               }
-              onMouseLeave={() => handleClearNotAvailable()}
+              onMouseLeave={() => setFiltersNotAvailable(false)}
               className={`btn btn-secondary aspect-square rounded-full border-none bg-opacity-20 !px-0 lg:btn-sm hocus:bg-opacity-50 lg:h-[42px]`}
             >
               {/* <span className="hidden md:block">Filters</span> */}
@@ -279,11 +246,7 @@ export default function Search({
                 </span>
               )}
 
-              <SearchSort
-                handleNotAvailable={handleNotAvailable}
-                handleClearNotAvailable={handleClearNotAvailable}
-                inputStyles={inputStyles}
-              />
+              <SearchSort />
             </div>
           </div>
         </section>
@@ -306,14 +269,16 @@ export default function Search({
         )}
       </div>
 
-      {notAvailable && (
+      {filtersNotAvailable && (
         <div className="toast toast-start z-[60] min-w-0 max-w-full whitespace-normal">
           <div className="alert alert-error">
-            <span style={{ textWrap: `balance` }}>{notAvailable}</span>
+            <span style={{ textWrap: `balance` }}>
+              Filters cannot be applied, please click reset
+            </span>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
 

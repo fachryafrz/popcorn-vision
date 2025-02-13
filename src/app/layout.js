@@ -92,9 +92,7 @@ export default async function RootLayout({ children }) {
       <body className={`bg-base-100 text-white ${roboto.className}`}>
         <CookiesProvider>
           {/* Navbar */}
-          <Suspense>
-            <Navbar />
-          </Suspense>
+          <Navbar />
 
           {/* User Location */}
           <UserLocation ip={ip} />

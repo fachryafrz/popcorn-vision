@@ -2,6 +2,7 @@ import Search from "@/components/Search/";
 import { fetchData } from "@/lib/fetch";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import dayjs from "dayjs";
+import Filters from "@/components/Search/Filter";
 
 export async function generateMetadata() {
   return {
@@ -69,12 +70,26 @@ export default async function page() {
   const maxYear = dayjs(fetchMaxYear.release_date).year();
 
   return (
-    <Search
-      type={`movie`}
-      genresData={movieGenresData}
-      languagesData={languagesData}
-      minYear={minYear}
-      maxYear={maxYear}
-    />
+    <div className={`flex lg:px-4 gap-4`}>
+      <h1 className="sr-only">
+        Search Movies
+      </h1>
+
+      <Filters
+        type={'movie'}
+        genresData={movieGenresData}
+        minYear={minYear}
+        maxYear={maxYear}
+        languagesData={languagesData}
+      />
+
+      <Search
+        type={`movie`}
+        genresData={movieGenresData}
+        languagesData={languagesData}
+        minYear={minYear}
+        maxYear={maxYear}
+      />
+    </div>
   );
 }

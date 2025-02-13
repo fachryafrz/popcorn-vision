@@ -1,4 +1,5 @@
 import Search from "@/components/Search/";
+import Filters from "@/components/Search/Filter";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import { fetchData } from "@/lib/fetch";
 import React, { Suspense } from "react";
@@ -66,14 +67,25 @@ export default async function page() {
   const maxYear = new Date(fetchMaxYear[0].first_air_date).getFullYear();
 
   return (
-    <Suspense>
+    <div className={`flex lg:px-4 gap-4`}>
+      <h1 className="sr-only">
+        Search TV Shows
+      </h1>
+
+      <Filters
+        type={'tv'}
+        genresData={tvGenresData}
+        minYear={minYear}
+        maxYear={maxYear}
+        languagesData={languagesData}
+      />
+
       <Search
         type={`tv`}
         genresData={tvGenresData}
         languagesData={languagesData}
         minYear={minYear}
         maxYear={maxYear > defaultMaxYear ? defaultMaxYear : maxYear}
-      />
-    </Suspense>
+      /></div>
   );
 }
