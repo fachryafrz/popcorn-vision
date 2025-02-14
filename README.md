@@ -1,6 +1,6 @@
 [![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/home.png)](https://popcornvision.vercel.app)
 
-# Popcorn Vision - Movie & TV Show Discovery
+# Popcorn Vision – Movie & TV Show Discovery
 
 Popcorn Vision is a movie and TV show discovery platform that allows users to browse and search for movies and TV shows, authenticate with TMDB API, and save their favorite movies and TV shows.
 
