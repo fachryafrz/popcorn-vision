@@ -2,7 +2,7 @@
 
 ## Usage and Forking Rules
 
-In addition to the above standards, contributors must adhere to the following rules regarding the usage and forking of this project:
+Contributors must adhere to the following rules regarding the usage and forking of this project:
 
 - You are allowed to **fork** and modify this project as needed.
 - You are **not allowed** to claim this project as your own, either directly or indirectly.
