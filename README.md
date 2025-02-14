@@ -4,7 +4,7 @@
 
 Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. With seamless authentication, users can log in to save their favorite movies and TV shows, create a personalized watchlist, and even rate titles.
 
-## 🔍 How It Works:
+## 🔍 How It Works
 
 - **Authenticate Securely** – Log in to access personalized features.
 - **Explore a Vast Database** – Discover movies and TV shows with rich details.
@@ -13,7 +13,7 @@ Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offer
 - **Find Content Easily** – Use advanced search filters to discover the perfect title.
 - **Watch Trailers & Track TV Shows** – Stay updated with seasons, episodes, and more.
 
-## ✨ Key Features:
+## ✨ Key Features
 
 - **Extensive Film & TV Database** – Access a vast collection of movies and TV shows.
 - **Save & Organize Content** – Add favorites and create a personalized watchlist.
@@ -53,12 +53,12 @@ Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offer
 
 ## 🛠️ Tech Stack
 
-- **Next.js 14** - React-based framework
-- **React** - JavaScript framework
-- **DaisyUI** - Tailwind CSS component library
-- **Tailwind CSS** - Styling and UI design
-- **Material UI** - UI component library
-- **TMDB API** - The biggest movie database
+- **Next.js 14** – React-based framework
+- **React** – JavaScript framework
+- **DaisyUI** – Tailwind CSS component library
+- **Tailwind CSS** – Styling and UI design
+- **Material UI** – UI component library
+- **TMDB API** – The biggest movie database
 
 ## 🚀 Fork the repository
 
