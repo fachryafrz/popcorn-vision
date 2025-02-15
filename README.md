@@ -2,7 +2,7 @@
 
 # Popcorn Vision – Movie & TV Show Discovery
 
-Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. With seamless authentication, users can log in to save their favorite movies and TV shows, create a personalized watchlist, and even rate titles.
+Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. With seamless authentication, you can log in to save your favorite movies and TV shows, create a personalized watchlist, and even rate titles.
 
 ## 🔍 How It Works
 
