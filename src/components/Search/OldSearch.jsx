@@ -87,7 +87,7 @@ export default function Search() {
       setFilms(response.data.results);
       setTotalSearchPages(response.data.total_pages);
     } catch (error) {
-      console.log(`Errornya search:`, error);
+      console.error(`Errornya search:`, error);
     }
   };
 
@@ -232,7 +232,7 @@ export default function Search() {
 
       setFilms((prevMovies) => [...prevMovies, ...response.data.results]);
     } catch (error) {
-      console.log(`Error fetching more movies:`, error);
+      console.error(`Error fetching more movies:`, error);
     }
   };
 

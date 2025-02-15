@@ -52,7 +52,7 @@ export default function Recommendation({
       setCurrentSearchPage(response.page);
       setTotalSearchPages(response.total_pages);
     } catch (error) {
-      console.log(`Error fetching more films:`, error);
+      console.error(`Error fetching more films:`, error);
     }
   };
 

@@ -19,7 +19,7 @@ export function findLocation(setLocation, setError) {
       });
     },
     (error) => {
-      console.log(error);
+      console.error(error);
       if (error.code === error.PERMISSION_DENIED) {
         setError(
           "Location access denied by user. Please enable location access in your browser settings and try again.",

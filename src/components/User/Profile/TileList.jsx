@@ -130,7 +130,7 @@ export default function TileList({ title, section, type = "movie", user }) {
       setFilmsData(updatedFilms);
       setCurrentSearchPage(response.page);
     } catch (error) {
-      console.log(`Error fetching more films:`, error);
+      console.error(`Error fetching more films:`, error);
     }
   };
 
