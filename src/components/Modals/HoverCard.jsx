@@ -120,7 +120,7 @@ export default function HoverCard() {
           onMouseLeave={handleMouseLeave}
           className={`pointer-events-auto absolute z-[60] hidden w-[300px] overflow-hidden rounded-2xl bg-base-100 shadow-[rgba(0,0,0,0.5)_0px_2px_16px_0px] xl:block`}
           style={{
-            top: position.top + window.scrollY + (position.height / 2 - 200),
+            top: position.top,
             left:
               Number(position.left.toFixed(0)) > 16
                 ? !sameWidthAsWindow
@@ -222,7 +222,11 @@ export default function HoverCard() {
                   <div className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm">
                     <span
                       className="before-content !text-white"
-                      data-before-content={pluralize("Season", filmDetails.number_of_seasons, true)}
+                      data-before-content={pluralize(
+                        "Season",
+                        filmDetails.number_of_seasons,
+                        true,
+                      )}
                     />
                   </div>
                 )}

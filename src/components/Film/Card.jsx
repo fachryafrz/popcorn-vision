@@ -9,7 +9,7 @@ import moment from "moment";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
-  const { handleMouseOver } = useHoverCard();
+  const { handleMouseOver, setPosition } = useHoverCard();
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -20,7 +20,26 @@ export default function FilmCard({ film, isTvPage }) {
     <Link
       id="film-card"
       href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-      onMouseEnter={(e) => handleMouseOver(e, film)}
+      onMouseEnter={(e) => {
+        const initialPosition = e.target.getBoundingClientRect();
+
+        const position = {
+          x: initialPosition.x,
+          y: initialPosition.y,
+          width: initialPosition.width,
+          height: initialPosition.height,
+          top:
+            initialPosition.top +
+            window.scrollY +
+            (initialPosition.height / 2 - 200),
+          right: initialPosition.right,
+          bottom: initialPosition.bottom,
+          left: initialPosition.left,
+        };
+
+        setPosition(position);
+        handleMouseOver(film);
+      }}
       onMouseLeave={() => handleMouseOver.clear()}
       prefetch={true}
       className={`relative`}

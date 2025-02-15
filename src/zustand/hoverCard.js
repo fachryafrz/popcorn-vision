@@ -2,10 +2,9 @@ import debounce from "debounce";
 import { create } from "zustand";
 
 export const useHoverCard = create((set) => {
-  const debounced = debounce((e, film) => {
+  const debounced = debounce((film) => {
     set({ card: film });
-    set({ position: e.target.getBoundingClientRect() });
-  }, 400);
+  }, 800);
 
   return {
     card: null,
