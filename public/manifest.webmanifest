@@ -1,7 +1,7 @@
 {
   "name": "Popcorn Vision",
   "short_name": "Popcorn Vision",
-  "description": "Your go-to website for movies and TV shows info. Explore a wide range of titles, with detailed synopses, reviews, cast and crew info. Convenient search functionality makes finding your favorites a breeze. Dive into the world of movies and television with Popcorn Vision.",
+  "description": "Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. You can save your favorite movies and TV shows, create a personalized watchlist, and even rate titles.",
   "icons": [
     {
       "src": "/maskable/maskable_icon_x512.png",
