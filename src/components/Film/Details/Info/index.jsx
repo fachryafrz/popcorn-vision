@@ -88,6 +88,21 @@ export default function FilmInfo({
     ? providersArray.find((item) => item[0] === countryCode)
     : null;
 
+  const includeTMDB = providersIDArray && [
+    providersIDArray[0],
+    {
+      ...providersIDArray[1],
+      tmdb: [
+        {
+          logo_path: "/provider/tmdb.png",
+          provider_id: 0,
+          provider_name: "The Movie Database",
+          url: `https://www.themoviedb.org/${!isTvPage ? "movie" : "tv"}/${film.id}`,
+        },
+      ],
+    },
+  ];
+
   // Confetti
   const calculateDaysLeft = () => {
     dayjs.extend(duration);
@@ -282,7 +297,7 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          {providersIDArray && (
+          {includeTMDB && (
             <section
               id={`Film Providers`}
               className="flex flex-col justify-center gap-1 md:justify-start"
@@ -292,7 +307,7 @@ export default function FilmInfo({
               </span>
 
               <WatchProvider
-                providersIDArray={providersIDArray}
+                providersIDArray={includeTMDB}
                 isTvPage={isTvPage}
               />
             </section>

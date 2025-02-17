@@ -198,7 +198,7 @@ function HomeFilm({
         <picture>
           <source
             media="(min-width: 640px)"
-            srcset={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
+            srcSet={`https://image.tmdb.org/t/p/w1280${filmBackdrop}`}
           />
           <img
             src={`https://image.tmdb.org/t/p/w500${filmPoster}`}

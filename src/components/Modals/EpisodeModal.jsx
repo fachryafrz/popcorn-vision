@@ -178,11 +178,11 @@ export function EpisodeModal({ film }) {
                 <picture>
                   <source
                     media="(min-width: 768px) and (max-width: 1279px)"
-                    srcset={`https://image.tmdb.org/t/p/w780${episode.still_path}`}
+                    srcSet={`https://image.tmdb.org/t/p/w780${episode.still_path}`}
                   />
                   <source
                     media="(min-width: 1280px)"
-                    srcset={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
+                    srcSet={`https://image.tmdb.org/t/p/w1280${episode.still_path}`}
                   />
                   <img
                     src={`https://image.tmdb.org/t/p/w500${episode.still_path}`}

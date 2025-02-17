@@ -40,7 +40,7 @@ export default function EpisodeCard({
         <picture>
           <source
             media="(min-width: 1024px)"
-            srcset={`https://image.tmdb.org/t/p/w780${imgPath}`}
+            srcSet={`https://image.tmdb.org/t/p/w780${imgPath}`}
           />
           <img
             src={`https://image.tmdb.org/t/p/w500${imgPath}`}

@@ -170,7 +170,7 @@ export function CollectionItem({
               >
                 <div className="rating rating-xs">
                   <input
-                    class="mask mask-star-2 pointer-events-none bg-primary-yellow"
+                    className="mask mask-star-2 pointer-events-none bg-primary-yellow"
                     checked={true}
                     disabled
                   />
@@ -297,7 +297,7 @@ function FilmSeason({ film, item, index }) {
               >
                 <div className="rating rating-xs">
                   <input
-                    class="mask mask-star-2 pointer-events-none bg-primary-yellow"
+                    className="mask mask-star-2 pointer-events-none bg-primary-yellow"
                     checked={true}
                     disabled
                   />
@@ -394,7 +394,7 @@ function FilmEpisodes({ id, season }) {
                           >
                             <div className="rating rating-xs">
                               <input
-                                class="mask mask-star-2 pointer-events-none bg-primary-yellow"
+                                className="mask mask-star-2 pointer-events-none bg-primary-yellow"
                                 checked={true}
                                 disabled
                               />

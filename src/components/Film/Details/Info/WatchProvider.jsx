@@ -1,7 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function WatchProvider({ providersIDArray, isTvPage }) {
+  const router = useRouter();
+
   const [providerCountry, providerTypes] = providersIDArray;
 
   const combinedProviders = [];
@@ -12,6 +15,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
         provider_id: provider.provider_id,
         provider_name: provider.provider_name,
         logo_path: provider.logo_path,
+        url: provider.url,
         type: type,
       };
     });
@@ -27,6 +31,10 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
     );
   if (providerTypes.ads)
     combinedProviders.push(...formatProviderType(providerTypes.ads, "Ads"));
+  if (providerTypes.tmdb)
+    combinedProviders.push(
+      ...formatProviderType(providerTypes.tmdb, "Provider"),
+    );
 
   const groupedProviders = combinedProviders.reduce((acc, provider) => {
     const existingProvider = acc.find(
@@ -44,6 +52,20 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
     return acc;
   }, []);
 
+  const handleOpenWindow = async (url) => {
+    // NOTE: Already tried the documentPictureInPicture with iframe but it doesn't work, because most of the website refuse to be embeded in iframe
+
+    const width =
+      screen.availWidth < 1024 ? 600 : screen.availWidth < 1280 ? 1024 : 1200;
+    const height = screen.availHeight < 600 ? screen.availHeight : 600;
+    const left = (screen.availWidth - width) / 2;
+    const top = (screen.availHeight - height) / 2;
+
+    const windowFeatures = `left=${left},top=${top},width=${width},height=${height},noreferrer,noopener`;
+
+    window.open(url, "gameStoreWindow", windowFeatures);
+  };
+
   return (
     <div className={`flex flex-wrap gap-2`}>
       {groupedProviders.map(
@@ -52,20 +74,32 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
             <>
               {/* NOTE: The delay causing component jump */}
 
-              <Link
+              <button
                 key={item.provider_id}
-                href={`${
-                  !isTvPage ? `/search` : `/tv/search`
-                }?watch_providers=${item.provider_id}`}
+                onClick={() => {
+                  if (item.url) {
+                    handleOpenWindow(item.url);
+                  } else {
+                    router.push(
+                      `${
+                        !isTvPage ? `/search` : `/tv/search`
+                      }?watch_providers=${item.provider_id}`,
+                    );
+                  }
+                }}
                 prefetch={true}
                 className={`flex`}
               >
                 <div
-                  class="tooltip tooltip-bottom before:!hidden before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden md:before:!inline-block"
+                  className="tooltip tooltip-bottom before:!hidden before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden md:before:!inline-block"
                   data-tip={`${item.provider_name} (${item.type})`}
                 >
                   <img
-                    src={`https://image.tmdb.org/t/p/w500${item.logo_path}`}
+                    src={
+                      item.url
+                        ? item.logo_path
+                        : `https://image.tmdb.org/t/p/w500${item.logo_path}`
+                    }
                     draggable={false}
                     alt=""
                     aria-hidden
@@ -78,7 +112,7 @@ export default function WatchProvider({ providersIDArray, isTvPage }) {
                     {item.provider_name} ({item.type})
                   </span>
                 </div>
-              </Link>
+              </button>
             </>
           ),
       )}

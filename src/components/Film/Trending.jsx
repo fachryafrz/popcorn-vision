@@ -53,7 +53,7 @@ export default async function Trending({ film, genres, type }) {
             <picture>
               <source
                 media="(min-width: 768px)"
-                srcset={`https://image.tmdb.org/t/p/w780${film.poster_path}`}
+                srcSet={`https://image.tmdb.org/t/p/w780${film.poster_path}`}
               />
               <img
                 src={`https://image.tmdb.org/t/p/w500${film.poster_path}`}

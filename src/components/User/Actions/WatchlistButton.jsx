@@ -63,7 +63,7 @@ export default function WatchlistButton({
       className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm ${className}`}
     >
       {isLoading ? (
-        <span class="loading loading-spinner w-[20px]"></span>
+        <span className="loading loading-spinner w-[20px]"></span>
       ) : (
         <IonIcon
           icon={!isAdded ? bookmarkOutline : bookmark}

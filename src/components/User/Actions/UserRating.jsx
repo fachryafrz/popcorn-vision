@@ -155,7 +155,7 @@ export default function UserRating({
           )}
 
           {isLoading && (
-            <span class="loading loading-spinner text-white"></span>
+            <span className="loading loading-spinner text-white"></span>
           )}
         </div>
       </div>
