@@ -12,10 +12,8 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import packageJson from "../../../package.json";
-
-// JSON import
-import footer from "../../json/footer.json";
 import { POPCORN } from "@/lib/constants";
+import dayjs from "dayjs";
 
 export default function Footer() {
   const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;
@@ -31,15 +29,56 @@ export default function Footer() {
 
   // Router variables
   const isTvPage = pathname.startsWith("/tv");
+  const today = dayjs();
+  const tomorrow = today.add(1, "days").format("YYYY-MM-DD");
+  const endOfNextYear = today.add(1, "year").endOf("year").format("YYYY-MM-DD");
 
-  const [installPrompt, setInstallPrompt] = useState();
-
-  useEffect(() => {
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      setInstallPrompt(event);
-    });
-  }, []);
+  const footerLinks = [
+    {
+      title: "Authentication",
+      links: [
+        { name: "Login", href: "/login" },
+        { name: "Favorites", href: "/profile" },
+        { name: "Watchlist", href: "/profile" },
+        { name: "Rated Film", href: "/profile" },
+      ],
+    },
+    {
+      title: "Explore",
+      links: [
+        { name: "Movies", href: "/" },
+        { name: "TV Shows", href: "/tv" },
+        { name: "Top Rated Movies", href: "/search?sort_by=vote_count.desc" },
+        {
+          name: "Upcoming Movies",
+          href: `/search?release_date=${tomorrow}..${endOfNextYear}`,
+        },
+        { name: "Popular TV Shows", href: "/tv/search?sort_by=vote_count.desc" },
+      ],
+    },
+    {
+      title: "Search",
+      links: [
+        { name: "Filters", href: `${isTvPage ? "/tv" : ""}/search` },
+        {
+          name: "Genres",
+          href: `${isTvPage ? "/tv" : ""}/search?with_genres=16`,
+        },
+        {
+          name: "Actors",
+          href: `${isTvPage ? "/tv" : ""}/search?with_cast=6384`,
+        },
+        {
+          name: "Streaming",
+          href: `${isTvPage ? "/tv" : ""}/search?watch_providers=8`,
+        },
+        {
+          name: "Vote Count",
+          href: `${isTvPage ? "/tv" : ""}/search?vote_count=10000`,
+        },
+      ],
+    },
+  ];
 
   return (
     <footer className="mx-auto flex max-w-7xl flex-col px-4 pt-[2rem] text-white">
@@ -56,32 +95,19 @@ export default function Footer() {
         ></figcaption>
       </div>
       <div className="grid grid-cols-1 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-4">
-        {footer.map((footer, i) => (
-          <div key={footer.id}>
-            <h2 className="mb-2 text-xl font-bold xl:mb-4">{footer.section}</h2>
+        {footerLinks.map((footer) => (
+          <div key={footer.title}>
+            <h2 className="mb-2 text-xl font-bold xl:mb-4">{footer.title}</h2>
             <ul>
               {footer.links &&
                 footer.links.map((link) => (
                   <li key={link.name}>
-                    {link.url === `/download` ? (
-                      <button
-                        onClick={async () => {
-                          await installPrompt.prompt();
-
-                          setInstallPrompt(null);
-                        }}
-                        className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
-                      >
-                        {link.name}
-                      </button>
-                    ) : (
-                      <Link
-                        href={link.url}
-                        className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
-                      >
-                        {link.name}
-                      </Link>
-                    )}
+                    <Link
+                      href={link.href}
+                      className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
+                    >
+                      {link.name}
+                    </Link>
                   </li>
                 ))}
             </ul>
