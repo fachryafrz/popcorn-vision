@@ -88,20 +88,17 @@ export default function FilmInfo({
     ? providersArray.find((item) => item[0] === countryCode)
     : null;
 
-  const includeTMDB = providersIDArray && [
-    providersIDArray[0],
-    {
-      ...providersIDArray[1],
-      tmdb: [
-        {
-          logo_path: "/provider/tmdb.png",
-          provider_id: 0,
-          provider_name: "The Movie Database",
-          url: `https://www.themoviedb.org/${!isTvPage ? "movie" : "tv"}/${film.id}`,
-        },
-      ],
-    },
-  ];
+  const handleOpenWindow = async (url) => {
+    const width =
+      screen.availWidth < 1024 ? 600 : screen.availWidth < 1280 ? 1024 : 1200;
+    const height = screen.availHeight < 600 ? screen.availHeight : 600;
+    const left = (screen.availWidth - width) / 2;
+    const top = (screen.availHeight - height) / 2;
+
+    const windowFeatures = `left=${left},top=${top},width=${width},height=${height},noreferrer,noopener`;
+
+    window.open(url, "gameStoreWindow", windowFeatures);
+  };
 
   // Confetti
   const calculateDaysLeft = () => {
@@ -297,21 +294,54 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Film Watch Provider */}
-          {includeTMDB && (
-            <section
-              id={`Film Providers`}
-              className="flex flex-col justify-center gap-1 md:justify-start"
-            >
-              <span aria-hidden className={`text-sm italic text-gray-400`}>
-                Where to watch?
-              </span>
+          <section
+            id={`Film Providers`}
+            className="mb-2 flex flex-col justify-center gap-1 md:justify-start"
+          >
+            <span aria-hidden className={`text-sm italic text-gray-400`}>
+              Where to watch?
+            </span>
 
-              <WatchProvider
-                providersIDArray={includeTMDB}
-                isTvPage={isTvPage}
-              />
-            </section>
-          )}
+            <div className={`flex flex-wrap gap-2`}>
+              {providersIDArray && (
+                <WatchProvider
+                  film={film}
+                  providersIDArray={providersIDArray}
+                  isTvPage={isTvPage}
+                />
+              )}
+
+              {/* TMDB as Provider */}
+              <button
+                onClick={() =>
+                  handleOpenWindow(
+                    `https://www.themoviedb.org/${!isTvPage ? "movie" : "tv"}/${film.id}/watch`,
+                  )
+                }
+                prefetch={true}
+                className={`flex`}
+              >
+                <div
+                  className="tooltip tooltip-bottom before:!hidden before:!rounded-full before:!bg-black before:!bg-opacity-80 before:!p-4 before:!py-2 before:!font-semibold before:!backdrop-blur after:!hidden md:before:!inline-block"
+                  data-tip={`The Movie Database`}
+                >
+                  <img
+                    src={`/provider/tmdb.png`}
+                    draggable={false}
+                    alt=""
+                    aria-hidden
+                    role="presentation"
+                    className={`aspect-square w-[40px] rounded-xl`}
+                    width={40}
+                    height={40}
+                  />
+                  <span aria-hidden className={`sr-only`}>
+                    The Movie Database
+                  </span>
+                </div>
+              </button>
+            </div>
+          </section>
 
           {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
           {/* Upcoming */}
