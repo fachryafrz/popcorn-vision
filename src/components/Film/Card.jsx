@@ -41,7 +41,7 @@ export default function FilmCard({ film, isTvPage }) {
         handleMouseOver(film);
       }}
       onMouseLeave={() => handleMouseOver.clear()}
-      prefetch={true}
+      prefetch={false}
       className={`relative`}
     >
       <h3 className={`sr-only`}>

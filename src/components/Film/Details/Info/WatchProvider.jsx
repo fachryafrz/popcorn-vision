@@ -61,7 +61,7 @@ export default function WatchProvider({ film, providersIDArray, isTvPage }) {
                 href={`${
                   !isTvPage ? `/search` : `/tv/search`
                 }?watch_providers=${item.provider_id}`}
-                prefetch={true}
+                prefetch={false}
                 className={`flex`}
               >
                 <div
