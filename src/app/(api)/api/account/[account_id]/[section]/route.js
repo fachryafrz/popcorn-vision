@@ -25,8 +25,8 @@ export async function POST(req, ctx) {
     );
 
     return NextResponse.json({ [section]: favorite || watchlist }, { status });
-  } catch ({ response }) {
-    const { data, status } = response;
+  } catch (error) {
+    const { data, status } = error?.response;
 
     return NextResponse.json(data, { status });
   }

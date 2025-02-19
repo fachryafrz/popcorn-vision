@@ -28,8 +28,8 @@ export async function GET(request, context) {
     );
 
     return NextResponse.json(data, { status });
-  } catch ({ response }) {
-    const { data, status } = response;
+  } catch (error) {
+    const { data, status } = error?.response;
 
     return NextResponse.json(data, { status });
   }

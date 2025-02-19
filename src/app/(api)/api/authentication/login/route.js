@@ -30,8 +30,8 @@ export async function POST(req) {
     });
 
     return NextResponse.json(data, { status });
-  } catch ({ response }) {
-    const { data, status } = response;
+  } catch (error) {
+    const { data, status } = error?.response;
 
     return NextResponse.json(data, { status });
   }
