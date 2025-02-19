@@ -31,6 +31,7 @@ import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 import { useEffect } from "react";
 import { useConfetti } from "@/zustand/confetti";
+import { handleOpenWindow } from "@/lib/openWindow";
 
 export default function FilmInfo({
   film,
@@ -87,18 +88,6 @@ export default function FilmInfo({
   const providersIDArray = location
     ? providersArray.find((item) => item[0] === countryCode)
     : null;
-
-  const handleOpenWindow = async (url) => {
-    const width =
-      screen.availWidth < 1024 ? 600 : screen.availWidth < 1280 ? 1024 : 1200;
-    const height = screen.availHeight < 600 ? screen.availHeight : 600;
-    const left = (screen.availWidth - width) / 2;
-    const top = (screen.availHeight - height) / 2;
-
-    const windowFeatures = `left=${left},top=${top},width=${width},height=${height},noreferrer,noopener`;
-
-    window.open(url, "gameStoreWindow", windowFeatures);
-  };
 
   // Confetti
   const calculateDaysLeft = () => {

@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/hooks/auth";
 import { fetchData } from "@/lib/fetch";
+import { handleOpenWindow } from "@/lib/openWindow";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -22,14 +23,14 @@ export default function LoginForm() {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    await fetchData({
-      endpoint: `/api/authentication/token/new`,
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ request_token: REQUEST_TOKEN }) => {
-      router.push(
-        `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${window.location.href}`,
-      );
-    });
+    // await fetchData({
+    //   endpoint: `/api/authentication/token/new`,
+    //   baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    // }).then(({ request_token: REQUEST_TOKEN }) => {
+    //   router.push(
+    //     `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${window.location.href}`,
+    //   );
+    // });
   };
 
   const handleLogin = async (e) => {
@@ -113,14 +114,16 @@ export default function LoginForm() {
               className="input input-bordered input-md w-full rounded-full"
             />
             <div className="label">
-              <Link
-                href={`https://www.themoviedb.org/reset-password`}
-                target="_blank"
+              <button
+                type="button"
+                onClick={() =>
+                  handleOpenWindow(`https://www.themoviedb.org/reset-password`)
+                }
                 prefetch={false}
                 className="label-text-alt italic text-primary-blue"
               >
                 Forgot your password?
-              </Link>
+              </button>
             </div>
           </label>
 
@@ -137,7 +140,10 @@ export default function LoginForm() {
             </button>
 
             <button
-              onClick={handleRegister}
+              type="button"
+              onClick={() =>
+                handleOpenWindow(`https://www.themoviedb.org/signup`)
+              }
               className={`order-1 flex text-sm text-base-content underline hocus:no-underline`}
             >
               Doesn&apos;t have an account?

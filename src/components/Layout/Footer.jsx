@@ -14,6 +14,7 @@ import { usePathname } from "next/navigation";
 import packageJson from "../../../package.json";
 import { POPCORN } from "@/lib/constants";
 import dayjs from "dayjs";
+import { handleOpenWindow } from "@/lib/openWindow";
 
 export default function Footer() {
   const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;
@@ -124,10 +125,10 @@ export default function Footer() {
             explore more with us
           </p>
           <div className="flex flex-wrap gap-2">
-            <Link
-              href="https://github.com/fachryafrz/popcorn-vision"
-              target="_blank"
-              prefetch={false}
+            <button
+              onClick={() =>
+                handleOpenWindow(`https://github.com/fachryafrz/popcorn-vision`)
+              }
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -136,11 +137,9 @@ export default function Footer() {
                   fontSize: 20,
                 }}
               />
-            </Link>
-            <Link
-              href="https://twitter.com/fachryafrz"
-              target="_blank"
-              prefetch={false}
+            </button>
+            <button
+              onClick={() => handleOpenWindow(`https://twitter.com/fachryafrz`)}
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -149,11 +148,11 @@ export default function Footer() {
                   fontSize: 20,
                 }}
               />
-            </Link>
-            <Link
-              href="https://instagram.com/fachryafrz"
-              target="_blank"
-              prefetch={false}
+            </button>
+            <button
+              onClick={() =>
+                handleOpenWindow(`https://instagram.com/fachryafrz`)
+              }
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -162,11 +161,11 @@ export default function Footer() {
                   fontSize: 20,
                 }}
               />
-            </Link>
-            <Link
-              href="https://www.linkedin.com/in/fachryafrz"
-              target="_blank"
-              prefetch={false}
+            </button>
+            <button
+              onClick={() =>
+                handleOpenWindow(`https://www.linkedin.com/in/fachryafrz`)
+              }
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -175,7 +174,7 @@ export default function Footer() {
                   fontSize: 20,
                 }}
               />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -189,10 +188,8 @@ export default function Footer() {
         </span>
         <span className={`flex items-center justify-center gap-1`}>
           <span>Powered by</span>
-          <Link
-            href="https://themoviedb.org"
-            target="_blank"
-            prefetch={false}
+          <button
+            onClick={() => handleOpenWindow(`https://themoviedb.org`)}
             className={`h-6 p-1.5 pl-0 pt-2`}
           >
             <figure
@@ -204,7 +201,7 @@ export default function Footer() {
                 backgroundSize: `contain`,
               }}
             ></figure>
-          </Link>
+          </button>
         </span>
         {/* <span>{`v${packageJson.version}`}</span> */}
       </div>
