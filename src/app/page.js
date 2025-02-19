@@ -74,11 +74,11 @@ export default async function Home({ type = "movie" }) {
     providersFilms,
   ] = await Promise.all([
     // Genres
-    axios.get(`/genre/${type}/list`, {}).then(({ data }) => data.genres),
+    axios.get(`/genre/${type}/list`).then(({ data }) => data.genres),
 
     // Trending
     // getTrending({ type }).then(({ results }) => results),
-    axios.get(`/trending/${type}/week`, {}).then(({ data }) => data.results),
+    axios.get(`/trending/${type}/week`).then(({ data }) => data.results),
 
     // Now playing
     axios.get(`/discover/${type}`, {

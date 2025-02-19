@@ -41,9 +41,9 @@ export default async function page() {
     { results: fetchMinYear },
     { results: fetchMaxYear },
   ] = await Promise.all([
-    axios.get(`/genre/tv/list`, {}).then(({ data }) => data),
+    axios.get(`/genre/tv/list`).then(({ data }) => data),
 
-    axios.get(`/configuration/languages`, {}).then(({ data }) => data),
+    axios.get(`/configuration/languages`).then(({ data }) => data),
 
     axios.get(`/discover/tv`, {
       params: {

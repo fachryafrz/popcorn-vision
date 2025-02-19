@@ -10,7 +10,7 @@ export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
 
   const [film, images] = await Promise.all([
-    axios.get(`/${type}/${id}`, {}).then(({ data }) => data),
+    axios.get(`/${type}/${id}`).then(({ data }) => data),
 
     axios.get(`/${type}/${id}/images`, {
       params: {
@@ -80,7 +80,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
       },
     }).then(({ data }) => data),
 
-    axios.get(`/genre/${type}/list`, {}).then(({ data }) => data.genres),
+    axios.get(`/genre/${type}/list`).then(({ data }) => data.genres),
   ]);
 
   const {

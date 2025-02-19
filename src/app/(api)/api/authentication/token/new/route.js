@@ -6,7 +6,6 @@ export async function GET(request) {
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);
 
-
   try {
     const { data, status } = await axios.get(
       `${process.env.API_URL}/authentication/token/new`,
@@ -14,8 +13,8 @@ export async function GET(request) {
     );
 
     return NextResponse.json(data, { status });
-  } catch (error) {
-    const { data, status } = error.response
+  } catch ({ response }) {
+    const { data, status } = response;
 
     return NextResponse.json(data, { status });
   }

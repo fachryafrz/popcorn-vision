@@ -26,8 +26,8 @@ export async function POST(req, ctx) {
     );
 
     return NextResponse.json({ rated: { value: rating } }, { status });
-  } catch (error) {
-    const { data, status } = error.response;
+  } catch ({ response }) {
+    const { data, status } = response;
 
     return NextResponse.json(data, { status });
   }
@@ -49,8 +49,8 @@ export async function DELETE(req, ctx) {
     );
 
     return NextResponse.json({ rated: null }, { status });
-  } catch (error) {
-    const { data, status } = error.response;
+  } catch ({ response }) {
+    const { data, status } = response;
 
     return NextResponse.json(data, { status });
   }

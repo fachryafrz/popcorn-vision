@@ -19,8 +19,8 @@ export async function GET(req, ctx) {
     );
 
     return NextResponse.json(data, { status });
-  } catch (error) {
-    const { data, status } = error.response;
+  } catch ({ response }) {
+    const { data, status } = response;
 
     return NextResponse.json(data, { status });
   }
