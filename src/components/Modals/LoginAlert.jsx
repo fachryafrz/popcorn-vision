@@ -20,7 +20,7 @@ export default function LoginAlert() {
         <p className="py-4 text-center">This action requires you to login.</p>
         <Link
           href={`/login?redirect_to=${pathname}${searchParams ? `?${searchParams}` : ``}`}
-           
+          prefetch={true}
           className={`btn btn-primary w-full rounded-full`}
         >
           Proceed to Login

@@ -50,7 +50,7 @@ export default function HomeSlider({ films, genres, filmData }) {
             <li key={film.id}>
               <Link
                 href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-                 
+                prefetch={true}
               >
                 <h3>
                   {film.title ?? film.name} (

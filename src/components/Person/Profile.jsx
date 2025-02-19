@@ -53,7 +53,7 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
       <div className={`flex flex-col gap-4 p-4 pb-6`}>
         <Link
           href={`/search?${isActing ? `with_cast` : `with_crew`}=${person.id}`}
-           
+          prefetch={true}
         >
           <h2
             className={`text-center text-2xl font-bold md:mb-2 md:text-3xl`}

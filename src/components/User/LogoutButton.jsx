@@ -69,7 +69,7 @@ export default function LogoutButton({ user }) {
         className="menu dropdown-content rounded-box z-50 mt-3 max-w-52 bg-base-200 bg-opacity-90 p-2 font-medium shadow backdrop-blur"
       >
         <li>
-          <Link href={`/profile`}  >
+          <Link href={`/profile`} prefetch={true}>
             <IonIcon
               icon={personOutline}
               style={{

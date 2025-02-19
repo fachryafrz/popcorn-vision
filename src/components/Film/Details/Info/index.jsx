@@ -254,7 +254,7 @@ export default function FilmInfo({
                             ? `/search?with_genres=${item.id}`
                             : `/tv/search?with_genres=${item.id}`
                         }
-                         
+                        prefetch={true}
                         className={`btn btn-ghost rounded-full bg-secondary bg-opacity-20 backdrop-blur`}
                       >
                         <p>{item.name}</p>
@@ -280,7 +280,7 @@ export default function FilmInfo({
                       <li key={person.id}>
                         <Link
                           href={`${pathname}/?person=${person.id}`}
-                           
+                          prefetch={true}
                         >
                           <p>{person.name}</p>
                         </Link>
@@ -318,7 +318,7 @@ export default function FilmInfo({
                     `https://www.themoviedb.org/${!isTvPage ? "movie" : "tv"}/${film.id}/watch`,
                   )
                 }
-                 
+                prefetch={true}
                 className={`flex`}
               >
                 <div

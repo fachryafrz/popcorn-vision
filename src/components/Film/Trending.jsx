@@ -18,7 +18,7 @@ export default async function Trending({ film, genres, type }) {
     <div className="mx-auto max-w-7xl md:px-4">
       <Link
         href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-         
+        prefetch={true}
         className="sr-only"
       >
         <h2>{`Trending ${!isTvPage ? `Movie` : `TV Shows`}: ${film.title ?? film.name} (${moment(

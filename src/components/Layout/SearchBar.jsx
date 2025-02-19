@@ -228,7 +228,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           >
             <Link
               href={!isTvPage ? `/search` : `/tv/search`}
-               
+              prefetch={true}
               className={`flex`}
             >
               <IonIcon
@@ -296,7 +296,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
                 <li key={film.id}>
                   <Link
                     href={`${isTvPage ? "/tv" : ""}/search?query=${(film.title ?? film.name).toLowerCase().replace(/\s+/g, "+")}`}
-                     
+                    prefetch={true}
                     className={`flex items-center gap-4 rounded-lg p-2 py-1 ${
                       index === highlightedIndex ? `bg-white bg-opacity-10` : ``
                     }`}
