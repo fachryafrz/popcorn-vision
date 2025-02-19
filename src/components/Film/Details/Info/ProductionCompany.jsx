@@ -10,7 +10,7 @@ export default function ProductionCompany({ item, i, isTvPage }) {
             ? `/search?with_companies=${item.id}`
             : `/tv/search?with_companies=${item.id}`
         }
-        prefetch={true}
+         
       >
         {item.logo_path ? (
           <div

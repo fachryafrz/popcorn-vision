@@ -37,7 +37,7 @@ export default function FilmSlider({
           {viewAll !== "" && (
             <Link
               href={viewAll}
-              prefetch={true}
+               
               className={`mb-[0.25rem] text-sm font-medium text-primary-blue`}
             >
               View all

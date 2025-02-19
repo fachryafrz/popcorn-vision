@@ -41,7 +41,7 @@ export default function CastsList({ credits }) {
                 <li key={actor.id}>
                   <Link
                     href={`${pathname}/?person=${actor.id}`}
-                    prefetch={true}
+                     
                   >
                     <h3 className="sr-only">
                       {`${actor.name} (${actor.character})`}
