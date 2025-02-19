@@ -11,7 +11,7 @@ export async function GET(req, ctx) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/trending/${type}/${time_window}`,
+      `${process.env.API_URL}/trending/${type}/${time_window}`,
       {
         params: {
           api_key: process.env.API_KEY,

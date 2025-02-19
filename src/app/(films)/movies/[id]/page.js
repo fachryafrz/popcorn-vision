@@ -4,18 +4,15 @@ import { releaseStatus } from "@/lib/releaseStatus";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
-import axios from "axios";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
 
   const [film, images] = await Promise.all([
-    axios.get(`/api/${type}/${id}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ data }) => data),
+    axios.get(`/${type}/${id}`, {}).then(({ data }) => data),
 
-    axios.get(`/api/${type}/${id}/images`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/${type}/${id}/images`, {
       params: {
         include_image_language: "en",
       },
@@ -70,24 +67,20 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const isTvPage = type === "tv";
 
   const [film, images, genres] = await Promise.all([
-    axios.get(`/api/${type}/${id}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/${type}/${id}`, {
       params: {
         append_to_response:
           "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
       },
     }).then(({ data }) => data),
 
-    axios.get(`/api/${type}/${id}/images`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/${type}/${id}/images`, {
       params: {
         include_image_language: "en",
       },
     }).then(({ data }) => data),
 
-    axios.get(`/api/genre/${type}/list`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ data }) => data.genres),
+    axios.get(`/genre/${type}/list`, {}).then(({ data }) => data.genres),
   ]);
 
   const {
@@ -106,8 +99,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let collection;
 
   if (film.belongs_to_collection) {
-    collection = await axios.get(`/api/collection/${film.belongs_to_collection.id}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    collection = await axios.get(`/collection/${film.belongs_to_collection.id}`, {
+
     }).then(({ data }) => data)
   }
 

@@ -20,7 +20,7 @@ export async function GET(req) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/search/multi`,
+      `${process.env.API_URL}/search/multi`,
       { params },
     );
 

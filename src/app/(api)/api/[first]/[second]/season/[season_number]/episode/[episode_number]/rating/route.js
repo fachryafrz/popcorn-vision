@@ -14,7 +14,7 @@ export async function POST(req, ctx) {
 
   try {
     const { data, status } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/${first}/${second}/season/${season_number}/episode/${episode_number}/rating`,
+      `${process.env.API_URL}/${first}/${second}/season/${season_number}/episode/${episode_number}/rating`,
       { value: rating },
       {
         params: {
@@ -38,7 +38,7 @@ export async function DELETE(req, ctx) {
 
   try {
     const { data, status } = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/${film_type}/${film_id}/season/${season_number}/episode/${episode_number}/rating`,
+      `${process.env.API_URL}/${film_type}/${film_id}/season/${season_number}/episode/${episode_number}/rating`,
       {
         params: {
           api_key: process.env.API_KEY,

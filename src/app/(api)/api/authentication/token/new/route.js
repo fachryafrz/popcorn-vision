@@ -9,7 +9,7 @@ export async function GET(request) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/token/new`,
+      `${process.env.API_URL}/authentication/token/new`,
       { params: { api_key: process.env.API_KEY } },
     );
 

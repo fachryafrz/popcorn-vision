@@ -15,7 +15,7 @@ export async function GET(request, context) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/account/${account_id}/${section}/${film_type}`,
+      `${process.env.API_URL}/account/${account_id}/${section}/${film_type}`,
       {
         params: {
           api_key: process.env.API_KEY,

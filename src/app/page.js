@@ -10,7 +10,7 @@ import SkeletonSlider from "@/components/Skeleton/main/Slider";
 import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
 import Script from "next/script";
-import axios from "axios";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata() {
   return {
@@ -74,15 +74,14 @@ export default async function Home({ type = "movie" }) {
     providersFilms,
   ] = await Promise.all([
     // Genres
-    axios.get(`/api/genre/${type}/list`, { baseURL: process.env.NEXT_PUBLIC_APP_URL }).then(({ data }) => data.genres),
+    axios.get(`/genre/${type}/list`, {}).then(({ data }) => data.genres),
 
     // Trending
     // getTrending({ type }).then(({ results }) => results),
-    axios.get(`/api/trending/${type}/week`, { baseURL: process.env.NEXT_PUBLIC_APP_URL }).then(({ data }) => data.results),
+    axios.get(`/trending/${type}/week`, {}).then(({ data }) => data.results),
 
     // Now playing
-    axios.get(`/api/discover/${type}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/discover/${type}`, {
       params: !isTvPage
         ? {
           ...defaultParams,
@@ -98,8 +97,7 @@ export default async function Home({ type = "movie" }) {
     }).then(({ data }) => data),
 
     // Upcoming
-    axios.get(`/api/discover/${type}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/discover/${type}`, {
       params: !isTvPage
         ? {
           ...defaultParams,
@@ -115,8 +113,7 @@ export default async function Home({ type = "movie" }) {
     }).then(({ data }) => data),
 
     // Top Rated
-    axios.get(`/api/discover/${type}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/discover/${type}`, {
       params: {
         ...defaultParams,
         // without_genres: 18,
@@ -127,8 +124,7 @@ export default async function Home({ type = "movie" }) {
     // Companies Films
     Promise.all(
       companies.slice(0, 3).map((company) =>
-        axios.get(`/api/discover/${type}`, {
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        axios.get(`/discover/${type}`, {
           params: {
             ...defaultParams,
             with_companies: company.id,
@@ -140,8 +136,7 @@ export default async function Home({ type = "movie" }) {
     // Providers Films
     Promise.all(
       providers.slice(0, 3).map((provider) =>
-        axios.get(`/api/discover/${type}`, {
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        axios.get(`/discover/${type}`, {
           params: {
             ...defaultParams,
             with_networks: provider.id,
@@ -155,8 +150,7 @@ export default async function Home({ type = "movie" }) {
     // Home Slider Films
     Promise.all(
       trending.slice(0, 5).map((film) =>
-        axios.get(`/api/${type}/${film.id}`, {
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        axios.get(`/${type}/${film.id}`, {
           params: {
             append_to_response: "images",
           },
@@ -167,8 +161,7 @@ export default async function Home({ type = "movie" }) {
     // Genres Films
     Promise.all(
       genres.slice(0, 3).map((genre) =>
-        axios.get(`/api/discover/${type}`, {
-          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+        axios.get(`/discover/${type}`, {
           params: {
             ...defaultParams,
             with_genres: genre.id,

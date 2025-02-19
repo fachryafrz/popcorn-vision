@@ -19,7 +19,7 @@ export async function GET() {
     }
 
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/account`,
+      `${process.env.API_URL}/account`,
       {
         params: {
           api_key: process.env.API_KEY,

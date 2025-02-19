@@ -10,7 +10,7 @@ export async function POST(request) {
 
   try {
     const { data, status } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/token/validate_with_login`,
+      `${process.env.API_URL}/authentication/token/validate_with_login`,
       {
         username,
         password,

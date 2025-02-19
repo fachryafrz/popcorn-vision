@@ -13,7 +13,7 @@ export async function POST(req) {
 
   try {
     const { data, status } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/session/new`,
+      `${process.env.API_URL}/authentication/session/new`,
       {
         request_token: request_token,
       },

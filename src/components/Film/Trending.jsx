@@ -4,14 +4,13 @@ import FilmSummary from "./Summary";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
-import axios from "axios";
+import { axios } from "@/lib/axios";
 
 export default async function Trending({ film, genres, type }) {
   const isTvPage = type === "tv";
 
   const filmDetails = await axios
-    .get(`/api/${!isTvPage ? `movie` : `tv`}/${film.id}`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    .get(`/${!isTvPage ? `movie` : `tv`}/${film.id}`, {
       params: { append_to_response: `images` },
     })
     .then(({ data }) => data);

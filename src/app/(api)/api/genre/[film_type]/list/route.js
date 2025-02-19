@@ -10,7 +10,7 @@ export async function GET(req, ctx) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/genre/${film_type}/list`,
+      `${process.env.API_URL}/genre/${film_type}/list`,
       {
         params: {
           api_key: process.env.API_KEY,

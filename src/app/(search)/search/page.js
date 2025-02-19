@@ -2,7 +2,7 @@ import Search from "@/components/Search/";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import dayjs from "dayjs";
 import Filters from "@/components/Search/Filter";
-import axios from "axios";
+import { axios } from "@/lib/axios";
 
 export async function generateMetadata() {
   return {
@@ -46,23 +46,17 @@ export default async function page() {
       results: [fetchMaxYear],
     },
   ] = await Promise.all([
-    axios.get(`/api/genre/movie/list`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ data }) => data),
+    axios.get(`/genre/movie/list`, {}).then(({ data }) => data),
 
-    axios.get(`/api/configuration/languages`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ data }) => data),
+    axios.get(`/configuration/languages`, {}).then(({ data }) => data),
 
-    axios.get(`/api/discover/movie`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/discover/movie`, {
       params: {
         sort_by: "primary_release_date.asc",
       },
     }).then(({ data }) => data),
 
-    axios.get(`/api/discover/movie`, {
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    axios.get(`/discover/movie`, {
       params: {
         sort_by: "primary_release_date.desc",
       },

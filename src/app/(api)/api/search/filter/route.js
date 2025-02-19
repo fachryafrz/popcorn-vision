@@ -79,7 +79,7 @@ export async function GET(req) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/discover/${media_type}`,
+      `${process.env.API_URL}/discover/${media_type}`,
       {
         params: params,
       },

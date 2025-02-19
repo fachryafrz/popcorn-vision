@@ -12,7 +12,7 @@ export async function DELETE() {
 
   try {
     const { data, status } = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/session`,
+      `${process.env.API_URL}/authentication/session`,
       {
         params: {
           api_key: process.env.API_KEY,

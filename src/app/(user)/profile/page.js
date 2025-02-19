@@ -12,7 +12,7 @@ export async function generateMetadata() {
   const cookiesStore = cookies();
 
   const { data: user } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/account`,
+    `${process.env.API_URL}/account`,
     {
       params: {
         api_key: process.env.API_KEY,
@@ -55,7 +55,7 @@ export default async function page() {
   const cookiesStore = cookies();
 
   const { data: user } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/account`,
+    `${process.env.API_URL}/account`,
     {
       params: {
         api_key: process.env.API_KEY,

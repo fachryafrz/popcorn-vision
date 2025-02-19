@@ -14,7 +14,7 @@ export async function POST(req, ctx) {
 
   try {
     const { data, status } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/account/${account_id}/${section}`,
+      `${process.env.API_URL}/account/${account_id}/${section}`,
       { media_type, media_id, favorite, watchlist },
       {
         params: {
