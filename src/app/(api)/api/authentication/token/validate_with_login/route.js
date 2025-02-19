@@ -2,8 +2,8 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "../../../config/limiter";
 
-export async function POST(request) {
-  const { username, password, request_token } = await request.json();
+export async function POST(req) {
+  const { username, password, request_token } = await req.json();
 
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);

@@ -2,7 +2,7 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "../../../config/limiter";
 
-export async function GET(request) {
+export async function GET(req) {
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);
 
