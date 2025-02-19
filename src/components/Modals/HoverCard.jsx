@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { fetchData } from "@/lib/fetch";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { AnimatePresence, motion as m } from "framer-motion";
@@ -48,13 +47,16 @@ export default function HoverCard() {
   };
 
   const fetchFilmDetails = async () => {
-    const res = await fetchData({
-      endpoint: `/${isItTvPage(`movie`, `tv`)}/${card.id}`,
-      queryParams: {
-        append_to_response: "images, videos",
-      },
-    });
+    const res = await axios
+      .get(`/api/${isItTvPage(`movie`, `tv`)}/${card.id}`, {
+        params: {
+          append_to_response: "images, videos",
+        },
+      })
+      .then(({ data }) => data);
+
     const { images } = res;
+
     return {
       titleLogo: images.logos.find((img) => img.iso_639_1 === "en"),
       filmDetails: res,
@@ -84,7 +86,7 @@ export default function HoverCard() {
   const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${card?.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(
-    user && card ? swrKey : null,
+    user && card && window.innerWidth >= 1280 ? swrKey : null,
     fetcher,
     {
       revalidateIfStale: false,

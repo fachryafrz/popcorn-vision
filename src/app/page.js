@@ -4,13 +4,13 @@ import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
 import companies from "../json/companies.json";
 import providers from "../json/providers.json";
-import { fetchData, getTrending } from "@/lib/fetch";
 import moment from "moment";
 import { POPCORN } from "@/lib/constants";
 import SkeletonSlider from "@/components/Skeleton/main/Slider";
 import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
 import Script from "next/script";
+import axios from "axios";
 
 export async function generateMetadata() {
   return {
@@ -48,20 +48,20 @@ export default async function Home({ type = "movie" }) {
 
   const defaultParams = !isTvPage
     ? {
-        region: "US",
-        include_adult: false,
-        language: "en-US",
-        sort_by: "popularity.desc",
-        with_original_language: "en",
-      }
+      region: "US",
+      include_adult: false,
+      language: "en-US",
+      sort_by: "popularity.desc",
+      with_original_language: "en",
+    }
     : {
-        region: "US",
-        include_adult: false,
-        include_null_first_air_dates: false,
-        language: "en-US",
-        sort_by: "popularity.desc",
-        with_original_language: "en",
-      };
+      region: "US",
+      include_adult: false,
+      include_null_first_air_dates: false,
+      language: "en-US",
+      sort_by: "popularity.desc",
+      with_original_language: "en",
+    };
 
   // API Requests
   const [
@@ -74,80 +74,79 @@ export default async function Home({ type = "movie" }) {
     providersFilms,
   ] = await Promise.all([
     // Genres
-    fetchData({
-      endpoint: `/genre/${type}/list`,
-    }).then(({ genres }) => genres),
+    axios.get(`/api/genre/${type}/list`, { baseURL: process.env.NEXT_PUBLIC_APP_URL }).then(({ data }) => data.genres),
 
     // Trending
-    getTrending({ type }).then(({ results }) => results),
+    // getTrending({ type }).then(({ results }) => results),
+    axios.get(`/api/trending/${type}/week`, { baseURL: process.env.NEXT_PUBLIC_APP_URL }).then(({ data }) => data.results),
 
     // Now playing
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: !isTvPage
+    axios.get(`/api/discover/${type}`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: !isTvPage
         ? {
-            ...defaultParams,
-            without_genres: 10749,
-            "primary_release_date.gte": monthsAgo,
-            "primary_release_date.lte": today,
-          }
+          ...defaultParams,
+          without_genres: 10749,
+          "primary_release_date.gte": monthsAgo,
+          "primary_release_date.lte": today,
+        }
         : {
-            ...defaultParams,
-            "first_air_date.gte": monthsAgo,
-            "first_air_date.lte": today,
-          },
-    }),
+          ...defaultParams,
+          "first_air_date.gte": monthsAgo,
+          "first_air_date.lte": today,
+        },
+    }).then(({ data }) => data),
 
     // Upcoming
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: !isTvPage
+    axios.get(`/api/discover/${type}`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: !isTvPage
         ? {
-            ...defaultParams,
-            without_genres: 10749,
-            "primary_release_date.gte": tomorrow,
-            "primary_release_date.lte": monthsLater,
-          }
+          ...defaultParams,
+          without_genres: 10749,
+          "primary_release_date.gte": tomorrow,
+          "primary_release_date.lte": monthsLater,
+        }
         : {
-            ...defaultParams,
-            "first_air_date.gte": tomorrow,
-            "first_air_date.lte": monthsLater,
-          },
-    }),
+          ...defaultParams,
+          "first_air_date.gte": tomorrow,
+          "first_air_date.lte": monthsLater,
+        },
+    }).then(({ data }) => data),
 
     // Top Rated
-    fetchData({
-      endpoint: `/discover/${type}`,
-      queryParams: {
+    axios.get(`/api/discover/${type}`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: {
         ...defaultParams,
         // without_genres: 18,
         sort_by: "vote_count.desc",
       },
-    }),
+    }).then(({ data }) => data),
 
     // Companies Films
     Promise.all(
       companies.slice(0, 3).map((company) =>
-        fetchData({
-          endpoint: `/discover/${type}`,
-          queryParams: {
+        axios.get(`/api/discover/${type}`, {
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+          params: {
             ...defaultParams,
             with_companies: company.id,
           },
-        }),
+        }).then(({ data }) => data),
       ),
     ),
 
     // Providers Films
     Promise.all(
       providers.slice(0, 3).map((provider) =>
-        fetchData({
-          endpoint: `/discover/${type}`,
-          queryParams: {
+        axios.get(`/api/discover/${type}`, {
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+          params: {
             ...defaultParams,
             with_networks: provider.id,
           },
-        }),
+        }).then(({ data }) => data),
       ),
     ),
   ]);
@@ -156,25 +155,25 @@ export default async function Home({ type = "movie" }) {
     // Home Slider Films
     Promise.all(
       trending.slice(0, 5).map((film) =>
-        fetchData({
-          endpoint: `/${type}/${film.id}`,
-          queryParams: {
+        axios.get(`/api/${type}/${film.id}`, {
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+          params: {
             append_to_response: "images",
           },
-        }),
+        }).then(({ data }) => data),
       ),
     ),
 
     // Genres Films
     Promise.all(
       genres.slice(0, 3).map((genre) =>
-        fetchData({
-          endpoint: `/discover/${type}`,
-          queryParams: {
+        axios.get(`/api/discover/${type}`, {
+          baseURL: process.env.NEXT_PUBLIC_APP_URL,
+          params: {
             ...defaultParams,
             with_genres: genre.id,
           },
-        }),
+        }).then(({ data }) => data),
       ),
     ),
   ]);
@@ -245,9 +244,8 @@ export default async function Home({ type = "movie" }) {
             films={topRated}
             title={`Top Rated`}
             genres={genres}
-            viewAll={`${
-              !isTvPage ? `/search` : `/tv/search`
-            }?sort_by=vote_count.desc`}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`
+              }?sort_by=vote_count.desc`}
           />
         </Suspense>
 
@@ -261,28 +259,27 @@ export default async function Home({ type = "movie" }) {
         {/* Companies / Providers */}
         {!isTvPage
           ? companies
-              .slice(0, 3)
-              .map((company, index) => (
-                <FilmSlider
-                  key={company.id}
-                  films={companiesFilms[index]}
-                  title={company.name}
-                  genres={genres}
-                  viewAll={`${
-                    !isTvPage ? `/search` : `/tv/search`
+            .slice(0, 3)
+            .map((company, index) => (
+              <FilmSlider
+                key={company.id}
+                films={companiesFilms[index]}
+                title={company.name}
+                genres={genres}
+                viewAll={`${!isTvPage ? `/search` : `/tv/search`
                   }?with_companies=${company.id}`}
-                />
-              ))
+              />
+            ))
           : providers
-              .slice(0, 3)
-              .map((provider, index) => (
-                <FilmSlider
-                  key={provider.id}
-                  films={providersFilms[index]}
-                  title={provider.name}
-                  genres={genres}
-                />
-              ))}
+            .slice(0, 3)
+            .map((provider, index) => (
+              <FilmSlider
+                key={provider.id}
+                films={providersFilms[index]}
+                title={provider.name}
+                genres={genres}
+              />
+            ))}
 
         {/* Trending */}
         <section
@@ -301,9 +298,8 @@ export default async function Home({ type = "movie" }) {
             films={genresFilms[index]}
             title={genre.name}
             genres={genres}
-            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
-              genre.id
-            }`}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${genre.id
+              }`}
           />
         ))}
 

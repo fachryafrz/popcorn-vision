@@ -2,8 +2,6 @@
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
 import SkeletonCollection from "@/components/Skeleton/Collection";
-import { TMDB_SESSION_ID } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";

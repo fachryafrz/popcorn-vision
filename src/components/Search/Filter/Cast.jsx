@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
 
 export default function Cast({ inputStyles }) {
   const router = useRouter();
@@ -19,21 +19,18 @@ export default function Cast({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/person`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
+      axios
+        .get(`/api/search/person`, { params: { query: inputValue } })
+        .then(({ data }) => {
+          const options = data.results.map((person) => ({
+            value: person.id,
+            label: person.name,
+          }));
+          const filteredOptions = options.filter((option) =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase()),
+          );
+          callback(filteredOptions);
+        });
     };
 
     // Hapus pemanggilan sebelumnya jika ada
@@ -66,9 +63,7 @@ export default function Cast({ inputStyles }) {
     if (searchParams.get("with_cast")) {
       const castParams = searchParams.get("with_cast").split(",");
       const fetchPromises = castParams.map((castId) => {
-        return fetchData({
-          endpoint: `/person/${castId}`,
-        });
+        return axios.get(`/api/person/${castId}`).then(({ data }) => data);
       });
 
       Promise.all(fetchPromises)

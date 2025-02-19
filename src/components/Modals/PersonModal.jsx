@@ -9,31 +9,36 @@ import PersonProfile from "../Person/Profile";
 import PersonDetails from "../Person/Details";
 import PersonWorks from "../Person/Works";
 import useSWR from "swr";
-import { fetchData } from "@/lib/fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
+import axios from "axios";
 
 export default function PersonModal() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const personParams = searchParams.get("person");
 
-  const getPersonModal = async () => {
-    const res = await fetchData({
-      endpoint: `/person/${personParams}`,
-      queryParams: {
-        language: "en",
-        append_to_response: `combined_credits,movie_credits,tv_credits,images`,
-      },
-    });
+  const getPersonModal = async (url) => {
+    const res = await axios
+      .get(url, {
+        params: {
+          language: "en",
+          append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+        },
+      })
+      .then(({ data }) => data);
 
     return res;
   };
 
-  const { data: person } = useSWR(`/person/${personParams}`, getPersonModal, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data: person } = useSWR(
+    `/api/person/${personParams}`,
+    getPersonModal,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
   const combinedCredits = person?.combined_credits;
   const movieCredits = person?.movie_credits;
@@ -248,9 +253,11 @@ function PersonModalSkeleton() {
                       className={`${loadingClass} h-5 w-full rounded-md`}
                     ></div>
                   ))}
-                  <div className={`${loadingClass} h-5 w-[80%] rounded-md`}></div>
+                  <div
+                    className={`${loadingClass} h-5 w-[80%] rounded-md`}
+                  ></div>
                 </div>
-  
+
                 <div className={`flex flex-col gap-1`}>
                   {[...Array(4)].map((_, index) => (
                     <div
@@ -258,9 +265,11 @@ function PersonModalSkeleton() {
                       className={`${loadingClass} h-5 w-full rounded-md`}
                     ></div>
                   ))}
-                  <div className={`${loadingClass} h-5 w-[50%] rounded-md`}></div>
+                  <div
+                    className={`${loadingClass} h-5 w-[50%] rounded-md`}
+                  ></div>
                 </div>
-  
+
                 <div className={`flex flex-col gap-1`}>
                   {[...Array(4)].map((_, index) => (
                     <div
@@ -268,7 +277,9 @@ function PersonModalSkeleton() {
                       className={`${loadingClass} h-5 w-full rounded-md`}
                     ></div>
                   ))}
-                  <div className={`${loadingClass} h-5 w-[30%] rounded-md`}></div>
+                  <div
+                    className={`${loadingClass} h-5 w-[30%] rounded-md`}
+                  ></div>
                 </div>
               </div>
             </section>

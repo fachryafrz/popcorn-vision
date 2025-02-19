@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { fetchData } from "@/lib/fetch";
 import { handleOpenWindow } from "@/lib/openWindow";
 import axios from "axios";
 import Link from "next/link";
@@ -19,19 +18,6 @@ export default function LoginForm() {
   const [password, setPassword] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-
-    // await fetchData({
-    //   endpoint: `/api/authentication/token/new`,
-    //   baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    // }).then(({ request_token: REQUEST_TOKEN }) => {
-    //   router.push(
-    //     `https://www.themoviedb.org/authenticate/${REQUEST_TOKEN}?redirect_to=${window.location.href}`,
-    //   );
-    // });
-  };
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -23,7 +23,6 @@ import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
 import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
-import { fetchData } from "@/lib/fetch";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 
@@ -37,15 +36,9 @@ export function EpisodeModal({ film }) {
   const { user } = userStore();
   const { seasons } = film;
 
-  const getEpisodeModal = async (url) => {
-    const res = await fetchData({ endpoint: url });
-
-    return res;
-  };
-
   const { data: episode } = useSWR(
-    `/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
-    getEpisodeModal,
+    `/api/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
+    (url) => axios.get(url).then(({ data }) => data),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,

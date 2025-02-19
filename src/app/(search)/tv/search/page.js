@@ -1,8 +1,7 @@
 import Search from "@/components/Search/";
 import Filters from "@/components/Search/Filter";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
-import React, { Suspense } from "react";
+import axios from "axios";
 
 export async function generateMetadata() {
   return {
@@ -42,24 +41,27 @@ export default async function page() {
     { results: fetchMinYear },
     { results: fetchMaxYear },
   ] = await Promise.all([
-    fetchData({
-      endpoint: `/genre/tv/list`,
-    }),
-    fetchData({
-      endpoint: `/configuration/languages`,
-    }),
-    fetchData({
-      endpoint: `/discover/tv`,
-      queryParams: {
+    axios.get(`/api/genre/tv/list`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }).then(({ data }) => data),
+
+    axios.get(`/api/configuration/languages`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }).then(({ data }) => data),
+
+    axios.get(`/api/discover/tv`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: {
         sort_by: "first_air_date.asc",
       },
-    }),
-    fetchData({
-      endpoint: `/discover/tv`,
-      queryParams: {
+    }).then(({ data }) => data),
+
+    axios.get(`/api/discover/tv`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: {
         sort_by: "first_air_date.desc",
       },
-    }),
+    }).then(({ data }) => data),
   ]);
 
   const defaultMaxYear = new Date().getFullYear() + 1;

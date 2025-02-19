@@ -1,8 +1,8 @@
 import Search from "@/components/Search/";
-import { fetchData } from "@/lib/fetch";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import dayjs from "dayjs";
 import Filters from "@/components/Search/Filter";
+import axios from "axios";
 
 export async function generateMetadata() {
   return {
@@ -46,24 +46,27 @@ export default async function page() {
       results: [fetchMaxYear],
     },
   ] = await Promise.all([
-    fetchData({
-      endpoint: `/genre/movie/list`,
-    }),
-    fetchData({
-      endpoint: `/configuration/languages`,
-    }),
-    fetchData({
-      endpoint: `/discover/movie`,
-      queryParams: {
+    axios.get(`/api/genre/movie/list`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }).then(({ data }) => data),
+
+    axios.get(`/api/configuration/languages`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    }).then(({ data }) => data),
+
+    axios.get(`/api/discover/movie`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: {
         sort_by: "primary_release_date.asc",
       },
-    }),
-    fetchData({
-      endpoint: `/discover/movie`,
-      queryParams: {
+    }).then(({ data }) => data),
+
+    axios.get(`/api/discover/movie`, {
+      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+      params: {
         sort_by: "primary_release_date.desc",
       },
-    }),
+    }).then(({ data }) => data),
   ]);
 
   const minYear = dayjs(fetchMinYear.release_date).year();

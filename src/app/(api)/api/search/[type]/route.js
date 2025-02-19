@@ -2,26 +2,22 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "../../config/limiter";
 
-export async function GET(req) {
-  const url = new URL(req.url);
-  const { page, query } = Object.fromEntries(url.searchParams);
+export async function GET(req, ctx) {
+  const { type } = ctx.params;
+  const { searchParams } = new URL(req.url);
 
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);
 
-  const params = {
-    api_key: process.env.API_KEY,
-    include_adult: false,
-  };
-
-  // Applying filters
-  if (page) params.page = page;
-  if (query) params.query = query;
-
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/search/multi`,
-      { params },
+      `${process.env.NEXT_PUBLIC_API_URL}/search/${type}`,
+      {
+        params: {
+          api_key: process.env.API_KEY,
+          ...Object.fromEntries(searchParams),
+        },
+      },
     );
 
     return NextResponse.json(data, { status });

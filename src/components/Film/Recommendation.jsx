@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { fetchData } from "@/lib/fetch";
 import FilmGrid from "./Grid";
+import axios from "axios";
 
 export default function Recommendation({
   id,
@@ -36,13 +36,14 @@ export default function Recommendation({
       let nextPage = currentSearchPage + 1;
       let endpoint = !isFinished ? `recommendations` : `similar`;
 
-      const response = await fetchData({
-        endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`,
-        queryParams: {
-          language: "en-US",
-          page: nextPage,
-        },
-      });
+      const response = await axios
+        .get(`/api/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`, {
+          params: {
+            language: "en-US",
+            page: nextPage,
+          },
+        })
+        .then(({ data }) => data);
 
       const filteredFilms = response.results.filter((film) => {
         return !filmsData.some((existingFilm) => existingFilm.id === film.id);

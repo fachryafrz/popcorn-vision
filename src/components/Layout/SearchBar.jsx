@@ -6,9 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Typewriter from "typewriter-effect/dist/core";
-import { fetchData } from "@/lib/fetch";
 import debounce from "debounce";
 import useSWR from "swr";
+import axios from "axios";
 
 export function SearchBar({ placeholder = `Type / to search` }) {
   const router = useRouter();
@@ -50,11 +50,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   // SWR fetch
   const { data: autocompleteResults, isLoading } = useSWR(
     debouncedQuery ? `/api/search/query?query=${debouncedQuery}` : null,
-    (endpoint) =>
-      fetchData({
-        baseURL: process.env.NEXT_PUBLIC_APP_URL,
-        endpoint,
-      }),
+    (endpoint) => axios.get(endpoint).then(({ data }) => data),
   );
 
   // Autocomplete data
