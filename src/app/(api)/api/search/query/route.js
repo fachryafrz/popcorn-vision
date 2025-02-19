@@ -28,6 +28,6 @@ export async function GET(req) {
   } catch (error) {
     const { data, status } = error.response;
 
-    return new NextResponse.json(data, { status });
+    return NextResponse.json(data, { status });
   }
 }
