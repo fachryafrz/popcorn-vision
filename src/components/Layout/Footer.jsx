@@ -53,7 +53,10 @@ export default function Footer() {
           name: "Upcoming Movies",
           href: `/search?release_date=${tomorrow}..${endOfNextYear}`,
         },
-        { name: "Popular TV Shows", href: "/tv/search?sort_by=vote_count.desc" },
+        {
+          name: "Popular TV Shows",
+          href: "/tv/search?sort_by=vote_count.desc",
+        },
       ],
     },
     {
@@ -104,6 +107,7 @@ export default function Footer() {
                   <li key={link.name}>
                     <Link
                       href={link.href}
+                      prefetch={false}
                       className="max-w-fit font-light tracking-wider transition-all hocus:font-normal"
                     >
                       {link.name}
@@ -123,6 +127,7 @@ export default function Footer() {
             <Link
               href="https://github.com/fachryafrz/popcorn-vision"
               target="_blank"
+              prefetch={false}
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -135,6 +140,7 @@ export default function Footer() {
             <Link
               href="https://twitter.com/fachryafrz"
               target="_blank"
+              prefetch={false}
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -147,6 +153,7 @@ export default function Footer() {
             <Link
               href="https://instagram.com/fachryafrz"
               target="_blank"
+              prefetch={false}
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -159,6 +166,7 @@ export default function Footer() {
             <Link
               href="https://www.linkedin.com/in/fachryafrz"
               target="_blank"
+              prefetch={false}
               className="grid place-items-center rounded-[3rem] bg-secondary bg-opacity-10 p-3 text-primary-blue transition-all hocus:scale-110 hocus:rounded-[0.75rem] hocus:bg-opacity-25"
             >
               <IonIcon
@@ -184,6 +192,7 @@ export default function Footer() {
           <Link
             href="https://themoviedb.org"
             target="_blank"
+            prefetch={false}
             className={`h-6 p-1.5 pl-0 pt-2`}
           >
             <figure

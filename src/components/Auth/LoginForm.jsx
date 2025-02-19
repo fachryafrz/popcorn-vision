@@ -116,6 +116,7 @@ export default function LoginForm() {
               <Link
                 href={`https://www.themoviedb.org/reset-password`}
                 target="_blank"
+                prefetch={false}
                 className="label-text-alt italic text-primary-blue"
               >
                 Forgot your password?

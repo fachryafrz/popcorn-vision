@@ -135,6 +135,7 @@ export default function HoverCard() {
 
             <Link
               href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
+              prefetch={false}
             >
               <span className={`sr-only`}>{card.title ?? card.name}</span>
 
@@ -194,6 +195,7 @@ export default function HoverCard() {
                 {card.vote_average > 0 && (
                   <Link
                     href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
+                    prefetch={false}
                     className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <IonIcon icon={star} />
@@ -208,6 +210,7 @@ export default function HoverCard() {
                 {!isTvPage && filmRuntime > 0 && (
                   <Link
                     href={`/search?with_runtime=${filmDetails?.runtime}..300`}
+                    prefetch={false}
                     className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <span
@@ -239,6 +242,7 @@ export default function HoverCard() {
                         ? `/search?with_genres=${filmDetails?.genres[0]?.id}`
                         : `/tv/search?with_genres=${filmDetails?.genres[0]?.id}`
                     }
+                    prefetch={false}
                     className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <span
@@ -265,6 +269,7 @@ export default function HoverCard() {
                 <div className={`flex-1`}>
                   <Link
                     href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
+                    prefetch={false}
                     className={`btn btn-primary w-full rounded-full`}
                   >
                     <span>Details</span>
