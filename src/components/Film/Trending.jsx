@@ -1,18 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import FilmSummary from "./Summary";
-import { fetchData } from "@/lib/fetch";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
+import { axios } from "@/lib/axios";
 
 export default async function Trending({ film, genres, type }) {
   const isTvPage = type === "tv";
 
-  const filmDetails = await fetchData({
-    endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}`,
-    queryParams: { append_to_response: `images` },
-  });
+  const filmDetails = await axios
+    .get(`/${!isTvPage ? `movie` : `tv`}/${film.id}`, {
+      params: { append_to_response: `images` },
+    })
+    .then(({ data }) => data);
 
   return (
     <div className="mx-auto max-w-7xl md:px-4">

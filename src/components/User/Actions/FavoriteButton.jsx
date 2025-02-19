@@ -30,8 +30,7 @@ export default function FavoriteButton({
 
       const {
         data: { favorite },
-      } = await axios.post(`/api/account/favorite`, {
-        user_id: user.id,
+      } = await axios.post(`/api/account/${user.id}/favorite`, {
         media_type: !isTvPage ? "movie" : "tv",
         media_id: film.id,
         favorite: value,

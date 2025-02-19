@@ -18,7 +18,7 @@ export default async function middleware(request) {
   // if (isMoviesPage || isTvPage) {
   //   const id = pathname.split("-")[0].split("/").pop();
   //   const film = await fetch(
-  //     `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
+  //     `${process.env.API_URL}/${type}/${id}?api_key=${process.env.API_KEY}&append_to_response=credits,videos,reviews,watch/providers,recommendations,similar,release_dates`,
   //   ).then((res) => res.json());
   //   const correctPathname = `/${!isTvPage ? `movies` : `tv`}/${id}-${slug(film?.title ?? film?.name)}`;
 
@@ -49,7 +49,7 @@ export default async function middleware(request) {
     const redirect_to = searchParams.get("redirect_to");
 
     const session = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/session/new?api_key=${process.env.API_KEY}`,
+      `${process.env.API_URL}/authentication/session/new?api_key=${process.env.API_KEY}`,
       {
         method: "POST",
         headers: {

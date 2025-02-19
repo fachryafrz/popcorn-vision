@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
 
 export default function Company({ inputStyles }) {
   const router = useRouter();
@@ -22,21 +22,18 @@ export default function Company({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/company`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((company) => ({
-          value: company.id,
-          label: company.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
+      axios
+        .get(`/api/search/company`, { params: { query: inputValue } })
+        .then(({ data }) => {
+          const options = data.results.map((company) => ({
+            value: company.id,
+            label: company.name,
+          }));
+          const filteredOptions = options.filter((option) =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase()),
+          );
+          callback(filteredOptions);
+        });
     };
 
     // Hapus pemanggilan sebelumnya jika ada
@@ -69,9 +66,7 @@ export default function Company({ inputStyles }) {
     if (searchParams.get("with_companies")) {
       const companyParams = searchParams.get("with_companies").split(",");
       const fetchPromises = companyParams.map((companyId) => {
-        return fetchData({
-          endpoint: `/company/${companyId}`,
-        });
+        return axios.get(`/api/company/${companyId}`).then(({ data }) => data);
       });
 
       Promise.all(fetchPromises)

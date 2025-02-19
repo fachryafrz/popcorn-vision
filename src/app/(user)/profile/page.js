@@ -2,7 +2,6 @@ import React from "react";
 import User from "../../../components/User/Profile/User";
 import axios from "axios";
 import { cookies } from "next/headers";
-import { fetchData } from "@/lib/fetch";
 import TileList from "../../../components/User/Profile/TileList";
 import UserProfileSort from "@/components/User/Profile/Sort";
 import { POPCORN, POPCORN_APPLE, TMDB_SESSION_ID } from "@/lib/constants";
@@ -13,7 +12,7 @@ export async function generateMetadata() {
   const cookiesStore = cookies();
 
   const { data: user } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/account`,
+    `${process.env.API_URL}/account`,
     {
       params: {
         api_key: process.env.API_KEY,
@@ -56,7 +55,7 @@ export default async function page() {
   const cookiesStore = cookies();
 
   const { data: user } = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/account`,
+    `${process.env.API_URL}/account`,
     {
       params: {
         api_key: process.env.API_KEY,

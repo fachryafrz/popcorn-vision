@@ -8,12 +8,12 @@ import SearchSort from "@/components/Search/Sort";
 import { closeCircle, optionsOutline } from "ionicons/icons";
 import FilmGrid from "../Film/Grid";
 import numeral from "numeral";
-import { fetchData } from "@/lib/fetch";
 import useSWR from "swr";
 import { useLocation } from "@/zustand/location";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import pluralize from "pluralize";
 import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
+import axios from "axios";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -31,10 +31,8 @@ export default function Search({ type = "movie" }) {
 
   // SWR configuration
   const fetcher = async (url) => {
-    const response = await fetchData({
-      endpoint: url,
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    });
+    const response = await axios.get(url).then(({ data }) => data);
+
     return response;
   };
 

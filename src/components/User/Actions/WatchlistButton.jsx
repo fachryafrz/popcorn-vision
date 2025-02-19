@@ -30,8 +30,7 @@ export default function WatchlistButton({
 
       const {
         data: { watchlist },
-      } = await axios.post(`/api/account/watchlist`, {
-        user_id: user.id,
+      } = await axios.post(`/api/account/${user.id}/watchlist`, {
         media_type: !isTvPage ? "movie" : "tv",
         media_id: film.id,
         watchlist: value,

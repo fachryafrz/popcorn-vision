@@ -23,7 +23,6 @@ import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
 import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
-import { fetchData } from "@/lib/fetch";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 
@@ -37,15 +36,9 @@ export function EpisodeModal({ film }) {
   const { user } = userStore();
   const { seasons } = film;
 
-  const getEpisodeModal = async (url) => {
-    const res = await fetchData({ endpoint: url });
-
-    return res;
-  };
-
   const { data: episode } = useSWR(
-    `/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
-    getEpisodeModal,
+    `/api/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
+    (url) => axios.get(url).then(({ data }) => data),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,
@@ -114,13 +107,17 @@ export function EpisodeModal({ film }) {
     // document.getElementById(`episodeModal`).close();
   };
 
-  const swrKey = `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`;
+  const swrKey = `/api/tv/${film.id}/season/${episode?.season_number}/episode/${episode?.episode_number}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
-  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data: accountStates } = useSWR(
+    user && episode ? swrKey : null,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
   useEffect(() => {
     if (!seasonParams || !episodeParams) return;
@@ -262,10 +259,8 @@ export function EpisodeModal({ film }) {
                   <section id={`Episode Rating`} className={`max-w-fit`}>
                     <UserRating
                       swrKey={swrKey}
-                      film={film}
-                      url={`/api/tv/season/episode/rating`}
-                      season={episode.season_number}
-                      episode={episode.episode_number}
+                      url={`/api/tv/${film.id}/season/${episode.season_number}/episode/${episode.episode_number}/rating`}
+                      name={`rating-tv-${film.id}-season-${episode.season_number}-episode-${episode.episode_number}`}
                       rating={accountStates?.rated}
                       title={`What did you think of ${episode.name}?`}
                     />

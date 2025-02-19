@@ -6,7 +6,7 @@ export async function fetchData({
   endpoint,
   queryParams = {},
   method = "GET",
-  baseURL = process.env.NEXT_PUBLIC_API_URL,
+  baseURL = process.env.API_URL,
   body,
 }) {
   try {
@@ -36,7 +36,7 @@ export async function QueryData({
 }) {
   const res = await axios.request({
     method: method,
-    baseURL: process.env.NEXT_PUBLIC_API_URL,
+    baseURL: process.env.API_URL,
     url: endpoint,
     params: { api_key: process.env.API_KEY, ...queryParams },
     data: data,

@@ -2,14 +2,18 @@ import { TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { limiter, tokenExpired } from "../../config/limiter";
 
 export async function POST(req) {
   const { request_token } = await req.json();
   const cookiesStore = cookies();
 
+  const remainingToken = await limiter.removeTokens(1);
+  if (remainingToken < 0) return tokenExpired(req);
+
   try {
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/authentication/session/new`,
+    const { data, status } = await axios.post(
+      `${process.env.API_URL}/authentication/session/new`,
       {
         request_token: request_token,
       },
@@ -25,10 +29,8 @@ export async function POST(req) {
       maxAge: 60 * 60 * 24 * 365,
     });
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
+    return NextResponse.json(error.response.data, { status: error.response.status });
   }
 }

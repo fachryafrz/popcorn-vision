@@ -1,10 +1,10 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
+import axios from "axios";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
@@ -16,18 +16,14 @@ export default function Streaming({ inputStyles }) {
 
   const { location } = useLocation();
 
-  const fetcher = async () => {
-    const { results } = await fetchData({
-      endpoint: `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
-      queryParams: {
-        watch_region: location.country_code,
-      },
-    });
-    return results;
-  };
   const { data: providersData } = useSWR(
-    `/watch/providers/${!isTvPage ? "movie" : "tv"}`,
-    fetcher,
+    `/api/watch/providers/${!isTvPage ? "movie" : "tv"}`,
+    (url) =>
+      axios
+        .get(url, {
+          params: { watch_region: location.country_code },
+        })
+        .then(({ data }) => data.results),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,

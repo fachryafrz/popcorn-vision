@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import axios from "axios";
 
 export default function Crew({ inputStyles }) {
   const router = useRouter();
@@ -22,21 +22,18 @@ export default function Crew({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
-        endpoint: `/search/person`,
-        queryParams: {
-          query: inputValue,
-        },
-      }).then((res) => {
-        const options = res.results.map((person) => ({
-          value: person.id,
-          label: person.name,
-        }));
-        const filteredOptions = options.filter((option) =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-        callback(filteredOptions);
-      });
+      axios
+        .get(`/api/search/person`, { params: { query: inputValue } })
+        .then(({ data }) => {
+          const options = data.results.map((person) => ({
+            value: person.id,
+            label: person.name,
+          }));
+          const filteredOptions = options.filter((option) =>
+            option.label.toLowerCase().includes(inputValue.toLowerCase()),
+          );
+          callback(filteredOptions);
+        });
     };
 
     // Hapus pemanggilan sebelumnya jika ada
@@ -69,9 +66,7 @@ export default function Crew({ inputStyles }) {
     if (searchParams.get("with_crew")) {
       const crewParams = searchParams.get("with_crew").split(",");
       const fetchPromises = crewParams.map((crewId) => {
-        return fetchData({
-          endpoint: `/person/${crewId}`,
-        });
+        return axios.get(`/api/person/${crewId}`).then(({ data }) => data);
       });
 
       Promise.all(fetchPromises)

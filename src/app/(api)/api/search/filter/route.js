@@ -1,6 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 import { NextResponse } from "next/server";
+import { limiter, tokenExpired } from "../../config/limiter";
 
 export async function GET(req) {
   const url = new URL(req.url);
@@ -23,11 +24,14 @@ export async function GET(req) {
     vote_count,
     type,
     sort_by,
-    api_key,
   } = Object.fromEntries(url.searchParams);
 
+  const remainingToken = await limiter.removeTokens(1);
+  if (remainingToken < 0) return tokenExpired(req);
+
+
   const params = {
-    api_key: api_key,
+    api_key: process.env.API_KEY,
     include_adult: false,
   };
 
@@ -74,17 +78,15 @@ export async function GET(req) {
   if (sort_by) params.sort_by = sort_by;
 
   try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/discover/${media_type}`,
+    const { data, status } = await axios.get(
+      `${process.env.API_URL}/discover/${media_type}`,
       {
         params: params,
       },
     );
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
+    return NextResponse.json(error.response.data, { status: error.response.status });
   }
 }

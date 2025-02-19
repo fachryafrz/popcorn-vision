@@ -2,8 +2,6 @@
 
 import { CollectionItem } from "@/components/Film/Details/Collection";
 import SkeletonCollection from "@/components/Skeleton/Collection";
-import { TMDB_SESSION_ID } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -23,15 +21,15 @@ export default function TileList({ title, section, type = "movie", user }) {
     isLoading,
     mutate,
   } = useSWR(
-    `/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
+    `/api/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
     (endpoint) =>
-      fetchData({
-        endpoint,
-        queryParams: {
-          session_id: cookies.get(TMDB_SESSION_ID),
-          sort_by: "created_at.desc",
-        },
-      }),
+      axios
+        .get(endpoint, {
+          params: {
+            sort_by: "created_at.desc",
+          },
+        })
+        .then(({ data }) => data),
   );
 
   const { ref: loadMoreBtn, inView, entry } = useInView();

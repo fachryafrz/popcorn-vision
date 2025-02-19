@@ -1,18 +1,21 @@
+import { limiter, tokenExpired } from "@/app/(api)/api/config/limiter";
 import { TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function GET(request, context) {
-  const { id, section, type } = context.params;
+  const { account_id, section, film_type } = context.params;
   const url = new URL(request.url);
   const { language, page, sort_by } = Object.fromEntries(url.searchParams);
-
   const cookiesStore = cookies();
+
+  const remainingToken = await limiter.removeTokens(1);
+  if (remainingToken < 0) return tokenExpired(req);
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/account/${id}/${section}/${type}`,
+      `${process.env.API_URL}/account/${account_id}/${section}/${film_type}`,
       {
         params: {
           api_key: process.env.API_KEY,
@@ -26,8 +29,6 @@ export async function GET(request, context) {
 
     return NextResponse.json(data, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
+    return NextResponse.json(error.response.data, { status: error.response.status });
   }
 }

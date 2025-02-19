@@ -2,9 +2,13 @@ import { TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { limiter, tokenExpired } from "../config/limiter";
 
 export async function GET() {
   const cookiesStore = cookies();
+
+  const remainingToken = await limiter.removeTokens(1);
+  if (remainingToken < 0) return tokenExpired(req);
 
   try {
     if (!cookiesStore.has(TMDB_SESSION_ID)) {
@@ -14,8 +18,8 @@ export async function GET() {
       );
     }
 
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/account`,
+    const { data, status } = await axios.get(
+      `${process.env.API_URL}/account`,
       {
         params: {
           api_key: process.env.API_KEY,
@@ -24,10 +28,8 @@ export async function GET() {
       },
     );
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, {
-      status: error.response.status,
-    });
+    return NextResponse.json(error.response.data, { status: error.response.status });
   }
 }
