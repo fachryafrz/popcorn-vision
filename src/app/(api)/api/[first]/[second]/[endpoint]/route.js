@@ -22,8 +22,6 @@ export async function GET(req, ctx) {
 
     return NextResponse.json(data, { status });
   } catch (error) {
-    const { data, status } = error?.response;
-
-    return NextResponse.json(data, { status });
+    return NextResponse.json(error.response.data, { status: error.response.status });
   }
 }
