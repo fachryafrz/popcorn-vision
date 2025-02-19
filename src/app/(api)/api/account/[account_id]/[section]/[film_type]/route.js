@@ -3,23 +3,28 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
-  const url = new URL(req.url);
-  const { id, type } = Object.fromEntries(url.searchParams);
+export async function GET(request, context) {
+  const { account_id, section, film_type } = context.params;
+  const url = new URL(request.url);
+  const { language, page, sort_by } = Object.fromEntries(url.searchParams);
+
   const cookiesStore = cookies();
 
   try {
-    const { data } = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/${type}/${id}/account_states`,
+    const { data, status } = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/account/${account_id}/${section}/${film_type}`,
       {
         params: {
           api_key: process.env.API_KEY,
           session_id: cookiesStore.get(TMDB_SESSION_ID).value,
+          language,
+          page,
+          sort_by,
         },
       },
     );
 
-    return NextResponse.json(data, { status: 200 });
+    return NextResponse.json(data, { status });
   } catch (error) {
     return NextResponse.json(error.response.data, {
       status: error.response.status,

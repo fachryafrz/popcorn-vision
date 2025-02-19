@@ -38,35 +38,30 @@ export default function LoginForm() {
 
     setIsLoading(true);
 
-    await fetchData({
-      endpoint: `/api/authentication/token/new`,
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
-    }).then(({ request_token }) => {
-      const credentials = {
-        username,
-        password,
-        request_token,
-      };
+    await axios
+      .get(`/api/authentication/token/new`)
+      .then(({ data: { request_token } }) => {
+        const credentials = { username, password, request_token };
 
-      axios
-        .post("/api/authentication/token/validate_with_login", credentials)
-        .then(({ data: { request_token } }) => {
-          // Login
-          axios
-            .post(`/api/authentication/login`, { request_token })
-            .then(({ data }) => {
-              mutate();
-              setIsLoading(false);
-              router.push(redirectTo);
-            });
-        })
-        .catch(({ response: { data } }) => {
-          const { status_message } = data;
+        axios
+          .post("/api/authentication/token/validate_with_login", credentials)
+          .then(({ data: { request_token } }) => {
+            // Login
+            axios
+              .post(`/api/authentication/login`, { request_token })
+              .then(({ data }) => {
+                mutate();
+                setIsLoading(false);
+                router.push(redirectTo);
+              });
+          })
+          .catch(({ response: { data } }) => {
+            const { status_message } = data;
 
-          setError(status_message);
-          setIsLoading(false);
-        });
-    });
+            setError(status_message);
+            setIsLoading(false);
+          });
+      });
   };
 
   useEffect(() => {

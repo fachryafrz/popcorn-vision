@@ -8,15 +8,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSWRConfig } from "swr";
 
-export default function UserRating({
-  swrKey,
-  film,
-  rating,
-  url,
-  season,
-  episode,
-  title,
-}) {
+export default function UserRating({ swrKey, rating, url, title, name }) {
   const { user } = userStore();
   const { mutate } = useSWRConfig();
 
@@ -33,13 +25,7 @@ export default function UserRating({
 
       const {
         data: { rated },
-      } = await axios.post(url, {
-        type: !isTvPage ? "movie" : "tv",
-        id: film.id,
-        rating: value,
-        season_number: season,
-        episode_number: episode,
-      });
+      } = await axios.post(url, { rating: value });
 
       setIsLoading(false);
       setRatingState(rated);
@@ -59,14 +45,7 @@ export default function UserRating({
 
       const {
         data: { rated },
-      } = await axios.delete(url, {
-        params: {
-          id: film.id,
-          type: !isTvPage ? `movie` : `tv`,
-          season_number: season,
-          episode_number: episode,
-        },
-      });
+      } = await axios.delete(url);
 
       setIsLoading(false);
       setRatingState(rated);
@@ -102,11 +81,12 @@ export default function UserRating({
           <div className="rating rating-half">
             <input
               type="radio"
-              name={
-                !episode && !season
-                  ? `rating-${film.id}`
-                  : `rating-season-${season}-episode-${episode}`
-              }
+              // name={
+              //   !episode && !season
+              //     ? `rating-${film.id}`
+              //     : `rating-season-${season}-episode-${episode}`
+              // }
+              name={name}
               checked={!ratingState?.value}
               className="rating-hidden sr-only"
             />
@@ -117,11 +97,12 @@ export default function UserRating({
                 <input
                   key={starValue}
                   type="radio"
-                  name={
-                    !episode && !season
-                      ? `rating-${film.id}`
-                      : `rating-season-${season}-episode-${episode}`
-                  }
+                  // name={
+                  //   !episode && !season
+                  //     ? `rating-${film.id}`
+                  //     : `rating-season-${season}-episode-${episode}`
+                  // }
+                  name={name}
                   onMouseEnter={() => setHoverState({ value: starValue })}
                   onMouseLeave={() =>
                     setHoverState({ value: ratingState?.value })

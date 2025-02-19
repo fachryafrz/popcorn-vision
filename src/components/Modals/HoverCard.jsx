@@ -81,7 +81,7 @@ export default function HoverCard() {
     filmDetails?.release_date ?? filmDetails?.first_air_date,
   ).isAfter(moment());
 
-  const swrKey = `/api/account_states?id=${card?.id}&type=${!isTvPage ? "movie" : "tv"}`;
+  const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${card?.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(
     user && card ? swrKey : null,

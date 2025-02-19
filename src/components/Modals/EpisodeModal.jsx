@@ -114,13 +114,17 @@ export function EpisodeModal({ film }) {
     // document.getElementById(`episodeModal`).close();
   };
 
-  const swrKey = `/api/tv/season/episode/account_states?id=${film.id}&season_number=${episode?.season_number}&episode_number=${episode?.episode_number}`;
+  const swrKey = `/api/tv/${film.id}/season/${episode?.season_number}/episode/${episode?.episode_number}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
-  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data: accountStates } = useSWR(
+    user && episode ? swrKey : null,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
   useEffect(() => {
     if (!seasonParams || !episodeParams) return;
@@ -262,10 +266,8 @@ export function EpisodeModal({ film }) {
                   <section id={`Episode Rating`} className={`max-w-fit`}>
                     <UserRating
                       swrKey={swrKey}
-                      film={film}
-                      url={`/api/tv/season/episode/rating`}
-                      season={episode.season_number}
-                      episode={episode.episode_number}
+                      url={`/api/tv/${film.id}/season/${episode.season_number}/episode/${episode.episode_number}/rating`}
+                      name={`rating-tv-${film.id}-season-${episode.season_number}-episode-${episode.episode_number}`}
                       rating={accountStates?.rated}
                       title={`What did you think of ${episode.name}?`}
                     />

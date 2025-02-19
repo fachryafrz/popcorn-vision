@@ -107,7 +107,7 @@ export default function FilmInfo({
   };
 
   // Get account state using SWR
-  const swrKey = `/api/account_states?id=${film.id}&type=${!isTvPage ? "movie" : "tv"}`;
+  const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
     revalidateIfStale: false,
@@ -381,8 +381,8 @@ export default function FilmInfo({
             >
               <UserRating
                 swrKey={swrKey}
-                film={film}
-                url={`/api/account/rating`}
+                url={`/api/${!isTvPage ? `movie` : `tv`}/${film.id}/rating`}
+                name={`rating-${!isTvPage ? `movie` : `tv`}-${film.id}`}
                 rating={accountStates?.rated}
                 title={`What did you think of ${!isTvPage ? film.title : film.name}?`}
               />
