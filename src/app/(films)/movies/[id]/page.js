@@ -1,20 +1,19 @@
 import React from "react";
 import FilmBackdrop from "../../../../components/Film/Details/Backdrop";
-import { fetchData, getGenres } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
-import moment from "moment";
+import { fetchAPI } from "@/utils/api";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
 
   const [film, images] = await Promise.all([
-    fetchData({
+    fetchAPI({
       endpoint: `/${type}/${id}`,
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/${type}/${id}/images`,
       queryParams: {
         include_image_language: "en",
@@ -70,20 +69,22 @@ export default async function FilmDetail({ params, type = "movie" }) {
   const isTvPage = type === "tv";
 
   const [film, images, genres] = await Promise.all([
-    fetchData({
+    fetchAPI({
       endpoint: `/${type}/${id}`,
       queryParams: {
         append_to_response:
           "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
       },
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/${type}/${id}/images`,
       queryParams: {
         include_image_language: "en",
       },
     }),
-    getGenres({ type }),
+    fetchAPI({
+      endpoint: `/genre/${type}/list`,
+    }).then((res) => res.genres),
   ]);
 
   const {
@@ -102,7 +103,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let collection;
 
   if (film.belongs_to_collection) {
-    collection = await fetchData({
+    collection = await fetchAPI({
       endpoint: `/collection/${film.belongs_to_collection.id}`,
     });
   }
@@ -147,11 +148,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
   // Director / Creator
   !isTvPage
     ? director &&
-      directorsArray.push({ "@type": "Person", name: director.name })
+    directorsArray.push({ "@type": "Person", name: director.name })
     : film.created_by.length &&
-      film.created_by.map((creator) => {
-        directorsArray.push({ "@type": "Person", name: creator.name });
-      });
+    film.created_by.map((creator) => {
+      directorsArray.push({ "@type": "Person", name: creator.name });
+    });
 
   // Actors
   credits.cast.slice(0, DATA_COUNT).map((actor) => {

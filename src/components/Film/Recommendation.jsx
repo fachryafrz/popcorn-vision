@@ -2,8 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { fetchData } from "@/lib/fetch";
 import FilmGrid from "./Grid";
+import { fetchAPI } from "@/utils/api";
 
 export default function Recommendation({
   id,
@@ -36,7 +36,7 @@ export default function Recommendation({
       let nextPage = currentSearchPage + 1;
       let endpoint = !isFinished ? `recommendations` : `similar`;
 
-      const response = await fetchData({
+      const response = await fetchAPI({
         endpoint: `/${!isTvPage ? `movie` : `tv`}/${id}/${endpoint}`,
         queryParams: {
           language: "en-US",

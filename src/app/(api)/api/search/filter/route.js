@@ -27,7 +27,7 @@ export async function GET(req) {
   } = Object.fromEntries(url.searchParams);
 
   const params = {
-    api_key: api_key,
+    api_key: process.env.API_KEY,
     include_adult: false,
   };
 

@@ -3,10 +3,10 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   const url = new URL(req.url);
-  const { page, query, api_key } = Object.fromEntries(url.searchParams);
+  const { page, query } = Object.fromEntries(url.searchParams);
 
   const params = {
-    api_key: api_key,
+    api_key: process.env.API_KEY,
     include_adult: false,
   };
 

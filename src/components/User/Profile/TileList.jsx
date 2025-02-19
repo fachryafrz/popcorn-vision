@@ -3,7 +3,7 @@
 import { CollectionItem } from "@/components/Film/Details/Collection";
 import SkeletonCollection from "@/components/Skeleton/Collection";
 import { TMDB_SESSION_ID } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
+import { fetchAPI } from "@/utils/api";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -25,7 +25,7 @@ export default function TileList({ title, section, type = "movie", user }) {
   } = useSWR(
     `/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
     (endpoint) =>
-      fetchData({
+      fetchAPI({
         endpoint,
         queryParams: {
           session_id: cookies.get(TMDB_SESSION_ID),

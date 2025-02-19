@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { fetchAPI } from "@/utils/api";
 
 export default function Crew({ inputStyles }) {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Crew({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
+      fetchAPI({
         endpoint: `/search/person`,
         queryParams: {
           query: inputValue,
@@ -69,7 +69,7 @@ export default function Crew({ inputStyles }) {
     if (searchParams.get("with_crew")) {
       const crewParams = searchParams.get("with_crew").split(",");
       const fetchPromises = crewParams.map((crewId) => {
-        return fetchData({
+        return fetchAPI({
           endpoint: `/person/${crewId}`,
         });
       });

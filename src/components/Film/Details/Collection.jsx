@@ -16,7 +16,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Keyboard, Navigation } from "swiper/modules";
-import { fetchData, getEpisodes } from "@/lib/fetch";
+import { getEpisodes } from "@/lib/fetch";
 import EpisodeCard from "./TV/EpisodeCard";
 import { releaseStatus } from "@/lib/releaseStatus";
 import ImagePovi from "@/components/Film/ImagePovi";
@@ -31,6 +31,7 @@ import slug from "slug";
 import useSWR from "swr";
 import SkeletonEpisodeCard from "@/components/Skeleton/details/EpisodeCard";
 import pluralize from "pluralize";
+import { fetchAPI } from "@/utils/api";
 
 export default function FilmCollection({ film, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -339,7 +340,10 @@ function FilmSeason({ film, item, index }) {
 function FilmEpisodes({ id, season }) {
   const { data: episodes, isLoading } = useSWR(
     `/tv/${id}/season/${season}`,
-    () => getEpisodes({ id, season }),
+    () =>
+      fetchAPI({
+        endpoint: `/tv/${id}/season/${season}`,
+      }).then((res) => res.episodes),
     {
       revalidateIfStale: false,
       revalidateOnFocus: false,

@@ -23,9 +23,9 @@ import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
 import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
-import { fetchData } from "@/lib/fetch";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
+import { fetchAPI } from "@/utils/api";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
@@ -38,7 +38,7 @@ export function EpisodeModal({ film }) {
   const { seasons } = film;
 
   const getEpisodeModal = async (url) => {
-    const res = await fetchData({ endpoint: url });
+    const res = await fetchAPI({ endpoint: url });
 
     return res;
   };

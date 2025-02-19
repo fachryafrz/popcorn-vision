@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { fetchAPI } from "@/utils/api";
 
 export default function Company({ inputStyles }) {
   const router = useRouter();
@@ -22,7 +22,7 @@ export default function Company({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
+      fetchAPI({
         endpoint: `/search/company`,
         queryParams: {
           query: inputValue,
@@ -69,7 +69,7 @@ export default function Company({ inputStyles }) {
     if (searchParams.get("with_companies")) {
       const companyParams = searchParams.get("with_companies").split(",");
       const fetchPromises = companyParams.map((companyId) => {
-        return fetchData({
+        return fetchAPI({
           endpoint: `/company/${companyId}`,
         });
       });

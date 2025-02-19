@@ -292,14 +292,6 @@ export default function FilmInfo({
             </span>
 
             <div className={`flex flex-wrap gap-2`}>
-              {providersIDArray && (
-                <WatchProvider
-                  film={film}
-                  providersIDArray={providersIDArray}
-                  isTvPage={isTvPage}
-                />
-              )}
-
               {/* TMDB as Provider */}
               <button
                 onClick={() =>
@@ -329,6 +321,14 @@ export default function FilmInfo({
                   </span>
                 </div>
               </button>
+
+              {providersIDArray && (
+                <WatchProvider
+                  film={film}
+                  providersIDArray={providersIDArray}
+                  isTvPage={isTvPage}
+                />
+              )}
             </div>
           </section>
 

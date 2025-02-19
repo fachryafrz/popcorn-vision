@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { fetchAPI } from "@/utils/api";
 
 export default function Keyword({ inputStyles }) {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function Keyword({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
+      fetchAPI({
         endpoint: `/search/keyword`,
         queryParams: {
           query: inputValue,
@@ -66,7 +66,7 @@ export default function Keyword({ inputStyles }) {
     if (searchParams.get("with_keywords")) {
       const keywordParams = searchParams.get("with_keywords").split(",");
       const fetchPromises = keywordParams.map((keywordId) => {
-        return fetchData({
+        return fetchAPI({
           endpoint: `/keyword/${keywordId}`,
         });
       });

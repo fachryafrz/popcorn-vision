@@ -9,8 +9,8 @@ import PersonProfile from "../Person/Profile";
 import PersonDetails from "../Person/Details";
 import PersonWorks from "../Person/Works";
 import useSWR from "swr";
-import { fetchData } from "@/lib/fetch";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { fetchAPI } from "@/utils/api";
 
 export default function PersonModal() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function PersonModal() {
   const personParams = searchParams.get("person");
 
   const getPersonModal = async () => {
-    const res = await fetchData({
+    const res = await fetchAPI({
       endpoint: `/person/${personParams}`,
       queryParams: {
         language: "en",

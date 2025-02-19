@@ -1,7 +1,7 @@
-import { fetchData } from "@/lib/fetch";
 import { useEffect, useState, useCallback, useRef } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { fetchAPI } from "@/utils/api";
 
 export default function Cast({ inputStyles }) {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function Cast({ inputStyles }) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Lakukan pengambilan data setelah delay
-      fetchData({
+      fetchAPI({
         endpoint: `/search/person`,
         queryParams: {
           query: inputValue,
@@ -66,7 +66,7 @@ export default function Cast({ inputStyles }) {
     if (searchParams.get("with_cast")) {
       const castParams = searchParams.get("with_cast").split(",");
       const fetchPromises = castParams.map((castId) => {
-        return fetchData({
+        return fetchAPI({
           endpoint: `/person/${castId}`,
         });
       });

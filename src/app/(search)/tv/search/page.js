@@ -1,7 +1,7 @@
 import Search from "@/components/Search/";
 import Filters from "@/components/Search/Filter";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
-import { fetchData } from "@/lib/fetch";
+import { fetchAPI } from "@/utils/api";
 import React, { Suspense } from "react";
 
 export async function generateMetadata() {
@@ -42,19 +42,19 @@ export default async function page() {
     { results: fetchMinYear },
     { results: fetchMaxYear },
   ] = await Promise.all([
-    fetchData({
+    fetchAPI({
       endpoint: `/genre/tv/list`,
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/configuration/languages`,
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/discover/tv`,
       queryParams: {
         sort_by: "first_air_date.asc",
       },
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/discover/tv`,
       queryParams: {
         sort_by: "first_air_date.desc",

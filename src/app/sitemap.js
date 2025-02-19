@@ -1,4 +1,4 @@
-import { fetchData } from "@/lib/fetch";
+// import { fetchData } from "@/lib/fetch";
 import slug from "slug";
 
 export default async function sitemap() {

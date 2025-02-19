@@ -1,8 +1,8 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { fetchData } from "@/lib/fetch";
 import { handleOpenWindow } from "@/lib/openWindow";
+import { fetchAPI } from "@/utils/api";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -38,9 +38,8 @@ export default function LoginForm() {
 
     setIsLoading(true);
 
-    await fetchData({
-      endpoint: `/api/authentication/token/new`,
-      baseURL: process.env.NEXT_PUBLIC_APP_URL,
+    await fetchAPI({
+      endpoint: `/authentication/token/new`,
     }).then(({ request_token }) => {
       const credentials = {
         username,

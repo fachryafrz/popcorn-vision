@@ -1,8 +1,8 @@
 import Search from "@/components/Search/";
-import { fetchData } from "@/lib/fetch";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import dayjs from "dayjs";
 import Filters from "@/components/Search/Filter";
+import { fetchAPI } from "@/utils/api";
 
 export async function generateMetadata() {
   return {
@@ -46,19 +46,19 @@ export default async function page() {
       results: [fetchMaxYear],
     },
   ] = await Promise.all([
-    fetchData({
+    fetchAPI({
       endpoint: `/genre/movie/list`,
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/configuration/languages`,
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/discover/movie`,
       queryParams: {
         sort_by: "primary_release_date.asc",
       },
     }),
-    fetchData({
+    fetchAPI({
       endpoint: `/discover/movie`,
       queryParams: {
         sort_by: "primary_release_date.desc",

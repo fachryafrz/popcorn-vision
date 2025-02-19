@@ -1,15 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 import FilmSummary from "./Summary";
-import { fetchData } from "@/lib/fetch";
 import ImagePovi from "./ImagePovi";
 import moment from "moment";
 import slug from "slug";
+import { fetchAPI } from "@/utils/api";
 
 export default async function Trending({ film, genres, type }) {
   const isTvPage = type === "tv";
 
-  const filmDetails = await fetchData({
+  const filmDetails = await fetchAPI({
     endpoint: `/${!isTvPage ? `movie` : `tv`}/${film.id}`,
     queryParams: { append_to_response: `images` },
   });
