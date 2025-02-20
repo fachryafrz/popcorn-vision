@@ -1,5 +1,5 @@
 import { IonIcon } from "@ionic/react";
-import { search, close } from "ionicons/icons";
+import { search, close, optionsOutline } from "ionicons/icons";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -118,9 +118,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
       .typeString("Search a movie or tv show title")
       .pauseFor(5e3)
       .deleteAll()
-      .typeString("Click search icon to explore filters!")
-      .pauseFor(5e3)
-      .deleteAll()
       .typeString(placeholder)
       .pauseFor(15e3)
       .start();
@@ -220,22 +217,15 @@ export function SearchBar({ placeholder = `Type / to search` }) {
           className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
         >
           <div
-            className={`pointer-events-none absolute ml-4 flex h-full items-center [&_*]:pointer-events-auto`}
+            className={`pointer-events-none absolute ml-4 flex h-full items-center`}
           >
-            <Link
-              href={!isTvPage ? `/search` : `/tv/search`}
-              prefetch={false}
-              className={`flex`}
-            >
-              <IonIcon
-                icon={search}
-                className={`pointer-events-none`}
-                style={{
-                  fontSize: 18,
-                  color: `rgb(156 163 175)`,
-                }}
-              />
-            </Link>
+            <IonIcon
+              icon={search}
+              style={{
+                fontSize: 18,
+                color: `rgb(156 163 175)`,
+              }}
+            />
           </div>
 
           <input
@@ -259,7 +249,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             }}
           />
 
-          <div className={`mr-4`}>
+          <div className={isSearchPage ? `mr-4` : ``}>
             {searchInput && (
               <button
                 type="button"
@@ -276,6 +266,19 @@ export function SearchBar({ placeholder = `Type / to search` }) {
               </button>
             )}
           </div>
+
+          <Link
+            href={!isTvPage ? `/search` : `/tv/search`}
+            className={`btn btn-circle btn-ghost ${isSearchPage ? `hidden` : ``}`}
+          >
+            <IonIcon
+              icon={optionsOutline}
+              style={{
+                fontSize: 20,
+                color: `rgb(156 163 175)`,
+              }}
+            />
+          </Link>
         </div>
       </form>
 
