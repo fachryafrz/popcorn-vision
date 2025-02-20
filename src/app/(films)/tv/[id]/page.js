@@ -1,19 +1,14 @@
+import { getFilm } from "@/lib/fetch";
 import { releaseStatus } from "@/lib/releaseStatus";
 import React from "react";
 import FilmDetail from "../../movies/[id]/page";
-import { axios } from "@/lib/axios";
 
 export async function generateMetadata({ params, type = `tv` }) {
   const { id } = params;
 
   const [film, images] = await Promise.all([
-    axios.get(`/${type}/${id}`).then(({ data }) => data),
-
-    axios.get(`/${type}/${id}/images`, {
-      params: {
-        include_image_language: "en",
-      },
-    }).then(({ data }) => data),
+    getFilm({ id, type }),
+    getFilm({ id, type, path: "/images" }),
   ])
 
   const isTvPage = type !== "movie" ? true : false;
@@ -25,7 +20,7 @@ export async function generateMetadata({ params, type = `tv` }) {
   const lastAirDate =
     film.last_air_date !== null &&
     new Date(film.last_air_date).getFullYear() !==
-    new Date(film.first_air_date).getFullYear();
+      new Date(film.first_air_date).getFullYear();
 
   let backdrops;
 
@@ -40,19 +35,21 @@ export async function generateMetadata({ params, type = `tv` }) {
   }
 
   return {
-    title: `${film.name} (${lastAirDate
-      ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
-      : filmReleaseDate
-      })`,
+    title: `${film.name} (${
+      lastAirDate
+        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+        : filmReleaseDate
+    })`,
     description: film.overview,
     alternates: {
       canonical: `/${`tv`}/${film.id}`,
     },
     openGraph: {
-      title: `${film.name} (${lastAirDate
-        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
-        : filmReleaseDate
-        }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+          : filmReleaseDate
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
       url: `${process.env.NEXT_PUBLIC_APP_URL}/${`tv`}/${film.id}`,
       siteName: process.env.NEXT_PUBLIC_APP_NAME,
@@ -62,10 +59,11 @@ export async function generateMetadata({ params, type = `tv` }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${film.name} (${lastAirDate
-        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
-        : filmReleaseDate
-        }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+          : filmReleaseDate
+      }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
       creator: "@fachryafrz",
       ...backdrops,

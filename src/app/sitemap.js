@@ -1,3 +1,4 @@
+import { fetchData } from "@/lib/fetch";
 import slug from "slug";
 
 export default async function sitemap() {
@@ -32,21 +33,23 @@ export default async function sitemap() {
 
   // const movies = [];
   // for (let i = 1; i <= totalPages; i++) {
-  //   const { results } = await axios.get(`/discover/movie`, {
-  //     params: {
+  //   const { results } = await fetchData({
+  //     endpoint: `/discover/movie`,
+  //     queryParams: {
   //       page: i,
   //     },
-  //   }).then(({data}) => data);
+  //   });
   //   movies.push(...results);
   // }
 
   // const tvShows = [];
   // for (let i = 1; i <= totalPages; i++) {
-  //   const { results } = await axios.get(`/discover/tv`, {
-  //     params: {
+  //   const { results } = await fetchData({
+  //     endpoint: `/discover/tv`,
+  //     queryParams: {
   //       page: i,
   //     },
-  //   }).then(({data}) => data);
+  //   });
   //   tvShows.push(...results);
   // }
 
