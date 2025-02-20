@@ -1,7 +1,7 @@
 "use client";
 
 import { USER_LOCATION } from "@/lib/constants";
-import { getLocationData } from "@/lib/fetch";
+import { getLocationData } from "@/server/action";
 import { useLocation } from "@/zustand/location";
 import { useEffect } from "react";
 

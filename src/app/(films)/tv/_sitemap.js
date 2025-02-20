@@ -1,15 +1,14 @@
-import { fetchData } from "@/lib/fetch";
+import axios from "axios";
 import slug from "slug";
 
 export async function generateSitemaps() {
   const sitemap = [];
 
-  const { total_pages: totalPages } = await fetchData({
-    endpoint: `/discover/tv`,
-    queryParams: {
+  const { total_pages: totalPages } = await axios.get(`/discover/movie`, {
+    params: {
       page: 1,
     },
-  });
+  }).then(({ data }) => data);
 
   for (let i = 1; i <= 10; i++) {
     sitemap.push({
@@ -27,9 +26,8 @@ export default async function sitemap({ id }) {
 
   const tvShows = [];
   for (let i = page; i <= page; i++) {
-    const { results } = await fetchData({
-      endpoint: `/discover/tv`,
-      queryParams: {
+    const { results } = await axios.get(`/discover/tv`, {
+      params: {
         page: i,
       },
     });
