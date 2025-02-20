@@ -2,7 +2,18 @@ import React from "react";
 import PersonProfile from "../../../../components/Person/Profile";
 import PersonDetails from "../../../../components/Person/Details";
 import PersonWorks from "../../../../components/Person/Works";
-import { getPerson } from "@/lib/fetch";
+import { axios } from "@/lib/axios";
+
+async function getPerson({ id, path }) {
+  const res = await axios.get(`/person/${id}${path}`, {
+    params: {
+      language: "en",
+      append_to_response: `combined_credits,movie_credits,tv_credits,images`,
+    },
+  });
+
+  return res;
+}
 
 export async function generateMetadata({ params }) {
   const { id } = params;

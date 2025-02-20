@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "../../../config/limiter";
 
 export async function GET(req, ctx) {
-  const { first, second, endpoint } = ctx.params;
+  const { first, second, third } = ctx.params;
   const { searchParams } = new URL(req.url);
 
   const remainingToken = await limiter.removeTokens(1);
@@ -11,7 +11,7 @@ export async function GET(req, ctx) {
 
   try {
     const { data, status } = await axios.get(
-      `${process.env.API_URL}/${first}/${second}/${endpoint}`,
+      `${process.env.API_URL}/${first}/${second}/${third}`,
       {
         params: {
           api_key: process.env.API_KEY,

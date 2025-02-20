@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import ReviewCard from "./ReviewCard";
 import { usePathname } from "next/navigation";
-import { getMoreReviews } from "@/lib/fetch";
 import SkeletonReviewCard from "@/components/Skeleton/ReviewCard";
 import pluralize from "pluralize";
+import axios from "axios";
 
 export default function FilmReviews({ reviews, film }) {
   const { total_pages } = reviews;
@@ -15,6 +15,20 @@ export default function FilmReviews({ reviews, film }) {
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
+
+  const getMoreReviews = async ({ film, type, currentPage }) => {
+    const nextPage = currentPage + 1;
+
+    const res = await axios
+      .get(`/api/${type}/${film.id}/reviews`, {
+        params: {
+          page: nextPage,
+        },
+      })
+      .then(({ data }) => data);
+
+    return res;
+  };
 
   return (
     <div id="reviews" className="relative flex flex-col gap-2">
