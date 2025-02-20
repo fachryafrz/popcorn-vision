@@ -249,36 +249,36 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             }}
           />
 
-          <div className={isSearchPage ? `mr-4` : ``}>
-            {searchInput && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className={`flex h-full items-center`}
-              >
-                <IonIcon
-                  icon={close}
-                  className={`text-gray-400`}
-                  style={{
-                    fontSize: 24,
-                  }}
-                />
-              </button>
-            )}
-          </div>
+          {searchInput && (
+            <button
+              type="button"
+              onClick={handleClear}
+              className={`flex h-full items-center ${isSearchPage ? `btn btn-circle btn-ghost` : ``}`}
+            >
+              <IonIcon
+                icon={close}
+                className={`text-gray-400`}
+                style={{
+                  fontSize: 24,
+                }}
+              />
+            </button>
+          )}
 
-          <Link
-            href={!isTvPage ? `/search` : `/tv/search`}
-            className={`btn btn-circle btn-ghost ${isSearchPage ? `hidden` : ``}`}
-          >
-            <IonIcon
-              icon={optionsOutline}
-              style={{
-                fontSize: 20,
-                color: `rgb(156 163 175)`,
-              }}
-            />
-          </Link>
+          {!isSearchPage && (
+            <Link
+              href={!isTvPage ? `/search` : `/tv/search`}
+              className={`btn btn-circle btn-ghost`}
+            >
+              <IonIcon
+                icon={optionsOutline}
+                style={{
+                  fontSize: 20,
+                  color: `rgb(156 163 175)`,
+                }}
+              />
+            </Link>
+          )}
         </div>
       </form>
 
