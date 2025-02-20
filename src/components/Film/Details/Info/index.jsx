@@ -312,9 +312,9 @@ export default function FilmInfo({
                     alt=""
                     aria-hidden
                     role="presentation"
-                    className={`aspect-square w-[40px] rounded-xl`}
-                    width={40}
-                    height={40}
+                    className={`aspect-square w-[50px] rounded-xl`}
+                    width={50}
+                    height={50}
                   />
                   <span aria-hidden className={`sr-only`}>
                     The Movie Database
