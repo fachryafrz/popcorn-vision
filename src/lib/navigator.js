@@ -1,5 +1,5 @@
 import { USER_LOCATION } from "./constants";
-import { getLocation } from "@/server/action";
+import { getLocation } from "@/server/actions";
 
 export function findLocation(setLocation, setError) {
   navigator.geolocation.getCurrentPosition(
