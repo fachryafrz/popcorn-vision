@@ -22,7 +22,6 @@ export default function UserLocation({ ip }) {
         }));
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ip]);
 
   return null;
