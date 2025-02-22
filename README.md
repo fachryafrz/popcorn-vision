@@ -58,7 +58,7 @@ Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offer
 - **DaisyUI** – Tailwind CSS component library
 - **Tailwind CSS** – Styling and UI design
 - **Material UI** – UI component library
-- **TMDB API** – The biggest movie database
+- **TMDB API** – The biggest movie & tv show database
 
 ## 🚀 Fork the repository
 
