@@ -178,7 +178,7 @@ export default function Filters({
       >
         {/* Sort */}
         <section className={`flex flex-col gap-1 sm:hidden`}>
-          <span className={`font-medium`}>Sort</span>
+          <span className={`block h-8 font-medium`}>Sort</span>
           <SearchSort />
         </section>
 

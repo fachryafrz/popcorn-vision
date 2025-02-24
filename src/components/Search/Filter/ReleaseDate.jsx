@@ -51,7 +51,9 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Release Date</span>
+      {/* NOTE: add h-8 to be aligned with the other filter */}
+      <span className={`block h-8 font-medium`}>Release Date</span>
+
       <div className={`w-full px-3`}>
         {minYear && maxYear ? (
           <>
