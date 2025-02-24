@@ -1,18 +1,27 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import axios from "axios";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+
+const WATCH_PROVIDERS = "watch_providers";
 
 export default function Streaming({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
   const isTvPage = pathname.startsWith("/tv");
+  const defaultToggleSeparation = searchParams
+    .get(WATCH_PROVIDERS)
+    ?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const { location } = useLocation();
 
@@ -34,6 +43,11 @@ export default function Streaming({ inputStyles }) {
   // const [providersData, setProvidersData] = useState([]);
   const [provider, setProvider] = useState();
   const [providersInputPlaceholder, setProvidersInputPlaceholder] = useState();
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
+
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
   const providersOptions = useMemo(() => {
     return providersData?.map((provider) => ({
@@ -46,16 +60,29 @@ export default function Streaming({ inputStyles }) {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete("watch_providers");
+      current.delete(WATCH_PROVIDERS);
     } else {
-      current.set("watch_providers", value);
+      current.set(WATCH_PROVIDERS, value.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(WATCH_PROVIDERS)) {
+      const params = searchParams.get(WATCH_PROVIDERS);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(WATCH_PROVIDERS, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   // Use Effect for cycling random options placeholder
@@ -78,29 +105,55 @@ export default function Streaming({ inputStyles }) {
 
   useEffect(() => {
     // Providers
-    if (searchParams.get("watch_providers")) {
-      const providersParams = searchParams.get("watch_providers").split(",");
-      const searchProviders = providersParams.map((providerId) =>
+    if (searchParams.get(WATCH_PROVIDERS)) {
+      const params = searchParams.get(WATCH_PROVIDERS);
+      const splitted = params.split(separation);
+      const filtered = splitted.map((providerId) =>
         providersData?.find(
           (provider) => parseInt(provider.provider_id) === parseInt(providerId),
         ),
       );
-      const searchProvidersOptions = searchProviders?.map(
+      const options = filtered?.map(
         (provider) =>
           provider && {
             value: provider.provider_id,
             label: provider.provider_name,
           },
       );
-      setProvider(searchProvidersOptions);
+      setProvider(options);
     } else {
       setProvider(null);
     }
-  }, [providersData, searchParams]);
+  }, [providersData, searchParams, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Streaming</span>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Streaming</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
 
       {!location && (
         <div className={`flex h-[42px] justify-center`}>

@@ -1,14 +1,26 @@
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+
+const STATUS = "status";
 
 export default function TVSeriesStatus() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
+  const defaultToggleSeparation = searchParams.get(STATUS)?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const [status, setStatus] = useState([]);
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
+
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
   // Pre-loaded Options
   const tvSeriesStatus = useMemo(
@@ -47,32 +59,72 @@ export default function TVSeriesStatus() {
     // Lakukan pengaturan URL
     if (updatedValue.length === 0) {
       setStatus(updatedValue);
-      current.delete("status");
+      current.delete(STATUS);
     } else {
-      current.set("status", updatedValue.join("|"));
+      current.set(STATUS, updatedValue.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(STATUS)) {
+      const params = searchParams.get(STATUS);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(STATUS, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   useEffect(() => {
     // TV Shows Status
-    if (searchParams.get("status")) {
-      const statusParams = searchParams.get("status").split("|");
-      setStatus(statusParams);
+    if (searchParams.get(STATUS)) {
+      const params = searchParams.get(STATUS);
+      const splitted = params.split(separation);
+      setStatus(splitted);
     } else {
       setStatus([]);
     }
-  }, [searchParams]);
+  }, [searchParams, separation]);
 
   return (
     <section className="@container">
-      <span className={`font-medium`}>Status</span>
-      <ul className={`mt-2 grid @sm:grid-cols-2`}>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Status</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
+
+      <ul className={`mt-2 grid @sm:grid-flow-col @sm:grid-rows-4`}>
         {tvSeriesStatus.map((statusName, i) => {
           const index = i - 1;
           const isChecked = status.length === 0 && i === 0;

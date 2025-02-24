@@ -2,16 +2,30 @@ import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+
+const WITH_ORIGINAL_LANGUAGE = "with_original_language";
 
 export default function Language({ inputStyles, languagesData }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
+  const defaultToggleSeparation = searchParams
+    .get(WITH_ORIGINAL_LANGUAGE)
+    ?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const [language, setLanguage] = useState();
   const [languagesInputPlaceholder, setLanguagesInputPlaceholder] = useState();
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
+
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
   // Handle Select Options
   const languagesOptions = useMemo(() => {
@@ -25,16 +39,29 @@ export default function Language({ inputStyles, languagesData }) {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete("with_original_language");
+      current.delete(WITH_ORIGINAL_LANGUAGE);
     } else {
-      current.set("with_original_language", value);
+      current.set(WITH_ORIGINAL_LANGUAGE, value.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(WITH_ORIGINAL_LANGUAGE)) {
+      const params = searchParams.get(WITH_ORIGINAL_LANGUAGE);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(WITH_ORIGINAL_LANGUAGE, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   // Use Effect for cycling random options placeholder
@@ -57,31 +84,56 @@ export default function Language({ inputStyles, languagesData }) {
 
   useEffect(() => {
     // Languages
-    if (searchParams.get("with_original_language")) {
-      const languagesParams = searchParams
-        .get("with_original_language")
-        .split(",");
-      const searchLanguages = languagesParams.map((languageId) =>
+    if (searchParams.get(WITH_ORIGINAL_LANGUAGE)) {
+      const params = searchParams.get(WITH_ORIGINAL_LANGUAGE);
+      const splitted = params.split(separation);
+      const filtered = splitted.map((languageId) =>
         languagesData?.find(
           (language) => language.iso_639_1 === languageId.toLowerCase(),
         ),
       );
-      const searchLanguagesOptions = searchLanguages?.map(
+      const options = filtered?.map(
         (language) =>
           language && {
             value: language.iso_639_1,
             label: language.english_name,
           },
       );
-      setLanguage(searchLanguagesOptions);
+      setLanguage(options);
     } else {
       setLanguage(null);
     }
-  }, [languagesData, searchParams]);
+  }, [languagesData, searchParams, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Language</span>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Language</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
+
       <Select
         options={languagesData && languagesOptions}
         onChange={handleLanguageChange}

@@ -1,75 +1,89 @@
-import { useEffect, useState, useMemo, useCallback, useRef } from "react";
+import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+import debounce from "debounce";
+
+const WITH_COMPANIES = "with_companies";
 
 export default function Company({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = useMemo(
-    () => new URLSearchParams(Array.from(searchParams.entries())),
-    [searchParams],
-  );
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
+  const defaultToggleSeparation = searchParams
+    .get(WITH_COMPANIES)
+    ?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const [company, setCompany] = useState([]);
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
 
-  const timerRef = useRef(null);
-  const companiesLoadOptions = useCallback((inputValue, callback) => {
-    const fetchDataWithDelay = async () => {
-      // Delay pengambilan data selama 500ms setelah pengguna berhenti mengetik
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
-      // Lakukan pengambilan data setelah delay
-      axios
-        .get(`/api/search/company`, { params: { query: inputValue } })
-        .then(({ data }) => {
-          const options = data.results.map((company) => ({
-            value: company.id,
-            label: company.name,
-          }));
-          const filteredOptions = options.filter((option) =>
-            option.label.toLowerCase().includes(inputValue.toLowerCase()),
-          );
-          callback(filteredOptions);
-        });
-    };
+  const companiesLoadOptions = debounce(async (inputValue, callback) => {
+    const { data } = await axios.get(`/api/search/company`, {
+      params: { query: inputValue },
+    });
 
-    // Hapus pemanggilan sebelumnya jika ada
-    clearTimeout(timerRef.current);
+    const options = data.results.map((company) => ({
+      value: company.id,
+      label: company.name,
+    }));
 
-    // Set timer untuk memanggil fetchDataWithDelay setelah delay
-    timerRef.current = setTimeout(() => {
-      fetchDataWithDelay();
-    }, 1000);
-  }, []);
+    const filteredOptions = options.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+
+    callback(filteredOptions);
+  }, 1000);
 
   const handleCompanyChange = (selectedOption) => {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete("with_companies");
+      current.delete(WITH_COMPANIES);
     } else {
-      current.set("with_companies", value);
+      current.set(WITH_COMPANIES, value.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(WITH_COMPANIES)) {
+      const params = searchParams.get(WITH_COMPANIES);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(WITH_COMPANIES, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   useEffect(() => {
     // Company
-    if (searchParams.get("with_companies")) {
-      const companyParams = searchParams.get("with_companies").split(",");
-      const fetchPromises = companyParams.map((companyId) => {
-        return axios.get(`/api/company/${companyId}`).then(({ data }) => data);
-      });
+    if (searchParams.get(WITH_COMPANIES)) {
+      const params = searchParams.get(WITH_COMPANIES);
+      const splitted = params.split(separation);
 
-      Promise.all(fetchPromises)
+      Promise.all(
+        splitted.map((companyId) =>
+          axios.get(`/api/company/${companyId}`).then(({ data }) => data),
+        ),
+      )
         .then((responses) => {
           const uniqueCompany = [...new Set(responses)]; // Remove duplicates if any
           const searchCompany = uniqueCompany.map((company) => ({
@@ -84,11 +98,37 @@ export default function Company({ inputStyles }) {
     } else {
       setCompany(null);
     }
-  }, [searchParams]);
+  }, [searchParams, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Company</span>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Company</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
+
       <AsyncSelect
         noOptionsMessage={() => "Type to search"}
         loadingMessage={() => "Searching..."}

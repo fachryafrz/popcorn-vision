@@ -2,16 +2,28 @@ import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+
+const WITH_NETWORKS = "with_networks";
 
 export default function Network({ inputStyles }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
+  const defaultToggleSeparation = searchParams.get(WITH_NETWORKS)?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const [networksData, setNetworksData] = useState(tmdbNetworks);
   const [network, setNetwork] = useState([]);
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
+
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
   const networksLoadOptions = (inputValue, callback) => {
     setTimeout(() => {
@@ -30,45 +42,85 @@ export default function Network({ inputStyles }) {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete("with_networks");
+      current.delete(WITH_NETWORKS);
     } else {
-      const joinedValue = value.join("|");
-      current.set("with_networks", joinedValue);
+      current.set(WITH_NETWORKS, value.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(WITH_NETWORKS)) {
+      const params = searchParams.get(WITH_NETWORKS);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(WITH_NETWORKS, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   useEffect(() => {
     // Network
-    if (searchParams.get("with_networks")) {
-      const networksParams = searchParams.get("with_networks").split("|");
-      const searchNetworks = networksParams.map((networkId) =>
+    if (searchParams.get(WITH_NETWORKS)) {
+      const params = searchParams.get(WITH_NETWORKS);
+      const splitted = params.split(separation);
+      const filtered = splitted.map((networkId) =>
         networksData?.find(
           (network) => parseInt(network.id) === parseInt(networkId),
         ),
       );
 
-      const searchNetworksOptions = searchNetworks?.map(
+      const options = filtered?.map(
         (network) =>
           network && {
             value: network.id,
             label: network.name,
           },
       );
-      setNetwork(searchNetworksOptions);
+
+      setNetwork(options);
     } else {
       setNetwork(null);
     }
-  }, [networksData, searchParams]);
+  }, [networksData, searchParams, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
-      <span className={`font-medium`}>Networks</span>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Networks</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
+
       <AsyncSelect
         noOptionsMessage={() => "Type to search"}
         loadingMessage={() => "Searching..."}

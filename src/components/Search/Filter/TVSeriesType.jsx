@@ -1,14 +1,26 @@
 import { useEffect, useState, useMemo } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+
+const TYPE = "type";
 
 export default function TVSeriesType() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
+
   const isQueryParams = searchParams.get("query");
+  const defaultToggleSeparation = searchParams.get(TYPE)?.includes("|")
+    ? OR_SEPARATION
+    : AND_SEPARATION;
 
   const [tvType, setTvType] = useState([]);
+  const [toggleSeparation, setToggleSeparation] = useState(
+    defaultToggleSeparation,
+  );
+
+  const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
   // Pre-loaded Options
   const tvSeriesType = useMemo(
@@ -48,31 +60,72 @@ export default function TVSeriesType() {
     // Lakukan pengaturan URL
     if (updatedValue.length === 0) {
       setTvType(updatedValue);
-      current.delete("type");
+      current.delete(TYPE);
     } else {
-      current.set("type", updatedValue.join("|"));
+      current.set(TYPE, updatedValue.join(separation));
     }
 
-    const search = current.toString();
+    router.push(`${pathname}?${current.toString()}`);
+  };
 
-    const query = search ? `?${search}` : "";
+  const handleSeparator = (separator) => {
+    setToggleSeparation(separator);
 
-    router.push(`${pathname}${query}`);
+    if (searchParams.get(TYPE)) {
+      const params = searchParams.get(TYPE);
+
+      const separation = separator === AND_SEPARATION ? "," : "|";
+      const newSeparator = params.includes("|") ? "," : "|";
+      if (newSeparator !== separation) return;
+
+      const updatedParams = params.replace(/[\|,]/g, newSeparator);
+
+      current.set(TYPE, updatedParams);
+      router.push(`${pathname}?${current.toString()}`);
+    }
   };
 
   useEffect(() => {
     // TV Shows Type
-    if (searchParams.get("type")) {
-      const typeParams = searchParams.get("type").split("|");
-      setTvType(typeParams);
+    if (searchParams.get(TYPE)) {
+      const params = searchParams.get(TYPE);
+      const splitted = params.split(separation);
+      setTvType(splitted);
     } else {
+      setTvType([]);
     }
-  }, [searchParams]);
+  }, [searchParams, separation]);
 
   return (
     <section className="@container">
-      <span className={`font-medium`}>Types</span>
-      <ul className={`mt-2 grid @sm:grid-cols-2`}>
+      <div className={`flex items-center justify-between`}>
+        <span className={`font-medium`}>Type</span>
+
+        <div className={`flex rounded-full bg-base-100 p-1`}>
+          <button
+            onClick={() => handleSeparator(AND_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === AND_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            AND
+          </button>
+          <button
+            onClick={() => handleSeparator(OR_SEPARATION)}
+            className={`btn btn-ghost btn-xs rounded-full ${
+              toggleSeparation === OR_SEPARATION
+                ? "bg-white text-base-100 hover:bg-white hover:bg-opacity-50"
+                : ""
+            }`}
+          >
+            OR
+          </button>
+        </div>
+      </div>
+
+      <ul className={`mt-2 grid @sm:grid-flow-col @sm:grid-rows-4`}>
         {tvSeriesType.map((typeName, i) => {
           const index = i - 1;
           const isChecked = tvType.length === 0 && i === 0;

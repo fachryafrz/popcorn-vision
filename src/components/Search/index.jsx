@@ -256,6 +256,7 @@ export default function Search({ type = "movie" }) {
             currentSearchPage={currentSearchPage}
             totalSearchPages={totalSearchPages}
             loading={loading}
+            initialLoading={true}
           />
         </section>
 
