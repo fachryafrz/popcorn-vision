@@ -10,6 +10,7 @@ export default function FilmGrid({
   currentSearchPage,
   totalSearchPages,
   loading,
+  initialLoading = false,
 }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -45,6 +46,17 @@ export default function FilmGrid({
       className={`relative z-10 mx-auto flex w-full max-w-none flex-col gap-2 @container`}
     >
       <ul className="grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6 @7xl:grid-cols-7">
+        {/* Initial loading */}
+        {initialLoading &&
+          loading &&
+          [...Array(20)].map((_, i) => (
+            <span
+              key={i}
+              className={`aspect-poster animate-pulse rounded-xl bg-gray-400 bg-opacity-20`}
+            ></span>
+          ))}
+
+        {/* Results */}
         {films?.map((film) => {
           return (
             <li key={film.id}>
@@ -56,10 +68,11 @@ export default function FilmGrid({
           );
         })}
 
-        {(loading || totalSearchPages > currentSearchPage) &&
-          [...Array(20).keys()].map((_, i) => (
+        {/* Infinite loading */}
+        {(!loading && totalSearchPages > currentSearchPage) &&
+          [...Array(20)].map((_, i) => (
             <span
-              key={i}
+              key={i + 20}
               ref={i === 0 ? loadMoreRef : null}
               className={`aspect-poster animate-pulse rounded-xl bg-gray-400 bg-opacity-20`}
             ></span>
