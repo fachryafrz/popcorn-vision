@@ -1,24 +1,28 @@
 import Person from "../../../Person/Person";
 
 export default function FilmDirector({ credits, film, isTvPage }) {
-  const director = credits.crew.find((person) => person.job === "Director");
+  const directors = credits.crew.filter((person) => person.job === "Director");
 
   return (
     <div className={`-mx-2`}>
       {!isTvPage
         ? credits &&
-          credits.crew.length > 0 &&
-          director && (
+          credits.crew.length > 0 && (
             <section
               id={`Movie Director`}
-              className={`flex items-center gap-2`}
+              className={`flex flex-wrap items-center`}
             >
-              <Person
-                id={director.id}
-                name={director.name}
-                profile_path={director.profile_path}
-                role={`Director`}
-              />
+              {directors.map((director) => {
+                return (
+                  <Person
+                    key={director.id}
+                    id={director.id}
+                    name={director.name}
+                    profile_path={director.profile_path}
+                    role={director.job}
+                  />
+                );
+              })}
             </section>
           )
         : film.created_by.length > 0 && (
