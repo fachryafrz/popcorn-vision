@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.0](https://github.com/fachryafrz/popcorn-vision/compare/v1.0.0...v1.1.0) (2025-02-24)
+
+
+### Features
+
+* **auth:** add option to disable retry on error for useAuth hook ([#101](https://github.com/fachryafrz/popcorn-vision/issues/101)) ([6228a3d](https://github.com/fachryafrz/popcorn-vision/commit/6228a3d3d82c11fac73ba892239b0751de744dce))
+* **FilmDirector:** update to support multiple directors and improve rendering ([#100](https://github.com/fachryafrz/popcorn-vision/issues/100)) ([ef8a4f5](https://github.com/fachryafrz/popcorn-vision/commit/ef8a4f5cababef1bf985c1b07b934ce805171b2f))
+* **FilmGrid:** add initial loading state and improve loading indicators ([#98](https://github.com/fachryafrz/popcorn-vision/issues/98)) ([92bad97](https://github.com/fachryafrz/popcorn-vision/commit/92bad97e1d4e6bcdea7712e19d93845e04ced68a))
+* **Search:** add toggle separation for supported filters ([#102](https://github.com/fachryafrz/popcorn-vision/issues/102)) ([3f8e199](https://github.com/fachryafrz/popcorn-vision/commit/3f8e1990664109acf2db090287bcd635780e9473))
+
 ## 1.0.0 (2025-02-22)
 
 
