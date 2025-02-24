@@ -24,6 +24,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
       revalidateIfStale: false,
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
+      shouldRetryOnError: false,
     },
   );
 
