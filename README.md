@@ -1,6 +1,6 @@
 [![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/home.png)](https://popcornvision.vercel.app)
 
-# Popcorn Vision – Movie & TV Show Discovery
+# Popcorn Vision – Movie & TV Show Streaming and Discovery
 
 Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. You can save your favorite movies and TV shows, create a personalized watchlist, and even rate titles.
 
