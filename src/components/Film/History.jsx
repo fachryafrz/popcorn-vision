@@ -110,7 +110,7 @@ export default function History({ title }) {
                   <Link
                     href={`/${!isTv ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}?streaming=true${isTv ? `&season=${film.last_season_watched}&episode=${film.last_episode_watched}` : ``}`}
                     prefetch={false}
-                    className={`relative`}
+                    className={`group relative block overflow-hidden rounded-xl`}
                   >
                     <h3 className={`sr-only`}>
                       {`${film.title ?? film.name} (${moment(film.release_date ?? film.first_air_date).format("YYYY")})`}
@@ -118,10 +118,10 @@ export default function History({ title }) {
 
                     <ImagePovi
                       imgPath={film.backdrop_path}
-                      className={`relative aspect-video overflow-hidden rounded-xl`}
+                      className={`relative aspect-video overflow-hidden transition-all duration-500 group-hover:scale-110`}
                     >
                       <img
-                        src={`https://image.tmdb.org/t/p/w500${film.backdrop_path}`}
+                        src={`https://image.tmdb.org/t/p/w780${film.backdrop_path}`}
                         role="presentation"
                         loading="lazy"
                         draggable={false}
