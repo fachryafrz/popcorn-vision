@@ -13,6 +13,9 @@ export default function Streaming() {
 
   const [origin, type, id] = pathname.split("/");
 
+  const mediaType = type === "movies" ? "movie" : "tv";
+  const filmID = id?.split("-")[0];
+
   const season = searchParams.get("season");
   const episode = searchParams.get("episode");
 
@@ -48,11 +51,7 @@ export default function Streaming() {
             width={"100%"}
             height={"100%"}
             allowFullScreen={true}
-            src={
-              type === "movies"
-                ? `https://vidbinge.dev/embed/movie/${id?.split("-")[0]}`
-                : `https://vidbinge.dev/embed/tv/${id?.split("-")[0]}/${season ?? 1}/${episode ?? 1}`
-            }
+            src={`https://vidlink.pro/${mediaType}/${type === "movies" ? filmID : `${filmID}/${season || 1}/${episode || 1}`}?primaryColor=0278fd&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=default&title=true&poster=false&autoplay=true&nextbutton=true`}
           ></iframe>
         )}
       </div>
