@@ -295,6 +295,10 @@ export default function FilmInfo({
             id={`Film Providers`}
             className="mb-2 flex flex-col justify-center gap-1 md:justify-start"
           >
+            <span aria-hidden className={`text-sm text-gray-400`}>
+              Available on
+            </span>
+
             <div className={`flex flex-wrap gap-2`}>
               {/* TMDB as Provider */}
               <button
