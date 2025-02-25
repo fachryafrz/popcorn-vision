@@ -47,29 +47,23 @@ export default function PersonModal() {
 
   const [films, setFilms] = useState();
 
-  const handleCloseModal = () => {
-    document.getElementById(`personModal`).close();
-
-    router.back();
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key !== "Escape") return;
-    handleCloseModal();
-  };
-
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+    };
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
   useEffect(() => {
-    if (!personParams) return;
-
-    document.getElementById(`personModal`).showModal();
+    if (!personParams) {
+      document.getElementById(`personModal`).close();
+    } else {
+      document.getElementById(`personModal`).showModal();
+    }
   }, [personParams]);
 
   useEffect(() => {
@@ -92,7 +86,7 @@ export default function PersonModal() {
         <div className={`relative w-full max-w-7xl md:p-4 md:pt-0`}>
           <div className={`pointer-events-none sticky top-0 z-50 md:-mr-4`}>
             <button
-              onClick={handleCloseModal}
+              onClick={() => router.back()}
               className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
             >
               <IonIcon

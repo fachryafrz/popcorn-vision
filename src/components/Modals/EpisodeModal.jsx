@@ -63,12 +63,6 @@ export function EpisodeModal({ film }) {
     dialogElement.scrollTo({ top: 0 });
   };
 
-  const handleCloseModal = () => {
-    document.getElementById(`episodeModal`).close();
-
-    router.back();
-  };
-
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
       router.replace(
@@ -122,19 +116,19 @@ export function EpisodeModal({ film }) {
   );
 
   useEffect(() => {
-    if (!seasonParams || !episodeParams) return;
-
-    document.getElementById(`episodeModal`).showModal();
+    if (!seasonParams || !episodeParams) {
+      document.getElementById(`episodeModal`).close();
+    } else {
+      document.getElementById(`episodeModal`).showModal();
+    }
   }, [episodeParams, seasonParams]);
 
-  const handleKeyDown = (e) => {
-    if (e.key !== "Escape") return;
-    handleCloseModal();
-  };
-
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+    };
     document.addEventListener("keydown", handleKeyDown);
-
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
@@ -153,9 +147,13 @@ export function EpisodeModal({ film }) {
 
         {episode && (
           <>
-            <div className={`pointer-events-none absolute inset-0 md:px-4`}>
+            <form
+              method="dialog"
+              onSubmit={() => router.back()}
+              className={`pointer-events-none absolute inset-0 md:px-4`}
+            >
               <button
-                onClick={handleCloseModal}
+                type="submit"
                 className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
               >
                 <IonIcon
@@ -165,7 +163,7 @@ export function EpisodeModal({ film }) {
                   }}
                 />
               </button>
-            </div>
+            </form>
 
             <div
               className={`modal-box relative max-h-none w-full max-w-none overflow-y-hidden rounded-3xl p-0`}

@@ -17,16 +17,28 @@ export default function Streaming() {
   const episode = searchParams.get("episode");
 
   useEffect(() => {
-    if (streaming === "true") {
-      document.getElementById("streaming").showModal();
-    } else {
+    if (!streaming) {
       document.getElementById("streaming").close();
+    } else {
+      document.getElementById("streaming").showModal();
     }
   }, [streaming]);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   return (
     <dialog
       id="streaming"
+      onCancel={(e) => e.preventDefault()}
       className="modal gap-4 overflow-y-auto px-4 backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur lg:px-16"
     >
       {/* Screen */}
