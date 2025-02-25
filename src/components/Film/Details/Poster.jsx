@@ -18,7 +18,9 @@ export default function FilmPoster({ film, videos, images, reviews }) {
 
   const [filmPoster] = seasonPoster;
   const [quickNav, setQuickNav] = useState([]);
-  const imgPath = !isTvPage ? film.poster_path : filmPoster ?? film.poster_path;
+  const imgPath = !isTvPage
+    ? film.poster_path
+    : (filmPoster ?? film.poster_path);
 
   useEffect(() => {
     if (!isTvPage) return;

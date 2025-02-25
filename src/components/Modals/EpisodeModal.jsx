@@ -8,6 +8,7 @@ import {
   chevronBack,
   chevronForward,
   close,
+  play,
   timeOutline,
   tvOutline,
 } from "ionicons/icons";
@@ -16,7 +17,7 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import moment from "moment";
 import Person from "@/components/Person/Person";
 import axios from "axios";
@@ -25,6 +26,7 @@ import Countdown from "../Film/Details/Info/Countdown";
 import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
+import WatchButton from "../Layout/WatchButton";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
@@ -256,15 +258,19 @@ export function EpisodeModal({ film }) {
                 </div>
 
                 {isAired && (
-                  <section id={`Episode Rating`} className={`max-w-fit`}>
-                    <UserRating
-                      swrKey={swrKey}
-                      url={`/api/tv/${film.id}/season/${episode.season_number}/episode/${episode.episode_number}/rating`}
-                      name={`rating-tv-${film.id}-season-${episode.season_number}-episode-${episode.episode_number}`}
-                      rating={accountStates?.rated}
-                      title={`What did you think of ${episode.name}?`}
-                    />
-                  </section>
+                  <>
+                    <WatchButton />
+
+                    <section id={`Episode Rating`} className={`max-w-fit`}>
+                      <UserRating
+                        swrKey={swrKey}
+                        url={`/api/tv/${film.id}/season/${episode.season_number}/episode/${episode.episode_number}/rating`}
+                        name={`rating-tv-${film.id}-season-${episode.season_number}-episode-${episode.episode_number}`}
+                        rating={accountStates?.rated}
+                        title={`What did you think of ${episode.name}?`}
+                      />
+                    </section>
+                  </>
                 )}
 
                 {isUpcoming && (
