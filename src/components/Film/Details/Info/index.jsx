@@ -32,6 +32,7 @@ import pluralize from "pluralize";
 import { useEffect } from "react";
 import { useConfetti } from "@/zustand/confetti";
 import { handleOpenWindow } from "@/lib/openWindow";
+import WatchButton from "@/components/Layout/WatchButton";
 
 export default function FilmInfo({
   film,
@@ -282,15 +283,18 @@ export default function FilmInfo({
           )}
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
+          {/* Streaming */}
+          {filmReleaseDate !== "" && !isUpcoming && (
+            <section>
+              <WatchButton />
+            </section>
+          )}
+
           {/* Film Watch Provider */}
           <section
             id={`Film Providers`}
-            className="mb-2 flex flex-col justify-center gap-1 md:justify-start"
+            className="my-2 flex flex-col justify-center gap-1 md:justify-start"
           >
-            <span aria-hidden className={`text-sm italic text-gray-400`}>
-              Where to watch?
-            </span>
-
             <div className={`flex flex-wrap gap-2`}>
               {/* TMDB as Provider */}
               <button
