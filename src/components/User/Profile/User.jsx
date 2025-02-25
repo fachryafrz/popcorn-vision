@@ -76,7 +76,7 @@ export default function User({ user }) {
         <h2 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h2>
       </div>
 
-      <div className={`w-full flex justify-end px-4 sm:px-0 sm:w-fit sm:absolute right-4 top-0`}>
+      <div className={`sm:absolute right-4 top-0`}>
         <button onClick={logout} className={`btn btn-error btn-sm`}>
           <IonIcon
             icon={logOutOutline}
