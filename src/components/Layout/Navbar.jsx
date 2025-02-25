@@ -273,9 +273,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className={`h-[40px] w-[40px]`}>
-            {!user ? <LoginButton /> : <LogoutButton user={user} />}
-          </div>
+          {!user ? <LoginButton /> : <LogoutButton user={user} />}
         </div>
       </nav>
     </header>

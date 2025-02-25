@@ -16,14 +16,9 @@ export default function LoginButton() {
           : `/login`
       }
       prefetch={false}
-      className={`btn btn-square btn-sm flex h-full w-full rounded-full border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
+      className={`btn btn-circle flex border-transparent bg-opacity-0 p-1 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
     >
-      <IonIcon
-        icon={personCircleOutline}
-        style={{
-          fontSize: 36,
-        }}
-      />
+      <IonIcon icon={personCircleOutline} className={`h-[36px] w-[36px]`} />
       {/* <span className={`hidden xl:block`}>Login</span> */}
     </Link>
   );
