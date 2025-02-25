@@ -2,14 +2,30 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
-import { useEffect, useState } from "react";
+import { IonIcon } from "@ionic/react";
+import axios from "axios";
+import { logOutOutline } from "ionicons/icons";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
 
 export default function User({ user }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { mutate } = useAuth();
+
   const [profileImage, setProfileImage] = useState(null);
+
+  const logout = async () => {
+    await axios.delete(`/api/authentication/logout`).then(() => mutate(null));
+
+    if (pathname === "/profile") {
+      router.push("/login");
+    }
+  };
 
   useEffect(() => window.scrollTo(0, 0), []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!user) return;
 
     const { avatar } = user;
@@ -31,7 +47,7 @@ export default function User({ user }) {
 
   return (
     <div
-      className={`flex flex-col items-center justify-center gap-4 text-center md:flex-row md:text-start`}
+      className={`relative flex flex-col items-center justify-center gap-4 text-center md:flex-row md:text-start`}
     >
       {!profileImage ? (
         <div className="avatar placeholder">
@@ -58,6 +74,18 @@ export default function User({ user }) {
           {user.name}
         </h1>
         <h2 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h2>
+      </div>
+
+      <div className={`sm:absolute right-4 top-0`}>
+        <button onClick={logout} className={`btn btn-error btn-sm`}>
+          <IonIcon
+            icon={logOutOutline}
+            style={{
+              fontSize: 24,
+            }}
+          />
+          <span>Logout</span>
+        </button>
       </div>
     </div>
   );

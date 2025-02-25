@@ -46,8 +46,8 @@ export default function TileList({ title, section, type = "movie", user }) {
   }, [films]);
 
   const sortedFilms =
-    filmsData &&
-    [...filmsData].sort((a, b) => {
+    films?.results &&
+    [...films?.results].sort((a, b) => {
       if (sort === "created_at") {
         if (order === "asc") {
           return -1;
