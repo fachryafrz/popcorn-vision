@@ -35,7 +35,7 @@ export default function TileList({ title, section, type = "movie", user }) {
   const { ref: loadMoreBtn, inView, entry } = useInView();
   const [currentSearchPage, setCurrentSearchPage] = useState(0);
   const [totalSearchPages, setTotalSearchPages] = useState();
-  const [filmsData, setFilmsData] = useState();
+  const [filmsData, setFilmsData] = useState(films?.results);
   const [sort, setSort] = useState();
   const [order, setOrder] = useState();
 
@@ -46,8 +46,8 @@ export default function TileList({ title, section, type = "movie", user }) {
   }, [films]);
 
   const sortedFilms =
-    films?.results &&
-    [...films?.results].sort((a, b) => {
+    filmsData &&
+    [...filmsData].sort((a, b) => {
       if (sort === "created_at") {
         if (order === "asc") {
           return -1;
@@ -180,12 +180,6 @@ export default function TileList({ title, section, type = "movie", user }) {
           </li>
         ))}
 
-        {sortedFilms?.length === 0 && (
-          <li className={`text-center`}>
-            No {type === "tv" ? "TV Shows" : "Movies"} found.
-          </li>
-        )}
-
         {totalSearchPages > currentSearchPage &&
           [...Array(3).keys()].map((_, i) => (
             <li key={i} ref={i === 0 ? loadMoreBtn : null}>
@@ -193,6 +187,12 @@ export default function TileList({ title, section, type = "movie", user }) {
             </li>
           ))}
       </ul>
+
+      {sortedFilms?.length === 0 && (
+        <div className={`flex h-full items-center justify-center text-center pb-20`}>
+          {`No ${type === "tv" ? "TV Shows" : "Movies"} found.`}
+        </div>
+      )}
     </section>
   );
 }
