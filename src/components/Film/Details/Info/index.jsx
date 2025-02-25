@@ -285,7 +285,7 @@ export default function FilmInfo({
 
           {/* Streaming */}
           {filmReleaseDate !== "" && !isUpcoming && (
-            <section>
+            <section className={`mb-2`}>
               <WatchButton />
             </section>
           )}
@@ -293,7 +293,7 @@ export default function FilmInfo({
           {/* Film Watch Provider */}
           <section
             id={`Film Providers`}
-            className="my-2 flex flex-col justify-center gap-1 md:justify-start"
+            className="mb-2 flex flex-col justify-center gap-1 md:justify-start"
           >
             <div className={`flex flex-wrap gap-2`}>
               {/* TMDB as Provider */}
