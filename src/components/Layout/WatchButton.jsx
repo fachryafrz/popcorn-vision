@@ -8,12 +8,10 @@ export default function WatchButton() {
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const handleWatch = (e) => {
-    e.preventDefault();
-
+  const handleWatch = () => {
     current.set("streaming", "true");
 
-    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
   };
 
   return (

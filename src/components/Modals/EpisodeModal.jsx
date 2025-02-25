@@ -30,7 +30,9 @@ import WatchButton from "../Layout/WatchButton";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const seasonParams = searchParams.get("season");
   const episodeParams = searchParams.get("episode");
   const dialogRef = useRef(null);
@@ -57,6 +59,12 @@ export function EpisodeModal({ film }) {
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
 
+  const handleClose = () => {
+    current.delete("season");
+    current.delete("episode");
+
+    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+  };
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
 
@@ -149,7 +157,7 @@ export function EpisodeModal({ film }) {
           <>
             <form
               method="dialog"
-              onSubmit={() => router.back()}
+              onSubmit={handleClose}
               className={`pointer-events-none absolute inset-0 md:px-4`}
             >
               <button

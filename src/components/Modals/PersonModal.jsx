@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Zustand
@@ -14,7 +14,9 @@ import axios from "axios";
 
 export default function PersonModal() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const personParams = searchParams.get("person");
 
   const getPersonModal = async (url) => {
@@ -46,6 +48,12 @@ export default function PersonModal() {
   const images = person?.images;
 
   const [films, setFilms] = useState();
+
+  const handleClose = () => {
+    current.delete("person");
+
+    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -86,7 +94,7 @@ export default function PersonModal() {
         <div className={`relative w-full max-w-7xl md:p-4 md:pt-0`}>
           <div className={`pointer-events-none sticky top-0 z-50 md:-mr-4`}>
             <button
-              onClick={() => router.back()}
+              onClick={handleClose}
               className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
             >
               <IonIcon

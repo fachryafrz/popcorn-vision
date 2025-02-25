@@ -11,6 +11,7 @@ import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
 import Script from "next/script";
 import { axios } from "@/lib/axios";
+import History from "@/components/Film/History";
 
 export async function generateMetadata() {
   return {
@@ -48,20 +49,20 @@ export default async function Home({ type = "movie" }) {
 
   const defaultParams = !isTvPage
     ? {
-      region: "US",
-      include_adult: false,
-      language: "en-US",
-      sort_by: "popularity.desc",
-      with_original_language: "en",
-    }
+        region: "US",
+        include_adult: false,
+        language: "en-US",
+        sort_by: "popularity.desc",
+        with_original_language: "en",
+      }
     : {
-      region: "US",
-      include_adult: false,
-      include_null_first_air_dates: false,
-      language: "en-US",
-      sort_by: "popularity.desc",
-      with_original_language: "en",
-    };
+        region: "US",
+        include_adult: false,
+        include_null_first_air_dates: false,
+        language: "en-US",
+        sort_by: "popularity.desc",
+        with_original_language: "en",
+      };
 
   // API Requests
   const [
@@ -81,67 +82,77 @@ export default async function Home({ type = "movie" }) {
     axios.get(`/trending/${type}/week`).then(({ data }) => data.results),
 
     // Now playing
-    axios.get(`/discover/${type}`, {
-      params: !isTvPage
-        ? {
-          ...defaultParams,
-          without_genres: 10749,
-          "primary_release_date.gte": monthsAgo,
-          "primary_release_date.lte": today,
-        }
-        : {
-          ...defaultParams,
-          "first_air_date.gte": monthsAgo,
-          "first_air_date.lte": today,
-        },
-    }).then(({ data }) => data),
+    axios
+      .get(`/discover/${type}`, {
+        params: !isTvPage
+          ? {
+              ...defaultParams,
+              without_genres: 10749,
+              "primary_release_date.gte": monthsAgo,
+              "primary_release_date.lte": today,
+            }
+          : {
+              ...defaultParams,
+              "first_air_date.gte": monthsAgo,
+              "first_air_date.lte": today,
+            },
+      })
+      .then(({ data }) => data),
 
     // Upcoming
-    axios.get(`/discover/${type}`, {
-      params: !isTvPage
-        ? {
-          ...defaultParams,
-          without_genres: 10749,
-          "primary_release_date.gte": tomorrow,
-          "primary_release_date.lte": monthsLater,
-        }
-        : {
-          ...defaultParams,
-          "first_air_date.gte": tomorrow,
-          "first_air_date.lte": monthsLater,
-        },
-    }).then(({ data }) => data),
+    axios
+      .get(`/discover/${type}`, {
+        params: !isTvPage
+          ? {
+              ...defaultParams,
+              without_genres: 10749,
+              "primary_release_date.gte": tomorrow,
+              "primary_release_date.lte": monthsLater,
+            }
+          : {
+              ...defaultParams,
+              "first_air_date.gte": tomorrow,
+              "first_air_date.lte": monthsLater,
+            },
+      })
+      .then(({ data }) => data),
 
     // Top Rated
-    axios.get(`/discover/${type}`, {
-      params: {
-        ...defaultParams,
-        // without_genres: 18,
-        sort_by: "vote_count.desc",
-      },
-    }).then(({ data }) => data),
+    axios
+      .get(`/discover/${type}`, {
+        params: {
+          ...defaultParams,
+          // without_genres: 18,
+          sort_by: "vote_count.desc",
+        },
+      })
+      .then(({ data }) => data),
 
     // Companies Films
     Promise.all(
       companies.slice(0, 3).map((company) =>
-        axios.get(`/discover/${type}`, {
-          params: {
-            ...defaultParams,
-            with_companies: company.id,
-          },
-        }).then(({ data }) => data),
+        axios
+          .get(`/discover/${type}`, {
+            params: {
+              ...defaultParams,
+              with_companies: company.id,
+            },
+          })
+          .then(({ data }) => data),
       ),
     ),
 
     // Providers Films
     Promise.all(
       providers.slice(0, 3).map((provider) =>
-        axios.get(`/discover/${type}`, {
-          params: {
-            ...defaultParams,
-            with_networks: provider.id,
-          },
-        }).then(({ data }) => data),
+        axios
+          .get(`/discover/${type}`, {
+            params: {
+              ...defaultParams,
+              with_networks: provider.id,
+            },
+          })
+          .then(({ data }) => data),
       ),
     ),
   ]);
@@ -150,23 +161,27 @@ export default async function Home({ type = "movie" }) {
     // Home Slider Films
     Promise.all(
       trending.slice(0, 5).map((film) =>
-        axios.get(`/${type}/${film.id}`, {
-          params: {
-            append_to_response: "images",
-          },
-        }).then(({ data }) => data),
+        axios
+          .get(`/${type}/${film.id}`, {
+            params: {
+              append_to_response: "images",
+            },
+          })
+          .then(({ data }) => data),
       ),
     ),
 
     // Genres Films
     Promise.all(
       genres.slice(0, 3).map((genre) =>
-        axios.get(`/discover/${type}`, {
-          params: {
-            ...defaultParams,
-            with_genres: genre.id,
-          },
-        }).then(({ data }) => data),
+        axios
+          .get(`/discover/${type}`, {
+            params: {
+              ...defaultParams,
+              with_genres: genre.id,
+            },
+          })
+          .then(({ data }) => data),
       ),
     ),
   ]);
@@ -210,6 +225,9 @@ export default async function Home({ type = "movie" }) {
       </div>
 
       <div className={`flex flex-col gap-4 lg:-mt-[5rem]`}>
+        {/* Continue Watching */}
+        <History title={`Continue Watching`} />
+
         {/* Now Playing */}
         <Suspense fallback={<SkeletonSlider />}>
           <FilmSlider
@@ -237,8 +255,9 @@ export default async function Home({ type = "movie" }) {
             films={topRated}
             title={`Top Rated`}
             genres={genres}
-            viewAll={`${!isTvPage ? `/search` : `/tv/search`
-              }?sort_by=vote_count.desc`}
+            viewAll={`${
+              !isTvPage ? `/search` : `/tv/search`
+            }?sort_by=vote_count.desc`}
           />
         </Suspense>
 
@@ -252,27 +271,28 @@ export default async function Home({ type = "movie" }) {
         {/* Companies / Providers */}
         {!isTvPage
           ? companies
-            .slice(0, 3)
-            .map((company, index) => (
-              <FilmSlider
-                key={company.id}
-                films={companiesFilms[index]}
-                title={company.name}
-                genres={genres}
-                viewAll={`${!isTvPage ? `/search` : `/tv/search`
+              .slice(0, 3)
+              .map((company, index) => (
+                <FilmSlider
+                  key={company.id}
+                  films={companiesFilms[index]}
+                  title={company.name}
+                  genres={genres}
+                  viewAll={`${
+                    !isTvPage ? `/search` : `/tv/search`
                   }?with_companies=${company.id}`}
-              />
-            ))
+                />
+              ))
           : providers
-            .slice(0, 3)
-            .map((provider, index) => (
-              <FilmSlider
-                key={provider.id}
-                films={providersFilms[index]}
-                title={provider.name}
-                genres={genres}
-              />
-            ))}
+              .slice(0, 3)
+              .map((provider, index) => (
+                <FilmSlider
+                  key={provider.id}
+                  films={providersFilms[index]}
+                  title={provider.name}
+                  genres={genres}
+                />
+              ))}
 
         {/* Trending */}
         <section
@@ -291,8 +311,9 @@ export default async function Home({ type = "movie" }) {
             films={genresFilms[index]}
             title={genre.name}
             genres={genres}
-            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${genre.id
-              }`}
+            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
+              genre.id
+            }`}
           />
         ))}
 

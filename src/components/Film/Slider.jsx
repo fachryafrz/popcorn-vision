@@ -19,7 +19,6 @@ import moment from "moment";
 export default function FilmSlider({
   films,
   title,
-  genres,
   sort = "DESC",
   viewAll = "",
 }) {

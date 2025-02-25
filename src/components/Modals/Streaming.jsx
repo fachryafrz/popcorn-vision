@@ -9,6 +9,7 @@ export default function Streaming() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const streaming = searchParams.get("streaming");
 
   const [origin, type, id] = pathname.split("/");
@@ -18,6 +19,12 @@ export default function Streaming() {
 
   const season = searchParams.get("season");
   const episode = searchParams.get("episode");
+
+  const handleClose = () => {
+    current.delete("streaming");
+
+    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+  };
 
   useEffect(() => {
     if (!streaming) {
@@ -36,6 +43,17 @@ export default function Streaming() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("message", (event) => {
+      if (event.origin !== "https://vidlink.pro") return;
+
+      if (event.data?.type === "MEDIA_DATA") {
+        const mediaData = event.data.data;
+        localStorage.setItem("watch-history", JSON.stringify(mediaData));
+      }
+    });
   }, []);
 
   return (
@@ -59,7 +77,7 @@ export default function Streaming() {
       {/* Close */}
       <form
         method="dialog"
-        onSubmit={() => router.back()}
+        onSubmit={handleClose}
         className={`absolute right-4 top-4 z-50`}
       >
         <button type="submit" className={`flex`}>
