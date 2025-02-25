@@ -37,7 +37,7 @@ export default function FilmDirector({ credits, film, isTvPage }) {
                     id={item.id}
                     name={item.name}
                     profile_path={item.profile_path}
-                    role={`Creator`}
+                    role={`Director`}
                   />
                 );
               })}
