@@ -105,7 +105,7 @@ export default function Streaming() {
               width={"100%"}
               height={"100%"}
               allowFullScreen={true}
-              src={`https://vidlink.pro/${mediaType}/${type === "movies" ? filmID : `${filmID}/${season || 1}/${episode || 1}`}?primaryColor=0278fd&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=default&title=true&poster=false&autoplay=false&nextbutton=true`}
+              src={`https://vidlink.pro/${mediaType}/${type === "movies" ? filmID : `${filmID}/${season}/${episode}`}?primaryColor=0278fd&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=default&title=true&poster=true&autoplay=false&nextbutton=true`}
             ></iframe>
           </div>
 
