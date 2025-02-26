@@ -122,7 +122,7 @@ export default function FilmSlider({
         wrapperClass={`@container`}
         wrapperTag="ul"
       >
-        {sortedFilms.map((film) => {
+        {films.results.filter((film) => film.poster_path).map((film) => {
           return (
             <SwiperSlide
               key={film.id}

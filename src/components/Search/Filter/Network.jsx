@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
-import tmdbNetworks from "@/json/tv_network_ids_12_26_2023.json";
+import { tvNetworks } from "@/data/tv-networks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+import debounce from "debounce";
 
 const WITH_NETWORKS = "with_networks";
 
@@ -17,7 +18,7 @@ export default function Network({ inputStyles }) {
     ? OR_SEPARATION
     : AND_SEPARATION;
 
-  const [networksData, setNetworksData] = useState(tmdbNetworks);
+  const [networksData, setNetworksData] = useState(tvNetworks);
   const [network, setNetwork] = useState([]);
   const [toggleSeparation, setToggleSeparation] = useState(
     defaultToggleSeparation,
@@ -25,18 +26,16 @@ export default function Network({ inputStyles }) {
 
   const separation = toggleSeparation === AND_SEPARATION ? "," : "|";
 
-  const networksLoadOptions = (inputValue, callback) => {
-    setTimeout(() => {
-      const options = networksData.map((network) => ({
-        value: network.id,
-        label: network.name,
-      }));
-      const filteredOptions = options.filter((option) =>
-        option.label.toLowerCase().includes(inputValue.toLowerCase()),
-      );
-      callback(filteredOptions);
-    }, 2000);
-  };
+  const networksLoadOptions = debounce((inputValue, callback) => {
+    const options = networksData.map((network) => ({
+      value: network.id,
+      label: network.name,
+    }));
+    const filteredOptions = options.filter((option) =>
+      option.label.toLowerCase().includes(inputValue.toLowerCase()),
+    );
+    callback(filteredOptions);
+  }, 1000);
 
   const handleNetworkChange = (selectedOption) => {
     const value = selectedOption.map((option) => option.value);

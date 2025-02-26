@@ -5,6 +5,8 @@ import FilmContent from "../../../../components/Film/Details/Content";
 import Recommendation from "@/components/Film/Recommendation";
 import AdultModal from "@/components/Modals/AdultModal";
 import { axios } from "@/lib/axios";
+import { movieGenres } from "@/data/movie-genres";
+import { tvGenres } from "@/data/tv-genres";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -12,11 +14,13 @@ export async function generateMetadata({ params, type = "movie" }) {
   const [film, images] = await Promise.all([
     axios.get(`/${type}/${id}`).then(({ data }) => data),
 
-    axios.get(`/${type}/${id}/images`, {
-      params: {
-        include_image_language: "en",
-      },
-    }).then(({ data }) => data),
+    axios
+      .get(`/${type}/${id}/images`, {
+        params: {
+          include_image_language: "en",
+        },
+      })
+      .then(({ data }) => data),
   ]);
   const isTvPage = type !== "movie" ? true : false;
 
@@ -66,21 +70,23 @@ export default async function FilmDetail({ params, type = "movie" }) {
 
   const isTvPage = type === "tv";
 
-  const [film, images, genres] = await Promise.all([
-    axios.get(`/${type}/${id}`, {
-      params: {
-        append_to_response:
-          "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
-      },
-    }).then(({ data }) => data),
+  const [film, images] = await Promise.all([
+    axios
+      .get(`/${type}/${id}`, {
+        params: {
+          append_to_response:
+            "credits,videos,reviews,watch/providers,recommendations,similar,release_dates",
+        },
+      })
+      .then(({ data }) => data),
 
-    axios.get(`/${type}/${id}/images`, {
-      params: {
-        include_image_language: "en",
-      },
-    }).then(({ data }) => data),
-
-    axios.get(`/genre/${type}/list`).then(({ data }) => data.genres),
+    axios
+      .get(`/${type}/${id}/images`, {
+        params: {
+          include_image_language: "en",
+        },
+      })
+      .then(({ data }) => data),
   ]);
 
   const {
@@ -99,9 +105,9 @@ export default async function FilmDetail({ params, type = "movie" }) {
   let collection;
 
   if (film.belongs_to_collection) {
-    collection = await axios.get(`/collection/${film.belongs_to_collection.id}`, {
-
-    }).then(({ data }) => data)
+    collection = await axios
+      .get(`/collection/${film.belongs_to_collection.id}`, {})
+      .then(({ data }) => data);
   }
 
   // This can cause double data from recommendation & similar
@@ -144,11 +150,11 @@ export default async function FilmDetail({ params, type = "movie" }) {
   // Director / Creator
   !isTvPage
     ? director &&
-    directorsArray.push({ "@type": "Person", name: director.name })
+      directorsArray.push({ "@type": "Person", name: director.name })
     : film.created_by.length &&
-    film.created_by.map((creator) => {
-      directorsArray.push({ "@type": "Person", name: creator.name });
-    });
+      film.created_by.map((creator) => {
+        directorsArray.push({ "@type": "Person", name: creator.name });
+      });
 
   // Actors
   credits.cast.slice(0, DATA_COUNT).map((actor) => {
@@ -273,7 +279,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
                   ? "Similar"
                   : ""
           }
-          genres={genres}
+          genres={!isTvPage ? movieGenres : tvGenres}
         />
       )}
 

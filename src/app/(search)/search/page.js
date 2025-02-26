@@ -3,6 +3,8 @@ import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import dayjs from "dayjs";
 import Filters from "@/components/Search/Filter";
 import { axios } from "@/lib/axios";
+import { movieGenres } from "@/data/movie-genres";
+import { languages } from "@/data/languages";
 
 export async function generateMetadata() {
   return {
@@ -37,8 +39,6 @@ export async function generateMetadata() {
 
 export default async function page() {
   const [
-    { genres: movieGenresData },
-    languagesData,
     {
       results: [fetchMinYear],
     },
@@ -46,44 +46,42 @@ export default async function page() {
       results: [fetchMaxYear],
     },
   ] = await Promise.all([
-    axios.get(`/genre/movie/list`).then(({ data }) => data),
+    axios
+      .get(`/discover/movie`, {
+        params: {
+          sort_by: "primary_release_date.asc",
+        },
+      })
+      .then(({ data }) => data),
 
-    axios.get(`/configuration/languages`).then(({ data }) => data),
-
-    axios.get(`/discover/movie`, {
-      params: {
-        sort_by: "primary_release_date.asc",
-      },
-    }).then(({ data }) => data),
-
-    axios.get(`/discover/movie`, {
-      params: {
-        sort_by: "primary_release_date.desc",
-      },
-    }).then(({ data }) => data),
+    axios
+      .get(`/discover/movie`, {
+        params: {
+          sort_by: "primary_release_date.desc",
+        },
+      })
+      .then(({ data }) => data),
   ]);
 
   const minYear = dayjs(fetchMinYear.release_date).year();
   const maxYear = dayjs(fetchMaxYear.release_date).year();
 
   return (
-    <div className={`flex lg:px-4 gap-4`}>
-      <h1 className="sr-only">
-        Search Movies
-      </h1>
+    <div className={`flex gap-4 lg:px-4`}>
+      <h1 className="sr-only">Search Movies</h1>
 
       <Filters
-        type={'movie'}
-        genresData={movieGenresData}
+        type={"movie"}
+        genresData={movieGenres}
         minYear={minYear}
         maxYear={maxYear}
-        languagesData={languagesData}
+        languagesData={languages}
       />
 
       <Search
         type={`movie`}
-        genresData={movieGenresData}
-        languagesData={languagesData}
+        genresData={movieGenres}
+        languagesData={languages}
         minYear={minYear}
         maxYear={maxYear}
       />

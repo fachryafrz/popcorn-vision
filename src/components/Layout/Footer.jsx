@@ -9,9 +9,7 @@ import {
   logoTwitter,
 } from "ionicons/icons";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import packageJson from "../../../package.json";
 import { POPCORN } from "@/lib/constants";
 import dayjs from "dayjs";
 import { handleOpenWindow } from "@/lib/openWindow";

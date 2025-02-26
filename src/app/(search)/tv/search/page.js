@@ -2,6 +2,8 @@ import Search from "@/components/Search/";
 import Filters from "@/components/Search/Filter";
 import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 import { axios } from "@/lib/axios";
+import { tvGenres } from "@/data/tv-genres";
+import { languages } from "@/data/languages";
 
 export async function generateMetadata() {
   return {
@@ -35,53 +37,48 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-  const [
-    { genres: tvGenresData },
-    languagesData,
-    { results: fetchMinYear },
-    { results: fetchMaxYear },
-  ] = await Promise.all([
-    axios.get(`/genre/tv/list`).then(({ data }) => data),
+  const [{ results: fetchMinYear }, { results: fetchMaxYear }] =
+    await Promise.all([
+      axios
+        .get(`/discover/tv`, {
+          params: {
+            sort_by: "first_air_date.asc",
+          },
+        })
+        .then(({ data }) => data),
 
-    axios.get(`/configuration/languages`).then(({ data }) => data),
-
-    axios.get(`/discover/tv`, {
-      params: {
-        sort_by: "first_air_date.asc",
-      },
-    }).then(({ data }) => data),
-
-    axios.get(`/discover/tv`, {
-      params: {
-        sort_by: "first_air_date.desc",
-      },
-    }).then(({ data }) => data),
-  ]);
+      axios
+        .get(`/discover/tv`, {
+          params: {
+            sort_by: "first_air_date.desc",
+          },
+        })
+        .then(({ data }) => data),
+    ]);
 
   const defaultMaxYear = new Date().getFullYear() + 1;
   const minYear = new Date(fetchMinYear[0].first_air_date).getFullYear();
   const maxYear = new Date(fetchMaxYear[0].first_air_date).getFullYear();
 
   return (
-    <div className={`flex lg:px-4 gap-4`}>
-      <h1 className="sr-only">
-        Search TV Shows
-      </h1>
+    <div className={`flex gap-4 lg:px-4`}>
+      <h1 className="sr-only">Search TV Shows</h1>
 
       <Filters
-        type={'tv'}
-        genresData={tvGenresData}
+        type={"tv"}
+        genresData={tvGenres}
         minYear={minYear}
         maxYear={maxYear}
-        languagesData={languagesData}
+        languagesData={languages}
       />
 
       <Search
         type={`tv`}
-        genresData={tvGenresData}
-        languagesData={languagesData}
+        genresData={tvGenres}
+        languagesData={languages}
         minYear={minYear}
         maxYear={maxYear > defaultMaxYear ? defaultMaxYear : maxYear}
-      /></div>
+      />
+    </div>
   );
 }

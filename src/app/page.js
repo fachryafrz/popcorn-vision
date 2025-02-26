@@ -2,8 +2,6 @@ import React, { Suspense } from "react";
 import HomeSlider from "@/components/Film/HomeSlider";
 import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
-import companies from "../json/companies.json";
-import providers from "../json/providers.json";
 import moment from "moment";
 import { POPCORN } from "@/lib/constants";
 import SkeletonSlider from "@/components/Skeleton/main/Slider";
@@ -12,6 +10,10 @@ import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
 import Script from "next/script";
 import { axios } from "@/lib/axios";
 import History from "@/components/Film/History";
+import { companies } from "@/data/companies";
+import { providers } from "@/data/providers";
+import { movieGenres } from "@/data/movie-genres";
+import { tvGenres } from "@/data/tv-genres";
 
 export async function generateMetadata() {
   return {
@@ -44,8 +46,8 @@ export default async function Home({ type = "movie" }) {
   // Get current date and other date-related variables
   const today = moment().format("YYYY-MM-DD");
   const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
-  const monthsAgo = moment().subtract(1, "months").format("YYYY-MM-DD");
-  const monthsLater = moment().add(1, "months").format("YYYY-MM-DD");
+  const monthsAgo = moment().subtract(3, "months").format("YYYY-MM-DD");
+  const monthsLater = moment().add(3, "months").format("YYYY-MM-DD");
 
   const defaultParams = !isTvPage
     ? {
@@ -66,7 +68,6 @@ export default async function Home({ type = "movie" }) {
 
   // API Requests
   const [
-    genres,
     trending,
     nowPlaying,
     upcoming,
@@ -74,11 +75,7 @@ export default async function Home({ type = "movie" }) {
     companiesFilms,
     providersFilms,
   ] = await Promise.all([
-    // Genres
-    axios.get(`/genre/${type}/list`).then(({ data }) => data.genres),
-
     // Trending
-    // getTrending({ type }).then(({ results }) => results),
     axios.get(`/trending/${type}/week`).then(({ data }) => data.results),
 
     // Now playing
@@ -87,7 +84,6 @@ export default async function Home({ type = "movie" }) {
         params: !isTvPage
           ? {
               ...defaultParams,
-              without_genres: 10749,
               "primary_release_date.gte": monthsAgo,
               "primary_release_date.lte": today,
             }
@@ -105,7 +101,6 @@ export default async function Home({ type = "movie" }) {
         params: !isTvPage
           ? {
               ...defaultParams,
-              without_genres: 10749,
               "primary_release_date.gte": tomorrow,
               "primary_release_date.lte": monthsLater,
             }
@@ -130,7 +125,7 @@ export default async function Home({ type = "movie" }) {
 
     // Companies Films
     Promise.all(
-      companies.slice(0, 3).map((company) =>
+      companies.map((company) =>
         axios
           .get(`/discover/${type}`, {
             params: {
@@ -144,7 +139,7 @@ export default async function Home({ type = "movie" }) {
 
     // Providers Films
     Promise.all(
-      providers.slice(0, 3).map((provider) =>
+      providers.map((provider) =>
         axios
           .get(`/discover/${type}`, {
             params: {
@@ -173,16 +168,31 @@ export default async function Home({ type = "movie" }) {
 
     // Genres Films
     Promise.all(
-      genres.slice(0, 3).map((genre) =>
-        axios
-          .get(`/discover/${type}`, {
-            params: {
-              ...defaultParams,
-              with_genres: genre.id,
-            },
-          })
-          .then(({ data }) => data),
-      ),
+      !isTvPage
+        ? movieGenres
+            .filter((genre) => [27, 35, 878].includes(genre.id))
+            .map((genre) =>
+              axios
+                .get(`/discover/${type}`, {
+                  params: {
+                    ...defaultParams,
+                    with_genres: genre.id,
+                  },
+                })
+                .then(({ data }) => data),
+            )
+        : tvGenres
+            .filter((genre) => [35, 10751, 10765].includes(genre.id))
+            .map((genre) =>
+              axios
+                .get(`/discover/${type}`, {
+                  params: {
+                    ...defaultParams,
+                    with_genres: genre.id,
+                  },
+                })
+                .then(({ data }) => data),
+            ),
     ),
   ]);
 
@@ -218,7 +228,7 @@ export default async function Home({ type = "movie" }) {
         <Suspense fallback={<SkeletonHomeSlider />}>
           <HomeSlider
             films={trending.slice(0, 5)}
-            genres={genres}
+            genres={!isTvPage ? movieGenres : tvGenres}
             filmData={homeSliderData}
           />
         </Suspense>
@@ -233,7 +243,6 @@ export default async function Home({ type = "movie" }) {
           <FilmSlider
             films={nowPlaying}
             title={!isTvPage ? `Now Playing` : `On The Air`}
-            genres={genres}
             viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${monthsAgo}..${today}`}
           />
         </Suspense>
@@ -243,7 +252,6 @@ export default async function Home({ type = "movie" }) {
           <FilmSlider
             films={upcoming}
             title={`Upcoming`}
-            genres={genres}
             sort={"ASC"}
             viewAll={`${!isTvPage ? `/search` : `/tv/search`}?release_date=${tomorrow}..${monthsLater}`}
           />
@@ -254,7 +262,6 @@ export default async function Home({ type = "movie" }) {
           <FilmSlider
             films={topRated}
             title={`Top Rated`}
-            genres={genres}
             viewAll={`${
               !isTvPage ? `/search` : `/tv/search`
             }?sort_by=vote_count.desc`}
@@ -264,7 +271,7 @@ export default async function Home({ type = "movie" }) {
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
           <Suspense fallback={<SkeletonTrending />}>
-            <Trending film={trending[5]} genres={genres} type={type} />
+            <Trending film={trending[5]} type={type} />
           </Suspense>
         </section>
 
@@ -277,7 +284,6 @@ export default async function Home({ type = "movie" }) {
                   key={company.id}
                   films={companiesFilms[index]}
                   title={company.name}
-                  genres={genres}
                   viewAll={`${
                     !isTvPage ? `/search` : `/tv/search`
                   }?with_companies=${company.id}`}
@@ -290,7 +296,6 @@ export default async function Home({ type = "movie" }) {
                   key={provider.id}
                   films={providersFilms[index]}
                   title={provider.name}
-                  genres={genres}
                 />
               ))}
 
@@ -300,27 +305,41 @@ export default async function Home({ type = "movie" }) {
           className="py-[2rem]"
         >
           <Suspense fallback={<SkeletonTrending />}>
-            <Trending film={trending[6]} genres={genres} type={type} />
+            <Trending film={trending[6]} type={type} />
           </Suspense>
         </section>
 
         {/* Genres */}
-        {genres.slice(0, 3).map((genre, index) => (
-          <FilmSlider
-            key={genre.id}
-            films={genresFilms[index]}
-            title={genre.name}
-            genres={genres}
-            viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
-              genre.id
-            }`}
-          />
-        ))}
+        {!isTvPage
+          ? movieGenres
+              .filter((genre) => [27, 35, 878].includes(genre.id))
+              .map((genre, index) => (
+                <FilmSlider
+                  key={genre.id}
+                  films={genresFilms[index]}
+                  title={genre.name}
+                  viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
+                    genre.id
+                  }`}
+                />
+              ))
+          : tvGenres
+              .filter((genre) => [35, 10751, 10765].includes(genre.id))
+              .map((genre, index) => (
+                <FilmSlider
+                  key={genre.id}
+                  films={genresFilms[index]}
+                  title={genre.name}
+                  viewAll={`${!isTvPage ? `/search` : `/tv/search`}?with_genres=${
+                    genre.id
+                  }`}
+                />
+              ))}
 
         {/* Trending */}
         <section id="Trending" className="py-[2rem]">
           <Suspense fallback={<SkeletonTrending />}>
-            <Trending film={trending[7]} genres={genres} type={type} />
+            <Trending film={trending[7]} type={type} />
           </Suspense>
         </section>
       </div>

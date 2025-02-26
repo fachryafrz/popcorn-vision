@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import FilmSlider from "./Slider";
 import Link from "next/link";
 import FilmCard from "./Card";
 import { FreeMode, Navigation } from "swiper/modules";
