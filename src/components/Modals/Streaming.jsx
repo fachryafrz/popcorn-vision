@@ -194,12 +194,13 @@ function MovieCollection({ film, detailsLoading }) {
           <li key={item.id}>
             <button
               onClick={() => handleWatchMovie(item)}
+              disabled={moment(item.release_date).isAfter()}
               prefetch={false}
-              className={`relative`}
+              className={`group relative overflow-hidden rounded-xl`}
             >
               <ImagePovi
                 imgPath={item.poster_path}
-                className={`relative aspect-poster overflow-hidden rounded-xl`}
+                className={`relative aspect-poster overflow-hidden transition-all duration-500 ${moment(item.release_date).isAfter() ? `` : `group-hover:scale-105`}`}
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
