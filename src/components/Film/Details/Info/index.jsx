@@ -286,7 +286,7 @@ export default function FilmInfo({
           {/* Streaming */}
           {filmReleaseDate !== "" && !isUpcoming && (
             <section className={`mb-2`}>
-              <WatchButton />
+              <WatchButton mediaType={isTvPage ? "tv" : "movie"} />
             </section>
           )}
 

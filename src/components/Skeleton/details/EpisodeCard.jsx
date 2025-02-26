@@ -7,8 +7,8 @@ import "swiper/css/keyboard";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Keyboard } from "swiper/modules";
 
-export default function SkeletonEpisodeCard() {
-  const episodes = [...Array(2).keys()];
+export default function SkeletonEpisodeCard({ breakpoints, numberOfEps = 2, className = "relative !px-2" }) {
+  const episodes = [...Array(numberOfEps).keys()];
 
   return (
     <Swiper
@@ -21,14 +21,9 @@ export default function SkeletonEpisodeCard() {
       }}
       slidesPerView={1}
       spaceBetween={4}
-      breakpoints={{
-        768: {
-          slidesPerView: 2,
-          slidesPerGroup: 2,
-        },
-      }}
-      className={`relative !px-2`}
-      >
+      breakpoints={breakpoints}
+      className={className}
+    >
       {episodes.map((item) => {
         return (
           <SwiperSlide key={item.id} className={`!h-auto`}>

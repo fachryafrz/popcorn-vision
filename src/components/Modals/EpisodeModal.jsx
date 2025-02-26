@@ -124,12 +124,10 @@ export function EpisodeModal({ film }) {
   );
 
   useEffect(() => {
-    if (!seasonParams || !episodeParams) {
-      document.getElementById(`episodeModal`).close();
-    } else {
-      document.getElementById(`episodeModal`).showModal();
-    }
-  }, [episodeParams, seasonParams]);
+    if (!searchParams.get("season") || !searchParams.get("episode")) return;
+
+    document.getElementById(`episodeModal`).showModal();
+  }, [searchParams]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -265,7 +263,11 @@ export function EpisodeModal({ film }) {
 
                 {isAired && (
                   <>
-                    <WatchButton />
+                    <WatchButton
+                      mediaType={`tv`}
+                      season={episode.season_number}
+                      episode={episode.episode_number}
+                    />
 
                     <section id={`Episode Rating`} className={`max-w-fit`}>
                       <UserRating

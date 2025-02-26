@@ -15,18 +15,21 @@ export default function EpisodeCard({
   secondaryInfo,
   thirdInfo,
   overlay,
+  onClick,
 }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  const handleClick = () => {
+    router.replace(
+      `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
+      { scroll: false },
+    );
+  };
+
   return (
     <button
-      onClick={() => {
-        router.replace(
-          `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
-          { scroll: false },
-        );
-      }}
+      onClick={onClick || handleClick}
       // href={{
       //   pathname,
       //   query: { season: episode.season_number, episode: episode.episode_number },

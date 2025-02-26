@@ -31,10 +31,6 @@ export default function History({ title }) {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(films);
-  }, [films]);
-
   return (
     <>
       {films.length > 0 && (

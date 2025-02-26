@@ -349,7 +349,16 @@ function FilmEpisodes({ id, season }) {
 
   return (
     <div className={`rounded-b-xl bg-secondary bg-opacity-10 py-2`}>
-      {isLoading && <SkeletonEpisodeCard />}
+      {isLoading && (
+        <SkeletonEpisodeCard
+          breakpoints={{
+            768: {
+              slidesPerView: 2,
+              slidesPerGroup: 2,
+            },
+          }}
+        />
+      )}
 
       {!isLoading && !episodes.length && (
         <div className={`flex items-center justify-center text-gray-400`}>

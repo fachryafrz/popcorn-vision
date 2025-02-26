@@ -11,7 +11,13 @@ import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
 import pluralize from "pluralize";
 
-export default function FilmSummary({ film, genres, className, btnClass }) {
+export default function FilmSummary({
+  film,
+  className,
+  btnClass,
+  showButton = true,
+  clampDescription = true,
+}) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -75,25 +81,32 @@ export default function FilmSummary({ film, genres, className, btnClass }) {
         )}
       </div>
 
-      <p aria-hidden className="hidden md:line-clamp-2 lg:line-clamp-3">
+      <p
+        aria-hidden
+        className={
+          clampDescription ? "hidden md:line-clamp-2 lg:line-clamp-3" : ""
+        }
+      >
         {film.overview}
       </p>
 
-      <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
-        <Link
-          href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
-          prefetch={false}
-          className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
-        >
-          Details
-          <IonIcon
-            icon={chevronForward}
-            style={{
-              fontSize: 16,
-            }}
-          />
-        </Link>
-      </div>
+      {showButton && (
+        <div className={`mt-4 grid w-full gap-2 md:grid-cols-2`}>
+          <Link
+            href={`/${!isTvPage ? `movies` : `tv`}/${film.id}-${slug(film.title ?? film.name)}`}
+            prefetch={false}
+            className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
+          >
+            Details
+            <IonIcon
+              icon={chevronForward}
+              style={{
+                fontSize: 16,
+              }}
+            />
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
