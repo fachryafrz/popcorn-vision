@@ -93,7 +93,7 @@ export default function Streaming() {
 
   return (
     <>
-      {streaming && (
+      {streaming === "true" && (
         <dialog
           id="streaming"
           onCancel={(e) => e.preventDefault()}
@@ -101,14 +101,12 @@ export default function Streaming() {
         >
           {/* Screen */}
           <div className="z-0 aspect-video h-full w-full lg:px-16">
-            {streaming && "true" && (
-              <iframe
-                width={"100%"}
-                height={"100%"}
-                allowFullScreen={true}
-                src={`https://vidlink.pro/${mediaType}/${type === "movies" ? filmID : `${filmID}/${season || 1}/${episode || 1}`}?primaryColor=0278fd&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=default&title=true&poster=false&autoplay=true&nextbutton=true`}
-              ></iframe>
-            )}
+            <iframe
+              width={"100%"}
+              height={"100%"}
+              allowFullScreen={true}
+              src={`https://vidlink.pro/${mediaType}/${type === "movies" ? filmID : `${filmID}/${season || 1}/${episode || 1}`}?primaryColor=0278fd&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=default&title=true&poster=false&autoplay=false&nextbutton=true`}
+            ></iframe>
           </div>
 
           {/* Title */}
