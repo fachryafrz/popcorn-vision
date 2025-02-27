@@ -9,6 +9,7 @@ export default function LoginButton() {
 
   return (
     <Link
+      id="login"
       href={
         pathname !== `/login`
           ? `/login?redirect_to=${pathname}${searchParams ? `?${searchParams}` : ``}`

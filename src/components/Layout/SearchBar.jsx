@@ -195,13 +195,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
     };
   }, [autocompleteData, highlightedIndex, isFocus]);
 
-  // Cleanup debounce
-  useEffect(() => {
-    return () => {
-      debouncedSearch.clear();
-    };
-  }, []);
-
   useEffect(() => {
     setHighlightedIndex(-1);
   }, [debouncedQuery]);
@@ -240,7 +233,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             }}
             onFocus={() => {
               setIsFocus(true);
-              debouncedSearch.flush(); // Immediate search saat focus
+              debouncedSearch.clear(); // Immediate search saat focus
             }}
             onBlur={(e) => {
               // Cegah blur jika klik di dalam autocomplete
