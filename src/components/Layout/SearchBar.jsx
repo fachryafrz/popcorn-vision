@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import Typewriter from "typewriter-effect/dist/core";
-import debounce from "debounce";
+import { debounce } from "@mui/material";
 import useSWR from "swr";
 import axios from "axios";
 

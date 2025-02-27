@@ -3,7 +3,7 @@ import AsyncSelect from "react-select/async";
 import { tvNetworks } from "@/data/tv-networks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
-import debounce from "debounce";
+import { debounce } from "@mui/material";
 
 const WITH_NETWORKS = "with_networks";
 

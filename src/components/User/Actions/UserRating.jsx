@@ -68,7 +68,7 @@ export default function UserRating({ swrKey, rating, url, title, name }) {
     <>
       <div>
         <div className={`mb-2 flex items-center gap-2`}>
-          <span aria-hidden className={`block text-sm font-medium italic`}>
+          <span aria-hidden className={`block text-sm font-medium`}>
             {title}
           </span>
         </div>

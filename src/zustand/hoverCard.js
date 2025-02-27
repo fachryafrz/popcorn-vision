@@ -1,4 +1,4 @@
-import debounce from "debounce";
+import { debounce } from "@mui/material";
 import { create } from "zustand";
 
 export const useHoverCard = create((set) => {

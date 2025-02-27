@@ -3,7 +3,7 @@ import AsyncSelect from "react-select/async";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
-import debounce from "debounce";
+import { debounce } from "@mui/material";
 
 const WITH_KEYWORDS = "with_keywords";
 
