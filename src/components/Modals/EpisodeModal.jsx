@@ -116,11 +116,6 @@ export function EpisodeModal({ film }) {
   const { data: accountStates } = useSWR(
     user && episode ? swrKey : null,
     fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
   );
 
   useEffect(() => {

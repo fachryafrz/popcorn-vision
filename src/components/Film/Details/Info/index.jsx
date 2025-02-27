@@ -110,11 +110,7 @@ export default function FilmInfo({
   // Get account state using SWR
   const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
-  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  });
+  const { data: accountStates } = useSWR(user ? swrKey : null, fetcher);
 
   // Confetti
   useEffect(() => {

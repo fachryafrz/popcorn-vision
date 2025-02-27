@@ -88,11 +88,6 @@ export default function HoverCard() {
   const { data: accountStates } = useSWR(
     user && card && window.innerWidth >= 1280 ? swrKey : null,
     fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
   );
 
   useEffect(() => {

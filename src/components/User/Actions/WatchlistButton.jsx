@@ -21,7 +21,7 @@ export default function WatchlistButton({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [isAdded, setIsAdded] = useState();
+  const [isAdded, setIsAdded] = useState(watchlist);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleWatchlist = async (value) => {

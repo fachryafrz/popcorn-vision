@@ -21,7 +21,7 @@ export default function FavoriteButton({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const [isAdded, setIsAdded] = useState();
+  const [isAdded, setIsAdded] = useState(favorite);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFavorite = async (value) => {
