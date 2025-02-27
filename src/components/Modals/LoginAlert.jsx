@@ -6,7 +6,7 @@ export default function LoginAlert() {
   const pathname = usePathname();
 
   useEffect(() => {
-    document.getElementById("loginAlert").close();
+    document.getElementById("loginAlert").showModal();
   }, [pathname]);
 
   return (
