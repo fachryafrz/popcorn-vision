@@ -107,10 +107,6 @@ export default function History({ title }) {
                     prefetch={false}
                     className={`group relative block overflow-hidden rounded-xl`}
                   >
-                    <h3 className={`sr-only`}>
-                      {`${film.title ?? film.name} (${moment(film.release_date ?? film.first_air_date).format("YYYY")})`}
-                    </h3>
-
                     <ImagePovi
                       imgPath={film.backdrop_path}
                       className={`relative aspect-video overflow-hidden transition-all duration-500 group-hover:scale-110`}
@@ -140,7 +136,7 @@ export default function History({ title }) {
                         )}
 
                         {/* Title */}
-                        <h3 className={`text-xl font-bold`}>{film.title}</h3>
+                        <h3 className={`xs:text-xl font-bold text-pretty`}>{film.title}</h3>
 
                         {/* Duration */}
                         <progress
