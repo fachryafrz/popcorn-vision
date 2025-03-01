@@ -80,7 +80,7 @@ export default function History({ title }) {
             wrapperClass={`@container`}
             wrapperTag="ul"
           >
-            {films?.map((film) => {
+            {films?.slice(0, 10).map((film) => {
               const isTv = film.type === "tv";
 
               const lastChapter = isTv
