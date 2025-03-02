@@ -9,7 +9,6 @@ import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
 import Script from "next/script";
 import { axios } from "@/lib/axios";
-import History from "@/components/Film/History";
 import { companies } from "@/data/companies";
 import { providers } from "@/data/providers";
 import { movieGenres } from "@/data/movie-genres";
@@ -235,9 +234,6 @@ export default async function Home({ type = "movie" }) {
       </div>
 
       <div className={`flex flex-col gap-4 lg:-mt-[5rem]`}>
-        {/* Continue Watching */}
-        <History title={`Continue Watching`} />
-
         {/* Now Playing */}
         <Suspense fallback={<SkeletonSlider />}>
           <FilmSlider

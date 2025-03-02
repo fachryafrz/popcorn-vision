@@ -76,82 +76,6 @@ export default function Filters({
     };
   }, []);
 
-  // Handle React-Select Input Styles
-  const inputStyles = useMemo(() => {
-    return {
-      placeholder: (styles) => ({
-        ...styles,
-        fontSize: "14px",
-        whiteSpace: "nowrap",
-      }),
-      control: (styles) => ({
-        ...styles,
-        color: "#fff",
-        backgroundColor: "#131720",
-        borderWidth: "1px",
-        borderColor: "#79808B",
-        borderRadius: "1.5rem",
-        cursor: "text",
-      }),
-      input: (styles, { isDisabled }) => ({
-        ...styles,
-        color: "#fff",
-      }),
-      dropdownIndicator: (styles) => ({
-        ...styles,
-        display: "none",
-      }),
-      indicatorSeparator: (styles) => ({
-        ...styles,
-        display: "none",
-      }),
-      menu: (styles) => ({
-        ...styles,
-        backgroundColor: "#131720",
-      }),
-      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-        return {
-          ...styles,
-          color: "#fff",
-          backgroundColor: isSelected ? "rgba(255,255,255,0.1)" : "#131720",
-          cursor: "pointer",
-          "&:hover": {
-            backgroundColor: "rgba(255,255,255,0.05)",
-          },
-        };
-      },
-      multiValue: (styles) => ({
-        ...styles,
-        backgroundColor: "rgba(255,255,255,0.1)",
-        borderRadius: "9999px",
-      }),
-      multiValueLabel: (styles) => ({
-        ...styles,
-        color: "#fff",
-      }),
-      multiValueRemove: (styles) => ({
-        ...styles,
-        color: "#fff",
-        borderRadius: "9999px",
-        "&:hover": {
-          backgroundColor: "rgba(255,255,255,0.1)",
-        },
-      }),
-      clearIndicator: (styles) => ({
-        ...styles,
-        display: "block",
-        "&:hover": {
-          color: "#fff",
-        },
-        cursor: "pointer",
-      }),
-      singleValue: (styles) => ({
-        ...styles,
-        color: "#fff",
-      }),
-    };
-  }, []);
-
   return (
     <aside
       onMouseOver={() => isQueryParams && setFiltersNotAvailable(true)}
@@ -186,28 +110,28 @@ export default function Filters({
         <ReleaseDate isTvPage={isTvPage} minYear={minYear} maxYear={maxYear} />
 
         {/* Streaming (Watch Providers) */}
-        <Streaming inputStyles={inputStyles} />
+        <Streaming />
 
         {/* Genre */}
-        <Genre genresData={genresData} inputStyles={inputStyles} />
+        <Genre genresData={genresData} />
 
         {/* Networks */}
-        {isTvPage && <Network inputStyles={inputStyles} />}
+        {isTvPage && <Network />}
 
         {/* Cast */}
-        {!isTvPage && <Cast inputStyles={inputStyles} />}
+        {!isTvPage && <Cast />}
 
         {/* Crew */}
-        {!isTvPage && <Crew inputStyles={inputStyles} />}
+        {!isTvPage && <Crew />}
 
         {/* Company */}
-        <Company inputStyles={inputStyles} />
+        <Company />
 
         {/* Language */}
-        <Language inputStyles={inputStyles} languagesData={languagesData} />
+        <Language languagesData={languagesData} />
 
         {/* Keyword */}
-        <Keyword inputStyles={inputStyles} />
+        <Keyword />
 
         {/* Runtime */}
         <Runtime sliderStyles={sliderStyles} />

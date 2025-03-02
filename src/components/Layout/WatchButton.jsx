@@ -17,7 +17,7 @@ export default function WatchButton({ mediaType, season, episode }) {
   return (
     <button
       onClick={handleWatch}
-      className={`btn btn-primary max-w-fit rounded-full px-8`}
+      className={`btn btn-primary max-w-fit rounded-full px-12`}
     >
       <IonIcon icon={play} />
       <span>Watch</span>

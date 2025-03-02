@@ -3,10 +3,11 @@ import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+import { inputStyles } from "@/utils/inputStyles";
 
 const WITH_GENRES = "with_genres";
 
-export default function Genre({ genresData, inputStyles }) {
+export default function Genre({ genresData }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

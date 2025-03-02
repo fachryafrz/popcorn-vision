@@ -1,10 +1,10 @@
+import { inputStyles } from "@/utils/inputStyles";
 import Select from "react-select";
 
 export default function SortByType({
   sortByTypeOptions,
   handleSortByTypeChange,
   sortByType,
-  inputStyles,
   isQueryParams,
 }) {
   return (

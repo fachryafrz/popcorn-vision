@@ -4,10 +4,11 @@ import { tvNetworks } from "@/data/tv-networks";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
+import { inputStyles } from "@/utils/inputStyles";
 
 const WITH_NETWORKS = "with_networks";
 
-export default function Network({ inputStyles }) {
+export default function Network() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
