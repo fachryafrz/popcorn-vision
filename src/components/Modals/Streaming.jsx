@@ -229,7 +229,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
 
         {/* Menu */}
         {isActive && (
-          <ul className="absolute bottom-full left-1/2 z-[1] mb-1 max-h-[200px] w-full max-w-80 -translate-x-1/2 overflow-y-auto rounded-lg bg-base-100 p-2 shadow">
+          <ul className="absolute left-1/2 z-[1] my-1 max-h-[200px] w-full max-w-80 -translate-x-1/2 overflow-y-auto rounded-lg bg-base-100 p-2 shadow lg:bottom-full">
             {providerList.map((provider) => (
               <li key={provider.title}>
                 <button
