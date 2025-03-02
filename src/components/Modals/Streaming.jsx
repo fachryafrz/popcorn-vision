@@ -21,6 +21,7 @@ import slug from "slug";
 import ImagePovi from "../Film/ImagePovi";
 import { streamingProviderList } from "@/lib/streamingProviderList";
 import { useStreamingProvider } from "@/zustand/streamingProvider";
+import Link from "next/link";
 
 export default function Streaming() {
   const router = useRouter();
@@ -98,62 +99,64 @@ export default function Streaming() {
         <dialog
           id="streaming"
           onCancel={(e) => e.preventDefault()}
-          className="modal block gap-4 space-y-4 overflow-y-auto pt-16 backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur xl:pt-0"
+          className="modal block overflow-y-auto backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur"
         >
-          {/* Screen */}
-          <div className="z-0 aspect-video w-full max-w-5xl">
-            <iframe
-              width={"100%"}
-              height={"100%"}
-              allowFullScreen={true}
-              src={selectedProvider?.source}
-            ></iframe>
-          </div>
+          <div className={`mx-auto max-w-7xl space-y-4 p-4 pt-0`}>
+            {/* Close */}
+            <form
+              method="dialog"
+              onSubmit={handleClose}
+              className={`pointer-events-none sticky top-0 z-50 !mt-0 p-4 xl:pr-0 [&_*]:pointer-events-none`}
+            >
+              <div className={`sticky top-0 -mx-4 flex justify-end`}>
+                <button type="submit" className={`!pointer-events-auto flex`}>
+                  <IonIcon icon={close} style={{ fontSize: 30 }} />
+                </button>
+              </div>
+            </form>
 
-          {/* Streaming Provider */}
-          <StreamingProvider
-            media_type={media_type}
-            id={filmID}
-            season={season}
-            episode={episode}
-          />
+            {/* Screen */}
+            <div className="z-0 -mx-4 !mt-0 aspect-video md:aspect-[2.39/1]">
+              <iframe
+                width={"100%"}
+                height={"100%"}
+                allowFullScreen={true}
+                src={selectedProvider?.source}
+              ></iframe>
+            </div>
 
-          {/* Title */}
-          <div className={`w-full px-4 pb-4`}>
-            {isLoading && <SummarySkeleton />}
+            {/* Streaming Provider */}
+            <StreamingProvider
+              media_type={media_type}
+              id={filmID}
+              season={season}
+              episode={episode}
+            />
 
-            {film && (
-              <FilmSummary
-                film={film}
-                showButton={false}
-                clampDescription={false}
-                className={`md:!max-w-[80%]`}
-              />
+            {/* Title */}
+            <div className={`w-full`}>
+              {isLoading && <SummarySkeleton />}
+
+              {film && (
+                <FilmSummary
+                  film={film}
+                  showButton={false}
+                  clampDescription={false}
+                  className={`md:!max-w-[80%]`}
+                />
+              )}
+            </div>
+
+            {/* Movie Collection */}
+            {!isTv && film?.belongs_to_collection && (
+              <MovieCollection film={film} detailsLoading={isLoading} />
+            )}
+
+            {/* Seasons & Episodes */}
+            {isTv && (
+              <Season film={film} season={season} detailsLoading={isLoading} />
             )}
           </div>
-
-          {/* Movie Collection */}
-          {!isTv && film?.belongs_to_collection && (
-            <MovieCollection film={film} detailsLoading={isLoading} />
-          )}
-
-          {/* Seasons & Episodes */}
-          {isTv && (
-            <Season film={film} season={season} detailsLoading={isLoading} />
-          )}
-
-          {/* Close */}
-          <form
-            method="dialog"
-            onSubmit={handleClose}
-            className={`pointer-events-none fixed inset-0 z-50 !mt-0 [&_*]:pointer-events-none`}
-          >
-            <div className={`sticky top-0 flex justify-end p-4`}>
-              <button type="submit" className={`!pointer-events-auto flex`}>
-                <IonIcon icon={close} style={{ fontSize: 30 }} />
-              </button>
-            </div>
-          </form>
         </dialog>
       )}
     </>
@@ -209,7 +212,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
   ];
 
   return (
-    <div className={`flex w-full items-center justify-center gap-4`}>
+    <div className={`flex w-full items-center justify-center gap-2`}>
       {/* Dropdown */}
       <div className={`relative w-full max-w-80`}>
         {/* Button */}
@@ -305,8 +308,6 @@ function StreamingProvider({ media_type, id, season, episode }) {
 }
 
 function MovieCollection({ film, detailsLoading }) {
-  const router = useRouter();
-  const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = new URLSearchParams(Array.from(searchParams.entries()));
   const belongsToCollection = film.belongs_to_collection;
@@ -316,20 +317,15 @@ function MovieCollection({ film, detailsLoading }) {
     (url) => axios.get(url).then(({ data }) => data),
   );
 
-  const handleWatchMovie = (item) => {
+  const handleWatchMovie = () => {
     document.getElementById("streaming").scrollTo({
       top: 0,
       behavior: "smooth",
     });
-
-    router.push(
-      `/movies/${item.id}-${slug(item.title)}?${current.toString()}`,
-      { scroll: false },
-    );
   };
 
   return (
-    <div className={`!mt-0 w-full space-y-2 p-4 pt-0 @container`}>
+    <div className={`w-full space-y-2 py-4 pt-0 @container`}>
       {isLoading && detailsLoading && <CollectionSkeleton />}
 
       {/* Header */}
@@ -341,34 +337,37 @@ function MovieCollection({ film, detailsLoading }) {
       <ul
         className={`grid grid-cols-3 gap-2 @2xl:grid-cols-4 @5xl:grid-cols-5 @6xl:grid-cols-6`}
       >
-        {collection?.parts.map((item) => (
-          <li key={item.id}>
-            <button
-              onClick={() => handleWatchMovie(item)}
-              disabled={
-                !item.release_date || moment(item.release_date).isAfter()
-              }
-              prefetch={false}
-              className={`group relative overflow-hidden rounded-xl`}
-            >
-              <ImagePovi
-                imgPath={item.poster_path}
-                className={`relative aspect-poster overflow-hidden transition-all duration-500 ${moment(item.release_date).isAfter() ? `` : `group-hover:scale-105`}`}
+        {collection?.parts
+          .sort((a, b) => new Date(a.release_date) - new Date(b.release_date))
+          .map((item) => (
+            <li key={item.id}>
+              <Link
+                href={{
+                  pathname: `/movies/${item.id}-${slug(item.title)}`,
+                  query: current.toString(),
+                }}
+                prefetch={false}
+                onClick={handleWatchMovie}
+                className={`group relative block overflow-hidden rounded-xl ${!item.release_date || moment(item.release_date).isAfter() ? `pointer-events-none` : ``}`}
               >
-                <img
-                  src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
-                  role="presentation"
-                  loading="lazy"
-                  draggable={false}
-                  alt=""
-                  aria-hidden
-                  width={100}
-                  height={150}
-                />
-              </ImagePovi>
-            </button>
-          </li>
-        ))}
+                <ImagePovi
+                  imgPath={item.poster_path}
+                  className={`relative aspect-poster overflow-hidden transition-all duration-500 ${moment(item.release_date).isAfter() ? `` : `group-hover:scale-105`}`}
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
+                    role="presentation"
+                    loading="lazy"
+                    draggable={false}
+                    alt=""
+                    aria-hidden
+                    width={100}
+                    height={150}
+                  />
+                </ImagePovi>
+              </Link>
+            </li>
+          ))}
       </ul>
     </div>
   );
