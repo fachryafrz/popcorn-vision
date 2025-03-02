@@ -9,6 +9,7 @@ import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import Confetti from "@/components/Layout/Confetti";
+import Providers from "@/components/Layout/ProgressBarProvider";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -90,27 +91,29 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-pt-20">
       <body className={`bg-base-100 text-white ${roboto.className}`}>
-        <CookiesProvider>
-          {/* Navbar */}
-          <Navbar />
+        <Providers>
+          <CookiesProvider>
+            {/* Navbar */}
+            <Navbar />
 
-          {/* User Location */}
-          <UserLocation ip={ip} />
+            {/* User Location */}
+            <UserLocation ip={ip} />
 
-          {/* Main Content */}
-          <main className={`mt-[66px] pb-8`}>{children}</main>
+            {/* Main Content */}
+            <main className={`mt-[66px] pb-8`}>{children}</main>
 
-          {/* Modal */}
-          <Modal />
+            {/* Modal */}
+            <Modal />
 
-          {/* Footer */}
-          <Footer />
-        </CookiesProvider>
+            {/* Footer */}
+            <Footer />
+          </CookiesProvider>
 
-        {/* Confetti */}
-        <Confetti />
+          {/* Confetti */}
+          <Confetti />
 
-        <GoogleAnalytics gaId={gtagId} />
+          <GoogleAnalytics gaId={gtagId} />
+        </Providers>
       </body>
     </html>
   );

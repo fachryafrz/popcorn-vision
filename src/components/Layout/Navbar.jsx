@@ -20,7 +20,6 @@ import { userStore } from "@/zustand/userStore";
 import { SearchBar } from "./SearchBar";
 
 export default function Navbar() {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -29,9 +28,7 @@ export default function Navbar() {
   const { setToggleFilter } = useToggleFilter();
   const { setSeasonPoster } = useSeasonPoster();
 
-  const [searchInput, setSearchInput] = useState("");
   const [isScrolled, setIsScrolled] = useState(true);
-  const [filmType, setFilmType] = useState("movie");
 
   useEffect(() => {
     if (!user) setUser(null);
@@ -134,33 +131,6 @@ export default function Navbar() {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`,
   );
-  let URLSearchQuery = searchParams.get("query");
-  const isThereAnyFilter =
-    Object.keys(Object.fromEntries(searchParams)).length > 0;
-
-  const handleFilmTypeChange = (type) => {
-    const isTvType = type === "tv";
-
-    setFilmType(type);
-
-    if (isSearchPage) {
-      if (isThereAnyFilter) {
-        router.push(
-          `${!isTvType ? `/search` : `/tv/search`}?${searchParams.toString()}`,
-        );
-      } else {
-        router.push(`${!isTvType ? `/search` : `/tv/search`}`);
-      }
-    } else {
-      router.push(!isTvType ? `/` : `/tv`);
-    }
-  };
-
-  useEffect(() => {
-    if (!URLSearchQuery) return;
-
-    setSearchInput(URLSearchQuery);
-  }, [URLSearchQuery]);
 
   useEffect(() => {
     const handleIsScrolled = () => {
@@ -239,9 +209,12 @@ export default function Navbar() {
             id={`FilmSwitcher`}
             className="flex w-fit place-content-center gap-1 rounded-full bg-neutral bg-opacity-50 p-1 backdrop-blur-sm"
           >
-            <button
-              onClick={() => handleFilmTypeChange("movie")}
-              type={`button`}
+            <Link
+              href={{
+                pathname: !isSearchPage ? `/` : `/search`,
+                query: searchParams.toString(),
+              }}
+              prefetch={false}
               className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
                 isMoviesPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
@@ -254,10 +227,13 @@ export default function Navbar() {
                 }}
               />
               <span className="hidden lg:block">Movies</span>
-            </button>
-            <button
-              onClick={() => handleFilmTypeChange("tv")}
-              type={`button`}
+            </Link>
+            <Link
+              href={{
+                pathname: !isSearchPage ? `/tv` : `/tv/search`,
+                query: searchParams.toString(),
+              }}
+              prefetch={false}
               className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
                 isTvPage &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
@@ -270,7 +246,7 @@ export default function Navbar() {
                 }}
               />
               <span className="hidden lg:block">TV Shows</span>
-            </button>
+            </Link>
           </div>
 
           {!user ? <LoginButton /> : <LogoutButton user={user} />}
