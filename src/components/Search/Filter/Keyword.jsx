@@ -4,10 +4,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
+import { inputStyles } from "@/utils/inputStyles";
 
 const WITH_KEYWORDS = "with_keywords";
 
-export default function Keyword({ inputStyles }) {
+export default function Keyword() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

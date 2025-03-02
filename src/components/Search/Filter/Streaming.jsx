@@ -6,10 +6,11 @@ import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import axios from "axios";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
+import { inputStyles } from "@/utils/inputStyles";
 
 const WATCH_PROVIDERS = "watch_providers";
 
-export default function Streaming({ inputStyles }) {
+export default function Streaming() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();

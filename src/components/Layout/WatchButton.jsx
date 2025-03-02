@@ -2,7 +2,7 @@ import { IonIcon } from "@ionic/react";
 import { play } from "ionicons/icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-export default function WatchButton({ mediaType, season, episode }) {
+export default function WatchButton() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -17,7 +17,7 @@ export default function WatchButton({ mediaType, season, episode }) {
   return (
     <button
       onClick={handleWatch}
-      className={`btn btn-primary max-w-fit rounded-full px-8`}
+      className={`btn btn-primary max-w-fit rounded-full px-12`}
     >
       <IonIcon icon={play} />
       <span>Watch</span>
