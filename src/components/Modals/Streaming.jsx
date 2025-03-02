@@ -98,7 +98,7 @@ export default function Streaming() {
         <dialog
           id="streaming"
           onCancel={(e) => e.preventDefault()}
-          className="modal block gap-4 space-y-4 overflow-y-auto backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur"
+          className="modal block gap-4 space-y-4 overflow-y-auto pt-16 backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur xl:pt-0"
         >
           {/* Screen */}
           <div className="z-0 aspect-video w-full max-w-5xl">
@@ -185,7 +185,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
     },
     {
       icon: <IonIcon icon={rocket} className="text-primary-red" />,
-      title: "Fast",
+      title: "Fast Server",
     },
     {
       icon: (
