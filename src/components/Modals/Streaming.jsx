@@ -412,7 +412,7 @@ function Season({ film, season, detailsLoading }) {
   }, [season]);
 
   return (
-    <div className={`mt-4 w-full space-y-2 pb-4`}>
+    <div className={`mt-4 w-full space-y-2`}>
       {/* Header */}
       <Swiper
         modules={[FreeMode, Mousewheel]}
@@ -420,7 +420,6 @@ function Season({ film, season, detailsLoading }) {
         mousewheel={true}
         slidesPerView={`auto`}
         spaceBetween={24}
-        className={`!px-4`}
       >
         {seasons?.map((season) => (
           <SwiperSlide key={season.id} className={`!max-w-fit`}>
@@ -503,7 +502,6 @@ function Season({ film, season, detailsLoading }) {
               slidesPerGroup: 4,
             },
           }}
-          className={`!px-4`}
         >
           {episodes?.map((item) => (
             <SwiperSlide key={item.id} className={`!h-auto`}>
