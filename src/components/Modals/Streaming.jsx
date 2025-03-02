@@ -289,7 +289,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
         </div>
 
         <div
-          className={`absolute left-full top-1/2 ml-1 -translate-y-1/2 rounded-lg bg-base-100 p-4 transition-all ${
+          className={`absolute top-full right-0 lg:right-auto lg:left-full lg:top-1/2 ml-1 lg:-translate-y-1/2 rounded-lg bg-base-200 p-4 transition-all ${
             isHovered ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >
