@@ -4,30 +4,16 @@
 import { IonIcon } from "@ionic/react";
 import { chevronBackCircle, chevronForwardCircle } from "ionicons/icons";
 import { YouTubeEmbed } from "@next/third-parties/google";
-
-// Swiper
 import { Swiper, SwiperSlide } from "swiper/react";
-import {
-  Autoplay,
-  EffectFade,
-  FreeMode,
-  Mousewheel,
-  Navigation,
-  Thumbs,
-  Zoom,
-} from "swiper/modules";
-
-// Swiper styles
+import { Navigation } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/effect-fade";
-import "swiper/css/free-mode";
 import "swiper/css/navigation";
-import "swiper/css/thumbs";
-import "swiper/css/autoplay";
-import "swiper/css/zoom";
 import { useEffect, useState } from "react";
+import { useImageSlider } from "@/zustand/imageSlider";
 
 export default function FilmMedia({ film, videos, images }) {
+  const { setOpen, setImages, setSelectedIndex } = useImageSlider();
+
   const [youtubeParams, setYoutubeParams] = useState();
 
   const filteredVideos = videos?.results.filter((result) => {
@@ -38,6 +24,21 @@ export default function FilmMedia({ film, videos, images }) {
 
     return isYouTubeOfficial && isEnglish && isValidType;
   });
+
+  const handleImageSlider = (index) => {
+    setOpen(true);
+    setSelectedIndex(index);
+
+    const mappedImages = images.map((img) => ({
+      src: `https://image.tmdb.org/t/p/original${img.file_path}`,
+      alt: img.file_path,
+      width: img.width,
+      height: img.height,
+      description: `${img.width}x${img.height}`,
+    }));
+
+    setImages(mappedImages);
+  };
 
   useEffect(() => {
     const params = new URLSearchParams({
@@ -55,16 +56,7 @@ export default function FilmMedia({ film, videos, images }) {
     <div id="media" className="-mx-4 flex flex-col gap-2 md:mx-0">
       <div className="max-w-full">
         <Swiper
-          modules={[
-            FreeMode,
-            Navigation,
-            Thumbs,
-            Autoplay,
-            EffectFade,
-            Mousewheel,
-            Zoom,
-          ]}
-          effect="fade"
+          modules={[Navigation]}
           spaceBetween={16}
           navigation={{
             enabled: true,
@@ -122,7 +114,7 @@ export default function FilmMedia({ film, videos, images }) {
 
           {images.slice(0, 10).map((img, index) => {
             return (
-              <SwiperSlide key={index}>
+              <SwiperSlide key={index} onClick={() => handleImageSlider(index)}>
                 <picture>
                   <source
                     media="(min-width: 780px) and (max-width: 1279px)"
