@@ -22,6 +22,7 @@ import ImagePovi from "../Film/ImagePovi";
 import { streamingProviderList } from "@/lib/streamingProviderList";
 import { useStreamingProvider } from "@/zustand/streamingProvider";
 import Link from "next/link";
+import RectangleAd from "../Icon/RectangleAd";
 
 export default function Streaming() {
   const router = useRouter();
@@ -191,22 +192,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
       title: "Fast Server",
     },
     {
-      icon: (
-        <div className={`text-primary-blue`}>
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            stroke-width="0"
-            viewBox="0 0 512 512"
-            class="text-primary-500"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M157.52 272h36.96L176 218.78 157.52 272zM352 256c-13.23 0-24 10.77-24 24s10.77 24 24 24 24-10.77 24-24-10.77-24-24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM250.58 352h-16.94c-6.81 0-12.88-4.32-15.12-10.75L211.15 320h-70.29l-7.38 21.25A16 16 0 0 1 118.36 352h-16.94c-11.01 0-18.73-10.85-15.12-21.25L140 176.12A23.995 23.995 0 0 1 162.67 160h26.66A23.99 23.99 0 0 1 212 176.13l53.69 154.62c3.61 10.4-4.11 21.25-15.11 21.25zM424 336c0 8.84-7.16 16-16 16h-16c-4.85 0-9.04-2.27-11.98-5.68-8.62 3.66-18.09 5.68-28.02 5.68-39.7 0-72-32.3-72-72s32.3-72 72-72c8.46 0 16.46 1.73 24 4.42V176c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v160z"></path>
-          </svg>
-        </div>
-      ),
+      icon: <RectangleAd className={`text-primary-blue`} />,
       title: "May contain popup ads",
     },
   ];
@@ -252,20 +238,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
                   )}
 
                   {provider.ads && (
-                    <div className={`text-primary-blue`}>
-                      <svg
-                        stroke="currentColor"
-                        fill="currentColor"
-                        stroke-width="0"
-                        viewBox="0 0 512 512"
-                        class="text-primary-500"
-                        height="1em"
-                        width="1em"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M157.52 272h36.96L176 218.78 157.52 272zM352 256c-13.23 0-24 10.77-24 24s10.77 24 24 24 24-10.77 24-24-10.77-24-24-24zM464 64H48C21.5 64 0 85.5 0 112v288c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48zM250.58 352h-16.94c-6.81 0-12.88-4.32-15.12-10.75L211.15 320h-70.29l-7.38 21.25A16 16 0 0 1 118.36 352h-16.94c-11.01 0-18.73-10.85-15.12-21.25L140 176.12A23.995 23.995 0 0 1 162.67 160h26.66A23.99 23.99 0 0 1 212 176.13l53.69 154.62c3.61 10.4-4.11 21.25-15.11 21.25zM424 336c0 8.84-7.16 16-16 16h-16c-4.85 0-9.04-2.27-11.98-5.68-8.62 3.66-18.09 5.68-28.02 5.68-39.7 0-72-32.3-72-72s32.3-72 72-72c8.46 0 16.46 1.73 24 4.42V176c0-8.84 7.16-16 16-16h16c8.84 0 16 7.16 16 16v160z"></path>
-                      </svg>
-                    </div>
+                    <RectangleAd className={`text-primary-blue`} />
                   )}
                 </button>
               </li>
@@ -289,7 +262,7 @@ function StreamingProvider({ media_type, id, season, episode }) {
         </div>
 
         <div
-          className={`absolute top-full right-0 lg:right-auto lg:left-full lg:top-1/2 ml-1 lg:-translate-y-1/2 rounded-lg bg-base-200 p-4 transition-all ${
+          className={`absolute right-0 top-full ml-1 rounded-lg bg-base-200 p-4 transition-all lg:left-full lg:right-auto lg:top-1/2 lg:-translate-y-1/2 ${
             isHovered ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >
