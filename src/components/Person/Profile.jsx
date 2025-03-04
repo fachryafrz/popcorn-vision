@@ -2,6 +2,7 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
+import { useImageSlider } from "@/zustand/imageSlider";
 import { IonIcon } from "@ionic/react";
 import {
   briefcaseOutline,
@@ -15,10 +16,17 @@ import { usePathname, useRouter } from "next/navigation";
 import pluralize from "pluralize";
 import React from "react";
 
-export default function PersonProfile({ person, combinedCredits, isModal }) {
+export default function PersonProfile({
+  person,
+  images,
+  combinedCredits,
+  isModal,
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const isTvPage = pathname.startsWith(`/tv`);
+
+  const { setOpen, setImages, setSelectedIndex } = useImageSlider();
 
   // Format Date
   const birthday = moment(person.birthday).format("dddd, MMMM D, YYYY");
@@ -27,6 +35,23 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
   const isActing = personJob === "Acting";
   const personWorks = isActing ? combinedCredits?.cast : combinedCredits?.crew;
 
+  const handleImageSlider = (index) => {
+    setOpen(true);
+    setSelectedIndex(index);
+
+    const mappedImages = images?.profiles.map((img) => ({
+      src: `https://image.tmdb.org/t/p/original${img.file_path}`,
+      alt: img.file_path,
+      width: img.width,
+      height: img.height,
+      description: `${img.width}x${img.height}`,
+    }));
+
+    setImages(mappedImages);
+
+    document.getElementById("personModal").close();
+  };
+
   return (
     <div
       className={`overflow-hidden rounded-2xl bg-secondary bg-opacity-10 sm:flex sm:items-center md:block ${
@@ -34,20 +59,26 @@ export default function PersonProfile({ person, combinedCredits, isModal }) {
       }`}
     >
       {/* Profile Picture */}
-      <ImagePovi
-        imgPath={person.profile_path}
-        className={`aspect-poster sm:flex-1`}
+      <div
+        onClick={() => handleImageSlider(0)}
+        className={`group cursor-pointer transition-all hover:opacity-50`}
       >
-        <img
-          src={`https://image.tmdb.org/t/p/w780${person.profile_path}`}
-          role="presentation"
-          draggable={false}
-          alt=""
-          aria-hidden
-          width={780}
-          height={1170}
-        />
-      </ImagePovi>
+        <ImagePovi
+          imgPath={person.profile_path}
+          className={`aspect-poster sm:flex-1`}
+        >
+          <img
+            src={`https://image.tmdb.org/t/p/w780${person.profile_path}`}
+            role="presentation"
+            draggable={false}
+            alt=""
+            aria-hidden
+            width={780}
+            height={1170}
+            className={`transition-all group-hover:scale-105`}
+          />
+        </ImagePovi>
+      </div>
 
       {/* Person Info */}
       <div className={`flex flex-col gap-4 p-4 pb-6`}>

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useImageSlider } from "@/zustand/imageSlider";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import pluralize from "pluralize";
@@ -17,6 +18,8 @@ export default function PersonDetails({
   tvCredits,
   isModal = false,
 }) {
+  const { setOpen, setImages, setSelectedIndex } = useImageSlider();
+
   const personJob = person.known_for_department;
   const personMovies =
     personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
@@ -38,6 +41,23 @@ export default function PersonDetails({
     }
 
     return age;
+  };
+
+  const handleImageSlider = (index) => {
+    setOpen(true);
+    setSelectedIndex(index);
+
+    const mappedImages = images?.profiles.map((img) => ({
+      src: `https://image.tmdb.org/t/p/original${img.file_path}`,
+      alt: img.file_path,
+      width: img.width,
+      height: img.height,
+      description: `${img.width}x${img.height}`,
+    }));
+
+    setImages(mappedImages);
+
+    document.getElementById("personModal").close();
   };
 
   return (
@@ -62,28 +82,27 @@ export default function PersonDetails({
             className={`relative w-full !pt-[2.5rem]`}
             wrapperClass={`rounded-xl`}
           >
-            {images?.profiles
-              .slice(1, images.profiles.length)
-              .map((image, i) => {
-                return (
-                  <SwiperSlide
-                    key={image.id}
-                    className={`max-w-[calc(100%/2.5)] transition-all sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
-                  >
-                    <img
-                      src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
-                      draggable={false}
-                      loading="lazy"
-                      role="presentation"
-                      alt=""
-                      aria-hidden
-                      width={500}
-                      height={750}
-                      className={`aspect-poster rounded-xl`}
-                    />
-                  </SwiperSlide>
-                );
-              })}
+            {images?.profiles.slice(1).map((image, i) => {
+              return (
+                <SwiperSlide
+                  key={image.id}
+                  onClick={() => handleImageSlider(i + 1)}
+                  className={`group max-w-[calc(100%/2.5)] cursor-pointer overflow-hidden rounded-xl !transition-all hover:opacity-50 sm:max-w-[calc(100%/3.5)] lg:max-w-[calc(100%/4.5)]`}
+                >
+                  <img
+                    src={`https://image.tmdb.org/t/p/w500${image.file_path}`}
+                    draggable={false}
+                    loading="lazy"
+                    role="presentation"
+                    alt=""
+                    aria-hidden
+                    width={500}
+                    height={750}
+                    className={`aspect-poster transition-all group-hover:scale-105`}
+                  />
+                </SwiperSlide>
+              );
+            })}
 
             <div className="absolute left-0 right-0 top-0 z-20 flex h-[28px] max-w-7xl items-end justify-between xl:max-w-none">
               <div className="flex items-end gap-2">

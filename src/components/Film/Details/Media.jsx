@@ -112,9 +112,13 @@ export default function FilmMedia({ film, videos, images }) {
             );
           })}
 
-          {images.slice(0, 10).map((img, index) => {
+          {images.map((img, index) => {
             return (
-              <SwiperSlide key={index} onClick={() => handleImageSlider(index)}>
+              <SwiperSlide
+                key={index}
+                onClick={() => handleImageSlider(index)}
+                className={`group cursor-pointer !transition-all hover:opacity-50`}
+              >
                 <picture>
                   <source
                     media="(min-width: 780px) and (max-width: 1279px)"
@@ -127,7 +131,7 @@ export default function FilmMedia({ film, videos, images }) {
                   <img
                     src={`https://image.tmdb.org/t/p/w500${img.file_path}`}
                     alt={film.title ?? film.name}
-                    className={`h-full w-full object-cover`}
+                    className={`h-full w-full object-cover transition-all group-hover:scale-105`}
                     draggable={false}
                     loading="lazy"
                     width={500}
