@@ -100,7 +100,7 @@ export default async function RootLayout({ children }) {
             <UserLocation ip={ip} />
 
             {/* Main Content */}
-            <main className={`mt-[66px] pb-8`}>{children}</main>
+            <main className={`mt-[66px]`}>{children}</main>
 
             {/* Modal */}
             <Modal />

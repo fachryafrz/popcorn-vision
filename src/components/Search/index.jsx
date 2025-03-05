@@ -186,7 +186,7 @@ export default function Search({ type = "movie" }) {
 
         {/* No film */}
         {!loading && films?.length === 0 && (
-          <section>
+          <section class={`grid h-[calc(100vh-66px-64px)] place-content-center`}>
             <span>No film found</span>
           </section>
         )}
