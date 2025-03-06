@@ -206,26 +206,20 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         id={`SearchBar`}
         className={`form-control relative block w-full justify-self-center`}
       >
-        <div
-          className={`input input-bordered flex items-center rounded-full bg-opacity-[0%] px-0`}
-        >
-          <div
-            className={`pointer-events-none absolute ml-4 flex h-full items-center`}
-          >
-            <IonIcon
-              icon={search}
-              style={{
-                fontSize: 18,
-                color: `rgb(156 163 175)`,
-              }}
-            />
-          </div>
+        <label class="input input-bordered flex items-center rounded-full bg-transparent pr-0">
+          <IonIcon
+            icon={search}
+            style={{
+              fontSize: 18,
+              color: `rgb(156 163 175)`,
+            }}
+          />
 
           <input
             type={`text`}
             ref={searchRef}
             tabIndex={isSearchPage ? 0 : -1}
-            className={`h-full w-full flex-1 bg-transparent pl-10`}
+            className={`ml-2 grow`}
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
@@ -246,13 +240,13 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             <button
               type="button"
               onClick={handleClear}
-              className={`flex h-full items-center ${isSearchPage ? `btn btn-circle btn-ghost` : ``}`}
+              className={`btn btn-circle btn-ghost flex h-full items-center`}
             >
               <IonIcon
                 icon={close}
                 className={`text-gray-400`}
                 style={{
-                  fontSize: 24,
+                  fontSize: 20,
                 }}
               />
             </button>
@@ -272,7 +266,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
               />
             </Link>
           )}
-        </div>
+        </label>
       </form>
 
       {/* Autocomplete suggestions */}

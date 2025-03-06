@@ -6,11 +6,6 @@
   @apply cursor-pointer;
 }
 
-* {
-  scrollbar-color: color-mix(in oklch, currentColor 35%, transparent)
-    transparent;
-}
-
 .swiper-button-disabled {
   @apply !opacity-25;
 }
