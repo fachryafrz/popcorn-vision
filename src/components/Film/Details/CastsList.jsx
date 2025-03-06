@@ -67,7 +67,7 @@ export default function CastsList({ credits }) {
           <div className={`sticky bottom-0 mt-2 hidden md:block`}>
             <button
               onClick={handleShowAllActors}
-              className={`btn btn-secondary flex w-full rounded-full !border-none !bg-opacity-0 text-primary-blue backdrop-blur-lg hocus:!bg-opacity-10 ${
+              className={`btn btn-ghost flex w-full rounded-full !border-none !bg-opacity-0 text-primary-blue backdrop-blur-lg hocus:!bg-opacity-10 ${
                 showAllActors ? `mx-1` : ``
               }`}
             >
