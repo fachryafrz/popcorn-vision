@@ -173,23 +173,25 @@ export default function Search({ type = "movie" }) {
           </div>
         </section>
 
-        <section>
-          <FilmGrid
-            films={films}
-            fetchMoreFilms={fetchMoreFilms}
-            currentSearchPage={currentSearchPage}
-            totalSearchPages={totalSearchPages}
-            loading={loading}
-            initialLoading={true}
-          />
-        </section>
+        <section className={`min-h-[calc(100vh-66px-64px)]`}>
+          {films?.length > 0 && (
+            <FilmGrid
+              films={films}
+              fetchMoreFilms={fetchMoreFilms}
+              currentSearchPage={currentSearchPage}
+              totalSearchPages={totalSearchPages}
+              loading={loading}
+              initialLoading={true}
+            />
+          )}
 
-        {/* No film */}
-        {!loading && films?.length === 0 && (
-          <section class={`grid h-[calc(100vh-66px-64px)] place-content-center`}>
-            <span>No film found</span>
-          </section>
-        )}
+          {/* No film */}
+          {!loading && films?.length === 0 && (
+            <div className={`grid h-full place-content-center`}>
+              <span>No film found</span>
+            </div>
+          )}
+        </section>
       </div>
 
       {filtersNotAvailable && (
