@@ -98,12 +98,6 @@ export default function FilmSummary({
             className={`btn btn-primary rounded-full border-none bg-opacity-40 backdrop-blur hocus:bg-opacity-100 ${btnClass}`}
           >
             Details
-            <IonIcon
-              icon={chevronForward}
-              style={{
-                fontSize: 16,
-              }}
-            />
           </Link>
         </div>
       )}
