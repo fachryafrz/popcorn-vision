@@ -1,4 +1,5 @@
 export const TMDB_SESSION_ID = "tmdb.session_id";
+export const TMDB_AUTH_TOKEN = "tmdb.auth_token";
 export const POPCORN = "/logo/popcorn.png";
 export const POPCORN_APPLE = "/favicon/povi-180.png";
 export const SAD_POPCORN = "/logo/sad_popcorn.png";
