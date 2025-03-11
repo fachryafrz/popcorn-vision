@@ -30,7 +30,7 @@ export const metadata = {
   referrer: "origin-when-cross-origin",
   keywords: process.env.NEXT_PUBLIC_APP_KEYWORDS.split(", "),
   authors: [
-    { name: "Fachry Dwi Afriza", url: "https://fachryafrz.vercel.app" },
+    { name: "Fachry Dwi Afriza", url: "https://fachryafrz.com" },
   ],
   creator: "Fachry Dwi Afriza",
   publisher: "Fachry Dwi Afriza",
@@ -66,7 +66,7 @@ export const metadata = {
     yandex: "yandex",
     yahoo: "yahoo",
     other: {
-      me: ["fachrydwiafriza@gmail.com", "https://fachryafrz.vercel.app"],
+      me: ["fachrydwiafriza@gmail.com", "https://fachryafrz.com"],
     },
   },
   category: "entertainment",

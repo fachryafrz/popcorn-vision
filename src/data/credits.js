@@ -2,7 +2,7 @@ export const credits = [
   {
     name: "Fachry Dwi Afriza",
     role: "Front-End Developer",
-    url: "https://fachryafrz.vercel.app",
+    url: "https://fachryafrz.com",
   },
   {
     name: "Dea Afrizal",

@@ -11,7 +11,7 @@ const Copyright = () => {
       </a>{" "}
       <br className={`xs:hidden`} />& Built by{" "}
       <a
-        href="https://fachryafrz.vercel.app"
+        href="https://fachryafrz.com"
         target="_blank"
         className="font-medium text-[#ea4c89] transition-all"
       >

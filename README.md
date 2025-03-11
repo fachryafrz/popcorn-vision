@@ -1,4 +1,4 @@
-[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/home.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.com/projects/popcorn-vision/home.png)](https://popcorn.fachryafrz.com)
 
 # Popcorn Vision – Movie & TV Show Streaming and Discovery
 
@@ -90,7 +90,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 📸 Screenshots
 
-[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/movie-details.png)](https://popcornvision.vercel.app)
-[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-details.png)](https://popcornvision.vercel.app)
-[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/tv-shows-episode-details.png)](https://popcornvision.vercel.app)
-[![Popcorn Vision](https://fachryafrz.vercel.app/projects/popcorn-vision/search.png)](https://popcornvision.vercel.app)
+[![Popcorn Vision](https://fachryafrz.com/projects/popcorn-vision/movie-details.png)](https://popcorn.fachryafrz.com)
+[![Popcorn Vision](https://fachryafrz.com/projects/popcorn-vision/tv-shows-details.png)](https://popcorn.fachryafrz.com)
+[![Popcorn Vision](https://fachryafrz.com/projects/popcorn-vision/tv-shows-episode-details.png)](https://popcorn.fachryafrz.com)
+[![Popcorn Vision](https://fachryafrz.com/projects/popcorn-vision/search.png)](https://popcorn.fachryafrz.com)
