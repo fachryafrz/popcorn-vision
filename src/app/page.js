@@ -14,31 +14,6 @@ import { providers } from "@/data/providers";
 import { movieGenres } from "@/data/movie-genres";
 import { tvGenres } from "@/data/tv-genres";
 
-export async function generateMetadata() {
-  return {
-    description: process.env.NEXT_PUBLIC_APP_DESC,
-    alternates: {
-      canonical: process.env.NEXT_PUBLIC_APP_URL,
-    },
-    openGraph: {
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
-      url: process.env.NEXT_PUBLIC_APP_URL,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
-      images: POPCORN,
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
-      creator: "@fachryafrz",
-      images: POPCORN,
-    },
-  };
-}
-
 export default async function Home({ type = "movie" }) {
   const isTvPage = type === "tv";
 
