@@ -15,12 +15,12 @@ export default function manifest() {
         purpose: "maskable",
       },
       {
-        src: "/favicon/povi-192.png",
+        src: "/favicon/android-chrome-192x192.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/favicon/povi-512.png",
+        src: "/favicon/android-chrome-512x512.png",
         sizes: "512x512",
         type: "image/png",
       },
