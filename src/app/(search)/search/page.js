@@ -9,30 +9,9 @@ import { languages } from "@/data/languages";
 export async function generateMetadata() {
   return {
     title: "Search Movies",
-    description: process.env.NEXT_PUBLIC_APP_DESC,
-    alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_APP_URL}/search`,
-    },
     openGraph: {
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
+      title: `Search Movies - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       url: `${process.env.NEXT_PUBLIC_APP_URL}/search`,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
-      images: POPCORN,
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
-      creator: "@fachryafrz",
-      images: POPCORN,
-    },
-    icons: {
-      icon: POPCORN,
-      shortcut: POPCORN,
-      apple: POPCORN_APPLE,
     },
   };
 }

@@ -13,7 +13,7 @@ import "driver.js/dist/driver.css";
 import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
-import { POPCORN_APPLE } from "@/lib/constants";
+import { POPCORN } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
@@ -170,7 +170,7 @@ export default function Navbar() {
           >
             <figure
               style={{
-                background: `url(${POPCORN_APPLE})`,
+                background: `url(${POPCORN})`,
               }}
               className={`aspect-square w-[50px] !bg-contain`}
             ></figure>

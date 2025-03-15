@@ -45,9 +45,6 @@ export async function generateMetadata({ params, type = `tv` }) {
       : filmReleaseDate
       })`,
     description: film.overview,
-    alternates: {
-      canonical: `/${`tv`}/${film.id}`,
-    },
     openGraph: {
       title: `${film.name} (${lastAirDate
         ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
@@ -59,16 +56,6 @@ export async function generateMetadata({ params, type = `tv` }) {
       ...backdrops,
       locale: "en_US",
       type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${film.name} (${lastAirDate
-        ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
-        : filmReleaseDate
-        }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      description: film.overview,
-      creator: "@fachryafrz",
-      ...backdrops,
     },
   };
 }

@@ -2,6 +2,13 @@ import LoginForm from "@/components/Auth/LoginForm";
 import { POPCORN } from "@/lib/constants";
 import React from "react";
 
+export const metadata = {
+  title: "Login",
+  openGraph: {
+    title: `Login - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+  }
+};
+
 export default function Login() {
   return (
     <section

@@ -1,6 +1,5 @@
 import React from "react";
 import Home from "@/app/page";
-import { POPCORN, POPCORN_APPLE } from "@/lib/constants";
 
 export async function generateMetadata() {
   return {

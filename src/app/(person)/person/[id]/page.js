@@ -38,9 +38,6 @@ export async function generateMetadata({ params }) {
   return {
     title: `${person.name}`,
     description: person.biography,
-    alternates: {
-      canonical: `/${`person`}/${person.id}`,
-    },
     openGraph: {
       title: `${person.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: person.biography,
@@ -49,13 +46,6 @@ export async function generateMetadata({ params }) {
       ...profiles,
       locale: "en_US",
       type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${person.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      description: person.biography,
-      creator: "@fachryafrz",
-      ...profiles,
     },
   };
 }

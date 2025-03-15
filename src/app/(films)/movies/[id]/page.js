@@ -43,9 +43,6 @@ export async function generateMetadata({ params, type = "movie" }) {
   return {
     title: `${film.title} (${filmReleaseDate})`,
     description: film.overview,
-    alternates: {
-      canonical: `/${`movies`}/${film.id}`,
-    },
     openGraph: {
       title: `${film.title} (${filmReleaseDate}) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
       description: film.overview,
@@ -54,13 +51,6 @@ export async function generateMetadata({ params, type = "movie" }) {
       ...backdrops,
       locale: "en_US",
       type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${film.title} (${filmReleaseDate}) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      description: film.overview,
-      creator: "@fachryafrz",
-      ...backdrops,
     },
   };
 }

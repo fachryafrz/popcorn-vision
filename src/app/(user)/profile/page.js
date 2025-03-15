@@ -11,42 +11,18 @@ export const revalidate = 0;
 export async function generateMetadata() {
   const cookiesStore = cookies();
 
-  const { data: user } = await axios.get(
-    `${process.env.API_URL}/account`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      },
+  const { data: user } = await axios.get(`${process.env.API_URL}/account`, {
+    params: {
+      api_key: process.env.API_KEY,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
     },
-  );
+  });
 
   return {
     title: user.name,
-    description: process.env.NEXT_PUBLIC_APP_DESC,
-    alternates: {
-      canonical: process.env.NEXT_PUBLIC_APP_URL,
-    },
     openGraph: {
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
-      url: process.env.NEXT_PUBLIC_APP_URL,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
-      images: POPCORN,
-      locale: "en_US",
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: process.env.NEXT_PUBLIC_APP_NAME,
-      description: process.env.NEXT_PUBLIC_APP_DESC,
-      creator: "@fachryafrz",
-      images: POPCORN,
-    },
-    icons: {
-      icon: POPCORN,
-      shortcut: POPCORN,
-      apple: POPCORN_APPLE,
+      title: `${user.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
     },
   };
 }
@@ -54,15 +30,12 @@ export async function generateMetadata() {
 export default async function page() {
   const cookiesStore = cookies();
 
-  const { data: user } = await axios.get(
-    `${process.env.API_URL}/account`,
-    {
-      params: {
-        api_key: process.env.API_KEY,
-        session_id: cookiesStore.get(TMDB_SESSION_ID).value,
-      },
+  const { data: user } = await axios.get(`${process.env.API_URL}/account`, {
+    params: {
+      api_key: process.env.API_KEY,
+      session_id: cookiesStore.get(TMDB_SESSION_ID).value,
     },
-  );
+  });
 
   return (
     <section className={`py-4`}>
