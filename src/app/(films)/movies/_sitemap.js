@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import axios from "axios";
 import slug from "slug";
 
@@ -21,7 +22,7 @@ export async function generateSitemaps() {
 }
 
 export default async function sitemap({ id }) {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const appUrl = siteConfig.url;
   const page = id;
   const sitemap = [];
 

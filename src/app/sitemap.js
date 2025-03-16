@@ -1,7 +1,8 @@
+import { siteConfig } from "@/config/site";
 import slug from "slug";
 
 export default async function sitemap() {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const appUrl = siteConfig.url;
   const totalPages = 5;
   const sitemap = [
     {

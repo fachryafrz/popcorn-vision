@@ -2,6 +2,7 @@ import { releaseStatus } from "@/lib/releaseStatus";
 import React from "react";
 import FilmDetail from "../../movies/[id]/page";
 import { axios } from "@/lib/axios";
+import { siteConfig } from "@/config/site";
 
 export async function generateMetadata({ params, type = `tv` }) {
   const { id } = params;
@@ -49,10 +50,10 @@ export async function generateMetadata({ params, type = `tv` }) {
       title: `${film.name} (${lastAirDate
         ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
         : filmReleaseDate
-        }) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+        }) - ${siteConfig.name}`,
       description: film.overview,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`tv`}/${film.id}`,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
+      url: `${siteConfig.url}/${`tv`}/${film.id}`,
+      siteName: siteConfig.name,
       ...backdrops,
       locale: "en_US",
       type: "website",

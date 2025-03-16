@@ -7,6 +7,7 @@ import AdultModal from "@/components/Modals/AdultModal";
 import { axios } from "@/lib/axios";
 import { movieGenres } from "@/data/movie-genres";
 import { tvGenres } from "@/data/tv-genres";
+import { siteConfig } from "@/config/site";
 
 export async function generateMetadata({ params, type = "movie" }) {
   const { id } = params;
@@ -44,10 +45,10 @@ export async function generateMetadata({ params, type = "movie" }) {
     title: `${film.title} (${filmReleaseDate})`,
     description: film.overview,
     openGraph: {
-      title: `${film.title} (${filmReleaseDate}) - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      title: `${film.title} (${filmReleaseDate}) - ${siteConfig.name}`,
       description: film.overview,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`movies`}/${film.id}`,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
+      url: `${siteConfig.url}/${`movies`}/${film.id}`,
+      siteName: siteConfig.name,
       ...backdrops,
       locale: "en_US",
       type: "website",

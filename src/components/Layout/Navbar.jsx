@@ -18,6 +18,7 @@ import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
 import { SearchBar } from "./SearchBar";
+import { siteConfig } from "@/config/site";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -58,7 +59,7 @@ export default function Navbar() {
           element: "#Home",
           popover: {
             title: "Navigate to Home",
-            description: `Takes you back to the main page of ${process.env.NEXT_PUBLIC_APP_NAME}. Click to return to the homepage and start navigation from the beginning.`,
+            description: `Takes you back to the main page of ${siteConfig.name}. Click to return to the homepage and start navigation from the beginning.`,
           },
         },
         {
@@ -84,7 +85,7 @@ export default function Navbar() {
           element: "#Home",
           popover: {
             title: "Navigate to Home",
-            description: `Takes you back to the main page of ${process.env.NEXT_PUBLIC_APP_NAME}. Click to return to the homepage and start navigation from the beginning.`,
+            description: `Takes you back to the main page of ${siteConfig.name}. Click to return to the homepage and start navigation from the beginning.`,
           },
         },
         {
@@ -175,7 +176,7 @@ export default function Navbar() {
               className={`aspect-square w-[50px] !bg-contain`}
             ></figure>
             <figcaption
-              data-after-content={process.env.NEXT_PUBLIC_APP_NAME}
+              data-after-content={siteConfig.name}
               className={`!after-content w-[70px] after:hidden after:h-full after:items-center after:leading-tight xs:after:flex`}
             ></figcaption>
           </Link>

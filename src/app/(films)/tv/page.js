@@ -1,12 +1,13 @@
 import React from "react";
 import Home from "@/app/page";
+import { siteConfig } from "@/config/site";
 
 export async function generateMetadata() {
   return {
     title: "TV Shows",
     openGraph: {
-      title: `TV Shows - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/tv`,
+      title: `TV Shows - ${siteConfig.name}`,
+      url: `${siteConfig.url}/tv`,
     },
   };
 }

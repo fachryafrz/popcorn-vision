@@ -10,6 +10,7 @@ import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import Confetti from "@/components/Layout/Confetti";
 import Providers from "@/components/Layout/ProgressBarProvider";
+import { siteConfig } from "@/config/site";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -26,12 +27,12 @@ export const viewport = {
 
 export const metadata = {
   title: {
-    template: `%s - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-    default: process.env.NEXT_PUBLIC_APP_NAME,
+    template: `%s - ${siteConfig.name}`,
+    default: siteConfig.name,
   },
-  description: process.env.NEXT_PUBLIC_APP_DESC,
+  description: siteConfig.description,
   openGraph: {
-    title: process.env.NEXT_PUBLIC_APP_NAME,
+    title: siteConfig.name,
     images: ["/maskable/maskable_icon_x192.png"],
   },
   robots: {

@@ -3,6 +3,7 @@ import PersonProfile from "../../../../components/Person/Profile";
 import PersonDetails from "../../../../components/Person/Details";
 import PersonWorks from "../../../../components/Person/Works";
 import { axios } from "@/lib/axios";
+import { siteConfig } from "@/config/site";
 
 async function getPerson({ id, path }) {
   const res = await axios.get(`/person/${id}${path}`, {
@@ -39,10 +40,10 @@ export async function generateMetadata({ params }) {
     title: `${person.name}`,
     description: person.biography,
     openGraph: {
-      title: `${person.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+      title: `${person.name} - ${siteConfig.name}`,
       description: person.biography,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/${`person`}/${person.id}`,
-      siteName: process.env.NEXT_PUBLIC_APP_NAME,
+      url: `${siteConfig.url}/${`person`}/${person.id}`,
+      siteName: siteConfig.name,
       ...profiles,
       locale: "en_US",
       type: "website",

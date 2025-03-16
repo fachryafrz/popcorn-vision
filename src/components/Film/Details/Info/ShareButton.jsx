@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import { IonIcon } from "@ionic/react";
 import { arrowRedoOutline } from "ionicons/icons";
 import { isMobile } from "react-device-detect";
@@ -6,7 +7,7 @@ export default function ShareButton() {
   const handleShare = async () => {
     try {
       await navigator.share({
-        title: `Shared via ${process.env.NEXT_PUBLIC_APP_NAME}`,
+        title: `Shared via ${siteConfig.name}`,
         // text: "",
         url: window.location.href,
         // files: [],

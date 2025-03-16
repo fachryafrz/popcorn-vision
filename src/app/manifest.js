@@ -1,8 +1,10 @@
+import { siteConfig } from "@/config/site";
+
 export default function manifest() {
   return {
-    name: process.env.NEXT_PUBLIC_APP_NAME,
-    short_name: process.env.NEXT_PUBLIC_APP_NAME,
-    description: process.env.NEXT_PUBLIC_APP_DESC,
+    name: siteConfig.name,
+    short_name: siteConfig.name,
+    description: siteConfig.description,
     start_url: "/",
     display: "standalone",
     background_color: "#131720",

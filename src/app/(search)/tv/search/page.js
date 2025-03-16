@@ -3,13 +3,14 @@ import Filters from "@/components/Search/Filter";
 import { axios } from "@/lib/axios";
 import { tvGenres } from "@/data/tv-genres";
 import { languages } from "@/data/languages";
+import { siteConfig } from "@/config/site";
 
 export async function generateMetadata() {
   return {
     title: "Search TV Shows",
     openGraph: {
-      title: `Search TV Shows - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/tv/search`,
+      title: `Search TV Shows - ${siteConfig.name}`,
+      url: `${siteConfig.url}/tv/search`,
     },
   };
 }

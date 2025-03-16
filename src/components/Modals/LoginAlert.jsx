@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import { POPCORN } from "@/lib/constants";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -36,7 +37,7 @@ export default function LoginAlert() {
           </p>
           <p>
             Don&apos;t miss out! sign in now and make the most of{" "}
-            {process.env.NEXT_PUBLIC_APP_NAME}!
+            {siteConfig.name}!
           </p>
         </div>
 

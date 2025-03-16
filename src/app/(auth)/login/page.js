@@ -1,11 +1,12 @@
 import LoginForm from "@/components/Auth/LoginForm";
+import { siteConfig } from "@/config/site";
 import { POPCORN } from "@/lib/constants";
 import React from "react";
 
 export const metadata = {
   title: "Login",
   openGraph: {
-    title: `Login - ${process.env.NEXT_PUBLIC_APP_NAME}`,
+    title: `Login - ${siteConfig.name}`,
   }
 };
 

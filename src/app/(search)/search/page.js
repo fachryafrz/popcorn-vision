@@ -5,13 +5,14 @@ import Filters from "@/components/Search/Filter";
 import { axios } from "@/lib/axios";
 import { movieGenres } from "@/data/movie-genres";
 import { languages } from "@/data/languages";
+import { siteConfig } from "@/config/site";
 
 export async function generateMetadata() {
   return {
     title: "Search Movies",
     openGraph: {
-      title: `Search Movies - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/search`,
+      title: `Search Movies - ${siteConfig.name}`,
+      url: `${siteConfig.url}/search`,
     },
   };
 }

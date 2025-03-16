@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import TileList from "../../../components/User/Profile/TileList";
 import UserProfileSort from "@/components/User/Profile/Sort";
 import { POPCORN, POPCORN_APPLE, TMDB_SESSION_ID } from "@/lib/constants";
+import { siteConfig } from "@/config/site";
 
 export const revalidate = 0;
 
@@ -21,8 +22,8 @@ export async function generateMetadata() {
   return {
     title: user.name,
     openGraph: {
-      title: `${user.name} - ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      url: `${process.env.NEXT_PUBLIC_APP_URL}/profile`,
+      title: `${user.name} - ${siteConfig.name}`,
+      url: `${siteConfig.url}/profile`,
     },
   };
 }

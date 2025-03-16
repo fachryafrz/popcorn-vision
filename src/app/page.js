@@ -13,6 +13,7 @@ import { companies } from "@/data/companies";
 import { providers } from "@/data/providers";
 import { movieGenres } from "@/data/movie-genres";
 import { tvGenres } from "@/data/tv-genres";
+import { siteConfig } from "@/config/site";
 
 export default async function Home({ type = "movie" }) {
   const isTvPage = type === "tv";
@@ -173,16 +174,16 @@ export default async function Home({ type = "movie" }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "@id": process.env.NEXT_PUBLIC_APP_URL,
-    url: process.env.NEXT_PUBLIC_APP_URL,
-    name: process.env.NEXT_PUBLIC_APP_NAME,
-    description: process.env.NEXT_PUBLIC_APP_DESC,
+    "@id": siteConfig.url,
+    url: siteConfig.url,
+    name: siteConfig.name,
+    description: siteConfig.description,
     potentialAction: [
       {
         "@type": "SearchAction",
         target: {
           "@type": "EntryPoint",
-          urlTemplate: `${process.env.NEXT_PUBLIC_APP_URL}/search?query={search_term_string}`,
+          urlTemplate: `${siteConfig.url}/search?query={search_term_string}`,
         },
         "query-input": {
           "@type": "PropertyValueSpecification",
@@ -196,8 +197,8 @@ export default async function Home({ type = "movie" }) {
 
   return (
     <>
-      <h1 className="sr-only">{process.env.NEXT_PUBLIC_APP_NAME}</h1>
-      <p className="sr-only">{process.env.NEXT_PUBLIC_APP_DESC}</p>
+      <h1 className="sr-only">{siteConfig.name}</h1>
+      <p className="sr-only">{siteConfig.description}</p>
       <div className="-mt-[66px]">
         <Suspense fallback={<SkeletonHomeSlider />}>
           <HomeSlider

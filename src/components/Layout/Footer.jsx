@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import { POPCORN } from "@/lib/constants";
 import dayjs from "dayjs";
 import { handleOpenWindow } from "@/lib/openWindow";
+import { siteConfig } from "@/config/site";
 
 export default function Footer() {
   const tmdbImg = `https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg`;
@@ -178,7 +179,7 @@ export default function Footer() {
       </div>
       <div className="flex flex-col justify-center border-t border-secondary border-opacity-25 p-4 text-center">
         <span style={{ textWrap: `balance` }}>
-          {`${process.env.NEXT_PUBLIC_APP_NAME} © ${
+          {`${siteConfig.name} © ${
             createdYear == currentYear
               ? `${createdMonth} ${createdYear}`
               : `${createdMonth} ${createdYear} - ${currentMonth} ${currentYear}`
