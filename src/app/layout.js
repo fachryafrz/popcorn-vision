@@ -32,8 +32,15 @@ export const metadata = {
   },
   description: siteConfig.description,
   openGraph: {
+    siteName: siteConfig.name,
     title: siteConfig.name,
-    images: ["/maskable/maskable_icon_x192.png"],
+    description: siteConfig.description,
+    url: siteConfig.url,
+    images: {
+      url: "/maskable/maskable_icon_x512.png",
+      width: 512,
+      height: 512,
+    },
   },
   robots: {
     index: false,
