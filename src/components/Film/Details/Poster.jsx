@@ -77,6 +77,10 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     }
   }, [film, images, isTvPage, reviews, videos]);
 
+  useEffect(() => {
+    setSeasonPoster(() => []);
+  }, [pathname]);
+
   return (
     <div className="sticky top-20 h-fit flex-1">
       <ImagePovi
