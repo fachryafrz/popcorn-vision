@@ -53,12 +53,12 @@ Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offer
 
 ## 🛠️ Tech Stack
 
-- **Next.js 14** – React-based framework
-- **React** – JavaScript framework
-- **DaisyUI** – Tailwind CSS component library
-- **Tailwind CSS** – Styling and UI design
-- **Material UI** – UI component library
-- **TMDB API** – The biggest movie & tv show database
+- **Next.js 14**
+- **React**
+- **DaisyUI**
+- **Tailwind CSS**
+- **Material UI**
+- **TMDB API**
 
 ## 🚀 Fork the repository
 
