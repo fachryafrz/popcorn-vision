@@ -1,8 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function LogoutButton({ user }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isTvPage = pathname.startsWith("/tv");
+  const isProfilePage = pathname.startsWith(`/profile`);
+
   const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
@@ -21,7 +27,13 @@ export default function LogoutButton({ user }) {
 
   return (
     <Link
-      href={`/profile`}
+      href={{
+        pathname: `/profile`,
+        query:
+          (isProfilePage && searchParams.get("type") === "tv") || isTvPage
+            ? "type=tv"
+            : "",
+      }}
       prefetch={false}
       className={`btn btn-circle flex border-transparent bg-opacity-0 p-0 hocus:border-transparent hocus:bg-opacity-[30%] hocus:backdrop-blur-sm`}
     >

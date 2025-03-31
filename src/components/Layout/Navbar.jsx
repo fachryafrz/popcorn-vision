@@ -132,6 +132,7 @@ export default function Navbar() {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`,
   );
+  const isProfilePage = pathname.startsWith("/profile");
 
   useEffect(() => {
     const handleIsScrolled = () => {
@@ -164,7 +165,12 @@ export default function Navbar() {
         <div className={`flex items-center`}>
           <Link
             id={`Home`}
-            href={!isTvPage ? `/` : `/tv`}
+            href={{
+              pathname:
+                (isProfilePage && searchParams.get("type") === "tv") || isTvPage
+                  ? `/tv`
+                  : `/`,
+            }}
             prefetch={false}
             className="flex max-w-fit items-center gap-1 font-semibold leading-none tracking-wide"
             aria-labelledby={`Home`}
@@ -212,12 +218,17 @@ export default function Navbar() {
           >
             <Link
               href={{
-                pathname: !isSearchPage ? `/` : `/search`,
-                query: searchParams.toString(),
+                pathname: !isProfilePage
+                  ? !isSearchPage
+                    ? `/`
+                    : `/search`
+                  : `/profile`,
+                query: !isProfilePage ? searchParams.toString() : ``,
               }}
               prefetch={false}
               className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
-                isMoviesPage &&
+                (isMoviesPage ||
+                  (isProfilePage && !searchParams.has("type"))) &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >
@@ -231,12 +242,17 @@ export default function Navbar() {
             </Link>
             <Link
               href={{
-                pathname: !isSearchPage ? `/tv` : `/tv/search`,
-                query: searchParams.toString(),
+                pathname: !isProfilePage
+                  ? !isSearchPage
+                    ? `/tv`
+                    : `/tv/search`
+                  : `/profile`,
+                query: !isProfilePage ? searchParams.toString() : `type=tv`,
               }}
               prefetch={false}
               className={`flex items-center gap-2 rounded-full px-2 py-2 font-medium transition-all hocus:bg-white hocus:bg-opacity-10 lg:px-4 ${
-                isTvPage &&
+                (isTvPage ||
+                  (isProfilePage && searchParams.get("type") === "tv")) &&
                 `bg-white text-base-100 hocus:!bg-white hocus:!bg-opacity-100`
               }`}
             >

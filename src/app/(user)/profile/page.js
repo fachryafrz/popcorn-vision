@@ -50,39 +50,9 @@ export default async function page() {
         <div
           className={`grid gap-2 p-4 md:grid-cols-2 xl:grid-cols-3 [&_section_ul]:max-h-[500px] [&_section_ul]:overflow-y-auto`}
         >
-          {/* Movies */}
-          <TileList
-            title={`Favorite (Movie)`}
-            section={`favorite`}
-            user={user}
-          />
-          <TileList
-            title={`Watchlist (Movie)`}
-            section={`watchlist`}
-            user={user}
-          />
-          <TileList title={`Rated (Movie)`} section={`rated`} user={user} />
-
-          {/* TV Shows */}
-          <TileList
-            title={`Favorite (TV Shows)`}
-            section={`favorite`}
-            type={`tv`}
-            user={user}
-          />
-          <TileList
-            title={`Watchlist (TV Shows)`}
-            section={`watchlist`}
-            type={`tv`}
-            user={user}
-          />
-          <TileList
-            title={`Rated (TV Shows)`}
-            section={`rated`}
-            type={`tv`}
-            user={user}
-            className={`md:col-span-2 xl:col-span-1`}
-          />
+          <TileList title={`Favorite`} section={`favorite`} user={user} />
+          <TileList title={`Watchlist`} section={`watchlist`} user={user} />
+          <TileList title={`Rated`} section={`rated`} user={user} />
         </div>
       </div>
     </section>

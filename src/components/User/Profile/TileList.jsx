@@ -5,31 +5,30 @@ import SkeletonCollection from "@/components/Skeleton/Collection";
 import axios from "axios";
 import { useCookies } from "next-client-cookies";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import useSWR from "swr";
 
-export default function TileList({ title, section, type = "movie", user }) {
+export default function TileList({ title, section, user }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
   const cookies = useCookies();
+  const type = searchParams.get("type") === "tv" ? "tv" : "movies";
 
   const {
     data: films,
     isLoading,
     mutate,
-  } = useSWR(
-    `/api/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
-    (endpoint) =>
-      axios
-        .get(endpoint, {
-          params: {
-            sort_by: "created_at.desc",
-          },
-        })
-        .then(({ data }) => data),
+  } = useSWR(`/api/account/${user.id}/${section}/${type}`, (endpoint) =>
+    axios
+      .get(endpoint, {
+        params: {
+          sort_by: "created_at.desc",
+        },
+      })
+      .then(({ data }) => data),
   );
 
   const { ref: loadMoreBtn, inView, entry } = useInView();
@@ -38,6 +37,8 @@ export default function TileList({ title, section, type = "movie", user }) {
   const [filmsData, setFilmsData] = useState(films?.results);
   const [sort, setSort] = useState();
   const [order, setOrder] = useState();
+
+  const listRef = useRef(null);
 
   useEffect(() => {
     setCurrentSearchPage(films?.page);
@@ -95,7 +96,7 @@ export default function TileList({ title, section, type = "movie", user }) {
       const nextPage = currentSearchPage + 1;
 
       const { data: response } = await axios.get(
-        `/api/account/${user.id}/${section}/${type === "tv" ? "tv" : "movies"}`,
+        `/api/account/${user.id}/${section}/${type}`,
         {
           params: {
             language: "en-US",
@@ -144,13 +145,19 @@ export default function TileList({ title, section, type = "movie", user }) {
       const sortParam = searchParams.get("sort_by");
 
       setSort(sortParam);
+    } else {
+      setSort("created_at");
     }
 
     if (searchParams.get("order")) {
       const orderParam = searchParams.get("order");
 
       setOrder(orderParam);
+    } else {
+      setOrder("desc");
     }
+
+    listRef.current.scrollTo(0, 0);
   }, [searchParams]);
 
   return (
@@ -161,7 +168,7 @@ export default function TileList({ title, section, type = "movie", user }) {
         {title}
       </h2>
 
-      <ul className={`flex flex-col gap-1`}>
+      <ul ref={listRef} className={`flex flex-col gap-1`}>
         {isLoading &&
           [...Array(5).keys()].map((_, i) => (
             <li key={i}>
@@ -189,7 +196,9 @@ export default function TileList({ title, section, type = "movie", user }) {
       </ul>
 
       {sortedFilms?.length === 0 && (
-        <div className={`flex h-full items-center justify-center text-center pb-20`}>
+        <div
+          className={`flex h-full items-center justify-center pb-20 text-center`}
+        >
           {`No ${type === "tv" ? "TV Shows" : "Movies"} found.`}
         </div>
       )}

@@ -26,14 +26,24 @@ export default function UserProfileSort() {
   const [order, setOrder] = useState();
 
   const handleSort = (option) => {
-    router.replace(`${pathname}?sort_by=${option.value}&order=${order?.value}`);
+    const current = new URLSearchParams({
+      ...Object.fromEntries(searchParams.entries()),
+      sort_by: option.value,
+      order: order?.value,
+    });
+
+    router.replace(`${pathname}?${current.toString()}`);
   };
   const handleOrder = () => {
     const newOrder = order?.value === "asc" ? orderOptions[1] : orderOptions[0];
 
-    router.replace(
-      `${pathname}?sort_by=${sort?.value}&order=${newOrder?.value}`,
-    );
+    const current = new URLSearchParams({
+      ...Object.fromEntries(searchParams.entries()),
+      sort_by: sort?.value,
+      order: newOrder?.value,
+    });
+
+    router.replace(`${pathname}?${current.toString()}`);
   };
 
   useEffect(() => {

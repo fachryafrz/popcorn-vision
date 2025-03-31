@@ -25,6 +25,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   const isSearchPage = pathname.startsWith(
     !isTvPage ? `/search` : `/tv/search`,
   );
+  const isProfilePage = pathname.startsWith(`/profile`);
   const DEBOUNCE_DELAY = 300;
 
   let URLSearchQuery = searchParams.get("query");
@@ -219,7 +220,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             type={`text`}
             ref={searchRef}
             tabIndex={isSearchPage ? 0 : -1}
-            className={`ml-2 grow w-full bg-transparent`}
+            className={`ml-2 w-full grow bg-transparent`}
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
@@ -254,7 +255,11 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
           {!isSearchPage && (
             <Link
-              href={!isTvPage ? `/search` : `/tv/search`}
+              href={
+                (isProfilePage && searchParams.get("type") === "tv") || isTvPage
+                  ? `/tv/search`
+                  : `/search`
+              }
               className={`btn btn-circle btn-ghost`}
             >
               <IonIcon
