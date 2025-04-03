@@ -1,4 +1,4 @@
-import { TMDB_SESSION_ID } from "@/lib/constants";
+import { TMDB_AUTH_TOKEN, TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -22,6 +22,7 @@ export async function DELETE() {
     );
 
     cookiesStore.delete(TMDB_SESSION_ID);
+    cookiesStore.delete(TMDB_AUTH_TOKEN);
 
     return NextResponse.json(data, { status });
   } catch (error) {

@@ -119,7 +119,7 @@ export function CollectionItem({
   film = null,
   item,
   index,
-  type = "movie",
+  type,
   userRating,
 }) {
   const filmTitle = item.title ?? item.name;
@@ -127,7 +127,7 @@ export function CollectionItem({
   return (
     <article>
       <Link
-        href={`/${type === "movie" ? "movies" : "tv"}/${item.id}-${slug(filmTitle)}`}
+        href={`/${type}/${item.id}-${slug(filmTitle)}`}
         prefetch={false}
         className={`flex w-full items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all @container hocus:bg-opacity-30 ${
           film?.id === item.id && `!bg-primary-blue !bg-opacity-30`
