@@ -5,17 +5,16 @@ import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "../../../config/limiter";
 
 export async function POST(req, ctx) {
-  const { first, second } = ctx.params;
+  const { first: film_type, second: film_id } = ctx.params;
   const { rating } = await req.json();
   const cookiesStore = cookies();
 
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);
 
-
   try {
     const { data, status } = await axios.post(
-      `${process.env.API_URL}/${first}/${second}/rating`,
+      `${process.env.API_URL}/${film_type}/${film_id}/rating`,
       { value: rating },
       {
         params: {
@@ -27,13 +26,18 @@ export async function POST(req, ctx) {
 
     return NextResponse.json({ rated: { value: rating } }, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, { status: error.response.status });
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
   }
 }
 
 export async function DELETE(req, ctx) {
-  const { film_type, film_id } = ctx.params;
+  const { first: film_type, second: film_id } = ctx.params;
   const cookiesStore = cookies();
+
+  const remainingToken = await limiter.removeTokens(1);
+  if (remainingToken < 0) return tokenExpired(req);
 
   try {
     const { data, status } = await axios.delete(
@@ -48,6 +52,8 @@ export async function DELETE(req, ctx) {
 
     return NextResponse.json({ rated: null }, { status });
   } catch (error) {
-    return NextResponse.json(error.response.data, { status: error.response.status });
+    return NextResponse.json(error.response.data, {
+      status: error.response.status,
+    });
   }
 }
