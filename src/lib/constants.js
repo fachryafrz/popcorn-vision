@@ -7,3 +7,4 @@ export const SAD_POPCORN_ENGINEER = "/logo/sad_popcorn_engineer.png";
 export const USER_LOCATION = "user-location";
 export const AND_SEPARATION = "AND";
 export const OR_SEPARATION = "OR";
+export const DISCLAIMER_READ = "disclaimer-read";

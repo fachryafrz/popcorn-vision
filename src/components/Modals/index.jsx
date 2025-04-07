@@ -5,6 +5,7 @@ import HoverCard from "./HoverCard";
 import { userStore } from "@/zustand/userStore";
 import Streaming from "./Streaming";
 import ImageSlider from "./ImageSlider";
+import Disclaimer from "./Disclaimer";
 
 export default function Modal() {
   const { user } = userStore();
@@ -18,6 +19,8 @@ export default function Modal() {
       <Streaming />
 
       <ImageSlider />
+
+      <Disclaimer />
     </>
   );
 }
