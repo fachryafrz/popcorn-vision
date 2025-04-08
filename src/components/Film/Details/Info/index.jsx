@@ -45,8 +45,8 @@ export default function FilmInfo({
   const { location } = useLocation();
   const { setConfetti } = useConfetti();
 
-  const countryCode = location?.country_code;
-  const countryName = location?.country_name;
+  const countryCode = location?.countryCode;
+  const countryName = location?.country;
 
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
