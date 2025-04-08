@@ -3,18 +3,15 @@
 import { CollectionItem } from "@/components/Film/Details/Collection";
 import SkeletonCollection from "@/components/Skeleton/Collection";
 import axios from "axios";
-import { useCookies } from "next-client-cookies";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import useSWR from "swr";
 
 export default function TileList({ title, section, user }) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
-  const cookies = useCookies();
   const type = searchParams.get("type") === "tv" ? "tv" : "movies";
 
   const {

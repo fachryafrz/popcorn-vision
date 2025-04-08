@@ -2,7 +2,7 @@
 
 import { AppProgressProvider as ProgressBar } from "@bprogress/next";
 
-const Providers = ({ children }) => {
+const ProgressProvider = ({ children }) => {
   return (
     <>
       {children}
@@ -16,4 +16,4 @@ const Providers = ({ children }) => {
   );
 };
 
-export default Providers;
+export default ProgressProvider;

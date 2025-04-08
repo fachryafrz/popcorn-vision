@@ -2,15 +2,13 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Suspense } from "react";
-import { CookiesProvider } from "next-client-cookies/server";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import Confetti from "@/components/Layout/Confetti";
-import Providers from "@/components/Layout/ProgressBarProvider";
 import { siteConfig } from "@/config/site";
+import Providers from "@/components/Providers";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -64,22 +62,20 @@ export default async function RootLayout({ children }) {
     <html lang="en" className="scroll-pt-20">
       <body className={`bg-base-100 text-white ${roboto.className}`}>
         <Providers>
-          <CookiesProvider>
-            {/* Navbar */}
-            <Navbar />
+          {/* Navbar */}
+          <Navbar />
 
-            {/* User Location */}
-            <UserLocation ip={ip} />
+          {/* User Location */}
+          <UserLocation ip={ip} />
 
-            {/* Main Content */}
-            <main className={`mt-[66px]`}>{children}</main>
+          {/* Main Content */}
+          <main className={`mt-[66px]`}>{children}</main>
 
-            {/* Modal */}
-            <Modal />
+          {/* Modal */}
+          <Modal />
 
-            {/* Footer */}
-            <Footer />
-          </CookiesProvider>
+          {/* Footer */}
+          <Footer />
 
           {/* Confetti */}
           <Confetti />
