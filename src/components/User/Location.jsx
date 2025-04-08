@@ -37,8 +37,8 @@ export default function UserLocation() {
       const { data } = await axios.get(`https://ipinfo.io/json`);
 
       const locationData = {
-        countryCode: data.country,
-        countryName: new Intl.DisplayNames(["en"], { type: "region" }).of(
+        country_code: data.country,
+        country_name: new Intl.DisplayNames(["en"], { type: "region" }).of(
           data.country,
         ),
       };

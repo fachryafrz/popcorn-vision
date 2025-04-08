@@ -31,7 +31,7 @@ export default function Streaming() {
     (url) =>
       axios
         .get(url, {
-          params: { watch_region: location.countryCode },
+          params: { watch_region: location.country_code },
         })
         .then(({ data }) => data.results),
     {

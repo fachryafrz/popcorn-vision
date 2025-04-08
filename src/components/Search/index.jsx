@@ -47,7 +47,7 @@ export default function Search({ type = "movie" }) {
       });
 
       if (searchParams.get("watch_providers") && location) {
-        params.append("watch_region", location.countryCode);
+        params.append("watch_region", location.country_code);
       }
 
       return `/api/search/filter?${params.toString()}`;
