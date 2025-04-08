@@ -10,12 +10,15 @@ export default function UserLocation() {
   const { setLocation } = useLocation();
 
   // State
-  const [isLocationSaved, setIsLocationSaved] = useState(false);
+  const [isLocationSaved, setIsLocationSaved] = useState(true); // NOTE: To prevent refetch ip
 
   // Lifecycle
   useEffect(() => {
     const userLocation = localStorage.getItem(USER_LOCATION);
-    if (!userLocation) return;
+    if (!userLocation) {
+      setIsLocationSaved(false);
+      return;
+    }
 
     if (Object.keys(JSON.parse(userLocation)).length === 0) {
       localStorage.removeItem(USER_LOCATION);
