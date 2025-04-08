@@ -3,39 +3,50 @@
 import { USER_LOCATION } from "@/lib/constants";
 import { useLocation } from "@/zustand/location";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export default function UserLocation({ ip }) {
+export default function UserLocation() {
+  // Zustand
   const { setLocation } = useLocation();
 
+  // State
+  const [isLocationSaved, setIsLocationSaved] = useState(false);
+
+  // Lifecycle
   useEffect(() => {
     const userLocation = localStorage.getItem(USER_LOCATION);
+    if (!userLocation) return;
 
-    if (userLocation) {
-      if (Object.keys(JSON.parse(userLocation)).length === 0) {
-        localStorage.removeItem(USER_LOCATION);
-        return;
-      }
+    if (Object.keys(JSON.parse(userLocation)).length === 0) {
+      localStorage.removeItem(USER_LOCATION);
+      setIsLocationSaved(false);
+      return;
+    }
 
-      setLocation(JSON.parse(userLocation));
-    } else {
-      const getLocationData = async () => {
-        const { data } = await axios.get(`http://ip-api.com/json/${ip}`);
+    setLocation(JSON.parse(userLocation));
+    setIsLocationSaved(true);
+  }, []);
 
-        setLocation(data);
+  useEffect(() => {
+    if (isLocationSaved) return;
 
-        localStorage.setItem(
-          USER_LOCATION,
-          JSON.stringify({
-            countryCode: data.countryCode,
-            country: data.country,
-          }),
-        );
+    const getLocationData = async () => {
+      const { data } = await axios.get(`https://ipinfo.io/json`);
+
+      const locationData = {
+        countryCode: data.country,
+        countryName: new Intl.DisplayNames(["en"], { type: "region" }).of(
+          data.country,
+        ),
       };
 
-      getLocationData();
-    }
-  }, [ip]);
+      setLocation(locationData);
+      localStorage.setItem(USER_LOCATION, JSON.stringify(locationData));
+      setIsLocationSaved(true);
+    };
+
+    getLocationData();
+  }, [isLocationSaved]);
 
   return null;
 }

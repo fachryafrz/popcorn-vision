@@ -24,6 +24,7 @@ export const viewport = {
 };
 
 export const metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     template: `%s - ${siteConfig.name}`,
     default: siteConfig.name,
@@ -53,9 +54,6 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const header = headers();
-  const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-
   const gtagId = process.env.GA_MEASUREMENT_ID;
 
   return (
@@ -66,7 +64,7 @@ export default async function RootLayout({ children }) {
           <Navbar />
 
           {/* User Location */}
-          <UserLocation ip={ip} />
+          <UserLocation />
 
           {/* Main Content */}
           <main className={`mt-[66px]`}>{children}</main>
