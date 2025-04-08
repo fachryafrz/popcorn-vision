@@ -2,15 +2,13 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Suspense } from "react";
-import { CookiesProvider } from "next-client-cookies/server";
 import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import Confetti from "@/components/Layout/Confetti";
-import Providers from "@/components/Layout/ProgressBarProvider";
 import { siteConfig } from "@/config/site";
+import Providers from "@/components/Providers";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -26,6 +24,7 @@ export const viewport = {
 };
 
 export const metadata = {
+  metadataBase: new URL(siteConfig.url),
   title: {
     template: `%s - ${siteConfig.name}`,
     default: siteConfig.name,
@@ -55,31 +54,26 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const header = headers();
-  const ip = (header.get("x-forwarded-for") ?? "127.0.0.1").split(",")[0];
-
   const gtagId = process.env.GA_MEASUREMENT_ID;
 
   return (
     <html lang="en" className="scroll-pt-20">
       <body className={`bg-base-100 text-white ${roboto.className}`}>
         <Providers>
-          <CookiesProvider>
-            {/* Navbar */}
-            <Navbar />
+          {/* Navbar */}
+          <Navbar />
 
-            {/* User Location */}
-            <UserLocation ip={ip} />
+          {/* User Location */}
+          <UserLocation />
 
-            {/* Main Content */}
-            <main className={`mt-[66px]`}>{children}</main>
+          {/* Main Content */}
+          <main className={`mt-[66px]`}>{children}</main>
 
-            {/* Modal */}
-            <Modal />
+          {/* Modal */}
+          <Modal />
 
-            {/* Footer */}
-            <Footer />
-          </CookiesProvider>
+          {/* Footer */}
+          <Footer />
 
           {/* Confetti */}
           <Confetti />
