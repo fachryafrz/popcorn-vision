@@ -110,7 +110,7 @@ ${siteConfig.name} is an open-source project created for educational and persona
 
 All data including titles, posters, and metadata is retrieved from third-party public API (The Movie Database). Streaming links or embeds shown on this site are sourced from external providers. **${siteConfig.name} does not host, store, or upload any content.**
 
-Any media streamed via this platform originates from third-party sources whose availability and legality are beyond our control. If you believe that any content infringes your copyright, **please contact the original hosting provider**, as ${siteConfig.name} does not have ownership or control over the hosted files.
+Any media streamed via this platform originates from third-party sources whose availability and legality are beyond our control. If you believe that any content infringes your copyright, **please contact the original streaming provider**, as ${siteConfig.name} does not have ownership or control over the hosted files.
 
 Use of this site implies that you understand and accept these terms. ${siteConfig.name} is non-commercial and should only be used for personal exploration and learning. We do not encourage or promote any form of copyright violation.
 `;
