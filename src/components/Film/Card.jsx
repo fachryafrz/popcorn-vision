@@ -8,7 +8,7 @@ import moment from "moment";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
-  const { handleMouseOver, setPosition } = useHoverCard();
+  const { handleMouseOver } = useHoverCard();
 
   const isItTvPage = (movie, tv) => {
     const type = !isTvPage ? movie : tv;
@@ -36,8 +36,7 @@ export default function FilmCard({ film, isTvPage }) {
           left: initialPosition.left,
         };
 
-        setPosition(position);
-        handleMouseOver(film);
+        handleMouseOver(film, position);
       }}
       onMouseLeave={() => handleMouseOver.clear()}
       prefetch={false}

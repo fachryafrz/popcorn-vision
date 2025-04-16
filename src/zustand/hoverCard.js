@@ -2,9 +2,10 @@ import { debounce } from "@mui/material";
 import { create } from "zustand";
 
 export const useHoverCard = create((set) => {
-  const debounced = debounce((film) => {
+  const debounced = debounce((film, position) => {
     set({ card: film });
-  }, 800);
+    set({ position });
+  }, 1000);
 
   return {
     card: null,
