@@ -20,9 +20,9 @@ export async function generateMetadata() {
   });
 
   return {
-    title: user.name,
+    title: user.name ?? user.username,
     openGraph: {
-      title: `${user.name} - ${siteConfig.name}`,
+      title: `${user.name ?? user.username} - ${siteConfig.name}`,
       url: `${siteConfig.url}/profile`,
     },
   };

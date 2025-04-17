@@ -2,9 +2,11 @@
 "use client";
 
 import { useAuth } from "@/hooks/auth";
+import { handleOpenWindow } from "@/lib/openWindow";
 import { IonIcon } from "@ionic/react";
 import axios from "axios";
 import { logOutOutline } from "ionicons/icons";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
 
@@ -69,14 +71,22 @@ export default function User({ user }) {
         </figure>
       )}
 
-      <div className={`flex flex-col-reverse gap-2`}>
-        <h1 className={`text-md font-medium text-gray-400 md:text-xl`}>
+      <div className={`flex flex-col gap-2`}>
+        <h1 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h1>
+        <h2 className={`text-md font-medium text-gray-400 md:text-xl`}>
           {user.name}
-        </h1>
-        <h2 className={`text-2xl font-bold md:text-4xl`}>{user.username}</h2>
+        </h2>
+        <button
+          onClick={() => {
+            handleOpenWindow("https://www.themoviedb.org/settings/profile");
+          }}
+          className="btn btn-ghost btn-sm mx-auto max-w-fit bg-gray-400 bg-opacity-20 md:mx-0"
+        >
+          Edit profile
+        </button>
       </div>
 
-      <div className={`sm:absolute right-4 top-0`}>
+      <div className={`right-4 top-0 sm:absolute`}>
         <button onClick={logout} className={`btn btn-error btn-sm`}>
           <IonIcon
             icon={logOutOutline}
