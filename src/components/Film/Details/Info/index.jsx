@@ -60,8 +60,7 @@ export default function FilmInfo({
   const releaseDateByCountry = releaseDates?.results.find(
     (item) => item.iso_3166_1 === countryCode,
   );
-
-  const validTypes = [1, 2, 3, 4, 5, 6];
+  const validTypes = [2, 3, 4, 5, 6];
   const filteredReleaseDateByCountry = releaseDateByCountry?.release_dates
     .filter((item) => validTypes.includes(item.type))
     .reduce((earliest, current) => {
