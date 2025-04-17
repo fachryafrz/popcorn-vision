@@ -10,12 +10,14 @@ export async function generateMetadata({ params, type = `tv` }) {
   const [film, images] = await Promise.all([
     axios.get(`/${type}/${id}`).then(({ data }) => data),
 
-    axios.get(`/${type}/${id}/images`, {
-      params: {
-        include_image_language: "en",
-      },
-    }).then(({ data }) => data),
-  ])
+    axios
+      .get(`/${type}/${id}/images`, {
+        params: {
+          include_image_language: "en",
+        },
+      })
+      .then(({ data }) => data),
+  ]);
 
   const isTvPage = type !== "movie" ? true : false;
   const date = new Date(!isTvPage ? film.release_date : film.first_air_date);
@@ -26,7 +28,7 @@ export async function generateMetadata({ params, type = `tv` }) {
   const lastAirDate =
     film.last_air_date !== null &&
     new Date(film.last_air_date).getFullYear() !==
-    new Date(film.first_air_date).getFullYear();
+      new Date(film.first_air_date).getFullYear();
 
   let backdrops;
 
@@ -41,16 +43,18 @@ export async function generateMetadata({ params, type = `tv` }) {
   }
 
   return {
-    title: `${film.name} (${lastAirDate
-      ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
-      : filmReleaseDate
-      })`,
-    description: film.overview,
-    openGraph: {
-      title: `${film.name} (${lastAirDate
+    title: `${film.name} (${
+      lastAirDate
         ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
         : filmReleaseDate
-        }) - ${siteConfig.name}`,
+    })`,
+    description: film.overview,
+    openGraph: {
+      title: `${film.name} (${
+        lastAirDate
+          ? `${filmReleaseDate}-${new Date(film.last_air_date).getFullYear()}`
+          : filmReleaseDate
+      })`,
       description: film.overview,
       url: `${siteConfig.url}/${`tv`}/${film.id}`,
       siteName: siteConfig.name,

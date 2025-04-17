@@ -40,7 +40,7 @@ export async function generateMetadata({ params }) {
     title: `${person.name}`,
     description: person.biography,
     openGraph: {
-      title: `${person.name} - ${siteConfig.name}`,
+      title: `${person.name}`,
       description: person.biography,
       url: `${siteConfig.url}/${`person`}/${person.id}`,
       siteName: siteConfig.name,

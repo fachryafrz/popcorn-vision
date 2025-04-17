@@ -4,10 +4,10 @@ import { POPCORN } from "@/lib/constants";
 import React from "react";
 
 export const metadata = {
-  title: "Login",
+  title: `Login`,
   openGraph: {
-    title: `Login - ${siteConfig.name}`,
-  }
+    title: `Login`,
+  },
 };
 
 export default function Login() {

@@ -4,9 +4,9 @@ import { siteConfig } from "@/config/site";
 
 export async function generateMetadata() {
   return {
-    title: "TV Shows",
+    title: `TV Shows`,
     openGraph: {
-      title: `TV Shows - ${siteConfig.name}`,
+      title: `TV Shows`,
       url: `${siteConfig.url}/tv`,
     },
   };

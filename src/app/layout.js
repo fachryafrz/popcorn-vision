@@ -32,7 +32,10 @@ export const metadata = {
   description: siteConfig.description,
   openGraph: {
     siteName: siteConfig.name,
-    title: siteConfig.name,
+    title: {
+      template: `%s - ${siteConfig.name}`,
+      default: siteConfig.name,
+    },
     description: siteConfig.description,
     url: siteConfig.url,
     images: {

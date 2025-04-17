@@ -45,7 +45,7 @@ export async function generateMetadata({ params, type = "movie" }) {
     title: `${film.title} (${filmReleaseDate})`,
     description: film.overview,
     openGraph: {
-      title: `${film.title} (${filmReleaseDate}) - ${siteConfig.name}`,
+      title: `${film.title} (${filmReleaseDate})`,
       description: film.overview,
       url: `${siteConfig.url}/${`movies`}/${film.id}`,
       siteName: siteConfig.name,
