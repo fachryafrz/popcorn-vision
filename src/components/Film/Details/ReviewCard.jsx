@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import Person from "../../Person/Person";
 import moment from "moment";
+import { siteConfig } from "@/config/site";
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -68,7 +69,7 @@ export default function ReviewCard({ review }) {
             a: ({ node, ...props }) => (
               <a
                 {...props}
-                href={`${props.href}?utm_source=popcornvision&utm_medium=referral&utm_campaign=reviews`}
+                href={`${props.href}?utm_source=${siteConfig.name.replace(" ", "").toLowerCase()}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
