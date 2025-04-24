@@ -69,9 +69,8 @@ export default function ReviewCard({ review }) {
             a: ({ node, ...props }) => (
               <a
                 {...props}
-                href={`${props.href}?utm_source=${siteConfig.name.replace(" ", "").toLowerCase()}`}
+                href={`${props.href}?utm_source=${siteConfig.url.replace(/^https?:\/\//, "")}`}
                 target="_blank"
-                rel="noopener noreferrer"
               >
                 {props.children}
               </a>
