@@ -61,7 +61,22 @@ export default function ReviewCard({ review }) {
       <div
         className={`prose max-w-none text-sm sm:text-base [&_*]:!text-white`}
       >
-        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeRaw]}
+          components={{
+            a: ({ node, ...props }) => (
+              <a
+                {...props}
+                href={`${props.href}?utm_source=popcornvision&utm_medium=referral&utm_campaign=reviews`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {props.children}
+              </a>
+            ),
+          }}
+        >
           {readMore || wordCount < maxLength
             ? text
             : `${words.slice(0, maxLength).join("")}...`}
