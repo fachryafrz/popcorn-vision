@@ -33,6 +33,7 @@ import { useEffect } from "react";
 import { useConfetti } from "@/zustand/confetti";
 import { handleOpenWindow } from "@/lib/openWindow";
 import WatchButton from "@/components/Layout/WatchButton";
+import AddToCalendar from "./AddToCalendar";
 
 export default function FilmInfo({
   film,
@@ -335,7 +336,6 @@ export default function FilmInfo({
             </div>
           </section>
 
-          {/* NOTE: Coba ambil dari user, kayak episode yg saat ini ditonton */}
           {/* Upcoming */}
           {filmReleaseDate !== "" && (isUpcoming || isUpcomingNextEps) && (
             <section id={`Upcoming`} className={`grid gap-2 md:grid-cols-2`}>
@@ -414,8 +414,13 @@ export default function FilmInfo({
               />
             </div>
 
-            {/* Share */}
-            <ShareButton />
+            <div className="flex flex-wrap gap-1">
+              {/* Add to Calendar */}
+              <AddToCalendar film={film} />
+
+              {/* Share */}
+              <ShareButton />
+            </div>
           </section>
         </div>
       </div>
