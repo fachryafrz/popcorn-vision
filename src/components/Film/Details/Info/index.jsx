@@ -412,12 +412,14 @@ export default function FilmInfo({
                 film={film}
                 watchlist={accountStates?.watchlist}
               />
+
+              {/* Add to Calendar */}
+              {isUpcoming && filmReleaseDate !== "" && (
+                <AddToCalendar film={film} />
+              )}
             </div>
 
             <div className="flex flex-wrap gap-1">
-              {/* Add to Calendar */}
-              <AddToCalendar film={film} />
-
               {/* Share */}
               <ShareButton />
             </div>
