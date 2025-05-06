@@ -114,7 +114,7 @@ export default function AddToCalendar({ film }) {
                   ? handleOpenWindow(
                       calendar.url(
                         `🍿 ${film.title}`,
-                        `${film.overview} \n\n via ${siteConfig.name}: ${siteConfig.url}`,
+                        `${film.overview} \n\nvia ${siteConfig.name}: ${siteConfig.url}`,
                         "",
                         dayjs(film.release_date || film.first_air_date),
                         dayjs(
@@ -126,7 +126,7 @@ export default function AddToCalendar({ film }) {
                     )
                   : calendar.url(
                       film.title,
-                      `${film.overview} \n\n via ${siteConfig.name}: ${siteConfig.url}`,
+                      `${film.overview} \n\nvia ${siteConfig.name}: ${siteConfig.url}`,
                       "",
                       dayjs(film.release_date || film.first_air_date),
                       dayjs(
