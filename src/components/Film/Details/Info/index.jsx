@@ -414,7 +414,7 @@ export default function FilmInfo({
               />
 
               {/* Add to Calendar */}
-              {isUpcoming && filmReleaseDate !== "" && (
+              {(isUpcoming || isUpcomingNextEps) && filmReleaseDate !== "" && (
                 <AddToCalendar film={film} />
               )}
             </div>

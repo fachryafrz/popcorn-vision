@@ -88,6 +88,8 @@ export default function AddToCalendar({ film }) {
     },
   ];
 
+  console.log(film);
+
   return (
     <div className="dropdown dropdown-end dropdown-hover">
       <label
@@ -113,26 +115,28 @@ export default function AddToCalendar({ film }) {
                 calendar.type !== "file"
                   ? handleOpenWindow(
                       calendar.url(
-                        `🍿 ${film.title}`,
+                        `🍿 ${film.title || film.name}`,
                         `${film.overview} \n\nvia ${siteConfig.name}: ${window.location.href}`,
                         "",
-                        dayjs(film.release_date || film.first_air_date),
                         dayjs(
                           film.release_date ||
-                            film.last_air_date ||
-                            film.first_air_date,
+                            film.next_episode_to_air?.air_date,
+                        ),
+                        dayjs(
+                          film.release_date ||
+                            film.next_episode_to_air?.air_date,
                         ),
                       ),
                     )
                   : calendar.url(
-                      film.title,
+                      film.title || film.name,
                       `${film.overview} \n\nvia ${siteConfig.name}: ${window.location.href}`,
                       "",
-                      dayjs(film.release_date || film.first_air_date),
                       dayjs(
-                        film.release_date ||
-                          film.last_air_date ||
-                          film.first_air_date,
+                        film.release_date || film.next_episode_to_air?.air_date,
+                      ),
+                      dayjs(
+                        film.release_date || film.next_episode_to_air?.air_date,
                       ),
                     )
               }
