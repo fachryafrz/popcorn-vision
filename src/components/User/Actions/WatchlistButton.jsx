@@ -59,7 +59,7 @@ export default function WatchlistButton({
           document.getElementById("loginAlert").showModal();
         }
       }}
-      className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm ${className}`}
+      className={`btn btn-ghost flex w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm ${className}`}
     >
       {isLoading ? (
         <span className="loading loading-spinner w-[20px]"></span>

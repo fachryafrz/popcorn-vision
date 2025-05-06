@@ -92,7 +92,7 @@ export default function AddToCalendar({ film }) {
     <div className="dropdown dropdown-end dropdown-hover">
       <label
         tabIndex={0}
-        className="btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm"
+        className="btn btn-ghost flex w-fit items-center gap-2 rounded-full bg-white bg-opacity-5 text-sm backdrop-blur-sm"
       >
         <IonIcon
           icon={calendarOutline}
