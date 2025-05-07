@@ -64,7 +64,7 @@ git clone https://github.com/{your-username}/popcorn-vision.git
 
 cd popcorn-vision
 
-npm install
+pnpm install
 
 cp .env.example .env
 
