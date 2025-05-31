@@ -74,8 +74,6 @@ export default function FilmInfo({
       )
     : null;
 
-  console.log(validReleaseDates);
-
   const filmReleaseDate = filteredReleaseDateByCountry
     ? filteredReleaseDateByCountry?.release_date
     : film?.release_date;
