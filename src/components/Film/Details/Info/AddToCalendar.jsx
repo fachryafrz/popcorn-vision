@@ -88,8 +88,6 @@ export default function AddToCalendar({ film }) {
     },
   ];
 
-  console.log(film);
-
   return (
     <div className="dropdown dropdown-end dropdown-hover">
       <label

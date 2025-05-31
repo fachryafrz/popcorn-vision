@@ -61,16 +61,22 @@ export default function FilmInfo({
   const releaseDateByCountry = releaseDates?.results.find(
     (item) => item.iso_3166_1 === countryCode,
   );
-  const validTypes = [2, 3, 4, 5, 6];
-  const filteredReleaseDateByCountry = releaseDateByCountry?.release_dates
-    .filter((item) => validTypes.includes(item.type))
-    .reduce((earliest, current) => {
-      return moment(current.release_date).isBefore(earliest.release_date)
-        ? current
-        : earliest;
-    });
+  const validTypes = [2, 3];
+  const validReleaseDates =
+    releaseDateByCountry?.release_dates?.filter((item) =>
+      validTypes.includes(item.type),
+    ) ?? [];
+  const filteredReleaseDateByCountry = validReleaseDates.length
+    ? validReleaseDates.reduce((earliest, current) =>
+        moment(current.release_date).isBefore(earliest.release_date)
+          ? current
+          : earliest,
+      )
+    : null;
 
-  const filmReleaseDate = releaseDateByCountry
+  console.log(validReleaseDates);
+
+  const filmReleaseDate = filteredReleaseDateByCountry
     ? filteredReleaseDateByCountry?.release_date
     : film?.release_date;
 
@@ -164,7 +170,7 @@ export default function FilmInfo({
             isTvPage={isTvPage}
             countryName={countryName}
             filmReleaseDate={filmReleaseDate}
-            releaseDateByCountry={releaseDateByCountry}
+            filteredReleaseDateByCountry={filteredReleaseDateByCountry}
           />
           {/* TV Shows Number of Season */}
           {isTvPage &&

@@ -7,9 +7,9 @@ export default function FilmReleaseDate({
   isTvPage,
   countryName,
   filmReleaseDate,
-  releaseDateByCountry,
+  filteredReleaseDateByCountry,
 }) {
-  const movieReleaseDate = `${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${releaseDateByCountry ? `(${countryName})` : ``}`;
+  const movieReleaseDate = `${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${filteredReleaseDateByCountry ? `(${countryName})` : ``}`;
 
   return (
     <>
