@@ -220,7 +220,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             type={`text`}
             ref={searchRef}
             tabIndex={isSearchPage ? 0 : -1}
-            className={`ml-2 w-full grow bg-transparent`}
+            className={`ml-2 grow bg-transparent`}
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
