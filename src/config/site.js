@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "Popcorn Vision",
   description:
-    "Popcorn Vision is the ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. You can save your favorite movies and TV shows, create a personalized watchlist, and even rate titles.",
+    "The ultimate platform for movie and TV show enthusiasts, offering an extensive database to explore, track and manage your favorite content. You can save your favorite movies and TV shows, create a personalized watchlist, and even rate titles.",
   url:
     process.env.NODE_ENV === "production"
       ? "https://popcorn.fachryafrz.com"
