@@ -2,11 +2,9 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { headers } from "next/headers";
 import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
-import Confetti from "@/components/Layout/Confetti";
 import { siteConfig } from "@/config/site";
 import Providers from "@/components/Providers";
 
@@ -77,9 +75,6 @@ export default async function RootLayout({ children }) {
 
           {/* Footer */}
           <Footer />
-
-          {/* Confetti */}
-          <Confetti />
 
           <GoogleAnalytics gaId={gtagId} />
         </Providers>

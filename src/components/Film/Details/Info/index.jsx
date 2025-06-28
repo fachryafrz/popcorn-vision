@@ -21,16 +21,11 @@ import Countdown from "./Countdown";
 import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
-import Confetti from "react-confetti-boom";
-import dayjs from "dayjs";
-import duration from "dayjs/plugin/duration";
 import moment from "moment";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
-import { useEffect } from "react";
-import { useConfetti } from "@/zustand/confetti";
 import { handleOpenWindow } from "@/lib/openWindow";
 import WatchButton from "@/components/Layout/WatchButton";
 import AddToCalendar from "./AddToCalendar";
@@ -44,7 +39,6 @@ export default function FilmInfo({
 }) {
   const { user } = userStore();
   const { location } = useLocation();
-  const { setConfetti } = useConfetti();
 
   const countryCode = location?.country_code;
   const countryName = location?.country_name;
@@ -94,36 +88,10 @@ export default function FilmInfo({
     ? providersArray.find((item) => item[0] === countryCode)
     : null;
 
-  // Confetti
-  const calculateDaysLeft = () => {
-    dayjs.extend(duration);
-    const now = dayjs();
-    const filmReleaseDateDayjs = dayjs(
-      !isTvPage ? filmReleaseDate : nextEps?.air_date,
-    );
-    const timeLeft = dayjs.duration(filmReleaseDateDayjs.diff(now));
-    const daysLeft = timeLeft.days();
-
-    if (isUpcoming || isUpcomingNextEps) {
-      return daysLeft < 1;
-    }
-
-    return false;
-  };
-
   // Get account state using SWR
   const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(user ? swrKey : null, fetcher);
-
-  // Confetti
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setConfetti(calculateDaysLeft());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <div className="flex flex-col items-center gap-4 md:flex-row md:items-stretch lg:gap-0">
