@@ -12,9 +12,8 @@ import {
 } from "ionicons/icons";
 import moment from "moment";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import pluralize from "pluralize";
-import React from "react";
+import React, { useMemo } from "react";
 
 export default function PersonProfile({
   person,
@@ -22,18 +21,23 @@ export default function PersonProfile({
   combinedCredits,
   isModal,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const isTvPage = pathname.startsWith(`/tv`);
-
   const { setOpen, setImages, setSelectedIndex } = useImageSlider();
 
   // Format Date
-  const birthday = moment(person.birthday).format("dddd, MMMM D, YYYY");
-  const deathday = moment(person.deathday).format("dddd, MMMM D, YYYY");
-  const personJob = person.known_for_department;
-  const isActing = personJob === "Acting";
-  const personWorks = isActing ? combinedCredits?.cast : combinedCredits?.crew;
+  const birthday = useMemo(
+    () => moment(person.birthday).format("dddd, MMMM D, YYYY"),
+    [person],
+  );
+  const deathday = useMemo(
+    () => moment(person.deathday).format("dddd, MMMM D, YYYY"),
+    [person],
+  );
+  const personJob = useMemo(() => person.known_for_department, [person]);
+  const isActing = useMemo(() => personJob === "Acting", [personJob]);
+  const personWorks = useMemo(
+    () => (isActing ? combinedCredits?.cast : combinedCredits?.crew),
+    [combinedCredits, isActing],
+  );
 
   const handleImageSlider = (index) => {
     setOpen(true);

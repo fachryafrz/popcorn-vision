@@ -5,7 +5,7 @@ import { useImageSlider } from "@/zustand/imageSlider";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import pluralize from "pluralize";
-import React from "react";
+import React, { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Navigation } from "swiper/modules";
@@ -20,10 +20,15 @@ export default function PersonDetails({
 }) {
   const { setOpen, setImages, setSelectedIndex } = useImageSlider();
 
-  const personJob = person.known_for_department;
-  const personMovies =
-    personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
-  const personTV = personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew;
+  const personJob = useMemo(() => person.known_for_department, [person]);
+  const personMovies = useMemo(
+    () => (personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew),
+    [movieCredits, personJob],
+  );
+  const personTV = useMemo(
+    () => (personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew),
+    [personJob, tvCredits],
+  );
 
   const calculateAge = (birthdate, deathdate) => {
     const today = new Date();

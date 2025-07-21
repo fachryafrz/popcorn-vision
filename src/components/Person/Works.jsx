@@ -2,13 +2,12 @@
 "use client";
 
 import ImagePovi from "@/components/Film/ImagePovi";
-import { POPCORN } from "@/lib/constants";
 import { formatRating } from "@/lib/formatRating";
 import { sortFilms } from "@/lib/sortFilms";
 import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import slug from "slug";
 import { Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -19,17 +18,24 @@ export default function PersonWorks({ person, movieCredits, tvCredits }) {
   const [mediaSwiper, setMediaSwiper] = useState();
 
   const isTvPage = creditsSwitcher === "TV";
-  const personJob = person.known_for_department;
-  const personMovies =
-    personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew;
-  const personTV = personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew;
+  const personJob = useMemo(() => person.known_for_department, [person]);
+  const personMovies = useMemo(
+    () => (personJob === "Acting" ? movieCredits?.cast : movieCredits?.crew),
+    [movieCredits, personJob],
+  );
+  const personTV = useMemo(
+    () => (personJob === "Acting" ? tvCredits?.cast : tvCredits?.crew),
+    [personJob, tvCredits],
+  );
 
-  const sortedFilms =
-    films &&
-    sortFilms({
-      films: personJob === "Acting" ? films?.cast : films?.crew,
-      isTvPage,
-    });
+  const sortedFilms = useMemo(() => {
+    if (films) {
+      return sortFilms({
+        films: personJob === "Acting" ? films?.cast : films?.crew,
+        isTvPage,
+      });
+    }
+  }, [films, isTvPage, personJob]);
 
   useEffect(() => {
     if (personMovies.length < 1) {
