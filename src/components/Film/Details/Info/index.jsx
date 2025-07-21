@@ -29,6 +29,7 @@ import pluralize from "pluralize";
 import { handleOpenWindow } from "@/lib/openWindow";
 import WatchButton from "@/components/Layout/WatchButton";
 import AddToCalendar from "./AddToCalendar";
+import { useMemo } from "react";
 
 export default function FilmInfo({
   film,
@@ -46,47 +47,67 @@ export default function FilmInfo({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const director = credits.crew.find((person) => person.job === "Director");
+  const director = useMemo(
+    () => credits.crew.find((person) => person.job === "Director"),
+    [credits],
+  );
 
-  const nextEps = film.next_episode_to_air;
-  const lastEps = film.last_episode_to_air;
+  const nextEps = useMemo(() => film.next_episode_to_air, [film]);
+  const lastEps = useMemo(() => film.last_episode_to_air, [film]);
 
   // Release Date
-  const releaseDateByCountry = releaseDates?.results.find(
-    (item) => item.iso_3166_1 === countryCode,
-  );
-  const validTypes = [2, 3];
-  const validReleaseDates =
-    releaseDateByCountry?.release_dates?.filter((item) =>
-      validTypes.includes(item.type),
-    ) ?? [];
-  const filteredReleaseDateByCountry = validReleaseDates.length
-    ? validReleaseDates.reduce((earliest, current) =>
-        moment(current.release_date).isBefore(earliest.release_date)
-          ? current
-          : earliest,
-      )
-    : null;
+  const filteredReleaseDateByCountry = useMemo(() => {
+    const releaseDateByCountry = releaseDates?.results.find(
+      (item) => item.iso_3166_1 === countryCode,
+    );
+    const validTypes = [2, 3];
+    const validReleaseDates =
+      releaseDateByCountry?.release_dates?.filter((item) =>
+        validTypes.includes(item.type),
+      ) ?? [];
 
-  const filmReleaseDate = filteredReleaseDateByCountry
-    ? filteredReleaseDateByCountry?.release_date
-    : film?.release_date;
+    return validReleaseDates.length
+      ? validReleaseDates.reduce((earliest, current) =>
+          moment(current.release_date).isBefore(earliest.release_date)
+            ? current
+            : earliest,
+        )
+      : null;
+  }, [releaseDates, countryCode]);
 
-  const isUpcoming = moment(
-    !isTvPage ? filmReleaseDate : film?.first_air_date,
-  ).isAfter(moment());
+  const filmReleaseDate = useMemo(() => {
+    return filteredReleaseDateByCountry
+      ? filteredReleaseDateByCountry?.release_date
+      : film?.release_date;
+  }, [film, filteredReleaseDateByCountry]);
 
-  const isUpcomingNextEps = moment(nextEps?.air_date).isAfter(moment());
+  const isUpcoming = useMemo(() => {
+    const today = moment();
+    return moment(!isTvPage ? filmReleaseDate : film?.first_air_date).isAfter(
+      today,
+    );
+  }, [film, filmReleaseDate, isTvPage]);
 
-  const filmRuntime = !isTvPage
-    ? film?.runtime
-    : film?.episode_run_time.length > 0 && film?.episode_run_time[0];
+  const isUpcomingNextEps = useMemo(() => {
+    const today = moment();
+    return moment(nextEps?.air_date).isAfter(today);
+  }, [nextEps]);
 
-  const providersArray = Object.entries(providers.results);
+  const filmRuntime = useMemo(() => {
+    return !isTvPage
+      ? film?.runtime
+      : film?.episode_run_time.length > 0 && film?.episode_run_time[0];
+  }, [film, isTvPage]);
 
-  const providersIDArray = location
-    ? providersArray.find((item) => item[0] === countryCode)
-    : null;
+  const providersArray = useMemo(() => {
+    return Object.entries(providers.results);
+  }, [providers]);
+
+  const providersIDArray = useMemo(() => {
+    return location
+      ? providersArray.find((item) => item[0] === countryCode)
+      : null;
+  }, [providersArray, location, countryCode]);
 
   // Get account state using SWR
   const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${film.id}/account_states`;

@@ -1,7 +1,13 @@
+"use client";
+
+import { useMemo } from "react";
 import Person from "../../../Person/Person";
 
 export default function FilmDirector({ credits, film, isTvPage }) {
-  const directors = credits.crew.filter((person) => person.job === "Director");
+  const directors = useMemo(
+    () => credits.crew.filter((person) => person.job === "Director"),
+    [credits],
+  );
 
   return (
     <div className={`-mx-2`}>

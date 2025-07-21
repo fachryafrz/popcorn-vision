@@ -1,52 +1,53 @@
 /* eslint-disable @next/next/no-img-element */
+"use client";
+
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useMemo } from "react";
 
 export default function WatchProvider({ film, providersIDArray, isTvPage }) {
-  const router = useRouter();
+  const groupedProviders = useMemo(() => {
+    if (!providersIDArray) return [];
 
-  const [providerCountry, providerTypes] = providersIDArray;
+    const [_, providerTypes] = providersIDArray;
+    const combinedProviders = [];
 
-  const combinedProviders = [];
+    const formatProviderType = (providers, type) => {
+      return providers.map((provider) => {
+        return {
+          provider_id: provider.provider_id,
+          provider_name: provider.provider_name,
+          logo_path: provider.logo_path,
+          url: provider.url,
+          type: type,
+        };
+      });
+    };
 
-  const formatProviderType = (providers, type) => {
-    return providers.map((provider) => {
-      return {
-        provider_id: provider.provider_id,
-        provider_name: provider.provider_name,
-        logo_path: provider.logo_path,
-        url: provider.url,
-        type: type,
-      };
-    });
-  };
+    if (providerTypes.rent)
+      combinedProviders.push(...formatProviderType(providerTypes.rent, "Rent"));
+    if (providerTypes.buy)
+      combinedProviders.push(...formatProviderType(providerTypes.buy, "Buy"));
+    if (providerTypes.flatrate)
+      combinedProviders.push(
+        ...formatProviderType(providerTypes.flatrate, "Stream"),
+      );
+    if (providerTypes.ads)
+      combinedProviders.push(...formatProviderType(providerTypes.ads, "Ads"));
 
-  if (providerTypes.rent)
-    combinedProviders.push(...formatProviderType(providerTypes.rent, "Rent"));
-  if (providerTypes.buy)
-    combinedProviders.push(...formatProviderType(providerTypes.buy, "Buy"));
-  if (providerTypes.flatrate)
-    combinedProviders.push(
-      ...formatProviderType(providerTypes.flatrate, "Stream"),
-    );
-  if (providerTypes.ads)
-    combinedProviders.push(...formatProviderType(providerTypes.ads, "Ads"));
-
-  const groupedProviders = combinedProviders.reduce((acc, provider) => {
-    const existingProvider = acc.find(
-      (p) => p.provider_id === provider.provider_id,
-    );
-    if (existingProvider) {
-      // Jika provider dengan id yang sama sudah ada, gabungkan tipe mereka jika belum ada
-      if (!existingProvider.type.includes(provider.type)) {
-        existingProvider.type += `/${provider.type}`;
+    return combinedProviders.reduce((acc, provider) => {
+      const existingProvider = acc.find(
+        (p) => p.provider_id === provider.provider_id,
+      );
+      if (existingProvider) {
+        if (!existingProvider.type.includes(provider.type)) {
+          existingProvider.type += `/${provider.type}`;
+        }
+      } else {
+        acc.push({ ...provider });
       }
-    } else {
-      // Jika belum ada, tambahkan provider ke array
-      acc.push({ ...provider });
-    }
-    return acc;
-  }, []);
+      return acc;
+    }, []);
+  }, [providersIDArray]);
 
   return (
     <>
