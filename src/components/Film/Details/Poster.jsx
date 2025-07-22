@@ -26,7 +26,7 @@ export default function FilmPoster({ film, videos, images, reviews }) {
     if (!isTvPage) return;
 
     setSeasonPoster(() => [film.poster_path]);
-  }, []);
+  }, [film, isTvPage]);
 
   useEffect(() => {
     const isWindowAvailable = typeof window !== "undefined";
@@ -76,10 +76,6 @@ export default function FilmPoster({ film, videos, images, reviews }) {
       ]);
     }
   }, [film, images, isTvPage, reviews, videos]);
-
-  useEffect(() => {
-    setSeasonPoster(() => []);
-  }, [pathname]);
 
   return (
     <div className="sticky top-20 h-fit flex-1">

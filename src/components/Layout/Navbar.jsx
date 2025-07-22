@@ -2,11 +2,11 @@
 "use client";
 
 import { IonIcon } from "@ionic/react";
-import { filmOutline, tvOutline, search, close } from "ionicons/icons";
+import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
@@ -15,7 +15,6 @@ import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
 import { POPCORN } from "@/lib/constants";
 import { useToggleFilter } from "@/zustand/toggleFilter";
-import { useSeasonPoster } from "@/zustand/seasonPoster";
 import { userStore } from "@/zustand/userStore";
 import { SearchBar } from "./SearchBar";
 import { siteConfig } from "@/config/site";
@@ -27,7 +26,6 @@ export default function Navbar() {
   const { user } = useAuth();
   const { setUser } = userStore();
   const { setToggleFilter } = useToggleFilter();
-  const { setSeasonPoster } = useSeasonPoster();
 
   const [isScrolled, setIsScrolled] = useState(true);
 
@@ -44,10 +42,6 @@ export default function Navbar() {
       setToggleFilter(false);
     }
   }, []);
-
-  useEffect(() => {
-    setSeasonPoster(() => []);
-  }, [pathname]);
 
   useEffect(() => {
     let steps;
