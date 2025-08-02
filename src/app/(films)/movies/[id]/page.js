@@ -90,8 +90,8 @@ export default async function FilmDetail({ params, type = "movie" }) {
     release_dates: releaseDates,
     adult,
   } = film;
-  const isThereRecommendations = recommendations.results.length > 0;
-  const isThereSimilar = similar.results.length > 0;
+  const isThereRecommendations = recommendations?.results?.length > 0;
+  const isThereSimilar = similar?.results?.length > 0;
 
   let collection;
 
@@ -104,7 +104,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   // This can cause double data from recommendation & similar
   // which means there can be two same movies in the list
   let recommendationsAndSimilar = {
-    results: [...recommendations.results, ...similar.results],
+    results: [...(recommendations?.results ?? []), ...(similar?.results ?? [])],
   };
 
   // Schema.org JSON-LD
@@ -190,7 +190,7 @@ export default async function FilmDetail({ params, type = "movie" }) {
   });
 
   // Reviews
-  reviews.results.slice(0, DATA_COUNT).map((review) => {
+  reviews?.results?.slice(0, DATA_COUNT).map((review) => {
     if (review.author_details.rating) {
       reviewsArray.push({
         "@type": "Review",
