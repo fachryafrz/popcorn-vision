@@ -21,7 +21,7 @@ export default function EpisodeCard({
   const pathname = usePathname();
 
   const handleClick = () => {
-    router.replace(
+    router.push(
       `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
       { scroll: false },
     );

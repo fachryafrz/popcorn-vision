@@ -11,7 +11,7 @@ export default function WatchButton() {
   const handleWatch = () => {
     current.set("streaming", "true");
 
-    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
   };
 
   return (

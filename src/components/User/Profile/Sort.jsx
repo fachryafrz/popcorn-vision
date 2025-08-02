@@ -32,7 +32,7 @@ export default function UserProfileSort() {
       order: order?.value,
     });
 
-    router.replace(`${pathname}?${current.toString()}`);
+    router.push(`${pathname}?${current.toString()}`);
   };
   const handleOrder = () => {
     const newOrder = order?.value === "asc" ? orderOptions[1] : orderOptions[0];
@@ -43,7 +43,7 @@ export default function UserProfileSort() {
       order: newOrder?.value,
     });
 
-    router.replace(`${pathname}?${current.toString()}`);
+    router.push(`${pathname}?${current.toString()}`);
   };
 
   useEffect(() => {

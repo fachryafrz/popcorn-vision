@@ -52,9 +52,7 @@ export default function Streaming() {
   );
 
   const handleClose = () => {
-    current.delete("streaming");
-
-    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    router.back();
   };
 
   const { data: film, isLoading } = useSWR(
@@ -377,7 +375,7 @@ function Season({ film, season, detailsLoading }) {
     current.set("season", selectedSeason);
     current.set("episode", item.episode_number);
 
-    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    router.push(`${pathname}?${current.toString()}`, { scroll: false });
   };
 
   useEffect(() => {

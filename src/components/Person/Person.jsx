@@ -19,7 +19,7 @@ export default function Person({
   const pathname = usePathname();
 
   const handleActorClick = () => {
-    router.replace(`${pathname}/?person=${id}`, { scroll: false });
+    router.push(`${pathname}/?person=${id}`, { scroll: false });
   };
 
   return (

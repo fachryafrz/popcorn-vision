@@ -50,9 +50,7 @@ export default function PersonModal() {
   const [films, setFilms] = useState();
 
   const handleClose = () => {
-    current.delete("person");
-
-    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    router.back();
   };
 
   useEffect(() => {

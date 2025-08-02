@@ -60,10 +60,7 @@ export function EpisodeModal({ film }) {
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
 
   const handleClose = () => {
-    current.delete("season");
-    current.delete("episode");
-
-    router.replace(`${pathname}?${current.toString()}`, { scroll: false });
+    router.back();
   };
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
@@ -73,14 +70,14 @@ export function EpisodeModal({ film }) {
 
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
-      router.replace(
+      router.push(
         `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
         { scroll: false },
       );
       return;
     }
 
-    router.replace(
+    router.push(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
       { scroll: false },
     );
@@ -95,13 +92,13 @@ export function EpisodeModal({ film }) {
       parseInt(episodeParams) ===
       filteredSeasons[seasonParams - 1]?.episode_count
     ) {
-      router.replace(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
+      router.push(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
         scroll: false,
       });
       return;
     }
 
-    router.replace(
+    router.push(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
       { scroll: false },
     );
