@@ -6,7 +6,7 @@ import pluralize from "pluralize";
 import axios from "axios";
 
 export default function FilmReviews({ reviews, film }) {
-  const { total_pages } = reviews;
+  const total_pages = reviews?.total_pages;
   let [currentPage, setCurrentPage] = useState(1);
   const [moreReviews, setMoreReviews] = useState(reviews.results);
   const [showAllReviews, setShowAllReviews] = useState(false);

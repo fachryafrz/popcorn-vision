@@ -18,17 +18,17 @@ export default function Recommendation({
     recommendations?.page || similar?.page,
   );
   const [totalSearchPages, setTotalSearchPages] = useState(
-    recommendations.total_pages
-      ? recommendations.total_pages
-      : similar.total_pages,
+    recommendations?.total_pages
+      ? recommendations?.total_pages
+      : similar?.total_pages,
   );
   const [filmsData, setFilmsData] = useState(
-    recommendations.results.length > 0
-      ? recommendations.results
-      : similar.results,
+    recommendations?.results.length > 0
+      ? recommendations?.results
+      : similar?.results,
   );
   const [isFinished, setIsFinished] = useState(
-    recommendations.results.length > 0 ? false : true,
+    recommendations?.results.length > 0 ? false : true,
   );
 
   const fetchMoreFilms = async () => {
@@ -45,13 +45,13 @@ export default function Recommendation({
         })
         .then(({ data }) => data);
 
-      const filteredFilms = response.results.filter((film) => {
+      const filteredFilms = response?.results.filter((film) => {
         return !filmsData.some((existingFilm) => existingFilm.id === film.id);
       });
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
       setCurrentSearchPage(response?.page);
-      setTotalSearchPages(response.total_pages);
+      setTotalSearchPages(response?.total_pages);
     } catch (error) {
       console.error(`Error fetching more films:`, error);
     }
@@ -61,7 +61,7 @@ export default function Recommendation({
     if (currentSearchPage === totalSearchPages && !isFinished) {
       setIsFinished(true);
       setCurrentSearchPage(0);
-      setTotalSearchPages(similar.total_pages);
+      setTotalSearchPages(similar?.total_pages);
     }
   }, [currentSearchPage, isFinished, similar, totalSearchPages]);
 
