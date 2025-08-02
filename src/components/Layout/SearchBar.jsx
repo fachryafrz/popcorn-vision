@@ -207,7 +207,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         id={`SearchBar`}
         className={`form-control relative block w-full justify-self-center`}
       >
-        <label class="input input-bordered flex items-center rounded-full bg-transparent pr-0">
+        <label className="input input-bordered flex items-center rounded-full bg-transparent pr-0">
           <IonIcon
             icon={search}
             style={{
