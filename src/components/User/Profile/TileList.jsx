@@ -124,7 +124,7 @@ export default function TileList({ title, section, user }) {
       // });
 
       setFilmsData(updatedFilms);
-      setCurrentSearchPage(response.page);
+      setCurrentSearchPage(response?.page);
     } catch (error) {
       console.error(`Error fetching more films:`, error);
     }

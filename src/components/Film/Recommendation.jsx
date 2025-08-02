@@ -15,7 +15,7 @@ export default function Recommendation({
   const isTvPage = pathname.startsWith("/tv");
 
   const [currentSearchPage, setCurrentSearchPage] = useState(
-    recommendations.page ? recommendations.page : similar.page,
+    recommendations?.page || similar?.page,
   );
   const [totalSearchPages, setTotalSearchPages] = useState(
     recommendations.total_pages
@@ -50,7 +50,7 @@ export default function Recommendation({
       });
 
       setFilmsData((prevMovies) => [...prevMovies, ...filteredFilms]);
-      setCurrentSearchPage(response.page);
+      setCurrentSearchPage(response?.page);
       setTotalSearchPages(response.total_pages);
     } catch (error) {
       console.error(`Error fetching more films:`, error);
