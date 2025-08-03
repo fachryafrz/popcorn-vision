@@ -207,7 +207,7 @@ export function SearchBar({ placeholder = `Type / to search` }) {
         id={`SearchBar`}
         className={`form-control relative block w-full justify-self-center`}
       >
-        <label className="input input-bordered flex items-center rounded-full bg-transparent pr-0">
+        <label className="input input-bordered grid grid-cols-[auto_1fr_auto] items-center rounded-full bg-transparent pr-0">
           <IonIcon
             icon={search}
             style={{
@@ -218,9 +218,10 @@ export function SearchBar({ placeholder = `Type / to search` }) {
 
           <input
             type={`text`}
+            name={`search`}
             ref={searchRef}
             tabIndex={isSearchPage ? 0 : -1}
-            className={`ml-2 grow bg-transparent`}
+            className={`w-full bg-transparent px-2`}
             value={searchInput}
             onChange={(e) => {
               setSearchInput(e.target.value);
