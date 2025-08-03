@@ -238,40 +238,43 @@ export function SearchBar({ placeholder = `Type / to search` }) {
             }}
           />
 
-          {searchInput && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className={`btn btn-circle btn-ghost flex h-full items-center`}
-            >
-              <IonIcon
-                icon={close}
-                className={`text-gray-400`}
-                style={{
-                  fontSize: 20,
-                }}
-              />
-            </button>
-          )}
+          <div className="flex">
+            {searchInput && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className={`btn btn-circle btn-ghost flex h-full items-center`}
+              >
+                <IonIcon
+                  icon={close}
+                  className={`text-gray-400`}
+                  style={{
+                    fontSize: 20,
+                  }}
+                />
+              </button>
+            )}
 
-          {!isSearchPage && (
-            <Link
-              href={
-                (isProfilePage && searchParams.get("type") === "tv") || isTvPage
-                  ? `/tv/search`
-                  : `/search`
-              }
-              className={`btn btn-circle btn-ghost`}
-            >
-              <IonIcon
-                icon={optionsOutline}
-                style={{
-                  fontSize: 20,
-                  color: `rgb(156 163 175)`,
-                }}
-              />
-            </Link>
-          )}
+            {!isSearchPage && (
+              <Link
+                href={
+                  (isProfilePage && searchParams.get("type") === "tv") ||
+                  isTvPage
+                    ? `/tv/search`
+                    : `/search`
+                }
+                className={`btn btn-circle btn-ghost`}
+              >
+                <IonIcon
+                  icon={optionsOutline}
+                  style={{
+                    fontSize: 20,
+                    color: `rgb(156 163 175)`,
+                  }}
+                />
+              </Link>
+            )}
+          </div>
         </label>
       </form>
 
