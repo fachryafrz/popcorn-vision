@@ -26,11 +26,26 @@ export default function FilmReleaseDate({
                   }}
                 />
 
-                <time dateTime={filmReleaseDate}>
+                <time
+                  dateTime={filmReleaseDate}
+                  className="flex items-center gap-1"
+                >
                   <p>
                     <span className="sr-only">Released on:&nbsp;</span>
                     {movieReleaseDate}
                   </p>
+                  {filteredReleaseDateByCountry && (
+                    <div
+                      className="tooltip"
+                      data-tip={`Original: ${moment(film.release_date).format(
+                        "dddd, MMMM D, YYYY",
+                      )}`}
+                    >
+                      <button className="btn btn-circle btn-ghost btn-xs rounded-full bg-secondary bg-opacity-20 backdrop-blur">
+                        i
+                      </button>
+                    </div>
+                  )}
                 </time>
               </div>
             </section>
