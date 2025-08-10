@@ -128,32 +128,32 @@ export default function HoverCard() {
           }}
         >
           <>
-            {/* Backdrop */}
-
             <Link
               href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
               prefetch={false}
+              className="absolute inset-0 z-10"
             >
               <span className={`sr-only`}>{card.title ?? card.name}</span>
-
-              <ImagePovi
-                imgPath={card.backdrop_path}
-                className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
-              >
-                <img
-                  src={`https://image.tmdb.org/t/p/w780${card.backdrop_path}`}
-                  role="presentation"
-                  alt=""
-                  aria-hidden
-                  className={`object-cover`}
-                  draggable={false}
-                  width={780}
-                  height={520}
-                />
-              </ImagePovi>
             </Link>
 
-            <div className={`relative z-10 flex flex-col gap-2 p-3 pb-4`}>
+            {/* Backdrop */}
+            <ImagePovi
+              imgPath={card.backdrop_path}
+              className={`relative z-0 aspect-[4/3] overflow-hidden before:absolute before:inset-x-0 before:bottom-0 before:h-[50%] before:bg-gradient-to-t before:from-base-100`}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w780${card.backdrop_path}`}
+                role="presentation"
+                alt=""
+                aria-hidden
+                className={`object-cover`}
+                draggable={false}
+                width={780}
+                height={520}
+              />
+            </ImagePovi>
+
+            <div className={`relative flex flex-col gap-2 p-3 pb-4`}>
               {/* Logo */}
               <section id="Logo" className={`flex items-end`}>
                 {/* Logo Image */}
@@ -193,7 +193,7 @@ export default function HoverCard() {
                   <Link
                     href={`${!isTvPage ? `/search` : `/tv/search`}?rating=${formatRating(card.vote_average)}..10`}
                     prefetch={false}
-                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    className="z-10 flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-primary-yellow backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <IonIcon icon={star} />
                     <span
@@ -208,7 +208,7 @@ export default function HoverCard() {
                   <Link
                     href={`/search?with_runtime=${filmDetails?.runtime}..300`}
                     prefetch={false}
-                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    className="z-10 flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <span
                       className="before-content !text-white"
@@ -240,7 +240,7 @@ export default function HoverCard() {
                         : `/tv/search?with_genres=${filmDetails?.genres[0]?.id}`
                     }
                     prefetch={false}
-                    className="flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
+                    className="z-10 flex items-center gap-1 rounded-full bg-secondary bg-opacity-20 p-1 px-2 backdrop-blur-sm transition-all hocus:bg-opacity-50"
                   >
                     <span
                       className="before-content !text-white"
@@ -267,7 +267,7 @@ export default function HoverCard() {
                   <Link
                     href={`/${!isTvPage ? `movies` : `tv`}/${card.id}-${slug(card.title ?? card.name)}`}
                     prefetch={false}
-                    className={`btn btn-primary w-full rounded-full`}
+                    className={`btn btn-primary relative z-10 w-full rounded-full`}
                   >
                     <span>Details</span>
                   </Link>
@@ -279,7 +279,7 @@ export default function HoverCard() {
                     film={card}
                     favorite={accountStates?.favorite}
                     withText={false}
-                    className={`!btn-square`}
+                    className={`!btn-square z-10`}
                   />
                 )}
 
@@ -288,7 +288,7 @@ export default function HoverCard() {
                   film={card}
                   watchlist={accountStates?.watchlist}
                   withText={false}
-                  className={`!btn-square`}
+                  className={`!btn-square z-10`}
                 />
               </section>
             </div>
