@@ -9,7 +9,9 @@ export default function FilmReleaseDate({
   filmReleaseDate,
   filteredReleaseDateByCountry,
 }) {
-  const movieReleaseDate = `${moment(filmReleaseDate).format("dddd, MMMM D, YYYY")} ${filteredReleaseDateByCountry ? `(${countryName})` : ``}`;
+  const movieReleaseDate = `${moment(filmReleaseDate).format(
+    "dddd, MMMM D, YYYY"
+  )} ${filteredReleaseDateByCountry ? `(${countryName})` : ``}`;
 
   return (
     <>
@@ -36,9 +38,9 @@ export default function FilmReleaseDate({
                   </p>
                   {filteredReleaseDateByCountry && (
                     <div
-                      className="tooltip"
+                      className="tooltip tooltip-left sm:tooltip-top"
                       data-tip={`Original: ${moment(film.release_date).format(
-                        "dddd, MMMM D, YYYY",
+                        "dddd, MMMM D, YYYY"
                       )}`}
                     >
                       <button className="btn btn-circle btn-ghost btn-xs rounded-full bg-secondary bg-opacity-20 backdrop-blur">
@@ -76,7 +78,9 @@ export default function FilmReleaseDate({
 
                           <p>
                             <span className="sr-only">Last aired:&nbsp;</span>
-                            {`${moment(film.last_air_date).format("dddd, MMMM D, YYYY")}`}
+                            {`${moment(film.last_air_date).format(
+                              "dddd, MMMM D, YYYY"
+                            )}`}
                           </p>
                         </>
                       )}
