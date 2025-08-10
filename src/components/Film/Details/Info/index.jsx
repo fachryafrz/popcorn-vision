@@ -87,6 +87,12 @@ export default function FilmInfo({
       today,
     );
   }, [film, filmReleaseDate, isTvPage]);
+  const isUpcomingOriginalReleaseDate = useMemo(() => {
+    const today = moment();
+    return moment(
+      !isTvPage ? film?.release_date : film?.first_air_date,
+    ).isAfter(today);
+  }, [film, isTvPage]);
 
   const isUpcomingNextEps = useMemo(() => {
     const today = moment();
@@ -273,7 +279,7 @@ export default function FilmInfo({
           <FilmDirector film={film} credits={credits} isTvPage={isTvPage} />
 
           {/* Streaming */}
-          {filmReleaseDate !== "" && !isUpcoming && (
+          {filmReleaseDate !== "" && !isUpcomingOriginalReleaseDate && (
             <section className={`mb-2`}>
               <WatchButton mediaType={isTvPage ? "tv" : "movie"} />
             </section>
