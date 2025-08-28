@@ -2,8 +2,6 @@ import React, { Suspense } from "react";
 import HomeSlider from "@/components/Film/HomeSlider";
 import FilmSlider from "@/components/Film/Slider";
 import Trending from "@/components/Film/Trending";
-import moment from "moment";
-import { POPCORN } from "@/lib/constants";
 import SkeletonSlider from "@/components/Skeleton/main/Slider";
 import SkeletonTrending from "@/components/Skeleton/main/Trending";
 import SkeletonHomeSlider from "@/components/Skeleton/main/HomeSlider";
@@ -14,162 +12,93 @@ import { providers } from "@/data/providers";
 import { movieGenres } from "@/data/movie-genres";
 import { tvGenres } from "@/data/tv-genres";
 import { siteConfig } from "@/config/site";
+import { fetchInBatches } from "@/lib/fetchInBatches";
+import dayjs from "dayjs";
 
 export default async function Home({ type = "movie" }) {
   const isTvPage = type === "tv";
 
-  // Get current date and other date-related variables
-  const today = moment().format("YYYY-MM-DD");
-  const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
-  const monthsAgo = moment().subtract(3, "months").format("YYYY-MM-DD");
-  const monthsLater = moment().add(3, "months").format("YYYY-MM-DD");
+  const today = dayjs().format("YYYY-MM-DD");
+  const tomorrow = dayjs().add(1, "days").format("YYYY-MM-DD");
+  const monthsAgo = dayjs().subtract(3, "months").format("YYYY-MM-DD");
+  const monthsLater = dayjs().add(3, "months").format("YYYY-MM-DD");
 
-  const defaultParams = !isTvPage
-    ? {
-        region: "US",
-        include_adult: false,
-        language: "en-US",
-        sort_by: "popularity.desc",
-        with_original_language: "en",
-      }
-    : {
-        region: "US",
-        include_adult: false,
-        include_null_first_air_dates: false,
-        language: "en-US",
-        sort_by: "popularity.desc",
-        with_original_language: "en",
-      };
+  const defaultParams = {
+    region: "US",
+    include_adult: false,
+    language: "en-US",
+    sort_by: "popularity.desc",
+    with_original_language: "en",
+    ...(isTvPage && { include_null_first_air_dates: false }),
+  };
 
-  // API Requests
-  const [
-    trending,
-    nowPlaying,
-    upcoming,
-    topRated,
-    companiesFilms,
-    providersFilms,
-  ] = await Promise.all([
-    // Trending
-    axios.get(`/trending/${type}/week`).then(({ data }) => data.results),
+  function dateParams(gte, lte) {
+    return isTvPage
+      ? { "first_air_date.gte": gte, "first_air_date.lte": lte }
+      : { "primary_release_date.gte": gte, "primary_release_date.lte": lte };
+  }
 
-    // Now playing
+  // Fetch main data
+  const [trending, nowPlaying, upcoming, topRated] = await Promise.all([
+    axios.get(`/trending/${type}/week`).then((r) => r.data.results),
+
     axios
       .get(`/discover/${type}`, {
-        params: !isTvPage
-          ? {
-              ...defaultParams,
-              "primary_release_date.gte": monthsAgo,
-              "primary_release_date.lte": today,
-            }
-          : {
-              ...defaultParams,
-              "first_air_date.gte": monthsAgo,
-              "first_air_date.lte": today,
-            },
+        params: { ...defaultParams, ...dateParams(monthsAgo, today) },
       })
-      .then(({ data }) => data),
+      .then((r) => r.data),
 
-    // Upcoming
     axios
       .get(`/discover/${type}`, {
-        params: !isTvPage
-          ? {
-              ...defaultParams,
-              "primary_release_date.gte": tomorrow,
-              "primary_release_date.lte": monthsLater,
-            }
-          : {
-              ...defaultParams,
-              "first_air_date.gte": tomorrow,
-              "first_air_date.lte": monthsLater,
-            },
+        params: { ...defaultParams, ...dateParams(tomorrow, monthsLater) },
       })
-      .then(({ data }) => data),
+      .then((r) => r.data),
 
-    // Top Rated
     axios
       .get(`/discover/${type}`, {
-        params: {
-          ...defaultParams,
-          // without_genres: 18,
-          sort_by: "vote_count.desc",
-        },
+        params: { ...defaultParams, sort_by: "vote_count.desc" },
       })
-      .then(({ data }) => data),
-
-    // Companies Films
-    Promise.all(
-      companies.map((company) =>
-        axios
-          .get(`/discover/${type}`, {
-            params: {
-              ...defaultParams,
-              with_companies: company.id,
-            },
-          })
-          .then(({ data }) => data),
-      ),
-    ),
-
-    // Providers Films
-    Promise.all(
-      providers.map((provider) =>
-        axios
-          .get(`/discover/${type}`, {
-            params: {
-              ...defaultParams,
-              with_networks: provider.id,
-            },
-          })
-          .then(({ data }) => data),
-      ),
-    ),
+      .then((r) => r.data),
   ]);
 
-  const [homeSliderData, genresFilms] = await Promise.all([
-    // Home Slider Films
-    Promise.all(
-      trending.slice(0, 5).map((film) =>
-        axios
-          .get(`/${type}/${film.id}`, {
-            params: {
-              append_to_response: "images",
-            },
-          })
-          .then(({ data }) => data),
-      ),
-    ),
+  // Companies & Providers (batched requests)
+  const companiesFilms = await fetchInBatches(companies, (c) =>
+    axios
+      .get(`/discover/${type}`, {
+        params: { ...defaultParams, with_companies: c.id },
+      })
+      .then((r) => r.data),
+  );
 
-    // Genres Films
-    Promise.all(
-      !isTvPage
-        ? movieGenres
-            .filter((genre) => [27, 35, 878].includes(genre.id))
-            .map((genre) =>
-              axios
-                .get(`/discover/${type}`, {
-                  params: {
-                    ...defaultParams,
-                    with_genres: genre.id,
-                  },
-                })
-                .then(({ data }) => data),
-            )
-        : tvGenres
-            .filter((genre) => [35, 10751, 10765].includes(genre.id))
-            .map((genre) =>
-              axios
-                .get(`/discover/${type}`, {
-                  params: {
-                    ...defaultParams,
-                    with_genres: genre.id,
-                  },
-                })
-                .then(({ data }) => data),
-            ),
-    ),
-  ]);
+  const providersFilms = await fetchInBatches(providers, (p) =>
+    axios
+      .get(`/discover/${type}`, {
+        params: { ...defaultParams, with_networks: p.id },
+      })
+      .then((r) => r.data),
+  );
+
+  // Home slider data
+  const homeSliderData = await fetchInBatches(trending.slice(0, 5), (film) =>
+    axios
+      .get(`/${type}/${film.id}`, {
+        params: { append_to_response: "images" },
+      })
+      .then((r) => r.data),
+  );
+
+  // Genres
+  const genreList = isTvPage
+    ? tvGenres.filter((g) => [35, 10751, 10765].includes(g.id))
+    : movieGenres.filter((g) => [27, 35, 878].includes(g.id));
+
+  const genresFilms = await fetchInBatches(genreList, (genre) =>
+    axios
+      .get(`/discover/${type}`, {
+        params: { ...defaultParams, with_genres: genre.id },
+      })
+      .then((r) => r.data),
+  );
 
   const jsonLd = {
     "@context": "https://schema.org",
