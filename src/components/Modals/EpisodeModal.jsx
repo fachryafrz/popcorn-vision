@@ -70,14 +70,14 @@ export function EpisodeModal({ film }) {
 
   const handlePrevEpisode = () => {
     if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
-      router.push(
+      router.replace(
         `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
         { scroll: false },
       );
       return;
     }
 
-    router.push(
+    router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
       { scroll: false },
     );
@@ -92,13 +92,13 @@ export function EpisodeModal({ film }) {
       parseInt(episodeParams) ===
       filteredSeasons[seasonParams - 1]?.episode_count
     ) {
-      router.push(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
+      router.replace(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
         scroll: false,
       });
       return;
     }
 
-    router.push(
+    router.replace(
       `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
       { scroll: false },
     );
