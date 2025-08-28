@@ -21,9 +21,9 @@ import "swiper/css/effect-fade";
 // Components
 import { usePathname } from "next/navigation";
 import FilmSummary from "./Summary";
-import moment from "moment";
 import slug from "slug";
 import { POPCORN } from "@/lib/constants";
+import dayjs from "dayjs";
 
 export default function HomeSlider({ films, genres, filmData }) {
   const pathname = usePathname();
@@ -54,7 +54,7 @@ export default function HomeSlider({ films, genres, filmData }) {
               >
                 <h3>
                   {film.title ?? film.name} (
-                  {moment(film.release_date ?? film.first_air_date).format(
+                  {dayjs(film.release_date ?? film.first_air_date).format(
                     "YYYY",
                   )}
                   )

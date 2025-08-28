@@ -16,9 +16,9 @@ import slug from "slug";
 import FavoriteButton from "../User/Actions/FavoriteButton";
 import axios from "axios";
 import WatchlistButton from "../User/Actions/WatchlistButton";
-import moment from "moment";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
+import dayjs from "dayjs";
 
 export default function HoverCard() {
   const { user } = userStore();
@@ -79,9 +79,10 @@ export default function HoverCard() {
 
   const { titleLogo, filmDetails, releaseDate, filmRuntime } = data || {};
 
-  const isUpcoming = moment(
+  const today = dayjs();
+  const isUpcoming = dayjs(
     filmDetails?.release_date ?? filmDetails?.first_air_date,
-  ).isAfter(moment());
+  ).isAfter(today);
 
   const swrKey = `/api/${!isTvPage ? "movie" : "tv"}/${card?.id}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);

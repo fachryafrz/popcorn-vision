@@ -2,9 +2,9 @@
 import Link from "next/link";
 import FilmSummary from "./Summary";
 import ImagePovi from "./ImagePovi";
-import moment from "moment";
 import slug from "slug";
 import { axios } from "@/lib/axios";
+import dayjs from "dayjs";
 
 export default async function Trending({ film, genres, type }) {
   const isTvPage = type === "tv";
@@ -22,7 +22,7 @@ export default async function Trending({ film, genres, type }) {
         prefetch={false}
         className="sr-only"
       >
-        <h2>{`Trending ${!isTvPage ? `Movie` : `TV Shows`}: ${film.title ?? film.name} (${moment(
+        <h2>{`Trending ${!isTvPage ? `Movie` : `TV Shows`}: ${film.title ?? film.name} (${dayjs(
           film.release_date ?? film.first_air_date,
         ).format("YYYY")})`}</h2>
       </Link>

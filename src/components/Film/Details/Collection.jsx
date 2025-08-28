@@ -24,13 +24,13 @@ import { formatRuntime } from "@/lib/formatRuntime";
 // Zustand
 import { formatRating } from "@/lib/formatRating";
 import { useSeasonPoster } from "@/zustand/seasonPoster";
-import moment from "moment";
 import { POPCORN } from "@/lib/constants";
 import slug from "slug";
 import useSWR from "swr";
 import SkeletonEpisodeCard from "@/components/Skeleton/details/EpisodeCard";
 import pluralize from "pluralize";
 import axios from "axios";
+import dayjs from "dayjs";
 
 export default function FilmCollection({ film, collection }) {
   const sortedCollections = collection?.parts.sort((a, b) => {
@@ -115,13 +115,7 @@ export default function FilmCollection({ film, collection }) {
   );
 }
 
-export function CollectionItem({
-  film = null,
-  item,
-  index,
-  type,
-  userRating,
-}) {
+export function CollectionItem({ film = null, item, index, type, userRating }) {
   const filmTitle = item.title ?? item.name;
 
   return (
@@ -156,8 +150,7 @@ export function CollectionItem({
           <p className="text-start font-medium" style={{ textWrap: "balance" }}>
             {filmTitle}&nbsp;
             <span className="sr-only">
-              ({moment(item.release_date ?? item.first_air_date).format("YYYY")}
-              )
+              ({dayjs(item.release_date ?? item.first_air_date).format("YYYY")})
             </span>
           </p>
 
@@ -192,7 +185,7 @@ export function CollectionItem({
               >
                 <span
                   className={`before-content`}
-                  data-before-content={moment(
+                  data-before-content={dayjs(
                     item.release_date || item.air_date || item.first_air_date,
                   ).format("MMM DD, YYYY")}
                 />
@@ -308,7 +301,7 @@ function FilmSeason({ film, item, index }) {
 
             {item.air_date && (
               <span className="flex rounded-full bg-secondary bg-opacity-20 p-1 px-2 text-xs font-medium text-gray-400 backdrop-blur-sm">
-                {moment(item.air_date).format("MMM D, YYYY")}
+                {dayjs(item.air_date).format("MMM D, YYYY")}
               </span>
             )}
           </div>
@@ -427,7 +420,7 @@ function FilmEpisodes({ id, season }) {
                           <span
                             className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                           >
-                            {moment(item.air_date).format("MMM D, YYYY")}
+                            {dayjs(item.air_date).format("MMM D, YYYY")}
                           </span>
                         )}
                       </>

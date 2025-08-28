@@ -18,7 +18,6 @@ import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import moment from "moment";
 import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
@@ -27,6 +26,7 @@ import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 import WatchButton from "../Layout/WatchButton";
+import dayjs from "dayjs";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
@@ -50,8 +50,9 @@ export function EpisodeModal({ film }) {
     },
   );
 
-  const isAired = moment(episode?.air_date).isBefore(moment());
-  const isUpcoming = moment(episode?.air_date).isAfter(moment());
+  const today = dayjs();
+  const isAired = dayjs(episode?.air_date).isBefore(today);
+  const isUpcoming = dayjs(episode?.air_date).isAfter(today);
 
   // const [accountStates, setAccountStates] = useState();
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
@@ -217,9 +218,7 @@ export function EpisodeModal({ film }) {
                       <IonIcon icon={calendarOutline} />
                       {episode.air_date ? (
                         <time dateTime={episode.air_date}>
-                          {moment(episode.air_date).format(
-                            "dddd, MMMM D, YYYY",
-                          )}
+                          {dayjs(episode.air_date).format("dddd, MMMM D, YYYY")}
                         </time>
                       ) : (
                         <span>TBA</span>

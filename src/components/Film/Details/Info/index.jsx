@@ -21,7 +21,6 @@ import Countdown from "./Countdown";
 import ShareButton from "./ShareButton";
 import LastEpisode from "../TV/LastEpisode";
 import NextEpisode from "../TV/NextEpisode";
-import moment from "moment";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import { userStore } from "@/zustand/userStore";
@@ -30,6 +29,7 @@ import { handleOpenWindow } from "@/lib/openWindow";
 import WatchButton from "@/components/Layout/WatchButton";
 import AddToCalendar from "./AddToCalendar";
 import { useMemo } from "react";
+import dayjs from "dayjs";
 
 export default function FilmInfo({
   film,
@@ -68,7 +68,7 @@ export default function FilmInfo({
 
     return validReleaseDates.length
       ? validReleaseDates.reduce((earliest, current) =>
-          moment(current.release_date).isBefore(earliest.release_date)
+          dayjs(current.release_date).isBefore(earliest.release_date)
             ? current
             : earliest,
         )
@@ -82,21 +82,21 @@ export default function FilmInfo({
   }, [film, filteredReleaseDateByCountry]);
 
   const isUpcoming = useMemo(() => {
-    const today = moment();
-    return moment(!isTvPage ? filmReleaseDate : film?.first_air_date).isAfter(
+    const today = dayjs();
+    return dayjs(!isTvPage ? filmReleaseDate : film?.first_air_date).isAfter(
       today,
     );
   }, [film, filmReleaseDate, isTvPage]);
   const isUpcomingOriginalReleaseDate = useMemo(() => {
-    const today = moment();
-    return moment(
-      !isTvPage ? film?.release_date : film?.first_air_date,
-    ).isAfter(today);
+    const today = dayjs();
+    return dayjs(!isTvPage ? film?.release_date : film?.first_air_date).isAfter(
+      today,
+    );
   }, [film, isTvPage]);
 
   const isUpcomingNextEps = useMemo(() => {
-    const today = moment();
-    return moment(nextEps?.air_date).isAfter(today);
+    const today = dayjs();
+    return dayjs(nextEps?.air_date).isAfter(today);
   }, [nextEps]);
 
   const filmRuntime = useMemo(() => {

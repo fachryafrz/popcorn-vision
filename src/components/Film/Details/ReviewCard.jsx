@@ -4,8 +4,11 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import Person from "../../Person/Person";
-import moment from "moment";
 import { siteConfig } from "@/config/site";
+import dayjs from "dayjs";
+
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export default function ReviewCard({ review }) {
   // Read More state
@@ -19,8 +22,8 @@ export default function ReviewCard({ review }) {
   const maxLength = 300;
 
   // Review date variables
-  const createdAt = moment(review.created_at).format("MMM D, YYYY");
-  const updatedAt = moment(review.updated_at).format("MMM D, YYYY");
+  const createdAt = dayjs(review.created_at).format("MMM D, YYYY");
+  const updatedAt = dayjs(review.updated_at).format("MMM D, YYYY");
 
   // Review author image URL variables
   const imgUrlAPI = review.author_details.avatar_path;
@@ -39,14 +42,14 @@ export default function ReviewCard({ review }) {
         <Person
           name={review.author}
           profile_path={imgUrlAPI && imgUrl}
-          role={moment(review.created_at).fromNow()}
+          role={dayjs(review.created_at).fromNow()}
           personRole={`author`}
           tooltip={
             <div
               className={`tooltip tooltip-bottom tooltip-info relative flex max-w-fit flex-wrap gap-1 text-xs font-medium text-gray-400 sm:tooltip-right before:text-xs`}
               data-tip={`${createdAt} ${updatedAt !== createdAt ? ` (${updatedAt})` : ``}`}
             >
-              <span>{moment(review.created_at).fromNow()}</span>
+              <span>{dayjs(review.created_at).fromNow()}</span>
               {updatedAt !== createdAt && <span>{`(edited)`}</span>}
             </div>
           }

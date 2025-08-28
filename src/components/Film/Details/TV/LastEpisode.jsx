@@ -2,10 +2,10 @@ import React from "react";
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { formatRating } from "@/lib/formatRating";
-import moment from "moment";
 import EpisodeCard from "./EpisodeCard";
 import pluralize from "pluralize";
 import { formatRuntime } from "@/lib/formatRuntime";
+import dayjs from "dayjs";
 
 export default function LastEpisode({ film, lastEps, nextEps }) {
   return (
@@ -46,7 +46,7 @@ export default function LastEpisode({ film, lastEps, nextEps }) {
             <span
               className={`rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
             >
-              {moment(lastEps.air_date).format("MMM D, YYYY")}
+              {dayjs(lastEps.air_date).format("MMM D, YYYY")}
             </span>
           )}
         </>

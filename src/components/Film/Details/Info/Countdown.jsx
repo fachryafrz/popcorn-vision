@@ -1,7 +1,10 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import { usePathname } from "next/navigation";
 import pluralize from "pluralize";
 import { useCallback, useEffect, useState } from "react";
+
+import duration from "dayjs/plugin/duration";
+dayjs.extend(duration);
 
 export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
   const pathname = usePathname();
@@ -12,7 +15,7 @@ export default function Countdown({ movieReleaseDate, tvReleaseDate }) {
   const calculateTimeLeft = useCallback(() => {
     const date = new Date(upcomingDate);
     const timeLeft = new Date(date - new Date());
-    const duration = moment.duration(timeLeft);
+    const duration = dayjs.duration(timeLeft.getTime());
     return {
       years: duration.years(),
       months: duration.months(),

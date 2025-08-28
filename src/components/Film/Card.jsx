@@ -4,7 +4,7 @@ import ImagePovi from "./ImagePovi";
 import { formatRating } from "@/lib/formatRating";
 import slug from "slug";
 import { useHoverCard } from "@/zustand/hoverCard";
-import moment from "moment";
+import dayjs from "dayjs";
 
 export default function FilmCard({ film, isTvPage }) {
   // Global State
@@ -43,7 +43,7 @@ export default function FilmCard({ film, isTvPage }) {
       className={`relative`}
     >
       <h3 className={`sr-only`}>
-        {`${film.title ?? film.name} (${moment(film.release_date ?? film.first_air_date).format("YYYY")})`}
+        {`${film.title ?? film.name} (${dayjs(film.release_date ?? film.first_air_date).format("YYYY")})`}
       </h3>
 
       <ImagePovi

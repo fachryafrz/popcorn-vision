@@ -15,7 +15,6 @@ import EpisodeCard from "../Film/Details/TV/EpisodeCard";
 import { formatRating } from "@/lib/formatRating";
 import { formatRuntime } from "@/lib/formatRuntime";
 import pluralize from "pluralize";
-import moment from "moment";
 import SkeletonEpisodeCard from "../Skeleton/details/EpisodeCard";
 import slug from "slug";
 import ImagePovi from "../Film/ImagePovi";
@@ -23,6 +22,7 @@ import { streamingProviderList } from "@/lib/streamingProviderList";
 import { useStreamingProvider } from "@/zustand/streamingProvider";
 import Link from "next/link";
 import RectangleAd from "../Icon/RectangleAd";
+import dayjs from "dayjs";
 
 export default function Streaming() {
   const router = useRouter();
@@ -319,11 +319,11 @@ function MovieCollection({ film, detailsLoading }) {
                 }}
                 prefetch={false}
                 onClick={handleWatchMovie}
-                className={`group relative block overflow-hidden rounded-xl ${!item.release_date || moment(item.release_date).isAfter() ? `pointer-events-none` : ``}`}
+                className={`group relative block overflow-hidden rounded-xl ${!item.release_date || dayjs(item.release_date).isAfter() ? `pointer-events-none` : ``}`}
               >
                 <ImagePovi
                   imgPath={item.poster_path}
-                  className={`relative aspect-poster overflow-hidden transition-all duration-500 ${moment(item.release_date).isAfter() ? `` : `group-hover:scale-105`}`}
+                  className={`relative aspect-poster overflow-hidden transition-all duration-500 ${dayjs(item.release_date).isAfter() ? `` : `group-hover:scale-105`}`}
                 >
                   <img
                     src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
@@ -513,7 +513,7 @@ function Season({ film, season, detailsLoading }) {
                       <span
                         className={`flex rounded-full bg-secondary bg-opacity-10 p-1 px-2 backdrop-blur-sm`}
                       >
-                        {moment(item.air_date).format("MMM D, YYYY")}
+                        {dayjs(item.air_date).format("MMM D, YYYY")}
                       </span>
                     )}
                   </>

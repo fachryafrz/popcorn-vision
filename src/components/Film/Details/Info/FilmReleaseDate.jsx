@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
+import dayjs from "dayjs";
 import { calendarOutline } from "ionicons/icons";
-import moment from "moment";
 
 export default function FilmReleaseDate({
   film,
@@ -9,11 +9,11 @@ export default function FilmReleaseDate({
   filmReleaseDate,
   filteredReleaseDateByCountry,
 }) {
-  const formattedOriginalReleaseDate = moment(film.release_date).format(
+  const formattedOriginalReleaseDate = dayjs(film.release_date).format(
     "dddd, MMMM D, YYYY",
   );
   const formattedReleaseDate =
-    moment(filmReleaseDate).format("dddd, MMMM D, YYYY");
+    dayjs(filmReleaseDate).format("dddd, MMMM D, YYYY");
 
   const movieReleaseDate = `${formattedReleaseDate} ${filteredReleaseDateByCountry ? `(${countryName})` : ``}`;
 
@@ -71,7 +71,7 @@ export default function FilmReleaseDate({
                   <div className={`flex flex-wrap`}>
                     <p>
                       <span className="sr-only">First aired:&nbsp;</span>
-                      {moment(film.first_air_date).format("dddd, MMMM D, YYYY")}
+                      {dayjs(film.first_air_date).format("dddd, MMMM D, YYYY")}
                     </p>
 
                     {film.last_air_date &&
@@ -81,7 +81,7 @@ export default function FilmReleaseDate({
 
                           <p>
                             <span className="sr-only">Last aired:&nbsp;</span>
-                            {`${moment(film.last_air_date).format(
+                            {`${dayjs(film.last_air_date).format(
                               "dddd, MMMM D, YYYY",
                             )}`}
                           </p>

@@ -12,7 +12,6 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import slug from "slug";
-import moment from "moment";
 import ImagePovi from "./ImagePovi";
 
 export default function History({ title }) {
@@ -136,7 +135,9 @@ export default function History({ title }) {
                         )}
 
                         {/* Title */}
-                        <h3 className={`xs:text-xl font-bold text-pretty`}>{film.title}</h3>
+                        <h3 className={`text-pretty font-bold xs:text-xl`}>
+                          {film.title}
+                        </h3>
 
                         {/* Duration */}
                         <progress

@@ -4,13 +4,13 @@
 import ImagePovi from "@/components/Film/ImagePovi";
 import { useImageSlider } from "@/zustand/imageSlider";
 import { IonIcon } from "@ionic/react";
+import dayjs from "dayjs";
 import {
   briefcaseOutline,
   calendarOutline,
   filmOutline,
   locationOutline,
 } from "ionicons/icons";
-import moment from "moment";
 import Link from "next/link";
 import pluralize from "pluralize";
 import React, { useMemo } from "react";
@@ -25,11 +25,11 @@ export default function PersonProfile({
 
   // Format Date
   const birthday = useMemo(
-    () => moment(person.birthday).format("dddd, MMMM D, YYYY"),
+    () => dayjs(person.birthday).format("dddd, MMMM D, YYYY"),
     [person],
   );
   const deathday = useMemo(
-    () => moment(person.deathday).format("dddd, MMMM D, YYYY"),
+    () => dayjs(person.deathday).format("dddd, MMMM D, YYYY"),
     [person],
   );
   const personJob = useMemo(() => person.known_for_department, [person]);

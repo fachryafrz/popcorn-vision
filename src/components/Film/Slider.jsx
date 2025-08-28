@@ -14,7 +14,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { sortFilms } from "../../lib/sortFilms";
 import slug from "slug";
-import moment from "moment";
 
 export default function FilmSlider({
   films,
@@ -79,7 +78,7 @@ export default function FilmSlider({
               >
                 <h3>
                   {film.title ?? film.name} (
-                  {moment(film.release_date ?? film.first_air_date).format(
+                  {dayjs(film.release_date ?? film.first_air_date).format(
                     "YYYY",
                   )}
                   )
@@ -122,17 +121,19 @@ export default function FilmSlider({
         wrapperClass={`@container`}
         wrapperTag="ul"
       >
-        {films.results.filter((film) => film.poster_path).map((film) => {
-          return (
-            <SwiperSlide
-              key={film.id}
-              tag="li"
-              className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6)] @7xl:max-w-[calc(100%/7)]`}
-            >
-              <FilmCard film={film} isTvPage={isTvPage} />
-            </SwiperSlide>
-          );
-        })}
+        {films.results
+          .filter((film) => film.poster_path)
+          .map((film) => {
+            return (
+              <SwiperSlide
+                key={film.id}
+                tag="li"
+                className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6)] @7xl:max-w-[calc(100%/7)]`}
+              >
+                <FilmCard film={film} isTvPage={isTvPage} />
+              </SwiperSlide>
+            );
+          })}
       </Swiper>
     </section>
   );
