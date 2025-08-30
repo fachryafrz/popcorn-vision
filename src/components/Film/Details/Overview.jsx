@@ -38,7 +38,7 @@ export default function FilmOverview({
     <div className={`flex flex-col gap-4`}>
       <div className="flex flex-col gap-6 text-white">
         {film.overview && (
-          <div id="overview" className="flex flex-col gap-2 ">
+          <div id="overview" className="flex flex-col gap-2 [&_*]:select-text">
             <h2 className="m-0 text-xl font-bold text-white">Overview</h2>
             <p className="text-gray-400 md:text-lg">{film.overview}</p>
           </div>

@@ -63,6 +63,18 @@
   @apply !border-white;
 }
 
+@layer base {
+  @media (display-mode: standalone) {
+    * {
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    body {
+      overscroll-behavior-y: contain;
+    }
+  }
+}
+
 @layer components {
   img {
     @apply h-full w-full bg-cover bg-no-repeat object-cover align-middle italic;

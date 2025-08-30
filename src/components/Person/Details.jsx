@@ -175,7 +175,7 @@ export default function PersonDetails({
       {/* Biography */}
       {person.biography && (
         <section
-          className={`flex flex-col gap-2 border-t border-t-white border-opacity-10 pt-2`}
+          className={`flex flex-col gap-2 border-t border-t-white border-opacity-10 pt-2 [&_*]:select-text`}
         >
           <h3 className={`text-2xl font-bold`}>Biography</h3>
 

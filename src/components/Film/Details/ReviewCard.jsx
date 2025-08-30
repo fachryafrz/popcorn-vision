@@ -63,7 +63,7 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div
-        className={`prose max-w-none text-sm sm:text-base [&_*]:!text-white`}
+        className={`prose max-w-none text-sm sm:text-base [&_*]:select-text [&_*]:!text-white`}
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
@@ -74,6 +74,7 @@ export default function ReviewCard({ review }) {
                 {...props}
                 href={`${props.href}?utm_source=${siteConfig.url.replace(/^https?:\/\//, "")}`}
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 {props.children}
               </a>

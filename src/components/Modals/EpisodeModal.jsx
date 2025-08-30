@@ -203,13 +203,13 @@ export function EpisodeModal({ film }) {
                   {episode.name}
                 </h1>
 
-                {episode.episode_type && (
+                {/* {episode.episode_type && (
                   <span
                     className={`mx-auto flex max-w-fit rounded-full bg-primary-blue bg-opacity-[10%] p-2 px-4 text-center font-medium capitalize text-primary-blue`}
                   >
                     {episode.episode_type}
                   </span>
-                )}
+                )} */}
 
                 <div className={`flex flex-col gap-2`}>
                   {/* Episode Air Date */}
@@ -279,7 +279,10 @@ export function EpisodeModal({ film }) {
                 )}
 
                 {episode.overview !== "" && (
-                  <section id={`Episode Overview`}>
+                  <section
+                    id={`Episode Overview`}
+                    className="[&_*]:select-text"
+                  >
                     <h2 className={`text-xl font-bold text-white`}>Overview</h2>
                     <p className={`text-gray-400 md:text-lg`}>
                       {episode.overview}
