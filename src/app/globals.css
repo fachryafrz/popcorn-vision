@@ -68,8 +68,6 @@
     * {
       -webkit-user-select: none;
       user-select: none;
-    }
-    body {
       overscroll-behavior-y: contain;
     }
   }
