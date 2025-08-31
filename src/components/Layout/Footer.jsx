@@ -34,15 +34,15 @@ export default function Footer() {
   const endOfNextYear = today.add(1, "year").endOf("year").format("YYYY-MM-DD");
 
   const footerLinks = [
-    {
-      title: "Authentication",
-      links: [
-        { name: "Login", href: "/login" },
-        { name: "Favorites", href: "/profile" },
-        { name: "Watchlist", href: "/profile" },
-        { name: "Rated Film", href: "/profile" },
-      ],
-    },
+    // {
+    //   title: "Authentication",
+    //   links: [
+    //     { name: "Login", href: "/login" },
+    //     { name: "Favorites", href: "/profile" },
+    //     { name: "Watchlist", href: "/profile" },
+    //     { name: "Rated Film", href: "/profile" },
+    //   ],
+    // },
     {
       title: "Explore",
       links: [
@@ -79,6 +79,14 @@ export default function Footer() {
           name: "Vote Count",
           href: `${isTvPage ? "/tv" : ""}/search?vote_count=10000`,
         },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { name: "Terms of Service", href: `/legal/terms` },
+        { name: "Privacy Policy", href: `/legal/privacy` },
+
       ],
     },
   ];
