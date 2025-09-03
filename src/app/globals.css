@@ -66,8 +66,6 @@
 @layer base {
   @media (display-mode: standalone) {
     * {
-      -webkit-user-select: none;
-      user-select: none;
       overscroll-behavior-y: contain;
     }
   }

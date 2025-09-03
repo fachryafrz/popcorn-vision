@@ -63,7 +63,7 @@ export default function ReviewCard({ review }) {
       </div>
 
       <div
-        className={`prose max-w-none text-sm sm:text-base [&_*]:select-text [&_*]:!text-white`}
+        className={`prose max-w-none text-sm sm:text-base [&_*]:!text-white`}
       >
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}

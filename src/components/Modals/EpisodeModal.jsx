@@ -281,7 +281,6 @@ export function EpisodeModal({ film }) {
                 {episode.overview !== "" && (
                   <section
                     id={`Episode Overview`}
-                    className="[&_*]:select-text"
                   >
                     <h2 className={`text-xl font-bold text-white`}>Overview</h2>
                     <p className={`text-gray-400 md:text-lg`}>
