@@ -3,12 +3,13 @@ import { search, close, optionsOutline } from "ionicons/icons";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import Typewriter from "typewriter-effect/dist/core";
 import { debounce } from "@mui/material";
 import useSWR from "swr";
 import axios from "axios";
+import { useRouter } from "@bprogress/next";
 
 export function SearchBar({ placeholder = `Type / to search` }) {
   const router = useRouter();
