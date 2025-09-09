@@ -100,7 +100,7 @@ export default function Streaming() {
           onCancel={(e) => e.preventDefault()}
           className="modal block overflow-y-auto backdrop:bg-black backdrop:bg-opacity-90 backdrop:backdrop-blur"
         >
-          <div className={`mx-auto max-w-7xl space-y-4 p-4 pt-0`}>
+          <div className={`mx-auto w-full max-w-7xl space-y-4 p-4 pt-0`}>
             {/* Close */}
             <form
               method="dialog"
