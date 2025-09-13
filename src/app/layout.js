@@ -75,9 +75,9 @@ export default async function RootLayout({ children }) {
 
           {/* Footer */}
           <Footer />
-
-          <GoogleAnalytics gaId={gtagId} />
         </Providers>
+
+        <GoogleAnalytics gaId={gtagId} />
       </body>
     </html>
   );

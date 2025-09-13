@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import ProgressProvider from "../Layout/ProgressBarProvider";
 
 export default function Providers({ children }) {
-  return <ProgressProvider>{children}</ProgressProvider>;
+  return (
+    <ProgressProvider>
+      <Suspense>{children}</Suspense>
+    </ProgressProvider>
+  );
 }
