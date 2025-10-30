@@ -8,6 +8,8 @@ import { Roboto } from "next/font/google";
 import { siteConfig } from "@/config/site";
 import Providers from "@/components/Providers";
 
+export const revalidate = 60;
+
 const roboto = Roboto({
   subsets: ["latin"],
   weight: ["100", "300", "400", "500", "700", "900"],
