@@ -2,7 +2,7 @@ import { TMDB_SESSION_ID } from "@/lib/constants";
 import axios from "axios";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { limiter, tokenExpired } from "@/app/(api)/api/config/limiter";
+import { limiter, tokenExpired } from "@/app/api/config/limiter";
 
 export async function GET(req, ctx) {
   const { slug } = ctx.params;
