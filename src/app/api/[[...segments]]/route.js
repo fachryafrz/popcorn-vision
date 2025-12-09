@@ -5,18 +5,18 @@ import { NextResponse } from "next/server";
 import { limiter, tokenExpired } from "@/app/api/config/limiter";
 
 export async function GET(req, ctx) {
-  const { slug } = ctx.params;
+  const { segments } = ctx.params;
   const { searchParams } = new URL(req.url);
 
   const remainingToken = await limiter.removeTokens(1);
   if (remainingToken < 0) return tokenExpired(req);
 
-  if (!slug || slug.length === 0) {
+  if (!segments || segments.length === 0) {
     return NextResponse.json({ message: "Not Found" }, { status: 404 });
   }
 
-  const urlPath = slug.join("/");
-  const lastSegment = slug[slug.length - 1];
+  const urlPath = segments.join("/");
+  const lastSegment = segments[segments.length - 1];
 
   const params = {
     api_key: process.env.API_KEY,
@@ -47,8 +47,8 @@ export async function GET(req, ctx) {
 }
 
 export async function POST(req, ctx) {
-  const { slug } = ctx.params;
-  const lastSegment = slug[slug.length - 1];
+  const { segments } = ctx.params;
+  const lastSegment = segments[segments.length - 1];
 
   if (lastSegment !== "rating") {
     return NextResponse.json(
@@ -61,8 +61,8 @@ export async function POST(req, ctx) {
 }
 
 export async function DELETE(req, ctx) {
-  const { slug } = ctx.params;
-  const lastSegment = slug[slug.length - 1];
+  const { segments } = ctx.params;
+  const lastSegment = segments[segments.length - 1];
 
   if (lastSegment !== "rating") {
     return NextResponse.json(
@@ -75,8 +75,8 @@ export async function DELETE(req, ctx) {
 }
 
 async function handleRating(req, ctx, method) {
-  const { slug } = ctx.params;
-  const lastSegment = slug[slug.length - 1];
+  const { segments } = ctx.params;
+  const lastSegment = segments[segments.length - 1];
 
   if (lastSegment !== "rating") {
     return NextResponse.json(
@@ -94,7 +94,7 @@ async function handleRating(req, ctx, method) {
     session_id: cookiesStore.get(TMDB_SESSION_ID)?.value,
   };
 
-  const urlPath = slug.join("/");
+  const urlPath = segments.join("/");
 
   try {
     let response;
