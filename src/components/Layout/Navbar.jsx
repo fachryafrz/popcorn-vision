@@ -4,12 +4,8 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
+import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
 import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
@@ -18,6 +14,7 @@ import { useToggleFilter } from "@/zustand/toggleFilter";
 import { userStore } from "@/zustand/userStore";
 import { SearchBar } from "./SearchBar";
 import { siteConfig } from "@/config/site";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -27,7 +24,11 @@ export default function Navbar() {
   const { setUser } = userStore();
   const { setToggleFilter } = useToggleFilter();
 
-  const [isScrolled, setIsScrolled] = useState(true);
+  const { scrollY } = useScroll();
+
+  // Smooth transitions based on scroll position
+  const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.85]);
+  const blurAmount = useTransform(scrollY, [0, 100], [0, 8]);
 
   useEffect(() => {
     if (!user) setUser(null);
@@ -43,81 +44,6 @@ export default function Navbar() {
     }
   }, []);
 
-  useEffect(() => {
-    let steps;
-    let desktop = window.matchMedia("(min-width: 1024px)");
-
-    if (desktop.matches) {
-      steps = [
-        {
-          element: "#Home",
-          popover: {
-            title: "Navigate to Home",
-            description: `Takes you back to the main page of ${siteConfig.name}. Click to return to the homepage and start navigation from the beginning.`,
-          },
-        },
-        {
-          element: "#SearchBar",
-          popover: {
-            title: "Find any films!",
-            description:
-              "Allows you to quickly find your favorite Movies or TV Shows. Type any titles to discover the content you're looking for.",
-          },
-        },
-        {
-          element: "#FilmSwitcher",
-          popover: {
-            title: "Movies / TV Shows?",
-            description:
-              "This film switcher enables you to toggle view between Movies and TV Shows. Use it to filter and display content based on your viewing preferences.",
-          },
-        },
-      ];
-    } else {
-      steps = [
-        {
-          element: "#Home",
-          popover: {
-            title: "Navigate to Home",
-            description: `Takes you back to the main page of ${siteConfig.name}. Click to return to the homepage and start navigation from the beginning.`,
-          },
-        },
-        {
-          element: "#FilmSwitcher",
-          popover: {
-            title: "Movies / TV Shows?",
-            description:
-              "This film switcher enables you to toggle view between Movies and TV Shows. Use it to filter and display content based on your viewing preferences.",
-          },
-        },
-        {
-          element: "#SearchBarMobile",
-          popover: {
-            title: "Find any films!",
-            description:
-              "Allows you to quickly find your favorite Movies or TV Shows. Type in titles, genres, or names to discover the content you're looking for.",
-          },
-        },
-      ];
-    }
-
-    // Driver JS
-    const driverObj = driver({
-      popoverClass: "bg-base-100 backdrop-blur bg-opacity-[85%] text-white",
-      allowClose: false,
-      showProgress: false,
-      onDestroyed: () => {
-        localStorage.setItem("is-driver-shown", true);
-      },
-      steps: steps,
-    });
-
-    // NOTE: Uncomment this to show driver.js
-    // if (!localStorage.getItem("is-driver-shown")) {
-    //   driverObj.drive();
-    // }
-  }, []);
-
   const isMoviesPage =
     pathname.startsWith("/movies") ||
     pathname === "/" ||
@@ -128,32 +54,26 @@ export default function Navbar() {
   );
   const isProfilePage = pathname.startsWith("/profile");
 
-  useEffect(() => {
-    const handleIsScrolled = () => {
-      if (window.scrollY >= 1) {
-        setIsScrolled(true);
-      } else if (window.scrollY < 1) {
-        setIsScrolled(false);
-      }
-    };
-
-    handleIsScrolled();
-
-    window.addEventListener("scroll", handleIsScrolled);
-
-    return () => {
-      window.removeEventListener("scroll", handleIsScrolled);
-    };
-  }, []);
-
   return (
     <header className={`fixed inset-x-0 top-0 z-[60]`}>
       {/* For blur effect, I did this way in order to make autocomplete blur work */}
-      <div
-        className={`absolute inset-0 -z-10 bg-base-100 transition-all ${
-          isScrolled ? `bg-opacity-[85%] backdrop-blur` : `bg-opacity-0`
-        }`}
-      ></div>
+      <motion.div
+        className="absolute inset-0 -z-10 bg-base-100"
+        style={{
+          background: useTransform(
+            backgroundOpacity,
+            (value) => `rgba(19, 23, 32, ${value})`,
+          ),
+          backdropFilter: useTransform(
+            blurAmount,
+            (value) => `blur(${value}px)`,
+          ),
+          WebkitBackdropFilter: useTransform(
+            blurAmount,
+            (value) => `blur(${value}px)`,
+          ),
+        }}
+      ></motion.div>
 
       <nav className="mx-auto grid max-w-none grid-cols-[auto_1fr_auto] gap-4 px-4 py-2 lg:!grid-cols-3">
         <div className={`flex items-center`}>
