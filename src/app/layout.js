@@ -2,7 +2,6 @@ import "./globals.css";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import UserLocation from "@/components/User/Location";
 import Modal from "@/components/Modals";
 import { Roboto } from "next/font/google";
 import { siteConfig } from "@/config/site";
@@ -65,9 +64,6 @@ export default async function RootLayout({ children }) {
         <Providers>
           {/* Navbar */}
           <Navbar />
-
-          {/* User Location */}
-          <UserLocation />
 
           {/* Main Content */}
           <main className={`mt-[66px]`}>{children}</main>

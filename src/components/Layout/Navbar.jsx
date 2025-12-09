@@ -4,14 +4,11 @@
 import { IonIcon } from "@ionic/react";
 import { filmOutline, tvOutline, search } from "ionicons/icons";
 import Link from "next/link";
-import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import LoginButton from "../User/LoginButton";
 import { useAuth } from "@/hooks/auth";
 import LogoutButton from "../User/LogoutButton";
 import { POPCORN } from "@/lib/constants";
-import { useToggleFilter } from "@/zustand/toggleFilter";
-import { userStore } from "@/zustand/userStore";
 import { SearchBar } from "./SearchBar";
 import { siteConfig } from "@/config/site";
 import { useScroll, useTransform, motion } from "framer-motion";
@@ -21,28 +18,11 @@ export default function Navbar() {
   const searchParams = useSearchParams();
 
   const { user } = useAuth();
-  const { setUser } = userStore();
-  const { setToggleFilter } = useToggleFilter();
-
   const { scrollY } = useScroll();
 
   // Smooth transitions based on scroll position
   const backgroundOpacity = useTransform(scrollY, [0, 100], [0, 0.85]);
   const blurAmount = useTransform(scrollY, [0, 100], [0, 8]);
-
-  useEffect(() => {
-    if (!user) setUser(null);
-
-    setUser(user);
-  }, [user]);
-
-  useEffect(() => {
-    if (window.innerWidth >= 1280) {
-      setToggleFilter(true);
-    } else {
-      setToggleFilter(false);
-    }
-  }, []);
 
   const isMoviesPage =
     pathname.startsWith("/movies") ||
