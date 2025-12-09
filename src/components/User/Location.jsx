@@ -5,7 +5,7 @@ import { useLocation } from "@/zustand/location";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-export default function UserLocation() {
+export default function UserLocation({ children }) {
   // Zustand
   const { setLocation } = useLocation();
 
@@ -51,5 +51,5 @@ export default function UserLocation() {
     getLocationData();
   }, [isLocationSaved]);
 
-  return null;
+  return children;
 }
