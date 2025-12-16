@@ -23,22 +23,32 @@ import { useStreamingProvider } from "@/zustand/streamingProvider";
 import Link from "next/link";
 import RectangleAd from "../Icon/RectangleAd";
 import dayjs from "dayjs";
+import {
+  useQueryState,
+  parseAsBoolean,
+  parseAsInteger,
+  parseAsString,
+} from "nuqs";
 
 export default function Streaming() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const streaming = searchParams.get("streaming");
+  const [streaming, setStreaming] = useQueryState("streaming", parseAsBoolean);
+  const [season, setSeason] = useQueryState(
+    "season",
+    parseAsInteger.withDefault(1),
+  );
+  const [episode, setEpisode] = useQueryState(
+    "episode",
+    parseAsInteger.withDefault(1),
+  );
 
   const [origin, type, id] = pathname.split("/");
 
   const isTv = type === "tv";
   const media_type = type === "movies" ? "movie" : "tv";
   const filmID = id?.split("-")[0];
-
-  const season = Number(searchParams.get("season")) || 1;
-  const episode = Number(searchParams.get("episode")) || 1;
 
   const { streamingProvider, setStreamingProvider } = useStreamingProvider();
   const providerList = streamingProviderList({
@@ -49,11 +59,7 @@ export default function Streaming() {
   });
   const selectedProvider = providerList.find(
     (p) => p.title === streamingProvider,
-  );
-
-  const handleClose = () => {
-    router.back();
-  };
+  );  
 
   const { data: film, isLoading } = useSWR(
     streaming ? (!isTv ? `/api/movie/${filmID}` : `/api/tv/${filmID}`) : null,
@@ -94,7 +100,7 @@ export default function Streaming() {
 
   return (
     <>
-      {streaming === "true" && (
+      {streaming && (
         <dialog
           id="streaming"
           onCancel={(e) => e.preventDefault()}
@@ -104,7 +110,7 @@ export default function Streaming() {
             {/* Close */}
             <form
               method="dialog"
-              onSubmit={handleClose}
+              onSubmit={() => setStreaming(null)}
               className={`pointer-events-none sticky top-0 z-50 !mt-0 p-4 xl:pr-0 [&_*]:pointer-events-none`}
             >
               <div className={`sticky top-0 -mx-4 flex justify-end`}>
@@ -345,16 +351,19 @@ function MovieCollection({ film, detailsLoading }) {
 }
 
 function Season({ film, season, detailsLoading }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const streaming = searchParams.get("streaming");
-
   const [selectedSeason, setSelectedSeason] = useState(season || 1);
   const [episodeSwiper, setEpisodeSwiper] = useState();
+  const [seasonParam, setSeasonParam] = useQueryState(
+    "season",
+    parseAsInteger.withDefault(1),
+  );
+  const [episodeParam, setEpisodeParam] = useQueryState(
+    "episode",
+    parseAsInteger.withDefault(1),
+  );
 
   const seasons = film?.seasons.filter((season) => season.season_number > 0);
+  const streaming = useQueryState("streaming", parseAsBoolean)[0];
 
   const { data: episodes, isLoading } = useSWR(
     streaming ? `/api/tv/${film?.id}/season/${selectedSeason}` : null,
@@ -372,10 +381,8 @@ function Season({ film, season, detailsLoading }) {
       behavior: "smooth",
     });
 
-    current.set("season", selectedSeason);
-    current.set("episode", item.episode_number);
-
-    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    setSeasonParam(selectedSeason);
+    setEpisodeParam(item.episode_number);
   };
 
   useEffect(() => {

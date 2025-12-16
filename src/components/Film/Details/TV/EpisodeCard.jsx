@@ -4,8 +4,7 @@ import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useQueryState, parseAsInteger } from "nuqs";
 
 export default function EpisodeCard({
   className,
@@ -17,14 +16,18 @@ export default function EpisodeCard({
   overlay,
   onClick,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const [seasonParam, setSeasonParam] = useQueryState(
+    "season",
+    parseAsInteger.withDefault(1),
+  );
+  const [episodeParam, setEpisodeParam] = useQueryState(
+    "episode",
+    parseAsInteger.withDefault(1),
+  );
 
   const handleClick = () => {
-    router.push(
-      `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
-      { scroll: false },
-    );
+    setSeasonParam(episode.season_number);
+    setEpisodeParam(episode.episode_number);
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
 import { inputStyles } from "@/utils/inputStyles";
@@ -9,13 +9,10 @@ import { inputStyles } from "@/utils/inputStyles";
 const WITH_CREW = "with_crew";
 
 export default function Crew() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withCrew, setWithCrew] = useQueryState(WITH_CREW, parseAsString);
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(WITH_CREW)?.includes("|")
+  const defaultToggleSeparation = withCrew?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -47,36 +44,29 @@ export default function Crew() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_CREW);
+      setWithCrew(null);
     } else {
-      current.set(WITH_CREW, value.join(separation));
+      setWithCrew(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_CREW)) {
-      const params = searchParams.get(WITH_CREW);
-
+    if (withCrew) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withCrew.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_CREW, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withCrew.replace(/[\|,]/g, newSeparator);
+      setWithCrew(updatedParams);
     }
   };
 
   useEffect(() => {
     // Crew
-    if (searchParams.get(WITH_CREW)) {
-      const params = searchParams.get(WITH_CREW);
-      const splitted = params.split(separation);
+    if (withCrew) {
+      const splitted = withCrew.split(separation);
 
       Promise.all(
         splitted.map((crewId) =>
@@ -97,7 +87,7 @@ export default function Crew() {
     } else {
       setCrew(null);
     }
-  }, [searchParams, separation]);
+  }, [withCrew, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -136,7 +126,7 @@ export default function Crew() {
         value={crew}
         styles={inputStyles}
         placeholder={`Search director, creator...`}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

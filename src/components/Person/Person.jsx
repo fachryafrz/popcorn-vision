@@ -5,7 +5,7 @@ import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { usePathname, useRouter } from "next/navigation";
+import { useQueryState, parseAsInteger } from "nuqs";
 
 export default function Person({
   id,
@@ -15,11 +15,10 @@ export default function Person({
   personRole,
   tooltip = false,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const [personParam, setPersonParam] = useQueryState("person", parseAsInteger);
 
   const handleActorClick = () => {
-    router.push(`${pathname}/?person=${id}`, { scroll: false });
+    setPersonParam(id);
   };
 
   return (

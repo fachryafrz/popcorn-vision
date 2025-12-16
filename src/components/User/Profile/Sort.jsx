@@ -2,8 +2,8 @@
 
 import { IonIcon } from "@ionic/react";
 import { arrowDown, arrowUp } from "ionicons/icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useQueryState, parseAsString } from "nuqs";
+import { useMemo } from "react";
 
 const sortOptions = [
   { label: "Date Added", value: "created_at" },
@@ -18,57 +18,26 @@ const orderOptions = [
 ];
 
 export default function UserProfileSort() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [sortBy, setSortBy] = useQueryState("sort_by", parseAsString);
+  const [orderBy, setOrderBy] = useQueryState("order", parseAsString);
 
-  const [sort, setSort] = useState();
-  const [order, setOrder] = useState();
+  const sort = useMemo(
+    () => sortOptions.find((o) => o.value === sortBy) || sortOptions[0],
+    [sortBy],
+  );
+  const order = useMemo(
+    () => orderOptions.find((o) => o.value === orderBy) || orderOptions[1],
+    [orderBy],
+  );
 
   const handleSort = (option) => {
-    const current = new URLSearchParams({
-      ...Object.fromEntries(searchParams.entries()),
-      sort_by: option.value,
-      order: order?.value,
-    });
-
-    router.push(`${pathname}?${current.toString()}`);
+    setSortBy(option.value);
   };
   const handleOrder = () => {
-    const newOrder = order?.value === "asc" ? orderOptions[1] : orderOptions[0];
-
-    const current = new URLSearchParams({
-      ...Object.fromEntries(searchParams.entries()),
-      sort_by: sort?.value,
-      order: newOrder?.value,
-    });
-
-    router.push(`${pathname}?${current.toString()}`);
+    const newOrder =
+      order?.value === "asc" ? orderOptions[1].value : orderOptions[0].value;
+    setOrderBy(newOrder);
   };
-
-  useEffect(() => {
-    if (searchParams.get("sort_by")) {
-      const sortParam = searchParams.get("sort_by");
-      const sortOption = sortOptions.find(
-        (option) => option.value === sortParam,
-      );
-
-      setSort(sortOption);
-    } else {
-      setSort(sortOptions[0]);
-    }
-
-    if (searchParams.get("order")) {
-      const orderParam = searchParams.get("order");
-      const orderOption = orderOptions.find(
-        (option) => option.value === orderParam,
-      );
-
-      setOrder(orderOption);
-    } else {
-      setOrder(orderOptions[1]);
-    }
-  }, [searchParams]);
 
   return (
     <div className={`flex flex-wrap items-center gap-x-4 gap-y-1`}>

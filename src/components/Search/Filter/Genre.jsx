@@ -1,20 +1,17 @@
 import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { inputStyles } from "@/utils/inputStyles";
 
 const WITH_GENRES = "with_genres";
 
 export default function Genre({ genresData }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withGenres, setWithGenres] = useQueryState(WITH_GENRES, parseAsString);
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(WITH_GENRES)?.includes("|")
+  const defaultToggleSeparation = withGenres?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -39,28 +36,22 @@ export default function Genre({ genresData }) {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_GENRES);
+      setWithGenres(null);
     } else {
-      current.set(WITH_GENRES, value.join(separation));
+      setWithGenres(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_GENRES)) {
-      const params = searchParams.get(WITH_GENRES);
-
+    if (withGenres) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withGenres.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_GENRES, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withGenres.replace(/[\|,]/g, newSeparator);
+      setWithGenres(updatedParams);
     }
   };
 
@@ -83,9 +74,8 @@ export default function Genre({ genresData }) {
 
   useEffect(() => {
     // Genres
-    if (searchParams.get(WITH_GENRES)) {
-      const params = searchParams.get(WITH_GENRES);
-      const splitted = params.split(separation);
+    if (withGenres) {
+      const splitted = withGenres.split(separation);
       const filtered = splitted.map((genreId) =>
         genresData?.find((genre) => parseInt(genre.id) === parseInt(genreId)),
       );
@@ -100,7 +90,7 @@ export default function Genre({ genresData }) {
     } else {
       setGenre(null);
     }
-  }, [genresData, searchParams, separation]);
+  }, [genresData, withGenres, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -147,7 +137,7 @@ export default function Genre({ genresData }) {
           }),
         }}
         placeholder={genresInputPlaceholder}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

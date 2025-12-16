@@ -1,13 +1,13 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
 
 export default function RatingCount({ sliderStyles }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query");
+  const [voteCount, setVoteCount] = useQueryState(
+    "vote_count",
+    parseAsInteger,
+  );
+  const [query] = useQueryState("query");
 
   const [rating, setRating] = useState(0);
   const [ratingSlider, setRatingSlider] = useState(0);
@@ -33,25 +33,16 @@ export default function RatingCount({ sliderStyles }) {
 
     // NOTE: Using vote_average.gte & vote_average.lte
     if (!value) {
-      current.delete("vote_count");
+      setVoteCount(null);
     } else {
-      current.set("vote_count", ratingValue);
+      setVoteCount(ratingValue);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
     // Rating Count
-    if (searchParams.get("vote_count")) {
-      const ratingCount = searchParams.get("vote_count");
-      const ratingIndex = [0, 10, 100, 1000, 10000].indexOf(
-        Number(ratingCount),
-      );
+    if (voteCount) {
+      const ratingIndex = [0, 10, 100, 1000, 10000].indexOf(Number(voteCount));
 
       if (rating !== ratingIndex) {
         setRating(ratingIndex);
@@ -59,7 +50,7 @@ export default function RatingCount({ sliderStyles }) {
       }
     } else {
     }
-  }, [rating, searchParams]);
+  }, [rating, voteCount]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -76,7 +67,7 @@ export default function RatingCount({ sliderStyles }) {
           max={4}
           marks={ratingMarks}
           sx={sliderStyles}
-          disabled={isQueryParams}
+          disabled={!!query}
         />
       </div>
     </section>

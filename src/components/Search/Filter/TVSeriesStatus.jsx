@@ -1,17 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 
 const STATUS = "status";
 
 export default function TVSeriesStatus() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [statusParam, setStatusParam] = useQueryState(STATUS, parseAsString);
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(STATUS)?.includes("|")
+  const defaultToggleSeparation = statusParam?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -58,42 +55,34 @@ export default function TVSeriesStatus() {
 
     // Lakukan pengaturan URL
     if (updatedValue.length === 0) {
-      setStatus(updatedValue);
-      current.delete(STATUS);
+      setStatusParam(null);
     } else {
-      current.set(STATUS, updatedValue.join(separation));
+      setStatusParam(updatedValue.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(STATUS)) {
-      const params = searchParams.get(STATUS);
-
+    if (statusParam) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = statusParam.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(STATUS, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = statusParam.replace(/[\|,]/g, newSeparator);
+      setStatusParam(updatedParams);
     }
   };
 
   useEffect(() => {
     // TV Shows Status
-    if (searchParams.get(STATUS)) {
-      const params = searchParams.get(STATUS);
-      const splitted = params.split(separation);
+    if (statusParam) {
+      const splitted = statusParam.split(separation);
       setStatus(splitted);
     } else {
       setStatus([]);
     }
-  }, [searchParams, separation]);
+  }, [statusParam, separation]);
 
   return (
     <section className="@container">
@@ -140,13 +129,13 @@ export default function TVSeriesStatus() {
                   value={index}
                   checked={isChecked || status.includes(index.toString())}
                   onChange={handleStatusChange}
-                  disabled={isQueryParams}
+                  disabled={!!query}
                 />
 
                 <label
                   htmlFor={`status_${index}`}
                   className={`${
-                    isQueryParams ? `cursor-default` : `cursor-pointer`
+                    query ? `cursor-default` : `cursor-pointer`
                   } flex w-full py-1 pl-2 text-sm font-medium`}
                 >
                   {statusName}

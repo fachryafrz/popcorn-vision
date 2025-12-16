@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
 import { tvNetworks } from "@/data/tv-networks";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
 import { inputStyles } from "@/utils/inputStyles";
@@ -9,13 +9,13 @@ import { inputStyles } from "@/utils/inputStyles";
 const WITH_NETWORKS = "with_networks";
 
 export default function Network() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withNetworks, setWithNetworks] = useQueryState(
+    WITH_NETWORKS,
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(WITH_NETWORKS)?.includes("|")
+  const defaultToggleSeparation = withNetworks?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -42,36 +42,29 @@ export default function Network() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_NETWORKS);
+      setWithNetworks(null);
     } else {
-      current.set(WITH_NETWORKS, value.join(separation));
+      setWithNetworks(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_NETWORKS)) {
-      const params = searchParams.get(WITH_NETWORKS);
-
+    if (withNetworks) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withNetworks.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_NETWORKS, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withNetworks.replace(/[\|,]/g, newSeparator);
+      setWithNetworks(updatedParams);
     }
   };
 
   useEffect(() => {
     // Network
-    if (searchParams.get(WITH_NETWORKS)) {
-      const params = searchParams.get(WITH_NETWORKS);
-      const splitted = params.split(separation);
+    if (withNetworks) {
+      const splitted = withNetworks.split(separation);
       const filtered = splitted.map((networkId) =>
         networksData?.find(
           (network) => parseInt(network.id) === parseInt(networkId),
@@ -90,7 +83,7 @@ export default function Network() {
     } else {
       setNetwork(null);
     }
-  }, [networksData, searchParams, separation]);
+  }, [networksData, withNetworks, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -129,7 +122,7 @@ export default function Network() {
         value={network}
         styles={inputStyles}
         placeholder={`Search TV networks...`}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
 import { inputStyles } from "@/utils/inputStyles";
@@ -9,15 +9,13 @@ import { inputStyles } from "@/utils/inputStyles";
 const WITH_COMPANIES = "with_companies";
 
 export default function Company() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withCompanies, setWithCompanies] = useQueryState(
+    WITH_COMPANIES,
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams
-    .get(WITH_COMPANIES)
-    ?.includes("|")
+  const defaultToggleSeparation = withCompanies?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -49,36 +47,29 @@ export default function Company() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_COMPANIES);
+      setWithCompanies(null);
     } else {
-      current.set(WITH_COMPANIES, value.join(separation));
+      setWithCompanies(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_COMPANIES)) {
-      const params = searchParams.get(WITH_COMPANIES);
-
+    if (withCompanies) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withCompanies.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_COMPANIES, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withCompanies.replace(/[\|,]/g, newSeparator);
+      setWithCompanies(updatedParams);
     }
   };
 
   useEffect(() => {
     // Company
-    if (searchParams.get(WITH_COMPANIES)) {
-      const params = searchParams.get(WITH_COMPANIES);
-      const splitted = params.split(separation);
+    if (withCompanies) {
+      const splitted = withCompanies.split(separation);
 
       Promise.all(
         splitted.map((companyId) =>
@@ -99,7 +90,7 @@ export default function Company() {
     } else {
       setCompany(null);
     }
-  }, [searchParams, separation]);
+  }, [withCompanies, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -138,7 +129,7 @@ export default function Company() {
         value={company}
         styles={inputStyles}
         placeholder={`Search company...`}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

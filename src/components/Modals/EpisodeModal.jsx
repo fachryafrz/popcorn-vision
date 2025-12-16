@@ -27,21 +27,24 @@ import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 import WatchButton from "../Layout/WatchButton";
 import dayjs from "dayjs";
+import { useQueryState, parseAsInteger } from "nuqs";
 
 export function EpisodeModal({ film }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const seasonParams = searchParams.get("season");
-  const episodeParams = searchParams.get("episode");
+  const [season, setSeason] = useQueryState(
+    "season",
+    parseAsInteger.withDefault(1),
+  );
+  const [episode, setEpisode] = useQueryState(
+    "episode",
+    parseAsInteger.withDefault(1),
+  );
   const dialogRef = useRef(null);
 
   const { user } = userStore();
   const { seasons } = film;
 
-  const { data: episode } = useSWR(
-    `/api/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
+  const { data: episodeData } = useSWR(
+    `/api/tv/${film.id}/season/${season}/episode/${episode}`,
     (url) => axios.get(url).then(({ data }) => data),
     {
       revalidateIfStale: false,
@@ -51,8 +54,8 @@ export function EpisodeModal({ film }) {
   );
 
   const today = dayjs();
-  const isAired = dayjs(episode?.air_date).isBefore(today);
-  const isUpcoming = dayjs(episode?.air_date).isAfter(today);
+  const isAired = dayjs(episodeData?.air_date).isBefore(today);
+  const isUpcoming = dayjs(episodeData?.air_date).isAfter(today);
 
   // const [accountStates, setAccountStates] = useState();
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
@@ -61,7 +64,8 @@ export function EpisodeModal({ film }) {
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
 
   const handleClose = () => {
-    router.back();
+    setSeason(null);
+    setEpisode(null);
   };
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
@@ -70,57 +74,44 @@ export function EpisodeModal({ film }) {
   };
 
   const handlePrevEpisode = () => {
-    if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
-      router.replace(
-        `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
-        { scroll: false },
-      );
+    if (season > 1 && episode === 1) {
+      setSeason(season - 1);
+      setEpisode(filteredSeasons[season - 2]?.episode_count);
       return;
     }
 
-    router.replace(
-      `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
-      { scroll: false },
-    );
+    setEpisode(episode - 1);
 
     scrollToTop();
-
-    // document.getElementById(`episodeModal`).close();
   };
 
   const handleNextEpisode = () => {
-    if (
-      parseInt(episodeParams) ===
-      filteredSeasons[seasonParams - 1]?.episode_count
-    ) {
-      router.replace(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
-        scroll: false,
-      });
+    if (episode === filteredSeasons[season - 1]?.episode_count) {
+      setSeason(season + 1);
+      setEpisode(1);
       return;
     }
 
-    router.replace(
-      `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
-      { scroll: false },
-    );
+    setEpisode(episode + 1);
 
     scrollToTop();
-
-    // document.getElementById(`episodeModal`).close();
   };
 
-  const swrKey = `/api/tv/${film.id}/season/${episode?.season_number}/episode/${episode?.episode_number}/account_states`;
+  const swrKey = `/api/tv/${film.id}/season/${episodeData?.season_number}/episode/${episodeData?.episode_number}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(
-    user && episode ? swrKey : null,
+    user && episodeData ? swrKey : null,
     fetcher,
   );
 
   useEffect(() => {
-    if (!searchParams.get("season") || !searchParams.get("episode")) return;
+    if (!season || !episode) {
+      document.getElementById(`episodeModal`).close();
+      return;
+    }
 
     document.getElementById(`episodeModal`).showModal();
-  }, [searchParams]);
+  }, [season, episode]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -296,11 +287,11 @@ export function EpisodeModal({ film }) {
                     </h2>
 
                     <div className={`relative mb-2 grid sm:grid-cols-2`}>
-                      {episode.guest_stars
+                      {episodeData.guest_stars
                         .slice(
                           0,
                           showAllGuestStars
-                            ? episode.guest_stars.length
+                            ? episodeData.guest_stars.length
                             : numGuestStars,
                         )
                         .map((item) => {

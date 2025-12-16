@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
 import { inputStyles } from "@/utils/inputStyles";
@@ -9,13 +9,10 @@ import { inputStyles } from "@/utils/inputStyles";
 const WITH_CAST = "with_cast";
 
 export default function Cast() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withCast, setWithCast] = useQueryState(WITH_CAST, parseAsString);
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(WITH_CAST)?.includes("|")
+  const defaultToggleSeparation = withCast?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -47,36 +44,29 @@ export default function Cast() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_CAST);
+      setWithCast(null);
     } else {
-      current.set(WITH_CAST, value.join(separation));
+      setWithCast(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_CAST)) {
-      const params = searchParams.get(WITH_CAST);
-
+    if (withCast) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withCast.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_CAST, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withCast.replace(/[\|,]/g, newSeparator);
+      setWithCast(updatedParams);
     }
   };
 
   useEffect(() => {
     // Cast
-    if (searchParams.get(WITH_CAST)) {
-      const params = searchParams.get(WITH_CAST);
-      const splitted = params.split(separation);
+    if (withCast) {
+      const splitted = withCast.split(separation);
 
       Promise.all(
         splitted.map((castId) =>
@@ -97,7 +87,7 @@ export default function Cast() {
     } else {
       setCast(null);
     }
-  }, [searchParams, separation]);
+  }, [withCast, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -136,7 +126,7 @@ export default function Cast() {
         value={cast}
         styles={inputStyles}
         placeholder={`Search actor...`}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>
