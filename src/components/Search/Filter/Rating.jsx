@@ -1,13 +1,10 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 
 export default function Rating({ sliderStyles }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query");
+  const [ratingParam, setRatingParam] = useQueryState("rating", parseAsString);
+  const [query] = useQueryState("query");
 
   const [rating, setRating] = useState([0, 10]);
   const [ratingSlider, setRatingSlider] = useState([0, 10]);
@@ -27,36 +24,30 @@ export default function Rating({ sliderStyles }) {
   );
 
   const handleRatingChange = (event, newValue) => {
-    const value = rating ? `${newValue[0]},${newValue[1]}` : "";
+    const value = newValue ? `${newValue[0]},${newValue[1]}` : "";
 
     // NOTE: Using vote_average.gte & vote_average.lte
     if (!value) {
-      current.delete("rating");
+      setRatingParam(null);
     } else {
-      current.set("rating", `${newValue[0]}..${newValue[1]}`);
+      setRatingParam(`${newValue[0]}..${newValue[1]}`);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
     // Rating
-    if (searchParams.get("rating")) {
-      const [min, max] = searchParams.get("rating").split("..");
-      const [ratingMin, ratingMax] = rating
-      const searchRating = [min, max];
+    if (ratingParam) {
+      const [min, max] = ratingParam.split("..");
+      const [ratingMin, ratingMax] = rating;
+      const searchRating = [Number(min), Number(max)];
 
-      if (ratingMin !== min || ratingMax !== max) {
+      if (ratingMin !== Number(min) || ratingMax !== Number(max)) {
         setRating(searchRating);
         setRatingSlider(searchRating);
       }
     } else {
     }
-  }, [rating, searchParams]);
+  }, [rating, ratingParam]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -73,7 +64,7 @@ export default function Rating({ sliderStyles }) {
           max={10}
           marks={ratingMarks}
           sx={sliderStyles}
-          disabled={isQueryParams}
+          disabled={!!query}
         />
       </div>
     </section>

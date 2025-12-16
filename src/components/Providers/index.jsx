@@ -5,6 +5,7 @@ import ProgressProvider from "../Layout/ProgressBarProvider";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import UserLocation from "../User/Location";
 import UserProvider from "./UserProvider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 export default function Providers({ children }) {
   const { setToggleFilter } = useToggleFilter();
@@ -19,12 +20,14 @@ export default function Providers({ children }) {
   }, []);
 
   return (
-    <ProgressProvider>
-      <UserProvider>
-        <UserLocation>
-          <Suspense>{children}</Suspense>
-        </UserLocation>
-      </UserProvider>
-    </ProgressProvider>
+    <NuqsAdapter>
+      <ProgressProvider>
+        <UserProvider>
+          <UserLocation>
+            <Suspense>{children}</Suspense>
+          </UserLocation>
+        </UserProvider>
+      </ProgressProvider>
+    </NuqsAdapter>
   );
 }

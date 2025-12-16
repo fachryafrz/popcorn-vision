@@ -1,11 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
-
-// Zustand
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { parseAsInteger, useQueryStates } from "nuqs";
 
 export default function EpisodeCard({
   className,
@@ -17,23 +13,21 @@ export default function EpisodeCard({
   overlay,
   onClick,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
+  const [, setChapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
 
   const handleClick = () => {
-    router.push(
-      `${pathname}/?season=${episode.season_number}&episode=${episode.episode_number}`,
-      { scroll: false },
-    );
+    setChapter({
+      season: episode.season_number,
+      episode: episode.episode_number,
+    });
   };
 
   return (
     <button
       onClick={onClick || handleClick}
-      // href={{
-      //   pathname,
-      //   query: { season: episode.season_number, episode: episode.episode_number },
-      // }}
       className={`flex h-fit w-full flex-col items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${className}`}
     >
       <ImagePovi

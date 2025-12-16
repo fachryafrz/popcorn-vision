@@ -10,12 +10,15 @@ import { debounce } from "@mui/material";
 import useSWR from "swr";
 import axios from "axios";
 import { useRouter } from "@bprogress/next";
+import { useQueryState, parseAsString } from "nuqs";
 
 export function SearchBar({ placeholder = `Type / to search` }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const searchRef = useRef(null);
+
+  const [query, setQuery] = useQueryState("query", parseAsString);
 
   const [searchInput, setSearchInput] = useState("");
   const [isFocus, setIsFocus] = useState(false);
@@ -28,8 +31,6 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   );
   const isProfilePage = pathname.startsWith(`/profile`);
   const DEBOUNCE_DELAY = 300;
-
-  let URLSearchQuery = searchParams.get("query");
 
   const handleClear = () => {
     setSearchInput("");
@@ -69,27 +70,38 @@ export function SearchBar({ placeholder = `Type / to search` }) {
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
 
-    const query = searchInput.trim();
+    const queryValue = searchInput.trim();
 
     const basePath = isTvPage ? "/tv" : "";
     const searchPath = `${basePath}/search`;
-    const formattedQuery = query.replace(/\s+/g, "+");
-    const searchQuery = `query=${formattedQuery}`;
-
-    if (!query) {
-      router.push(`${searchPath}`);
+    
+    // If we are already on the search page, use nuqs
+    if (isSearchPage) {
+        if (!queryValue) {
+            setQuery(null);
+        } else {
+            setQuery(queryValue);
+        }
     } else {
-      router.push(`${searchPath}?${searchQuery}`);
+        // If navigating to search page
+        const formattedQuery = queryValue.replace(/\s+/g, "+");
+        const searchQuery = `query=${formattedQuery}`;
+    
+        if (!queryValue) {
+          router.push(`${searchPath}`);
+        } else {
+          router.push(`${searchPath}?${searchQuery}`);
+        }
     }
 
     searchRef?.current.blur();
   };
 
   useEffect(() => {
-    if (!URLSearchQuery) return;
+    if (!query) return;
 
-    setSearchInput(URLSearchQuery);
-  }, [URLSearchQuery]);
+    setSearchInput(query);
+  }, [query]);
 
   useEffect(() => {
     let input = searchRef.current;

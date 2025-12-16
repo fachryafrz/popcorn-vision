@@ -1,26 +1,26 @@
 import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocation } from "@/zustand/location";
 import useSWR from "swr";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
+import { usePathname } from "next/navigation";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { inputStyles } from "@/utils/inputStyles";
 
 const WATCH_PROVIDERS = "watch_providers";
 
 export default function Streaming() {
-  const router = useRouter();
+  const [watchProviders, setWatchProviders] = useQueryState(
+    WATCH_PROVIDERS,
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
 
-  const isQueryParams = searchParams.get("query");
   const isTvPage = pathname.startsWith("/tv");
-  const defaultToggleSeparation = searchParams
-    .get(WATCH_PROVIDERS)
-    ?.includes("|")
+  const defaultToggleSeparation = watchProviders?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -61,28 +61,22 @@ export default function Streaming() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WATCH_PROVIDERS);
+      setWatchProviders(null);
     } else {
-      current.set(WATCH_PROVIDERS, value.join(separation));
+      setWatchProviders(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WATCH_PROVIDERS)) {
-      const params = searchParams.get(WATCH_PROVIDERS);
-
+    if (watchProviders) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = watchProviders.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WATCH_PROVIDERS, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = watchProviders.replace(/[\|,]/g, newSeparator);
+      setWatchProviders(updatedParams);
     }
   };
 
@@ -106,9 +100,8 @@ export default function Streaming() {
 
   useEffect(() => {
     // Providers
-    if (searchParams.get(WATCH_PROVIDERS)) {
-      const params = searchParams.get(WATCH_PROVIDERS);
-      const splitted = params.split(separation);
+    if (watchProviders) {
+      const splitted = watchProviders.split(separation);
       const filtered = splitted.map((providerId) =>
         providersData?.find(
           (provider) => parseInt(provider.provider_id) === parseInt(providerId),
@@ -125,7 +118,7 @@ export default function Streaming() {
     } else {
       setProvider(null);
     }
-  }, [providersData, searchParams, separation]);
+  }, [providersData, watchProviders, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -181,7 +174,7 @@ export default function Streaming() {
             }),
           }}
           placeholder={providersInputPlaceholder}
-          isDisabled={isQueryParams}
+          isDisabled={!!query}
           isMulti
         />
       )}

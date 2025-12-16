@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import AsyncSelect from "react-select/async";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { debounce } from "@mui/material";
 import { inputStyles } from "@/utils/inputStyles";
@@ -9,13 +9,13 @@ import { inputStyles } from "@/utils/inputStyles";
 const WITH_KEYWORDS = "with_keywords";
 
 export default function Keyword() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withKeywords, setWithKeywords] = useQueryState(
+    WITH_KEYWORDS,
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(WITH_KEYWORDS)?.includes("|")
+  const defaultToggleSeparation = withKeywords?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -47,36 +47,29 @@ export default function Keyword() {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_KEYWORDS);
+      setWithKeywords(null);
     } else {
-      current.set(WITH_KEYWORDS, value.join(separation));
+      setWithKeywords(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_KEYWORDS)) {
-      const params = searchParams.get(WITH_KEYWORDS);
-
+    if (withKeywords) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withKeywords.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_KEYWORDS, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withKeywords.replace(/[\|,]/g, newSeparator);
+      setWithKeywords(updatedParams);
     }
   };
 
   useEffect(() => {
     // Keyword
-    if (searchParams.get(WITH_KEYWORDS)) {
-      const params = searchParams.get(WITH_KEYWORDS);
-      const splitted = params.split(separation);
+    if (withKeywords) {
+      const splitted = withKeywords.split(separation);
 
       Promise.all(
         splitted.map((keywordId) =>
@@ -97,7 +90,7 @@ export default function Keyword() {
     } else {
       setKeyword(null);
     }
-  }, [searchParams, separation]);
+  }, [withKeywords, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -136,7 +129,7 @@ export default function Keyword() {
         value={keyword}
         styles={inputStyles}
         placeholder={`Search keyword...`}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

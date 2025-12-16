@@ -1,13 +1,13 @@
 import { Slider } from "@mui/material";
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 
 export default function Runtime({ sliderStyles }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query");
+  const [withRuntime, setWithRuntime] = useQueryState(
+    "with_runtime",
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
   const [runtime, setRuntime] = useState([0, 300]);
   const [runtimeSlider, setRuntimeSlider] = useState([0, 300]);
@@ -31,22 +31,16 @@ export default function Runtime({ sliderStyles }) {
 
     // NOTE: Using with_runtime.gte & with_runtime.lte
     if (!value) {
-      current.delete("with_runtime");
+      setWithRuntime(null);
     } else {
-      current.set("with_runtime", `${newValue[0]}..${newValue[1]}`);
+      setWithRuntime(`${newValue[0]}..${newValue[1]}`);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
     // Runtime
-    if (searchParams.get("with_runtime")) {
-      const [min, max] = searchParams.get("with_runtime").split("..");
+    if (withRuntime) {
+      const [min, max] = withRuntime.split("..");
       const searchRuntime = [parseInt(min), parseInt(max)];
 
       if (runtime[0] !== searchRuntime[0] || runtime[1] !== searchRuntime[1]) {
@@ -55,7 +49,7 @@ export default function Runtime({ sliderStyles }) {
       }
     } else {
     }
-  }, [runtime, searchParams]);
+  }, [runtime, withRuntime]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -72,7 +66,7 @@ export default function Runtime({ sliderStyles }) {
           max={300}
           marks={runtimeMarks}
           sx={sliderStyles}
-          disabled={isQueryParams}
+          disabled={query}
         />
       </div>
     </section>

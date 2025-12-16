@@ -14,15 +14,18 @@ import { useToggleFilter } from "@/zustand/toggleFilter";
 import pluralize from "pluralize";
 import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
 import axios from "axios";
+import { useQueryState, parseAsString } from "nuqs";
 
 export default function Search({ type = "movie" }) {
   const isTvPage = type === "tv";
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [query] = useQueryState("query", parseAsString);
+  const [watchProviders] = useQueryState("watch_providers", parseAsString);
   const { filtersNotAvailable, setFiltersNotAvailable } =
     useFiltersNotAvailable();
 
-  const isQueryParams = searchParams.get("query");
+  // Note: We still use searchParams to check if *any* filter is present
   const isThereAnyFilter = Object.keys(Object.fromEntries(searchParams)).length;
 
   // Global State
@@ -38,15 +41,15 @@ export default function Search({ type = "movie" }) {
 
   // Prepare SWR key
   const getKey = () => {
-    if (isQueryParams) {
-      return `/api/search/query?query=${searchParams.get("query")}`;
+    if (query) {
+      return `/api/search/query?query=${query}`;
     } else {
       const params = new URLSearchParams({
         media_type: type,
         ...Object.fromEntries(searchParams),
       });
 
-      if (searchParams.get("watch_providers") && location) {
+      if (watchProviders && location) {
         params.append("watch_region", location.country_code);
       }
 
@@ -69,13 +72,13 @@ export default function Search({ type = "movie" }) {
   const films = useMemo(() => {
     if (!data) return [];
     const mediaTypes = ["movie", "tv"];
-    const results = isQueryParams
+    const results = query
       ? data.results.filter((film) => mediaTypes.includes(film.media_type))
       : data.results;
     return results.filter(
       (film, index, self) => index === self.findIndex((t) => t.id === film.id),
     );
-  }, [data, isQueryParams]);
+  }, [data, query]);
 
   const totalSearchResults = data?.total_results;
   const totalSearchPages = data?.total_pages;
@@ -162,7 +165,7 @@ export default function Search({ type = "movie" }) {
             <div className={`flex items-center gap-2`}>
               {films?.length > 0 && (
                 <span className={`block text-xs font-medium`}>
-                  {!isQueryParams
+                  {!query
                     ? `Showing ${numeral(films.length).format("0,0")} of ${numeral(totalSearchResults).format("0,0")} ${!isTvPage ? pluralize("Movie", films.length) : pluralize("TV Show", films.length)}`
                     : `Showing ${numeral(films.length).format("0,0")} ${pluralize("Result", films.length)}`}
                 </span>
@@ -230,17 +233,12 @@ function ButtonFilter({
   setVariableSlider = null,
   searchParam,
 }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [param, setParam] = useQueryState(searchParam, parseAsString);
 
   return (
     <button
       onClick={() => {
-        current.delete(searchParam);
-        const updatedSearchParams = new URLSearchParams(current.toString());
-        router.push(`${pathname}?${updatedSearchParams}`);
+        setParam(null);
       }}
       className={`flex items-center gap-1 rounded-full bg-gray-900 p-2 px-3 text-sm hocus:bg-red-700 hocus:line-through`}
     >

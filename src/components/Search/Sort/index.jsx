@@ -1,15 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import SortByType from "./Type";
 import SortByOrder from "./Order";
 import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
+import { useQueryState, parseAsString } from "nuqs";
 
 export default function SearchSort() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query");
+  const [sortBy, setSortBy] = useQueryState("sort_by", parseAsString);
+  const [query] = useQueryState("query");
   const { setFiltersNotAvailable } = useFiltersNotAvailable();
 
   const sortByTypeOptions = useMemo(
@@ -45,37 +42,25 @@ export default function SearchSort() {
     const value = selectedOption.value;
 
     if (!value) {
-      current.delete("sort_by");
+      setSortBy(null);
     } else {
-      current.set("sort_by", `${value}.${sortByOrder.value}`);
+      setSortBy(`${value}.${sortByOrder.value}`);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
   const handleSortByOrderChange = (selectedOption) => {
     const value = selectedOption.value;
 
     if (!value) {
-      current.delete("sort_by");
+      setSortBy(null);
     } else {
-      current.set("sort_by", `${sortByType.value}.${value}`);
+      setSortBy(`${sortByType.value}.${value}`);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
     // Sort by
-    if (searchParams.get("sort_by")) {
-      const sortByParams = searchParams.get("sort_by").split(".");
+    if (sortBy) {
+      const sortByParams = sortBy.split(".");
       const searchSortByType = sortByParams.map((param) =>
         sortByTypeOptions.find((option) => option.value === param),
       )[0];
@@ -95,7 +80,7 @@ export default function SearchSort() {
       setSortByOrder(sortByOrderOptions[1]);
     }
   }, [
-    searchParams,
+    sortBy,
     sortByOrder.value,
     sortByOrderOptions,
     sortByType.value,
@@ -104,7 +89,7 @@ export default function SearchSort() {
 
   return (
     <div
-      onMouseOver={() => isQueryParams && setFiltersNotAvailable(true)}
+      onMouseOver={() => query && setFiltersNotAvailable(true)}
       onMouseLeave={() => setFiltersNotAvailable(false)}
       className={`flex flex-nowrap justify-center gap-2 lg:justify-end [&>div]:w-full lg:[&>div]:w-[145px]`}
     >
@@ -113,7 +98,7 @@ export default function SearchSort() {
         sortByTypeOptions={sortByTypeOptions}
         handleSortByTypeChange={handleSortByTypeChange}
         sortByType={sortByType}
-        isQueryParams={isQueryParams}
+        isQueryParams={!!query}
       />
 
       {/* Sort by order */}
@@ -121,7 +106,7 @@ export default function SearchSort() {
         sortByOrderOptions={sortByOrderOptions}
         handleSortByOrderChange={handleSortByOrderChange}
         sortByOrder={sortByOrder}
-        isQueryParams={isQueryParams}
+        isQueryParams={!!query}
       />
     </div>
   );

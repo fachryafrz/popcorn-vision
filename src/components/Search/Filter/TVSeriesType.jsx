@@ -1,17 +1,14 @@
 import { useEffect, useState, useMemo } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 
 const TYPE = "type";
 
 export default function TVSeriesType() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [typeParam, setTypeParam] = useQueryState(TYPE, parseAsString);
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams.get(TYPE)?.includes("|")
+  const defaultToggleSeparation = typeParam?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -59,42 +56,34 @@ export default function TVSeriesType() {
 
     // Lakukan pengaturan URL
     if (updatedValue.length === 0) {
-      setTvType(updatedValue);
-      current.delete(TYPE);
+      setTypeParam(null);
     } else {
-      current.set(TYPE, updatedValue.join(separation));
+      setTypeParam(updatedValue.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(TYPE)) {
-      const params = searchParams.get(TYPE);
-
+    if (typeParam) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = typeParam.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(TYPE, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = typeParam.replace(/[\|,]/g, newSeparator);
+      setTypeParam(updatedParams);
     }
   };
 
   useEffect(() => {
     // TV Shows Type
-    if (searchParams.get(TYPE)) {
-      const params = searchParams.get(TYPE);
-      const splitted = params.split(separation);
+    if (typeParam) {
+      const splitted = typeParam.split(separation);
       setTvType(splitted);
     } else {
       setTvType([]);
     }
-  }, [searchParams, separation]);
+  }, [typeParam, separation]);
 
   return (
     <section className="@container">
@@ -141,13 +130,13 @@ export default function TVSeriesType() {
                   value={index}
                   checked={isChecked || tvType.includes(index.toString())}
                   onChange={handleTypeChange}
-                  disabled={isQueryParams}
+                  disabled={!!query}
                 />
 
                 <label
                   htmlFor={`type_${index}`}
                   className={`${
-                    isQueryParams ? `cursor-default` : `cursor-pointer`
+                    query ? `cursor-default` : `cursor-pointer`
                   } flex w-full py-1 pl-2 text-sm font-medium`}
                 >
                   {typeName}

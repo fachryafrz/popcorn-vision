@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { IonIcon } from "@ionic/react";
 import { close } from "ionicons/icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 // Zustand
@@ -11,13 +10,13 @@ import PersonWorks from "../Person/Works";
 import useSWR from "swr";
 import { Swiper, SwiperSlide } from "swiper/react";
 import axios from "axios";
+import { useQueryState, parseAsInteger } from "nuqs";
+import { useRouter } from "next/navigation";
 
 export default function PersonModal() {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const personParams = searchParams.get("person");
+
+  const [personParam, setPersonParam] = useQueryState("person", parseAsInteger);
 
   const getPersonModal = async (url) => {
     const res = await axios
@@ -33,7 +32,7 @@ export default function PersonModal() {
   };
 
   const { data: person } = useSWR(
-    `/api/person/${personParams}`,
+    personParam ? `/api/person/${personParam}` : null,
     getPersonModal,
     {
       revalidateIfStale: false,
@@ -49,10 +48,6 @@ export default function PersonModal() {
 
   const [films, setFilms] = useState();
 
-  const handleClose = () => {
-    router.back();
-  };
-
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key !== "Escape") return;
@@ -65,12 +60,12 @@ export default function PersonModal() {
   }, []);
 
   useEffect(() => {
-    if (!personParams) {
+    if (!personParam) {
       document.getElementById(`personModal`).close();
     } else {
       document.getElementById(`personModal`).showModal();
     }
-  }, [personParams]);
+  }, [personParam]);
 
   useEffect(() => {
     if (movieCredits && tvCredits) {
@@ -92,7 +87,7 @@ export default function PersonModal() {
         <div className={`relative w-full max-w-7xl md:p-4 md:pt-0`}>
           <div className={`pointer-events-none sticky top-0 z-50 md:-mr-4`}>
             <button
-              onClick={handleClose}
+              onClick={() => setPersonParam(null)}
               className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
             >
               <IonIcon

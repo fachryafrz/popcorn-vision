@@ -1,8 +1,9 @@
 "use client";
 
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import FilmCard from "./Card";
+import { useQueryState } from "nuqs";
 
 export default function FilmGrid({
   films,
@@ -13,9 +14,9 @@ export default function FilmGrid({
   initialLoading = false,
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const isTvPage = pathname.startsWith("/tv");
-  const isQueryParams = searchParams.get("query");
+
+  const [query] = useQueryState("query");
 
   const loadMoreRef = useRef(null);
 
@@ -62,14 +63,15 @@ export default function FilmGrid({
             <li key={film.id}>
               <FilmCard
                 film={film}
-                isTvPage={isQueryParams ? film.media_type === "tv" : isTvPage}
+                isTvPage={query ? film.media_type === "tv" : isTvPage}
               />
             </li>
           );
         })}
 
         {/* Infinite loading */}
-        {(!loading && totalSearchPages > currentSearchPage) &&
+        {!loading &&
+          totalSearchPages > currentSearchPage &&
           [...Array(20)].map((_, i) => (
             <span
               key={i + 20}

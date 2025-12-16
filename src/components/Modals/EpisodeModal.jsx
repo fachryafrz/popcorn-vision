@@ -17,7 +17,6 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
@@ -27,21 +26,25 @@ import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 import WatchButton from "../Layout/WatchButton";
 import dayjs from "dayjs";
+import { useQueryStates, parseAsInteger } from "nuqs";
+import { useRouter } from "next/navigation";
 
 export function EpisodeModal({ film }) {
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const seasonParams = searchParams.get("season");
-  const episodeParams = searchParams.get("episode");
+
+  const [chapter, setChapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
   const dialogRef = useRef(null);
 
   const { user } = userStore();
   const { seasons } = film;
 
   const { data: episode } = useSWR(
-    `/api/tv/${film.id}/season/${seasonParams}/episode/${episodeParams}`,
+    chapter?.season &&
+      chapter?.episode &&
+      `/api/tv/${film.id}/season/${chapter.season}/episode/${chapter.episode}`,
     (url) => axios.get(url).then(({ data }) => data),
     {
       revalidateIfStale: false,
@@ -60,9 +63,6 @@ export function EpisodeModal({ film }) {
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
 
-  const handleClose = () => {
-    router.back();
-  };
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
 
@@ -70,57 +70,55 @@ export function EpisodeModal({ film }) {
   };
 
   const handlePrevEpisode = () => {
-    if (parseInt(seasonParams) > 1 && parseInt(episodeParams) === 1) {
-      router.replace(
-        `?season=${parseInt(seasonParams) - 1}&episode=${filteredSeasons[seasonParams - 2]?.episode_count}`,
-        { scroll: false },
-      );
-      return;
-    }
-
-    router.replace(
-      `?season=${seasonParams}&episode=${parseInt(episodeParams) - 1}`,
-      { scroll: false },
-    );
-
-    scrollToTop();
-
-    // document.getElementById(`episodeModal`).close();
-  };
-
-  const handleNextEpisode = () => {
-    if (
-      parseInt(episodeParams) ===
-      filteredSeasons[seasonParams - 1]?.episode_count
-    ) {
-      router.replace(`?season=${parseInt(seasonParams) + 1}&episode=1`, {
-        scroll: false,
+    if (chapter?.season > 1 && chapter?.episode === 1) {
+      setChapter({
+        season: chapter.season - 1,
+        episode: filteredSeasons[chapter.season - 2]?.episode_count,
       });
       return;
     }
 
-    router.replace(
-      `?season=${seasonParams}&episode=${parseInt(episodeParams) + 1}`,
-      { scroll: false },
-    );
+    setChapter({
+      season: chapter.season,
+      episode: chapter.episode - 1,
+    });
 
     scrollToTop();
-
-    // document.getElementById(`episodeModal`).close();
   };
 
-  const swrKey = `/api/tv/${film.id}/season/${episode?.season_number}/episode/${episode?.episode_number}/account_states`;
+  const handleNextEpisode = () => {
+    if (
+      chapter?.episode === filteredSeasons[chapter?.season - 1]?.episode_count
+    ) {
+      setChapter({
+        season: chapter.season + 1,
+        episode: 1,
+      });
+      return;
+    }
+
+    setChapter({
+      season: chapter.season,
+      episode: chapter.episode + 1,
+    });
+
+    scrollToTop();
+  };
+
+  const swrKey = `/api/tv/${film.id}/season/${chapter.season}/episode/${chapter.episode}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(
-    user && episode ? swrKey : null,
+    user && chapter?.season && chapter?.episode ? swrKey : null,
     fetcher,
   );
 
   useEffect(() => {
-    if (!searchParams.get("season") || !searchParams.get("episode")) return;
-
-    document.getElementById(`episodeModal`).showModal();
-  }, [searchParams]);
+    if (chapter?.season && chapter?.episode) {
+      document.getElementById(`episodeModal`).showModal();
+    } else {
+      document.getElementById(`episodeModal`).close();
+    }
+  }, [chapter]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -148,7 +146,7 @@ export function EpisodeModal({ film }) {
           <>
             <form
               method="dialog"
-              onSubmit={handleClose}
+              onSubmit={() => setChapter({ season: null, episode: null })}
               className={`pointer-events-none absolute inset-0 md:px-4`}
             >
               <button
@@ -279,9 +277,7 @@ export function EpisodeModal({ film }) {
                 )}
 
                 {episode.overview !== "" && (
-                  <section
-                    id={`Episode Overview`}
-                  >
+                  <section id={`Episode Overview`}>
                     <h2 className={`text-xl font-bold text-white`}>Overview</h2>
                     <p className={`text-gray-400 md:text-lg`}>
                       {episode.overview}
@@ -346,9 +342,7 @@ export function EpisodeModal({ film }) {
         >
           <button
             onClick={handlePrevEpisode}
-            disabled={
-              parseInt(seasonParams) === 1 && parseInt(episodeParams) === 1
-            }
+            disabled={chapter?.season === 1 && chapter?.episode === 1}
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >
             <IonIcon
@@ -362,10 +356,10 @@ export function EpisodeModal({ film }) {
           <button
             onClick={handleNextEpisode}
             disabled={
-              parseInt(seasonParams) === filteredSeasons.length &&
-              (parseInt(episodeParams) ===
-                filteredSeasons[seasonParams - 1]?.episode_count ||
-                parseInt(episodeParams) === film.number_of_episodes)
+              chapter?.season === filteredSeasons.length &&
+              (chapter?.episode ===
+                filteredSeasons[chapter?.season - 1]?.episode_count ||
+                chapter?.episode === film.number_of_episodes)
             }
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >

@@ -1,22 +1,20 @@
 import { useEffect, useState, useMemo } from "react";
 import Select from "react-select";
 import { getRandomOptionsPlaceholder } from "@/lib/getRandomOptionsPlaceholder";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 import { AND_SEPARATION, OR_SEPARATION } from "@/lib/constants";
 import { inputStyles } from "@/utils/inputStyles";
 
 const WITH_ORIGINAL_LANGUAGE = "with_original_language";
 
 export default function Language({ languagesData }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [withOriginalLanguage, setWithOriginalLanguage] = useQueryState(
+    WITH_ORIGINAL_LANGUAGE,
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
-  const isQueryParams = searchParams.get("query");
-  const defaultToggleSeparation = searchParams
-    .get(WITH_ORIGINAL_LANGUAGE)
-    ?.includes("|")
+  const defaultToggleSeparation = withOriginalLanguage?.includes("|")
     ? OR_SEPARATION
     : AND_SEPARATION;
 
@@ -40,28 +38,25 @@ export default function Language({ languagesData }) {
     const value = selectedOption.map((option) => option.value);
 
     if (value.length === 0) {
-      current.delete(WITH_ORIGINAL_LANGUAGE);
+      setWithOriginalLanguage(null);
     } else {
-      current.set(WITH_ORIGINAL_LANGUAGE, value.join(separation));
+      setWithOriginalLanguage(value.join(separation));
     }
-
-    router.push(`${pathname}?${current.toString()}`);
   };
 
   const handleSeparator = (separator) => {
     setToggleSeparation(separator);
 
-    if (searchParams.get(WITH_ORIGINAL_LANGUAGE)) {
-      const params = searchParams.get(WITH_ORIGINAL_LANGUAGE);
-
+    if (withOriginalLanguage) {
       const separation = separator === AND_SEPARATION ? "," : "|";
-      const newSeparator = params.includes("|") ? "," : "|";
+      const newSeparator = withOriginalLanguage.includes("|") ? "," : "|";
       if (newSeparator !== separation) return;
 
-      const updatedParams = params.replace(/[\|,]/g, newSeparator);
-
-      current.set(WITH_ORIGINAL_LANGUAGE, updatedParams);
-      router.push(`${pathname}?${current.toString()}`);
+      const updatedParams = withOriginalLanguage.replace(
+        /[\|,]/g,
+        newSeparator,
+      );
+      setWithOriginalLanguage(updatedParams);
     }
   };
 
@@ -85,9 +80,8 @@ export default function Language({ languagesData }) {
 
   useEffect(() => {
     // Languages
-    if (searchParams.get(WITH_ORIGINAL_LANGUAGE)) {
-      const params = searchParams.get(WITH_ORIGINAL_LANGUAGE);
-      const splitted = params.split(separation);
+    if (withOriginalLanguage) {
+      const splitted = withOriginalLanguage.split(separation);
       const filtered = splitted.map((languageId) =>
         languagesData?.find(
           (language) => language.iso_639_1 === languageId.toLowerCase(),
@@ -104,7 +98,7 @@ export default function Language({ languagesData }) {
     } else {
       setLanguage(null);
     }
-  }, [languagesData, searchParams, separation]);
+  }, [languagesData, withOriginalLanguage, separation]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -151,7 +145,7 @@ export default function Language({ languagesData }) {
           }),
         }}
         placeholder={languagesInputPlaceholder}
-        isDisabled={isQueryParams}
+        isDisabled={!!query}
         isMulti
       />
     </section>

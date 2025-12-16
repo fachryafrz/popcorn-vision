@@ -23,37 +23,32 @@ import { useStreamingProvider } from "@/zustand/streamingProvider";
 import Link from "next/link";
 import RectangleAd from "../Icon/RectangleAd";
 import dayjs from "dayjs";
+import { useQueryState, parseAsBoolean, parseAsInteger } from "nuqs";
+import { useQueryStates } from "nuqs";
 
 export default function Streaming() {
-  const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const streaming = searchParams.get("streaming");
-
+  const [streaming, setStreaming] = useQueryState("streaming", parseAsBoolean);
+  const [chapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
   const [origin, type, id] = pathname.split("/");
 
   const isTv = type === "tv";
   const media_type = type === "movies" ? "movie" : "tv";
   const filmID = id?.split("-")[0];
 
-  const season = Number(searchParams.get("season")) || 1;
-  const episode = Number(searchParams.get("episode")) || 1;
-
   const { streamingProvider, setStreamingProvider } = useStreamingProvider();
   const providerList = streamingProviderList({
     media_type,
     id: filmID,
-    season,
-    episode,
+    season: chapter?.season,
+    episode: chapter?.episode,
   });
   const selectedProvider = providerList.find(
     (p) => p.title === streamingProvider,
   );
-
-  const handleClose = () => {
-    router.back();
-  };
 
   const { data: film, isLoading } = useSWR(
     streaming ? (!isTv ? `/api/movie/${filmID}` : `/api/tv/${filmID}`) : null,
@@ -75,11 +70,8 @@ export default function Streaming() {
   useEffect(() => {
     if (!streaming) return;
 
-    if (searchParams.get("season") && searchParams.get("episode"))
-      document.getElementById("episodeModal").close();
-
     document.getElementById("streaming").showModal();
-  }, [streaming, searchParams]);
+  }, [streaming]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -94,7 +86,7 @@ export default function Streaming() {
 
   return (
     <>
-      {streaming === "true" && (
+      {streaming && (
         <dialog
           id="streaming"
           onCancel={(e) => e.preventDefault()}
@@ -104,7 +96,7 @@ export default function Streaming() {
             {/* Close */}
             <form
               method="dialog"
-              onSubmit={handleClose}
+              onSubmit={() => setStreaming(null)}
               className={`pointer-events-none sticky top-0 z-50 !mt-0 p-4 xl:pr-0 [&_*]:pointer-events-none`}
             >
               <div className={`sticky top-0 -mx-4 flex justify-end`}>
@@ -128,8 +120,8 @@ export default function Streaming() {
             <StreamingProvider
               media_type={media_type}
               id={filmID}
-              season={season}
-              episode={episode}
+              season={chapter?.season}
+              episode={chapter?.episode}
             />
 
             {/* Title */}
@@ -153,7 +145,11 @@ export default function Streaming() {
 
             {/* Seasons & Episodes */}
             {isTv && (
-              <Season film={film} season={season} detailsLoading={isLoading} />
+              <Season
+                film={film}
+                season={chapter?.season}
+                detailsLoading={isLoading}
+              />
             )}
           </div>
         </dialog>
@@ -280,7 +276,6 @@ function StreamingProvider({ media_type, id, season, episode }) {
 
 function MovieCollection({ film, detailsLoading }) {
   const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
   const belongsToCollection = film.belongs_to_collection;
 
   const { data: collection, isLoading } = useSWR(
@@ -315,7 +310,7 @@ function MovieCollection({ film, detailsLoading }) {
               <Link
                 href={{
                   pathname: `/movies/${item.id}-${slug(item.title)}`,
-                  query: current.toString(),
+                  query: searchParams.toString(),
                 }}
                 prefetch={false}
                 onClick={handleWatchMovie}
@@ -345,16 +340,15 @@ function MovieCollection({ film, detailsLoading }) {
 }
 
 function Season({ film, season, detailsLoading }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const streaming = searchParams.get("streaming");
-
   const [selectedSeason, setSelectedSeason] = useState(season || 1);
   const [episodeSwiper, setEpisodeSwiper] = useState();
+  const [chapter, setChapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
 
   const seasons = film?.seasons.filter((season) => season.season_number > 0);
+  const streaming = useQueryState("streaming", parseAsBoolean);
 
   const { data: episodes, isLoading } = useSWR(
     streaming ? `/api/tv/${film?.id}/season/${selectedSeason}` : null,
@@ -372,15 +366,23 @@ function Season({ film, season, detailsLoading }) {
       behavior: "smooth",
     });
 
-    current.set("season", selectedSeason);
-    current.set("episode", item.episode_number);
-
-    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    setChapter({
+      season: selectedSeason,
+      episode: item.episode_number,
+    });
   };
 
   useEffect(() => {
     setSelectedSeason(season);
   }, [season]);
+
+  useEffect(() => {
+    if (streaming) {
+      document.getElementById("streaming").showModal();
+    } else {
+      document.getElementById("streaming").close();
+    }
+  }, [streaming]);
 
   return (
     <div className={`mt-4 w-full space-y-2`}>

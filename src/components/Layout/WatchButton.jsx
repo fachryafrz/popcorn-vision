@@ -1,17 +1,12 @@
 import { IonIcon } from "@ionic/react";
 import { play } from "ionicons/icons";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsBoolean } from "nuqs";
 
 export default function WatchButton() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
+  const [, setStreaming] = useQueryState("streaming", parseAsBoolean);
 
   const handleWatch = () => {
-    current.set("streaming", "true");
-
-    router.push(`${pathname}?${current.toString()}`, { scroll: false });
+    setStreaming(true);
   };
 
   return (

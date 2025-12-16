@@ -27,6 +27,7 @@
     "limiter": "^3.0.0",
     "next": "14.2.35",
     "numeral": "^2.0.6",
+    "nuqs": "^2.8.5",
     "pluralize": "^8.0.0",
     "react": "^18.3.1",
     "react-device-detect": "^2.2.3",

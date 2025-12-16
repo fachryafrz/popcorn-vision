@@ -2,14 +2,14 @@ import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
 import { LocalizationProvider, MobileDatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryState, parseAsString } from "nuqs";
 
 export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const current = new URLSearchParams(Array.from(searchParams.entries()));
-  const isQueryParams = searchParams.get("query");
+  const [releaseDate, setReleaseDate] = useQueryState(
+    "release_date",
+    parseAsString,
+  );
+  const [query] = useQueryState("query");
 
   const today = dayjs();
   const endOfNextYear = today.add(1, "year").endOf("year");
@@ -21,22 +21,16 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
     const value = `${newValue[0]}..${newValue[1]}`;
 
     if (!value) {
-      current.delete("release_date");
+      setReleaseDate(null);
     } else {
-      current.set("release_date", value);
+      setReleaseDate(value);
     }
-
-    const search = current.toString();
-
-    const query = search ? `?${search}` : "";
-
-    router.push(`${pathname}${query}`);
   };
 
   useEffect(() => {
     // Datepicker
-    if (searchParams.get("release_date")) {
-      const [min, max] = searchParams.get("release_date").split("..");
+    if (releaseDate) {
+      const [min, max] = releaseDate.split("..");
       const searchMinDatepicker = dayjs(min);
       const searchMaxDatepicker = dayjs(max);
 
@@ -47,7 +41,7 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
       setMaxDatepicker(endOfNextYear);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams, minYear, maxYear, isTvPage]);
+  }, [releaseDate, minYear, maxYear, isTvPage]);
 
   return (
     <section className={`flex flex-col gap-1`}>
@@ -80,7 +74,7 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
                     textField: { size: "small" },
                   }}
                   closeOnSelect={false}
-                  disabled={isQueryParams}
+                  disabled={query}
                   format="DD MMM YYYY"
                   sx={{
                     "& .MuiInputBase-root": {
@@ -139,7 +133,7 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
                     textField: { size: "small" },
                   }}
                   closeOnSelect={false}
-                  disabled={isQueryParams}
+                  disabled={query}
                   format="DD MMM YYYY"
                   sx={{
                     "& .MuiInputBase-root": {

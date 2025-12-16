@@ -21,6 +21,7 @@ import RatingCount from "./RatingCount";
 import { useSearchParams } from "next/navigation";
 import { useToggleFilter } from "@/zustand/toggleFilter";
 import { useFiltersNotAvailable } from "@/zustand/filtersNotAvailable";
+import { useQueryState } from "nuqs";
 
 export default function Filters({
   type,
@@ -30,8 +31,7 @@ export default function Filters({
   languagesData,
 }) {
   const isTvPage = type === "tv";
-  const searchParams = useSearchParams();
-  const isQueryParams = searchParams.get("query");
+  const [query] = useQueryState("query");
   const { setFiltersNotAvailable } = useFiltersNotAvailable();
 
   const { toggleFilter, setToggleFilter } = useToggleFilter();
@@ -78,7 +78,7 @@ export default function Filters({
 
   return (
     <aside
-      onMouseOver={() => isQueryParams && setFiltersNotAvailable(true)}
+      onMouseOver={() => query && setFiltersNotAvailable(true)}
       onMouseLeave={() => setFiltersNotAvailable(false)}
       className={`fixed inset-0 top-[66px] z-50 max-h-[calc(100dvh-66px)] transition-all duration-300 lg:static lg:z-0 lg:max-h-none lg:max-w-[300px] ${
         toggleFilter ? `translate-x-0` : `-translate-x-[calc(100%+1.5rem)]`
