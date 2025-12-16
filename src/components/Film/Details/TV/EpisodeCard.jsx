@@ -1,10 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import React from "react";
 import ImagePovi from "@/components/Film/ImagePovi";
-
-// Zustand
-import { useQueryState, parseAsInteger } from "nuqs";
+import { parseAsInteger, useQueryStates } from "nuqs";
 
 export default function EpisodeCard({
   className,
@@ -16,27 +13,21 @@ export default function EpisodeCard({
   overlay,
   onClick,
 }) {
-  const [seasonParam, setSeasonParam] = useQueryState(
-    "season",
-    parseAsInteger.withDefault(1),
-  );
-  const [episodeParam, setEpisodeParam] = useQueryState(
-    "episode",
-    parseAsInteger.withDefault(1),
-  );
+  const [, setChapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
 
   const handleClick = () => {
-    setSeasonParam(episode.season_number);
-    setEpisodeParam(episode.episode_number);
+    setChapter({
+      season: episode.season_number,
+      episode: episode.episode_number,
+    });
   };
 
   return (
     <button
       onClick={onClick || handleClick}
-      // href={{
-      //   pathname,
-      //   query: { season: episode.season_number, episode: episode.episode_number },
-      // }}
       className={`flex h-fit w-full flex-col items-center gap-2 rounded-xl bg-secondary bg-opacity-10 p-2 backdrop-blur transition-all hocus:bg-opacity-30 ${className}`}
     >
       <ImagePovi

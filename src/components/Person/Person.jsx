@@ -15,7 +15,7 @@ export default function Person({
   personRole,
   tooltip = false,
 }) {
-  const [personParam, setPersonParam] = useQueryState("person", parseAsInteger);
+  const [, setPersonParam] = useQueryState("person", parseAsInteger);
 
   const handleActorClick = () => {
     setPersonParam(id);

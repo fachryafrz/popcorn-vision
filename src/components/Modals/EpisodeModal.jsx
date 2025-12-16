@@ -17,7 +17,6 @@ import { formatRuntime } from "@/lib/formatRuntime";
 import ImagePovi from "@/components/Film/ImagePovi";
 
 // Zustand
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Person from "@/components/Person/Person";
 import axios from "axios";
 import UserRating from "../User/Actions/UserRating";
@@ -27,24 +26,25 @@ import { userStore } from "@/zustand/userStore";
 import pluralize from "pluralize";
 import WatchButton from "../Layout/WatchButton";
 import dayjs from "dayjs";
-import { useQueryState, parseAsInteger } from "nuqs";
+import { useQueryStates, parseAsInteger } from "nuqs";
+import { useRouter } from "next/navigation";
 
 export function EpisodeModal({ film }) {
-  const [season, setSeason] = useQueryState(
-    "season",
-    parseAsInteger.withDefault(1),
-  );
-  const [episode, setEpisode] = useQueryState(
-    "episode",
-    parseAsInteger.withDefault(1),
-  );
+  const router = useRouter();
+
+  const [chapter, setChapter] = useQueryStates({
+    season: parseAsInteger,
+    episode: parseAsInteger,
+  });
   const dialogRef = useRef(null);
 
   const { user } = userStore();
   const { seasons } = film;
 
-  const { data: episodeData } = useSWR(
-    `/api/tv/${film.id}/season/${season}/episode/${episode}`,
+  const { data: episode } = useSWR(
+    chapter?.season &&
+      chapter?.episode &&
+      `/api/tv/${film.id}/season/${chapter.season}/episode/${chapter.episode}`,
     (url) => axios.get(url).then(({ data }) => data),
     {
       revalidateIfStale: false,
@@ -54,8 +54,8 @@ export function EpisodeModal({ film }) {
   );
 
   const today = dayjs();
-  const isAired = dayjs(episodeData?.air_date).isBefore(today);
-  const isUpcoming = dayjs(episodeData?.air_date).isAfter(today);
+  const isAired = dayjs(episode?.air_date).isBefore(today);
+  const isUpcoming = dayjs(episode?.air_date).isAfter(today);
 
   // const [accountStates, setAccountStates] = useState();
   const [showAllGuestStars, setShowAllGuestStars] = useState(false);
@@ -63,10 +63,6 @@ export function EpisodeModal({ film }) {
 
   const filteredSeasons = seasons.filter((item) => item.season_number > 0);
 
-  const handleClose = () => {
-    setSeason(null);
-    setEpisode(null);
-  };
   const scrollToTop = () => {
     const dialogElement = dialogRef.current;
 
@@ -74,44 +70,55 @@ export function EpisodeModal({ film }) {
   };
 
   const handlePrevEpisode = () => {
-    if (season > 1 && episode === 1) {
-      setSeason(season - 1);
-      setEpisode(filteredSeasons[season - 2]?.episode_count);
+    if (chapter?.season > 1 && chapter?.episode === 1) {
+      setChapter({
+        season: chapter.season - 1,
+        episode: filteredSeasons[chapter.season - 2]?.episode_count,
+      });
       return;
     }
 
-    setEpisode(episode - 1);
+    setChapter({
+      season: chapter.season,
+      episode: chapter.episode - 1,
+    });
 
     scrollToTop();
   };
 
   const handleNextEpisode = () => {
-    if (episode === filteredSeasons[season - 1]?.episode_count) {
-      setSeason(season + 1);
-      setEpisode(1);
+    if (
+      chapter?.episode === filteredSeasons[chapter?.season - 1]?.episode_count
+    ) {
+      setChapter({
+        season: chapter.season + 1,
+        episode: 1,
+      });
       return;
     }
 
-    setEpisode(episode + 1);
+    setChapter({
+      season: chapter.season,
+      episode: chapter.episode + 1,
+    });
 
     scrollToTop();
   };
 
-  const swrKey = `/api/tv/${film.id}/season/${episodeData?.season_number}/episode/${episodeData?.episode_number}/account_states`;
+  const swrKey = `/api/tv/${film.id}/season/${chapter.season}/episode/${chapter.episode}/account_states`;
   const fetcher = (url) => axios.get(url).then(({ data }) => data);
   const { data: accountStates } = useSWR(
-    user && episodeData ? swrKey : null,
+    user && chapter?.season && chapter?.episode ? swrKey : null,
     fetcher,
   );
 
   useEffect(() => {
-    if (!season || !episode) {
+    if (chapter?.season && chapter?.episode) {
+      document.getElementById(`episodeModal`).showModal();
+    } else {
       document.getElementById(`episodeModal`).close();
-      return;
     }
-
-    document.getElementById(`episodeModal`).showModal();
-  }, [season, episode]);
+  }, [chapter]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -139,7 +146,7 @@ export function EpisodeModal({ film }) {
           <>
             <form
               method="dialog"
-              onSubmit={handleClose}
+              onSubmit={() => setChapter({ season: null, episode: null })}
               className={`pointer-events-none absolute inset-0 md:px-4`}
             >
               <button
@@ -270,9 +277,7 @@ export function EpisodeModal({ film }) {
                 )}
 
                 {episode.overview !== "" && (
-                  <section
-                    id={`Episode Overview`}
-                  >
+                  <section id={`Episode Overview`}>
                     <h2 className={`text-xl font-bold text-white`}>Overview</h2>
                     <p className={`text-gray-400 md:text-lg`}>
                       {episode.overview}
@@ -287,11 +292,11 @@ export function EpisodeModal({ film }) {
                     </h2>
 
                     <div className={`relative mb-2 grid sm:grid-cols-2`}>
-                      {episodeData.guest_stars
+                      {episode.guest_stars
                         .slice(
                           0,
                           showAllGuestStars
-                            ? episodeData.guest_stars.length
+                            ? episode.guest_stars.length
                             : numGuestStars,
                         )
                         .map((item) => {
@@ -337,9 +342,7 @@ export function EpisodeModal({ film }) {
         >
           <button
             onClick={handlePrevEpisode}
-            disabled={
-              parseInt(seasonParams) === 1 && parseInt(episodeParams) === 1
-            }
+            disabled={chapter?.season === 1 && chapter?.episode === 1}
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >
             <IonIcon
@@ -353,10 +356,10 @@ export function EpisodeModal({ film }) {
           <button
             onClick={handleNextEpisode}
             disabled={
-              parseInt(seasonParams) === filteredSeasons.length &&
-              (parseInt(episodeParams) ===
-                filteredSeasons[seasonParams - 1]?.episode_count ||
-                parseInt(episodeParams) === film.number_of_episodes)
+              chapter?.season === filteredSeasons.length &&
+              (chapter?.episode ===
+                filteredSeasons[chapter?.season - 1]?.episode_count ||
+                chapter?.episode === film.number_of_episodes)
             }
             className={`btn btn-ghost flex items-center gap-2 rounded-full bg-white bg-opacity-10 text-sm backdrop-blur-sm`}
           >

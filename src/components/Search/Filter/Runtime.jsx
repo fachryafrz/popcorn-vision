@@ -66,7 +66,7 @@ export default function Runtime({ sliderStyles }) {
           max={300}
           marks={runtimeMarks}
           sx={sliderStyles}
-          disabled={isQueryParams}
+          disabled={query}
         />
       </div>
     </section>

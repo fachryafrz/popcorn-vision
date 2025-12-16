@@ -3,7 +3,7 @@ import { play } from "ionicons/icons";
 import { useQueryState, parseAsBoolean } from "nuqs";
 
 export default function WatchButton() {
-  const [streaming, setStreaming] = useQueryState("streaming", parseAsBoolean);
+  const [, setStreaming] = useQueryState("streaming", parseAsBoolean);
 
   const handleWatch = () => {
     setStreaming(true);

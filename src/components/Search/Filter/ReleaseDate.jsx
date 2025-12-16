@@ -74,7 +74,7 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
                     textField: { size: "small" },
                   }}
                   closeOnSelect={false}
-                  disabled={isQueryParams}
+                  disabled={query}
                   format="DD MMM YYYY"
                   sx={{
                     "& .MuiInputBase-root": {
@@ -133,7 +133,7 @@ export default function ReleaseDate({ isTvPage, minYear, maxYear }) {
                     textField: { size: "small" },
                   }}
                   closeOnSelect={false}
-                  disabled={isQueryParams}
+                  disabled={query}
                   format="DD MMM YYYY"
                   sx={{
                     "& .MuiInputBase-root": {

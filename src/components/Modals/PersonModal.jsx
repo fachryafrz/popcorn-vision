@@ -11,12 +11,12 @@ import useSWR from "swr";
 import { Swiper, SwiperSlide } from "swiper/react";
 import axios from "axios";
 import { useQueryState, parseAsInteger } from "nuqs";
+import { useRouter } from "next/navigation";
 
 export default function PersonModal() {
-  const [personParam, setPersonParam] = useQueryState(
-    "person",
-    parseAsInteger,
-  );
+  const router = useRouter();
+
+  const [personParam, setPersonParam] = useQueryState("person", parseAsInteger);
 
   const getPersonModal = async (url) => {
     const res = await axios
@@ -47,10 +47,6 @@ export default function PersonModal() {
   const images = person?.images;
 
   const [films, setFilms] = useState();
-
-  const handleClose = () => {
-    setPersonParam(null);
-  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -91,7 +87,7 @@ export default function PersonModal() {
         <div className={`relative w-full max-w-7xl md:p-4 md:pt-0`}>
           <div className={`pointer-events-none sticky top-0 z-50 md:-mr-4`}>
             <button
-              onClick={handleClose}
+              onClick={() => setPersonParam(null)}
               className={`pointer-events-auto sticky top-0 z-50 ml-auto grid aspect-square place-content-center p-4`}
             >
               <IonIcon
