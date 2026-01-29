@@ -9,6 +9,7 @@
 * {
   scrollbar-color: color-mix(in oklch, currentColor 35%, transparent)
     transparent;
+  overscroll-behavior: auto;
 }
 
 .swiper-button-disabled {
