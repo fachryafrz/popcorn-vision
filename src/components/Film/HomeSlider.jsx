@@ -25,7 +25,10 @@ import slug from "slug";
 import { POPCORN } from "@/lib/constants";
 import dayjs from "dayjs";
 
-export default function HomeSlider({ films, genres, filmData }) {
+import useSWR from "swr";
+import { axios } from "@/lib/axios";
+
+export default function HomeSlider({ films, genres, type }) {
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
@@ -116,7 +119,7 @@ export default function HomeSlider({ films, genres, filmData }) {
                   isTvPage={isTvPage}
                   loading={loading}
                   setLoading={setLoading}
-                  filmData={filmData}
+                  type={type}
                 />
               </SwiperSlide>
             );
@@ -153,7 +156,8 @@ export default function HomeSlider({ films, genres, filmData }) {
                   film={film}
                   index={i}
                   isTvPage={isTvPage}
-                  filmData={filmData}
+                  type={type}
+                  activeSlide={activeSlide}
                 />
               </SwiperSlide>
             );
@@ -172,23 +176,33 @@ function HomeFilm({
   isTvPage,
   loading,
   setLoading,
-  filmData,
+  type,
 }) {
-  const matchFilm = filmData.filter((f) => f.id === film.id);
+  const [hasBeenActive, setHasBeenActive] = useState(false);
+  
+  if (activeSlide === index && !hasBeenActive) {
+    setHasBeenActive(true);
+  }
 
-  const { images } = matchFilm[0];
-  const { posters, backdrops } = images;
+  const { data: matchFilm } = useSWR(
+    hasBeenActive || activeSlide === index
+      ? `/api/${type}/${film.id}?append_to_response=images`
+      : null,
+    (url) => axios.get(url).then((res) => res.data),
+    { revalidateOnFocus: false }
+  );
 
-  // State
-  const [filmDetails, setFilmDetails] = useState(matchFilm[0]);
-  const [filmPoster, setFilmPoster] = useState(
+  const images = matchFilm?.images || {};
+  const posters = images.posters || [];
+  const backdrops = images.backdrops || [];
+
+  const filmDetails = matchFilm;
+  const filmPoster =
     posters.find((img) => img.iso_639_1 === null)?.file_path ??
-      film.poster_path,
-  );
-  const [filmBackdrop, setFilmBackdrop] = useState(
+    film.poster_path;
+  const filmBackdrop =
     backdrops.find((img) => img.iso_639_1 === null)?.file_path ??
-      film.backdrop_path,
-  );
+    film.backdrop_path;
 
   return (
     <>
@@ -229,16 +243,27 @@ function HomeFilm({
 }
 
 // NOTE: This is for the backdrop with the film title
-function SliderThumbs({ film, isTvPage, index, filmData }) {
-  const matchFilm = filmData.filter((f) => f.id === film.id);
+function SliderThumbs({ film, isTvPage, index, type, activeSlide }) {
+  const [hasBeenActive, setHasBeenActive] = useState(false);
+  
+  if (activeSlide === index && !hasBeenActive) {
+    setHasBeenActive(true);
+  }
 
-  const images = matchFilm[0]?.images;
-  const { backdrops } = images;
+  // optionally fetch if active, or rely on the cache from HomeFilm SWR
+  const { data: matchFilm } = useSWR(
+    hasBeenActive || activeSlide === index
+      ? `/api/${type}/${film.id}?append_to_response=images`
+      : null,
+    (url) => axios.get(url).then((res) => res.data),
+    { revalidateOnFocus: false }
+  );
+
+  const images = matchFilm?.images || {};
+  const backdrops = images.backdrops || [];
   const backdropWithTitle = backdrops.find((img) => img.iso_639_1 === "en");
 
-  const [filmBackdrop, setFilmBackdrop] = useState(
-    backdropWithTitle?.file_path ?? film.backdrop_path,
-  );
+  const filmBackdrop = backdropWithTitle?.file_path ?? film.backdrop_path;
 
   return (
     <>

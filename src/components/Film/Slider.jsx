@@ -12,7 +12,7 @@ import { IonIcon } from "@ionic/react";
 import { chevronBack, chevronForward } from "ionicons/icons";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { sortFilms } from "../../lib/sortFilms";
+// import { sortFilms } from "../../lib/sortFilms";
 import slug from "slug";
 
 export default function FilmSlider({
@@ -24,7 +24,7 @@ export default function FilmSlider({
   const pathname = usePathname();
   const isTvPage = pathname.startsWith("/tv");
 
-  const sortedFilms = sortFilms({ films: films.results, sort, isTvPage });
+  // const sortedFilms = sortFilms({ films: films.results, sort, isTvPage });
 
   return (
     <section id={title} className={`mx-auto w-full max-w-none`}>
@@ -121,8 +121,8 @@ export default function FilmSlider({
         wrapperClass={`@container`}
         wrapperTag="ul"
       >
-        {films.results
-          .filter((film) => film.poster_path)
+        {films?.results
+          ?.filter((film) => film.poster_path)
           .map((film) => {
             return (
               <SwiperSlide
