@@ -5,15 +5,23 @@ import ImagePovi from "./ImagePovi";
 import slug from "slug";
 import { axios } from "@/lib/axios";
 import dayjs from "dayjs";
+import useSWR from "swr";
 
-export default async function Trending({ film, genres, type }) {
+export default function Trending({ film, genres, type }) {
   const isTvPage = type === "tv";
 
-  const filmDetails = await axios
-    .get(`/${!isTvPage ? `movie` : `tv`}/${film.id}`, {
-      params: { append_to_response: `images` },
-    })
-    .then(({ data }) => data);
+  const { data: filmDetails } = useSWR(
+    `/api/${!isTvPage ? `movie` : `tv`}/${film.id}`,
+    (url) =>
+      axios
+        .get(url, {
+          params: { append_to_response: `images` },
+        })
+        .then(({ data }) => data),
+    {
+      revalidateOnFocus: false,
+    },
+  );
 
   return (
     <div className="mx-auto max-w-7xl md:px-4">
@@ -70,7 +78,7 @@ export default async function Trending({ film, genres, type }) {
           </ImagePovi>
         </div>
         <div className="z-30 flex flex-col items-center gap-2 text-center md:max-w-[60%] md:items-start md:text-start lg:max-w-[50%]">
-          {filmDetails && (
+          {filmDetails && filmDetails.images && (
             <FilmSummary
               film={filmDetails}
               genres={genres}

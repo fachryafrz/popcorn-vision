@@ -37,7 +37,7 @@ export default function SkeletonSlider() {
         {[...Array(itemCount).keys()].map((b) => (
           <SwiperSlide
             key={b}
-            className={`max-w-[calc(100%/2.2)] pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6.2)] @7xl:max-w-[calc(100%/7.2)]`}
+            className={`max-w-[calc(100%/2.2)] !bg-opacity-0 pr-2 transition-all @xl:max-w-[calc(100%/3.2)] @2xl:max-w-[calc(100%/4.2)] @5xl:max-w-[calc(100%/5.2)] @6xl:max-w-[calc(100%/6.2)] @7xl:max-w-[calc(100%/7.2)]`}
           >
             {/* Poster */}
             <div className={`aspect-poster`}></div>
