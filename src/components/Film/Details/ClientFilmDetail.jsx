@@ -9,6 +9,7 @@ import AdultModal from "@/components/Modals/AdultModal";
 import { movieGenres } from "@/data/movie-genres";
 import { tvGenres } from "@/data/tv-genres";
 import { axios } from "@/lib/axios";
+import DetailsLoading from "@/components/Skeleton/details";
 
 export default function ClientFilmDetail({ id, type = "movie" }) {
   const isTvPage = type === "tv";
@@ -33,9 +34,7 @@ export default function ClientFilmDetail({ id, type = "movie" }) {
 
   if (filmLoading || imagesLoading) {
     return (
-      <div className={`relative flex flex-col bg-base-100 pb-[2rem] text-white md:-mt-[66px] md:pb-[5rem] min-h-screen items-center justify-center`}>
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-      </div>
+      <DetailsLoading />
     );
   }
 
