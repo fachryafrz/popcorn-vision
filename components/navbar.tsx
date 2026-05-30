@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown, Settings, User } from "lucide-react";
+import { LogOut, Menu, Search, X, ChevronDown, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -253,7 +253,14 @@ export default function Navbar() {
               <div className="flex flex-col gap-4 mt-auto">
                 {isLoggedIn ? (
                   <div className="flex flex-col gap-4 w-full">
-                    <Button variant={'ghost'} onClick={() => router.push(`/@/${user?.username}`)} className="flex h-fit items-center gap-3 p-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/80">
+                    <Button 
+                    variant={'ghost'} 
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      router.push(`/@/${user?.username}`)
+                    }} 
+                    className="flex h-fit items-center gap-3 p-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/80"
+                    >
                       <Avatar className="h-9 w-9 border border-zinc-700/50">
                         {user?.image && (
                           <AvatarImage src={user.image} alt={user.username || "User"} className="object-cover" />
