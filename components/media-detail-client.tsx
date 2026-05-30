@@ -503,7 +503,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     : "/logo/popcorn.png";
 
   const mobileBackdropUrl = initialData.textlessPosterPath
-    ? `https://image.tmdb.org/t/p/w1280${initialData.textlessPosterPath}`
+    ? `https://image.tmdb.org/t/p/w780${initialData.textlessPosterPath}`
     : posterUrl;
 
   const duration = moment.duration(runtime, "minutes");
