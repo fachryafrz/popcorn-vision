@@ -174,7 +174,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       setProfileImage("");
       toast.success("Profile picture removed");
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -311,7 +311,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       toast.success("Your account has been deleted. Goodbye!");
       router.push("/");
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };

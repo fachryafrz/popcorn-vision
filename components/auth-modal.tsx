@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useConvex, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useRouter } from "next/navigation";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,6 +17,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+  const router = useRouter();
   const convex = useConvex();
   const updateProfile = useMutation(api.users.createOrUpdateProfile);
 
@@ -81,7 +83,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             }
           }
           onClose();
-          window.location.reload();
+          router.refresh();
         }
       } else {
         if (!name) {
@@ -129,7 +131,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           }
 
           onClose();
-          window.location.reload();
+          router.refresh();
         }
       }
     } catch (err: unknown) {

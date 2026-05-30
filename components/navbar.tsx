@@ -83,28 +83,12 @@ export default function Navbar() {
           >
             <div
               className={cn(
-                "relative flex items-center h-9 rounded-full bg-zinc-900/60 border border-zinc-800/65 transition-all duration-300 ease-in-out overflow-hidden",
-                isExpanded ? (scrolled ? "w-56 lg:w-72 px-3 pr-8 bg-zinc-900" : "w-64 lg:w-80 px-3 pr-8 bg-zinc-900") : "w-9 border-transparent bg-transparent cursor-pointer justify-center"
+                "relative flex items-center h-9 rounded-full bg-zinc-900/60 border border-zinc-800/65 transition-all duration-300 overflow-hidden",
+                scrolled ? "w-48 lg:w-64" : "w-56 lg:w-72",
+                isSearchFocused ? "bg-zinc-900/90 border-zinc-700/80 ring-1 ring-zinc-800" : "bg-zinc-900/40"
               )}
             >
-              {/* Search button / icon */}
-              <button
-                type="submit"
-                onClick={(e) => {
-                  if (!isExpanded) {
-                    e.preventDefault();
-                    searchInputRef.current?.focus();
-                  }
-                }}
-                className={cn(
-                  "flex items-center justify-center transition-colors cursor-pointer text-zinc-400 hover:text-white shrink-0",
-                  isExpanded ? "mr-2" : "h-9 w-9 rounded-full bg-zinc-900/80 border border-zinc-700/60 hover:bg-zinc-900 hover:border-zinc-500"
-                )}
-                aria-label="Search"
-              >
-                <Search className="h-4 w-4" />
-              </button>
-
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500 pointer-events-none" />
               <input
                 ref={searchInputRef}
                 id="navbar-search"
@@ -114,12 +98,9 @@ export default function Navbar() {
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setIsSearchFocused(false)}
                 placeholder="Search movies, shows…"
-                className={cn(
-                  "w-full bg-transparent text-xs text-white placeholder:text-zinc-500 outline-none transition-opacity duration-200",
-                  isExpanded ? "opacity-100" : "opacity-0 w-0 pointer-events-none"
-                )}
+                className="w-full bg-transparent text-xs text-white placeholder:text-zinc-500 outline-none pl-8 pr-7"
               />
-              {isExpanded && searchValue && (
+              {searchValue && (
                 <button
                   type="button"
                   onClick={handleSearchClear}

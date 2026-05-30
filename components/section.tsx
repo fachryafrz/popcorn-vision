@@ -90,13 +90,13 @@ export default function Section({
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">Trending Now</h2>
             
             {/* Segmented Controls / Tabs */}
-            <div className="flex p-1 rounded-xl bg-zinc-900 border border-zinc-800">
+            <div className="flex p-1 rounded-full bg-zinc-900 border border-zinc-800">
               {(["all", "movie", "tv"] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => handleTrendingChange(tab)}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer",
+                    "px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer",
                     trendingTab === tab
                       ? "bg-blue-600 text-white shadow-md"
                       : "text-zinc-400 hover:text-white"
