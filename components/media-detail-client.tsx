@@ -40,6 +40,7 @@ import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import moment from "moment";
+import { FreeMode, Mousewheel } from "swiper/modules";
 
 interface CastItem {
   id: number;
@@ -981,6 +982,8 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             </h2>
             <div className="w-full relative swiper-cast-container">
               <Swiper
+                freeMode={true}
+                modules={[Mousewheel, FreeMode]}
                 spaceBetween={16}
                 slidesPerView={3}
                 breakpoints={{
@@ -989,6 +992,9 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                   768: { slidesPerView: 6, spaceBetween: 20 },
                   1024: { slidesPerView: 8, spaceBetween: 24 },
                   1280: { slidesPerView: 10, spaceBetween: 24 },
+                }}
+                mousewheel={{
+                  forceToAxis: true,
                 }}
                 className="w-full pb-4"
               >

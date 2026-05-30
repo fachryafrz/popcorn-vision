@@ -7,6 +7,7 @@ import Card from "./card";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 import "swiper/css";
+import { FreeMode, Mousewheel } from "swiper/modules";
 
 interface CarouselProps {
   items: TMDBMedia[];
@@ -26,6 +27,8 @@ export default function Carousel({ items, onQuickView, onAuthRequired }: Carouse
   return (
     <div className="relative w-full swiper-carousel-container">
       <Swiper
+        modules={[Mousewheel, FreeMode]}
+        freeMode={true}
         spaceBetween={16}
         slidesPerView={2}
         breakpoints={{
@@ -33,6 +36,9 @@ export default function Carousel({ items, onQuickView, onAuthRequired }: Carouse
           768: { slidesPerView: 4, spaceBetween: 24 },
           1024: { slidesPerView: 5, spaceBetween: 24 },
           1280: { slidesPerView: 6, spaceBetween: 24 },
+        }}
+        mousewheel={{
+          forceToAxis: true,
         }}
         className="w-full pb-4"
       >
