@@ -9,7 +9,7 @@ import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
 import { TMDBMedia } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 interface UserProfilePageProps {
   params: Promise<{
@@ -83,6 +83,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       {/* Header Profile Info card */}
       <div className="relative p-6 sm:p-8 rounded-3xl border border-zinc-900 bg-zinc-900/10 shadow-lg backdrop-blur-md mb-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
         <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-zinc-800 shadow-xl">
+          {targetUser.image && (
+            <AvatarImage src={targetUser.image} alt={targetUser.name} className="object-cover" />
+          )}
           <AvatarFallback className="bg-blue-600 text-white font-black text-2xl">
             {targetUser.name.charAt(0).toUpperCase()}
           </AvatarFallback>

@@ -175,6 +175,13 @@ export const deleteCurrentUserAccountData = mutation({
       .withIndex("by_userId", (q) => q.eq("userId", userId))
       .first();
     if (profile) {
+      if (profile.imageStorageId) {
+        try {
+          await ctx.storage.delete(profile.imageStorageId);
+        } catch (err) {
+          console.error("Failed to delete storage file during account deletion:", err);
+        }
+      }
       await ctx.db.delete(profile._id);
     }
 
@@ -204,4 +211,86 @@ export const deleteCurrentUserAccountData = mutation({
     }
   },
 });
+
+// Generate a file upload URL in Convex
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    if (!user) throw new Error("Unauthorized");
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+// Save storage ID of uploaded image and return its public URL
+export const updateProfileImage = mutation({
+  args: {
+    storageId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    // Get the profile
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    if (!profile) throw new Error("Profile not found");
+
+    // 1. Delete the OLD image from Convex Storage if it exists
+    if (profile.imageStorageId) {
+      try {
+        await ctx.storage.delete(profile.imageStorageId);
+      } catch (err) {
+        console.error("Failed to delete old storage file:", err);
+      }
+    }
+
+    // 2. Get the new public URL for the storage ID
+    const imageUrl = await ctx.storage.getUrl(args.storageId);
+    if (!imageUrl) throw new Error("Failed to retrieve uploaded image URL");
+
+    // 3. Update profile with new imageUrl and imageStorageId
+    await ctx.db.patch(profile._id, {
+      image: imageUrl,
+      imageStorageId: args.storageId,
+    });
+
+    return imageUrl;
+  },
+});
+
+// Remove profile image
+export const removeProfileImage = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    if (profile) {
+      // 1. Delete image from Convex Storage if it exists
+      if (profile.imageStorageId) {
+        try {
+          await ctx.storage.delete(profile.imageStorageId);
+        } catch (err) {
+          console.error("Failed to delete storage file during removal:", err);
+        }
+      }
+
+      // 2. Update profile fields to undefined
+      await ctx.db.patch(profile._id, {
+        image: undefined,
+        imageStorageId: undefined,
+      });
+    }
+  },
+});
+
 

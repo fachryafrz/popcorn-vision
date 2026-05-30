@@ -9,6 +9,8 @@ export default defineSchema({
     email: v.string(),
     bio: v.optional(v.string()),
     country: v.optional(v.string()),
+    image: v.optional(v.string()),
+    imageStorageId: v.optional(v.string()),
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),

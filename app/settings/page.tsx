@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { User, Lock, Trash2, Loader2, Globe, FileText } from "lucide-react";
+import { User, Lock, Trash2, Loader2, Globe, FileText, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,8 +18,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import AvatarCropModal from "@/components/avatar-crop-modal";
 
 const COUNTRIES = [
   "United States",
@@ -43,11 +45,13 @@ interface SettingsFormProps {
     username: string;
     bio?: string;
     country?: string;
+    image?: string;
   } | null;
   user: {
     name?: string;
     username?: string | null;
     email?: string;
+    image?: string | null;
   };
 }
 
@@ -55,6 +59,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const router = useRouter();
   const updateProfile = useMutation(api.users.updateCurrentUserProfile);
   const deleteConvexAccountData = useMutation(api.users.deleteCurrentUserAccountData);
+
+  // Convex image storage mutations
+  const generateUploadUrl = useMutation(api.users.generateUploadUrl);
+  const updateProfileImage = useMutation(api.users.updateProfileImage);
+  const removeProfileImage = useMutation(api.users.removeProfileImage);
 
   // Tabs
   const [activeSection, setActiveSection] = useState<"profile" | "security" | "danger">("profile");
@@ -64,7 +73,14 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [username, setUsername] = useState(convexProfile?.username || user?.username || "");
   const [bio, setBio] = useState(convexProfile?.bio || "");
   const [country, setCountry] = useState(convexProfile?.country || "");
+  const [profileImage, setProfileImage] = useState(convexProfile?.image || user?.image || "");
   const [savingProfile, setSavingProfile] = useState(false);
+
+  // Image upload & crop states
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isCropOpen, setIsCropOpen] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   // Password fields state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -75,6 +91,98 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   // Delete account fields state
   const [deletePassword, setDeletePassword] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Supported formats
+    const supportedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (!supportedTypes.includes(file.type)) {
+      toast.error("Unsupported file format. Please upload JPG, JPEG, PNG, or WEBP.");
+      return;
+    }
+
+    // Size limit check (2MB)
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error("File size exceeds 2MB limit.");
+      return;
+    }
+
+    setSelectedFile(file);
+    setIsCropOpen(true);
+  };
+
+  const handleCropSave = async (croppedBlob: Blob) => {
+    setUploadingImage(true);
+    try {
+      // 1. Get upload URL from Convex
+      const uploadUrl = await generateUploadUrl();
+
+      // 2. Upload cropped blob to Convex Storage
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": "image/jpeg" },
+        body: croppedBlob,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image blob to storage");
+      }
+
+      const { storageId } = await response.json();
+
+      // 3. Save storage ID in Convex and retrieve public URL
+      const imageUrl = await updateProfileImage({ storageId });
+
+      // 4. Update image URL in Better Auth user object
+      await authClient.updateUser({
+        image: imageUrl,
+      });
+
+      // 5. Force update client session cache
+      await authClient.getSession({ query: { disableCookieCache: true } });
+
+      setProfileImage(imageUrl);
+      toast.success("Profile picture updated successfully!");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to upload profile picture");
+    } finally {
+      setUploadingImage(false);
+      setSelectedFile(null);
+    }
+  };
+
+  const handleRemoveImage = async () => {
+    if (!confirm("Are you sure you want to remove your profile picture?")) return;
+
+    setUploadingImage(true);
+    try {
+      // 1. Call Convex mutation to remove profile image
+      await removeProfileImage();
+
+      // 2. Call Better Auth updateUser with empty string image
+      await authClient.updateUser({
+        image: "",
+      });
+
+      // 3. Force update client session cache
+      await authClient.getSession({ query: { disableCookieCache: true } });
+
+      setProfileImage("");
+      toast.success("Profile picture removed");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to remove profile picture");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -263,6 +371,71 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
             <div>
               <h2 className="text-xl font-bold tracking-tight text-white mb-1">Profile Details</h2>
               <p className="text-xs text-zinc-500">Update your public credentials, region, and custom bio</p>
+            </div>
+
+            {/* Profile Picture Uploader Area */}
+            <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-zinc-900">
+              <div className="relative group/avatar cursor-pointer select-none">
+                <Avatar className="h-24 w-24 sm:h-28 sm:w-28 border border-zinc-800 shadow-xl overflow-hidden relative">
+                  {profileImage ? (
+                    <AvatarImage src={profileImage} alt={name} className="object-cover" />
+                  ) : null}
+                  <AvatarFallback className="bg-blue-600 text-white font-black text-3xl flex items-center justify-center w-full h-full">
+                    {name.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+
+                  {/* Loading overlay spinner */}
+                  {uploadingImage && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-20">
+                      <Loader2 className="h-6 w-6 text-blue-500 animate-spin" />
+                    </div>
+                  )}
+
+                  {/* Hover Edit Overlay */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute inset-0 bg-black/50 opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center transition-opacity duration-200 z-10"
+                  >
+                    <Camera className="h-5 w-5 text-white mb-1" />
+                    <span className="text-[10px] uppercase font-bold tracking-wider text-white">Change</span>
+                  </div>
+                </Avatar>
+              </div>
+
+              <div className="flex flex-col gap-2 text-center sm:text-left">
+                <h3 className="text-sm font-bold text-white">Profile Picture</h3>
+                <p className="text-xs text-zinc-500 max-w-xs">
+                  Supported formats: JPG, JPEG, PNG, or WEBP. Max file size: 2MB.
+                </p>
+                <div className="flex justify-center sm:justify-start gap-3 mt-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="rounded-xl border border-zinc-800 text-xs font-semibold px-4 cursor-pointer hover:bg-zinc-800 hover:text-white"
+                  >
+                    Upload Photo
+                  </Button>
+                  {profileImage && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleRemoveImage}
+                      className="rounded-xl border border-red-950/40 text-red-400 text-xs font-semibold px-4 cursor-pointer hover:bg-red-950/20 hover:text-red-300"
+                    >
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/png, image/jpeg, image/jpg, image/webp"
+                onChange={handleFileChange}
+                className="hidden"
+              />
             </div>
 
             <div className="space-y-4">
@@ -481,6 +654,19 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
           </form>
         )}
       </div>
+
+      {/* Avatar Crop Modal Overlay */}
+      {isCropOpen && (
+        <AvatarCropModal
+          isOpen={isCropOpen}
+          onClose={() => {
+            setIsCropOpen(false);
+            setSelectedFile(null);
+          }}
+          imageFile={selectedFile}
+          onCropSave={handleCropSave}
+        />
+      )}
     </div>
   );
 }
@@ -491,10 +677,9 @@ export default function SettingsPage() {
   const loadingSession = session.isPending;
   const user = session.data?.user;
 
-  const openAuth = useAuthModalStore((state) => state.open);
-
   // Fetch current user details from Convex
   const convexProfile = useQuery(api.users.getCurrentUser);
+  const openAuth = useAuthModalStore((state) => state.open);
 
   if (loadingSession || (isLoggedIn && convexProfile === undefined)) {
     return (

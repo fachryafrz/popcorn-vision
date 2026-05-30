@@ -6,7 +6,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -140,6 +140,9 @@ export default function Navbar() {
                   className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-full pl-1.5 pr-3 py-1.5 text-sm hover:bg-zinc-800 hover:border-zinc-700 transition-all cursor-pointer focus:outline-none"
                 >
                   <Avatar className="h-7 w-7">
+                    {user?.image && (
+                      <AvatarImage src={user.image} alt={user.username || "User"} className="object-cover" />
+                    )}
                     <AvatarFallback className="bg-blue-600 text-white text-xs font-bold">
                       {user?.username?.charAt(0).toUpperCase() ?? "U"}
                     </AvatarFallback>
@@ -268,6 +271,9 @@ export default function Navbar() {
                   <div className="flex flex-col gap-4 w-full">
                     <Button variant={'ghost'} onClick={() => router.push(`/@/${user?.username}`)} className="flex h-fit items-center gap-3 p-3 rounded-2xl bg-zinc-900/60 border border-zinc-800/80">
                       <Avatar className="h-9 w-9 border border-zinc-700/50">
+                        {user?.image && (
+                          <AvatarImage src={user.image} alt={user.username || "User"} className="object-cover" />
+                        )}
                         <AvatarFallback className="bg-blue-600 text-white text-xs font-bold">
                           {user?.username?.charAt(0).toUpperCase() ?? "U"}
                         </AvatarFallback>
