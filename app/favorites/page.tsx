@@ -85,6 +85,9 @@ export default function FavoritesPage() {
               vote_average: item.rating,
               release_date: item.releaseYear,
               popularity: 0,
+              backdrop_path: "",
+              genre_ids: [],
+              overview: "",
             };
             return (
               <Card

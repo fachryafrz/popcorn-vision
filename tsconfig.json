@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "lib/formatRating.js", "lib/formatRuntime.js", "lib/formatDate.js", "lib/delay.js", "lib/openWindow.js", "lib/getRandomOptionsPlaceholder.ts", "lib/revalidateRedirect.js", "lib/streamingProviderList.js", "lib/sortFilms.js", "lib/releaseStatus.js", "lib/fetchInBatches.js"  ],
   "exclude": ["node_modules"]
 }
