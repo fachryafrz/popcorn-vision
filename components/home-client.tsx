@@ -29,7 +29,7 @@ export default function HomeClient({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white flex flex-col font-sans select-none overflow-x-hidden">
+    <div className="min-h-svh bg-zinc-950 text-white flex flex-col font-sans select-none overflow-x-hidden">
       <main className="grow flex flex-col">
         {/* Fullscreen Hero Carousel */}
         <Hero

@@ -180,6 +180,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const openAuth = useAuthModalStore((state) => state.open);
   const playerSectionRef = useRef<HTMLDivElement>(null);
   const backdropRef = useRef<HTMLDivElement>(null);
+  const seasonDetailsRef = useRef<HTMLDivElement>(null);
 
   // Logo render error state
   const [logoError, setLogoError] = useState(false);
@@ -272,9 +273,19 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       setExpandedSeason(seasonNumber);
       setSeasonDetailsLoading(true);
       setActiveSeasonData(null);
+      
+      // Initial scroll to the season section as soon as it begins loading
+      setTimeout(() => {
+        seasonDetailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+
       getSeasonDetails(details.id, seasonNumber).then((data) => {
         if (data) {
           setActiveSeasonData(data as SeasonDetails);
+          // Re-scroll once actual episodes list loads and changes heights
+          setTimeout(() => {
+            seasonDetailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 150);
         }
         setSeasonDetailsLoading(false);
       });
@@ -475,7 +486,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const scrollToPlayer = (tab: "trailer" | "watch") => {
     setActiveTab(tab);
     setTimeout(() => {
-      playerSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      playerSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
 
@@ -499,7 +510,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white select-none">
+    <div className="min-h-svh bg-zinc-950 text-white select-none">
       {/* Hero Header Section - Stacked Backdrop */}
       <div className="relative w-full h-[65svh] overflow-hidden">
         {/* Backdrop Background (Desktop) */}
@@ -529,7 +540,43 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         </div>
 
         {/* Details Header Details */}
-        <div className="flex-1 flex flex-col items-start gap-4 text-left">
+        <div className="flex-1 flex flex-col items-start gap-4 text-left">          
+          {/* Genre Badges */}
+          {details?.genres && details.genres.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-1">
+              {details.genres.map((g: { id: number; name: string }) => (
+                <span
+                  key={g.id}
+                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
+                >
+                  {g.name}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Logo or Title */}
+          {initialData.logoPath && !logoError ? (
+            <div className="h-16 sm:h-24 md:h-28 max-w-[85%] relative mb-2 flex items-center">
+              <img
+                src={`https://image.tmdb.org/t/p/w500${initialData.logoPath}`}
+                alt={details?.title || details?.name}
+                className="h-full w-auto object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
+                onError={() => setLogoError(true)}
+              />
+            </div>
+          ) : (
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight line-clamp-2">
+              {details?.title || details?.name}
+            </h1>
+          )}
+
+          {details?.tagline && (
+            <p className="text-zinc-400 italic text-sm sm:text-base -mt-1">
+              &ldquo;{details.tagline}&rdquo;
+            </p>
+          )}
+
           <div className="flex flex-wrap items-center gap-3">
             <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600 border border-blue-400/30 text-white">
             {mediaType === "tv" ? "TV Series" : "Movie"}
@@ -569,42 +616,6 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
               </div>
             )}
           </div>
-
-          {/* Logo or Title */}
-          {initialData.logoPath && !logoError ? (
-            <div className="h-16 sm:h-24 md:h-28 max-w-[85%] relative mb-2 flex items-center">
-              <img
-                src={`https://image.tmdb.org/t/p/w500${initialData.logoPath}`}
-                alt={details?.title || details?.name}
-                className="h-full w-auto object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
-                onError={() => setLogoError(true)}
-              />
-            </div>
-          ) : (
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight line-clamp-2">
-              {details?.title || details?.name}
-            </h1>
-          )}
-
-          {details?.tagline && (
-            <p className="text-zinc-400 italic text-sm sm:text-base -mt-1">
-              &ldquo;{details.tagline}&rdquo;
-            </p>
-          )}
-
-          {/* Genre Badges */}
-          {details?.genres && details.genres.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-1">
-              {details.genres.map((g: { id: number; name: string }) => (
-                <span
-                  key={g.id}
-                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
-                >
-                  {g.name}
-                </span>
-              ))}
-            </div>
-          )}
 
           <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-3xl drop-shadow line-clamp-3 mt-2">
             {details?.overview || "No overview available."}
@@ -676,7 +687,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
           </div>
 
           {/* Star Rating Picker Section */}
-          <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 border border-zinc-900 p-4 rounded-2xl w-full max-w-sm backdrop-blur-sm">
+          <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 border border-zinc-900 p-4 rounded-2xl max-w-sm backdrop-blur-sm">
             <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400">
               <span>{userRating ? "Your Rating" : "Rate this title"}</span>
               {userRating && (
@@ -698,53 +709,80 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 </button>
               )}
             </div>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 10 }).map((_, index) => {
-                  const starValue = index + 1;
-                  const isFilled = userRating ? starValue <= userRating : false;
+            <div className="flex items-center gap-3 mt-1 flex-wrap">
+              <div className="flex items-center gap-1.5">
+                {Array.from({ length: 5 }).map((_, starIndex) => {
+                  const starPosition = starIndex + 1;
+                  const leftValue = starPosition * 2 - 1;
+                  const rightValue = starPosition * 2;
+                  
+                  const handleRate = async (starValue: number) => {
+                    if (!isLoggedIn) {
+                      openAuth();
+                      return;
+                    }
+                    try {
+                      await rateMedia({
+                        mediaId: String(details.id),
+                        mediaType,
+                        title: details.title || details.name || "",
+                        posterPath: details.poster_path || "",
+                        rating: starValue,
+                        releaseYear: releaseYear.toString(),
+                      });
+                      toast.success(`Rated ${starValue / 2} stars successfully!`);
+                    } catch (err) {
+                      console.error("Rating failed:", err);
+                      toast.error("Failed to submit rating");
+                    }
+                  };
+
                   return (
-                    <button
-                      key={starValue}
-                      type="button"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!isLoggedIn) {
-                          openAuth();
-                          return;
-                        }
-                        try {
-                          await rateMedia({
-                            mediaId: String(details.id),
-                            mediaType,
-                            title: details.title || details.name || "",
-                            posterPath: details.poster_path || "",
-                            rating: starValue,
-                            releaseYear: releaseYear.toString(),
-                          });
-                          toast.success(`Rated ${starValue}/10 successfully!`);
-                        } catch (err) {
-                          console.error("Rating failed:", err);
-                          toast.error("Failed to submit rating");
-                        }
-                      }}
-                      className="p-0.5 hover:scale-125 transition-transform duration-100 cursor-pointer"
-                      title={`Rate ${starValue}/10`}
-                    >
-                      <Star
-                        className={cn(
-                          "h-5.5 w-5.5 transition-colors",
-                          isFilled
-                            ? "text-yellow-400 fill-current"
-                            : "text-zinc-700 hover:text-yellow-400/50"
-                        )}
-                      />
-                    </button>
+                    <div className="relative hover:scale-110 transition-transform duration-100" key={starIndex}>
+                      {/* Base Empty Star */}
+                      <Star className="h-6 w-6 text-zinc-700" />
+                      
+                      {/* Half Filled Overlay */}
+                      {userRating === leftValue && (
+                        <div className="absolute top-0 left-0 w-1/2 overflow-hidden pointer-events-none">
+                          <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
+                        </div>
+                      )}
+                      
+                      {/* Fully Filled Overlay */}
+                      {userRating! >= rightValue && (
+                        <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none">
+                          <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
+                        </div>
+                      )}
+                      
+                      {/* Hover/Click Areas */}
+                      <div className="absolute inset-0 flex">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRate(leftValue);
+                          }}
+                          className="w-1/2 h-full cursor-pointer"
+                          title={`Rate ${leftValue / 2} stars`}
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRate(rightValue);
+                          }}
+                          className="w-1/2 h-full cursor-pointer"
+                          title={`Rate ${rightValue / 2} stars`}
+                        />
+                      </div>
+                    </div>
                   );
                 })}
               </div>
-              <span className="text-sm font-black text-white ml-1">
-                {userRating ? `${userRating}/10` : "_/10"}
+              <span className="text-sm font-black text-white ml-2 bg-zinc-900/60 px-2 py-0.5 rounded-md border border-zinc-800">
+                {userRating ? `${userRating / 2} / 5` : "_ / 5"}
               </span>
             </div>
           </div>
@@ -1095,7 +1133,10 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
                 {/* Expanded Season Details & Episode List */}
                 {expandedSeason !== null && (
-                  <div className="mt-6 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/15 backdrop-blur-md space-y-6">
+                  <div
+                    ref={seasonDetailsRef}
+                    className="mt-6 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/15 backdrop-blur-md space-y-6 scroll-mt-24"
+                  >
                     {seasonDetailsLoading ? (
                       <div className="flex flex-col items-center justify-center py-12">
                         <Loader2 className="h-8 w-8 text-blue-500 animate-spin mb-2" />

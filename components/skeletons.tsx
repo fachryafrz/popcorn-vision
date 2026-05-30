@@ -22,7 +22,7 @@ export function Skeleton({ className }: SkeletonProps) {
 // Fullscreen Hero Skeleton
 export function HeroSkeleton() {
   return (
-    <div className="relative w-full h-[85svh] sm:h-screen bg-zinc-950 flex items-end pb-12 px-6 sm:px-16 overflow-hidden">
+    <div className="relative w-full h-[90svh] sm:h-svh bg-zinc-950 flex items-end pb-12 px-6 sm:px-16 overflow-hidden">
       {/* Backdrop mockup */}
       <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
       <Skeleton className="absolute inset-0 w-full h-full rounded-none" />

@@ -169,17 +169,19 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
         </div>
 
         <div className="flex-1 flex flex-col items-start gap-4 text-left">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600/90 border border-blue-400/40 text-white">
-              {mediaLabel}
-            </span>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-700/50 backdrop-blur-sm">
-              <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span>{rating}</span>
+        {genres.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {genres.map((genre) => (
+                <span
+                  key={genre}
+                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
+                >
+                  {genre}
+                </span>
+              ))}
             </div>
-            <span className="text-zinc-400 text-sm font-medium">{releaseYear}</span>
-          </div>
-
+          )}
+          
           {media.logo_path && !logoError ? (
             <div className="h-16 sm:h-20 md:h-24 lg:h-28 max-w-[85%] relative mb-2 flex items-center">
               <img
@@ -195,18 +197,16 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
             </h1>
           )}
 
-          {genres.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
-                >
-                  {genre}
-                </span>
-              ))}
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600/90 border border-blue-400/40 text-white">
+              {mediaLabel}
+            </span>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-700/50 backdrop-blur-sm">
+              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+              <span>{rating}</span>
             </div>
-          )}
+            <span className="text-zinc-400 text-sm font-medium">{releaseYear}</span>
+          </div>
 
           <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-2xl drop-shadow line-clamp-3">
             {media.overview}
@@ -276,7 +276,7 @@ export default function Hero({ items, onQuickView, onAuthRequired }: HeroProps) 
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="relative w-full h-[90svh] sm:h-screen bg-zinc-950 overflow-hidden select-none">
+    <div className="relative w-full h-[90svh] sm:h-svh bg-zinc-950 overflow-hidden select-none">
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
