@@ -1029,17 +1029,6 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
               </p>
             </div>
 
-            {mediaType === "movie" && details?.belongs_to_collection && (
-              <div>
-                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
-                  Part of the Collection
-                </h3>
-                <p className="text-sm sm:text-base text-zinc-200 font-semibold">
-                  {details.belongs_to_collection.name}
-                </p>
-              </div>
-            )}
-
             {details?.production_companies && details.production_companies.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
