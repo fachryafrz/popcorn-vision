@@ -91,22 +91,46 @@ interface MediaDetails {
   seasons?: Season[];
 }
 
+interface RegionalRelease {
+  iso_3166_1: string;
+  release_dates: { certification: string; release_date: string }[];
+}
+
+interface RegionalContentRating {
+  iso_3166_1: string;
+  rating: string;
+}
+
 interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
   initialData: {
     details: MediaDetails;
     credits?: { cast?: CastItem[] };
     videos?: VideoItem[];
-    watchProviders?: {
-      US?: {
-        flatrate?: ProviderItem[];
-      };
-    };
+    watchProviders?: Record<string, { flatrate?: ProviderItem[] }>;
     logoPath?: string | null;
     textlessPosterPath?: string | null;
     recommendations?: TMDBMedia[];
+    regionalData?: (RegionalRelease | RegionalContentRating)[];
   };
 }
+
+// Map full country name string from profile/settings to ISO 2-letter code for TMDB
+const countryNameToCode: Record<string, string> = {
+  "United States": "US",
+  "Indonesia": "ID",
+  "Japan": "JP",
+  "South Korea": "KR",
+  "United Kingdom": "GB",
+  "Canada": "CA",
+  "Australia": "AU",
+  "Germany": "DE",
+  "France": "FR",
+  "Singapore": "SG",
+  "India": "IN",
+  "Brazil": "BR",
+  "Mexico": "MX",
+};
 
 export default function MediaDetailClient({ mediaType, initialData }: MediaDetailClientProps) {
   const session = authClient.useSession();
@@ -126,6 +150,46 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+
+  const [selectedRegion, setSelectedRegion] = useState("US");
+
+  // Query current user profile to read country preference
+  const convexProfile = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
+
+  // Automatic region detection
+  useEffect(() => {
+    // 1. Prioritize user profile country preference if set
+    if (convexProfile?.country) {
+      const mappedCode = countryNameToCode[convexProfile.country] || convexProfile.country;
+      Promise.resolve().then(() => {
+        setSelectedRegion(mappedCode);
+      });
+      return;
+    }
+
+    // 2. Fall back to browser locales detection
+    if (typeof window !== "undefined") {
+      const locale = navigator.language || (navigator.languages && navigator.languages[0]);
+      if (locale) {
+        const parts = locale.split("-");
+        const detectedRegion = parts[1] ? parts[1].toUpperCase() : parts[0].toUpperCase();
+        const supported = ["US", "ID", "JP", "KR", "GB"];
+        if (supported.includes(detectedRegion)) {
+          Promise.resolve().then(() => {
+            setSelectedRegion(detectedRegion);
+          });
+        } else if (initialData.watchProviders && detectedRegion in initialData.watchProviders) {
+          Promise.resolve().then(() => {
+            setSelectedRegion(detectedRegion);
+          });
+        } else {
+          Promise.resolve().then(() => {
+            setSelectedRegion("US");
+          });
+        }
+      }
+    }
+  }, [initialData.watchProviders, convexProfile]);
 
   // Parallax Scroll Effect
   useEffect(() => {
@@ -179,7 +243,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const details = initialData.details;
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
-  const providers = initialData.watchProviders?.US?.flatrate || [];
+  const providers = initialData.watchProviders?.[selectedRegion]?.flatrate || [];
 
   // YouTube trailer resolution
   const trailerVideo = initialData.videos?.find(
@@ -196,18 +260,82 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   });
 
   const rating = details?.vote_average ? details.vote_average.toFixed(1) : "0.0";
-  const releaseDate = details?.release_date || details?.first_air_date || "";
+
+  // Find regional release date and content certification
+  const regionalReleaseInfo = (() => {
+    if (mediaType !== "movie" || !initialData.regionalData) return null;
+    const movieReleaseData = initialData.regionalData as RegionalRelease[];
+    const regionRelease = movieReleaseData.find(
+      (r) => r.iso_3166_1 === selectedRegion
+    );
+    if (!regionRelease || !regionRelease.release_dates || regionRelease.release_dates.length === 0) {
+      const usRelease = movieReleaseData.find((r) => r.iso_3166_1 === "US");
+      return usRelease?.release_dates?.[0] || null;
+    }
+    return regionRelease.release_dates[0];
+  })();
+
+  const certification = (() => {
+    if (mediaType === "movie") {
+      return regionalReleaseInfo?.certification || null;
+    } else {
+      if (!initialData.regionalData) return null;
+      const tvRatingsData = initialData.regionalData as RegionalContentRating[];
+      const regionRating = tvRatingsData.find(
+        (r) => r.iso_3166_1 === selectedRegion
+      );
+      if (!regionRating) {
+        const usRating = tvRatingsData.find((r) => r.iso_3166_1 === "US");
+        return usRating?.rating || null;
+      }
+      return regionRating.rating || null;
+    }
+  })();
+
+  const regionalReleaseDate = (() => {
+    if (mediaType === "movie") {
+      return regionalReleaseInfo?.release_date || details?.release_date || "";
+    } else {
+      return details?.first_air_date || "";
+    }
+  })();
+
+  const releaseDate = regionalReleaseDate;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : "N/A";
   const runtime = details?.runtime || (details?.episode_run_time?.[0]) || null;
 
-  // Format currency helpers
+  // Format currency helpers based on active region
   const formatCurrency = (amount?: number) => {
     if (!amount) return "N/A";
-    return new Intl.NumberFormat("en-US", {
+
+    let currency = "USD";
+    let exchangeRate = 1;
+    let locale = "en-US";
+
+    if (selectedRegion === "ID") {
+      currency = "IDR";
+      exchangeRate = 17800; // 1 USD = 16,300 IDR approx
+      locale = "id-ID";
+    } else if (selectedRegion === "JP") {
+      currency = "JPY";
+      exchangeRate = 159; // 1 USD = 157 JPY approx
+      locale = "ja-JP";
+    } else if (selectedRegion === "KR") {
+      currency = "KRW";
+      exchangeRate = 1507; // 1 USD = 1,370 KRW approx
+      locale = "ko-KR";
+    } else if (selectedRegion === "GB") {
+      currency = "GBP";
+      exchangeRate = 0.74; // 1 USD = 0.79 GBP approx
+      locale = "en-GB";
+    }
+
+    const convertedAmount = amount * exchangeRate;
+    return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: "USD",
+      currency: currency,
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(convertedAmount);
   };
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
@@ -328,6 +456,11 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600 border border-blue-400/30 text-white">
             {mediaType === "tv" ? "TV Series" : "Movie"}
             </span>
+            {certification && (
+              <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-zinc-900 border border-zinc-800 text-zinc-300">
+                {certification}
+              </span>
+            )}
             {(() => {
               const hasCommunity = communityStats && communityStats.totalRatings > 0;
               const displayRating = hasCommunity ? communityStats.averageRating.toFixed(1) : rating;
@@ -341,7 +474,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                   </div>
                   {hasCommunity && (
                     <span className="text-zinc-500 text-xs font-medium bg-zinc-900/40 border border-zinc-850 px-3 py-1 rounded-full">
-                      TMDB Ref: {rating} • {communityStats.totalRatings} rating{communityStats.totalRatings !== 1 ? "s" : ""}
+                      TMDB: {rating}
                     </span>
                   )}
                 </>
@@ -799,6 +932,24 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             </h3>
 
             <div className="grid grid-cols-2 gap-4 text-sm">
+              <div className="col-span-2 flex flex-col gap-1.5 pb-3 border-b border-zinc-800/80">
+                <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
+                  Content Region
+                </span>
+                <Select value={selectedRegion} onValueChange={(val) => setSelectedRegion(val || "US")}>
+                  <SelectTrigger className="w-full bg-zinc-950 border-zinc-800 text-xs font-bold rounded-xl h-10 text-zinc-200 focus:ring-0 cursor-pointer flex items-center justify-between px-3">
+                    <SelectValue placeholder="Select Region" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-zinc-950 border-zinc-800 text-white rounded-xl">
+                    <SelectItem value="US" className="cursor-pointer">🇺🇸 United States</SelectItem>
+                    <SelectItem value="ID" className="cursor-pointer">🇮🇩 Indonesia</SelectItem>
+                    <SelectItem value="JP" className="cursor-pointer">🇯🇵 Japan</SelectItem>
+                    <SelectItem value="KR" className="cursor-pointer">🇰🇷 South Korea</SelectItem>
+                    <SelectItem value="GB" className="cursor-pointer">🇬🇧 United Kingdom</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div>
                 <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
                   Status
@@ -841,7 +992,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             {providers.length > 0 && (
               <div className="pt-2 border-t border-zinc-850">
                 <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold mb-2">
-                  Streaming Services (US)
+                  Streaming Services ({selectedRegion})
                 </span>
                 <div className="flex flex-wrap gap-2">
                   {providers.slice(0, 5).map((prov: ProviderItem) => (

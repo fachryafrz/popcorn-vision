@@ -174,12 +174,19 @@ export async function getByCategory(genreName: string): Promise<TMDBMedia[]> {
 // Get specific details for Quick View / Detail Page (including videos/trailer, watch providers, logo, and recommendations)
 export async function getMediaDetails(mediaType: "movie" | "tv", id: string) {
   try {
-    const [detailsRes, creditsRes, videosRes, watchRes, recommendationsRes] = await Promise.all([
+    const regionDataPromise = (
+      mediaType === "movie"
+        ? axios.get(`/movie/${id}/release_dates`)
+        : axios.get(`/tv/${id}/content_ratings`)
+    ).catch(() => ({ data: { results: [] } }));
+
+    const [detailsRes, creditsRes, videosRes, watchRes, recommendationsRes, regionDataRes] = await Promise.all([
       axios.get(`/${mediaType}/${id}`),
       axios.get(`/${mediaType}/${id}/credits`),
       axios.get(`/${mediaType}/${id}/videos`),
       axios.get(`/${mediaType}/${id}/watch/providers`),
       axios.get(`/${mediaType}/${id}/recommendations`),
+      regionDataPromise,
     ]);
 
     const { logoPath, textlessPosterPath } = await getMediaImages(mediaType, Number(id));
@@ -193,6 +200,7 @@ export async function getMediaDetails(mediaType: "movie" | "tv", id: string) {
       logoPath,
       textlessPosterPath,
       recommendations,
+      regionalData: regionDataRes.data.results || [],
     };
   } catch (error) {
     console.error(`Error fetching details for ${mediaType} ${id}:`, error);
