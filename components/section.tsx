@@ -1,11 +1,17 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { TMDBMedia, PROVIDERS, GENRE_MAP } from "@/lib/tmdb";
 import Carousel from "./carousel";
 import { CarouselSkeleton } from "./skeletons";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface SectionProps {
   titleType: "text" | "dropdown-streaming" | "dropdown-genre";
@@ -35,28 +41,14 @@ export default function Section({
   const [streamingProv, setStreamingProv] = useState<keyof typeof PROVIDERS>("netflix");
   const [genreName, setGenreName] = useState<string>("Action");
 
-  // Dropdown UI state
-  const [isDropOpen, setIsDropOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Close dropdown on click outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   // Fetch initial data
   useEffect(() => {
     defaultFetch().then((data) => {
       setItems(data);
       setLoading(false);
     });
-  }, [defaultFetch]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Fetch on controls update
   const handleTrendingChange = async (type: "all" | "movie" | "tv") => {
@@ -71,7 +63,6 @@ export default function Section({
   const handleStreamingChange = async (prov: keyof typeof PROVIDERS) => {
     if (!onStreamingChange) return;
     setStreamingProv(prov);
-    setIsDropOpen(false);
     setLoading(true);
     const data = await onStreamingChange(prov);
     setItems(data);
@@ -81,7 +72,6 @@ export default function Section({
   const handleGenreChange = async (name: string) => {
     if (!onGenreChange) return;
     setGenreName(name);
-    setIsDropOpen(false);
     setLoading(true);
     const data = await onGenreChange(name);
     setItems(data);
@@ -96,7 +86,7 @@ export default function Section({
         
         {/* Title / Interactive Dropdown */}
         {titleType === "text" && onTrendingChange && (
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+          <div className="flex flex-wrap justify-between grow items-center gap-4 sm:gap-6">
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white">Trending Now</h2>
             
             {/* Segmented Controls / Tabs */}
@@ -106,7 +96,7 @@ export default function Section({
                   key={tab}
                   onClick={() => handleTrendingChange(tab)}
                   className={cn(
-                    "px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all",
+                    "px-4 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer",
                     trendingTab === tab
                       ? "bg-blue-600 text-white shadow-md"
                       : "text-zinc-400 hover:text-white"
@@ -120,61 +110,49 @@ export default function Section({
         )}
 
         {titleType === "dropdown-streaming" && onStreamingChange && (
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropOpen(!isDropOpen)}
-              className="flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-blue-400 transition-colors"
-            >
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-blue-400 transition-colors outline-none cursor-pointer">
               <span>{PROVIDERS[streamingProv].name}</span>
               <ChevronDown className="h-5 w-5 text-zinc-400" />
-            </button>
-
-            {isDropOpen && (
-              <div className="absolute left-0 mt-2 w-64 rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl backdrop-blur-xl z-40 animate-in fade-in slide-in-from-top-1 duration-200">
-                {(Object.keys(PROVIDERS) as Array<keyof typeof PROVIDERS>).map((key) => (
-                  <button
-                    key={key}
-                    onClick={() => handleStreamingChange(key)}
-                    className={cn(
-                      "w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-zinc-900/60",
-                      streamingProv === key ? "text-blue-400 bg-blue-500/10" : "text-zinc-300 hover:text-white"
-                    )}
-                  >
-                    {PROVIDERS[key].name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64 rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl backdrop-blur-xl z-40">
+              {(Object.keys(PROVIDERS) as Array<keyof typeof PROVIDERS>).map((key) => (
+                <DropdownMenuItem
+                  key={key}
+                  onClick={() => handleStreamingChange(key)}
+                  className={cn(
+                    "w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-zinc-900/60 cursor-pointer focus:outline-none",
+                    streamingProv === key ? "text-blue-400 bg-blue-500/10 focus:text-blue-400 focus:bg-blue-500/10" : "text-zinc-300 hover:text-white"
+                  )}
+                >
+                  {PROVIDERS[key].name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
         {titleType === "dropdown-genre" && onGenreChange && (
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropOpen(!isDropOpen)}
-              className="flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-blue-400 transition-colors"
-            >
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-2 text-xl sm:text-2xl font-bold tracking-tight text-white hover:text-blue-400 transition-colors outline-none cursor-pointer">
               <span>{genreName}</span>
               <ChevronDown className="h-5 w-5 text-zinc-400" />
-            </button>
-
-            {isDropOpen && (
-              <div className="absolute left-0 mt-2 w-56 max-h-80 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl backdrop-blur-xl z-40 animate-in fade-in slide-in-from-top-1 duration-200 scrollbar-thin">
-                {Object.keys(GENRE_MAP).map((name) => (
-                  <button
-                    key={name}
-                    onClick={() => handleGenreChange(name)}
-                    className={cn(
-                      "w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-zinc-900/60",
-                      genreName === name ? "text-blue-400 bg-blue-500/10" : "text-zinc-300 hover:text-white"
-                    )}
-                  >
-                    {name}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 max-h-80 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950/95 p-2 shadow-2xl backdrop-blur-xl z-40 scrollbar-thin">
+              {Object.keys(GENRE_MAP).map((name) => (
+                <DropdownMenuItem
+                  key={name}
+                  onClick={() => handleGenreChange(name)}
+                  className={cn(
+                    "w-full text-left px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:bg-zinc-900/60 cursor-pointer focus:outline-none",
+                    genreName === name ? "text-blue-400 bg-blue-500/10 focus:text-blue-400 focus:bg-blue-500/10" : "text-zinc-300 hover:text-white"
+                  )}
+                >
+                  {name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
       </div>
 

@@ -14,6 +14,8 @@ export interface TMDBMedia {
   genre_ids: number[];
   overview: string;
   popularity: number;
+  logo_path?: string | null;
+  textless_poster_path?: string | null;
 }
 
 export const ALL_GENRES: Record<number, string> = {

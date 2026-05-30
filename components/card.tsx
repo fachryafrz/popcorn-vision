@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { TMDBMedia } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
-import { Star, Play, Plus, Check, Loader2 } from "lucide-react";
+import { Star, Plus, Check, Heart, Loader2, Eye } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface CardProps {
@@ -15,9 +17,53 @@ interface CardProps {
 }
 
 export default function Card({ media, onQuickView, onAuthRequired }: CardProps) {
+  const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const [watchlistLoading, setWatchlistLoading] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
+
+  // Read favorite status from Convex
+  const isFavorited = useQuery(
+    api.favorites.checkFavoriteItem,
+    isLoggedIn
+      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
+      : "skip"
+  );
+
+  const addToFavorites = useMutation(api.favorites.addToFavorites);
+  const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      onAuthRequired();
+      return;
+    }
+
+    setFavoriteLoading(true);
+    try {
+      const mId = String(media.id);
+      const mType = media.media_type || "movie";
+      
+      if (isFavorited) {
+        await removeFromFavorites({ mediaId: mId, mediaType: mType });
+      } else {
+        await addToFavorites({
+          mediaId: mId,
+          mediaType: mType,
+          title: media.title || media.name || "",
+          posterPath: media.poster_path || "",
+          rating: media.vote_average,
+          releaseYear: media.release_date ? new Date(media.release_date).getFullYear().toString() : "N/A",
+        });
+      }
+    } catch (error) {
+      console.error("Favorite modification failed:", error);
+    } finally {
+      setFavoriteLoading(false);
+    }
+  };
 
   // Read watchlist status from Convex
   const isWatchlisted = useQuery(
@@ -71,11 +117,11 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
 
   return (
     <div
-      onClick={() => onQuickView(media)}
-      className="group relative w-full flex-shrink-0 flex flex-col gap-3 cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40"
+      onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
+      className="group relative w-full shrink-0 flex flex-col gap-3 cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40"
     >
       {/* Poster area */}
-      <div className="relative aspect-[2/3] w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+      <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
         
         {/* Poster image */}
         <img
@@ -86,7 +132,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
         />
 
         {/* Backdrop overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
 
         {/* Content badges */}
         <div className="absolute top-3 left-3 z-20 flex gap-2">
@@ -95,30 +141,19 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
           </span>
         </div>
 
-        {/* Floating Quick View & Watchlist buttons on Hover */}
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-3 px-4 opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-          
-          {/* Quick View Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onQuickView(media);
-            }}
-            className="flex items-center gap-1.5 rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:bg-blue-500 hover:scale-105 active:scale-95"
-          >
-            <Play className="h-3.5 w-3.5 fill-current" />
-            Quick View
-          </button>
+        {/* Floating action buttons on Hover */}
+        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2 px-3 opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
 
-          {/* Watchlist Toggle Button */}
-          <button
+          {/* Watchlist Button */}
+          <Button
             onClick={handleWatchlistClick}
             disabled={watchlistLoading}
+            size="icon-sm"
             className={cn(
-              "flex h-8 w-8 items-center justify-center rounded-full border shadow-lg transition-all hover:scale-105 active:scale-95 disabled:pointer-events-none",
+              "rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer",
               isWatchlisted
-                ? "bg-emerald-600/90 border-emerald-500 text-white"
-                : "bg-black/60 border-zinc-700 text-zinc-300 hover:text-white"
+                ? "bg-emerald-600/90 border-emerald-500 hover:bg-emerald-500 text-white"
+                : "bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
             )}
             title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
           >
@@ -129,7 +164,37 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
             ) : (
               <Plus className="h-4 w-4" />
             )}
-          </button>
+          </Button>
+
+          {/* Quick View Button */}
+          <Button
+            onClick={(e) => { e.stopPropagation(); onQuickView(media); }}
+            size="icon-sm"
+            className="rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+            title="Quick View"
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+
+          {/* Favorite Toggle Button */}
+          <Button
+            onClick={handleFavoriteClick}
+            disabled={favoriteLoading}
+            size="icon-sm"
+            className={cn(
+              "rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer",
+              isFavorited
+                ? "bg-rose-600/90 border-rose-500 hover:bg-rose-500 text-white"
+                : "bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+            )}
+            title={isFavorited ? "Remove from Favorites" : "Add to Favorites"}
+          >
+            {favoriteLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin text-white" />
+            ) : (
+              <Heart className={cn("h-4 w-4", isFavorited && "fill-current")} />
+            )}
+          </Button>
         </div>
       </div>
 

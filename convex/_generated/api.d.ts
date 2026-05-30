@@ -9,7 +9,10 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
+import type * as ratings from "../ratings.js";
+import type * as users from "../users.js";
 import type * as watchlist from "../watchlist.js";
 
 import type {
@@ -20,7 +23,10 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  favorites: typeof favorites;
   http: typeof http;
+  ratings: typeof ratings;
+  users: typeof users;
   watchlist: typeof watchlist;
 }>;
 

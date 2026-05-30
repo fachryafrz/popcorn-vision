@@ -83,6 +83,18 @@ export const getWatchlist = query({
   },
 });
 
+// Get Watchlist for a specific public userId
+export const getPublicWatchlist = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("watchlist")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .order("desc")
+      .collect();
+  },
+});
+
 // Check if a specific media is in the watchlist
 export const checkWatchlistItem = query({
   args: {

@@ -4,6 +4,7 @@ import { convex } from "@convex-dev/better-auth/plugins";
 import { components } from "./_generated/api";
 import { DataModel } from "./_generated/dataModel";
 import authConfig from "./auth.config";
+import { username } from "better-auth/plugins";
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
 
@@ -12,7 +13,10 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
     database: authComponent.adapter(ctx),
     secret: process.env.BETTER_AUTH_SECRET || "default_local_dev_secret_for_popcorn_vision_32_chars_long",
     trustedOrigins: [process.env.SITE_URL || "http://localhost:3000"],
-    plugins: [convex({ authConfig })],
+    plugins: [
+      convex({ authConfig }),
+      username()
+    ],
     emailAndPassword: {
       enabled: true,
     },
