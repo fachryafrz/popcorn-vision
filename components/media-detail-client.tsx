@@ -518,9 +518,9 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       </div>
 
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 md:px-20 -mt-24 sm:-mt-36 md:-mt-44 flex flex-col md:flex-row items-end gap-8 md:gap-12">
+      <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 md:px-20 -mt-24 sm:-mt-36 md:-mt-44 flex flex-col md:flex-row items-start gap-8 md:gap-12">
         {/* Large Poster Sidebar */}
-        <div className="hidden md:block w-64 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 border border-zinc-850 bg-zinc-900/60 backdrop-blur-md transform hover:scale-102 transition-all duration-300 shrink-0">
+        <div className="sticky top-22 hidden md:block w-64 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 border border-zinc-850 bg-zinc-900/60 backdrop-blur-md transform hover:scale-102 transition-all duration-300 shrink-0">
           <img
             src={posterUrl}
             alt={details?.title || details?.name}
@@ -536,7 +536,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             </span>
             {certification && (
               <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-zinc-900 border border-zinc-800 text-zinc-300">
-                {certification}
+                Rating: {certification}
               </span>
             )}
             {(() => {
@@ -1246,7 +1246,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
                   Release Date
                 </span>
-                <span className="text-zinc-200">{moment(releaseDate).format("MMM Do YYYY, dddd") || "N/A"}</span>
+                <span className="text-zinc-200">{moment(releaseDate).format("MMM Do, YYYY (dddd)") || "N/A"}</span>
               </div>
 
               {details?.budget !== undefined && (

@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useConvex, useMutation } from "convex/react";
+import { useConvex, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { siteConfig } from "@/config/site";
+import { useEffect } from "react";
 
 export default function UsernamePromptModal() {
   const session = authClient.useSession();
@@ -19,6 +20,24 @@ export default function UsernamePromptModal() {
 
   const convex = useConvex();
   const updateProfile = useMutation(api.users.createOrUpdateProfile);
+
+  const convexProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip"
+  );
+
+  // Auto-sync user profile to Convex if logged in but missing in Convex db
+  useEffect(() => {
+    if (isLoggedIn && user && user.username && convexProfile === null) {
+      updateProfile({
+        username: user.username,
+        name: user.name,
+        email: user.email || "",
+      }).catch((err) => {
+        console.error("Auto sync profile to Convex failed:", err);
+      });
+    }
+  }, [isLoggedIn, user, convexProfile, updateProfile]);
 
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
