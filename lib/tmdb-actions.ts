@@ -208,6 +208,28 @@ export async function getMediaDetails(mediaType: "movie" | "tv", id: string) {
   }
 }
 
+// Fetch movie collection details by collection ID
+export async function getCollectionDetails(collectionId: number) {
+  try {
+    const res = await axios.get(`/collection/${collectionId}`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching collection ${collectionId}:`, error);
+    return null;
+  }
+}
+
+// Fetch TV show season details (episodes overview, stills, etc.) by season number
+export async function getSeasonDetails(tvId: number, seasonNumber: number) {
+  try {
+    const res = await axios.get(`/tv/${tvId}/season/${seasonNumber}`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching season ${seasonNumber} for tv ${tvId}:`, error);
+    return null;
+  }
+}
+
 // Search movies and TV shows by query string
 export async function searchMedia(query: string, type: "all" | "movie" | "tv" = "all"): Promise<TMDBMedia[]> {
   if (!query.trim()) return [];

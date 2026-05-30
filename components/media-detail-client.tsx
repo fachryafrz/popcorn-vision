@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -33,6 +34,7 @@ import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import { toast } from "sonner";
+import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -63,8 +65,12 @@ interface ProductionCompany {
 }
 
 interface Season {
+  id: number;
   season_number: number;
   episode_count: number;
+  name: string;
+  poster_path: string | null;
+  air_date: string | null;
 }
 
 interface MediaDetails {
@@ -87,7 +93,9 @@ interface MediaDetails {
   revenue?: number;
   original_language?: string;
   production_companies?: ProductionCompany[];
+  belongs_to_collection?: { id: number; name: string; poster_path: string; backdrop_path: string } | null;
   number_of_seasons?: number;
+  number_of_episodes?: number;
   seasons?: Season[];
 }
 
@@ -99,6 +107,36 @@ interface RegionalRelease {
 interface RegionalContentRating {
   iso_3166_1: string;
   rating: string;
+}
+
+interface Episode {
+  id: number;
+  episode_number: number;
+  name: string;
+  overview: string;
+  still_path: string | null;
+  air_date: string | null;
+  runtime: number | null;
+}
+
+interface SeasonDetails {
+  _id: string;
+  air_date: string;
+  episodes: Episode[];
+  name: string;
+  overview: string;
+  id: number;
+  poster_path: string | null;
+  season_number: number;
+}
+
+interface CollectionPart {
+  id: number;
+  title: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  overview: string;
 }
 
 interface MediaDetailClientProps {
@@ -133,6 +171,8 @@ const countryNameToCode: Record<string, string> = {
 };
 
 export default function MediaDetailClient({ mediaType, initialData }: MediaDetailClientProps) {
+  const router = useRouter();
+  const details = initialData.details;
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
@@ -202,6 +242,45 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [collectionParts, setCollectionParts] = useState<CollectionPart[]>([]);
+
+  // Fetch movie collection items if available
+  useEffect(() => {
+    if (mediaType === "movie" && details?.belongs_to_collection?.id) {
+      getCollectionDetails(details.belongs_to_collection.id).then((data) => {
+        if (data && data.parts) {
+          const sortedParts = (data.parts as CollectionPart[]).sort((a, b) => {
+            const dateA = a.release_date ? new Date(a.release_date).getTime() : 0;
+            const dateB = b.release_date ? new Date(b.release_date).getTime() : 0;
+            return dateA - dateB;
+          });
+          setCollectionParts(sortedParts);
+        }
+      });
+    }
+  }, [mediaType, details?.belongs_to_collection?.id]);
+
+  const [expandedSeason, setExpandedSeason] = useState<number | null>(null);
+  const [seasonDetailsLoading, setSeasonDetailsLoading] = useState(false);
+  const [activeSeasonData, setActiveSeasonData] = useState<SeasonDetails | null>(null);
+
+  const handleSeasonClick = (seasonNumber: number) => {
+    if (expandedSeason === seasonNumber) {
+      setExpandedSeason(null);
+      setActiveSeasonData(null);
+    } else {
+      setExpandedSeason(seasonNumber);
+      setSeasonDetailsLoading(true);
+      setActiveSeasonData(null);
+      getSeasonDetails(details.id, seasonNumber).then((data) => {
+        if (data) {
+          setActiveSeasonData(data as SeasonDetails);
+        }
+        setSeasonDetailsLoading(false);
+      });
+    }
+  };
+
   // Convex watchlist mutations/queries
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const isWatchlisted = useQuery(
@@ -240,7 +319,6 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const rateMedia = useMutation(api.ratings.rateMedia);
   const deleteRating = useMutation(api.ratings.deleteRating);
 
-  const details = initialData.details;
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
   const providers = initialData.watchProviders?.[selectedRegion]?.flatrate || [];
@@ -314,19 +392,19 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
     if (selectedRegion === "ID") {
       currency = "IDR";
-      exchangeRate = 17800; // 1 USD = 16,300 IDR approx
+      exchangeRate = 17800;
       locale = "id-ID";
     } else if (selectedRegion === "JP") {
       currency = "JPY";
-      exchangeRate = 159; // 1 USD = 157 JPY approx
+      exchangeRate = 159;
       locale = "ja-JP";
     } else if (selectedRegion === "KR") {
       currency = "KRW";
-      exchangeRate = 1507; // 1 USD = 1,370 KRW approx
+      exchangeRate = 1507;
       locale = "ko-KR";
     } else if (selectedRegion === "GB") {
       currency = "GBP";
-      exchangeRate = 0.74; // 1 USD = 0.79 GBP approx
+      exchangeRate = 0.74;
       locale = "en-GB";
     }
 
@@ -913,6 +991,17 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
               </p>
             </div>
 
+            {mediaType === "movie" && details?.belongs_to_collection && (
+              <div>
+                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
+                  Part of the Collection
+                </h3>
+                <p className="text-sm sm:text-base text-zinc-200 font-semibold">
+                  {details.belongs_to_collection.name}
+                </p>
+              </div>
+            )}
+
             {details?.production_companies && details.production_companies.length > 0 && (
               <div>
                 <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
@@ -923,10 +1012,187 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 </p>
               </div>
             )}
+
+            {mediaType === "movie" && collectionParts.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-zinc-800/40">
+                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  Movies in this Collection
+                </h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                  {collectionParts.map((part) => {
+                    const posterUrl = part.poster_path
+                      ? `https://image.tmdb.org/t/p/w185${part.poster_path}`
+                      : "/logo/popcorn.png";
+                    const year = part.release_date ? new Date(part.release_date).getFullYear() : "N/A";
+                    return (
+                      <div
+                        key={part.id}
+                        onClick={() => router.push(`/movie/${part.id}`)}
+                        className="group flex flex-col gap-2 bg-zinc-900/45 hover:bg-zinc-900/80 border border-zinc-850 hover:border-zinc-800 rounded-2xl p-2 cursor-pointer transition-all duration-300 hover:-translate-y-0.5"
+                      >
+                        <div className="aspect-2/3 w-full rounded-xl overflow-hidden bg-zinc-950">
+                          <img
+                            src={posterUrl}
+                            alt={part.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <div className="px-1 text-left">
+                          <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors line-clamp-1">
+                            {part.title}
+                          </h4>
+                          <span className="text-[10px] text-zinc-500 font-semibold">{year}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {mediaType === "tv" && details?.seasons && details.seasons.length > 0 && (
+              <div className="space-y-4 pt-4 border-t border-zinc-800/40">
+                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  Seasons
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {details.seasons.map((s) => {
+                    const posterUrl = s.poster_path
+                      ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
+                      : "/logo/popcorn.png";
+                    const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
+                    return (
+                      <div
+                        key={s.id}
+                        onClick={() => handleSeasonClick(s.season_number)}
+                        className={cn(
+                          "group flex gap-3 border rounded-2xl p-2.5 cursor-pointer transition-all duration-300 hover:-translate-y-0.5",
+                          expandedSeason === s.season_number
+                            ? "bg-zinc-900 border-blue-500 shadow-lg shadow-blue-500/10"
+                            : "bg-zinc-900/45 border-zinc-850 hover:border-zinc-800 hover:bg-zinc-900/80"
+                        )}
+                      >
+                        <div className="aspect-2/3 w-16 rounded-xl overflow-hidden bg-zinc-950 shrink-0">
+                          <img
+                            src={posterUrl}
+                            alt={s.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0 text-left flex flex-col justify-center font-medium">
+                          <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+                            {s.name}
+                          </h4>
+                          <span className="text-[10px] text-zinc-400 font-semibold mt-1">
+                            {s.episode_count || 0} Episode{s.episode_count !== 1 ? "s" : ""}
+                          </span>
+                          <span className="text-[9px] text-zinc-500 font-bold mt-0.5">{year}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Expanded Season Details & Episode List */}
+                {expandedSeason !== null && (
+                  <div className="mt-6 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/15 backdrop-blur-md space-y-6">
+                    {seasonDetailsLoading ? (
+                      <div className="flex flex-col items-center justify-center py-12">
+                        <Loader2 className="h-8 w-8 text-blue-500 animate-spin mb-2" />
+                        <p className="text-zinc-500 text-xs font-semibold">Loading season details...</p>
+                      </div>
+                    ) : activeSeasonData ? (
+                      <div className="space-y-6">
+                        {/* Season Header info */}
+                        <div className="border-b border-zinc-800/80 pb-4">
+                          <h4 className="text-sm font-extrabold text-white">{activeSeasonData.name}</h4>
+                          {activeSeasonData.overview && (
+                            <p className="text-zinc-400 text-xs mt-2 leading-relaxed italic">
+                              &ldquo;{activeSeasonData.overview}&rdquo;
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Episodes List */}
+                        <div className="space-y-4">
+                          <h5 className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                            Episodes ({activeSeasonData.episodes?.length || 0})
+                          </h5>
+                          <div className="flex flex-col gap-4">
+                            {activeSeasonData.episodes?.map((ep) => {
+                              const stillUrl = ep.still_path
+                                ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
+                                : "/logo/popcorn.png";
+                              return (
+                                <div
+                                  key={ep.id}
+                                  className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-zinc-850 bg-zinc-900/20 hover:bg-zinc-900/40 transition-colors"
+                                >
+                                  {/* Still image / thumbnail */}
+                                  <div className="w-full sm:w-44 aspect-video rounded-lg overflow-hidden bg-zinc-950 shrink-0 relative group">
+                                    <img
+                                      src={stillUrl}
+                                      alt={ep.name}
+                                      className="w-full h-full object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                      <Button
+                                        size="sm"
+                                        onClick={() => {
+                                          setSeason(activeSeasonData.season_number);
+                                          setEpisode(ep.episode_number);
+                                          scrollToPlayer("watch");
+                                        }}
+                                        className="rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] h-7 px-3.5 cursor-pointer shadow-md"
+                                      >
+                                        Play S{activeSeasonData.season_number}E{ep.episode_number}
+                                      </Button>
+                                    </div>
+                                  </div>
+
+                                  {/* Episode Info */}
+                                  <div className="flex-1 min-w-0 text-left flex flex-col justify-between">
+                                    <div>
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs font-black text-blue-400">
+                                          Episode {ep.episode_number}
+                                        </span>
+                                        {ep.runtime && (
+                                          <span className="text-[9px] text-zinc-500 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-850">
+                                            {ep.runtime}m
+                                          </span>
+                                        )}
+                                      </div>
+                                      <h6 className="text-xs font-extrabold text-white mt-1 truncate">
+                                        {ep.name}
+                                      </h6>
+                                      <p className="text-zinc-400 text-xs mt-2 leading-relaxed line-clamp-3">
+                                        {ep.overview || "No overview available for this episode."}
+                                      </p>
+                                    </div>
+                                    {ep.air_date && (
+                                      <span className="text-[9px] text-zinc-500 font-semibold mt-3">
+                                        Air Date: {moment(ep.air_date).format("MMM Do YYYY")}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-zinc-500 text-xs">Failed to load episode details.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Quick Stats Sidebar */}
-          <div className="rounded-2xl border border-zinc-850 bg-zinc-900/10 p-6 space-y-6">
+          <div className="rounded-2xl border sticky top-22 border-zinc-850 bg-zinc-900/10 p-6 space-y-6 h-fit">
             <h3 className="text-base font-bold text-white border-b border-zinc-805 pb-2">
               More Info
             </h3>
@@ -950,6 +1216,26 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 </Select>
               </div>
 
+              {mediaType === "tv" && details && (
+                <div>
+                  <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
+                    Seasons
+                  </span>
+                  <span className="text-zinc-200">
+                    {details?.number_of_seasons || 0}
+                  </span>
+                </div>
+              )}
+              {mediaType === "tv" && details && (
+                <div>
+                  <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
+                    Episodes
+                  </span>
+                  <span className="text-zinc-200">
+                    {details?.number_of_episodes || 0}
+                  </span>
+                </div>
+              )}
               <div>
                 <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
                   Status
@@ -962,6 +1248,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 </span>
                 <span className="text-zinc-200">{moment(releaseDate).format("MMM Do YYYY, dddd") || "N/A"}</span>
               </div>
+
               {details?.budget !== undefined && (
                 <div>
                   <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
