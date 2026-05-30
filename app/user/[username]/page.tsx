@@ -3,7 +3,7 @@
 import { useState, use } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { User as UserIcon, Bookmark, Heart, Star, Loader2 } from "lucide-react";
+import { User as UserIcon, Bookmark, Heart, Star, Loader2, Grid } from "lucide-react";
 import Card from "@/components/card";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
@@ -21,7 +21,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const { username } = use(params);
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [activeTab, setActiveTab] = useState<"watchlist" | "favorites" | "ratings">("watchlist");
+  const [activeTab, setActiveTab] = useState<"all" | "watchlist" | "favorites" | "ratings">("all");
 
   // Query user profile by username
   const targetUser = useQuery(api.users.getUserByUsername, { username });
@@ -40,6 +40,82 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     api.ratings.getUserRatings,
     targetUserId ? { userId: targetUserId } : "skip"
   );
+
+  // Combine all items uniquely
+  const allItemsMap = new Map<string, {
+    mediaId: string;
+    mediaType: string;
+    title: string;
+    posterPath: string;
+    releaseYear: string;
+    addedAt: number;
+    rating?: number;
+    isWatchlist?: boolean;
+    isFavorite?: boolean;
+  }>();
+
+  if (watchlist) {
+    watchlist.forEach(item => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      allItemsMap.set(key, {
+        mediaId: item.mediaId,
+        mediaType: item.mediaType,
+        title: item.title,
+        posterPath: item.posterPath,
+        releaseYear: item.releaseYear,
+        addedAt: item.addedAt,
+        isWatchlist: true,
+      });
+    });
+  }
+
+  if (favorites) {
+    favorites.forEach(item => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      const existing = allItemsMap.get(key);
+      if (existing) {
+        existing.isFavorite = true;
+        if (item.addedAt > existing.addedAt) {
+          existing.addedAt = item.addedAt;
+        }
+      } else {
+        allItemsMap.set(key, {
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          title: item.title,
+          posterPath: item.posterPath,
+          releaseYear: item.releaseYear,
+          addedAt: item.addedAt,
+          isFavorite: true,
+        });
+      }
+    });
+  }
+
+  if (ratings) {
+    ratings.forEach(item => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      const existing = allItemsMap.get(key);
+      if (existing) {
+        existing.rating = item.rating;
+        if (item.addedAt > existing.addedAt) {
+          existing.addedAt = item.addedAt;
+        }
+      } else {
+        allItemsMap.set(key, {
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          title: item.title,
+          posterPath: item.posterPath,
+          releaseYear: item.releaseYear,
+          addedAt: item.addedAt,
+          rating: item.rating,
+        });
+      }
+    });
+  }
+
+  const allItems = Array.from(allItemsMap.values()).sort((a, b) => b.addedAt - a.addedAt);
 
   // Loading states
   const loadingProfile = targetUser === undefined;
@@ -64,18 +140,18 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     );
   }
 
-
-
   const getFallbackIcon = () => {
     if (activeTab === "watchlist") return <Bookmark className="h-12 w-12 text-zinc-800" />;
     if (activeTab === "favorites") return <Heart className="h-12 w-12 text-zinc-800" />;
-    return <Star className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "ratings") return <Star className="h-12 w-12 text-zinc-800" />;
+    return <Grid className="h-12 w-12 text-zinc-800" />;
   };
 
   const getEmptyMessage = () => {
     if (activeTab === "watchlist") return "This user's watchlist is currently empty.";
     if (activeTab === "favorites") return "This user's favorites list is currently empty.";
-    return "This user hasn't rated any movies or TV shows yet.";
+    if (activeTab === "ratings") return "This user hasn't rated any movies or TV shows yet.";
+    return "This user hasn't added any titles to their lists or submitted any ratings yet.";
   };
 
   return (
@@ -117,7 +193,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
       {/* Tabs */}
       <div className="flex border-b border-zinc-900 mb-8 gap-6 text-sm">
-        {(["watchlist", "favorites", "ratings"] as const).map((tab) => (
+        {(["all", "watchlist", "favorites", "ratings"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -128,12 +204,75 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                 : "text-zinc-500 border-transparent hover:text-zinc-300"
             )}
           >
-            {tab} ({tab === "watchlist" ? (watchlist ? watchlist.length : 0) : tab === "favorites" ? (favorites ? favorites.length : 0) : (ratings ? ratings.length : 0)})
+            {tab} ({tab === "all" ? allItems.length : tab === "watchlist" ? (watchlist ? watchlist.length : 0) : tab === "favorites" ? (favorites ? favorites.length : 0) : (ratings ? ratings.length : 0)})
           </button>
         ))}
       </div>
 
       {/* Tab Contents */}
+      {activeTab === "all" && (
+        <>
+          {watchlist === undefined || favorites === undefined || ratings === undefined ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+            </div>
+          ) : allItems.length === 0 ? (
+            <div className="text-center py-20 bg-zinc-900/10 border border-zinc-900 rounded-3xl p-8 flex flex-col items-center justify-center gap-3">
+              {getFallbackIcon()}
+              <p className="text-zinc-400 text-sm font-medium">{getEmptyMessage()}</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+              {allItems.map((item) => {
+                const mediaItem: TMDBMedia = {
+                  id: Number(item.mediaId),
+                  media_type: item.mediaType as "movie" | "tv",
+                  title: item.title,
+                  name: item.title,
+                  poster_path: item.posterPath,
+                  vote_average: item.rating || 0,
+                  release_date: item.releaseYear,
+                  backdrop_path: "",
+                  genre_ids: [],
+                  overview: "",
+                  popularity: 0,
+                };
+                return (
+                  <div key={`${item.mediaType}-${item.mediaId}`} className="relative group/card-wrapper">
+                    <Card
+                      media={mediaItem}
+                      onQuickView={setQuickViewMedia}
+                      onAuthRequired={openAuth}
+                    />
+                    {/* Badge Overlay */}
+                    <div className="absolute top-3 right-3 z-30 flex flex-col items-end gap-1.5 pointer-events-none">
+                      {item.rating && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-blue-600/90 border border-blue-400/30 text-white shadow-lg">
+                          <Star className="h-3 w-3 fill-current text-yellow-300" />
+                          <span>{item.rating}/10</span>
+                        </div>
+                      )}
+                      {!item.rating && item.isFavorite && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-rose-600/90 border border-rose-400/30 text-white shadow-lg">
+                          <Heart className="h-3 w-3 fill-current text-white" />
+                          <span>Favorite</span>
+                        </div>
+                      )}
+                      {!item.rating && !item.isFavorite && item.isWatchlist && (
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-emerald-600/90 border border-emerald-400/30 text-white shadow-lg">
+                          <Bookmark className="h-3 w-3 fill-current text-white" />
+                          <span>Watchlist</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
       {activeTab === "watchlist" && (
         <>
           {!watchlist ? (
@@ -236,7 +375,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                   title: item.title,
                   name: item.title,
                   poster_path: item.posterPath,
-                  vote_average: 0, // Zero so we don't duplicate ratings on card, we show given rating instead!
+                  vote_average: item.rating, // Pass user rating so card displays it instead of 0.0
                   release_date: item.releaseYear,
                   backdrop_path: "",
                   genre_ids: [],

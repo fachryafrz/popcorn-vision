@@ -81,6 +81,14 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
 
+  // Community rating stats query
+  const communityStats = useQuery(
+    api.ratings.getCommunityRatingStats,
+    media
+      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
+      : "skip"
+  );
+
   useEffect(() => {
     if (!media) return;
     
@@ -290,11 +298,27 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
 
               {/* Metadata Indicators */}
               <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-zinc-300 border-b border-zinc-900 pb-4">
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span className="font-semibold text-white">{voteRating}</span>
-                  <span className="text-zinc-500">({details?.vote_count || 0})</span>
-                </div>
+                {(() => {
+                  const hasCommunity = communityStats && communityStats.totalRatings > 0;
+                  const displayRating = hasCommunity ? communityStats.averageRating.toFixed(1) : voteRating;
+                  const sourceLabel = hasCommunity ? "Community" : "TMDB";
+                  const ratingCount = hasCommunity ? communityStats.totalRatings : (details?.vote_count || 0);
+                  return (
+                    <>
+                      <div className="flex items-center gap-1.5" title={`${sourceLabel} Rating`}>
+                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                        <span className="font-semibold text-white">{displayRating}</span>
+                        <span className="text-zinc-500 text-xs font-semibold">({ratingCount} {hasCommunity ? `rating${communityStats.totalRatings !== 1 ? "s" : ""}` : "votes"})</span>
+                        <span className="text-[9px] text-zinc-400 bg-zinc-900 border border-zinc-850 px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold ml-1">{sourceLabel}</span>
+                      </div>
+                      {hasCommunity && (
+                        <div className="text-zinc-500 text-xs font-medium bg-zinc-900/40 border border-zinc-850 px-2.5 py-0.5 rounded-full" title="TMDB reference rating">
+                          TMDB Ref: {voteRating}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4 text-zinc-400" />
                   <span>{releaseYear}</span>

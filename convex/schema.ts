@@ -52,5 +52,6 @@ export default defineSchema({
     addedAt: v.number(),
   })
     .index("by_user", ["userId"])
-    .index("by_user_media", ["userId", "mediaId", "mediaType"]),
+    .index("by_user_media", ["userId", "mediaId", "mediaType"])
+    .index("by_media", ["mediaId", "mediaType"]),
 });

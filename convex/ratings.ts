@@ -105,3 +105,32 @@ export const getUserRatings = query({
       .collect();
   },
 });
+
+// Get community rating stats
+export const getCommunityRatingStats = query({
+  args: {
+    mediaId: v.string(),
+    mediaType: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const ratings = await ctx.db
+      .query("ratings")
+      .withIndex("by_media", (q) => q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType))
+      .collect();
+
+    if (ratings.length === 0) {
+      return {
+        averageRating: 0,
+        totalRatings: 0,
+      };
+    }
+
+    const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
+    const average = Number((sum / ratings.length).toFixed(1));
+
+    return {
+      averageRating: average,
+      totalRatings: ratings.length,
+    };
+  },
+});

@@ -32,6 +32,7 @@ import { cn } from "@/lib/utils";
 import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
+import { toast } from "sonner";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -159,6 +160,22 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
 
+  // Convex rating mutations/queries
+  const userRating = useQuery(
+    api.ratings.getUserRating,
+    isLoggedIn && initialData.details
+      ? { mediaId: String(initialData.details.id), mediaType }
+      : "skip"
+  );
+  const communityStats = useQuery(
+    api.ratings.getCommunityRatingStats,
+    initialData.details
+      ? { mediaId: String(initialData.details.id), mediaType }
+      : "skip"
+  );
+  const rateMedia = useMutation(api.ratings.rateMedia);
+  const deleteRating = useMutation(api.ratings.deleteRating);
+
   const details = initialData.details;
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
@@ -272,6 +289,9 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     ? `https://image.tmdb.org/t/p/w1280${initialData.textlessPosterPath}`
     : posterUrl;
 
+  const duration = moment.duration(runtime, "minutes");
+
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white select-none">
       {/* Hero Header Section - Stacked Backdrop */}
@@ -306,17 +326,35 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         <div className="flex-1 flex flex-col items-start gap-4 text-left">
           <div className="flex flex-wrap items-center gap-3">
             <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600 border border-blue-400/30 text-white">
-              {mediaType === "tv" ? "TV Series" : "Movie"}
+            {mediaType === "tv" ? "TV Series" : "Movie"}
             </span>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-800 backdrop-blur-sm">
-              <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span>{rating}</span>
-            </div>
+            {(() => {
+              const hasCommunity = communityStats && communityStats.totalRatings > 0;
+              const displayRating = hasCommunity ? communityStats.averageRating.toFixed(1) : rating;
+              const sourceLabel = hasCommunity ? "Community" : "TMDB";
+              return (
+                <>
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-800 backdrop-blur-sm">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span>{displayRating}</span>
+                    <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider ml-1">({sourceLabel})</span>
+                  </div>
+                  {hasCommunity && (
+                    <span className="text-zinc-500 text-xs font-medium bg-zinc-900/40 border border-zinc-850 px-3 py-1 rounded-full">
+                      TMDB Ref: {rating} • {communityStats.totalRatings} rating{communityStats.totalRatings !== 1 ? "s" : ""}
+                    </span>
+                  )}
+                </>
+              );
+            })()}
             <span className="text-zinc-400 text-sm font-medium">{releaseYear}</span>
             {runtime && (
               <div className="flex items-center gap-1 text-zinc-400 text-sm">
                 <Clock className="h-4 w-4" />
-                <span>{runtime}m</span>
+                <span>
+                  {duration.hours() > 0 ? `${duration.hours()}h ` : ""}
+                  {duration.minutes() > 0 ? `${duration.minutes()}m` : ""}
+                </span>
               </div>
             )}
           </div>
@@ -424,6 +462,80 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 {isFavorited ? "Favorited" : "Favorite"}
               </span>
             </Button>
+          </div>
+
+          {/* Star Rating Picker Section */}
+          <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 border border-zinc-900 p-4 rounded-2xl w-full max-w-sm backdrop-blur-sm">
+            <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+              <span>{userRating ? "Your Rating" : "Rate this title"}</span>
+              {userRating && (
+                <button
+                  type="button"
+                  onClick={async (e) => {
+                    e.stopPropagation();
+                    try {
+                      await deleteRating({ mediaId: String(details.id), mediaType });
+                      toast.success("Rating cleared successfully!");
+                    } catch (err) {
+                      console.error("Clear rating failed:", err);
+                      toast.error("Failed to clear rating");
+                    }
+                  }}
+                  className="text-red-400 hover:text-red-300 font-bold tracking-wide uppercase transition-colors cursor-pointer"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+              <div className="flex items-center gap-1">
+                {Array.from({ length: 10 }).map((_, index) => {
+                  const starValue = index + 1;
+                  const isFilled = userRating ? starValue <= userRating : false;
+                  return (
+                    <button
+                      key={starValue}
+                      type="button"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!isLoggedIn) {
+                          openAuth();
+                          return;
+                        }
+                        try {
+                          await rateMedia({
+                            mediaId: String(details.id),
+                            mediaType,
+                            title: details.title || details.name || "",
+                            posterPath: details.poster_path || "",
+                            rating: starValue,
+                            releaseYear: releaseYear.toString(),
+                          });
+                          toast.success(`Rated ${starValue}/10 successfully!`);
+                        } catch (err) {
+                          console.error("Rating failed:", err);
+                          toast.error("Failed to submit rating");
+                        }
+                      }}
+                      className="p-0.5 hover:scale-125 transition-transform duration-100 cursor-pointer"
+                      title={`Rate ${starValue}/10`}
+                    >
+                      <Star
+                        className={cn(
+                          "h-5.5 w-5.5 transition-colors",
+                          isFilled
+                            ? "text-yellow-400 fill-current"
+                            : "text-zinc-700 hover:text-yellow-400/50"
+                        )}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+              <span className="text-sm font-black text-white ml-1">
+                {userRating ? `${userRating}/10` : "_/10"}
+              </span>
+            </div>
           </div>
         </div>
       </div>

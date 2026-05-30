@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown, Settings } from "lucide-react";
+import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -167,22 +167,6 @@ export default function Navbar() {
                   <DropdownMenuSeparator className="bg-zinc-800 my-1" />
 
                   <DropdownMenuItem
-                    onClick={() => router.push("/watchlist")}
-                    className="rounded-xl cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 text-zinc-300 hover:text-white focus:text-white px-3 py-2"
-                  >
-                    <Bookmark className="h-4 w-4 mr-2 text-blue-400" />
-                    Watchlist
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={() => router.push("/favorites")}
-                    className="rounded-xl cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 text-zinc-300 hover:text-white focus:text-white px-3 py-2"
-                  >
-                    <Heart className="h-4 w-4 mr-2 text-rose-400" />
-                    Favorites
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
                     onClick={() => router.push("/settings")}
                     className="rounded-xl cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 text-zinc-300 hover:text-white focus:text-white px-3 py-2"
                   >
@@ -285,22 +269,6 @@ export default function Navbar() {
                     </Button>
                     
                     <div className="flex flex-col gap-2">
-                      <Link
-                        href="/watchlist"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-900 transition-all text-left"
-                      >
-                        <Bookmark className="h-4 w-4 text-blue-400" />
-                        Watchlist
-                      </Link>
-                      <Link
-                        href="/favorites"
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-900 transition-all text-left"
-                      >
-                        <Heart className="h-4 w-4 text-rose-400" />
-                        Favorites
-                      </Link>
                       <Link
                         href="/settings"
                         onClick={() => setMobileMenuOpen(false)}
