@@ -17,6 +17,11 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
       convex({ authConfig }),
       username()
     ],
+    user: {
+      deleteUser: {
+        enabled: true,
+      },
+    },
     emailAndPassword: {
       enabled: true,
     },

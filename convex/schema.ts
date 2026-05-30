@@ -7,6 +7,8 @@ export default defineSchema({
     username: v.string(), // Unique username
     name: v.string(),
     email: v.string(),
+    bio: v.optional(v.string()),
+    country: v.optional(v.string()),
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),

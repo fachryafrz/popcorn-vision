@@ -87,11 +87,23 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
             {targetUser.name.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <div className="grow min-w-0">
+        <div className="grow min-w-0 w-full">
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white truncate">
             {targetUser.name}
           </h1>
-          <p className="text-blue-400 font-semibold text-sm mt-0.5">@{targetUser.username}</p>
+          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-2 gap-y-1 mt-1">
+            <span className="text-blue-400 font-semibold text-sm">@{targetUser.username}</span>
+            {targetUser.country && (
+              <span className="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                {targetUser.country}
+              </span>
+            )}
+          </div>
+          {targetUser.bio && (
+            <p className="text-zinc-300 text-sm mt-3 max-w-xl italic">
+              &ldquo;{targetUser.bio}&rdquo;
+            </p>
+          )}
           <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2 mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
             <span>{watchlist ? watchlist.length : 0} Watchlist</span>
             <span>{favorites ? favorites.length : 0} Favorites</span>

@@ -34,12 +34,19 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     try {
       if (isLogin) {
-        const { error: signInError } = await authClient.signIn.email({
-          email,
-          password,
-        });
+        const isEmail = email.includes("@");
+        const { error: signInError } = isEmail
+          ? await authClient.signIn.email({
+              email,
+              password,
+            })
+          : await authClient.signIn.username({
+              username: email,
+              password,
+            });
+
         if (signInError) {
-          setError(signInError.message || "Invalid email or password");
+          setError(signInError.message || `Invalid ${isEmail ? "email" : "username"} or password`);
         } else {
           onClose();
           window.location.reload();
@@ -189,16 +196,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           <div>
             <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
-              Email Address
+              {isLogin ? "Email or Username" : "Email Address"}
             </Label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
-                <Mail className="h-5 w-5" />
+                {isLogin && !email.includes("@") && email.trim() !== "" ? (
+                  <AtSign className="h-5 w-5" />
+                ) : (
+                  <Mail className="h-5 w-5" />
+                )}
               </span>
               <Input
-                type="email"
+                type={isLogin ? "text" : "email"}
                 required
-                placeholder="you@example.com"
+                placeholder={isLogin ? "you@example.com or username" : "you@example.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pl-12 pr-4 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"

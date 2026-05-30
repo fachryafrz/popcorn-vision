@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown } from "lucide-react";
+import { LogOut, Menu, Search, X, Heart, Bookmark, ChevronDown, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -179,6 +179,14 @@ export default function Navbar() {
                     Favorites
                   </DropdownMenuItem>
 
+                  <DropdownMenuItem
+                    onClick={() => router.push("/settings")}
+                    className="rounded-xl cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 text-zinc-300 hover:text-white focus:text-white px-3 py-2"
+                  >
+                    <Settings className="h-4 w-4 mr-2 text-zinc-400" />
+                    Settings
+                  </DropdownMenuItem>
+
                   <DropdownMenuSeparator className="bg-zinc-800 my-1" />
 
                   <DropdownMenuItem
@@ -286,6 +294,14 @@ export default function Navbar() {
                       >
                         <Heart className="h-4 w-4 text-rose-400" />
                         Favorites
+                      </Link>
+                      <Link
+                        href="/settings"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-zinc-300 hover:text-white hover:bg-zinc-900 transition-all text-left"
+                      >
+                        <Settings className="h-4 w-4 text-zinc-400" />
+                        Settings
                       </Link>
                     </div>
 

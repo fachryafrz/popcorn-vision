@@ -186,13 +186,3 @@ Mobile:
 
 * 2–3 card per row.
 * Hero disesuaikan agar tetap fokus pada backdrop dan informasi utama.
-
-## NEXT FEATURE
-
-- Edit Profile
-- Update foto profile
-- Komentar film
-- Counter watchlist, favorite
-- Rating film
-- Search film & advanced filter
-- More info region based by selecting dropdown

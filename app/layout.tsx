@@ -7,6 +7,7 @@ import { siteConfig } from "@/config/site";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import UsernamePromptModal from "@/components/username-prompt-modal";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -43,6 +44,7 @@ export default function RootLayout({
             {children}
           </div>
           <Footer />
+          <Toaster />
         </Providers>
       </body>
     </html>
