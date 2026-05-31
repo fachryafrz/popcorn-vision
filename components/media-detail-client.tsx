@@ -511,7 +511,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
 
   return (
-    <div className="min-h-svh bg-zinc-950 text-white select-none">
+    <div className="min-h-svh bg-background text-foreground select-none transition-colors duration-300">
       {/* Hero Header Section - Stacked Backdrop */}
       <div className="relative w-full h-[65svh] overflow-hidden">
         {/* Backdrop Background (Desktop) */}

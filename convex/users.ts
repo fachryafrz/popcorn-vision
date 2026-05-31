@@ -293,4 +293,29 @@ export const removeProfileImage = mutation({
   },
 });
 
+// Update user theme settings (theme)
+export const updateUserThemeSettings = mutation({
+  args: {
+    theme: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    if (!user) throw new Error("Unauthorized");
+    const userId = user._id;
+
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    if (!profile) throw new Error("Profile not found");
+
+    await ctx.db.patch(profile._id, {
+      theme: args.theme,
+    });
+
+    return profile._id;
+  },
+});
+
 

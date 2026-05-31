@@ -91,7 +91,7 @@ export default function SearchClient({ initialResults, initialQuery, initialType
   const hasQuery = query.trim().length > 0;
 
   return (
-    <main className="min-h-svh bg-zinc-950 text-white pt-28 pb-16">
+    <main className="min-h-svh bg-background text-foreground pt-28 pb-16 transition-colors duration-300">
       {/* Page header */}
       <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16">
         <div className="mb-10">

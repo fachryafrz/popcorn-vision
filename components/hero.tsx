@@ -126,7 +126,7 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
     ? `${process.env.NEXT_PUBLIC_API_IMAGE_342 || "https://image.tmdb.org/t/p/w342"}${media.poster_path}`
     : "/logo/popcorn.png";
   const mobileBackdropUrl = media.textless_poster_path
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_ORIGINAL || "https://image.tmdb.org/t/p/original"}${media.textless_poster_path}`
+    ? `${process.env.NEXT_PUBLIC_API_IMAGE_780 || "https://image.tmdb.org/t/p/w780"}${media.textless_poster_path}`
     : posterUrl;
   const releaseYear = media.release_date ? new Date(media.release_date).getFullYear() : "N/A";
   const genres = getGenreNames(media.genre_ids).slice(0, 3);

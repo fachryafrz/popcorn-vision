@@ -155,38 +155,44 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   };
 
   return (
-    <div className="grow bg-zinc-950 text-white min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-7xl mx-auto w-full">
+    <div 
+      className="grow bg-background text-foreground min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-7xl mx-auto w-full transition-colors duration-300 relative rounded-3xl"
+      data-theme={targetUser.theme || "dark"}
+    >
       {/* Header Profile Info card */}
-      <div className="relative p-6 sm:p-8 rounded-3xl border border-zinc-900 bg-zinc-900/10 shadow-lg backdrop-blur-md mb-8 flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-        <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-zinc-800 shadow-xl">
-          {targetUser.image && (
-            <AvatarImage src={targetUser.image} alt={targetUser.name} className="object-cover" />
-          )}
-          <AvatarFallback className="bg-blue-600 text-white font-black text-2xl">
-            {targetUser.name.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div className="grow min-w-0 w-full">
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white truncate">
-            {targetUser.name}
-          </h1>
-          <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-2 gap-y-1 mt-1">
-            <span className="text-blue-400 font-semibold text-sm">@{targetUser.username}</span>
-            {targetUser.country && (
-              <span className="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                {targetUser.country}
-              </span>
+      <div className="relative rounded-3xl mb-8 flex flex-col items-stretch overflow-hidden border border-zinc-900 bg-zinc-900/10 backdrop-blur-md shadow-lg shadow-black/40 transition-all duration-350 z-10">
+        {/* Profile Details Content Overlay */}
+        <div className="p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-end gap-6 text-center sm:text-left">
+          <Avatar className="h-20 w-20 sm:h-28 sm:w-28 border-4 border-background bg-background shadow-xl shrink-0 z-10">
+            {targetUser.image && (
+              <AvatarImage src={targetUser.image} alt={targetUser.name} className="object-cover" />
             )}
-          </div>
-          {targetUser.bio && (
-            <p className="text-zinc-300 text-sm mt-3 max-w-xl italic">
-              &ldquo;{targetUser.bio}&rdquo;
-            </p>
-          )}
-          <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2 mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-            <span>{watchlist ? watchlist.length : 0} Watchlist</span>
-            <span>{favorites ? favorites.length : 0} Favorites</span>
-            <span>{ratings ? ratings.length : 0} Ratings</span>
+            <AvatarFallback className="bg-primary text-primary-foreground font-black text-2xl flex items-center justify-center h-full w-full">
+              {targetUser.name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          <div className="grow min-w-0 w-full pt-2">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white truncate drop-shadow-sm">
+              {targetUser.name}
+            </h1>
+            <div className="flex flex-wrap justify-center sm:justify-start items-center gap-x-2 gap-y-1 mt-1">
+              <span className="text-primary font-semibold text-sm">@{targetUser.username}</span>
+              {targetUser.country && (
+                <span className="text-[10px] bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {targetUser.country}
+                </span>
+              )}
+            </div>
+            {targetUser.bio && (
+              <p className="text-zinc-300 text-sm mt-3 max-w-xl italic">
+                &ldquo;{targetUser.bio}&rdquo;
+              </p>
+            )}
+            <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2 mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+              <span>{watchlist ? watchlist.length : 0} Watchlist</span>
+              <span>{favorites ? favorites.length : 0} Favorites</span>
+              <span>{ratings ? ratings.length : 0} Ratings</span>
+            </div>
           </div>
         </div>
       </div>
@@ -200,7 +206,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
             className={cn(
               "font-bold pb-4 border-b-2 uppercase tracking-wider text-xs transition-all cursor-pointer",
               activeTab === tab
-                ? "text-blue-500 border-blue-500 font-extrabold"
+                ? "text-primary border-primary font-extrabold"
                 : "text-zinc-500 border-transparent hover:text-zinc-300"
             )}
           >

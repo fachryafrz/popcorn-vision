@@ -63,7 +63,7 @@ export default function Navbar() {
   return (
     <>
       <header className={cn("fixed inset-x-0 z-40 transition-all duration-500", scrolled ? "top-4 px-4 sm:px-10 md:px-16" : "top-0")}>
-        <div className={cn("w-full flex items-center justify-between transition-all duration-500", scrolled ? "max-w-5xl mx-auto px-6 md:pr-2 py-2 bg-zinc-950/80 backdrop-blur-md border border-zinc-800/80 rounded-full shadow-xl shadow-black/60" : "max-w-7xl mx-auto px-6 sm:px-12 md:px-16 py-4 border border-transparent")}>
+        <div className={cn("w-full flex items-center justify-between transition-all duration-500", scrolled ? "max-w-5xl mx-auto px-6 md:pr-2 py-2 bg-background/80 backdrop-blur-md border border-border/80 rounded-full shadow-xl shadow-black/60" : "max-w-7xl mx-auto px-6 sm:px-12 md:px-16 py-4 border border-transparent")}>
           {/* Logo */}
           <Link href="/" prefetch={false} className="flex items-center gap-2 cursor-pointer">
             <img

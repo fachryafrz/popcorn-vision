@@ -29,7 +29,7 @@ export default function HomeClient({
   };
 
   return (
-    <div className="min-h-svh bg-zinc-950 text-white flex flex-col font-sans select-none overflow-x-hidden">
+    <div className="min-h-svh bg-background text-foreground flex flex-col font-sans select-none overflow-x-hidden transition-colors duration-300">
       <main className="grow flex flex-col">
         {/* Fullscreen Hero Carousel */}
         <Hero
@@ -39,10 +39,10 @@ export default function HomeClient({
         />
 
         {/* Categories Section Carousels */}
-        <div className="relative z-20 flex flex-col gap-6 bg-zinc-950 pb-20">
+        <div className="relative z-20 flex flex-col gap-6 bg-background pb-20 transition-colors duration-300">
           
           {/* Top backdrop glow */}
-          <div className="absolute top-0 inset-x-0 -translate-y-48 h-96 bg-linear-to-b from-transparent to-zinc-950 pointer-events-none -z-10" />
+          <div className="absolute top-0 inset-x-0 -translate-y-48 h-96 bg-linear-to-b from-transparent to-background pointer-events-none -z-10 transition-colors duration-300" />
 
           {/* Trending Now */}
           <div id="trending">

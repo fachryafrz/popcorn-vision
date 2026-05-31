@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { User, Lock, Trash2, Loader2, Globe, FileText, Camera } from "lucide-react";
+import { User, Lock, Trash2, Loader2, Globe, FileText, Camera, Palette } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { usePersonalization, type ThemeType } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,8 +67,16 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const updateProfileImage = useMutation(api.users.updateProfileImage);
   const removeProfileImage = useMutation(api.users.removeProfileImage);
 
+  const isLoggedIn = !!user?.email;
+  const {
+    theme,
+    setTheme,
+  } = usePersonalization();
+
   // Tabs
-  const [activeSection, setActiveSection] = useState<"profile" | "security" | "danger">("profile");
+  const [activeSection, setActiveSection] = useState<"profile" | "appearance" | "security" | "danger">(
+    convexProfile ? "profile" : "appearance"
+  );
 
   // Profile fields state - initialized directly from props to avoid useEffect warnings
   const [name, setName] = useState(convexProfile?.name || user?.name || "");
@@ -325,46 +335,105 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
       {/* Sidebar Nav */}
       <div className="md:col-span-1 flex flex-col gap-2">
+        {isLoggedIn && (
+          <button
+            type="button"
+            onClick={() => setActiveSection("profile")}
+            className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
+              activeSection === "profile"
+                ? "bg-zinc-900 text-white border border-zinc-800"
+                : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
+            }`}
+          >
+            <User className="h-4 w-4" />
+            Edit Profile
+          </button>
+        )}
         <button
           type="button"
-          onClick={() => setActiveSection("profile")}
+          onClick={() => setActiveSection("appearance")}
           className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
-            activeSection === "profile"
+            activeSection === "appearance"
               ? "bg-zinc-900 text-white border border-zinc-800"
               : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
           }`}
         >
-          <User className="h-4 w-4" />
-          Edit Profile
+          <Palette className="h-4 w-4" />
+          Appearance & Styling
         </button>
-        <button
-          type="button"
-          onClick={() => setActiveSection("security")}
-          className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
-            activeSection === "security"
-              ? "bg-zinc-900 text-white border border-zinc-800"
-              : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
-          }`}
-        >
-          <Lock className="h-4 w-4" />
-          Security
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveSection("danger")}
-          className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
-            activeSection === "danger"
-              ? "bg-red-950/30 text-red-400 border border-red-900/40"
-              : "text-zinc-400 hover:text-red-400 hover:bg-red-950/10 border border-transparent"
-          }`}
-        >
-          <Trash2 className="h-4 w-4" />
-          Danger Zone
-        </button>
+        {isLoggedIn && (
+          <>
+            <button
+              type="button"
+              onClick={() => setActiveSection("security")}
+              className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
+                activeSection === "security"
+                  ? "bg-zinc-900 text-white border border-zinc-800"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
+              }`}
+            >
+              <Lock className="h-4 w-4" />
+              Security
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("danger")}
+              className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
+                activeSection === "danger"
+                  ? "bg-red-950/30 text-red-400 border border-red-900/40"
+                  : "text-zinc-400 hover:text-red-400 hover:bg-red-950/10 border border-transparent"
+              }`}
+            >
+              <Trash2 className="h-4 w-4" />
+              Danger Zone
+            </button>
+          </>
+        )}
       </div>
 
       {/* Content Box */}
       <div className="md:col-span-3 bg-zinc-900/10 border border-zinc-900 rounded-3xl p-6 sm:p-8 backdrop-blur-md">
+        
+        {/* APPEARANCE SECTION */}
+        {activeSection === "appearance" && (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-white mb-1">Appearance & Styling</h2>
+              <p className="text-xs text-zinc-500">Personalize your platform appearance by choosing from a selection of premium dark themes</p>
+            </div>
+
+            {/* Core Theme Picker */}
+            <div className="space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-400">Select Theme</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {([
+                  { id: "dark", name: "Dark Mode (Default)", bg: "bg-zinc-950 text-white border-zinc-800" },
+                  { id: "netflix", name: "Netflix Red", bg: "bg-zinc-900 text-white border-red-600/30" },
+                  { id: "hbo", name: "HBO Purple", bg: "bg-indigo-950/60 text-white border-purple-800/30" },
+                  { id: "disney", name: "Disney Blue", bg: "bg-blue-950/60 text-white border-blue-600/30" },
+                  { id: "prime", name: "Prime Video Blue", bg: "bg-slate-900 text-white border-sky-600/30" },
+                  { id: "letterboxd", name: "Letterboxd Orange", bg: "bg-zinc-900 text-white border-orange-500/30" },
+                  { id: "cinema", name: "Cinema Gold", bg: "bg-stone-900 text-white border-yellow-600/30" },
+                  { id: "sakura", name: "Sakura Pink", bg: "bg-zinc-900 text-white border-pink-500/30" },
+                ] as { id: ThemeType; name: string; bg: string }[]).map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setTheme(t.id)}
+                    className={cn(
+                      "flex flex-col items-center justify-center p-4 rounded-2xl border text-center transition-all duration-200 hover:scale-[1.02] cursor-pointer min-h-16",
+                      t.bg,
+                      theme === t.id ? "ring-2 ring-blue-500 scale-102 font-bold" : "opacity-80 hover:opacity-100"
+                    )}
+                  >
+                    <span className="text-xs">{t.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* PROFILE SECTION */}
         {activeSection === "profile" && (
           <form onSubmit={handleUpdateProfile} className="space-y-6">
@@ -678,7 +747,7 @@ export default function SettingsPage() {
   const user = session.data?.user;
 
   // Fetch current user details from Convex
-  const convexProfile = useQuery(api.users.getCurrentUser);
+  const convexProfile = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
   const openAuth = useAuthModalStore((state) => state.open);
 
   if (loadingSession || (isLoggedIn && convexProfile === undefined)) {
@@ -691,30 +760,24 @@ export default function SettingsPage() {
 
   if (!isLoggedIn) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white px-6 text-center">
-        <User className="h-16 w-16 text-zinc-700 mb-4" />
-        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Settings</h1>
-        <p className="text-zinc-400 text-sm max-w-md mb-6">
-          Sign in to manage and edit your profile settings.
-        </p>
-        <Button
-          onClick={openAuth}
-          className="rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold px-8 py-6 text-base cursor-pointer"
-        >
-          Sign In / Register
+      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-background text-foreground gap-4 text-center px-4">
+        <h1 className="text-xl font-bold text-white">Login Required</h1>
+        <p className="text-sm text-zinc-400 max-w-sm">You must be logged in to access and customize your account settings and theme preferences.</p>
+        <Button onClick={() => openAuth()} className="rounded-2xl px-6 py-5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer">
+          Sign In
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="grow bg-zinc-950 text-white min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-5xl mx-auto w-full">
+    <div className="grow bg-background text-foreground min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-5xl mx-auto w-full transition-colors duration-300">
       <div className="border-b border-zinc-900 pb-6 mb-8">
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white">Settings</h1>
-        <p className="text-zinc-500 text-xs mt-0.5">Manage your profile, security options, and platform details</p>
+        <p className="text-zinc-500 text-xs mt-0.5">Manage your profile, security options, and platform appearance</p>
       </div>
 
-      <SettingsForm convexProfile={convexProfile!} user={user!} />
+      <SettingsForm convexProfile={convexProfile || null} user={user || {}} />
     </div>
   );
 }
