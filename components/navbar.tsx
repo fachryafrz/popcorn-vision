@@ -33,8 +33,6 @@ export default function Navbar() {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
-  const isExpanded = isSearchFocused || searchValue.length > 0;
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
