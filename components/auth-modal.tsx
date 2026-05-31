@@ -134,9 +134,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           router.refresh();
         }
       }
-    } catch (err: unknown) {
-      const errorObj = err as { message?: string };
-      setError(errorObj.message || "An unexpected error occurred");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

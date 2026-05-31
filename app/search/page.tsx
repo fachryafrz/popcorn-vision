@@ -18,9 +18,9 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params.q || "";
-  const type = (params.type as "all" | "movie" | "tv") || "all";
+  const type = (params.type as "all" | "movie" | "tv" | "users") || "all";
 
-  const results = query ? await searchMedia(query, type) : [];
+  const results = (query && type !== "users") ? await searchMedia(query, type) : [];
 
   return <SearchClient initialResults={results} initialQuery={query} initialType={type} />;
 }

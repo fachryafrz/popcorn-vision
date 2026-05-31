@@ -5,13 +5,14 @@ import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
-import { User, Lock, Trash2, Loader2, Globe, FileText, Camera, Palette } from "lucide-react";
+import { User, Lock, Trash2, Loader2, Globe, FileText, Camera, Palette, Shield, UserX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePersonalization, type ThemeType } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -48,6 +49,11 @@ interface SettingsFormProps {
     bio?: string;
     country?: string;
     image?: string;
+    profilePrivacy?: string;
+    allowFriendRequests?: boolean;
+    hideWatchlist?: boolean;
+    hideFavorites?: boolean;
+    hideRatings?: boolean;
   } | null;
   user: {
     name?: string;
@@ -74,7 +80,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   } = usePersonalization();
 
   // Tabs
-  const [activeSection, setActiveSection] = useState<"profile" | "appearance" | "security" | "danger">(
+  const [activeSection, setActiveSection] = useState<"profile" | "appearance" | "privacy" | "security" | "danger">(
     convexProfile ? "profile" : "appearance"
   );
 
@@ -85,6 +91,57 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [country, setCountry] = useState(convexProfile?.country || "");
   const [profileImage, setProfileImage] = useState(convexProfile?.image || user?.image || "");
   const [savingProfile, setSavingProfile] = useState(false);
+
+  // Privacy & Social fields state
+  const [profilePrivacy, setProfilePrivacy] = useState(convexProfile?.profilePrivacy || "public");
+  const [allowFriendRequests, setAllowFriendRequests] = useState(
+    convexProfile?.allowFriendRequests !== false
+  );
+  const [hideWatchlist, setHideWatchlist] = useState(
+    convexProfile?.hideWatchlist === true
+  );
+  const [hideFavorites, setHideFavorites] = useState(
+    convexProfile?.hideFavorites === true
+  );
+  const [hideRatings, setHideRatings] = useState(
+    convexProfile?.hideRatings === true
+  );
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
+
+  // Privacy mutations & queries
+  const updatePrivacy = useMutation(api.social.updatePrivacySettings);
+  const blockedUsersList = useQuery(api.social.getBlockedUsers);
+  const unblockMutation = useMutation(api.social.unblockUser);
+
+  const handleUpdatePrivacy = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSavingPrivacy(true);
+    try {
+      await updatePrivacy({
+        profilePrivacy,
+        allowFriendRequests,
+        hideWatchlist,
+        hideFavorites,
+        hideRatings,
+      });
+      toast.success("Privacy settings updated successfully!");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to update privacy settings");
+    } finally {
+      setSavingPrivacy(false);
+    }
+  };
+
+  const handleUnblock = async (targetUserId: string) => {
+    try {
+      await unblockMutation({ targetUserId });
+      toast.success("User unblocked successfully!");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to unblock user");
+    }
+  };
 
   // Image upload & crop states
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -361,8 +418,20 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
           <Palette className="h-4 w-4" />
           Appearance & Styling
         </button>
-        {isLoggedIn && (
+         {isLoggedIn && (
           <>
+            <button
+              type="button"
+              onClick={() => setActiveSection("privacy")}
+              className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
+                activeSection === "privacy"
+                  ? "bg-zinc-900 text-white border border-zinc-800"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
+              }`}
+            >
+              <Shield className="h-4 w-4" />
+              Privacy & Social
+            </button>
             <button
               type="button"
               onClick={() => setActiveSection("security")}
@@ -611,6 +680,163 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
                 "Save Profile Changes"
               )}
             </Button>
+          </form>
+        )}
+
+        {/* PRIVACY & SOCIAL SECTION */}
+        {activeSection === "privacy" && (
+          <form onSubmit={handleUpdatePrivacy} className="space-y-6">
+            <div>
+              <h2 className="text-xl font-bold tracking-tight text-white mb-1">Privacy & Social Settings</h2>
+              <p className="text-xs text-zinc-500">Configure profile visibility, requests, and manage blocklist</p>
+            </div>
+
+            <div className="space-y-6">
+              {/* Profile Privacy Dropdown */}
+              <div className="relative">
+                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Profile Privacy
+                </Label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
+                    <Shield className="h-4 w-4" />
+                  </span>
+                  <Select value={profilePrivacy} onValueChange={(val) => setProfilePrivacy(val || "public")}>
+                    <SelectTrigger className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pl-12 pr-4 text-sm text-white focus:border-blue-500/50 focus:bg-zinc-900 h-12">
+                      <SelectValue placeholder="Select Privacy" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border border-zinc-800 text-white rounded-2xl shadow-xl">
+                      <SelectGroup>
+                        <SelectItem value="public" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Public Profile (Anyone can view lists)
+                        </SelectItem>
+                        <SelectItem value="friends" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Friends Only (Approved friends can view lists)
+                        </SelectItem>
+                        <SelectItem value="private" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Private Profile (Only you can view lists)
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Toggles */}
+              <div className="space-y-4 pt-4 border-t border-zinc-900">
+                <h3 className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-2">Social & Discoverability</h3>
+                
+                {/* Allow Friend Requests */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-white">Allow Friend Requests</span>
+                    <span className="text-[10px] text-zinc-500">Enable others to send you friend requests</span>
+                  </div>
+                  <Checkbox
+                    checked={allowFriendRequests}
+                    onCheckedChange={(checked) => setAllowFriendRequests(checked === true)}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+
+                {/* Hide Watchlist */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-white">Hide Watchlist</span>
+                    <span className="text-[10px] text-zinc-500">Conceal your Watchlist tab from other users</span>
+                  </div>
+                  <Checkbox
+                    checked={hideWatchlist}
+                    onCheckedChange={(checked) => setHideWatchlist(checked === true)}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+
+                {/* Hide Favorites */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-white">Hide Favorites</span>
+                    <span className="text-[10px] text-zinc-500">Conceal your Favorites tab from other users</span>
+                  </div>
+                  <Checkbox
+                    checked={hideFavorites}
+                    onCheckedChange={(checked) => setHideFavorites(checked === true)}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+
+                {/* Hide Ratings */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-bold text-white">Hide Ratings</span>
+                    <span className="text-[10px] text-zinc-500">Conceal your Ratings tab from other users</span>
+                  </div>
+                  <Checkbox
+                    checked={hideRatings}
+                    onCheckedChange={(checked) => setHideRatings(checked === true)}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              disabled={savingPrivacy}
+              className="w-full rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] mt-4 cursor-pointer"
+            >
+              {savingPrivacy ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "Save Privacy Changes"
+              )}
+            </Button>
+
+            {/* Blocklist Section */}
+            <div className="pt-6 border-t border-zinc-900 space-y-4">
+              <h3 className="text-xs font-black uppercase tracking-wider text-zinc-400">Blocked Users</h3>
+              {!blockedUsersList ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                </div>
+              ) : blockedUsersList.length === 0 ? (
+                <p className="text-xs text-zinc-500 italic">No users blocked.</p>
+              ) : (
+                <div className="space-y-2">
+                  {blockedUsersList.map((blockedUser) => (
+                    <div
+                      key={blockedUser.userId}
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-900/20 border border-zinc-900/60"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8 border border-zinc-800">
+                          {blockedUser.image && (
+                            <AvatarImage src={blockedUser.image} alt={blockedUser.name} className="object-cover" />
+                          )}
+                          <AvatarFallback className="bg-zinc-800 text-zinc-300 text-xs font-bold">
+                            {blockedUser.name.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-xs font-bold text-white">{blockedUser.name}</p>
+                          <p className="text-[10px] text-zinc-500">@{blockedUser.username}</p>
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        size="xs"
+                        variant="destructive"
+                        onClick={() => handleUnblock(blockedUser.userId)}
+                        className="rounded-lg h-7 px-3 text-[10px] font-bold cursor-pointer"
+                      >
+                        <UserX className="h-3 w-3 mr-1" />
+                        Unblock
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </form>
         )}
 

@@ -12,6 +12,11 @@ export default defineSchema({
     image: v.optional(v.string()),
     imageStorageId: v.optional(v.string()),
     theme: v.optional(v.string()),
+    profilePrivacy: v.optional(v.string()), // "public" | "friends" | "private"
+    allowFriendRequests: v.optional(v.boolean()),
+    hideWatchlist: v.optional(v.boolean()),
+    hideFavorites: v.optional(v.boolean()),
+    hideRatings: v.optional(v.boolean()),
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),
@@ -55,4 +60,33 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_media", ["userId", "mediaId", "mediaType"])
     .index("by_media", ["mediaId", "mediaType"]),
+
+  friendships: defineTable({
+    userId1: v.string(), // Lower string value alphabetically (for easy querying)
+    userId2: v.string(), // Higher string value alphabetically
+    status: v.string(), // "pending_1_to_2" | "pending_2_to_1" | "friends"
+    createdAt: v.number(),
+  })
+    .index("by_users", ["userId1", "userId2"])
+    .index("by_user1", ["userId1"])
+    .index("by_user2", ["userId2"]),
+
+  blocks: defineTable({
+    blockerId: v.string(),
+    blockedId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_blocker", ["blockerId"])
+    .index("by_blocked", ["blockedId"])
+    .index("by_both", ["blockerId", "blockedId"]),
+
+  notifications: defineTable({
+    userId: v.string(), // Recipient
+    senderId: v.string(), // Sender of the action
+    type: v.string(), // "friend_request" | "friend_accepted"
+    read: v.boolean(),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_unread", ["userId", "read"]),
 });
