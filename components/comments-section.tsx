@@ -150,7 +150,6 @@ export default function CommentsSection({ mediaId, mediaType }: CommentsSectionP
           />
         ) : (
           <div className="relative group overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/20 backdrop-blur-md p-6 text-center shadow-lg">
-            <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-blue-500/5 blur-xl group-hover:bg-blue-500/10 transition-all duration-300" />
             <h3 className="text-zinc-200 font-bold text-base mb-1">
               Connect with the Community
             </h3>

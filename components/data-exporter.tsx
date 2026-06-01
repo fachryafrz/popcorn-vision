@@ -252,7 +252,7 @@ export default function DataExporter() {
   const hasAnyData = wCount > 0 || fCount > 0 || rCount > 0 || dCount > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-10">
       {/* Exporter Header */}
       <div>
         <h2 className="text-xl font-bold tracking-tight text-white mb-1">
@@ -267,7 +267,6 @@ export default function DataExporter() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Watchlist card */}
         <div className="relative group overflow-hidden border border-zinc-900 rounded-3xl bg-zinc-950/20 backdrop-blur-md p-6 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-zinc-800/80 shadow-md">
-          <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-blue-500/5 blur-xl group-hover:bg-blue-500/8 transition-all duration-300" />
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-blue-950/30 border border-blue-900/30 flex items-center justify-center shadow-inner">
               <Film className="h-5 w-5 text-blue-400" />
@@ -290,7 +289,6 @@ export default function DataExporter() {
 
         {/* Favorites card */}
         <div className="relative group overflow-hidden border border-zinc-900 rounded-3xl bg-zinc-950/20 backdrop-blur-md p-6 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-zinc-800/80 shadow-md">
-          <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-purple-500/5 blur-xl group-hover:bg-purple-500/8 transition-all duration-300" />
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-purple-950/30 border border-purple-900/30 flex items-center justify-center shadow-inner">
               <Heart className="h-5 w-5 text-purple-400" />
@@ -313,7 +311,6 @@ export default function DataExporter() {
 
         {/* Ratings card */}
         <div className="relative group overflow-hidden border border-zinc-900 rounded-3xl bg-zinc-950/20 backdrop-blur-md p-6 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-zinc-800/80 shadow-md">
-          <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-yellow-500/5 blur-xl group-hover:bg-yellow-500/8 transition-all duration-300" />
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-yellow-950/30 border border-yellow-900/30 flex items-center justify-center shadow-inner">
               <Star className="h-5 w-5 text-yellow-400" />
@@ -336,7 +333,6 @@ export default function DataExporter() {
 
         {/* Diary card */}
         <div className="relative group overflow-hidden border border-zinc-900 rounded-3xl bg-zinc-950/20 backdrop-blur-md p-6 flex flex-col justify-between gap-4 transition-all duration-300 hover:border-zinc-800/80 shadow-md">
-          <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-emerald-500/5 blur-xl group-hover:bg-emerald-500/8 transition-all duration-300" />
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-xl bg-emerald-950/30 border border-emerald-900/30 flex items-center justify-center shadow-inner">
               <Calendar className="h-5 w-5 text-emerald-400" />

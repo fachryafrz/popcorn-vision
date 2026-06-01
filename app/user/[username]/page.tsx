@@ -717,7 +717,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                                       </h3>
                                     </Link>
                                     {isOwner && (
-                                      <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                      <div className="flex items-center gap-1.5 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                                         <button
                                           onClick={() => setEditingEntry(entry)}
                                           className="p-1 rounded-lg hover:bg-zinc-900 text-zinc-400 hover:text-white cursor-pointer transition-colors"

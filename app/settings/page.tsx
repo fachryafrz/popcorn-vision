@@ -615,7 +615,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
                   {/* Hover Edit Overlay */}
                   <div
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/50 opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center transition-opacity duration-200 z-10"
+                    className="absolute inset-0 bg-black/50 md:opacity-0 md:group-hover/avatar:opacity-100 flex flex-col items-center justify-center transition-opacity duration-200 z-10"
                   >
                     <Camera className="h-5 w-5 text-white mb-1" />
                     <span className="text-[10px] uppercase font-bold tracking-wider text-white">Change</span>
@@ -991,7 +991,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
         {/* DANGER ZONE SECTION */}
         {activeSection === "danger" && (
-          <div className="space-y-10 divide-y divide-zinc-900/80">
+          <div className="divide-y divide-zinc-900/80">
             {/* CLOSE ACCOUNT SECTION */}
             <form onSubmit={handleCloseAccount} className="space-y-6 pb-10">
               <div>
@@ -1075,11 +1075,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
         {/* IMPORT & EXPORT SECTION */}
         {activeSection === "import" && (
-          <div className="space-y-12 divide-y divide-zinc-900/80">
+          <div className="divide-y divide-zinc-900/80">
             <ImportWizard />
-            <div className="pt-10">
-              <DataExporter />
-            </div>
+            <DataExporter />
           </div>
         )}
       </div>
