@@ -179,10 +179,6 @@ function ResetPasswordForm() {
 export default function ResetPasswordPage() {
   return (
     <main className="min-h-[80vh] flex items-center justify-center p-4 pt-22 relative overflow-hidden">
-      {/* Background glow effects */}
-      <div className="absolute -top-32 -left-32 -z-10 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
-      <div className="absolute -bottom-32 -right-32 -z-10 h-64 w-64 rounded-full bg-violet-600/10 blur-3xl" />
-
       <div className="w-full max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/85 p-8 text-white shadow-2xl shadow-black/80 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
         <Suspense
           fallback={

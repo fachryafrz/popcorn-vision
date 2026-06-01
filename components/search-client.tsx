@@ -135,9 +135,6 @@ function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
 
   return (
     <div className="relative group overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/30 backdrop-blur-md p-5 flex flex-col justify-between hover:border-zinc-700/80 hover:bg-zinc-900/50 transition-all duration-300 shadow-lg hover:shadow-xl">
-      {/* Subtle top-right accent glow */}
-      <div className="absolute -top-12 -right-12 -z-10 h-24 w-24 rounded-full bg-blue-500/5 blur-xl group-hover:bg-blue-500/10 transition-all duration-300" />
-      
       <div>
         {/* User Info */}
         <div className="flex items-start gap-4 mb-4">
