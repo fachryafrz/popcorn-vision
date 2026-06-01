@@ -7,6 +7,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
 import { 
   User as UserIcon, 
+  Users,
   Bookmark, 
   Heart, 
   Star, 
@@ -29,6 +30,7 @@ import { TMDBMedia } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import Link from "next/link";
 import LogWatchModal from "@/components/log-watch-modal";
@@ -44,6 +46,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [activeTab, setActiveTab] = useState<"all" | "watchlist" | "favorites" | "ratings" | "diary">("all");
+  const [showFriendsDialog, setShowFriendsDialog] = useState(false);
 
   interface DiaryItem {
     _id: string;
@@ -509,7 +512,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                 </p>
               )}
               <div className="flex flex-wrap justify-center sm:justify-start gap-x-6 gap-y-2 mt-4 text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-                <span>{profileData.friendCount} Friends</span>
+                <button
+                  onClick={() => setShowFriendsDialog(true)}
+                  className="hover:text-white transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  <Users className="h-3.5 w-3.5" />
+                  {profileData.friendCount} Friends
+                </button>
               </div>
             </div>
           </div>
@@ -992,6 +1001,52 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
           initialReview={editingEntry.review}
         />
       )}
+
+      {/* Friends List Dialog */}
+      <Dialog open={showFriendsDialog} onOpenChange={setShowFriendsDialog}>
+        <DialogContent className="sm:max-w-md max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-lg font-bold">
+              <Users className="h-5 w-5 text-primary" />
+              Friends ({profileData?.friendCount ?? 0})
+            </DialogTitle>
+          </DialogHeader>
+          <div className="overflow-y-auto -mx-6 px-6 flex-1">
+            {profileData?.friends && profileData.friends.length > 0 ? (
+              <div className="space-y-1">
+                {profileData.friends.map((friend) => (
+                  <Link
+                    key={friend.userId}
+                    href={`/user/${friend.username}`}
+                    onClick={() => setShowFriendsDialog(false)}
+                    className="flex items-center gap-3 p-3 rounded-2xl hover:bg-zinc-900/50 transition-colors group/friend"
+                  >
+                    <Avatar className="h-10 w-10 border-2 border-zinc-800 group-hover/friend:border-primary/50 transition-colors shrink-0">
+                      {friend.image && (
+                        <AvatarImage src={friend.image} alt={friend.name} className="object-cover" />
+                      )}
+                      <AvatarFallback className="bg-zinc-900 text-zinc-400 text-sm font-bold">
+                        {friend.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-white truncate group-hover/friend:text-primary transition-colors">
+                        {friend.name}
+                      </p>
+                      <p className="text-xs text-zinc-500 truncate">@{friend.username}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <Users className="h-10 w-10 text-zinc-700 mb-3" />
+                <p className="text-sm text-zinc-500 font-medium">No friends yet</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
