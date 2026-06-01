@@ -114,6 +114,10 @@ export default function SidebarPanel({
                   onClick={() => {
                     setSelectedChatId(c.chatId);
                     setIsSidebarOpen(false); // Close sidebar on mobile
+
+                    if (isActive) {
+                      setSelectedChatId(null);
+                    }
                   }}
                   className={cn(
                     "flex cursor-pointer items-center gap-3 rounded-2xl border border-transparent p-3 transition-all select-none",
