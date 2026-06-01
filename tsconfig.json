@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+, "lib/formatRating.js", "lib/formatRuntime.js", "lib/formatDate.js", "lib/delay.js", "lib/openWindow.js", "lib/getRandomOptionsPlaceholder.ts", "lib/revalidateRedirect.js", "lib/streamingProviderList.js", "lib/sortFilms.js", "lib/releaseStatus.js", "lib/fetchInBatches.js"  ],
+  "exclude": ["node_modules"]
+}
