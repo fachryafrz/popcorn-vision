@@ -8,6 +8,7 @@ import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import UsernamePromptModal from "@/components/username-prompt-modal";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -31,6 +32,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaMeasurementId = process.env.GA_MEASUREMENT_ID;
+  
   return (
     <html
       lang="en"
@@ -47,6 +50,7 @@ export default function RootLayout({
           <Toaster />
         </Providers>
       </body>
+      {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
     </html>
   );
 }
