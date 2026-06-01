@@ -554,7 +554,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex border-b border-zinc-900 mb-8 gap-6 text-sm">
+          <div className="flex border-b overflow-x-auto border-zinc-900 mb-8 gap-6 text-sm">
             {tabsList.map((tab) => (
               <button
                 key={tab.id}
