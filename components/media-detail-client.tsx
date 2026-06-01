@@ -36,8 +36,9 @@ import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
-import { toast } from "sonner";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
+import RegionSelect from "@/components/region-select";
+import { toast } from "sonner";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -1273,18 +1274,13 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                 <span className="text-zinc-500 block text-xs uppercase tracking-wider font-semibold">
                   Content Region
                 </span>
-                <Select value={selectedRegion} onValueChange={(val) => setSelectedRegion(val || "US")}>
-                  <SelectTrigger className="w-full bg-zinc-950 border-zinc-800 text-xs font-bold rounded-xl h-10 text-zinc-200 focus:ring-0 cursor-pointer flex items-center justify-between px-3">
-                    <SelectValue placeholder="Select Region" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-zinc-950 border-zinc-800 text-white rounded-xl">
-                    <SelectItem value="US" className="cursor-pointer">🇺🇸 United States</SelectItem>
-                    <SelectItem value="ID" className="cursor-pointer">🇮🇩 Indonesia</SelectItem>
-                    <SelectItem value="JP" className="cursor-pointer">🇯🇵 Japan</SelectItem>
-                    <SelectItem value="KR" className="cursor-pointer">🇰🇷 South Korea</SelectItem>
-                    <SelectItem value="GB" className="cursor-pointer">🇬🇧 United Kingdom</SelectItem>
-                  </SelectContent>
-                </Select>
+                <RegionSelect
+                  value={selectedRegion}
+                  onValueChange={(val) => setSelectedRegion(val || "US")}
+                  mode="code"
+                  placeholder="Select Region"
+                  className="bg-zinc-950 border-zinc-800 text-xs font-bold rounded-xl h-10 text-zinc-200"
+                />
               </div>
 
               {mediaType === "tv" && details && (

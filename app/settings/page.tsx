@@ -27,22 +27,7 @@ import { useAuthModalStore } from "@/lib/auth-modal-store";
 import AvatarCropModal from "@/components/avatar-crop-modal";
 import ImportWizard from "@/components/import-wizard";
 import DataExporter from "@/components/data-exporter";
-
-const COUNTRIES = [
-  "United States",
-  "United Kingdom",
-  "Canada",
-  "Australia",
-  "Germany",
-  "France",
-  "Japan",
-  "Indonesia",
-  "Singapore",
-  "India",
-  "Brazil",
-  "Mexico",
-  "Other"
-];
+import RegionSelect from "@/components/region-select";
 
 interface SettingsFormProps {
   convexProfile: {
@@ -734,20 +719,13 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
                   <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
                     <Globe className="h-4 w-4" />
                   </span>
-                  <Select value={country} onValueChange={(val) => setCountry(val || "")}>
-                    <SelectTrigger className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pl-12 pr-4 text-sm text-white focus:border-blue-500/50 focus:bg-zinc-900 h-12">
-                      <SelectValue placeholder="Select your region" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-zinc-900 border border-zinc-800 text-white rounded-2xl shadow-xl">
-                      <SelectGroup>
-                        {COUNTRIES.map((c) => (
-                          <SelectItem key={c} value={c} className="hover:bg-zinc-800 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
-                            {c}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <RegionSelect
+                    value={country}
+                    onValueChange={(val) => setCountry(val || "")}
+                    mode="name"
+                    placeholder="Select your region"
+                    className="pl-12 text-sm font-semibold text-zinc-300 hover:text-white"
+                  />
                 </div>
               </div>
             </div>
