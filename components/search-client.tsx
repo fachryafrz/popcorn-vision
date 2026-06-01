@@ -303,7 +303,7 @@ export default function SearchClient({ initialResults, initialQuery, initialType
         </div>
 
         {/* Type filter tabs */}
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex items-center flex-wrap gap-2 mb-8">
           {TYPE_FILTERS.map((f) => (
             <button
               key={f.value}
