@@ -588,12 +588,15 @@ export const getChatsList = query({
           .first();
 
         if (partnerProfile) {
+          const isTyping = partnerMem.typingUntil ? partnerMem.typingUntil > Date.now() : false;
           results.push({
             chatId: chat._id,
             type: "private" as const,
             updatedAt: chat.updatedAt,
             isMuted: !!mem.isMuted,
             unreadCount,
+            isTyping,
+            typingName: isTyping ? partnerProfile.name : undefined,
             lastMessage: messages
               ? {
                   senderId: messages.senderId,
@@ -611,6 +614,24 @@ export const getChatsList = query({
         }
       } else if (chat.type === "group") {
         // Handle Group Details
+        const otherMembers = await ctx.db
+          .query("chatMemberships")
+          .withIndex("by_chat", (q) => q.eq("chatId", chat._id))
+          .collect();
+
+        const typingMember = otherMembers.find(
+          (m) => m.userId !== currentUserId && m.typingUntil && m.typingUntil > Date.now()
+        );
+
+        let typingName: string | undefined = undefined;
+        if (typingMember) {
+          const u = await ctx.db
+            .query("users")
+            .withIndex("by_userId", (q) => q.eq("userId", typingMember.userId))
+            .first();
+          typingName = u?.name;
+        }
+
         results.push({
           chatId: chat._id,
           type: "group" as const,
@@ -622,6 +643,8 @@ export const getChatsList = query({
           updatedAt: chat.updatedAt,
           isMuted: !!mem.isMuted,
           unreadCount,
+          isTyping: !!typingMember,
+          typingName,
           lastMessage: messages
               ? {
                   senderId: messages.senderId,

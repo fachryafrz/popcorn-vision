@@ -491,9 +491,15 @@ export default function ChatPage() {
                         )}
                       </div>
                       <div className="flex items-center justify-between mt-0.5">
-                        <span className="text-[10px] text-zinc-500 truncate block max-w-[150px]">
-                          {c.lastMessage ? c.lastMessage.content : displaySubtitle}
-                        </span>
+                        {c.isTyping ? (
+                          <span className="text-[10px] text-blue-400 font-bold animate-pulse truncate block max-w-[150px]">
+                            {c.type === "group" ? `${c.typingName} is typing...` : "typing..."}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-zinc-500 truncate block max-w-[150px]">
+                            {c.lastMessage ? c.lastMessage.content : displaySubtitle}
+                          </span>
+                        )}
                         {hasUnread && (
                           <span className="h-4 min-w-4 px-1 rounded-full bg-blue-600 text-[8px] font-black text-white flex items-center justify-center shrink-0">
                             {c.unreadCount}
@@ -548,9 +554,17 @@ export default function ChatPage() {
                   <h2 className="text-xs font-black text-white leading-none">
                     {activeChat.type === "group" ? activeChat.name : activeChat.friend?.name}
                   </h2>
-                  <span className="text-[9px] text-zinc-500 font-bold block mt-1 uppercase tracking-wider">
-                    {activeChat.type === "group" ? "Group Chat" : `@${activeChat.friend?.username}`}
-                  </span>
+                  {activeChatTyping && activeChatTyping.length > 0 ? (
+                    <span className="text-[9px] text-blue-400 font-bold block mt-1 animate-pulse italic">
+                      {activeChat.type === "group" 
+                        ? `${activeChatTyping.join(", ")} is typing...` 
+                        : "typing..."}
+                    </span>
+                  ) : (
+                    <span className="text-[9px] text-zinc-500 font-bold block mt-1 uppercase tracking-wider">
+                      {activeChat.type === "group" ? "Group Chat" : `@${activeChat.friend?.username}`}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -620,7 +634,7 @@ export default function ChatPage() {
                           className={cn("group/msg flex gap-3 max-w-[85%] sm:max-w-[70%] relative", isMe ? "ml-auto flex-row-reverse" : "mr-auto")}
                         >
                       {/* Message Avatar */}
-                      <div className="w-8 shrink-0">
+                      <div className={cn("w-8 shrink-0", isMe && "hidden")}>
                         {showAvatar && !isMe && (
                           <Avatar className="h-8 w-8 border border-zinc-800">
                             {msg.senderImage && (
@@ -641,7 +655,7 @@ export default function ChatPage() {
                           </span>
                         )}
 
-                        <div className="flex items-center gap-2 max-w-full">
+                        <div className={cn("flex items-center gap-2 max-w-full", isMe && "justify-end")}>
                           <div
                             className={cn(
                               "p-3.5 text-xs relative shrink-0 max-w-full transition-all duration-300",
