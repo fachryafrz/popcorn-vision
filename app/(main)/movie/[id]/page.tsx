@@ -8,7 +8,9 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { id } = await params;
   const data = await getMediaDetails("movie", id);
   if (!data || !data.details) {
@@ -17,14 +19,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
   const movie = data.details;
-  const releaseYear = movie.release_date ? ` (${new Date(movie.release_date).getFullYear()})` : "";
+  const releaseYear = movie.release_date
+    ? ` (${new Date(movie.release_date).getFullYear()})`
+    : "";
   return {
     title: `${movie.title}${releaseYear} - Watch Free on ${siteConfig.name}`,
-    description: movie.overview || `Watch ${movie.title} online in high definition on ${siteConfig.name}.`,
+    description:
+      movie.overview ||
+      `Watch ${movie.title} online in high definition on ${siteConfig.name}.`,
     openGraph: {
       title: movie.title,
       description: movie.overview,
-      images: movie.backdrop_path ? [`https://image.tmdb.org/t/p/w780${movie.backdrop_path}`] : [],
+      images: movie.backdrop_path
+        ? [`https://image.tmdb.org/t/p/w780${movie.backdrop_path}`]
+        : [],
     },
   };
 }

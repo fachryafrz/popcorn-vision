@@ -11,9 +11,7 @@ export default function MainLayout({
     <>
       <Navbar />
       <UsernamePromptModal />
-      <div className="grow">
-        {children}
-      </div>
+      <div className="grow">{children}</div>
       <Footer />
     </>
   );

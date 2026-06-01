@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, ReactNode, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  ReactNode,
+  useState,
+} from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -23,21 +29,29 @@ interface PersonalizationContextProps {
   setTheme: (theme: ThemeType) => void;
 }
 
-const PersonalizationContext = createContext<PersonalizationContextProps | undefined>(undefined);
+const PersonalizationContext = createContext<
+  PersonalizationContextProps | undefined
+>(undefined);
 
 export function PersonalizationProvider({ children }: { children: ReactNode }) {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
   // DB Sync mutations and queries
-  const currentUser = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
   const saveThemeSettings = useMutation(api.users.updateUserThemeSettings);
   const reopenAccount = useMutation(api.users.reopenCurrentUserAccount);
 
   const [reopening, setReopening] = useState(false);
 
   // Compute active variables based on user status
-  const theme = isLoggedIn && currentUser?.theme ? (currentUser.theme as ThemeType) : "dark";
+  const theme =
+    isLoggedIn && currentUser?.theme
+      ? (currentUser.theme as ThemeType)
+      : "dark";
 
   const setTheme = async (newTheme: ThemeType) => {
     if (isLoggedIn) {
@@ -79,11 +93,15 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
 
       {/* Account Deactivated/Closed Overlay Prompt */}
       {isLoggedIn && currentUser && currentUser.status === "closed" && (
-        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md p-6">
-          <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 p-8 rounded-3xl text-center space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <h2 className="text-2xl font-black text-white">Reopen Your Account?</h2>
-            <p className="text-zinc-400 text-sm leading-relaxed">
-              Welcome back! Your account is currently closed. Reopening your account will restore your profile page and all your previous logged history.
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-zinc-950/80 p-6 backdrop-blur-md">
+          <div className="animate-in fade-in zoom-in-95 w-full max-w-md space-y-6 rounded-3xl border border-zinc-800 bg-zinc-900 p-8 text-center shadow-2xl duration-200">
+            <h2 className="text-2xl font-black text-white">
+              Reopen Your Account?
+            </h2>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Welcome back! Your account is currently closed. Reopening your
+              account will restore your profile page and all your previous
+              logged history.
             </p>
             <div className="flex flex-col gap-3 pt-2">
               <Button
@@ -100,7 +118,7 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
                     setReopening(false);
                   }
                 }}
-                className="w-full rounded-2xl bg-white hover:bg-zinc-200 text-black font-bold py-3.5 cursor-pointer transition-all active:scale-[0.98] h-12 flex items-center justify-center"
+                className="flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl bg-white py-3.5 font-bold text-black transition-all hover:bg-zinc-200 active:scale-[0.98]"
               >
                 {reopening ? (
                   <Loader2 className="h-5 w-5 animate-spin text-black" />
@@ -121,7 +139,7 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
                   }
                 }}
                 variant="outline"
-                className="w-full rounded-2xl border-zinc-800 text-zinc-400 hover:text-white py-3.5 cursor-pointer transition-all h-12 flex items-center justify-center bg-transparent hover:bg-zinc-800/40"
+                className="flex h-12 w-full cursor-pointer items-center justify-center rounded-2xl border-zinc-800 bg-transparent py-3.5 text-zinc-400 transition-all hover:bg-zinc-800/40 hover:text-white"
               >
                 Log Out
               </Button>
@@ -136,7 +154,9 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
 export function usePersonalization() {
   const context = useContext(PersonalizationContext);
   if (context === undefined) {
-    throw new Error("usePersonalization must be used within a PersonalizationProvider");
+    throw new Error(
+      "usePersonalization must be used within a PersonalizationProvider",
+    );
   }
   return context;
 }

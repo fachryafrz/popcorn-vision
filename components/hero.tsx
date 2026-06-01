@@ -32,7 +32,12 @@ interface HeroSlideProps {
 }
 
 // Subcomponent to optimize watchlist queries without re-rendering Swiper container
-function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlideProps) {
+function HeroSlide({
+  media,
+  onQuickView,
+  onAuthRequired,
+  isLoggedIn,
+}: HeroSlideProps) {
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -41,7 +46,7 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
     api.favorites.checkFavoriteItem,
     isLoggedIn && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
 
   const addToFavorites = useMutation(api.favorites.addToFavorites);
@@ -68,7 +73,9 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
           title: media.title || media.name || "",
           posterPath: media.poster_path || "",
           rating: media.vote_average,
-          releaseYear: media.release_date ? new Date(media.release_date).getFullYear().toString() : "N/A",
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
         });
       }
     } catch (err) {
@@ -82,7 +89,7 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
     api.watchlist.checkWatchlistItem,
     isLoggedIn && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
 
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
@@ -109,7 +116,9 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
           title: media.title || media.name || "",
           posterPath: media.poster_path || "",
           rating: media.vote_average,
-          releaseYear: media.release_date ? new Date(media.release_date).getFullYear().toString() : "N/A",
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
         });
       }
     } catch (err) {
@@ -128,7 +137,9 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
   const mobileBackdropUrl = media.textless_poster_path
     ? `${process.env.NEXT_PUBLIC_API_IMAGE_780 || "https://image.tmdb.org/t/p/w780"}${media.textless_poster_path}`
     : posterUrl;
-  const releaseYear = media.release_date ? new Date(media.release_date).getFullYear() : "N/A";
+  const releaseYear = media.release_date
+    ? new Date(media.release_date).getFullYear()
+    : "N/A";
   const genres = getGenreNames(media.genre_ids).slice(0, 3);
   const rating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
@@ -136,86 +147,88 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
   const router = useRouter();
 
   return (
-    <div className="relative w-full h-full flex items-end pb-16 px-6 sm:pb-24 sm:px-16 md:px-20">
+    <div className="relative flex h-full w-full items-end px-6 pb-16 sm:px-16 sm:pb-24 md:px-20">
       {/* Backdrop Image (Desktop) */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 hidden sm:block"
+        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat transition-transform duration-700 sm:block"
         style={{
           backgroundImage: `url(${backdropUrl})`,
         }}
       />
       {/* Poster Image as Backdrop (Mobile) */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-700 block sm:hidden"
+        className="absolute inset-0 block bg-cover bg-center bg-no-repeat transition-transform duration-700 sm:hidden"
         style={{
           backgroundImage: `url(${mobileBackdropUrl})`,
         }}
       />
       {/* Black-out Overlay Gradient */}
-      <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/45 to-black/10 z-10" />
-      <div className="absolute inset-0 bg-linear-to-r from-zinc-950/80 via-transparent to-transparent hidden md:block z-10" />
+      <div className="absolute inset-0 z-10 bg-linear-to-t from-zinc-950 via-zinc-950/45 to-black/10" />
+      <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
 
       {/* Slide Content */}
-      <div className="relative z-20 w-full max-w-5xl flex flex-col md:flex-row items-end gap-8 md:gap-10">
+      <div className="relative z-20 flex w-full max-w-5xl flex-col items-end gap-8 md:flex-row md:gap-10">
         <div
           onClick={() => onQuickView(media)}
-          className="hidden lg:block w-52 h-76 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 cursor-pointer border border-zinc-700/30 transform hover:scale-102 transition-all duration-300 shrink-0"
+          className="hidden h-76 w-52 shrink-0 transform cursor-pointer overflow-hidden rounded-2xl border border-zinc-700/30 shadow-2xl shadow-black/85 transition-all duration-300 hover:scale-102 lg:block"
         >
           <img
             src={posterUrl}
             alt={media.title || media.name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
 
-        <div className="flex-1 flex flex-col items-start gap-4 text-left">
-        {genres.length > 0 && (
+        <div className="flex flex-1 flex-col items-start gap-4 text-left">
+          {genres.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {genres.map((genre) => (
                 <span
                   key={genre}
-                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
+                  className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm"
                 >
                   {genre}
                 </span>
               ))}
             </div>
           )}
-          
+
           {media.logo_path && !logoError ? (
-            <div className="h-16 sm:h-20 md:h-24 lg:h-28 max-w-[85%] relative mb-2 flex items-center">
+            <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-20 md:h-24 lg:h-28">
               <img
                 src={`${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${media.logo_path}`}
                 alt={media.title || media.name}
-                className="h-full w-auto object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
+                className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                 onError={() => setLogoError(true)}
               />
             </div>
           ) : (
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight line-clamp-2">
+            <h1 className="line-clamp-2 text-3xl leading-tight font-black tracking-tight text-white drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl">
               {media.title || media.name}
             </h1>
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600/90 border border-blue-400/40 text-white">
+            <span className="rounded-full border border-blue-400/40 bg-blue-600/90 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
               {mediaLabel}
             </span>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-700/50 backdrop-blur-sm">
-              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+            <div className="flex items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/80 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+              <Star className="h-4 w-4 fill-current text-yellow-400" />
               <span>{rating}</span>
             </div>
-            <span className="text-zinc-400 text-sm font-medium">{releaseYear}</span>
+            <span className="text-sm font-medium text-zinc-400">
+              {releaseYear}
+            </span>
           </div>
 
-          <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-2xl drop-shadow line-clamp-3">
+          <p className="line-clamp-3 max-w-2xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
             {media.overview}
           </p>
 
-          <div className="flex items-center gap-4 mt-6">
+          <div className="mt-6 flex items-center gap-4">
             <Button
               onClick={() => router.push(`/${media.media_type}/${media.id}`)}
-              className="rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm sm:text-base px-6 py-6 sm:px-8 transition-all hover:scale-105 active:scale-98 flex items-center gap-2 cursor-pointer"
+              className="flex cursor-pointer items-center gap-2 rounded-full bg-blue-600 px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 hover:bg-blue-500 active:scale-98 sm:px-8 sm:text-base"
             >
               <Play className="h-5 w-5 fill-current" />
               View Details
@@ -225,10 +238,10 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
               onClick={handleWatchlistToggle}
               disabled={watchlistLoading}
               className={cn(
-                "rounded-full border max-w-9 sm:max-w-none font-semibold text-sm sm:text-base p-3.5 sm:px-8 sm:py-6 transition-all hover:scale-105 active:scale-98 disabled:opacity-50 shrink-0 cursor-pointer",
+                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-8 sm:py-6 sm:text-base",
                 isWatchlisted
-                  ? "bg-emerald-600 border-emerald-500 hover:bg-emerald-500 text-white"
-                  : "bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white"
+                  ? "border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500"
+                  : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
               )}
             >
               <span className="flex items-center gap-1.5">
@@ -239,7 +252,9 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
                 ) : (
                   <Plus className="h-5 w-5" />
                 )}
-                <span className="hidden sm:inline">{isWatchlisted ? "In Watchlist" : "Watchlist"}</span>
+                <span className="hidden sm:inline">
+                  {isWatchlisted ? "In Watchlist" : "Watchlist"}
+                </span>
               </span>
             </Button>
 
@@ -247,19 +262,23 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
               onClick={handleFavoriteToggle}
               disabled={favoriteLoading}
               className={cn(
-                "rounded-full border max-w-9 sm:max-w-none font-semibold text-sm sm:text-base p-3.5 sm:px-8 sm:py-6 transition-all hover:scale-105 active:scale-98 disabled:opacity-50 shrink-0 cursor-pointer",
+                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-8 sm:py-6 sm:text-base",
                 isFavorited
-                  ? "bg-rose-600 border-rose-500 hover:bg-rose-500 text-white"
-                  : "bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white"
+                  ? "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
+                  : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
               )}
             >
               <span className="flex items-center gap-1.5">
                 {favoriteLoading ? (
                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
-                  <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
+                  <Heart
+                    className={cn("h-5 w-5", isFavorited && "fill-current")}
+                  />
                 )}
-                <span className="hidden sm:inline">{isFavorited ? "Favorited" : "Favorite"}</span>
+                <span className="hidden sm:inline">
+                  {isFavorited ? "Favorited" : "Favorite"}
+                </span>
               </span>
             </Button>
           </div>
@@ -269,24 +288,31 @@ function HeroSlide({ media, onQuickView, onAuthRequired, isLoggedIn }: HeroSlide
   );
 }
 
-export default function Hero({ items, onQuickView, onAuthRequired }: HeroProps) {
+export default function Hero({
+  items,
+  onQuickView,
+  onAuthRequired,
+}: HeroProps) {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="relative w-full h-[90svh] sm:h-svh bg-zinc-950 overflow-hidden select-none">
+    <div className="relative h-[90svh] w-full overflow-hidden bg-zinc-950 select-none sm:h-svh">
       <Swiper
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
         pagination={{ clickable: true }}
         autoplay={{ delay: 8000, disableOnInteraction: false }}
         loop
-        className="w-full h-full swiper-hero"
+        className="swiper-hero h-full w-full"
       >
         {items.map((media) => (
-          <SwiperSlide key={`${media.media_type}-${media.id}`} className="w-full h-full">
+          <SwiperSlide
+            key={`${media.media_type}-${media.id}`}
+            className="h-full w-full"
+          >
             <HeroSlide
               media={media}
               onQuickView={onQuickView}
@@ -296,7 +322,7 @@ export default function Hero({ items, onQuickView, onAuthRequired }: HeroProps) 
           </SwiperSlide>
         ))}
       </Swiper>
-      
+
       {/* Custom styles to match theme */}
       <style jsx global>{`
         .swiper-hero .swiper-pagination-bullet {

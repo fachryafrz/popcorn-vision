@@ -18,7 +18,7 @@ export default defineSchema({
     hideFavorites: v.optional(v.boolean()),
     hideRatings: v.optional(v.boolean()),
     status: v.optional(v.string()), // "active" | "deleted" | "closed"
-    messagePrivacy: v.optional(v.string()), // "friends" | "disabled" | "followers"
+    messagePrivacy: v.optional(v.string()), // "friends" | "disabled"
     readReceiptsEnabled: v.optional(v.boolean()), // true = visible, false = hidden
   })
     .index("by_username", ["username"])

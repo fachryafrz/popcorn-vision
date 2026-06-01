@@ -6,8 +6,22 @@ import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
 import { getMediaDetails } from "@/lib/tmdb-actions";
-import { Star, Clock, Calendar, Film, Loader2, Plus, Check, Heart } from "lucide-react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Star,
+  Clock,
+  Calendar,
+  Film,
+  Loader2,
+  Plus,
+  Check,
+  Heart,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
@@ -35,7 +49,11 @@ interface CastItem {
 
 interface WatchProviders {
   US?: {
-    flatrate?: { provider_id: number; provider_name: string; logo_path: string }[];
+    flatrate?: {
+      provider_id: number;
+      provider_name: string;
+      logo_path: string;
+    }[];
   };
 }
 
@@ -45,7 +63,11 @@ interface QuickViewModalProps {
   media: TMDBMedia | null;
 }
 
-export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModalProps) {
+export default function QuickViewModal({
+  isOpen,
+  onClose,
+  media,
+}: QuickViewModalProps) {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
@@ -66,7 +88,7 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
     api.watchlist.checkWatchlistItem,
     isLoggedIn && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
@@ -76,7 +98,7 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
     api.favorites.checkFavoriteItem,
     isLoggedIn && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
@@ -86,12 +108,12 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
     api.ratings.getCommunityRatingStats,
     media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
 
   useEffect(() => {
     if (!media) return;
-    
+
     // Reset state asynchronously to prevent React cascading renders warning
     Promise.resolve().then(() => {
       setLoading(true);
@@ -103,21 +125,25 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
       setLogoError(false);
     });
 
-    getMediaDetails(media.media_type || "movie", String(media.id)).then((data) => {
-      if (data) {
-        setDetails(data.details);
-        setVideos(data.videos || []);
-        setCast(data.credits?.cast?.slice(0, 5) || []);
-        setProviders(data.watchProviders || {});
-        setLogoPath(data.logoPath || null);
-      }
-      setLoading(false);
-    });
+    getMediaDetails(media.media_type || "movie", String(media.id)).then(
+      (data) => {
+        if (data) {
+          setDetails(data.details);
+          setVideos(data.videos || []);
+          setCast(data.credits?.cast?.slice(0, 5) || []);
+          setProviders(data.watchProviders || {});
+          setLogoPath(data.logoPath || null);
+        }
+        setLoading(false);
+      },
+    );
   }, [media]);
 
   if (!media) return null;
 
-  const releaseYear = media.release_date ? new Date(media.release_date).getFullYear() : "N/A";
+  const releaseYear = media.release_date
+    ? new Date(media.release_date).getFullYear()
+    : "N/A";
   const voteRating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
   const backdropUrl = media.backdrop_path
     ? `https://image.tmdb.org/t/p/w780${media.backdrop_path}`
@@ -125,9 +151,11 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
 
   // YouTube trailer resolution
   const trailerVideo = videos?.find(
-    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube"
+    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube",
   );
-  const trailerKey = trailerVideo?.key || (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
+  const trailerKey =
+    trailerVideo?.key ||
+    (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -189,65 +217,73 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="w-[calc(100%-2rem)] max-w-7xl sm:max-w-7xl h-[85svh] sm:h-[80svh] md:h-[85svh] p-0 overflow-hidden bg-zinc-950 border border-zinc-800 text-white rounded-3xl shadow-2xl backdrop-blur-xl">
-        <DialogTitle className="sr-only">Quick View: {media.title || media.name}</DialogTitle>
-        <DialogDescription className="sr-only">Official trailer and details overview</DialogDescription>
-        
+      <DialogContent className="h-[85svh] w-[calc(100%-2rem)] max-w-7xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-0 text-white shadow-2xl backdrop-blur-xl sm:h-[80svh] sm:max-w-7xl md:h-[85svh]">
+        <DialogTitle className="sr-only">
+          Quick View: {media.title || media.name}
+        </DialogTitle>
+        <DialogDescription className="sr-only">
+          Official trailer and details overview
+        </DialogDescription>
+
         {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center">
-            <Loader2 className="h-12 w-12 text-blue-500 animate-spin mb-4" />
-            <p className="text-zinc-400 text-sm">Loading details...</p>
+          <div className="flex flex-1 flex-col items-center justify-center">
+            <Loader2 className="mb-4 h-12 w-12 animate-spin text-blue-500" />
+            <p className="text-sm text-zinc-400">Loading details...</p>
           </div>
         ) : (
-          <div className="flex-1 flex flex-col md:flex-row min-h-0 overflow-hidden">
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
             {/* Left section: Trailer or Backdrop */}
-            <div className="relative w-full md:w-3/5 aspect-video md:aspect-auto md:h-full bg-black shrink-0 flex items-center justify-center overflow-hidden border-b md:border-b-0 md:border-r border-zinc-900">
+            <div className="relative flex aspect-video w-full shrink-0 items-center justify-center overflow-hidden border-b border-zinc-900 bg-black md:aspect-auto md:h-full md:w-3/5 md:border-r md:border-b-0">
               {trailerKey ? (
                 <iframe
                   src={`https://www.youtube.com/embed/${trailerKey}?autoplay=0&rel=0`}
                   title="Official Trailer"
-                  className="w-full h-full border-none"
+                  className="h-full w-full border-none"
                   allowFullScreen
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 />
               ) : (
                 <>
                   <div
-                    className="absolute inset-0 bg-cover bg-center transition-all duration-500 scale-105"
+                    className="absolute inset-0 scale-105 bg-cover bg-center transition-all duration-500"
                     style={{ backgroundImage: `url(${backdropUrl})` }}
                   />
-                  <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/50 to-black/20 z-10" />
-                  <div className="relative z-20 text-center px-4">
-                    <Film className="h-12 w-12 text-zinc-500 mx-auto mb-2" />
-                    <p className="text-zinc-400 text-sm font-semibold">No trailer video available</p>
+                  <div className="absolute inset-0 z-10 bg-linear-to-t from-zinc-950 via-zinc-950/50 to-black/20" />
+                  <div className="relative z-20 px-4 text-center">
+                    <Film className="mx-auto mb-2 h-12 w-12 text-zinc-500" />
+                    <p className="text-sm font-semibold text-zinc-400">
+                      No trailer video available
+                    </p>
                   </div>
                 </>
               )}
             </div>
 
             {/* Right section: Detailed metadata */}
-            <div className="grow md:h-full overflow-y-auto flex flex-col p-6 sm:p-8 space-y-6 scrollbar-thin">
+            <div className="flex grow scrollbar-thin flex-col space-y-6 overflow-y-auto p-6 sm:p-8 md:h-full">
               {/* Title Logo / Text */}
               <div>
-                <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-zinc-900 text-zinc-300 border border-zinc-800 mb-3">
+                <span className="mb-3 inline-block rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 text-xs font-semibold tracking-wider text-zinc-300 uppercase">
                   {media.media_type === "tv" ? "TV Series" : "Movie"}
                 </span>
                 {logoPath && !logoError ? (
-                  <div className="h-16 sm:h-20 md:h-24 lg:h-28 max-w-[85%] relative mb-2 flex items-center">
+                  <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-20 md:h-24 lg:h-28">
                     <img
                       src={`https://image.tmdb.org/t/p/w500${logoPath}`}
                       alt={media.title || media.name}
-                      className="h-full w-auto object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
+                      className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                       onError={() => setLogoError(true)}
                     />
                   </div>
                 ) : (
-                  <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                  <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
                     {media.title || media.name}
                   </h2>
                 )}
                 {details?.tagline && (
-                  <p className="text-zinc-500 italic mt-1.5 text-sm">&ldquo;{details.tagline}&rdquo;</p>
+                  <p className="mt-1.5 text-sm text-zinc-500 italic">
+                    &ldquo;{details.tagline}&rdquo;
+                  </p>
                 )}
               </div>
 
@@ -257,10 +293,10 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
                   onClick={handleWatchlistToggle}
                   disabled={watchlistLoading}
                   className={cn(
-                    "rounded-full border font-semibold text-xs px-4 py-4 transition-all hover:scale-105 active:scale-98 disabled:opacity-50 cursor-pointer h-9",
+                    "h-9 cursor-pointer rounded-full border px-4 py-4 text-xs font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50",
                     isWatchlisted
-                      ? "bg-emerald-600 border-emerald-500 hover:bg-emerald-500 text-white"
-                      : "bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white"
+                      ? "border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500"
+                      : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
                   )}
                 >
                   <span className="flex items-center gap-1.5">
@@ -279,17 +315,22 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
                   onClick={handleFavoriteToggle}
                   disabled={favoriteLoading}
                   className={cn(
-                    "rounded-full border font-semibold text-xs px-4 py-4 transition-all hover:scale-105 active:scale-98 disabled:opacity-50 cursor-pointer h-9",
+                    "h-9 cursor-pointer rounded-full border px-4 py-4 text-xs font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50",
                     isFavorited
-                      ? "bg-rose-600 border-rose-500 hover:bg-rose-500 text-white"
-                      : "bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white"
+                      ? "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
+                      : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
                   )}
                 >
                   <span className="flex items-center gap-1.5">
                     {favoriteLoading ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
-                      <Heart className={cn("h-3.5 w-3.5", isFavorited && "fill-current")} />
+                      <Heart
+                        className={cn(
+                          "h-3.5 w-3.5",
+                          isFavorited && "fill-current",
+                        )}
+                      />
                     )}
                     {isFavorited ? "Favorited" : "Favorite"}
                   </span>
@@ -297,22 +338,43 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
               </div>
 
               {/* Metadata Indicators */}
-              <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-zinc-300 border-b border-zinc-900 pb-4">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-zinc-900 pb-4 text-sm text-zinc-300">
                 {(() => {
-                  const hasCommunity = communityStats && communityStats.totalRatings > 0;
-                  const displayRating = hasCommunity ? communityStats.averageRating.toFixed(1) : voteRating;
+                  const hasCommunity =
+                    communityStats && communityStats.totalRatings > 0;
+                  const displayRating = hasCommunity
+                    ? communityStats.averageRating.toFixed(1)
+                    : voteRating;
                   const sourceLabel = hasCommunity ? "Community" : "TMDB";
-                  const ratingCount = hasCommunity ? communityStats.totalRatings : (details?.vote_count || 0);
+                  const ratingCount = hasCommunity
+                    ? communityStats.totalRatings
+                    : details?.vote_count || 0;
                   return (
                     <>
-                      <div className="flex items-center gap-1.5" title={`${sourceLabel} Rating`}>
-                        <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                        <span className="font-semibold text-white">{displayRating}</span>
-                        <span className="text-zinc-500 text-xs font-semibold">({ratingCount} {hasCommunity ? `rating${communityStats.totalRatings !== 1 ? "s" : ""}` : "votes"})</span>
-                        <span className="text-[9px] text-zinc-400 bg-zinc-900 border border-zinc-850 px-2 py-0.5 rounded-full uppercase tracking-wider font-extrabold ml-1">{sourceLabel}</span>
+                      <div
+                        className="flex items-center gap-1.5"
+                        title={`${sourceLabel} Rating`}
+                      >
+                        <Star className="h-4 w-4 fill-current text-yellow-400" />
+                        <span className="font-semibold text-white">
+                          {displayRating}
+                        </span>
+                        <span className="text-xs font-semibold text-zinc-500">
+                          ({ratingCount}{" "}
+                          {hasCommunity
+                            ? `rating${communityStats.totalRatings !== 1 ? "s" : ""}`
+                            : "votes"}
+                          )
+                        </span>
+                        <span className="border-zinc-850 ml-1 rounded-full border bg-zinc-900 px-2 py-0.5 text-[9px] font-extrabold tracking-wider text-zinc-400 uppercase">
+                          {sourceLabel}
+                        </span>
                       </div>
                       {hasCommunity && (
-                        <div className="text-zinc-500 text-xs font-medium bg-zinc-900/40 border border-zinc-850 px-2.5 py-0.5 rounded-full" title="TMDB reference rating">
+                        <div
+                          className="border-zinc-850 rounded-full border bg-zinc-900/40 px-2.5 py-0.5 text-xs font-medium text-zinc-500"
+                          title="TMDB reference rating"
+                        >
                           TMDB Ref: {voteRating}
                         </div>
                       )}
@@ -333,7 +395,8 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
                   <div className="flex items-center gap-1">
                     <Film className="h-4 w-4 text-zinc-400" />
                     <span>
-                      {details.number_of_seasons} Season{details.number_of_seasons > 1 ? "s" : ""}
+                      {details.number_of_seasons} Season
+                      {details.number_of_seasons > 1 ? "s" : ""}
                     </span>
                   </div>
                 )}
@@ -345,7 +408,7 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
                   {details.genres.map((g) => (
                     <span
                       key={g.id}
-                      className="px-3 py-1 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-semibold"
+                      className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-semibold text-zinc-300"
                     >
                       {g.name}
                     </span>
@@ -355,10 +418,10 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
 
               {/* Description */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">
+                <h4 className="mb-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                   Overview
                 </h4>
-                <p className="text-zinc-300 text-sm leading-relaxed">
+                <p className="text-sm leading-relaxed text-zinc-300">
                   {media.overview || "No overview available."}
                 </p>
               </div>
@@ -366,7 +429,7 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
               {/* Cast Grid */}
               {cast.length > 0 && (
                 <div>
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-3">
+                  <h4 className="mb-3 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                     Key Cast
                   </h4>
                   <div className="grid grid-cols-5 gap-3">
@@ -375,15 +438,18 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
                         ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
                         : "/logo/popcorn.png";
                       return (
-                        <div key={actor.id} className="text-center flex flex-col items-center">
+                        <div
+                          key={actor.id}
+                          className="flex flex-col items-center text-center"
+                        >
                           <div
-                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-cover bg-center border border-zinc-800 shadow-md mb-1.5"
+                            className="mb-1.5 h-10 w-10 rounded-full border border-zinc-800 bg-cover bg-center shadow-md sm:h-12 sm:w-12"
                             style={{ backgroundImage: `url(${actorPic})` }}
                           />
-                          <span className="text-[10px] font-semibold text-white truncate w-full">
+                          <span className="w-full truncate text-[10px] font-semibold text-white">
                             {actor.name}
                           </span>
-                          <span className="text-[9px] text-zinc-500 truncate w-full">
+                          <span className="w-full truncate text-[9px] text-zinc-500">
                             {actor.character}
                           </span>
                         </div>
@@ -396,14 +462,14 @@ export default function QuickViewModal({ isOpen, onClose, media }: QuickViewModa
               {/* Watch Providers */}
               {providers.US?.flatrate && (
                 <div className="pt-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2.5">
+                  <h4 className="mb-2.5 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                     Streaming on (US)
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {providers.US.flatrate.map((prov) => (
                       <div
                         key={prov.provider_id}
-                        className="group relative flex h-9 w-9 overflow-hidden rounded-xl border border-zinc-850 bg-zinc-900"
+                        className="group border-zinc-850 relative flex h-9 w-9 overflow-hidden rounded-xl border bg-zinc-900"
                         title={prov.provider_name}
                       >
                         <img

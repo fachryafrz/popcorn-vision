@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
-import { getTrending, getStreamingOriginals, getByCategory } from "@/lib/tmdb-actions";
+import {
+  getTrending,
+  getStreamingOriginals,
+  getByCategory,
+} from "@/lib/tmdb-actions";
 import Hero from "./hero";
 import Section from "./section";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
@@ -29,8 +33,8 @@ export default function HomeClient({
   };
 
   return (
-    <div className="min-h-svh bg-background text-foreground flex flex-col font-sans select-none overflow-x-hidden transition-colors duration-300">
-      <main className="grow flex flex-col">
+    <div className="bg-background text-foreground flex min-h-svh flex-col overflow-x-hidden font-sans transition-colors duration-300 select-none">
+      <main className="flex grow flex-col">
         {/* Fullscreen Hero Carousel */}
         <Hero
           items={initialHero}
@@ -39,7 +43,7 @@ export default function HomeClient({
         />
 
         {/* Categories Section Carousels */}
-        <div className="relative z-20 flex flex-col gap-6 bg-background pb-20 transition-colors duration-300">
+        <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
           {/* Trending Now */}
           <div id="trending">
             <Section

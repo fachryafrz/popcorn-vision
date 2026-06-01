@@ -16,7 +16,11 @@ interface CardProps {
   onAuthRequired: () => void;
 }
 
-export default function Card({ media, onQuickView, onAuthRequired }: CardProps) {
+export default function Card({
+  media,
+  onQuickView,
+  onAuthRequired,
+}: CardProps) {
   const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -28,7 +32,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
     api.favorites.checkFavoriteItem,
     isLoggedIn
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
 
   const addToFavorites = useMutation(api.favorites.addToFavorites);
@@ -45,7 +49,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
     try {
       const mId = String(media.id);
       const mType = media.media_type || "movie";
-      
+
       if (isFavorited) {
         await removeFromFavorites({ mediaId: mId, mediaType: mType });
       } else {
@@ -55,7 +59,9 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
           title: media.title || media.name || "",
           posterPath: media.poster_path || "",
           rating: media.vote_average,
-          releaseYear: media.release_date ? new Date(media.release_date).getFullYear().toString() : "N/A",
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
         });
       }
     } catch (error) {
@@ -70,7 +76,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
     api.watchlist.checkWatchlistItem,
     isLoggedIn
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip"
+      : "skip",
   );
 
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
@@ -87,7 +93,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
     try {
       const mId = String(media.id);
       const mType = media.media_type || "movie";
-      
+
       if (isWatchlisted) {
         await removeFromWatchlist({ mediaId: mId, mediaType: mType });
       } else {
@@ -97,7 +103,9 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
           title: media.title || media.name || "",
           posterPath: media.poster_path || "",
           rating: media.vote_average,
-          releaseYear: media.release_date ? new Date(media.release_date).getFullYear().toString() : "N/A",
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
         });
       }
     } catch (error) {
@@ -112,17 +120,18 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
     : "/logo/popcorn.png";
 
   const rating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
-  const releaseYear = media.release_date ? new Date(media.release_date).getFullYear() : "N/A";
+  const releaseYear = media.release_date
+    ? new Date(media.release_date).getFullYear()
+    : "N/A";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
 
   return (
     <div
       onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
-      className="group relative w-full shrink-0 flex flex-col gap-3 cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-black/40"
+      className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-black/40"
     >
       {/* Poster area */}
       <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
-        
         {/* Poster image */}
         <img
           src={posterPath}
@@ -132,27 +141,27 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
         />
 
         {/* Backdrop overlay */}
-        <div className="absolute hidden md:block inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+        <div className="absolute inset-0 z-10 hidden bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
 
         {/* Content badges */}
         <div className="absolute top-3 left-3 z-20 flex gap-2">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 backdrop-blur-md text-zinc-300 border border-zinc-700/30">
+          <span className="rounded-full border border-zinc-700/30 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {mediaLabel}
           </span>
         </div>
 
         {/* Floating action buttons on Hover */}
-        <div className="absolute hidden inset-x-0 bottom-4 z-20 md:flex justify-center gap-2 px-3 opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+        <div className="absolute inset-x-0 bottom-4 z-20 hidden translate-y-3 transform justify-center gap-2 px-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:flex">
           {/* Watchlist Button */}
           <Button
             onClick={handleWatchlistClick}
             disabled={watchlistLoading}
             size="icon-sm"
             className={cn(
-              "rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer",
+              "cursor-pointer rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none",
               isWatchlisted
-                ? "bg-emerald-600/90 border-emerald-500 hover:bg-emerald-500 text-white"
-                : "bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                ? "border-emerald-500 bg-emerald-600/90 text-white hover:bg-emerald-500"
+                : "border-zinc-700 bg-black/60 text-zinc-300 hover:bg-zinc-800 hover:text-white",
             )}
             title={isWatchlisted ? "Remove from Watchlist" : "Add to Watchlist"}
           >
@@ -167,9 +176,12 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
 
           {/* Quick View Button */}
           <Button
-            onClick={(e) => { e.stopPropagation(); onQuickView(media); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onQuickView(media);
+            }}
             size="icon-sm"
-            className="rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+            className="cursor-pointer rounded-full border border-zinc-700 bg-black/60 text-zinc-300 shadow-lg transition-all hover:scale-105 hover:bg-zinc-800 hover:text-white active:translate-y-px disabled:pointer-events-none"
             title="Quick View"
           >
             <Eye className="h-4 w-4" />
@@ -181,10 +193,10 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
             disabled={favoriteLoading}
             size="icon-sm"
             className={cn(
-              "rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none cursor-pointer",
+              "cursor-pointer rounded-full border shadow-lg transition-all hover:scale-105 active:translate-y-px disabled:pointer-events-none",
               isFavorited
-                ? "bg-rose-600/90 border-rose-500 hover:bg-rose-500 text-white"
-                : "bg-black/60 border-zinc-700 text-zinc-300 hover:text-white hover:bg-zinc-800"
+                ? "border-rose-500 bg-rose-600/90 text-white hover:bg-rose-500"
+                : "border-zinc-700 bg-black/60 text-zinc-300 hover:bg-zinc-800 hover:text-white",
             )}
             title={isFavorited ? "Remove from Favorites" : "Add to Favorites"}
           >
@@ -199,14 +211,14 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
 
       {/* Metadata section */}
       <div className="flex flex-col gap-1 px-1">
-        <h3 className="font-semibold text-sm line-clamp-1 text-white group-hover:text-blue-400 transition-colors">
+        <h3 className="line-clamp-1 text-sm font-semibold text-white transition-colors group-hover:text-blue-400">
           {media.title || media.name}
         </h3>
-        
+
         <div className="flex items-center justify-between text-xs text-zinc-400">
           <span>{releaseYear}</span>
           <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 text-yellow-500 fill-current" />
+            <Star className="h-3.5 w-3.5 fill-current text-yellow-500" />
             <span className="font-semibold text-zinc-200">{rating}</span>
           </div>
         </div>
