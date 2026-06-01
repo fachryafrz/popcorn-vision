@@ -46,20 +46,20 @@ export default function RatingSection({
   };
 
   return (
-    <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 max-w-sm backdrop-blur-sm">
-      <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+    <div className="mt-6 flex max-w-sm flex-col gap-2 bg-zinc-900/10 backdrop-blur-sm">
+      <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
         <span>{userRating ? "Your Rating" : "Rate this title"}</span>
         {userRating && (
           <button
             type="button"
             onClick={handleClearRating}
-            className="text-red-400 hover:text-red-300 font-bold tracking-wide uppercase transition-colors cursor-pointer"
+            className="cursor-pointer font-bold tracking-wide text-red-400 uppercase transition-colors hover:text-red-300"
           >
             Clear
           </button>
         )}
       </div>
-      <div className="flex items-center gap-3 mt-1 flex-wrap">
+      <div className="mt-1 flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1.5">
           {Array.from({ length: 5 }).map((_, starIndex) => {
             const starPosition = starIndex + 1;
@@ -89,7 +89,7 @@ export default function RatingSection({
 
             return (
               <div
-                className="relative hover:scale-110 transition-transform duration-100"
+                className="relative transition-transform duration-100 hover:scale-110"
                 key={starIndex}
               >
                 {/* Base Empty Star */}
@@ -97,15 +97,15 @@ export default function RatingSection({
 
                 {/* Half Filled Overlay */}
                 {userRating === leftValue && (
-                  <div className="absolute top-0 left-0 w-1/2 overflow-hidden pointer-events-none">
-                    <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
+                  <div className="pointer-events-none absolute top-0 left-0 w-1/2 overflow-hidden">
+                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
                   </div>
                 )}
 
                 {/* Fully Filled Overlay */}
                 {userRating && userRating >= rightValue && (
-                  <div className="absolute top-0 left-0 w-full overflow-hidden pointer-events-none">
-                    <Star className="h-6 w-6 text-yellow-400 fill-yellow-400" />
+                  <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden">
+                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
                   </div>
                 )}
 
@@ -117,7 +117,7 @@ export default function RatingSection({
                       e.stopPropagation();
                       handleRate(leftValue);
                     }}
-                    className="w-1/2 h-full cursor-pointer"
+                    className="h-full w-1/2 cursor-pointer"
                     title={`Rate ${leftValue / 2} stars`}
                   />
                   <button
@@ -126,7 +126,7 @@ export default function RatingSection({
                       e.stopPropagation();
                       handleRate(rightValue);
                     }}
-                    className="w-1/2 h-full cursor-pointer"
+                    className="h-full w-1/2 cursor-pointer"
                     title={`Rate ${rightValue / 2} stars`}
                   />
                 </div>
@@ -134,7 +134,7 @@ export default function RatingSection({
             );
           })}
         </div>
-        <span className="text-sm font-black text-white ml-2 bg-zinc-900/60 px-2 py-0.5 rounded-md border border-zinc-800">
+        <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
           {userRating ? `${userRating / 2} / 5` : "_ / 5"}
         </span>
       </div>

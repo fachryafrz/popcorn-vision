@@ -29,15 +29,15 @@ export function EditToolbar({
   if (!isOwner || !items || items.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-4 bg-zinc-950/20 mb-6 backdrop-blur-md">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-4 bg-zinc-950/20 backdrop-blur-md">
       <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
           onClick={() => setIsEditMode(!isEditMode)}
           className={cn(
-            "rounded-xl text-xs font-semibold cursor-pointer h-9 border-zinc-800",
-            isEditMode && "bg-zinc-900 border-zinc-700 text-white"
+            "h-9 cursor-pointer rounded-xl border-zinc-800 text-xs font-semibold",
+            isEditMode && "border-zinc-700 bg-zinc-900 text-white",
           )}
         >
           {isEditMode ? "Exit Edit Mode" : "Edit List"}
@@ -47,9 +47,11 @@ export function EditToolbar({
             variant="ghost"
             size="sm"
             onClick={() => handleSelectAll(items)}
-            className="rounded-xl text-xs font-semibold h-9 text-zinc-400 hover:text-white cursor-pointer"
+            className="h-9 cursor-pointer rounded-xl text-xs font-semibold text-zinc-400 hover:text-white"
           >
-            {selectedItems.size === items.length ? "Deselect All" : "Select All"}
+            {selectedItems.size === items.length
+              ? "Deselect All"
+              : "Select All"}
           </Button>
         )}
       </div>
@@ -59,7 +61,7 @@ export function EditToolbar({
           size="sm"
           onClick={handleBulkDelete}
           disabled={isBulkDeleting}
-          className="rounded-xl text-xs font-bold h-9 bg-red-600 hover:bg-red-500 text-white border-red-500 cursor-pointer shadow-md flex items-center gap-1.5"
+          className="flex h-9 cursor-pointer items-center gap-1.5 rounded-xl border-red-500 bg-red-600 text-xs font-bold text-white shadow-md hover:bg-red-500"
         >
           {isBulkDeleting ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />

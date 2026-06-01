@@ -11,7 +11,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 // Import types and subcomponents
-import { Friend, ChatMessage, ChatItem, ChatMember } from "@/components/chat/types";
+import {
+  Friend,
+  ChatMessage,
+  ChatItem,
+  ChatMember,
+} from "@/components/chat/types";
 import SidebarPanel from "@/components/chat/sidebar-panel";
 import ChatWorkspace from "@/components/chat/chat-workspace";
 import DetailsPanel from "@/components/chat/details-panel";
@@ -26,8 +31,14 @@ export default function ChatPage() {
   // ----------------------------------------------------
   // CONVEX STATE QUERIES & MUTATIONS
   // ----------------------------------------------------
-  const currentUserProfile = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
-  const rawChatsList = useQuery(api.chats.getChatsList, isLoggedIn ? {} : "skip");
+  const currentUserProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
+  const rawChatsList = useQuery(
+    api.chats.getChatsList,
+    isLoggedIn ? {} : "skip",
+  );
 
   // Cast raw Convex query output to strong local ChatItem interface
   const chats = useMemo(() => {
@@ -38,7 +49,9 @@ export default function ChatPage() {
   // Get active friends list to start new chat
   const profileData = useQuery(
     api.social.getUserSocialProfile,
-    currentUserProfile?.username ? { username: currentUserProfile.username } : "skip"
+    currentUserProfile?.username
+      ? { username: currentUserProfile.username }
+      : "skip",
   );
 
   // Strictly cast friends profiles
@@ -64,14 +77,19 @@ export default function ChatPage() {
   // ----------------------------------------------------
   // LOCAL COMPONENT STATE
   // ----------------------------------------------------
-  const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(null);
+  const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(
+    null,
+  );
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [showRightPanel, setShowRightPanel] = useState(false);
-  const [editingMessageId, setEditingMessageId] = useState<Id<"messages"> | null>(null);
+  const [editingMessageId, setEditingMessageId] =
+    useState<Id<"messages"> | null>(null);
   const [editingText, setEditingText] = useState("");
-  const [activeContextMenuMessageId, setActiveContextMenuMessageId] = useState<string | null>(null);
+  const [activeContextMenuMessageId, setActiveContextMenuMessageId] = useState<
+    string | null
+  >(null);
 
   // Modals
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
@@ -83,7 +101,9 @@ export default function ChatPage() {
   // Forms
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
-  const [selectedInvitedUsers, setSelectedInvitedUsers] = useState<Set<string>>(new Set());
+  const [selectedInvitedUsers, setSelectedInvitedUsers] = useState<Set<string>>(
+    new Set(),
+  );
   const [reportReason, setReportReason] = useState("");
   const [reportedUserId, setReportedUserId] = useState<string | null>(null);
 
@@ -99,7 +119,7 @@ export default function ChatPage() {
 
   const rawActiveChatMessages = useQuery(
     api.chats.getChatMessages,
-    selectedChatId ? { chatId: selectedChatId } : "skip"
+    selectedChatId ? { chatId: selectedChatId } : "skip",
   );
   const activeChatMessages = useMemo(() => {
     if (!rawActiveChatMessages) return undefined;
@@ -108,7 +128,7 @@ export default function ChatPage() {
 
   const rawActiveChatMembers = useQuery(
     api.chats.getChatMembers,
-    selectedChatId ? { chatId: selectedChatId } : "skip"
+    selectedChatId ? { chatId: selectedChatId } : "skip",
   );
   const activeChatMembers = useMemo(() => {
     if (!rawActiveChatMembers) return undefined;
@@ -117,7 +137,7 @@ export default function ChatPage() {
 
   const activeChatTyping = useQuery(
     api.chats.getTypingUsers,
-    selectedChatId ? { chatId: selectedChatId } : "skip"
+    selectedChatId ? { chatId: selectedChatId } : "skip",
   );
 
   // Mark chat as read when opening or receiving messages
@@ -135,11 +155,15 @@ export default function ChatPage() {
   // Handle typing triggers
   const handleTyping = () => {
     if (!selectedChatId) return;
-    setTypingStatus({ chatId: selectedChatId, isTyping: true }).catch(console.error);
+    setTypingStatus({ chatId: selectedChatId, isTyping: true }).catch(
+      console.error,
+    );
 
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
     typingTimerRef.current = setTimeout(() => {
-      setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(console.error);
+      setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(
+        console.error,
+      );
     }, 3000);
   };
 
@@ -152,7 +176,9 @@ export default function ChatPage() {
       const textToSend = messageText.trim();
       setMessageText("");
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(console.error);
+      setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(
+        console.error,
+      );
 
       await sendMessage({
         chatId: selectedChatId,
@@ -278,7 +304,9 @@ export default function ChatPage() {
       setIsReportOpen(false);
       setReportReason("");
       setReportedUserId(null);
-      toast.success("User reported successfully. Popcorn Vision safety admins will review this chat session.");
+      toast.success(
+        "User reported successfully. Popcorn Vision safety admins will review this chat session.",
+      );
     } catch {
       toast.error("Failed to submit report");
     }
@@ -287,7 +315,9 @@ export default function ChatPage() {
   // Start direct message
   const handleStartDM = async (friendId: string) => {
     try {
-      const newChatId = await createOrGetPrivateChat({ friendUserId: friendId });
+      const newChatId = await createOrGetPrivateChat({
+        friendUserId: friendId,
+      });
       setSelectedChatId(newChatId);
       setIsNewChatOpen(false);
     } catch (err: unknown) {
@@ -301,23 +331,32 @@ export default function ChatPage() {
     if (!activeChatMessages) return [];
     if (!searchQuery.trim()) return activeChatMessages;
     const q = searchQuery.toLowerCase();
-    return activeChatMessages.filter((m) => m.content.toLowerCase().includes(q));
+    return activeChatMessages.filter((m) =>
+      m.content.toLowerCase().includes(q),
+    );
   }, [activeChatMessages, searchQuery]);
 
   // Extract shared media list
   const sharedMediaList = useMemo(() => {
     if (!activeChatMessages) return [];
-    return activeChatMessages.filter((m) => m.attachmentType === "media" && m.sharedMediaId);
+    return activeChatMessages.filter(
+      (m) => m.attachmentType === "media" && m.sharedMediaId,
+    );
   }, [activeChatMessages]);
 
   // Enforce logged-in status
   if (!isLoggedIn || !currentUserId) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white p-6 text-center">
-        <Loader2 className="h-10 w-10 text-blue-500 animate-spin mb-4" />
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
+        <Loader2 className="mb-4 h-10 w-10 animate-spin text-blue-500" />
         <h1 className="text-xl font-bold">Loading chats...</h1>
-        <p className="text-zinc-550 text-xs mt-1">Please log in to participate in direct and group chats.</p>
-        <Button onClick={() => router.push("/")} className="mt-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white px-6 cursor-pointer">
+        <p className="text-zinc-550 mt-1 text-xs">
+          Please log in to participate in direct and group chats.
+        </p>
+        <Button
+          onClick={() => router.push("/")}
+          className="mt-4 cursor-pointer rounded-xl bg-blue-600 px-6 text-white hover:bg-blue-500"
+        >
           Go Home
         </Button>
       </div>
@@ -325,8 +364,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="grow bg-zinc-950 text-white min-h-svh max-h-svh flex flex-row overflow-hidden relative border-t border-zinc-900">
-      
+    <div className="relative flex max-h-svh min-h-svh grow flex-row overflow-hidden border-t border-zinc-900 bg-zinc-950 text-white">
       <SidebarPanel
         chats={chats}
         selectedChatId={selectedChatId}
@@ -406,7 +444,6 @@ export default function ChatPage() {
         handleSendGIF={handleSendGIF}
         handleSubmitReport={handleSubmitReport}
       />
-
     </div>
   );
 }

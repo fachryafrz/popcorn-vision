@@ -22,7 +22,12 @@ import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Id } from "@/convex/_generated/dataModel";
 import moment from "moment";
@@ -32,7 +37,6 @@ import {
   CastItem,
   VideoItem,
   ProviderItem,
-  Season,
   MediaDetails,
   RegionalRelease,
   RegionalContentRating,
@@ -66,21 +70,24 @@ interface MediaDetailClientProps {
 // Map full country name string from profile/settings to ISO 2-letter code for TMDB
 const countryNameToCode: Record<string, string> = {
   "United States": "US",
-  "Indonesia": "ID",
-  "Japan": "JP",
+  Indonesia: "ID",
+  Japan: "JP",
   "South Korea": "KR",
   "United Kingdom": "GB",
-  "Canada": "CA",
-  "Australia": "AU",
-  "Germany": "DE",
-  "France": "FR",
-  "Singapore": "SG",
-  "India": "IN",
-  "Brazil": "BR",
-  "Mexico": "MX",
+  Canada: "CA",
+  Australia: "AU",
+  Germany: "DE",
+  France: "FR",
+  Singapore: "SG",
+  India: "IN",
+  Brazil: "BR",
+  Mexico: "MX",
 };
 
-export default function MediaDetailClient({ mediaType, initialData }: MediaDetailClientProps) {
+export default function MediaDetailClient({
+  mediaType,
+  initialData,
+}: MediaDetailClientProps) {
   const router = useRouter();
   const details = initialData.details;
   const session = authClient.useSession();
@@ -105,13 +112,17 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const [selectedRegion, setSelectedRegion] = useState("US");
 
   // Query current user profile to read country preference
-  const convexProfile = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
+  const convexProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
 
   // Automatic region detection
   useEffect(() => {
     // 1. Prioritize user profile country preference if set
     if (convexProfile?.country) {
-      const mappedCode = countryNameToCode[convexProfile.country] || convexProfile.country;
+      const mappedCode =
+        countryNameToCode[convexProfile.country] || convexProfile.country;
       Promise.resolve().then(() => {
         setSelectedRegion(mappedCode);
       });
@@ -120,16 +131,22 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
     // 2. Fall back to browser locales detection
     if (typeof window !== "undefined") {
-      const locale = navigator.language || (navigator.languages && navigator.languages[0]);
+      const locale =
+        navigator.language || (navigator.languages && navigator.languages[0]);
       if (locale) {
         const parts = locale.split("-");
-        const detectedRegion = parts[1] ? parts[1].toUpperCase() : parts[0].toUpperCase();
+        const detectedRegion = parts[1]
+          ? parts[1].toUpperCase()
+          : parts[0].toUpperCase();
         const supported = ["US", "ID", "JP", "KR", "GB"];
         if (supported.includes(detectedRegion)) {
           Promise.resolve().then(() => {
             setSelectedRegion(detectedRegion);
           });
-        } else if (initialData.watchProviders && detectedRegion in initialData.watchProviders) {
+        } else if (
+          initialData.watchProviders &&
+          detectedRegion in initialData.watchProviders
+        ) {
           Promise.resolve().then(() => {
             setSelectedRegion(detectedRegion);
           });
@@ -161,8 +178,12 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       getCollectionDetails(details.belongs_to_collection.id).then((data) => {
         if (data && data.parts) {
           const sortedParts = (data.parts as CollectionPart[]).sort((a, b) => {
-            const dateA = a.release_date ? new Date(a.release_date).getTime() : 0;
-            const dateB = b.release_date ? new Date(b.release_date).getTime() : 0;
+            const dateA = a.release_date
+              ? new Date(a.release_date).getTime()
+              : 0;
+            const dateB = b.release_date
+              ? new Date(b.release_date).getTime()
+              : 0;
             return dateA - dateB;
           });
           setCollectionParts(sortedParts);
@@ -173,7 +194,8 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
   const [expandedSeason, setExpandedSeason] = useState<number | null>(null);
   const [seasonDetailsLoading, setSeasonDetailsLoading] = useState(false);
-  const [activeSeasonData, setActiveSeasonData] = useState<SeasonDetails | null>(null);
+  const [activeSeasonData, setActiveSeasonData] =
+    useState<SeasonDetails | null>(null);
 
   const handleSeasonClick = (seasonNumber: number) => {
     if (expandedSeason === seasonNumber) {
@@ -183,10 +205,13 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       setExpandedSeason(seasonNumber);
       setSeasonDetailsLoading(true);
       setActiveSeasonData(null);
-      
+
       // Initial scroll to the season section as soon as it begins loading
       setTimeout(() => {
-        seasonDetailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        seasonDetailsRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
       }, 100);
 
       getSeasonDetails(details.id, seasonNumber).then((data) => {
@@ -194,7 +219,10 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
           setActiveSeasonData(data as SeasonDetails);
           // Re-scroll once actual episodes list loads and changes heights
           setTimeout(() => {
-            seasonDetailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+            seasonDetailsRef.current?.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           }, 150);
         }
         setSeasonDetailsLoading(false);
@@ -208,7 +236,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     api.watchlist.checkWatchlistItem,
     isLoggedIn && initialData.details
       ? { mediaId: String(initialData.details.id), mediaType }
-      : "skip"
+      : "skip",
   );
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
@@ -219,7 +247,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     api.favorites.checkFavoriteItem,
     isLoggedIn && initialData.details
       ? { mediaId: String(initialData.details.id), mediaType }
-      : "skip"
+      : "skip",
   );
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
@@ -229,13 +257,13 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     api.ratings.getUserRating,
     isLoggedIn && initialData.details
       ? { mediaId: String(initialData.details.id), mediaType }
-      : "skip"
+      : "skip",
   );
   const communityStats = useQuery(
     api.ratings.getCommunityRatingStats,
     initialData.details
       ? { mediaId: String(initialData.details.id), mediaType }
-      : "skip"
+      : "skip",
   );
   const rateMedia = useMutation(api.ratings.rateMedia);
   const deleteRating = useMutation(api.ratings.deleteRating);
@@ -245,7 +273,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     api.diary.getMediaWatchHistory,
     isLoggedIn && initialData.details
       ? { mediaId: String(initialData.details.id), mediaType }
-      : "skip"
+      : "skip",
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
@@ -267,7 +295,9 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         sharedMediaYear: releaseYear.toString(),
       });
       setIsShareDialogOpen(false);
-      toast.success(`Shared "${details.title || details.name}" to ${chatTitle}!`);
+      toast.success(
+        `Shared "${details.title || details.name}" to ${chatTitle}!`,
+      );
     } catch {
       toast.error("Failed to share title");
     }
@@ -275,13 +305,18 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
-  const providers = initialData.watchProviders?.[selectedRegion]?.flatrate || [];
+  const providers =
+    initialData.watchProviders?.[selectedRegion]?.flatrate || [];
 
   // YouTube trailer resolution
   const trailerVideo = initialData.videos?.find(
-    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube"
+    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube",
   );
-  const trailerKey = trailerVideo?.key || (initialData.videos?.[0]?.site === "YouTube" ? initialData.videos[0].key : null);
+  const trailerKey =
+    trailerVideo?.key ||
+    (initialData.videos?.[0]?.site === "YouTube"
+      ? initialData.videos[0].key
+      : null);
 
   // Streaming server sources
   const servers = streamingProviderList({
@@ -291,16 +326,22 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
     episode,
   });
 
-  const rating = details?.vote_average ? details.vote_average.toFixed(1) : "0.0";
+  const rating = details?.vote_average
+    ? details.vote_average.toFixed(1)
+    : "0.0";
 
   // Find regional release date and content certification
   const regionalReleaseInfo = (() => {
     if (mediaType !== "movie" || !initialData.regionalData) return null;
     const movieReleaseData = initialData.regionalData as RegionalRelease[];
     const regionRelease = movieReleaseData.find(
-      (r) => r.iso_3166_1 === selectedRegion
+      (r) => r.iso_3166_1 === selectedRegion,
     );
-    if (!regionRelease || !regionRelease.release_dates || regionRelease.release_dates.length === 0) {
+    if (
+      !regionRelease ||
+      !regionRelease.release_dates ||
+      regionRelease.release_dates.length === 0
+    ) {
       const usRelease = movieReleaseData.find((r) => r.iso_3166_1 === "US");
       return usRelease?.release_dates?.[0] || null;
     }
@@ -314,7 +355,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       if (!initialData.regionalData) return null;
       const tvRatingsData = initialData.regionalData as RegionalContentRating[];
       const regionRating = tvRatingsData.find(
-        (r) => r.iso_3166_1 === selectedRegion
+        (r) => r.iso_3166_1 === selectedRegion,
       );
       if (!regionRating) {
         const usRating = tvRatingsData.find((r) => r.iso_3166_1 === "US");
@@ -334,7 +375,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
   const releaseDate = regionalReleaseDate;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : "N/A";
-  const runtime = details?.runtime || (details?.episode_run_time?.[0]) || null;
+  const runtime = details?.runtime || details?.episode_run_time?.[0] || null;
 
   // Format currency helpers based on active region
   const formatCurrency = (amount?: number) => {
@@ -429,7 +470,10 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const scrollToPlayer = (tab: "trailer" | "watch") => {
     setActiveTab(tab);
     setTimeout(() => {
-      playerSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      playerSectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 100);
   };
 
@@ -452,7 +496,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const duration = moment.duration(runtime, "minutes");
 
   return (
-    <div className="min-h-svh bg-background text-foreground select-none transition-colors duration-300">
+    <div className="bg-background text-foreground min-h-svh transition-colors duration-300 select-none">
       {/* Hero Header Section - Stacked Backdrop */}
       <MediaHero
         backdropRef={backdropRef}
@@ -461,25 +505,25 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       />
 
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 md:px-20 -mt-24 sm:-mt-36 md:-mt-44 flex flex-col md:flex-row items-start gap-8 md:gap-12">
+      <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 md:-mt-44 md:flex-row md:gap-12 md:px-20">
         {/* Large Poster Sidebar */}
-        <div className="hidden md:block w-64 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 border border-zinc-850 bg-zinc-900/60 backdrop-blur-md transform hover:scale-102 transition-all duration-300 shrink-0">
+        <div className="border-zinc-850 hidden w-64 shrink-0 transform overflow-hidden rounded-2xl border bg-zinc-900/60 shadow-2xl shadow-black/85 backdrop-blur-md transition-all duration-300 hover:scale-102 md:block">
           <img
             src={posterUrl}
             alt={details?.title || details?.name}
-            className="w-full h-auto object-cover"
+            className="h-auto w-full object-cover"
           />
         </div>
 
         {/* Details Header Details */}
-        <div className="flex-1 flex flex-col items-start gap-4 text-left">          
+        <div className="flex flex-1 flex-col items-start gap-4 text-left">
           {/* Genre Badges */}
           {details?.genres && details.genres.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-1">
+            <div className="mt-1 flex flex-wrap gap-2">
               {details.genres.map((g) => (
                 <span
                   key={g.id}
-                  className="px-3 py-1 rounded-xl bg-zinc-900/60 border border-zinc-800/80 backdrop-blur-sm text-zinc-300 text-xs font-semibold"
+                  className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm"
                 >
                   {g.name}
                 </span>
@@ -489,57 +533,64 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
           {/* Logo or Title */}
           {initialData.logoPath && !logoError ? (
-            <div className="h-16 sm:h-24 md:h-28 max-w-[85%] relative mb-2 flex items-center">
+            <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-24 md:h-28">
               <img
                 src={`https://image.tmdb.org/t/p/w500${initialData.logoPath}`}
                 alt={details?.title || details?.name}
-                className="h-full w-auto object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]"
+                className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                 onError={() => setLogoError(true)}
               />
             </div>
           ) : (
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white drop-shadow-md leading-tight line-clamp-2">
+            <h1 className="line-clamp-2 text-3xl leading-tight font-black tracking-tight text-white drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl">
               {details?.title || details?.name}
             </h1>
           )}
 
           {details?.tagline && (
-            <p className="text-zinc-400 italic text-sm sm:text-base -mt-1">
+            <p className="-mt-1 text-sm text-zinc-400 italic sm:text-base">
               &ldquo;{details.tagline}&rdquo;
             </p>
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-600 border border-blue-400/30 text-white">
+            <span className="rounded-full border border-blue-400/30 bg-blue-600 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
               {mediaType === "tv" ? "TV Series" : "Movie"}
             </span>
             {certification && (
-              <span className="px-3 py-1 rounded-full text-xs font-black uppercase bg-zinc-900 border border-zinc-800 text-zinc-300">
+              <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-black text-zinc-300 uppercase">
                 Rating: {certification}
               </span>
             )}
             {(() => {
-              const hasCommunity = communityStats && communityStats.totalRatings > 0;
-              const displayRating = hasCommunity ? communityStats.averageRating.toFixed(1) : rating;
+              const hasCommunity =
+                communityStats && communityStats.totalRatings > 0;
+              const displayRating = hasCommunity
+                ? communityStats.averageRating.toFixed(1)
+                : rating;
               const sourceLabel = hasCommunity ? "Community" : "TMDB";
               return (
                 <>
-                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-zinc-900/80 border border-zinc-800 backdrop-blur-sm">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                  <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
+                    <Star className="h-4 w-4 fill-current text-yellow-400" />
                     <span>{displayRating}</span>
-                    <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider ml-1">({sourceLabel})</span>
+                    <span className="ml-1 text-[9px] font-bold tracking-wider text-zinc-500 uppercase">
+                      ({sourceLabel})
+                    </span>
                   </div>
                   {hasCommunity && (
-                    <span className="text-zinc-500 text-xs font-medium bg-zinc-900/40 border border-zinc-850 px-3 py-1 rounded-full">
+                    <span className="border-zinc-850 rounded-full border bg-zinc-900/40 px-3 py-1 text-xs font-medium text-zinc-500">
                       TMDB: {rating}
                     </span>
                   )}
                 </>
               );
             })()}
-            <span className="text-zinc-400 text-sm font-medium">{releaseYear}</span>
+            <span className="text-sm font-medium text-zinc-400">
+              {releaseYear}
+            </span>
             {runtime && (
-              <div className="flex items-center gap-1 text-zinc-400 text-sm">
+              <div className="flex items-center gap-1 text-sm text-zinc-400">
                 <Clock className="h-4 w-4" />
                 <span>
                   {duration.hours() > 0 ? `${duration.hours()}h ` : ""}
@@ -549,7 +600,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             )}
           </div>
 
-          <p className="text-zinc-300 text-sm md:text-base leading-relaxed max-w-3xl drop-shadow line-clamp-3 mt-2">
+          <p className="mt-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
             {details?.overview || "No overview available."}
           </p>
 
@@ -583,7 +634,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       </div>
 
       {/* Main Details Body */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-12 py-12 space-y-16">
+      <div className="mx-auto max-w-7xl space-y-16 px-6 py-12 sm:px-12">
         <VideoPlayer
           playerSectionRef={playerSectionRef}
           mediaType={mediaType}
@@ -603,26 +654,27 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         <CastSlider cast={cast} />
 
         {/* Metadata Details Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           {/* Main Info Column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="space-y-6 lg:col-span-2">
             <div>
-              <h3 className="text-lg font-bold text-white mb-2">Overview</h3>
-              <p className="text-zinc-300 text-sm sm:text-base leading-relaxed">
+              <h3 className="mb-2 text-lg font-bold text-white">Overview</h3>
+              <p className="text-sm leading-relaxed text-zinc-300 sm:text-base">
                 {details?.overview || "No overview details available."}
               </p>
             </div>
 
-            {details?.production_companies && details.production_companies.length > 0 && (
-              <div>
-                <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">
-                  Production Companies
-                </h3>
-                <p className="text-sm text-zinc-300">
-                  {details.production_companies.map((c) => c.name).join(", ")}
-                </p>
-              </div>
-            )}
+            {details?.production_companies &&
+              details.production_companies.length > 0 && (
+                <div>
+                  <h3 className="mb-2 text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                    Production Companies
+                  </h3>
+                  <p className="text-sm text-zinc-300">
+                    {details.production_companies.map((c) => c.name).join(", ")}
+                  </p>
+                </div>
+              )}
 
             <CollectionGrid
               collectionParts={collectionParts}
@@ -655,12 +707,15 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         </div>
 
         {/* Dedicated Comments Section */}
-        <CommentsSection mediaId={details.id.toString()} mediaType={mediaType} />
+        <CommentsSection
+          mediaId={details.id.toString()}
+          mediaType={mediaType}
+        />
 
         {/* Recommendations Carousel */}
         {recommendations.length > 0 && (
           <div className="space-y-6">
-            <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
               <TrendingUp className="h-5 w-5 text-blue-500" />
               More Like This
             </h2>
@@ -695,43 +750,70 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
 
       {/* Share to Chat Dialog */}
       <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
-        <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 text-white shadow-2xl p-6 backdrop-blur-md">
+        <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-md">
           <DialogHeader>
-            <DialogTitle className="text-base font-black uppercase tracking-wider text-white">Share with Friends</DialogTitle>
+            <DialogTitle className="text-base font-black tracking-wider text-white uppercase">
+              Share with Friends
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 mt-4 text-left">
-            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550">Select Chat</h3>
-            <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
+          <div className="mt-4 space-y-4 text-left">
+            <h3 className="text-zinc-550 text-xs font-black tracking-wider uppercase">
+              Select Chat
+            </h3>
+            <div className="max-h-60 scrollbar-thin space-y-1.5 overflow-y-auto pr-1">
               {!chatsList ? (
                 <div className="flex items-center justify-center py-6">
-                  <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
+                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
                 </div>
               ) : chatsList.length === 0 ? (
-                <p className="text-xs text-zinc-500 italic py-4 text-center">No active chats found. Open the chat tab to start conversations with friends!</p>
+                <p className="py-4 text-center text-xs text-zinc-500 italic">
+                  No active chats found. Open the chat tab to start
+                  conversations with friends!
+                </p>
               ) : (
                 chatsList.map((c) => {
                   const isGroup = c.type === "group";
-                  const chatTitle = isGroup ? c.name : c.friend?.name || "Friend";
+                  const chatTitle = isGroup
+                    ? c.name
+                    : c.friend?.name || "Friend";
                   return (
                     <div
                       key={c.chatId}
                       onClick={() => handleShareToChat(c.chatId, chatTitle)}
-                      className="flex items-center justify-between p-3 rounded-2xl hover:bg-zinc-900/60 cursor-pointer border border-transparent hover:border-zinc-850 transition-all text-xs"
+                      className="hover:border-zinc-850 flex cursor-pointer items-center justify-between rounded-2xl border border-transparent p-3 text-xs transition-all hover:bg-zinc-900/60"
                     >
                       <div className="flex items-center gap-3">
                         <Avatar className="h-9 w-9 border border-zinc-800">
                           {isGroup ? (
-                            c.image ? <AvatarImage src={c.image} alt={c.name} className="object-cover" /> : null
+                            c.image ? (
+                              <AvatarImage
+                                src={c.image}
+                                alt={c.name}
+                                className="object-cover"
+                              />
+                            ) : null
                           ) : c.friend?.image ? (
-                            <AvatarImage src={c.friend.image} alt={c.friend.name} className="object-cover" />
+                            <AvatarImage
+                              src={c.friend.image}
+                              alt={c.friend.name}
+                              className="object-cover"
+                            />
                           ) : null}
-                          <AvatarFallback className="bg-zinc-900 text-zinc-300 font-bold text-xs">
-                            {isGroup ? <Users className="h-4 w-4 text-zinc-400" /> : chatTitle.charAt(0).toUpperCase()}
+                          <AvatarFallback className="bg-zinc-900 text-xs font-bold text-zinc-300">
+                            {isGroup ? (
+                              <Users className="h-4 w-4 text-zinc-400" />
+                            ) : (
+                              chatTitle.charAt(0).toUpperCase()
+                            )}
                           </AvatarFallback>
                         </Avatar>
                         <div>
-                          <span className="font-bold text-white block">{chatTitle}</span>
-                          <span className="text-[10px] text-zinc-500 mt-0.5 block">{isGroup ? "Group Chat" : `@${c.friend?.username}`}</span>
+                          <span className="block font-bold text-white">
+                            {chatTitle}
+                          </span>
+                          <span className="mt-0.5 block text-[10px] text-zinc-500">
+                            {isGroup ? "Group Chat" : `@${c.friend?.username}`}
+                          </span>
                         </div>
                       </div>
                       <ChevronRight className="h-4 w-4 text-zinc-500" />

@@ -15,7 +15,11 @@ interface CarouselProps {
   onAuthRequired: () => void;
 }
 
-export default function Carousel({ items, onQuickView, onAuthRequired }: CarouselProps) {
+export default function Carousel({
+  items,
+  onQuickView,
+  onAuthRequired,
+}: CarouselProps) {
   if (!items || items.length === 0) {
     return (
       <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 text-sm text-zinc-500">
@@ -25,7 +29,7 @@ export default function Carousel({ items, onQuickView, onAuthRequired }: Carouse
   }
 
   return (
-    <div className="relative w-full swiper-carousel-container">
+    <div className="swiper-carousel-container relative w-full">
       <Swiper
         modules={[Mousewheel, FreeMode]}
         freeMode={true}

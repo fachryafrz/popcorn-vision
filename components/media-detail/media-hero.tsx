@@ -12,20 +12,20 @@ export default function MediaHero({
   mobileBackdropUrl,
 }: MediaHeroProps) {
   return (
-    <div className="relative w-full h-[65svh] overflow-hidden">
+    <div className="relative h-[65svh] w-full overflow-hidden">
       {/* Backdrop Background (Desktop) */}
       <div
         ref={backdropRef}
-        className="absolute inset-0 bg-cover bg-top bg-no-repeat scale-102 hidden sm:block"
+        className="absolute inset-0 hidden scale-102 bg-cover bg-top bg-no-repeat sm:block"
         style={{ backgroundImage: `url(${backdropUrl})` }}
       />
       {/* Poster Background (Mobile) */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-102 block sm:hidden"
+        className="absolute inset-0 block scale-102 bg-cover bg-center bg-no-repeat sm:hidden"
         style={{ backgroundImage: `url(${mobileBackdropUrl})` }}
       />
       {/* Gradients Overlay */}
-      <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/45 to-transparent z-10" />
+      <div className="absolute inset-0 z-10 bg-linear-to-t from-zinc-950 via-zinc-950/45 to-transparent" />
     </div>
   );
 }

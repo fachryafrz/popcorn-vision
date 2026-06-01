@@ -5,14 +5,14 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
-import { 
-  User as UserIcon, 
-  Loader2, 
-  Grid, 
-  Bookmark, 
-  Heart, 
-  Star, 
-  UserX
+import {
+  User as UserIcon,
+  Loader2,
+  Grid,
+  Bookmark,
+  Heart,
+  Star,
+  UserX,
 } from "lucide-react";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
@@ -29,7 +29,10 @@ import { LockScreen } from "@/components/profile/lock-screen";
 import { FriendsDialog } from "@/components/profile/friends-dialog";
 import { EditToolbar } from "@/components/profile/edit-toolbar";
 import { DiaryTab } from "@/components/profile/diary-tab";
-import { MediaGridTab, GridMediaItem } from "@/components/profile/media-grid-tab";
+import {
+  MediaGridTab,
+  GridMediaItem,
+} from "@/components/profile/media-grid-tab";
 
 interface UserProfilePageProps {
   params: Promise<{
@@ -41,7 +44,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const { username } = use(params);
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [activeTab, setActiveTab] = useState<"all" | "watchlist" | "favorites" | "ratings" | "diary">("all");
+  const [activeTab, setActiveTab] = useState<
+    "all" | "watchlist" | "favorites" | "ratings" | "diary"
+  >("all");
   const [showFriendsDialog, setShowFriendsDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -49,7 +54,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const deleteDiaryEntry = useMutation(api.diary.deleteDiaryEntry);
 
   const handleDeleteDiary = async (diaryId: string) => {
-    if (!confirm("Are you sure you want to delete this watch log entry?")) return;
+    if (!confirm("Are you sure you want to delete this watch log entry?"))
+      return;
     setDeletingId(diaryId);
     try {
       await deleteDiaryEntry({ diaryId: diaryId as Id<"diary"> });
@@ -101,7 +107,12 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   const handleBulkDelete = async () => {
     if (selectedItems.size === 0) return;
-    if (!confirm(`Are you sure you want to delete the ${selectedItems.size} selected items?`)) return;
+    if (
+      !confirm(
+        `Are you sure you want to delete the ${selectedItems.size} selected items?`,
+      )
+    )
+      return;
 
     setIsBulkDeleting(true);
     const itemsToDelete = Array.from(selectedItems).map((key) => {
@@ -112,11 +123,20 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     try {
       for (const item of itemsToDelete) {
         if (activeTab === "watchlist") {
-          await removeFromWatchlist({ mediaId: item.mediaId, mediaType: item.mediaType });
+          await removeFromWatchlist({
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+          });
         } else if (activeTab === "favorites") {
-          await removeFromFavorites({ mediaId: item.mediaId, mediaType: item.mediaType });
+          await removeFromFavorites({
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+          });
         } else if (activeTab === "ratings") {
-          await deleteRating({ mediaId: item.mediaId, mediaType: item.mediaType });
+          await deleteRating({
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+          });
         }
       }
       toast.success(`Successfully removed ${itemsToDelete.length} items!`);
@@ -136,7 +156,10 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   // Query social profile detailed context
   const profileData = useQuery(api.social.getUserSocialProfile, { username });
-  const targetUser = profileData && !profileData.isBlocked ? (profileData.user as UserDoc) : null;
+  const targetUser =
+    profileData && !profileData.isBlocked
+      ? (profileData.user as UserDoc)
+      : null;
   const targetUserId = targetUser?.userId;
 
   // Unblock mutation in case user is blocked
@@ -154,7 +177,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const isPrivate = targetUser?.profilePrivacy === "private";
   const isFriendsOnly = targetUser?.profilePrivacy === "friends";
   const isFriend = profileData?.friendshipStatus === "friends";
-  const showLockScreen = !isOwner && (isPrivate || (isFriendsOnly && !isFriend));
+  const showLockScreen =
+    !isOwner && (isPrivate || (isFriendsOnly && !isFriend));
 
   // Individual visibility flags
   const showWatchlistTab = isOwner || !targetUser?.hideWatchlist;
@@ -164,19 +188,25 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   // Query target user lists if profile exists and content is visible
   const watchlist = useQuery(
     api.watchlist.getPublicWatchlist,
-    targetUserId && showWatchlistTab && !showLockScreen ? { userId: targetUserId } : "skip"
+    targetUserId && showWatchlistTab && !showLockScreen
+      ? { userId: targetUserId }
+      : "skip",
   ) as GridMediaItem[] | undefined;
   const favorites = useQuery(
     api.favorites.getPublicFavorites,
-    targetUserId && showFavoritesTab && !showLockScreen ? { userId: targetUserId } : "skip"
+    targetUserId && showFavoritesTab && !showLockScreen
+      ? { userId: targetUserId }
+      : "skip",
   ) as GridMediaItem[] | undefined;
   const ratings = useQuery(
     api.ratings.getUserRatings,
-    targetUserId && showRatingsTab && !showLockScreen ? { userId: targetUserId } : "skip"
+    targetUserId && showRatingsTab && !showLockScreen
+      ? { userId: targetUserId }
+      : "skip",
   ) as GridMediaItem[] | undefined;
   const diary = useQuery(
     api.diary.getUserDiary,
-    targetUserId && !showLockScreen ? { userId: targetUserId } : "skip"
+    targetUserId && !showLockScreen ? { userId: targetUserId } : "skip",
   ) as DiaryItem[] | undefined;
 
   const handleFriendAction = async () => {
@@ -197,7 +227,11 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         await acceptFriendRequest({ targetUserId });
         toast.success("Friend request accepted!");
       } else if (profileData.friendshipStatus === "friends") {
-        if (confirm(`Are you sure you want to remove ${targetUser.name} from friends?`)) {
+        if (
+          confirm(
+            `Are you sure you want to remove ${targetUser.name} from friends?`,
+          )
+        ) {
           await removeFriend({ targetUserId });
           toast.success("Friend removed.");
         }
@@ -213,7 +247,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const allItemsMap = new Map<string, GridMediaItem>();
 
   if (watchlist) {
-    watchlist.forEach(item => {
+    watchlist.forEach((item) => {
       const key = `${item.mediaType}-${item.mediaId}`;
       allItemsMap.set(key, {
         mediaId: item.mediaId,
@@ -229,12 +263,16 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   }
 
   if (favorites) {
-    favorites.forEach(item => {
+    favorites.forEach((item) => {
       const key = `${item.mediaType}-${item.mediaId}`;
       const existing = allItemsMap.get(key);
       if (existing) {
         existing.isFavorite = true;
-        if (item.addedAt && existing.addedAt && item.addedAt > existing.addedAt) {
+        if (
+          item.addedAt &&
+          existing.addedAt &&
+          item.addedAt > existing.addedAt
+        ) {
           existing.addedAt = item.addedAt;
         }
       } else {
@@ -252,12 +290,16 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   }
 
   if (ratings) {
-    ratings.forEach(item => {
+    ratings.forEach((item) => {
       const key = `${item.mediaType}-${item.mediaId}`;
       const existing = allItemsMap.get(key);
       if (existing) {
         existing.rating = item.rating;
-        if (item.addedAt && existing.addedAt && item.addedAt > existing.addedAt) {
+        if (
+          item.addedAt &&
+          existing.addedAt &&
+          item.addedAt > existing.addedAt
+        ) {
           existing.addedAt = item.addedAt;
         }
       } else {
@@ -285,19 +327,23 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   if (loadingProfile) {
     return (
-      <div className="grow flex items-center justify-center min-h-[50vh] bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 text-blue-500 animate-spin" />
+      <div className="flex min-h-[50vh] grow items-center justify-center bg-zinc-950 text-white">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
       </div>
     );
   }
 
   if (!profileData) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white px-6 text-center">
-        <UserIcon className="h-16 w-16 text-zinc-700 mb-4" />
-        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">User Not Found</h1>
-        <p className="text-zinc-400 text-sm max-w-md mb-6">
-          The user <span className="text-blue-400 font-semibold">@{username}</span> does not exist or has not created a profile yet.
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserIcon className="mb-4 h-16 w-16 text-zinc-700" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          User Not Found
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          The user{" "}
+          <span className="font-semibold text-blue-400">@{username}</span> does
+          not exist or has not created a profile yet.
         </p>
       </div>
     );
@@ -306,11 +352,15 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   // Handle Deactivated State
   if ("isDeactivated" in profileData && profileData.isDeactivated) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white px-6 text-center">
-        <UserX className="h-16 w-16 text-zinc-650 mb-4 animate-pulse" />
-        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Account Deactivated</h1>
-        <p className="text-zinc-400 text-sm max-w-md mb-6">
-          The user <span className="text-blue-400 font-semibold">@{username}</span> has temporarily deactivated their account.
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserX className="text-zinc-650 mb-4 h-16 w-16 animate-pulse" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          Account Deactivated
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          The user{" "}
+          <span className="font-semibold text-blue-400">@{username}</span> has
+          temporarily deactivated their account.
         </p>
       </div>
     );
@@ -319,11 +369,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   // Handle Blocked State
   if (profileData.isBlocked) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white px-6 text-center">
-        <UserX className="h-16 w-16 text-red-500/80 mb-4" />
-        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Profile Unavailable</h1>
-        <p className="text-zinc-400 text-sm max-w-md mb-6">
-          {profileData.blockedByMe 
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserX className="mb-4 h-16 w-16 text-red-500/80" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          Profile Unavailable
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          {profileData.blockedByMe
             ? "You have blocked this user. Unblock them to view their profile."
             : "This profile is not available to you."}
         </p>
@@ -337,7 +389,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                 console.error(e);
               }
             }}
-            className="rounded-2xl bg-white hover:bg-zinc-200 text-black font-bold text-sm px-6 py-2.5 cursor-pointer"
+            className="cursor-pointer rounded-2xl bg-white px-6 py-2.5 text-sm font-bold text-black hover:bg-zinc-200"
           >
             Unblock User
           </Button>
@@ -347,31 +399,57 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   }
 
   const getFallbackIcon = () => {
-    if (activeTab === "watchlist") return <Bookmark className="h-12 w-12 text-zinc-800" />;
-    if (activeTab === "favorites") return <Heart className="h-12 w-12 text-zinc-800" />;
-    if (activeTab === "ratings") return <Star className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "watchlist")
+      return <Bookmark className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "favorites")
+      return <Heart className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "ratings")
+      return <Star className="h-12 w-12 text-zinc-800" />;
     return <Grid className="h-12 w-12 text-zinc-800" />;
   };
 
   const getEmptyMessage = () => {
-    if (activeTab === "watchlist") return "This user's watchlist is currently empty.";
-    if (activeTab === "favorites") return "This user's favorites list is currently empty.";
-    if (activeTab === "ratings") return "This user hasn't rated any movies or TV shows yet.";
+    if (activeTab === "watchlist")
+      return "This user's watchlist is currently empty.";
+    if (activeTab === "favorites")
+      return "This user's favorites list is currently empty.";
+    if (activeTab === "ratings")
+      return "This user hasn't rated any movies or TV shows yet.";
     return "This user hasn't added any titles to their lists or submitted any ratings yet.";
   };
 
   // Define tab navigation dynamically based on visitor visibility settings
   const tabsList = [
     { id: "all" as const, label: "All", count: allItems.length, visible: true },
-    { id: "diary" as const, label: "Diary", count: diary ? diary.length : 0, visible: true },
-    { id: "watchlist" as const, label: "Watchlist", count: watchlist ? watchlist.length : 0, visible: showWatchlistTab },
-    { id: "favorites" as const, label: "Favorites", count: favorites ? favorites.length : 0, visible: showFavoritesTab },
-    { id: "ratings" as const, label: "Ratings", count: ratings ? ratings.length : 0, visible: showRatingsTab }
-  ].filter(t => t.visible);
+    {
+      id: "diary" as const,
+      label: "Diary",
+      count: diary ? diary.length : 0,
+      visible: true,
+    },
+    {
+      id: "watchlist" as const,
+      label: "Watchlist",
+      count: watchlist ? watchlist.length : 0,
+      visible: showWatchlistTab,
+    },
+    {
+      id: "favorites" as const,
+      label: "Favorites",
+      count: favorites ? favorites.length : 0,
+      visible: showFavoritesTab,
+    },
+    {
+      id: "ratings" as const,
+      label: "Ratings",
+      count: ratings ? ratings.length : 0,
+      visible: showRatingsTab,
+    },
+  ].filter((t) => t.visible);
 
   return (
-    <div 
-      className="grow bg-background text-foreground min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-7xl mx-auto w-full transition-colors duration-300 relative rounded-3xl"
+    <div
+      className="bg-background text-foreground relative mx-auto min-h-[85vh] w-full max-w-7xl grow rounded-3xl px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20"
       data-theme={targetUser?.theme || "dark"}
     >
       {/* Header Profile Info card */}
@@ -390,16 +468,16 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       ) : (
         <>
           {/* Tabs */}
-          <div className="flex border-b overflow-x-auto border-zinc-900 mb-8 gap-6 text-sm">
+          <div className="mb-8 flex gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
             {tabsList.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "font-bold pb-4 border-b-2 uppercase tracking-wider text-xs transition-all cursor-pointer",
+                  "cursor-pointer border-b-2 pb-4 text-xs font-bold tracking-wider uppercase transition-all",
                   activeTab === tab.id
                     ? "text-primary border-primary font-extrabold"
-                    : "text-zinc-500 border-transparent hover:text-zinc-300"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300",
                 )}
               >
                 {tab.label} ({tab.count})
@@ -421,7 +499,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
               {activeTab !== "all" && (
                 <EditToolbar
                   isOwner={isOwner || false}
-                  items={activeTab === "watchlist" ? watchlist : activeTab === "favorites" ? favorites : ratings}
+                  items={
+                    activeTab === "watchlist"
+                      ? watchlist
+                      : activeTab === "favorites"
+                        ? favorites
+                        : ratings
+                  }
                   isEditMode={isEditMode}
                   setIsEditMode={setIsEditMode}
                   selectedItems={selectedItems}
@@ -432,7 +516,15 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
               )}
               <MediaGridTab
                 activeTab={activeTab}
-                items={activeTab === "all" ? allItems : activeTab === "watchlist" ? watchlist : activeTab === "favorites" ? favorites : ratings}
+                items={
+                  activeTab === "all"
+                    ? allItems
+                    : activeTab === "watchlist"
+                      ? watchlist
+                      : activeTab === "favorites"
+                        ? favorites
+                        : ratings
+                }
                 isEditMode={isEditMode}
                 selectedItems={selectedItems}
                 handleToggleSelectItem={handleToggleSelectItem}

@@ -22,17 +22,29 @@ interface SearchClientProps {
   initialType: SearchType;
 }
 
-const TYPE_FILTERS: { label: string; value: SearchType; icon: React.ReactNode }[] = [
+const TYPE_FILTERS: {
+  label: string;
+  value: SearchType;
+  icon: React.ReactNode;
+}[] = [
   { label: "All", value: "all", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
   { label: "Movies", value: "movie", icon: <Film className="h-3.5 w-3.5" /> },
   { label: "TV Series", value: "tv", icon: <Tv className="h-3.5 w-3.5" /> },
   { label: "Users", value: "users", icon: <User className="h-3.5 w-3.5" /> },
 ];
 
-export default function SearchClient({ initialResults, initialQuery, initialType }: SearchClientProps) {
+export default function SearchClient({
+  initialResults,
+  initialQuery,
+  initialType,
+}: SearchClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { open: openAuth, isOpen: isAuthOpen, close: closeAuth } = useAuthModalStore();
+  const {
+    open: openAuth,
+    isOpen: isAuthOpen,
+    close: closeAuth,
+  } = useAuthModalStore();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
@@ -48,9 +60,14 @@ export default function SearchClient({ initialResults, initialQuery, initialType
   // Convex Query for Users
   const userResults = useQuery(
     api.social.searchUsers,
-    (activeType === "users" || activeType === "all") && query.trim().length > 0 ? { query } : "skip"
+    (activeType === "users" || activeType === "all") && query.trim().length > 0
+      ? { query }
+      : "skip",
   ) as SearchUserResult[] | undefined;
-  const isUsersLoading = (activeType === "users" || activeType === "all") && query.trim().length > 0 && userResults === undefined;
+  const isUsersLoading =
+    (activeType === "users" || activeType === "all") &&
+    query.trim().length > 0 &&
+    userResults === undefined;
 
   // Push URL update and fetch results
   const performSearch = useCallback(
@@ -69,7 +86,7 @@ export default function SearchClient({ initialResults, initialQuery, initialType
         });
       }
     },
-    [router, searchParams]
+    [router, searchParams],
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,32 +114,38 @@ export default function SearchClient({ initialResults, initialQuery, initialType
   const hasQuery = query.trim().length > 0;
 
   return (
-    <main className="min-h-svh bg-background text-foreground pt-28 pb-16 transition-colors duration-300">
+    <main className="bg-background text-foreground min-h-svh pt-28 pb-16 transition-colors duration-300">
       {/* Page header */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 md:px-16">
+      <div className="mx-auto max-w-7xl px-6 sm:px-10 md:px-16">
         <div className="mb-10 text-left">
-          <h1 className="text-3xl sm:text-4xl font-black tracking-tight mb-2 bg-linear-to-r from-white via-zinc-300 to-zinc-500 bg-clip-text text-transparent">
+          <h1 className="mb-2 bg-linear-to-r from-white via-zinc-300 to-zinc-500 bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl">
             Search
           </h1>
-          <p className="text-zinc-400 text-sm">Find movies, TV series, or other film enthusiasts</p>
+          <p className="text-sm text-zinc-400">
+            Find movies, TV series, or other film enthusiasts
+          </p>
         </div>
 
         {/* Search Input */}
-        <div className="relative max-w-2xl mb-8">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500 pointer-events-none" />
+        <div className="relative mb-8 max-w-2xl">
+          <Search className="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-zinc-500" />
           <Input
             id="search-input"
             type="text"
             value={inputValue}
             onChange={handleInputChange}
-            placeholder={activeType === "users" ? "Search users by display name or username…" : "Search movies, TV shows…"}
+            placeholder={
+              activeType === "users"
+                ? "Search users by display name or username…"
+                : "Search movies, TV shows…"
+            }
             autoFocus
-            className="w-full h-14 pl-12 pr-12 rounded-2xl bg-zinc-900 border-zinc-700/60 text-white placeholder:text-zinc-500 text-base focus-visible:ring-1 focus-visible:ring-zinc-500 focus-visible:border-zinc-600 transition-all"
+            className="h-14 w-full rounded-2xl border-zinc-700/60 bg-zinc-900 pr-12 pl-12 text-base text-white transition-all placeholder:text-zinc-500 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-500"
           />
           {inputValue && (
             <button
               onClick={handleClear}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors cursor-pointer"
+              className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-zinc-500 transition-colors hover:text-white"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" />
@@ -131,16 +154,16 @@ export default function SearchClient({ initialResults, initialQuery, initialType
         </div>
 
         {/* Type filter tabs */}
-        <div className="flex items-center flex-wrap gap-2 mb-8">
+        <div className="mb-8 flex flex-wrap items-center gap-2">
           {TYPE_FILTERS.map((f) => (
             <button
               key={f.value}
               onClick={() => handleTypeChange(f.value)}
               className={cn(
-                "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold border transition-all duration-200 cursor-pointer",
+                "flex cursor-pointer items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200",
                 activeType === f.value
-                  ? "bg-white text-black border-white shadow-lg"
-                  : "bg-zinc-900 text-zinc-400 border-zinc-700/60 hover:border-zinc-500 hover:text-zinc-200"
+                  ? "border-white bg-white text-black shadow-lg"
+                  : "border-zinc-700/60 bg-zinc-900 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200",
               )}
             >
               {f.icon}

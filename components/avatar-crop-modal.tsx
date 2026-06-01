@@ -1,7 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Loader2 } from "lucide-react";
@@ -35,7 +40,11 @@ export default function AvatarCropModal({
   const cropSize = 256;
 
   // Track original dimensions
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0, scale: 1 });
+  const [dimensions, setDimensions] = useState({
+    width: 0,
+    height: 0,
+    scale: 1,
+  });
 
   // Read file on load
   useEffect(() => {
@@ -77,8 +86,14 @@ export default function AvatarCropModal({
     const newY = e.clientY - dragStart.current.y;
 
     // Constrain panning so the image stays within viewport bounds
-    const maxPanX = Math.max(0, (dimensions.width * dimensions.scale * zoom - viewportSize) / 2);
-    const maxPanY = Math.max(0, (dimensions.height * dimensions.scale * zoom - viewportSize) / 2);
+    const maxPanX = Math.max(
+      0,
+      (dimensions.width * dimensions.scale * zoom - viewportSize) / 2,
+    );
+    const maxPanY = Math.max(
+      0,
+      (dimensions.height * dimensions.scale * zoom - viewportSize) / 2,
+    );
 
     setOffsetX(Math.max(-maxPanX, Math.min(maxPanX, newX)));
     setOffsetY(Math.max(-maxPanY, Math.min(maxPanY, newY)));
@@ -129,7 +144,7 @@ export default function AvatarCropModal({
           setSaving(false);
         },
         "image/jpeg",
-        0.9
+        0.9,
       );
     } catch (err) {
       console.error("Cropping failed:", err);
@@ -141,16 +156,19 @@ export default function AvatarCropModal({
   const h = dimensions.height * dimensions.scale;
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && !saving && onClose()}>
-      <DialogContent className="max-w-sm rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in duration-300">
-        <DialogTitle className="text-lg font-bold text-center tracking-tight bg-linear-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => !open && !saving && onClose()}
+    >
+      <DialogContent className="animate-in fade-in zoom-in max-w-sm rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-xl duration-300">
+        <DialogTitle className="bg-linear-to-r from-white to-zinc-400 bg-clip-text text-center text-lg font-bold tracking-tight text-transparent">
           Crop Your Avatar
         </DialogTitle>
-        <DialogDescription className="text-xs text-zinc-500 text-center mt-1">
+        <DialogDescription className="mt-1 text-center text-xs text-zinc-500">
           Drag to pan and use the slider below to zoom your image.
         </DialogDescription>
 
-        <div className="flex flex-col items-center justify-center my-6 gap-6">
+        <div className="my-6 flex flex-col items-center justify-center gap-6">
           {/* Crop Viewport Window */}
           <div
             ref={containerRef}
@@ -158,10 +176,9 @@ export default function AvatarCropModal({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             style={{ width: viewportSize, height: viewportSize }}
-            className="rounded-full overflow-hidden relative border-2 border-blue-500/70 bg-zinc-900 shadow-inner cursor-move select-none touch-none"
+            className="relative cursor-move touch-none overflow-hidden rounded-full border-2 border-blue-500/70 bg-zinc-900 shadow-inner select-none"
           >
             {imgSrc && (
-              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 ref={imageRef}
                 src={imgSrc}
@@ -180,12 +197,12 @@ export default function AvatarCropModal({
               />
             )}
             {/* Guide overlay ring */}
-            <div className="absolute inset-0 rounded-full border border-white/20 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-0 rounded-full border border-white/20" />
           </div>
 
           {/* Zoom Slider */}
           <div className="w-full space-y-2 px-2">
-            <div className="flex justify-between text-[10px] text-zinc-400 font-bold uppercase tracking-wider">
+            <div className="flex justify-between text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
               <span>Zoom</span>
               <span>{Math.round(zoom * 100)}%</span>
             </div>
@@ -205,21 +222,25 @@ export default function AvatarCropModal({
           </div>
         </div>
 
-        <div className="flex gap-3 justify-end mt-4">
+        <div className="mt-4 flex justify-end gap-3">
           <Button
             variant="ghost"
             disabled={saving}
             onClick={onClose}
-            className="rounded-xl border border-zinc-800 text-zinc-400 hover:text-white cursor-pointer px-4"
+            className="cursor-pointer rounded-xl border border-zinc-800 px-4 text-zinc-400 hover:text-white"
           >
             Cancel
           </Button>
           <Button
             disabled={saving}
             onClick={handleSave}
-            className="rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold flex items-center justify-center gap-2 cursor-pointer px-5"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 font-semibold text-white hover:bg-blue-500"
           >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Avatar"}
+            {saving ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              "Save Avatar"
+            )}
           </Button>
         </div>
       </DialogContent>

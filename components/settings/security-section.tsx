@@ -28,15 +28,18 @@ export default function SecuritySection({
   return (
     <form onSubmit={handleUpdatePassword} className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold tracking-tight text-white mb-1">Account Security</h2>
+        <h2 className="mb-1 text-xl font-bold tracking-tight text-white">
+          Account Security
+        </h2>
         <p className="text-xs text-zinc-500">
-          Change your password. Upon updating, you will be logged out of other devices.
+          Change your password. Upon updating, you will be logged out of other
+          devices.
         </p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1 text-left">
+          <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">
             Current Password
           </Label>
           <Input
@@ -45,12 +48,12 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-650 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900 text-left"
+            className="placeholder-zinc-650 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
           />
         </div>
 
         <div>
-          <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1 text-left">
+          <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">
             New Password
           </Label>
           <Input
@@ -59,12 +62,12 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-655 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900 text-left"
+            className="placeholder-zinc-655 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
           />
         </div>
 
         <div>
-          <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1 text-left">
+          <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">
             Confirm New Password
           </Label>
           <Input
@@ -73,7 +76,7 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-655 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900 text-left"
+            className="placeholder-zinc-655 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
           />
         </div>
       </div>
@@ -81,10 +84,10 @@ export default function SecuritySection({
       <Button
         type="submit"
         disabled={updatingPassword}
-        className="w-full rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] mt-6 cursor-pointer"
+        className="mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
       >
         {updatingPassword ? (
-          <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+          <Loader2 className="mx-auto h-5 w-5 animate-spin" />
         ) : (
           "Change Password"
         )}

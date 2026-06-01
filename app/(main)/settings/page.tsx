@@ -27,12 +27,20 @@ interface SettingsFormProps {
   user: User;
 }
 
-type SettingsSection = "profile" | "appearance" | "privacy" | "security" | "danger" | "import";
+type SettingsSection =
+  | "profile"
+  | "appearance"
+  | "privacy"
+  | "security"
+  | "danger"
+  | "import";
 
 function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const router = useRouter();
   const updateProfile = useMutation(api.users.updateCurrentUserProfile);
-  const deleteConvexAccountData = useMutation(api.users.deleteCurrentUserAccountData);
+  const deleteConvexAccountData = useMutation(
+    api.users.deleteCurrentUserAccountData,
+  );
   const closeConvexAccount = useMutation(api.users.closeCurrentUserAccount);
 
   // Convex image storage mutations
@@ -44,43 +52,49 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
   // Tabs
   const [activeSection, setActiveSection] = useState<SettingsSection>(
-    convexProfile ? "profile" : "appearance"
+    convexProfile ? "profile" : "appearance",
   );
 
   // Profile fields state - initialized directly from props to avoid useEffect warnings
   const [name, setName] = useState(convexProfile?.name || user?.name || "");
-  const [username, setUsername] = useState(convexProfile?.username || user?.username || "");
+  const [username, setUsername] = useState(
+    convexProfile?.username || user?.username || "",
+  );
   const [bio, setBio] = useState(convexProfile?.bio || "");
   const [country, setCountry] = useState(convexProfile?.country || "");
-  const [profileImage, setProfileImage] = useState(convexProfile?.image || user?.image || "");
+  const [profileImage, setProfileImage] = useState(
+    convexProfile?.image || user?.image || "",
+  );
   const [savingProfile, setSavingProfile] = useState(false);
 
   // Privacy & Social fields state
-  const [profilePrivacy, setProfilePrivacy] = useState(convexProfile?.profilePrivacy || "public");
+  const [profilePrivacy, setProfilePrivacy] = useState(
+    convexProfile?.profilePrivacy || "public",
+  );
   const [allowFriendRequests, setAllowFriendRequests] = useState(
-    convexProfile?.allowFriendRequests !== false
+    convexProfile?.allowFriendRequests !== false,
   );
   const [hideWatchlist, setHideWatchlist] = useState(
-    convexProfile?.hideWatchlist === true
+    convexProfile?.hideWatchlist === true,
   );
   const [hideFavorites, setHideFavorites] = useState(
-    convexProfile?.hideFavorites === true
+    convexProfile?.hideFavorites === true,
   );
   const [hideRatings, setHideRatings] = useState(
-    convexProfile?.hideRatings === true
+    convexProfile?.hideRatings === true,
   );
   const [messagePrivacy, setMessagePrivacy] = useState(
-    convexProfile?.messagePrivacy || "friends"
+    convexProfile?.messagePrivacy || "friends",
   );
   const [readReceiptsEnabled, setReadReceiptsEnabled] = useState(
-    convexProfile?.readReceiptsEnabled !== false
+    convexProfile?.readReceiptsEnabled !== false,
   );
   const [savingPrivacy, setSavingPrivacy] = useState(false);
 
   // Privacy mutations & queries
   const updatePrivacy = useMutation(api.social.updatePrivacySettings);
   const rawBlockedUsersList = useQuery(api.social.getBlockedUsers);
-  
+
   const blockedUsersList = useMemo(() => {
     if (!rawBlockedUsersList) return undefined;
     return rawBlockedUsersList as BlockedUser[];
@@ -143,9 +157,16 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (!file) return;
 
     // Supported formats
-    const supportedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    const supportedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/webp",
+    ];
     if (!supportedTypes.includes(file.type)) {
-      toast.error("Unsupported file format. Please upload JPG, JPEG, PNG, or WEBP.");
+      toast.error(
+        "Unsupported file format. Please upload JPG, JPEG, PNG, or WEBP.",
+      );
       return;
     }
 
@@ -202,7 +223,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   };
 
   const handleRemoveImage = async () => {
-    if (!confirm("Are you sure you want to remove your profile picture?")) return;
+    if (!confirm("Are you sure you want to remove your profile picture?"))
+      return;
 
     setUploadingImage(true);
     try {
@@ -248,7 +270,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       return;
     }
     if (!/^[a-zA-Z0-9_]{3,15}$/.test(cleanedUsername)) {
-      toast.error("Username must be between 3 and 15 alphanumeric characters or underscores");
+      toast.error(
+        "Username must be between 3 and 15 alphanumeric characters or underscores",
+      );
       setSavingProfile(false);
       return;
     }
@@ -266,7 +290,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       });
 
       if (baResult.error) {
-        throw new Error(baResult.error.message || "Failed to update Better Auth credentials");
+        throw new Error(
+          baResult.error.message || "Failed to update Better Auth credentials",
+        );
       }
 
       // 2. Sync / Update Convex profile
@@ -329,7 +355,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!deletePassword) {
       toast.error("Please enter your current password to confirm deletion");
       return;
@@ -341,7 +367,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       return;
     }
 
-    if (!confirm("Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.")) {
+    if (
+      !confirm(
+        "Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.",
+      )
+    ) {
       return;
     }
 
@@ -355,7 +385,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       });
 
       if (verifyResult.error) {
-        throw new Error("Incorrect password. Please verify your current password.");
+        throw new Error(
+          "Incorrect password. Please verify your current password.",
+        );
       }
 
       // 2. Remove user data from Convex tables (while still authenticated!)
@@ -367,7 +399,10 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       });
 
       if (deleteResult.error) {
-        throw new Error(deleteResult.error.message || "Failed to delete account from authenticator");
+        throw new Error(
+          deleteResult.error.message ||
+            "Failed to delete account from authenticator",
+        );
       }
 
       toast.success("Your account has been deleted. Goodbye!");
@@ -387,7 +422,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     e.preventDefault();
 
     if (!closePassword) {
-      toast.error("Please enter your current password to confirm closing your account");
+      toast.error(
+        "Please enter your current password to confirm closing your account",
+      );
       return;
     }
 
@@ -397,7 +434,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       return;
     }
 
-    if (!confirm("Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.")) {
+    if (
+      !confirm(
+        "Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.",
+      )
+    ) {
       return;
     }
 
@@ -411,7 +452,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       });
 
       if (verifyResult.error) {
-        throw new Error("Incorrect password. Please verify your current password.");
+        throw new Error(
+          "Incorrect password. Please verify your current password.",
+        );
       }
 
       // 2. Mark user account as closed in Convex
@@ -420,7 +463,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       // 3. Sign out the user
       await authClient.signOut();
 
-      toast.success("Your account has been closed. You can reopen it anytime by logging back in.");
+      toast.success(
+        "Your account has been closed. You can reopen it anytime by logging back in.",
+      );
       router.push("/");
       setTimeout(() => {
         window.location.reload();
@@ -434,8 +479,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-      
+    <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
       <SidebarNav
         activeSection={activeSection}
         setActiveSection={setActiveSection}
@@ -443,8 +487,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       />
 
       {/* Content Box */}
-      <div className="md:col-span-3 bg-zinc-900/10 border border-zinc-900 rounded-3xl p-6 sm:p-8 backdrop-blur-md">
-        
+      <div className="rounded-3xl border border-zinc-900 bg-zinc-900/10 p-6 backdrop-blur-md sm:p-8 md:col-span-3">
         {activeSection === "appearance" && <AppearanceSection />}
 
         {activeSection === "profile" && (
@@ -547,7 +590,10 @@ export default function SettingsPage() {
   const user = session.data?.user;
 
   // Fetch current user details from Convex
-  const rawConvexProfile = useQuery(api.users.getCurrentUser, isLoggedIn ? {} : "skip");
+  const rawConvexProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
   const openAuth = useAuthModalStore((state) => state.open);
 
   const convexProfile = useMemo(() => {
@@ -557,22 +603,23 @@ export default function SettingsPage() {
 
   if (loadingSession || (isLoggedIn && convexProfile === undefined)) {
     return (
-      <div className="grow flex items-center justify-center min-h-[60vh] bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 text-blue-500 animate-spin" />
+      <div className="flex min-h-[60vh] grow items-center justify-center bg-zinc-950 text-white">
+        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
       </div>
     );
   }
 
   if (!isLoggedIn) {
     return (
-      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-background text-foreground gap-4 text-center px-4">
+      <div className="bg-background text-foreground flex min-h-[60vh] grow flex-col items-center justify-center gap-4 px-4 text-center">
         <h1 className="text-xl font-bold text-white">Login Required</h1>
-        <p className="text-sm text-zinc-400 max-w-sm">
-          You must be logged in to access and customize your account settings and theme preferences.
+        <p className="max-w-sm text-sm text-zinc-400">
+          You must be logged in to access and customize your account settings
+          and theme preferences.
         </p>
         <Button
           onClick={() => openAuth()}
-          className="rounded-2xl px-6 py-5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer"
+          className="bg-primary text-primary-foreground hover:bg-primary/90 cursor-pointer rounded-2xl px-6 py-5 text-sm font-semibold"
         >
           Sign In
         </Button>
@@ -581,10 +628,12 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="grow bg-background text-foreground min-h-[85vh] py-24 px-6 sm:px-12 md:px-16 lg:px-20 max-w-5xl mx-auto w-full transition-colors duration-300">
-      <div className="border-b border-zinc-900 pb-6 mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white text-left">Settings</h1>
-        <p className="text-zinc-500 text-xs mt-0.5 text-left">
+    <div className="bg-background text-foreground mx-auto min-h-[85vh] w-full max-w-5xl grow px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20">
+      <div className="mb-8 border-b border-zinc-900 pb-6">
+        <h1 className="text-left text-2xl font-black tracking-tight text-white sm:text-3xl">
+          Settings
+        </h1>
+        <p className="mt-0.5 text-left text-xs text-zinc-500">
           Manage your profile, security options, and platform appearance
         </p>
       </div>

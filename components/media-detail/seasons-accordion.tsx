@@ -31,44 +31,43 @@ export default function SeasonsAccordion({
   if (!details?.seasons || details.seasons.length === 0) return null;
 
   return (
-    <div className="space-y-4 pt-4 border-t border-zinc-800/40">
-      <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+    <div className="space-y-4 border-t border-zinc-800/40 pt-4">
+      <h3 className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
         Seasons
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {details.seasons.map((s) => {
           const posterUrl = s.poster_path
             ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
             : "/logo/popcorn.png";
-          const year = s.air_date
-            ? new Date(s.air_date).getFullYear()
-            : "N/A";
+          const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
           return (
             <div
               key={s.id}
               onClick={() => handleSeasonClick(s.season_number)}
               className={cn(
-                "group flex gap-3 border rounded-2xl p-2.5 cursor-pointer transition-all duration-300 hover:-translate-y-0.5",
+                "group flex cursor-pointer gap-3 rounded-2xl border p-2.5 transition-all duration-300 hover:-translate-y-0.5",
                 expandedSeason === s.season_number
-                  ? "bg-zinc-900 border-blue-500 shadow-lg shadow-blue-500/10"
-                  : "bg-zinc-900/45 border-zinc-850 hover:border-zinc-800 hover:bg-zinc-900/80"
+                  ? "border-blue-500 bg-zinc-900 shadow-lg shadow-blue-500/10"
+                  : "border-zinc-850 bg-zinc-900/45 hover:border-zinc-800 hover:bg-zinc-900/80",
               )}
             >
-              <div className="aspect-2/3 w-16 rounded-xl overflow-hidden bg-zinc-950 shrink-0">
+              <div className="aspect-2/3 w-16 shrink-0 overflow-hidden rounded-xl bg-zinc-950">
                 <img
                   src={posterUrl}
                   alt={s.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
-              <div className="flex-1 min-w-0 text-left flex flex-col justify-center font-medium">
-                <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+              <div className="flex min-w-0 flex-1 flex-col justify-center text-left font-medium">
+                <h4 className="truncate text-xs font-bold text-white transition-colors group-hover:text-blue-400">
                   {s.name}
                 </h4>
-                <span className="text-[10px] text-zinc-400 font-semibold mt-1">
-                  {s.episode_count || 0} Episode{s.episode_count !== 1 ? "s" : ""}
+                <span className="mt-1 text-[10px] font-semibold text-zinc-400">
+                  {s.episode_count || 0} Episode
+                  {s.episode_count !== 1 ? "s" : ""}
                 </span>
-                <span className="text-[9px] text-zinc-500 font-bold mt-0.5">
+                <span className="mt-0.5 text-[9px] font-bold text-zinc-500">
                   {year}
                 </span>
               </div>
@@ -81,12 +80,12 @@ export default function SeasonsAccordion({
       {expandedSeason !== null && (
         <div
           ref={seasonDetailsRef}
-          className="mt-6 p-6 rounded-2xl border border-zinc-800 bg-zinc-900/15 backdrop-blur-md space-y-6 scroll-mt-24"
+          className="mt-6 scroll-mt-24 space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900/15 p-6 backdrop-blur-md"
         >
           {seasonDetailsLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 text-blue-500 animate-spin mb-2" />
-              <p className="text-zinc-500 text-xs font-semibold">
+              <Loader2 className="mb-2 h-8 w-8 animate-spin text-blue-500" />
+              <p className="text-xs font-semibold text-zinc-500">
                 Loading season details...
               </p>
             </div>
@@ -98,7 +97,7 @@ export default function SeasonsAccordion({
                   {activeSeasonData.name}
                 </h4>
                 {activeSeasonData.overview && (
-                  <p className="text-zinc-400 text-xs mt-2 leading-relaxed italic">
+                  <p className="mt-2 text-xs leading-relaxed text-zinc-400 italic">
                     &ldquo;{activeSeasonData.overview}&rdquo;
                   </p>
                 )}
@@ -106,7 +105,7 @@ export default function SeasonsAccordion({
 
               {/* Episodes List */}
               <div className="space-y-4">
-                <h5 className="text-[10px] font-black text-zinc-500 uppercase tracking-wider">
+                <h5 className="text-[10px] font-black tracking-wider text-zinc-500 uppercase">
                   Episodes ({activeSeasonData.episodes?.length || 0})
                 </h5>
                 <div className="flex flex-col gap-4">
@@ -117,16 +116,16 @@ export default function SeasonsAccordion({
                     return (
                       <div
                         key={ep.id}
-                        className="flex flex-col sm:flex-row gap-4 p-4 rounded-xl border border-zinc-850 bg-zinc-900/20 hover:bg-zinc-900/40 transition-colors"
+                        className="border-zinc-850 flex flex-col gap-4 rounded-xl border bg-zinc-900/20 p-4 transition-colors hover:bg-zinc-900/40 sm:flex-row"
                       >
                         {/* Still image / thumbnail */}
-                        <div className="w-full sm:w-44 aspect-video rounded-lg overflow-hidden bg-zinc-950 shrink-0 relative group">
+                        <div className="group relative aspect-video w-full shrink-0 overflow-hidden rounded-lg bg-zinc-950 sm:w-44">
                           <img
                             src={stillUrl}
                             alt={ep.name}
-                            className="w-full h-full object-cover"
+                            className="h-full w-full object-cover"
                           />
-                          <div className="absolute inset-0 bg-black/45 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/45 transition-opacity group-hover:opacity-100 md:opacity-0">
                             <Button
                               size="sm"
                               onClick={() => {
@@ -134,36 +133,39 @@ export default function SeasonsAccordion({
                                 setEpisode(ep.episode_number);
                                 scrollToPlayer("watch");
                               }}
-                              className="rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] h-7 px-3.5 cursor-pointer shadow-md"
+                              className="h-7 cursor-pointer rounded-full bg-blue-600 px-3.5 text-[10px] font-bold text-white shadow-md hover:bg-blue-500"
                             >
-                              Play S{activeSeasonData.season_number}E{ep.episode_number}
+                              Play S{activeSeasonData.season_number}E
+                              {ep.episode_number}
                             </Button>
                           </div>
                         </div>
 
                         {/* Episode Info */}
-                        <div className="flex-1 min-w-0 text-left flex flex-col justify-between">
+                        <div className="flex min-w-0 flex-1 flex-col justify-between text-left">
                           <div>
                             <div className="flex items-center gap-2">
                               <span className="text-xs font-black text-blue-400">
                                 Episode {ep.episode_number}
                               </span>
                               {ep.runtime && (
-                                <span className="text-[9px] text-zinc-500 font-bold bg-zinc-900 px-2 py-0.5 rounded border border-zinc-850">
+                                <span className="border-zinc-850 rounded border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold text-zinc-500">
                                   {ep.runtime}m
                                 </span>
                               )}
                             </div>
-                            <h6 className="text-xs font-extrabold text-white mt-1 truncate">
+                            <h6 className="mt-1 truncate text-xs font-extrabold text-white">
                               {ep.name}
                             </h6>
-                            <p className="text-zinc-400 text-xs mt-2 leading-relaxed line-clamp-3">
-                              {ep.overview || "No overview available for this episode."}
+                            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-zinc-400">
+                              {ep.overview ||
+                                "No overview available for this episode."}
                             </p>
                           </div>
                           {ep.air_date && (
-                            <span className="text-[9px] text-zinc-500 font-semibold mt-3">
-                              Air Date: {moment(ep.air_date).format("MMM Do YYYY")}
+                            <span className="mt-3 text-[9px] font-semibold text-zinc-500">
+                              Air Date:{" "}
+                              {moment(ep.air_date).format("MMM Do YYYY")}
                             </span>
                           )}
                         </div>
@@ -174,7 +176,9 @@ export default function SeasonsAccordion({
               </div>
             </div>
           ) : (
-            <p className="text-zinc-500 text-xs">Failed to load episode details.</p>
+            <p className="text-xs text-zinc-500">
+              Failed to load episode details.
+            </p>
           )}
         </div>
       )}

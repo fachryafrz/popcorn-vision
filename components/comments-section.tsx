@@ -53,7 +53,10 @@ interface CommentType {
   replies: CommentType[];
 }
 
-export default function CommentsSection({ mediaId, mediaType }: CommentsSectionProps) {
+export default function CommentsSection({
+  mediaId,
+  mediaType,
+}: CommentsSectionProps) {
   const [sorting, setSorting] = useState<SortOption>("best");
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,16 +68,12 @@ export default function CommentsSection({ mediaId, mediaType }: CommentsSectionP
   const authModal = useAuthModalStore();
 
   // Convex comment queries and mutations
-  const comments = useQuery(
-    api.comments.getComments,
-    {
-      mediaId,
-      mediaType,
-      sorting,
-    }
-  ) as CommentType[] | undefined;
+  const comments = useQuery(api.comments.getComments, {
+    mediaId,
+    mediaType,
+    sorting,
+  }) as CommentType[] | undefined;
 
-  
   const addCommentMutation = useMutation(api.comments.addComment);
 
   const handlePostComment = async (e: React.FormEvent) => {
@@ -105,31 +104,31 @@ export default function CommentsSection({ mediaId, mediaType }: CommentsSectionP
 
   return (
     <div className="mt-16 border-t border-zinc-800/80 pt-10">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
             <MessageSquare className="h-6 w-6 text-blue-500" />
             Comments
-            <span className="text-zinc-500 text-sm font-normal">
+            <span className="text-sm font-normal text-zinc-500">
               ({comments?.length ?? 0} discussions)
             </span>
           </h2>
-          <p className="text-zinc-400 text-sm mt-1">
+          <p className="mt-1 text-sm text-zinc-400">
             Join the conversation and share your thoughts
           </p>
         </div>
 
         {/* Sort Controls */}
-        <div className="flex items-center gap-1.5 self-start sm:self-center bg-zinc-900/60 p-1 rounded-xl border border-zinc-800/50">
+        <div className="flex items-center gap-1.5 self-start rounded-xl border border-zinc-800/50 bg-zinc-900/60 p-1 sm:self-center">
           {(["best", "top", "latest"] as SortOption[]).map((option) => (
             <button
               key={option}
               onClick={() => setSorting(option)}
               className={cn(
-                "px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200 cursor-pointer",
+                "cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all duration-200",
                 sorting === option
-                  ? "bg-white text-zinc-950 shadow-md scale-100"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "scale-100 bg-white text-zinc-950 shadow-md"
+                  : "text-zinc-400 hover:text-zinc-200",
               )}
             >
               {option}
@@ -149,18 +148,19 @@ export default function CommentsSection({ mediaId, mediaType }: CommentsSectionP
             placeholder="What's on your mind? Mention others using @username…"
           />
         ) : (
-          <div className="relative group overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/20 backdrop-blur-md p-6 text-center shadow-lg">
-            <h3 className="text-zinc-200 font-bold text-base mb-1">
+          <div className="group relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/20 p-6 text-center shadow-lg backdrop-blur-md">
+            <h3 className="mb-1 text-base font-bold text-zinc-200">
               Connect with the Community
             </h3>
-            <p className="text-zinc-500 text-xs max-w-sm mx-auto mb-4">
-              Log in or register your account to write comments, reply to discussions, and like user reviews.
+            <p className="mx-auto mb-4 max-w-sm text-xs text-zinc-500">
+              Log in or register your account to write comments, reply to
+              discussions, and like user reviews.
             </p>
             <Button
               onClick={() => authModal.open()}
               variant="default"
               size="sm"
-              className="rounded-xl font-bold bg-white text-black hover:bg-zinc-200 cursor-pointer"
+              className="cursor-pointer rounded-xl bg-white font-bold text-black hover:bg-zinc-200"
             >
               Sign In to Participate
             </Button>
@@ -172,21 +172,23 @@ export default function CommentsSection({ mediaId, mediaType }: CommentsSectionP
       {comments === undefined ? (
         <div className="space-y-6">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="flex gap-4 animate-pulse">
+            <div key={i} className="flex animate-pulse gap-4">
               <div className="h-10 w-10 rounded-full bg-zinc-800" />
               <div className="flex-1 space-y-2.5">
-                <div className="h-4 bg-zinc-800 rounded w-1/4" />
-                <div className="h-3 bg-zinc-800/60 rounded w-3/4" />
-                <div className="h-3 bg-zinc-800/40 rounded w-1/2" />
+                <div className="h-4 w-1/4 rounded bg-zinc-800" />
+                <div className="h-3 w-3/4 rounded bg-zinc-800/60" />
+                <div className="h-3 w-1/2 rounded bg-zinc-800/40" />
               </div>
             </div>
           ))}
         </div>
       ) : comments.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-zinc-800 rounded-2xl bg-zinc-950/30">
-          <MessageSquare className="h-10 w-10 text-zinc-700 mb-3" />
-          <p className="text-zinc-400 font-medium text-sm">No comments yet</p>
-          <p className="text-zinc-600 text-xs mt-1">Be the first to share your thoughts!</p>
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/30 py-16 text-center">
+          <MessageSquare className="mb-3 h-10 w-10 text-zinc-700" />
+          <p className="text-sm font-medium text-zinc-400">No comments yet</p>
+          <p className="mt-1 text-xs text-zinc-600">
+            Be the first to share your thoughts!
+          </p>
         </div>
       ) : (
         <div className="space-y-6">
@@ -238,22 +240,26 @@ function CommentNode({
   const [showOptions, setShowOptions] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  
   const addCommentMutation = useMutation(api.comments.addComment);
-  
+
   const editCommentMutation = useMutation(api.comments.editComment);
-  
+
   const deleteCommentMutation = useMutation(api.comments.deleteComment);
-  
+
   const toggleLikeMutation = useMutation(api.comments.toggleLikeComment);
 
   const isOwner = currentUserId && comment.userId === currentUserId;
-  const isDeletedUser = comment.author.username === "[deleted]" || comment.author.username === "deleted";
+  const isDeletedUser =
+    comment.author.username === "[deleted]" ||
+    comment.author.username === "deleted";
 
   // Toggle Dropdown
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setShowOptions(false);
       }
     }
@@ -321,9 +327,15 @@ function CommentNode({
   };
 
   const handleDelete = async () => {
-    if (confirm("Are you sure you want to delete this comment? This will also delete all replies to it.")) {
+    if (
+      confirm(
+        "Are you sure you want to delete this comment? This will also delete all replies to it.",
+      )
+    ) {
       try {
-        await deleteCommentMutation({ commentId: comment._id as Id<"comments"> });
+        await deleteCommentMutation({
+          commentId: comment._id as Id<"comments">,
+        });
         toast.success("Comment deleted.");
       } catch {
         toast.error("Failed to delete comment");
@@ -348,10 +360,10 @@ function CommentNode({
         <Link
           key={index}
           href={`/@/${username}`}
-          className="text-blue-400 font-bold hover:underline"
+          className="font-bold text-blue-400 hover:underline"
         >
           @{username}
-        </Link>
+        </Link>,
       );
       lastIndex = index + match[0].length;
     }
@@ -366,56 +378,81 @@ function CommentNode({
   // Limit visual indent spacing at depth 3, keep flat replies aligned
   const maxNestingIndent = 3;
   const isNested = depth > 0;
-  const indentClass = isNested && depth <= maxNestingIndent ? "ml-5 md:ml-10 border-l border-zinc-800/80 pl-4 md:pl-6" : "";
+  const indentClass =
+    isNested && depth <= maxNestingIndent
+      ? "ml-5 md:ml-10 border-l border-zinc-800/80 pl-4 md:pl-6"
+      : "";
 
   return (
-    <div className={cn("group flex flex-col gap-1 transition-all duration-300", indentClass)}>
-      <div className="flex items-start gap-3 bg-zinc-900/10 p-3 rounded-2xl hover:bg-zinc-900/30 border border-transparent hover:border-zinc-800/30 transition-all duration-300">
+    <div
+      className={cn(
+        "group flex flex-col gap-1 transition-all duration-300",
+        indentClass,
+      )}
+    >
+      <div className="flex items-start gap-3 rounded-2xl border border-transparent bg-zinc-900/10 p-3 transition-all duration-300 hover:border-zinc-800/30 hover:bg-zinc-900/30">
         {isDeletedUser ? (
           <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 select-none">
             {comment.author.image && (
-              <AvatarImage src={comment.author.image} alt={comment.author.name} className="object-cover" />
+              <AvatarImage
+                src={comment.author.image}
+                alt={comment.author.name}
+                className="object-cover"
+              />
             )}
-            <AvatarFallback className="bg-zinc-800 text-zinc-300 text-sm font-bold">
+            <AvatarFallback className="bg-zinc-800 text-sm font-bold text-zinc-300">
               {comment.author.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         ) : (
           <Link href={`/@/${comment.author.username}`}>
-            <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent group-hover:ring-zinc-700/30 transition-all duration-300">
+            <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/30">
               {comment.author.image && (
-                <AvatarImage src={comment.author.image} alt={comment.author.name} className="object-cover" />
+                <AvatarImage
+                  src={comment.author.image}
+                  alt={comment.author.name}
+                  className="object-cover"
+                />
               )}
-              <AvatarFallback className="bg-zinc-800 text-zinc-300 text-sm font-bold">
+              <AvatarFallback className="bg-zinc-800 text-sm font-bold text-zinc-300">
                 {comment.author.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </Link>
         )}
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           {/* Header */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               {isDeletedUser ? (
-                <span className="font-bold text-white text-sm">
+                <span className="text-sm font-bold text-white">
                   {comment.author.name}
                 </span>
               ) : (
                 <Link
                   href={`/@/${comment.author.username}`}
-                  className="font-bold text-white text-sm hover:underline"
+                  className="text-sm font-bold text-white hover:underline"
                 >
                   {comment.author.name}
                 </Link>
               )}
-              {!isDeletedUser && <span className="text-zinc-500 text-xs">@{comment.author.username}</span>}
-              <span className="text-zinc-600 text-xs font-semibold">•</span>
-              <span className="text-zinc-500 text-[11px]" title={new Date(comment.createdAt).toLocaleString()}>
+              {!isDeletedUser && (
+                <span className="text-xs text-zinc-500">
+                  @{comment.author.username}
+                </span>
+              )}
+              <span className="text-xs font-semibold text-zinc-600">•</span>
+              <span
+                className="text-[11px] text-zinc-500"
+                title={new Date(comment.createdAt).toLocaleString()}
+              >
                 {formatDistanceToNow(comment.createdAt, { addSuffix: true })}
               </span>
               {comment.updatedAt && (
-                <span className="text-zinc-600 text-[10px] italic font-semibold">(edited)</span>
+                <span className="text-[10px] font-semibold text-zinc-600 italic">
+                  (edited)
+                </span>
               )}
             </div>
 
@@ -424,19 +461,19 @@ function CommentNode({
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setShowOptions(!showOptions)}
-                  className="text-zinc-500 hover:text-white p-1 rounded-lg hover:bg-zinc-800/50 cursor-pointer"
+                  className="cursor-pointer rounded-lg p-1 text-zinc-500 hover:bg-zinc-800/50 hover:text-white"
                   aria-label="Comment options"
                 >
                   <MoreHorizontal className="h-4 w-4" />
                 </button>
                 {showOptions && (
-                  <div className="absolute right-0 mt-1 w-28 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl z-30 overflow-hidden">
+                  <div className="absolute right-0 z-30 mt-1 w-28 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 shadow-xl">
                     <button
                       onClick={() => {
                         setIsEditing(true);
                         setShowOptions(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs text-zinc-300 hover:bg-zinc-800/80 hover:text-white text-left cursor-pointer"
+                      className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-xs text-zinc-300 hover:bg-zinc-800/80 hover:text-white"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
                       Edit
@@ -446,7 +483,7 @@ function CommentNode({
                         handleDelete();
                         setShowOptions(false);
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-400 hover:bg-zinc-800/80 hover:text-red-300 text-left cursor-pointer"
+                      className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 text-left text-xs text-red-400 hover:bg-zinc-800/80 hover:text-red-300"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Delete
@@ -458,22 +495,22 @@ function CommentNode({
           </div>
 
           {/* Content */}
-          <div className="mt-2 text-sm text-zinc-300 leading-relaxed wrap-break-word whitespace-pre-wrap">
+          <div className="mt-2 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap text-zinc-300">
             {isEditing ? (
               <form onSubmit={handleEditSubmit} className="mt-2 space-y-2">
                 <Textarea
                   value={editContent}
                   onChange={(e) => setEditContent(e.target.value)}
-                  className="bg-zinc-950 border-zinc-800 text-white min-h-[60px] text-sm focus-visible:ring-1 focus-visible:ring-zinc-600 focus-visible:border-zinc-700"
+                  className="min-h-[60px] border-zinc-800 bg-zinc-950 text-sm text-white focus-visible:border-zinc-700 focus-visible:ring-1 focus-visible:ring-zinc-600"
                   required
                 />
-                <div className="flex gap-2 justify-end">
+                <div className="flex justify-end gap-2">
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
                     onClick={() => setIsEditing(false)}
-                    className="rounded-lg h-7 text-xs cursor-pointer"
+                    className="h-7 cursor-pointer rounded-lg text-xs"
                   >
                     Cancel
                   </Button>
@@ -481,7 +518,7 @@ function CommentNode({
                     type="submit"
                     size="sm"
                     disabled={isSubmittingEdit}
-                    className="rounded-lg h-7 text-xs bg-white text-black hover:bg-zinc-200 cursor-pointer"
+                    className="h-7 cursor-pointer rounded-lg bg-white text-xs text-black hover:bg-zinc-200"
                   >
                     {isSubmittingEdit ? "Saving…" : "Save"}
                   </Button>
@@ -494,17 +531,22 @@ function CommentNode({
 
           {/* Actions */}
           {!isEditing && (
-            <div className="flex items-center gap-4 mt-3">
+            <div className="mt-3 flex items-center gap-4">
               <button
                 onClick={handleLike}
                 className={cn(
-                  "flex items-center gap-1 text-[11px] font-bold group/like transition-all duration-200 cursor-pointer",
+                  "group/like flex cursor-pointer items-center gap-1 text-[11px] font-bold transition-all duration-200",
                   comment.isLiked
-                    ? "text-red-500 scale-105 active:scale-95"
-                    : "text-zinc-500 hover:text-zinc-300"
+                    ? "scale-105 text-red-500 active:scale-95"
+                    : "text-zinc-500 hover:text-zinc-300",
                 )}
               >
-                <Heart className={cn("h-3.5 w-3.5 transition-colors group-hover/like:fill-red-500/20", comment.isLiked && "fill-red-500 text-red-500")} />
+                <Heart
+                  className={cn(
+                    "h-3.5 w-3.5 transition-colors group-hover/like:fill-red-500/20",
+                    comment.isLiked && "fill-red-500 text-red-500",
+                  )}
+                />
                 <span>{comment.likeCount}</span>
               </button>
 
@@ -517,8 +559,8 @@ function CommentNode({
                   }
                 }}
                 className={cn(
-                  "flex items-center gap-1 text-[11px] font-bold text-zinc-500 hover:text-zinc-300 transition-colors cursor-pointer",
-                  isReplying && "text-blue-400 hover:text-blue-300"
+                  "flex cursor-pointer items-center gap-1 text-[11px] font-bold text-zinc-500 transition-colors hover:text-zinc-300",
+                  isReplying && "text-blue-400 hover:text-blue-300",
                 )}
               >
                 <Reply className="h-3.5 w-3.5" />
@@ -529,7 +571,7 @@ function CommentNode({
 
           {/* Reply Form */}
           {isReplying && (
-            <div className="mt-4 pl-4 border-l-2 border-zinc-800">
+            <div className="mt-4 border-l-2 border-zinc-800 pl-4">
               <CommentInputForm
                 value={replyContent}
                 onChange={setReplyContent}
@@ -591,7 +633,7 @@ function CommentInputForm({
     api.social.searchUsers,
     mentionQuery !== null && mentionQuery.trim().length >= 1
       ? { query: mentionQuery }
-      : "skip"
+      : "skip",
   );
 
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -600,7 +642,7 @@ function CommentInputForm({
 
     const selectionEnd = e.target.selectionEnd;
     const textBeforeCursor = val.substring(0, selectionEnd);
-    
+
     // Find if the cursor is currently inside an active @mention block
     const mentionRegex = /@([a-zA-Z0-9_]*)$/;
     const match = textBeforeCursor.match(mentionRegex);
@@ -620,8 +662,9 @@ function CommentInputForm({
 
     // Replace the incomplete `@username` with the full selection
     const lastAtIdx = textBeforeCursor.lastIndexOf("@");
-    const newTextBeforeCursor = textBeforeCursor.substring(0, lastAtIdx) + `@${username} `;
-    
+    const newTextBeforeCursor =
+      textBeforeCursor.substring(0, lastAtIdx) + `@${username} `;
+
     onChange(newTextBeforeCursor + textAfterCursor);
     setMentionQuery(null);
 
@@ -643,32 +686,34 @@ function CommentInputForm({
           value={value}
           onChange={handleTextareaChange}
           placeholder={placeholder}
-          className="bg-zinc-900 border-zinc-800/80 text-white rounded-2xl min-h-[90px] pr-10 focus-visible:ring-1 focus-visible:ring-zinc-700 focus-visible:border-zinc-800"
+          className="min-h-[90px] rounded-2xl border-zinc-800/80 bg-zinc-900 pr-10 text-white focus-visible:border-zinc-800 focus-visible:ring-1 focus-visible:ring-zinc-700"
           required
         />
       </div>
 
       {/* Mention Dropdown */}
       {mentionQuery !== null && searchResults && searchResults.length > 0 && (
-        <div className="absolute left-0 right-0 mt-1 max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-40 p-2 divide-y divide-zinc-800/60 max-w-sm">
+        <div className="absolute right-0 left-0 z-40 mt-1 max-h-48 max-w-sm divide-y divide-zinc-800/60 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900 p-2 shadow-2xl">
           {searchResults.map((user) => (
             <button
               key={user.userId}
               type="button"
               onClick={() => handleSelectMention(user.username)}
-              className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-left hover:bg-zinc-800 transition-colors cursor-pointer group"
+              className="group flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left transition-colors hover:bg-zinc-800"
             >
               <Avatar className="h-7 w-7 border border-zinc-800">
                 {user.image && <AvatarImage src={user.image} alt={user.name} />}
-                <AvatarFallback className="bg-zinc-800 text-zinc-300 text-xs font-bold">
+                <AvatarFallback className="bg-zinc-800 text-xs font-bold text-zinc-300">
                   {user.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="text-white text-xs font-semibold truncate group-hover:text-blue-400 transition-colors">
+                <p className="truncate text-xs font-semibold text-white transition-colors group-hover:text-blue-400">
                   {user.name}
                 </p>
-                <p className="text-zinc-500 text-[10px] truncate">@{user.username}</p>
+                <p className="truncate text-[10px] text-zinc-500">
+                  @{user.username}
+                </p>
               </div>
             </button>
           ))}
@@ -683,7 +728,7 @@ function CommentInputForm({
             variant="outline"
             size="sm"
             onClick={onCancel}
-            className="rounded-xl h-8 text-xs font-semibold cursor-pointer"
+            className="h-8 cursor-pointer rounded-xl text-xs font-semibold"
           >
             Cancel
           </Button>
@@ -692,13 +737,13 @@ function CommentInputForm({
           type="submit"
           disabled={isSubmitting || !value.trim()}
           size="sm"
-          className="rounded-xl h-8 text-xs font-bold bg-white text-black hover:bg-zinc-200 cursor-pointer"
+          className="h-8 cursor-pointer rounded-xl bg-white text-xs font-bold text-black hover:bg-zinc-200"
         >
           {isSubmitting ? (
             "Sending…"
           ) : (
             <>
-              <Send className="h-3 w-3 mr-1.5" />
+              <Send className="mr-1.5 h-3 w-3" />
               Post Comment
             </>
           )}

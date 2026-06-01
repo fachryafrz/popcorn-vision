@@ -4,7 +4,12 @@ import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { Mail, Lock, User, Loader2, AtSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useConvex, useMutation } from "convex/react";
@@ -66,7 +71,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             });
 
         if (signInError) {
-          setError(signInError.message || `Invalid ${isEmail ? "email" : "username"} or password`);
+          setError(
+            signInError.message ||
+              `Invalid ${isEmail ? "email" : "username"} or password`,
+          );
         } else if (signInData?.user) {
           // Best effort profile sync on login
           if (signInData.user.username) {
@@ -92,7 +100,9 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
         const cleanedUsername = username.trim().toLowerCase();
         if (!/^[a-zA-Z0-9_]{3,15}$/.test(cleanedUsername)) {
-          setError("Username must be between 3 and 15 alphanumeric characters or underscores");
+          setError(
+            "Username must be between 3 and 15 alphanumeric characters or underscores",
+          );
           setLoading(false);
           return;
         }
@@ -107,12 +117,13 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           return;
         }
 
-        const { data: signUpData, error: signUpError } = await authClient.signUp.email({
-          email,
-          password,
-          name,
-          username: cleanedUsername,
-        });
+        const { data: signUpData, error: signUpError } =
+          await authClient.signUp.email({
+            email,
+            password,
+            name,
+            username: cleanedUsername,
+          });
 
         if (signUpError) {
           setError(signUpError.message || "Failed to create account");
@@ -133,44 +144,55 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred. Please try again.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open) {
-        setMode("login");
-        setError("");
-        setSuccess("");
-        setEmail("");
-        setPassword("");
-        setName("");
-        setUsername("");
-        onClose();
-      }
-    }}>
-      <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/85 p-8 text-white shadow-2xl shadow-black/80 backdrop-blur-xl animate-in fade-in zoom-in duration-300">
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          setMode("login");
+          setError("");
+          setSuccess("");
+          setEmail("");
+          setPassword("");
+          setName("");
+          setUsername("");
+          onClose();
+        }
+      }}
+    >
+      <DialogContent className="animate-in fade-in zoom-in max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/85 p-8 text-white shadow-2xl shadow-black/80 backdrop-blur-xl duration-300">
         {/* Header */}
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
             <img
               src="/logo/popcorn.png"
               alt="Logo"
               className="h-9 w-9 object-contain"
             />
           </div>
-          <DialogTitle className="text-2xl font-bold tracking-tight bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-            {mode === "login" ? "Welcome Back" : mode === "signup" ? "Create Account" : "Reset Password"}
+          <DialogTitle className="bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
+            {mode === "login"
+              ? "Welcome Back"
+              : mode === "signup"
+                ? "Create Account"
+                : "Reset Password"}
           </DialogTitle>
           <DialogDescription className="mt-2 text-sm text-zinc-400">
             {mode === "login"
               ? "Sign in to save your watchlist and rate titles"
               : mode === "signup"
-              ? "Register to explore, track, and review titles"
-              : "Enter your email address and we'll send you a link to reset your password"}
+                ? "Register to explore, track, and review titles"
+                : "Enter your email address and we'll send you a link to reset your password"}
           </DialogDescription>
         </div>
 
@@ -193,11 +215,11 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {mode === "signup" && (
             <>
               <div className="relative">
-                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                <Label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                   Name
                 </Label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
+                  <span className="absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-zinc-500">
                     <User className="h-5 w-5" />
                   </span>
                   <Input
@@ -206,17 +228,17 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pl-12 pr-4 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
                   />
                 </div>
               </div>
 
               <div className="relative">
-                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                <Label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                   Username
                 </Label>
                 <div className="relative">
-                  <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
+                  <span className="absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-zinc-500">
                     <AtSign className="h-5 w-5" />
                   </span>
                   <Input
@@ -225,7 +247,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                     placeholder="johndoe"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pl-12 pr-4 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
                   />
                 </div>
               </div>
@@ -233,12 +255,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           )}
 
           <div>
-            <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+            <Label className="mb-1 block text-xs font-semibold tracking-wider text-zinc-400 uppercase">
               {mode === "login" ? "Email or Username" : "Email Address"}
             </Label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
-                {mode === "login" && !email.includes("@") && email.trim() !== "" ? (
+              <span className="absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-zinc-500">
+                {mode === "login" &&
+                !email.includes("@") &&
+                email.trim() !== "" ? (
                   <AtSign className="h-5 w-5" />
                 ) : (
                   <Mail className="h-5 w-5" />
@@ -247,18 +271,22 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               <Input
                 type={mode === "signup" || mode === "forgot" ? "email" : "text"}
                 required
-                placeholder={mode === "login" ? "you@example.com or username" : "you@example.com"}
+                placeholder={
+                  mode === "login"
+                    ? "you@example.com or username"
+                    : "you@example.com"
+                }
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pl-12 pr-4 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
               />
             </div>
           </div>
 
           {mode !== "forgot" && (
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block">
+              <div className="mb-1 flex items-center justify-between">
+                <Label className="block text-xs font-semibold tracking-wider text-zinc-400 uppercase">
                   Password
                 </Label>
                 {mode === "login" && (
@@ -269,14 +297,14 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                       setError("");
                       setSuccess("");
                     }}
-                    className="text-xs font-semibold text-blue-400 hover:underline bg-transparent border-none p-0 cursor-pointer"
+                    className="cursor-pointer border-none bg-transparent p-0 text-xs font-semibold text-blue-400 hover:underline"
                   >
                     Forgot password?
                   </button>
                 )}
               </div>
               <div className="relative">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
+                <span className="absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-zinc-500">
                   <Lock className="h-5 w-5" />
                 </span>
                 <Input
@@ -285,7 +313,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pl-12 pr-4 text-sm text-white placeholder-zinc-500 outline-none transition-all duration-200 focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                  className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
                 />
               </div>
             </div>
@@ -294,7 +322,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-base font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 mt-6 cursor-pointer"
+            className="mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-base font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
           >
             {loading ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -320,7 +348,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   setError("");
                   setSuccess("");
                 }}
-                className="font-semibold text-blue-400 hover:underline transition-all duration-200 bg-transparent border-none p-0 cursor-pointer"
+                className="cursor-pointer border-none bg-transparent p-0 font-semibold text-blue-400 transition-all duration-200 hover:underline"
               >
                 Sign Up
               </button>
@@ -336,7 +364,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   setError("");
                   setSuccess("");
                 }}
-                className="font-semibold text-blue-400 hover:underline transition-all duration-200 bg-transparent border-none p-0 cursor-pointer"
+                className="cursor-pointer border-none bg-transparent p-0 font-semibold text-blue-400 transition-all duration-200 hover:underline"
               >
                 Sign In
               </button>
@@ -352,7 +380,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   setError("");
                   setSuccess("");
                 }}
-                className="font-semibold text-blue-400 hover:underline transition-all duration-200 bg-transparent border-none p-0 cursor-pointer"
+                className="cursor-pointer border-none bg-transparent p-0 font-semibold text-blue-400 transition-all duration-200 hover:underline"
               >
                 Sign In
               </button>

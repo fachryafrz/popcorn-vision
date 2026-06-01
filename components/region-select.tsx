@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { ChevronDown, Check, Search } from "lucide-react";
 import regionsData from "@/data/iso-3166.json";
@@ -61,7 +65,7 @@ export default function RegionSelect({
     return regions.find((r) =>
       mode === "code"
         ? r["alpha-2"].toUpperCase() === value.toUpperCase()
-        : r.name.toLowerCase() === value.toLowerCase()
+        : r.name.toLowerCase() === value.toLowerCase(),
     );
   }, [value, mode]);
 
@@ -73,7 +77,7 @@ export default function RegionSelect({
       (r) =>
         r.name.toLowerCase().includes(query) ||
         r["alpha-2"].toLowerCase().includes(query) ||
-        r["alpha-3"].toLowerCase().includes(query)
+        r["alpha-3"].toLowerCase().includes(query),
     );
   }, [search]);
 
@@ -85,32 +89,37 @@ export default function RegionSelect({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          "w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-xs font-bold text-zinc-300 hover:text-white transition-all duration-200 outline-hidden focus:border-blue-500/50 focus:bg-zinc-900 h-12 flex items-center justify-between text-left cursor-pointer select-none",
-          className
+          "flex h-12 w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-left text-xs font-bold text-zinc-300 outline-hidden transition-all duration-200 select-none hover:text-white focus:border-blue-500/50 focus:bg-zinc-900",
+          className,
         )}
       >
         <span className="truncate">{displayLabel}</span>
-        <ChevronDown className={cn("h-4 w-4 text-zinc-500 shrink-0 transition-transform duration-200", open && "rotate-180")} />
+        <ChevronDown
+          className={cn(
+            "h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200",
+            open && "rotate-180",
+          )}
+        />
       </PopoverTrigger>
       <PopoverContent
         align="start"
         sideOffset={6}
-        className="w-[280px] sm:w-[320px] bg-zinc-950/95 border border-zinc-850 text-white rounded-2xl shadow-2xl p-0 backdrop-blur-md overflow-hidden z-50 origin-top"
+        className="border-zinc-850 z-50 w-[280px] origin-top overflow-hidden rounded-2xl border bg-zinc-950/95 p-0 text-white shadow-2xl backdrop-blur-md sm:w-[320px]"
       >
         {/* Sticky Search Header */}
-        <div className="relative p-2.5 border-b border-zinc-900 bg-zinc-950/40 flex items-center gap-2">
+        <div className="relative flex items-center gap-2 border-b border-zinc-900 bg-zinc-950/40 p-2.5">
           <Search className="absolute left-5 h-3.5 w-3.5 text-zinc-500" />
           <input
             type="text"
             placeholder="Search region or code..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-zinc-900 bg-zinc-950 pl-8 pr-3 py-2 text-xs text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/30"
+            className="w-full rounded-xl border border-zinc-900 bg-zinc-950 py-2 pr-3 pl-8 text-xs text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/30"
           />
         </div>
 
         {/* Scrollable list */}
-        <div className="max-h-64 overflow-y-auto p-1.5 space-y-0.5 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+        <div className="max-h-64 scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent space-y-0.5 overflow-y-auto p-1.5">
           {filteredRegions.map((region) => {
             const itemValue = mode === "code" ? region["alpha-2"] : region.name;
             const isSelected =
@@ -130,24 +139,26 @@ export default function RegionSelect({
                   setSearch("");
                 }}
                 className={cn(
-                  "w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-all cursor-pointer",
+                  "flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition-all",
                   isSelected
-                    ? "bg-blue-600/10 text-blue-400 border border-blue-500/20"
-                    : "text-zinc-400 hover:text-white hover:bg-zinc-900/50"
+                    ? "border border-blue-500/20 bg-blue-600/10 text-blue-400"
+                    : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white",
                 )}
               >
                 <span className="flex items-center gap-2.5 truncate">
-                  <span className="text-sm select-none leading-none shrink-0">
+                  <span className="shrink-0 text-sm leading-none select-none">
                     {getFlagEmoji(region["alpha-2"])}
                   </span>
                   <span className="truncate">{region.name}</span>
                 </span>
-                {isSelected && <Check className="h-3.5 w-3.5 text-blue-400 shrink-0" />}
+                {isSelected && (
+                  <Check className="h-3.5 w-3.5 shrink-0 text-blue-400" />
+                )}
               </button>
             );
           })}
           {filteredRegions.length === 0 && (
-            <div className="text-center py-6 text-zinc-650 text-xs font-bold italic">
+            <div className="text-zinc-650 py-6 text-center text-xs font-bold italic">
               No matching regions found
             </div>
           )}

@@ -13,11 +13,11 @@ export default function CastSlider({ cast }: CastSliderProps) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+      <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
         <Tv className="h-5 w-5 text-blue-500" />
         Key Cast & Characters
       </h2>
-      <div className="w-full relative swiper-cast-container">
+      <div className="swiper-cast-container relative w-full">
         <Swiper
           freeMode={true}
           modules={[Mousewheel, FreeMode]}
@@ -41,15 +41,15 @@ export default function CastSlider({ cast }: CastSliderProps) {
               : "/logo/popcorn.png";
             return (
               <SwiperSlide key={actor.id} className="py-1">
-                <div className="flex flex-col items-center text-center w-full">
+                <div className="flex w-full flex-col items-center text-center">
                   <div
-                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-cover bg-center border-2 border-zinc-800 shadow-md mb-2 bg-zinc-900"
+                    className="mb-2 h-16 w-16 rounded-full border-2 border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md sm:h-20 sm:w-20"
                     style={{ backgroundImage: `url(${actorPic})` }}
                   />
-                  <span className="text-xs font-semibold text-white truncate w-full">
+                  <span className="w-full truncate text-xs font-semibold text-white">
                     {actor.name}
                   </span>
-                  <span className="text-[10px] text-zinc-500 truncate w-full mt-0.5">
+                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500">
                     {actor.character}
                   </span>
                 </div>

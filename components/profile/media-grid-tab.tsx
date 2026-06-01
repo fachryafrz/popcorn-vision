@@ -45,22 +45,22 @@ export function MediaGridTab({
   if (!items) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 text-blue-500 animate-spin" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
 
   if (items.length === 0) {
     return (
-      <div className="text-center py-20 bg-zinc-900/10 border border-zinc-900 rounded-3xl p-8 flex flex-col items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border border-zinc-900 bg-zinc-900/10 p-8 py-20 text-center">
         {fallbackIcon}
-        <p className="text-zinc-400 text-sm font-medium">{emptyMessage}</p>
+        <p className="text-sm font-medium text-zinc-400">{emptyMessage}</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {items.map((item) => {
         const mediaItem: TMDBMedia = {
           id: Number(item.mediaId),
@@ -79,7 +79,10 @@ export function MediaGridTab({
         const itemKey = `${item.mediaType}-${item.mediaId}`;
 
         return (
-          <div key={item._id || itemKey} className="relative group/card-wrapper cursor-pointer">
+          <div
+            key={item._id || itemKey}
+            className="group/card-wrapper relative cursor-pointer"
+          >
             <Card
               media={mediaItem}
               onQuickView={setQuickViewMedia}
@@ -87,19 +90,21 @@ export function MediaGridTab({
             />
 
             {/* Badge Overlay */}
-            <div className="absolute top-3 right-3 z-30 flex flex-col items-end gap-1.5 pointer-events-none">
-              {(activeTab === "ratings" || (activeTab === "all" && item.rating)) && item.rating ? (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-blue-600/90 border border-blue-400/30 text-white shadow-lg">
+            <div className="pointer-events-none absolute top-3 right-3 z-30 flex flex-col items-end gap-1.5">
+              {(activeTab === "ratings" ||
+                (activeTab === "all" && item.rating)) &&
+              item.rating ? (
+                <div className="flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
                   <Star className="h-3 w-3 fill-current text-yellow-300" />
                   <span>{item.rating}/10</span>
                 </div>
               ) : activeTab === "all" && item.isFavorite ? (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-rose-600/90 border border-rose-400/30 text-white shadow-lg">
+                <div className="flex items-center gap-1.5 rounded-full border border-rose-400/30 bg-rose-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
                   <Heart className="h-3 w-3 fill-current text-white" />
                   <span>Favorite</span>
                 </div>
               ) : activeTab === "all" && item.isWatchlist ? (
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-black tracking-wide uppercase bg-emerald-600/90 border border-emerald-400/30 text-white shadow-lg">
+                <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
                   <Bookmark className="h-3 w-3 fill-current text-white" />
                   <span>Watchlist</span>
                 </div>
@@ -113,14 +118,16 @@ export function MediaGridTab({
                   e.stopPropagation();
                   handleToggleSelectItem(item.mediaType, item.mediaId);
                 }}
-                className="absolute inset-0 bg-black/45 backdrop-blur-[1px] rounded-2xl z-35 flex items-center justify-center transition-all"
+                className="absolute inset-0 z-35 flex items-center justify-center rounded-2xl bg-black/45 backdrop-blur-[1px] transition-all"
               >
-                <div className={cn(
-                  "h-8 w-8 rounded-xl border flex items-center justify-center transition-all shadow-md",
-                  selectedItems.has(itemKey)
-                    ? "bg-blue-600 border-blue-500 text-white scale-110"
-                    : "bg-black/60 border-zinc-700 text-transparent hover:border-zinc-500"
-                )}>
+                <div
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-xl border shadow-md transition-all",
+                    selectedItems.has(itemKey)
+                      ? "scale-110 border-blue-500 bg-blue-600 text-white"
+                      : "border-zinc-700 bg-black/60 text-transparent hover:border-zinc-500",
+                  )}
+                >
                   <Check className="h-5 w-5 stroke-3" />
                 </div>
               </div>

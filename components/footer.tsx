@@ -4,10 +4,10 @@ import { siteConfig } from "@/config/site";
 import moment from "moment";
 
 export default function Footer() {
-  const createdDate = '2023-02-17'
+  const createdDate = "2023-02-17";
 
   return (
-    <footer className="bg-zinc-950 border-t border-zinc-900 py-12 px-6 sm:px-16 md:px-20 text-center text-sm text-zinc-500 flex flex-col items-center gap-4">
+    <footer className="flex flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20">
       <div className="flex items-center gap-2">
         <img
           src="/logo/popcorn.png"
@@ -17,10 +17,12 @@ export default function Footer() {
         <span className="font-semibold text-zinc-400">{siteConfig.name}</span>
       </div>
       <p className="max-w-xs">
-        Explore movies and TV shows, track your favorite titles, and watch trailers.
+        Explore movies and TV shows, track your favorite titles, and watch
+        trailers.
       </p>
-      <p className="text-xs text-zinc-600 mt-2">
-        &copy; {moment(createdDate).format('MMM YYYY')} - {moment().format('MMM YYYY')} {siteConfig.name}. All rights reserved.
+      <p className="mt-2 text-xs text-zinc-600">
+        &copy; {moment(createdDate).format("MMM YYYY")} -{" "}
+        {moment().format("MMM YYYY")} {siteConfig.name}. All rights reserved.
       </p>
     </footer>
   );

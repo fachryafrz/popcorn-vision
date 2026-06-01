@@ -41,7 +41,9 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
         await acceptFriendRequest({ targetUserId: user.userId });
         toast.success("Friend request accepted!");
       } else if (user.friendshipStatus === "friends") {
-        if (confirm(`Are you sure you want to remove ${user.name} from friends?`)) {
+        if (
+          confirm(`Are you sure you want to remove ${user.name} from friends?`)
+        ) {
           await removeFriend({ targetUserId: user.userId });
           toast.success("Friend removed.");
         }
@@ -56,7 +58,8 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
   // Determine Friend Button style & content
   let friendLabel = "Add Friend";
   let FriendIcon = UserPlus;
-  let friendVariant: "default" | "secondary" | "outline" | "destructive" = "outline";
+  let friendVariant: "default" | "secondary" | "outline" | "destructive" =
+    "outline";
 
   if (user.friendshipStatus === "request_sent") {
     friendLabel = "Cancel Request";
@@ -73,30 +76,47 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
   }
 
   return (
-    <div className="relative group overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/30 backdrop-blur-md p-5 flex flex-col justify-between hover:border-zinc-700/80 hover:bg-zinc-900/50 transition-all duration-300 shadow-lg hover:shadow-xl">
+    <div className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-5 shadow-lg backdrop-blur-md transition-all duration-300 hover:border-zinc-700/80 hover:bg-zinc-900/50 hover:shadow-xl">
       <div>
         {/* User Info */}
-        <div className="flex items-start gap-4 mb-4">
-          <Link href={`/@/${user.username}`} prefetch={false} className="cursor-pointer">
-            <Avatar className="h-14 w-14 border border-zinc-800 ring-2 ring-transparent group-hover:ring-zinc-700/50 transition-all duration-300">
+        <div className="mb-4 flex items-start gap-4">
+          <Link
+            href={`/@/${user.username}`}
+            prefetch={false}
+            className="cursor-pointer"
+          >
+            <Avatar className="h-14 w-14 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/50">
               {user.image && (
-                <AvatarImage src={user.image} alt={user.name} className="object-cover" />
+                <AvatarImage
+                  src={user.image}
+                  alt={user.name}
+                  className="object-cover"
+                />
               )}
-              <AvatarFallback className="bg-zinc-800 text-zinc-300 text-lg font-bold">
+              <AvatarFallback className="bg-zinc-800 text-lg font-bold text-zinc-300">
                 {user.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </Link>
-          <div className="flex-1 min-w-0">
-            <Link href={`/@/${user.username}`} prefetch={false} className="group-hover:text-white transition-colors cursor-pointer block">
-              <h3 className="font-bold text-white text-base truncate leading-snug">{user.name}</h3>
+          <div className="min-w-0 flex-1">
+            <Link
+              href={`/@/${user.username}`}
+              prefetch={false}
+              className="block cursor-pointer transition-colors group-hover:text-white"
+            >
+              <h3 className="truncate text-base leading-snug font-bold text-white">
+                {user.name}
+              </h3>
             </Link>
-            <p className="text-zinc-550 text-xs truncate block">@{user.username}</p>
-            
+            <p className="text-zinc-550 block truncate text-xs">
+              @{user.username}
+            </p>
+
             {/* Stats */}
-            <div className="flex items-center gap-3 mt-2 text-[11px] text-zinc-400 font-semibold">
+            <div className="mt-2 flex items-center gap-3 text-[11px] font-semibold text-zinc-400">
               <span className="flex items-center gap-1">
-                <span className="text-zinc-200">{user.friendCount}</span> friends
+                <span className="text-zinc-200">{user.friendCount}</span>{" "}
+                friends
               </span>
             </div>
           </div>
@@ -104,11 +124,11 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
 
         {/* Bio */}
         {user.bio ? (
-          <p className="text-zinc-400 text-xs line-clamp-2 mb-5 min-h-10 leading-relaxed text-left">
+          <p className="mb-5 line-clamp-2 min-h-10 text-left text-xs leading-relaxed text-zinc-400">
             {user.bio}
           </p>
         ) : (
-          <p className="text-zinc-600 text-xs italic mb-5 min-h-10 leading-relaxed text-left">
+          <p className="mb-5 min-h-10 text-left text-xs leading-relaxed text-zinc-600 italic">
             No bio yet.
           </p>
         )}
@@ -121,13 +141,13 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
           variant={friendVariant}
           disabled={friendLoading}
           onClick={handleFriendAction}
-          className="rounded-xl h-9 w-full text-xs font-bold transition-all duration-200 hover:scale-[1.02] cursor-pointer"
+          className="h-9 w-full cursor-pointer rounded-xl text-xs font-bold transition-all duration-200 hover:scale-[1.02]"
         >
           {friendLoading ? (
             <Loader2 className="h-3 w-3 animate-spin" />
           ) : (
             <>
-              <FriendIcon className="h-3.5 w-3.5 mr-1" />
+              <FriendIcon className="mr-1 h-3.5 w-3.5" />
               {friendLabel}
             </>
           )}
