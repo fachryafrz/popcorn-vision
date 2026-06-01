@@ -4,10 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 import { siteConfig } from "@/config/site";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
-import UsernamePromptModal from "@/components/username-prompt-modal";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -31,6 +29,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaMeasurementId = process.env.GA_MEASUREMENT_ID;
+  
   return (
     <html
       lang="en"
@@ -38,15 +38,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         <Providers>
-          <Navbar />
-          <UsernamePromptModal />
-          <div className="grow">
-            {children}
-          </div>
-          <Footer />
+          {children}
           <Toaster />
         </Providers>
       </body>
+      {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
     </html>
   );
 }

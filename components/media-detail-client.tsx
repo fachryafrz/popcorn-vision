@@ -19,7 +19,10 @@ import {
   Loader2,
   Tv,
   TrendingUp,
-  Calendar
+  Calendar,
+  Send,
+  Users,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,6 +42,9 @@ import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 import RegionSelect from "@/components/region-select";
 import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Id } from "@/convex/_generated/dataModel";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -343,6 +349,30 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       : "skip"
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+
+  const chatsList = useQuery(api.chats.getChatsList, isLoggedIn ? {} : "skip");
+  const sendChatMessage = useMutation(api.chats.sendMessage);
+
+  const handleShareToChat = async (chatId: string, chatTitle: string) => {
+    try {
+      await sendChatMessage({
+        chatId: chatId as Id<"chats">,
+        content: `Recommended ${mediaType === "movie" ? "movie" : "TV show"}: ${details.title || details.name}`,
+        attachmentType: "media",
+        sharedMediaId: String(details.id),
+        sharedMediaType: mediaType,
+        sharedMediaTitle: details.title || details.name || "",
+        sharedMediaPoster: details.poster_path || "",
+        sharedMediaRating: details.vote_average || 0,
+        sharedMediaYear: releaseYear.toString(),
+      });
+      setIsShareDialogOpen(false);
+      toast.success(`Shared "${details.title || details.name}" to ${chatTitle}!`);
+    } catch {
+      toast.error("Failed to share title");
+    }
+  };
 
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
@@ -711,6 +741,21 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
               <span className="flex items-center gap-1.5">
                 <Calendar className="h-5 w-5" />
                 Log Watch
+              </span>
+            </Button>
+
+            {/* Share Button */}
+            <Button
+              type="button"
+              onClick={() => {
+                if (!isLoggedIn) openAuth();
+                else setIsShareDialogOpen(true);
+              }}
+              className="rounded-full border font-semibold text-sm sm:text-base px-5 py-6 sm:px-6 transition-all hover:scale-105 active:scale-98 bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+            >
+              <span className="flex items-center gap-1.5">
+                <Send className="h-5 w-5" />
+                Share
               </span>
             </Button>
 
@@ -1207,7 +1252,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                                       alt={ep.name}
                                       className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-black/45 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                       <Button
                                         size="sm"
                                         onClick={() => {
@@ -1406,6 +1451,57 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
         posterPath={details.poster_path || ""}
         releaseYear={releaseYear.toString()}
       />
+
+      {/* Share to Chat Dialog */}
+      <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+        <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 text-white shadow-2xl p-6 backdrop-blur-md">
+          <DialogHeader>
+            <DialogTitle className="text-base font-black uppercase tracking-wider text-white">Share with Friends</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 mt-4 text-left">
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-550">Select Chat</h3>
+            <div className="max-h-60 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin">
+              {!chatsList ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-5 w-5 text-blue-500 animate-spin" />
+                </div>
+              ) : chatsList.length === 0 ? (
+                <p className="text-xs text-zinc-500 italic py-4 text-center">No active chats found. Open the chat tab to start conversations with friends!</p>
+              ) : (
+                chatsList.map((c) => {
+                  const isGroup = c.type === "group";
+                  const chatTitle = isGroup ? c.name : c.friend?.name || "Friend";
+                  return (
+                    <div
+                      key={c.chatId}
+                      onClick={() => handleShareToChat(c.chatId, chatTitle)}
+                      className="flex items-center justify-between p-3 rounded-2xl hover:bg-zinc-900/60 cursor-pointer border border-transparent hover:border-zinc-850 transition-all text-xs"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-9 w-9 border border-zinc-800">
+                          {isGroup ? (
+                            c.image ? <AvatarImage src={c.image} alt={c.name} className="object-cover" /> : null
+                          ) : c.friend?.image ? (
+                            <AvatarImage src={c.friend.image} alt={c.friend.name} className="object-cover" />
+                          ) : null}
+                          <AvatarFallback className="bg-zinc-900 text-zinc-300 font-bold text-xs">
+                            {isGroup ? <Users className="h-4 w-4 text-zinc-400" /> : chatTitle.charAt(0).toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <span className="font-bold text-white block">{chatTitle}</span>
+                          <span className="text-[10px] text-zinc-500 mt-0.5 block">{isGroup ? "Group Chat" : `@${c.friend?.username}`}</span>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-zinc-500" />
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

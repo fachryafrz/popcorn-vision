@@ -297,7 +297,7 @@ export default function Hero({ items, onQuickView, onAuthRequired }: HeroProps) 
         ))}
       </Swiper>
       
-      {/* Custom styles to match premium theme */}
+      {/* Custom styles to match theme */}
       <style jsx global>{`
         .swiper-hero .swiper-pagination-bullet {
           background: rgba(255, 255, 255, 0.4) !important;

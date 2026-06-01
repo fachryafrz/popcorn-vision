@@ -18,6 +18,8 @@ export default defineSchema({
     hideFavorites: v.optional(v.boolean()),
     hideRatings: v.optional(v.boolean()),
     status: v.optional(v.string()), // "active" | "deleted" | "closed"
+    messagePrivacy: v.optional(v.string()), // "friends" | "disabled" | "followers"
+    readReceiptsEnabled: v.optional(v.boolean()), // true = visible, false = hidden
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),
@@ -131,4 +133,56 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_media", ["userId", "mediaId", "mediaType"])
     .index("by_user_watched", ["userId", "watchedDate"]),
+
+  chats: defineTable({
+    type: v.string(), // "private" | "group"
+    name: v.optional(v.string()), // group chat name
+    image: v.optional(v.string()), // group avatar
+    description: v.optional(v.string()), // group description
+    adminIds: v.optional(v.array(v.string())), // userIds of admins
+    createdById: v.optional(v.string()),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_updatedAt", ["updatedAt"]),
+
+  chatMemberships: defineTable({
+    chatId: v.id("chats"),
+    userId: v.string(),
+    joinedAt: v.number(),
+    lastReadAt: v.optional(v.number()),
+    typingUntil: v.optional(v.number()),
+    isMuted: v.optional(v.boolean()),
+  })
+    .index("by_user", ["userId"])
+    .index("by_chat", ["chatId"])
+    .index("by_chat_user", ["chatId", "userId"]),
+
+  messages: defineTable({
+    chatId: v.id("chats"),
+    senderId: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+    editedAt: v.optional(v.number()),
+    attachmentUrl: v.optional(v.string()),
+    attachmentType: v.optional(v.string()), // "image" | "gif" | "media" | "list"
+    sharedMediaId: v.optional(v.string()),
+    sharedMediaType: v.optional(v.string()),
+    sharedMediaTitle: v.optional(v.string()),
+    sharedMediaPoster: v.optional(v.string()),
+    sharedMediaRating: v.optional(v.number()),
+    sharedMediaYear: v.optional(v.string()),
+    sharedListId: v.optional(v.string()),
+    sharedListName: v.optional(v.string()),
+  })
+    .index("by_chat", ["chatId"])
+    .index("by_chat_created", ["chatId", "createdAt"]),
+
+  chatReports: defineTable({
+    reporterId: v.string(),
+    reportedUserId: v.string(),
+    reason: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_reported", ["reportedUserId"]),
 });

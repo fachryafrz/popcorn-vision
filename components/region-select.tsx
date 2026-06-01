@@ -32,7 +32,7 @@ interface RegionSelectProps {
   mode?: "code" | "name"; // "code" uses alpha-2 (e.g., 'US'), "name" uses full name (e.g., 'United States')
 }
 
-// Premium dynamic country flag emoji generation
+// Dynamic country flag emoji generation
 export function getFlagEmoji(countryCode: string): string {
   if (!countryCode || countryCode.length !== 2) return "🌐";
   const codePoints = countryCode
