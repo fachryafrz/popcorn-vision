@@ -6,7 +6,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { LogOut, Menu, Search, X, ChevronDown, Settings, Bell, Trash2, Loader2 } from "lucide-react";
+import { LogOut, Menu, Search, X, ChevronDown, Settings, Bell, Trash2, Loader2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -90,7 +90,7 @@ export default function Navbar() {
   return (
     <>
       <header className={cn("fixed inset-x-0 z-40 transition-all duration-500", scrolled ? "top-4 px-4 sm:px-10 md:px-16" : "top-0")}>
-        <div className={cn("w-full flex items-center justify-between transition-all duration-500", scrolled ? "max-w-5xl mx-auto px-6 md:pr-2 py-2 bg-background/80 backdrop-blur-md border border-border/80 rounded-full shadow-xl shadow-black/60" : "max-w-7xl mx-auto px-6 sm:px-12 md:px-16 py-4 border border-transparent")}>
+        <div className={cn("w-full grid grid-cols-2 lg:grid-cols-3 transition-all duration-500", scrolled ? "max-w-5xl mx-auto px-6 lg:pr-2 py-2 bg-background/80 backdrop-blur-md border border-border/80 rounded-full shadow-xl shadow-black/60" : "max-w-7xl mx-auto px-6 sm:px-12 md:px-16 py-4 border border-transparent")}>
           {/* Logo */}
           <Link href="/" prefetch={false} className="flex items-center gap-2 cursor-pointer">
             <img
@@ -106,7 +106,7 @@ export default function Navbar() {
           {/* Search Bar (Desktop Center) */}
           <form
             onSubmit={handleSearchSubmit}
-            className="hidden md:flex items-center"
+            className="hidden lg:flex items-center justify-self-center"
           >
             <div
               className={cn(
@@ -141,9 +141,19 @@ export default function Navbar() {
           </form>
 
           {/* User Controls (Desktop) */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4 justify-self-end">
             {isLoggedIn && (
-              <DropdownMenu>
+              <>
+                <Link
+                  href="/chat"
+                  prefetch={false}
+                  className="relative p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all cursor-pointer focus:outline-none"
+                  title="Chat Workspace"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                </Link>
+
+                <DropdownMenu>
                 <DropdownMenuTrigger className="relative p-2 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all cursor-pointer focus:outline-none">
                   <Bell className="h-4 w-4" />
                   {unreadCount > 0 && (
@@ -280,6 +290,7 @@ export default function Navbar() {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </>
             )}
 
             {isLoggedIn ? (
@@ -344,9 +355,10 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Controls (Bell + Hamburger Drawer) */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-3 justify-self-end">
             {isLoggedIn && (
-              <DropdownMenu>
+              <>
+                <DropdownMenu>
                 <DropdownMenuTrigger className="relative p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-705 transition-all cursor-pointer focus:outline-none">
                   <Bell className="h-5 w-5" />
                   {unreadCount > 0 && (
@@ -483,6 +495,7 @@ export default function Navbar() {
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
+              </>
             )}
 
             {/* Mobile Menu Button & Drawer via Shadcn Sheet */}
@@ -536,6 +549,17 @@ export default function Navbar() {
                   <Search className="h-4 w-4" />
                   Search
                 </Link>
+                {isLoggedIn && (
+                  <Link
+                    href="/chat"
+                    prefetch={false}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="hover:text-white flex items-center gap-2"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Chat
+                  </Link>
+                )}
               </nav>
 
               <hr className="border-zinc-800" />

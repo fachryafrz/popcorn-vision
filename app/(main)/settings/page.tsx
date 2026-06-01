@@ -41,6 +41,8 @@ interface SettingsFormProps {
     hideWatchlist?: boolean;
     hideFavorites?: boolean;
     hideRatings?: boolean;
+    messagePrivacy?: string;
+    readReceiptsEnabled?: boolean;
   } | null;
   user: {
     name?: string;
@@ -94,6 +96,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [hideRatings, setHideRatings] = useState(
     convexProfile?.hideRatings === true
   );
+  const [messagePrivacy, setMessagePrivacy] = useState(
+    convexProfile?.messagePrivacy || "friends"
+  );
+  const [readReceiptsEnabled, setReadReceiptsEnabled] = useState(
+    convexProfile?.readReceiptsEnabled !== false
+  );
   const [savingPrivacy, setSavingPrivacy] = useState(false);
 
   // Privacy mutations & queries
@@ -111,6 +119,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
         hideWatchlist,
         hideFavorites,
         hideRatings,
+        messagePrivacy,
+        readReceiptsEnabled,
       });
       toast.success("Privacy settings updated successfully!");
     } catch (err: unknown) {
@@ -536,7 +546,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
           <div className="space-y-8">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-white mb-1">Appearance & Styling</h2>
-              <p className="text-xs text-zinc-500">Personalize your platform appearance by choosing from a selection of premium dark themes</p>
+              <p className="text-xs text-zinc-500">Personalize your platform appearance by choosing from a selection of dark themes</p>
             </div>
 
             {/* Core Theme Picker */}
@@ -783,6 +793,36 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
                 </div>
               </div>
 
+              {/* Direct Messages Privacy Select */}
+              <div className="relative">
+                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                  Direct Messages Privacy
+                </Label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-zinc-500 z-10">
+                    <Shield className="h-4 w-4" />
+                  </span>
+                  <Select value={messagePrivacy} onValueChange={(val) => setMessagePrivacy(val || "friends")}>
+                    <SelectTrigger className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pl-12 pr-4 text-sm text-white focus:border-blue-500/50 focus:bg-zinc-900 h-12">
+                      <SelectValue placeholder="Select Message Privacy" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-zinc-900 border border-zinc-800 text-white rounded-2xl shadow-xl">
+                      <SelectGroup>
+                        <SelectItem value="friends" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Friends Only (Only approved friends can DM)
+                        </SelectItem>
+                        <SelectItem value="followers" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Followers (Allow messages from followers)
+                        </SelectItem>
+                        <SelectItem value="disabled" className="hover:bg-zinc-850 rounded-xl cursor-pointer text-zinc-300 hover:text-white px-3 py-2">
+                          Disable Messages (Do not allow DMs)
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
               {/* Toggles */}
               <div className="space-y-4 pt-4 border-t border-zinc-900">
                 <h3 className="text-xs font-black uppercase tracking-wider text-zinc-400 mb-2">Social & Discoverability</h3>
@@ -835,6 +875,20 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
                   <Checkbox
                     checked={hideRatings}
                     onCheckedChange={(checked) => setHideRatings(checked === true)}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                </div>
+
+
+                {/* Read Receipts toggles */}
+                <div className="flex items-center justify-between p-4 rounded-2xl bg-zinc-900/30 border border-zinc-800/80">
+                  <div className="flex flex-col gap-0.5 text-left">
+                    <span className="text-xs font-bold text-white">Show Read Receipts</span>
+                    <span className="text-[10px] text-zinc-500">Allow others to see when you have read their messages</span>
+                  </div>
+                  <Checkbox
+                    checked={readReceiptsEnabled}
+                    onCheckedChange={(checked) => setReadReceiptsEnabled(checked === true)}
                     className="h-5 w-5 cursor-pointer"
                   />
                 </div>

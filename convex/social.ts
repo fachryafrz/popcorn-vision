@@ -514,6 +514,8 @@ export const updatePrivacySettings = mutation({
     hideWatchlist: v.boolean(),
     hideFavorites: v.boolean(),
     hideRatings: v.boolean(),
+    messagePrivacy: v.optional(v.string()),
+    readReceiptsEnabled: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await authComponent.getAuthUser(ctx);
@@ -533,6 +535,8 @@ export const updatePrivacySettings = mutation({
       hideWatchlist: args.hideWatchlist,
       hideFavorites: args.hideFavorites,
       hideRatings: args.hideRatings,
+      messagePrivacy: args.messagePrivacy,
+      readReceiptsEnabled: args.readReceiptsEnabled,
     });
   },
 });
