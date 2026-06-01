@@ -761,7 +761,7 @@ export default function ImportWizard() {
               Adding Entries
             </h3>
             <p className="text-zinc-500 text-xs">
-              Saving watchlist, favorites, and ratings data securely...
+              Saving your data securely...
             </p>
           </div>
           <div className="w-full max-w-xs bg-zinc-900 h-2.5 rounded-full overflow-hidden border border-zinc-800">
