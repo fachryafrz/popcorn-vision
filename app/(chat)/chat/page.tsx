@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -24,7 +24,6 @@ import ChatModals from "@/components/chat/chat-modals";
 
 export default function ChatPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const currentUserId = session.data?.user?.id;
@@ -78,27 +77,8 @@ export default function ChatPage() {
   // ----------------------------------------------------
   // LOCAL COMPONENT STATE
   // ----------------------------------------------------
-  // Initialise selectedChatId from the URL ?room= param (if present)
-  const [selectedChatId, setSelectedChatIdRaw] = useState<Id<"chats"> | null>(
-    () => {
-      const roomParam = searchParams.get("room");
-      return roomParam ? (roomParam as Id<"chats">) : null;
-    },
-  );
-
-  // Wrapper that also syncs the room ID into the URL
-  const setSelectedChatId = useCallback(
-    (id: Id<"chats"> | null) => {
-      setSelectedChatIdRaw(id);
-      const params = new URLSearchParams(searchParams.toString());
-      if (id) {
-        params.set("room", id);
-      } else {
-        params.delete("room");
-      }
-      router.replace(`/chat?${params.toString()}`, { scroll: false });
-    },
-    [router, searchParams],
+  const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(
+    null,
   );
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
