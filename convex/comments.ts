@@ -79,9 +79,10 @@ export const getComments = query({
       const directReplies = rawComments.filter((c) => c.parentId === comment._id);
       const replyCount = directReplies.length;
 
+      const isDeleted = !author || author.status === "deleted";
       commentsWithMeta.push({
         ...comment,
-        author: author ? {
+        author: !isDeleted && author ? {
           name: author.name,
           username: author.username,
           image: author.image,

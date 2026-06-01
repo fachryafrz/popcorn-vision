@@ -388,6 +388,19 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     );
   }
 
+  // Handle Deactivated State
+  if ("isDeactivated" in profileData && profileData.isDeactivated) {
+    return (
+      <div className="grow flex flex-col items-center justify-center min-h-[60vh] bg-zinc-950 text-white px-6 text-center">
+        <UserX className="h-16 w-16 text-zinc-650 mb-4 animate-pulse" />
+        <h1 className="text-2xl font-bold tracking-tight text-white mb-2">Account Deactivated</h1>
+        <p className="text-zinc-400 text-sm max-w-md mb-6">
+          The user <span className="text-blue-400 font-semibold">@{username}</span> has temporarily deactivated their account.
+        </p>
+      </div>
+    );
+  }
+
   // Handle Blocked State
   if (profileData.isBlocked) {
     return (

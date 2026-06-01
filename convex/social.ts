@@ -78,8 +78,10 @@ export const searchUsers = query({
     const allUsers = await ctx.db.query("users").collect();
     
     const matchedUsers = allUsers.filter(u => 
-      u.name.toLowerCase().includes(q) || 
-      u.username.toLowerCase().includes(q)
+      u.status !== "deleted" &&
+      u.status !== "closed" &&
+      (u.name.toLowerCase().includes(q) || 
+       u.username.toLowerCase().includes(q))
     ).slice(0, 20);
 
     const results = [];
@@ -138,6 +140,19 @@ export const getUserSocialProfile = query({
       const user = await authComponent.getAuthUser(ctx);
       if (user) currentUserId = user._id;
     } catch {}
+
+    const isOwner = currentUserId && targetUser.userId === currentUserId;
+    if (targetUser.status === "deleted") return null;
+    if (targetUser.status === "closed" && !isOwner) {
+      return {
+        user: {
+          name: targetUser.name,
+          username: targetUser.username,
+          image: targetUser.image,
+        },
+        isDeactivated: true,
+      };
+    }
 
     const relationship = await getSocialStatus(ctx, currentUserId, targetUser.userId);
 

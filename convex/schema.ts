@@ -17,6 +17,7 @@ export default defineSchema({
     hideWatchlist: v.optional(v.boolean()),
     hideFavorites: v.optional(v.boolean()),
     hideRatings: v.optional(v.boolean()),
+    status: v.optional(v.string()), // "active" | "deleted" | "closed"
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),

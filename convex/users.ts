@@ -53,11 +53,13 @@ export const createOrUpdateProfile = mutation({
       .first();
 
     if (existingProfile) {
+      const newStatus = existingProfile.status || "active";
       // Update existing profile
       await ctx.db.patch(existingProfile._id, {
         username: cleanedUsername,
         name: args.name,
         email: args.email,
+        status: newStatus,
       });
       return existingProfile._id;
     } else {
@@ -67,6 +69,7 @@ export const createOrUpdateProfile = mutation({
         username: cleanedUsername,
         name: args.name,
         email: args.email,
+        status: "active",
       });
     }
   },
@@ -77,10 +80,12 @@ export const getUserByUsername = query({
   args: { username: v.string() },
   handler: async (ctx, args) => {
     const cleanedUsername = args.username.trim().toLowerCase();
-    return await ctx.db
+    const profile = await ctx.db
       .query("users")
       .withIndex("by_username", (q) => q.eq("username", cleanedUsername))
       .first();
+    if (!profile || profile.status === "deleted" || profile.status === "closed") return null;
+    return profile;
   },
 });
 
@@ -147,6 +152,7 @@ export const updateCurrentUserProfile = mutation({
         name: args.name.trim(),
         bio: args.bio,
         country: args.country,
+        status: existingProfile.status || "active",
       });
       return existingProfile._id;
     } else {
@@ -157,19 +163,20 @@ export const updateCurrentUserProfile = mutation({
         email: user.email || "",
         bio: args.bio,
         country: args.country,
+        status: "active",
       });
     }
   },
 });
 
-// Delete account data
+// Delete account data (Soft Delete)
 export const deleteCurrentUserAccountData = mutation({
   args: {},
   handler: async (ctx) => {
     const user = await authComponent.getAuthUser(ctx);
     const userId = user._id;
 
-    // Remove users profile
+    // Soft delete users profile
     const profile = await ctx.db
       .query("users")
       .withIndex("by_userId", (q) => q.eq("userId", userId))
@@ -182,51 +189,19 @@ export const deleteCurrentUserAccountData = mutation({
           console.error("Failed to delete storage file during account deletion:", err);
         }
       }
-      await ctx.db.delete(profile._id);
+      // Soft delete: change status, rename username to free it up, and clear details
+      await ctx.db.patch(profile._id, {
+        status: "deleted",
+        name: "[deleted]",
+        username: `deleted_${profile._id}`,
+        email: "",
+        bio: undefined,
+        image: undefined,
+        imageStorageId: undefined,
+      });
     }
 
-    // Delete ratings, watchlist, favorites
-    const ratings = await ctx.db
-      .query("ratings")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .collect();
-    for (const r of ratings) {
-      await ctx.db.delete(r._id);
-    }
-
-    const watchlists = await ctx.db
-      .query("watchlist")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .collect();
-    for (const w of watchlists) {
-      await ctx.db.delete(w._id);
-    }
-
-    const favorites = await ctx.db
-      .query("favorites")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .collect();
-    for (const f of favorites) {
-      await ctx.db.delete(f._id);
-    }
-
-    // Delete diary logs
-    const diaries = await ctx.db
-      .query("diary")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
-      .collect();
-    for (const d of diaries) {
-      await ctx.db.delete(d._id);
-    }
-
-    // Delete comment likes
-    const commentLikes = await ctx.db
-      .query("commentLikes")
-      .withIndex("by_user_comment", (q) => q.eq("userId", userId))
-      .collect();
-    for (const cl of commentLikes) {
-      await ctx.db.delete(cl._id);
-    }
+    // Preserve ratings, watchlist, favorites, and diary logs in database (avoid deleting data)
 
     // Delete friendships
     const friendships1 = await ctx.db
@@ -277,6 +252,48 @@ export const deleteCurrentUserAccountData = mutation({
     for (const n of relevantSentNotifs) {
       await ctx.db.delete(n._id);
     }
+  },
+});
+
+// Close account (Deactivation)
+export const closeCurrentUserAccount = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    if (!profile) throw new Error("Profile not found");
+
+    await ctx.db.patch(profile._id, {
+      status: "closed",
+    });
+  },
+});
+
+// Reopen account (Reactivation)
+export const reopenCurrentUserAccount = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", userId))
+      .first();
+
+    if (profile && profile.status === "closed") {
+      await ctx.db.patch(profile._id, {
+        status: "active",
+      });
+      return { reopened: true };
+    }
+    return { reopened: false };
   },
 });
 

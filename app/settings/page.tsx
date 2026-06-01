@@ -69,6 +69,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const router = useRouter();
   const updateProfile = useMutation(api.users.updateCurrentUserProfile);
   const deleteConvexAccountData = useMutation(api.users.deleteCurrentUserAccountData);
+  const closeConvexAccount = useMutation(api.users.closeCurrentUserAccount);
 
   // Convex image storage mutations
   const generateUploadUrl = useMutation(api.users.generateUploadUrl);
@@ -160,6 +161,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   // Delete account fields state
   const [deletePassword, setDeletePassword] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [closePassword, setClosePassword] = useState("");
+  const [closingAccount, setClosingAccount] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -243,7 +246,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       setProfileImage("");
       toast.success("Profile picture removed");
       setTimeout(() => {
-        router.refresh();
+        window.location.reload();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -396,13 +399,63 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       toast.success("Your account has been deleted. Goodbye!");
       router.push("/");
       setTimeout(() => {
-        router.refresh();
+        window.location.reload();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Account deletion failed.");
     } finally {
       setDeletingAccount(false);
+    }
+  };
+
+  const handleCloseAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!closePassword) {
+      toast.error("Please enter your current password to confirm closing your account");
+      return;
+    }
+
+    const email = user?.email;
+    if (!email) {
+      toast.error("User email not found. Please log in again.");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.")) {
+      return;
+    }
+
+    setClosingAccount(true);
+
+    try {
+      // 1. Verify password by calling signIn (will fail if password is wrong)
+      const verifyResult = await authClient.signIn.email({
+        email,
+        password: closePassword,
+      });
+
+      if (verifyResult.error) {
+        throw new Error("Incorrect password. Please verify your current password.");
+      }
+
+      // 2. Mark user account as closed in Convex
+      await closeConvexAccount({});
+
+      // 3. Sign out the user
+      await authClient.signOut();
+
+      toast.success("Your account has been closed. You can reopen it anytime by logging back in.");
+      router.push("/");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to close account.");
+    } finally {
+      setClosingAccount(false);
     }
   };
 
@@ -938,45 +991,86 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
         {/* DANGER ZONE SECTION */}
         {activeSection === "danger" && (
-          <form onSubmit={handleDeleteAccount} className="space-y-6">
-            <div>
-              <h2 className="text-xl font-bold tracking-tight text-red-500 mb-1">Danger Zone</h2>
-              <p className="text-xs text-zinc-500">Permanently delete your user profile and all recorded database actions (diary entries, watchlist, ratings, and favorites).</p>
-            </div>
-
-            <div className="rounded-2xl border border-red-900/30 bg-red-950/10 p-4 text-sm text-red-400 space-y-2">
-              <p className="font-semibold">Warning: This action is irreversible.</p>
-              <p className="text-xs text-red-500/80">All diary logs, watchlist selections, rating scores, favorites list entries, and diary entries associated with this user ID will be permanently removed.</p>
-            </div>
-
-            <div className="space-y-4">
+          <div className="space-y-10 divide-y divide-zinc-900/80">
+            {/* CLOSE ACCOUNT SECTION */}
+            <form onSubmit={handleCloseAccount} className="space-y-6 pb-10">
               <div>
-                <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
-                  Enter Your Password to Confirm Deletion
-                </Label>
-                <Input
-                  type="password"
-                  required
-                  placeholder="Current Password"
-                  value={deletePassword}
-                  onChange={(e) => setDeletePassword(e.target.value)}
-                  className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-all focus:border-red-500/30 focus:bg-zinc-900"
-                />
+                <h2 className="text-xl font-bold tracking-tight text-white mb-1">Close Account</h2>
+                <p className="text-xs text-zinc-500">Temporarily close your account. This logs you out and hides your profile page. All your logged lists, diary entries, ratings, and reviews will be safely preserved. You can reopen your account anytime simply by logging back in.</p>
               </div>
-            </div>
 
-            <Button
-              type="submit"
-              disabled={deletingAccount}
-              className="w-full rounded-2xl bg-red-900 hover:bg-red-800 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] mt-6 cursor-pointer"
-            >
-              {deletingAccount ? (
-                <Loader2 className="h-5 w-5 animate-spin" />
-              ) : (
-                "Permanently Delete Account"
-              )}
-            </Button>
-          </form>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                    Enter Password to Confirm Closing Account
+                  </Label>
+                  <Input
+                    type="password"
+                    required
+                    placeholder="Current Password"
+                    value={closePassword}
+                    onChange={(e) => setClosePassword(e.target.value)}
+                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-all focus:border-zinc-500/30 focus:bg-zinc-900"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={closingAccount}
+                className="w-full rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] mt-6 cursor-pointer h-12"
+              >
+                {closingAccount ? (
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                ) : (
+                  "Close My Account"
+                )}
+              </Button>
+            </form>
+
+            {/* DANGER ZONE DELETION */}
+            <form onSubmit={handleDeleteAccount} className="space-y-6 pt-10">
+              <div>
+                <h2 className="text-xl font-bold tracking-tight text-red-500 mb-1">Danger Zone</h2>
+                <p className="text-xs text-zinc-500">Delete your profile. This clears your profile information and anonymizes your historical contributions.</p>
+              </div>
+
+              <div className="rounded-2xl border border-red-950 bg-red-950/10 p-4 text-sm text-red-400 space-y-2">
+                <p className="font-semibold text-xs uppercase tracking-wider text-red-500">Warning: Deletion is permanent</p>
+                <p className="text-xs text-red-400/80 leading-relaxed">
+                  Your profile details (email, bio, profile image) will be permanently cleared and your username will be randomized to free it up for other film enthusiasts. Your comment authors will appear as <strong className="text-white">[deleted]</strong>. Your ratings, watchlist, and diary records will be safely preserved in the database for continuity but fully anonymized.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-wider block mb-1">
+                    Enter Password to Confirm Deletion
+                  </Label>
+                  <Input
+                    type="password"
+                    required
+                    placeholder="Current Password"
+                    value={deletePassword}
+                    onChange={(e) => setDeletePassword(e.target.value)}
+                    className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 px-4 text-sm text-white placeholder-zinc-600 outline-none transition-all focus:border-red-500/30 focus:bg-zinc-900"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={deletingAccount}
+                className="w-full rounded-2xl bg-red-950 border border-red-900/50 hover:bg-red-900 text-sm font-semibold text-red-200 transition-all duration-200 active:scale-[0.98] mt-6 cursor-pointer h-12"
+              >
+                {deletingAccount ? (
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                ) : (
+                  "Delete Account"
+                )}
+              </Button>
+            </form>
+          </div>
         )}
 
         {/* IMPORT & EXPORT SECTION */}
