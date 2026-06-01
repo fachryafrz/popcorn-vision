@@ -79,7 +79,7 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
 
       {/* Account Deactivated/Closed Overlay Prompt */}
       {isLoggedIn && currentUser && currentUser.status === "closed" && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-950/80 backdrop-blur-md p-6">
+        <div className="fixed inset-0 z-9999 flex items-center justify-center bg-zinc-950/80 backdrop-blur-md p-6">
           <div className="max-w-md w-full bg-zinc-900 border border-zinc-800 p-8 rounded-3xl text-center space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
             <h2 className="text-2xl font-black text-white">Reopen Your Account?</h2>
             <p className="text-zinc-400 text-sm leading-relaxed">
