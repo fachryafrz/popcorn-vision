@@ -54,17 +54,11 @@ async function allowsDirectMessageFrom(
 
   const privacy = receiverProfile.messagePrivacy || "friends";
 
-  if (privacy === "disabled") {
-    return false;
-  }
-
-  // "friends" requires approved friends status
   if (privacy === "friends") {
     return await verifyFriendshipAndBlocks(ctx, senderId, receiverId);
   }
 
-  // "followers" is treated as public/friends or followers
-  return true;
+  return false;
 }
 
 // ----------------------------------------------------
