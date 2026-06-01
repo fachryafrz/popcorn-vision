@@ -306,7 +306,7 @@ export default function Hero({ items, onQuickView, onAuthRequired }: HeroProps) 
           transition: all 0.3s ease;
         }
         .swiper-hero .swiper-pagination-bullet-active {
-          background: #3b82f6 !important;
+          background: var(--primary) !important;
           width: 24px;
           border-radius: 4px;
         }

@@ -18,7 +18,8 @@ import {
   Server,
   Loader2,
   Tv,
-  TrendingUp
+  TrendingUp,
+  Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,7 @@ import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import CommentsSection from "@/components/comments-section";
+import LogWatchModal from "./log-watch-modal";
 import { toast } from "sonner";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 
@@ -332,6 +334,15 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
   const rateMedia = useMutation(api.ratings.rateMedia);
   const deleteRating = useMutation(api.ratings.deleteRating);
 
+  // Convex diary history queries/mutations
+  const watchHistory = useQuery(
+    api.diary.getMediaWatchHistory,
+    isLoggedIn && initialData.details
+      ? { mediaId: String(initialData.details.id), mediaType }
+      : "skip"
+  );
+  const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
   const recommendations = initialData.recommendations || [];
   const providers = initialData.watchProviders?.[selectedRegion]?.flatrate || [];
@@ -533,7 +544,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
       <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-12 md:px-20 -mt-24 sm:-mt-36 md:-mt-44 flex flex-col md:flex-row items-start gap-8 md:gap-12">
         {/* Large Poster Sidebar */}
-        <div className="sticky top-22 hidden md:block w-64 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 border border-zinc-850 bg-zinc-900/60 backdrop-blur-md transform hover:scale-102 transition-all duration-300 shrink-0">
+        <div className="hidden md:block w-64 rounded-2xl overflow-hidden shadow-2xl shadow-black/85 border border-zinc-850 bg-zinc-900/60 backdrop-blur-md transform hover:scale-102 transition-all duration-300 shrink-0">
           <img
             src={posterUrl}
             alt={details?.title || details?.name}
@@ -679,17 +690,40 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             >
               <span className="flex items-center gap-1.5">
                 {favoriteLoading ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                   <Loader2 className="h-5 w-5 animate-spin" />
                 ) : (
                   <Heart className={cn("h-5 w-5", isFavorited && "fill-current")} />
                 )}
                 {isFavorited ? "Favorited" : "Favorite"}
               </span>
             </Button>
+
+            {/* Log Watch Button */}
+            <Button
+              type="button"
+              onClick={() => {
+                if (!isLoggedIn) openAuth();
+                else setIsLogModalOpen(true);
+              }}
+              className="rounded-full border font-semibold text-sm sm:text-base px-5 py-6 sm:px-6 transition-all hover:scale-105 active:scale-98 bg-black/40 border-zinc-700 hover:bg-zinc-900 text-zinc-300 hover:text-white cursor-pointer"
+            >
+              <span className="flex items-center gap-1.5">
+                <Calendar className="h-5 w-5" />
+                Log Watch
+              </span>
+            </Button>
+
+            {/* Watch count capsule */}
+            {watchHistory && watchHistory.watchCount > 0 && (
+              <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-400 bg-emerald-950/20 px-4 py-2.5 rounded-full border border-emerald-900/30 uppercase select-none h-fit">
+                <Check className="h-4 w-4 stroke-3" />
+                Watched {watchHistory.watchCount} {watchHistory.watchCount === 1 ? "time" : "times"}
+              </span>
+            )}
           </div>
 
           {/* Star Rating Picker Section */}
-          <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 border border-zinc-900 p-4 rounded-2xl max-w-sm backdrop-blur-sm">
+          <div className="mt-6 flex flex-col gap-2 bg-zinc-900/10 max-w-sm backdrop-blur-sm">
             <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-zinc-400">
               <span>{userRating ? "Your Rating" : "Rate this title"}</span>
               {userRating && (
@@ -1365,6 +1399,17 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
           onClose={() => setQuickViewMedia(null)}
         />
       )}
+
+      {/* Log Watch Modal */}
+      <LogWatchModal
+        isOpen={isLogModalOpen}
+        onClose={() => setIsLogModalOpen(false)}
+        mediaId={details.id.toString()}
+        mediaType={mediaType}
+        title={details.title || details.name || ""}
+        posterPath={details.poster_path || ""}
+        releaseYear={releaseYear.toString()}
+      />
     </div>
   );
 }

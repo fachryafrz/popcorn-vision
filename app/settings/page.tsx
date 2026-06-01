@@ -25,6 +25,8 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "sonner";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import AvatarCropModal from "@/components/avatar-crop-modal";
+import ImportWizard from "@/components/import-wizard";
+import DataExporter from "@/components/data-exporter";
 
 const COUNTRIES = [
   "United States",
@@ -80,7 +82,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   } = usePersonalization();
 
   // Tabs
-  const [activeSection, setActiveSection] = useState<"profile" | "appearance" | "privacy" | "security" | "danger">(
+  const [activeSection, setActiveSection] = useState<"profile" | "appearance" | "privacy" | "security" | "danger" | "import">(
     convexProfile ? "profile" : "appearance"
   );
 
@@ -443,6 +445,18 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
             >
               <Lock className="h-4 w-4" />
               Security
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSection("import")}
+              className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-semibold tracking-wide flex items-center gap-3 transition-all cursor-pointer ${
+                activeSection === "import"
+                  ? "bg-zinc-900 text-white border border-zinc-800"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/30 border border-transparent"
+              }`}
+            >
+              <FileText className="h-4 w-4" />
+              Import & Export
             </button>
             <button
               type="button"
@@ -947,6 +961,16 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
               )}
             </Button>
           </form>
+        )}
+
+        {/* IMPORT & EXPORT SECTION */}
+        {activeSection === "import" && (
+          <div className="space-y-12 divide-y divide-zinc-900/80">
+            <ImportWizard />
+            <div className="pt-10">
+              <DataExporter />
+            </div>
+          </div>
         )}
       </div>
 

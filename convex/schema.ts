@@ -113,4 +113,21 @@ export default defineSchema({
   })
     .index("by_comment", ["commentId"])
     .index("by_user_comment", ["userId", "commentId"]),
+
+  diary: defineTable({
+    userId: v.string(),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    rating: v.optional(v.number()),
+    releaseYear: v.string(),
+    watchedDate: v.number(),
+    rewatch: v.boolean(),
+    review: v.optional(v.string()),
+    addedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_media", ["userId", "mediaId", "mediaType"])
+    .index("by_user_watched", ["userId", "watchedDate"]),
 });

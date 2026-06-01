@@ -220,9 +220,9 @@ export default function SearchClient({ initialResults, initialQuery, initialType
   // Convex Query for Users
   const userResults = useQuery(
     api.social.searchUsers,
-    activeType === "users" && query.trim().length > 0 ? { query } : "skip"
+    (activeType === "users" || activeType === "all") && query.trim().length > 0 ? { query } : "skip"
   );
-  const isUsersLoading = activeType === "users" && query.trim().length > 0 && userResults === undefined;
+  const isUsersLoading = (activeType === "users" || activeType === "all") && query.trim().length > 0 && userResults === undefined;
 
   // Push URL update and fetch results
   const performSearch = useCallback(
@@ -374,7 +374,7 @@ export default function SearchClient({ initialResults, initialQuery, initialType
               </div>
             </>
           )
-        ) : isPending ? (
+        ) : isPending || (activeType === "all" && isUsersLoading) ? (
           <>
             <p className="text-zinc-500 text-sm mb-6 animate-pulse">Searching…</p>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
@@ -383,7 +383,7 @@ export default function SearchClient({ initialResults, initialQuery, initialType
               ))}
             </div>
           </>
-        ) : hasQuery && results.length === 0 ? (
+        ) : hasQuery && results.length === 0 && (activeType !== "all" || !userResults || userResults.length === 0) ? (
           <div className="flex flex-col items-center justify-center py-24 text-center gap-4">
             <div className="h-16 w-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
               <Search className="h-7 w-7 text-zinc-600" />
@@ -408,22 +408,81 @@ export default function SearchClient({ initialResults, initialQuery, initialType
             </div>
           </div>
         ) : (
-          <>
-            <p className="text-zinc-500 text-sm mb-6">
-              {results.length} result{results.length !== 1 ? "s" : ""} for{" "}
-              <span className="text-zinc-300 font-semibold">&ldquo;{query}&rdquo;</span>
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
-              {results.map((media) => (
-                <Card
-                  key={`${media.media_type}-${media.id}`}
-                  media={media}
-                  onQuickView={setQuickViewMedia}
-                  onAuthRequired={openAuth}
-                />
-              ))}
-            </div>
-          </>
+          <div className="space-y-10">
+            {/* User Results under "All" */}
+            {activeType === "all" && userResults && userResults.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-blue-400" />
+                    <h2 className="text-lg font-bold text-white tracking-tight">Film Enthusiasts</h2>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      {userResults.length}
+                    </span>
+                  </div>
+                  {userResults.length > 4 && (
+                    <button
+                      onClick={() => handleTypeChange("users")}
+                      className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors cursor-pointer"
+                    >
+                      View all
+                    </button>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                  {userResults.slice(0, 4).map((user) => (
+                    <UserCard
+                      key={user.userId}
+                      user={user}
+                      onAuthRequired={openAuth}
+                      isLoggedIn={isLoggedIn}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Media Results */}
+            {(results.length > 0 || activeType !== "all") && (
+              <div>
+                {activeType === "all" && userResults && userResults.length > 0 && (
+                  <div className="flex items-center gap-2 mb-5">
+                    <Film className="h-4 w-4 text-zinc-400" />
+                    <h2 className="text-lg font-bold text-white tracking-tight">Movies & TV Shows</h2>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700/60">
+                      {results.length}
+                    </span>
+                  </div>
+                )}
+                {results.length > 0 ? (
+                  <>
+                    {activeType !== "all" && (
+                      <p className="text-zinc-500 text-sm mb-6">
+                        {results.length} result{results.length !== 1 ? "s" : ""} for{" "}
+                        <span className="text-zinc-300 font-semibold">&ldquo;{query}&rdquo;</span>
+                      </p>
+                    )}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5">
+                      {results.map((media) => (
+                        <Card
+                          key={`${media.media_type}-${media.id}`}
+                          media={media}
+                          onQuickView={setQuickViewMedia}
+                          onAuthRequired={openAuth}
+                        />
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  activeType === "all" && userResults && userResults.length > 0 && (
+                    <div className="py-6 text-center border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/10">
+                      <p className="text-zinc-500 text-sm">No matching movies or TV shows found.</p>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </div>
         )}
       </div>
 

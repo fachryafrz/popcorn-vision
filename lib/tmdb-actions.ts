@@ -256,3 +256,137 @@ export async function searchMedia(query: string, type: "all" | "movie" | "tv" = 
     return [];
   }
 }
+
+export interface ImportItem {
+  title: string;
+  year?: string;
+  rating?: number;
+  imdbId?: string;
+  type: "movie" | "tv";
+  sourceTable: "watchlist" | "favorites" | "ratings" | "diary";
+  watchedDate?: number;
+  rewatch?: boolean;
+  review?: string;
+}
+
+export interface MatchedImportItem {
+  mediaId: string;
+  mediaType: "movie" | "tv";
+  title: string;
+  posterPath: string;
+  releaseYear: string;
+  rating?: number;
+  sourceTable: "watchlist" | "favorites" | "ratings" | "diary";
+  matched: boolean;
+  watchedDate?: number;
+  rewatch?: boolean;
+  review?: string;
+}
+
+export async function matchImportItemsAction(items: ImportItem[]): Promise<MatchedImportItem[]> {
+  const results: MatchedImportItem[] = [];
+
+  for (const item of items) {
+    let matchedId: string | null = null;
+    let matchedTitle: string | null = null;
+    let matchedPoster: string | null = null;
+    let matchedYear: string | null = null;
+    let matchedType: "movie" | "tv" = item.type;
+
+    try {
+      // Pass 1: IMDb ID Match
+      if (item.imdbId && item.imdbId.trim().startsWith("tt")) {
+        const findRes = await axios.get(`/find/${item.imdbId.trim()}`, {
+          params: { external_source: "imdb_id" },
+        });
+        const movieResults = findRes.data.movie_results || [];
+        const tvResults = findRes.data.tv_results || [];
+
+        if (movieResults.length > 0) {
+          const matched = movieResults[0];
+          matchedId = String(matched.id);
+          matchedTitle = matched.title;
+          matchedPoster = matched.poster_path || "";
+          matchedYear = matched.release_date ? String(new Date(matched.release_date).getFullYear()) : "";
+          matchedType = "movie";
+        } else if (tvResults.length > 0) {
+          const matched = tvResults[0];
+          matchedId = String(matched.id);
+          matchedTitle = matched.name;
+          matchedPoster = matched.poster_path || "";
+          matchedYear = matched.first_air_date ? String(new Date(matched.first_air_date).getFullYear()) : "";
+          matchedType = "tv";
+        }
+      }
+
+      // Pass 2: Search Match (if IMDb match failed or not provided)
+      if (!matchedId) {
+        const queryType = item.type === "tv" ? "tv" : "movie";
+        const searchRes = await axios.get(`/search/${queryType}`, {
+          params: { query: item.title, include_adult: false },
+        });
+        const searchResults = searchRes.data.results || [];
+
+        if (searchResults.length > 0) {
+          // Find the best match by comparing years
+          let bestMatch = searchResults[0];
+          if (item.year) {
+            const targetYear = parseInt(item.year, 10);
+            for (const candidate of searchResults) {
+              const dateStr = queryType === "movie" ? candidate.release_date : candidate.first_air_date;
+              if (dateStr) {
+                const candidateYear = new Date(dateStr).getFullYear();
+                if (Math.abs(candidateYear - targetYear) <= 1) {
+                  bestMatch = candidate;
+                  break;
+                }
+              }
+            }
+          }
+
+          matchedId = String(bestMatch.id);
+          matchedTitle = queryType === "movie" ? bestMatch.title : bestMatch.name;
+          matchedPoster = bestMatch.poster_path || "";
+          const dateStr = queryType === "movie" ? bestMatch.release_date : bestMatch.first_air_date;
+          matchedYear = dateStr ? String(new Date(dateStr).getFullYear()) : (item.year || "");
+          matchedType = queryType;
+        }
+      }
+    } catch (err) {
+      console.error(`Error matching import item ${item.title}:`, err);
+    }
+
+    if (matchedId && matchedTitle) {
+      results.push({
+        mediaId: matchedId,
+        mediaType: matchedType,
+        title: matchedTitle,
+        posterPath: matchedPoster || "",
+        releaseYear: matchedYear || "",
+        rating: item.rating,
+        sourceTable: item.sourceTable,
+        matched: true,
+        watchedDate: item.watchedDate,
+        rewatch: item.rewatch,
+        review: item.review,
+      });
+    } else {
+      results.push({
+        mediaId: "",
+        mediaType: item.type,
+        title: item.title,
+        posterPath: "",
+        releaseYear: item.year || "",
+        rating: item.rating,
+        sourceTable: item.sourceTable,
+        matched: false,
+        watchedDate: item.watchedDate,
+        rewatch: item.rewatch,
+        review: item.review,
+      });
+    }
+  }
+
+  return results;
+}
+
