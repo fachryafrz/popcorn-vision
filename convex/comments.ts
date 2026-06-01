@@ -86,8 +86,8 @@ export const getComments = query({
           username: author.username,
           image: author.image,
         } : {
-          name: "Deleted User",
-          username: "deleted",
+          name: "[deleted]",
+          username: "[deleted]",
           image: undefined,
         },
         likeCount,

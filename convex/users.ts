@@ -209,6 +209,74 @@ export const deleteCurrentUserAccountData = mutation({
     for (const f of favorites) {
       await ctx.db.delete(f._id);
     }
+
+    // Delete diary logs
+    const diaries = await ctx.db
+      .query("diary")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    for (const d of diaries) {
+      await ctx.db.delete(d._id);
+    }
+
+    // Delete comment likes
+    const commentLikes = await ctx.db
+      .query("commentLikes")
+      .withIndex("by_user_comment", (q) => q.eq("userId", userId))
+      .collect();
+    for (const cl of commentLikes) {
+      await ctx.db.delete(cl._id);
+    }
+
+    // Delete friendships
+    const friendships1 = await ctx.db
+      .query("friendships")
+      .withIndex("by_user1", (q) => q.eq("userId1", userId))
+      .collect();
+    for (const f of friendships1) {
+      await ctx.db.delete(f._id);
+    }
+
+    const friendships2 = await ctx.db
+      .query("friendships")
+      .withIndex("by_user2", (q) => q.eq("userId2", userId))
+      .collect();
+    for (const f of friendships2) {
+      await ctx.db.delete(f._id);
+    }
+
+    // Delete blocks
+    const blocks1 = await ctx.db
+      .query("blocks")
+      .withIndex("by_blocker", (q) => q.eq("blockerId", userId))
+      .collect();
+    for (const b of blocks1) {
+      await ctx.db.delete(b._id);
+    }
+
+    const blocks2 = await ctx.db
+      .query("blocks")
+      .withIndex("by_blocked", (q) => q.eq("blockedId", userId))
+      .collect();
+    for (const b of blocks2) {
+      await ctx.db.delete(b._id);
+    }
+
+    // Delete notifications received
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+    for (const n of notifications) {
+      await ctx.db.delete(n._id);
+    }
+
+    // Delete notifications sent
+    const sentNotifications = await ctx.db.query("notifications").collect();
+    const relevantSentNotifs = sentNotifications.filter((n) => n.senderId === userId);
+    for (const n of relevantSentNotifs) {
+      await ctx.db.delete(n._id);
+    }
   },
 });
 

@@ -249,6 +249,7 @@ function CommentNode({
   const toggleLikeMutation = useMutation(api.comments.toggleLikeComment);
 
   const isOwner = currentUserId && comment.userId === currentUserId;
+  const isDeletedUser = comment.author.username === "[deleted]" || comment.author.username === "deleted";
 
   // Toggle Dropdown
   useEffect(() => {
@@ -371,8 +372,8 @@ function CommentNode({
   return (
     <div className={cn("group flex flex-col gap-1 transition-all duration-300", indentClass)}>
       <div className="flex items-start gap-3 bg-zinc-900/10 p-3 rounded-2xl hover:bg-zinc-900/30 border border-transparent hover:border-zinc-800/30 transition-all duration-300">
-        <Link href={`/@/${comment.author.username}`}>
-          <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent group-hover:ring-zinc-700/30 transition-all duration-300">
+        {isDeletedUser ? (
+          <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 select-none">
             {comment.author.image && (
               <AvatarImage src={comment.author.image} alt={comment.author.name} className="object-cover" />
             )}
@@ -380,19 +381,36 @@ function CommentNode({
               {comment.author.name.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-        </Link>
+        ) : (
+          <Link href={`/@/${comment.author.username}`}>
+            <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent group-hover:ring-zinc-700/30 transition-all duration-300">
+              {comment.author.image && (
+                <AvatarImage src={comment.author.image} alt={comment.author.name} className="object-cover" />
+              )}
+              <AvatarFallback className="bg-zinc-800 text-zinc-300 text-sm font-bold">
+                {comment.author.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+        )}
 
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-              <Link
-                href={`/@/${comment.author.username}`}
-                className="font-bold text-white text-sm hover:underline"
-              >
-                {comment.author.name}
-              </Link>
-              <span className="text-zinc-500 text-xs">@{comment.author.username}</span>
+              {isDeletedUser ? (
+                <span className="font-bold text-white text-sm">
+                  {comment.author.name}
+                </span>
+              ) : (
+                <Link
+                  href={`/@/${comment.author.username}`}
+                  className="font-bold text-white text-sm hover:underline"
+                >
+                  {comment.author.name}
+                </Link>
+              )}
+              {!isDeletedUser && <span className="text-zinc-500 text-xs">@{comment.author.username}</span>}
               <span className="text-zinc-600 text-xs font-semibold">•</span>
               <span className="text-zinc-500 text-[11px]" title={new Date(comment.createdAt).toLocaleString()}>
                 {formatDistanceToNow(comment.createdAt, { addSuffix: true })}

@@ -358,6 +358,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       return;
     }
 
+    const email = user?.email;
+    if (!email) {
+      toast.error("User email not found. Please log in again.");
+      return;
+    }
+
     if (!confirm("Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.")) {
       return;
     }
@@ -365,17 +371,27 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     setDeletingAccount(true);
 
     try {
-      // 1. Delete user from Better Auth
-      const result = await authClient.deleteUser({
+      // 1. Verify password by calling signIn (will fail if password is wrong)
+      const verifyResult = await authClient.signIn.email({
+        email,
         password: deletePassword,
       });
 
-      if (result.error) {
-        throw new Error(result.error.message || "Failed to delete account from authenticator");
+      if (verifyResult.error) {
+        throw new Error("Incorrect password. Please verify your current password.");
       }
 
-      // 2. Remove user data from Convex tables
+      // 2. Remove user data from Convex tables (while still authenticated!)
       await deleteConvexAccountData({});
+
+      // 3. Delete user from Better Auth
+      const deleteResult = await authClient.deleteUser({
+        password: deletePassword,
+      });
+
+      if (deleteResult.error) {
+        throw new Error(deleteResult.error.message || "Failed to delete account from authenticator");
+      }
 
       toast.success("Your account has been deleted. Goodbye!");
       router.push("/");
@@ -384,7 +400,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      toast.error(errorObj.message || "Account deletion failed. Verify your password.");
+      toast.error(errorObj.message || "Account deletion failed.");
     } finally {
       setDeletingAccount(false);
     }
@@ -925,12 +941,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
           <form onSubmit={handleDeleteAccount} className="space-y-6">
             <div>
               <h2 className="text-xl font-bold tracking-tight text-red-500 mb-1">Danger Zone</h2>
-              <p className="text-xs text-zinc-500">Permanently delete your user profile and all recorded database actions (ratings, watchlist, and favorites).</p>
+              <p className="text-xs text-zinc-500">Permanently delete your user profile and all recorded database actions (diary entries, watchlist, ratings, and favorites).</p>
             </div>
 
             <div className="rounded-2xl border border-red-900/30 bg-red-950/10 p-4 text-sm text-red-400 space-y-2">
               <p className="font-semibold">Warning: This action is irreversible.</p>
-              <p className="text-xs text-red-500/80">All watchlist selections, rating scores, favorites list entries, and social statistics associated with this user ID will be permanently removed.</p>
+              <p className="text-xs text-red-500/80">All diary logs, watchlist selections, rating scores, favorites list entries, and diary entries associated with this user ID will be permanently removed.</p>
             </div>
 
             <div className="space-y-4">
