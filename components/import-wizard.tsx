@@ -606,7 +606,7 @@ export default function ImportWizard() {
       {step === "preview" && (
         <div className="space-y-6">
           {/* Top Panel Actions info */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-2xl border border-zinc-850 bg-zinc-900/10">
+          <div className="flex flex-col flex-wrap md:flex-row items-start md:items-center justify-between gap-4 p-4 rounded-2xl border border-zinc-850 bg-zinc-900/10">
             <div className="space-y-3">
               <p className="text-xs text-zinc-400">
                 Source Platform: <span className="font-bold text-white uppercase">{platform}</span>
