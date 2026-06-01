@@ -1207,7 +1207,7 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
                                       alt={ep.name}
                                       className="w-full h-full object-cover"
                                     />
-                                    <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <div className="absolute inset-0 bg-black/45 md:opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                       <Button
                                         size="sm"
                                         onClick={() => {
