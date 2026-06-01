@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
+import CommentsSection from "@/components/comments-section";
 import { toast } from "sonner";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
 
@@ -1336,6 +1337,9 @@ export default function MediaDetailClient({ mediaType, initialData }: MediaDetai
             )}
           </div>
         </div>
+
+        {/* Dedicated Comments Section */}
+        <CommentsSection mediaId={details.id.toString()} mediaType={mediaType} />
 
         {/* Recommendations Carousel */}
         {recommendations.length > 0 && (

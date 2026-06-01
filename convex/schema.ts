@@ -83,10 +83,34 @@ export default defineSchema({
   notifications: defineTable({
     userId: v.string(), // Recipient
     senderId: v.string(), // Sender of the action
-    type: v.string(), // "friend_request" | "friend_accepted"
+    type: v.string(), // "friend_request" | "friend_accepted" | "comment_mention" | "comment_reply"
     read: v.boolean(),
     createdAt: v.number(),
+    commentId: v.optional(v.id("comments")),
+    mediaId: v.optional(v.string()),
+    mediaType: v.optional(v.string()),
   })
     .index("by_user", ["userId"])
     .index("by_user_unread", ["userId", "read"]),
+
+  comments: defineTable({
+    mediaId: v.string(),
+    mediaType: v.string(),
+    userId: v.string(),
+    content: v.string(),
+    parentId: v.optional(v.id("comments")),
+    createdAt: v.number(),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_media", ["mediaId", "mediaType"])
+    .index("by_parent", ["parentId"])
+    .index("by_user", ["userId"]),
+
+  commentLikes: defineTable({
+    commentId: v.id("comments"),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_comment", ["commentId"])
+    .index("by_user_comment", ["userId", "commentId"]),
 });

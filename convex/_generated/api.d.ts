@@ -9,6 +9,7 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as comments from "../comments.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
 import type * as ratings from "../ratings.js";
@@ -24,6 +25,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  comments: typeof comments;
   favorites: typeof favorites;
   http: typeof http;
   ratings: typeof ratings;

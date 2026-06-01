@@ -198,7 +198,11 @@ export default function Navbar() {
                               if (!notif.read) {
                                 await markRead({ notifId: notif._id });
                               }
-                              if (notif.sender) {
+                              if (notif.type === "comment_reply" || notif.type === "comment_mention") {
+                                if (notif.mediaType && notif.mediaId) {
+                                  router.push(`/${notif.mediaType}/${notif.mediaId}`);
+                                }
+                              } else if (notif.sender) {
                                 router.push(`/@/${notif.sender.username}`);
                               }
                             }}
@@ -221,6 +225,8 @@ export default function Navbar() {
                                 <span className="font-bold text-white">{notif.sender?.name}</span>{" "}
                                 {notif.type === "friend_request" && "sent you a friend request."}
                                 {notif.type === "friend_accepted" && "accepted your friend request."}
+                                {notif.type === "comment_reply" && "replied to your comment."}
+                                {notif.type === "comment_mention" && "mentioned you in a comment."}
                               </p>
                               <span className="text-[10px] text-zinc-500 font-semibold block mt-1">
                                 {formatTime(notif.createdAt)}
@@ -395,7 +401,11 @@ export default function Navbar() {
                               if (!notif.read) {
                                 await markRead({ notifId: notif._id });
                               }
-                              if (notif.sender) {
+                              if (notif.type === "comment_reply" || notif.type === "comment_mention") {
+                                if (notif.mediaType && notif.mediaId) {
+                                  router.push(`/${notif.mediaType}/${notif.mediaId}`);
+                                }
+                              } else if (notif.sender) {
                                 router.push(`/@/${notif.sender.username}`);
                               }
                             }}
@@ -418,7 +428,8 @@ export default function Navbar() {
                                 <span className="font-bold text-white">{notif.sender?.name}</span>{" "}
                                 {notif.type === "friend_request" && "sent you a friend request."}
                                 {notif.type === "friend_accepted" && "accepted your friend request."}
-                                {notif.type === "new_follower" && "started following you."}
+                                {notif.type === "comment_reply" && "replied to your comment."}
+                                {notif.type === "comment_mention" && "mentioned you in a comment."}
                               </p>
                               <span className="text-[10px] text-zinc-500 font-semibold block mt-1">
                                 {formatTime(notif.createdAt)}

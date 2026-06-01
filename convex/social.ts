@@ -553,6 +553,9 @@ export const getNotifications = query({
         type: notif.type,
         read: notif.read,
         createdAt: notif.createdAt,
+        commentId: notif.commentId,
+        mediaId: notif.mediaId,
+        mediaType: notif.mediaType,
         sender: sender ? {
           userId: sender.userId,
           name: sender.name,
