@@ -118,7 +118,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
   return (
     <div
       onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
-      className="group relative w-full shrink-0 flex flex-col gap-3 cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/40"
+      className="group relative w-full shrink-0 flex flex-col gap-3 cursor-pointer rounded-2xl overflow-hidden transition-all duration-300 md:hover:-translate-y-1 md:hover:shadow-xl md:hover:shadow-black/40"
     >
       {/* Poster area */}
       <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
@@ -127,12 +127,12 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
         <img
           src={posterPath}
           alt={media.title || media.name}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-500 md:group-hover:scale-105"
           loading="lazy"
         />
 
         {/* Backdrop overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+        <div className="absolute hidden md:block inset-0 bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
 
         {/* Content badges */}
         <div className="absolute top-3 left-3 z-20 flex gap-2">
@@ -142,8 +142,7 @@ export default function Card({ media, onQuickView, onAuthRequired }: CardProps) 
         </div>
 
         {/* Floating action buttons on Hover */}
-        <div className="absolute inset-x-0 bottom-4 z-20 flex justify-center gap-2 px-3 opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-
+        <div className="absolute hidden inset-x-0 bottom-4 z-20 md:flex justify-center gap-2 px-3 opacity-0 transform translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
           {/* Watchlist Button */}
           <Button
             onClick={handleWatchlistClick}

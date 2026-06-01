@@ -513,7 +513,7 @@ export default function ImportWizard() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-10">
       {/* Wizard Header */}
       <div>
         <h2 className="text-xl font-bold tracking-tight text-white mb-1">
@@ -528,7 +528,6 @@ export default function ImportWizard() {
       {step === "upload" && (
         <div className="space-y-6">
           <div className="relative group overflow-hidden border border-dashed border-zinc-800 rounded-3xl bg-zinc-950/20 backdrop-blur-md p-8 md:p-12 text-center transition-all duration-300 hover:bg-zinc-950/30 hover:border-zinc-700/80 shadow-lg">
-            <div className="absolute -top-16 -right-16 -z-10 h-32 w-32 rounded-full bg-blue-500/5 blur-2xl group-hover:bg-blue-500/10 transition-all duration-300" />
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="h-16 w-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300">
                 <Upload className="h-7 w-7 text-blue-500" />

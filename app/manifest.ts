@@ -28,35 +28,5 @@ export default function manifest(): MetadataRoute.Manifest {
         type: "image/png",
       },
     ],
-    screenshots: [
-      {
-        src: "/screenshots/home.png",
-        sizes: "640x320",
-        type: "image/png",
-        form_factor: "wide",
-        label: "Home",
-      },
-      {
-        src: "/screenshots/film_details.png",
-        sizes: "640x320",
-        type: "image/png",
-        form_factor: "wide",
-        label: "Film Details",
-      },
-      {
-        src: "/screenshots/home_mobile.png",
-        sizes: "750x1332",
-        type: "image/png",
-        form_factor: "narrow",
-        label: "Home",
-      },
-      {
-        src: "/screenshots/film_details_mobile.png",
-        sizes: "750x1332",
-        type: "image/png",
-        form_factor: "narrow",
-        label: "Film Details",
-      },
-    ],
   };
 }
