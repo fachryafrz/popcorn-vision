@@ -149,7 +149,7 @@ export default function ChatPage() {
 
   // Scroll to bottom on new messages
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    messageEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [activeChatMessages?.length]);
 
   // Handle typing triggers

@@ -6,6 +6,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import moment from "moment";
 import { ChatItem } from "./types";
 import { Id } from "@/convex/_generated/dataModel";
+import { siteConfig } from "@/config/site";
 
 interface SidebarPanelProps {
   chats: ChatItem[] | undefined;
@@ -41,8 +42,20 @@ export default function SidebarPanel({
         {/* Header Controls */}
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
           <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white select-none">
-            <Users className="h-5 w-5 text-blue-500" />
-            Friends Chat
+            <img
+              src="/logo/popcorn.png"
+              alt={siteConfig.name}
+              className={cn(
+                "h-10 w-10 object-contain transition-all duration-500",
+              )}
+            />
+            <span
+              className={cn(
+                "bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-lg font-black tracking-wider text-transparent uppercase transition-all duration-500",
+              )}
+            >
+              POVI
+            </span>
           </h1>
           <div className="flex gap-2">
             <Button
