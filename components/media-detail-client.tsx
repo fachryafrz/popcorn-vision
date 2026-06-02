@@ -482,7 +482,7 @@ export default function MediaDetailClient({
   };
 
   const backdropUrl = details?.backdrop_path
-    ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}`
+    ? `https://image.tmdb.org/t/p/original${details.backdrop_path}`
     : "/logo/popcorn.png";
 
   const posterUrl = details?.poster_path
