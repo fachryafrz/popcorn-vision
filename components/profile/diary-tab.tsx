@@ -143,7 +143,7 @@ export function DiaryTab({
                       {entry.rating && (
                         <div className="flex items-center gap-1 text-[10px] font-black text-yellow-500">
                           <Star className="h-3 w-3 fill-current" />
-                          <span>{entry.rating}/10</span>
+                          <span>{Number(entry.rating).toFixed(0)}/10</span>
                         </div>
                       )}
                     </div>

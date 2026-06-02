@@ -96,7 +96,7 @@ export function MediaGridTab({
               item.rating ? (
                 <div className="flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
                   <Star className="h-3 w-3 fill-current text-yellow-300" />
-                  <span>{item.rating}/10</span>
+                  <span>{Number(item.rating).toFixed(0)}/10</span>
                 </div>
               ) : activeTab === "all" && item.isFavorite ? (
                 <div className="flex items-center gap-1.5 rounded-full border border-rose-400/30 bg-rose-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
