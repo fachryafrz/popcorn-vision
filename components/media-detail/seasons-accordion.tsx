@@ -113,6 +113,7 @@ export default function SeasonsAccordion({
                     const stillUrl = ep.still_path
                       ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
                       : "/logo/popcorn.png";
+                    const duration = moment.duration(ep.runtime, "minutes");
                     return (
                       <div
                         key={ep.id}
@@ -150,7 +151,12 @@ export default function SeasonsAccordion({
                               </span>
                               {ep.runtime && (
                                 <span className="border-zinc-850 rounded border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold text-zinc-500">
-                                  {ep.runtime}m
+                                  {duration.hours() > 0
+                                    ? `${duration.hours()}h `
+                                    : ""}
+                                  {duration.minutes() > 0
+                                    ? `${duration.minutes()}m`
+                                    : ""}
                                 </span>
                               )}
                             </div>

@@ -25,6 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import moment from "moment";
 
 interface MediaDetails {
   tagline?: string;
@@ -215,6 +216,8 @@ export default function QuickViewModal({
     }
   };
 
+  const duration = moment.duration(details?.runtime, "minutes");
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="h-[85svh] w-[calc(100%-2rem)] max-w-7xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-0 text-white shadow-2xl backdrop-blur-xl sm:h-[80svh] sm:max-w-7xl md:h-[85svh]">
@@ -388,7 +391,10 @@ export default function QuickViewModal({
                 {details?.runtime && (
                   <div className="flex items-center gap-1">
                     <Clock className="h-4 w-4 text-zinc-400" />
-                    <span>{details.runtime} mins</span>
+                    <span>
+                      {duration.hours() > 0 ? `${duration.hours()}h ` : ""}
+                      {duration.minutes() > 0 ? `${duration.minutes()}m` : ""}
+                    </span>
                   </div>
                 )}
                 {details?.number_of_seasons && (
