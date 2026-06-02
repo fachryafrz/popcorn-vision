@@ -178,7 +178,7 @@ export default function LogWatchModal({
               ) : null}
             </div>
             <div className="min-w-0 flex-1">
-              <h4 className="truncate text-sm leading-snug font-bold text-white">
+              <h4 className="text-sm leading-snug font-bold text-white">
                 {title}
               </h4>
               <p className="mt-1 text-[10px] font-semibold text-zinc-500 uppercase">
