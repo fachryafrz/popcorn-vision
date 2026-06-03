@@ -232,4 +232,63 @@ export default defineSchema({
   })
     .index("by_activity", ["activityId"])
     .index("by_user", ["userId"]),
+
+  sharedWatchlists: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    createdById: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_creator", ["createdById"]),
+
+  sharedWatchlistMembers: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    userId: v.string(),
+    joinedAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_user", ["userId"])
+    .index("by_watchlist_user", ["watchlistId", "userId"]),
+
+  sharedWatchlistItems: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    releaseYear: v.string(),
+    addedById: v.string(),
+    addedAt: v.number(),
+    watched: v.boolean(),
+    watchedAt: v.optional(v.number()),
+    watchedById: v.optional(v.string()),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_media", ["watchlistId", "mediaId", "mediaType"]),
+
+  sharedWatchlistItemVotes: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    userId: v.string(),
+    vote: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_user", ["watchlistId", "userId"])
+    .index("by_item", ["watchlistId", "mediaId", "mediaType"])
+    .index("by_item_user", ["watchlistId", "mediaId", "mediaType", "userId"]),
+
+  sharedWatchlistActivities: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    userId: v.string(),
+    type: v.string(),
+    mediaId: v.optional(v.string()),
+    mediaType: v.optional(v.string()),
+    title: v.optional(v.string()),
+    details: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_created", ["watchlistId", "createdAt"]),
 });
