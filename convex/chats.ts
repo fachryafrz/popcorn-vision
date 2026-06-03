@@ -426,6 +426,26 @@ export const sendMessage = mutation({
       lastReadAt: Date.now(),
     });
 
+    // Create notifications for all other members in the conversation session
+    const otherMembers = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+      .collect();
+
+    for (const mem of otherMembers) {
+      if (mem.userId !== currentUserId) {
+        await ctx.db.insert("notifications", {
+          userId: mem.userId,
+          senderId: currentUserId,
+          type: "chat_message",
+          read: false,
+          createdAt: Date.now(),
+          mediaId: args.chatId,
+          mediaType: "chat",
+        });
+      }
+    }
+
     return messageId;
   },
 });
@@ -446,6 +466,18 @@ export const setReadReceipt = mutation({
     await ctx.db.patch(membership._id, {
       lastReadAt: Date.now(),
     });
+
+    // Mark chat_message notifications for this chat as read
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user_unread", (q) => q.eq("userId", currentUserId).eq("read", false))
+      .collect();
+
+    for (const notif of notifications) {
+      if (notif.type === "chat_message" && notif.mediaId === args.chatId) {
+        await ctx.db.patch(notif._id, { read: true });
+      }
+    }
   },
 });
 

@@ -262,7 +262,12 @@ export default function Navbar() {
                                 if (!notif.read) {
                                   await markRead({ notifId: notif._id });
                                 }
-                                if (
+                                if (notif.type === "chat_message") {
+                                  if (notif.mediaId) {
+                                    localStorage.setItem("active_chat_id", notif.mediaId);
+                                  }
+                                  router.push(`/chat`);
+                                } else if (
                                   notif.type === "comment_reply" ||
                                   notif.type === "comment_mention"
                                 ) {
@@ -310,6 +315,8 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
+                                  {notif.type === "chat_message" &&
+                                    "sent you a message."}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -510,7 +517,12 @@ export default function Navbar() {
                                 if (!notif.read) {
                                   await markRead({ notifId: notif._id });
                                 }
-                                if (
+                                if (notif.type === "chat_message") {
+                                  if (notif.mediaId) {
+                                    localStorage.setItem("active_chat_id", notif.mediaId);
+                                  }
+                                  router.push(`/chat`);
+                                } else if (
                                   notif.type === "comment_reply" ||
                                   notif.type === "comment_mention"
                                 ) {
@@ -558,6 +570,8 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
+                                  {notif.type === "chat_message" &&
+                                    "sent you a message."}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
