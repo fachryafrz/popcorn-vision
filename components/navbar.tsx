@@ -22,6 +22,7 @@ import {
   Activity,
   Users,
   Popcorn,
+  List,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -489,6 +490,13 @@ export default function Navbar() {
                     Shared Watchlists
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    onClick={() => router.push("/lists")}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <List className="mr-2 h-4 w-4 text-zinc-400" />
+                    My Lists
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     onClick={() => router.push("/settings")}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
@@ -819,6 +827,15 @@ export default function Navbar() {
                       >
                         <Users className="h-4 w-4" />
                         Shared Watchlists
+                      </Link>
+                      <Link
+                        href="/lists"
+                        prefetch={false}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 hover:text-white"
+                      >
+                        <List className="h-4 w-4" />
+                        My Lists
                       </Link>
                       <Link
                         href="/chat"

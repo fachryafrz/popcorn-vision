@@ -291,4 +291,63 @@ export default defineSchema({
   })
     .index("by_watchlist", ["watchlistId"])
     .index("by_watchlist_created", ["watchlistId", "createdAt"]),
+
+  customLists: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    createdById: v.string(),
+    createdAt: v.number(),
+    privacy: v.string(), // "public" | "private"
+    isCollaborative: v.boolean(),
+  })
+    .index("by_creator", ["createdById"])
+    .index("by_privacy", ["privacy"]),
+
+  customListItems: defineTable({
+    listId: v.id("customLists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    releaseYear: v.string(),
+    addedById: v.string(),
+    addedAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_list_media", ["listId", "mediaId", "mediaType"]),
+
+  customListCollaborators: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    joinedAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user", ["userId"])
+    .index("by_list_user", ["listId", "userId"]),
+
+  customListLikes: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user_list", ["userId", "listId"]),
+
+  customListComments: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user", ["userId"]),
+
+  customListFavorites: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    savedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_list_user", ["listId", "userId"]),
 });
+

@@ -9,6 +9,7 @@ import {
   Calendar,
   Send,
   Users,
+  List,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ interface ActionsSectionProps {
   setIsLogModalOpen: (open: boolean) => void;
   setIsShareDialogOpen: (open: boolean) => void;
   onClickSharedWatchlist: () => void;
+  onClickCustomList: () => void;
   watchHistory: { watchCount: number } | null | undefined;
   scrollToPlayer: (tab: "trailer" | "watch") => void;
 }
@@ -43,6 +45,7 @@ export default function ActionsSection({
   setIsLogModalOpen,
   setIsShareDialogOpen,
   onClickSharedWatchlist,
+  onClickCustomList,
   watchHistory,
   scrollToPlayer,
 }: ActionsSectionProps) {
@@ -97,6 +100,17 @@ export default function ActionsSection({
         <span className="flex items-center gap-1.5">
           <Users className="h-5 w-5" />
           Shared Watchlist
+        </span>
+      </Button>
+
+      {/* Add to List Button */}
+      <Button
+        onClick={onClickCustomList}
+        className="cursor-pointer rounded-full border border-zinc-700 bg-black/40 px-5 py-6 text-sm font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:text-base"
+      >
+        <span className="flex items-center gap-1.5">
+          <List className="h-5 w-5" />
+          Add to List
         </span>
       </Button>
 
@@ -162,3 +176,4 @@ export default function ActionsSection({
     </div>
   );
 }
+
