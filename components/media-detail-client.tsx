@@ -281,6 +281,48 @@ export default function MediaDetailClient({
   const chatsList = useQuery(api.chats.getChatsList, isLoggedIn ? {} : "skip");
   const sendChatMessage = useMutation(api.chats.sendMessage);
 
+  // Convex watch progress query & mutation
+  const watchProgress = useQuery(
+    api.continueWatching.getProgressForMedia,
+    isLoggedIn && initialData.details
+      ? { mediaId: String(initialData.details.id), mediaType }
+      : "skip",
+  );
+  const upsertWatchProgress = useMutation(api.continueWatching.upsertProgress);
+
+  const hasResumed = useRef(false);
+
+  // Auto-resume watch progress
+  useEffect(() => {
+    if (watchProgress && !hasResumed.current) {
+      hasResumed.current = true;
+      const targetSeason = watchProgress.season;
+      const targetEpisode = watchProgress.episode;
+      Promise.resolve().then(() => {
+        if (targetSeason !== undefined) {
+          setSeason(targetSeason);
+        }
+        if (targetEpisode !== undefined) {
+          setEpisode(targetEpisode);
+        }
+      });
+    }
+  }, [watchProgress]);
+
+  // Track and save watch progress
+  useEffect(() => {
+    if (isLoggedIn && activeTab === "watch" && details) {
+      upsertWatchProgress({
+        mediaId: String(details.id),
+        mediaType,
+        title: details.title || details.name || "",
+        posterPath: details.poster_path || "",
+        season: mediaType === "tv" ? season : undefined,
+        episode: mediaType === "tv" ? episode : undefined,
+      }).catch((err) => console.error("Failed to save watch progress:", err));
+    }
+  }, [activeTab, season, episode, isLoggedIn, mediaType, details, upsertWatchProgress]);
+
   const handleShareToChat = async (chatId: string, chatTitle: string) => {
     try {
       await sendChatMessage({

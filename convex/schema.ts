@@ -185,4 +185,18 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_reported", ["reportedUserId"]),
+
+  continueWatching: defineTable({
+    userId: v.string(),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    season: v.optional(v.number()),
+    episode: v.optional(v.number()),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_media", ["userId", "mediaId", "mediaType"])
+    .index("by_user_updated", ["userId", "updatedAt"]),
 });

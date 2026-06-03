@@ -11,6 +11,7 @@
 import type * as auth from "../auth.js";
 import type * as chats from "../chats.js";
 import type * as comments from "../comments.js";
+import type * as continueWatching from "../continueWatching.js";
 import type * as diary from "../diary.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   chats: typeof chats;
   comments: typeof comments;
+  continueWatching: typeof continueWatching;
   diary: typeof diary;
   favorites: typeof favorites;
   http: typeof http;
