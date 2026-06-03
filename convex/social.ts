@@ -1,5 +1,6 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 
 // Helper to get helper data for user social status
@@ -567,6 +568,70 @@ export const getNotifications = query({
         .withIndex("by_userId", (q) => q.eq("userId", notif.senderId))
         .first();
       
+      let targetName: string | undefined = undefined;
+      if (notif.type === "list_invite" && notif.mediaId) {
+        try {
+          const customList = await ctx.db.get(notif.mediaId as Id<"customLists">);
+          if (customList) {
+            targetName = customList.name;
+          }
+        } catch {}
+      } else if (notif.type === "watchlist_invite" && notif.mediaId) {
+        try {
+          const watchlist = await ctx.db.get(notif.mediaId as Id<"sharedWatchlists">);
+          if (watchlist) {
+            targetName = watchlist.name;
+          }
+        } catch {}
+      } else if (notif.type === "group_invite" && notif.mediaId) {
+        try {
+          const chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+          if (chat) {
+            targetName = chat.name;
+          }
+        } catch {}
+      }
+
+      // For chat message notifications, fetch the message details and group context
+      let chatMessageContent: string | undefined = undefined;
+      let groupName: string | undefined = undefined;
+      if (notif.type === "chat_message" && notif.mediaId) {
+        try {
+          const chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+          if (chat && chat.type === "group") {
+            groupName = chat.name || "Group";
+          }
+
+          let chatMsg = null;
+          if (notif.messageId) {
+            chatMsg = await ctx.db.get(notif.messageId);
+          }
+          if (!chatMsg) {
+            chatMsg = await ctx.db
+              .query("messages")
+              .withIndex("by_chat_created", (q) =>
+                q.eq("chatId", notif.mediaId as Id<"chats">).lte("createdAt", notif.createdAt)
+              )
+              .order("desc")
+              .first();
+          }
+
+          if (chatMsg) {
+            if (chatMsg.attachmentType === "gif") {
+              chatMessageContent = "👾 Sent a GIF";
+            } else if (chatMsg.attachmentType === "image") {
+              chatMessageContent = "📷 Sent an image";
+            } else if (chatMsg.attachmentType === "media") {
+              chatMessageContent = `🎬 Shared: ${chatMsg.sharedMediaTitle || "a movie/show"}`;
+            } else if (chatMsg.attachmentType === "list") {
+              chatMessageContent = `📋 Shared list: ${chatMsg.sharedListName || "a list"}`;
+            } else {
+              chatMessageContent = chatMsg.content;
+            }
+          }
+        } catch {}
+      }
+
       enriched.push({
         _id: notif._id,
         type: notif.type,
@@ -575,6 +640,9 @@ export const getNotifications = query({
         commentId: notif.commentId,
         mediaId: notif.mediaId,
         mediaType: notif.mediaType,
+        targetName,
+        chatMessageContent,
+        groupName,
         sender: sender ? {
           userId: sender.userId,
           name: sender.name,

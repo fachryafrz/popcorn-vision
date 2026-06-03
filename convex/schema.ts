@@ -92,6 +92,7 @@ export default defineSchema({
     commentId: v.optional(v.id("comments")),
     mediaId: v.optional(v.string()),
     mediaType: v.optional(v.string()),
+    messageId: v.optional(v.id("messages")),
   })
     .index("by_user", ["userId"])
     .index("by_user_unread", ["userId", "read"]),

@@ -148,7 +148,7 @@ export default function CustomListDetailPage({
   const removeItemMutation = useMutation(api.customLists.removeItem);
   const updateListMutation = useMutation(api.customLists.updateList);
   const deleteListMutation = useMutation(api.customLists.deleteList);
-  const addCollaboratorMutation = useMutation(api.customLists.addCollaborator);
+  const inviteCollaboratorMutation = useMutation(api.customLists.inviteCollaborator);
   const removeCollaboratorMutation = useMutation(
     api.customLists.removeCollaborator,
   );
@@ -263,10 +263,10 @@ export default function CustomListDetailPage({
 
   const handleInvite = async (userId: string, name: string) => {
     try {
-      await addCollaboratorMutation({ listId, userId });
-      toast.success(`Added ${name} as a collaborator`);
+      await inviteCollaboratorMutation({ listId, userId });
+      toast.success(`Sent collaborator invitation to ${name}`);
     } catch {
-      toast.error("Failed to add collaborator");
+      toast.error("Failed to send collaborator invitation");
     }
   };
 

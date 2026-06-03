@@ -264,8 +264,8 @@ export const removeItem = mutation({
   },
 });
 
-// Add collaborator to collaborative list
-export const addCollaborator = mutation({
+// Invite collaborator to collaborative list
+export const inviteCollaborator = mutation({
   args: {
     listId: v.id("customLists"),
     userId: v.string(),
@@ -283,15 +283,106 @@ export const addCollaborator = mutation({
       .query("customListCollaborators")
       .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", args.userId))
       .first();
-    if (existing) return existing._id;
+    if (existing) throw new Error("User is already a collaborator");
 
-    return await ctx.db.insert("customListCollaborators", {
-      listId: args.listId,
+    // Check if invitation is already pending
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    const existingInvite = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (existingInvite) throw new Error("Invitation already pending");
+
+    // Insert Notification
+    await ctx.db.insert("notifications", {
       userId: args.userId,
-      joinedAt: Date.now(),
+      senderId: currentUserId,
+      type: "list_invite",
+      read: false,
+      createdAt: Date.now(),
+      mediaId: String(args.listId),
+      mediaType: "list",
     });
+
+    return true;
   },
 });
+
+// Accept a collaborative list invitation
+export const acceptListInvite = mutation({
+  args: {
+    listId: v.id("customLists"),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const currentUserId = user._id;
+
+    const list = await ctx.db.get(args.listId);
+    if (!list) throw new Error("List not found");
+
+    // Check if already a collaborator
+    const existing = await ctx.db
+      .query("customListCollaborators")
+      .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", currentUserId))
+      .first();
+    if (existing) return;
+
+    // Add as collaborator
+    await ctx.db.insert("customListCollaborators", {
+      listId: args.listId,
+      userId: currentUserId,
+      joinedAt: Date.now(),
+    });
+
+    // Delete notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return true;
+  },
+});
+
+// Decline a collaborative list invitation
+export const declineListInvite = mutation({
+  args: {
+    listId: v.id("customLists"),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const currentUserId = user._id;
+
+    // Delete notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return true;
+  },
+});
+
 
 // Remove collaborator (or leave)
 export const removeCollaborator = mutation({

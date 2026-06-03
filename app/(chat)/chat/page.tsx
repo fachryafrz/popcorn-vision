@@ -182,6 +182,17 @@ export default function ChatPage() {
     messageEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [activeChatMessages?.length]);
 
+  // Handle case where chat session is deleted or membership is revoked
+  useEffect(() => {
+    if (selectedChatId && (rawActiveChatMessages === null || rawActiveChatMembers === null)) {
+      const timer = setTimeout(() => {
+        setSelectedChatId(null);
+        toast.error("This chat session is no longer available.");
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [rawActiveChatMessages, rawActiveChatMembers, selectedChatId]);
+
   // Handle typing triggers
   const handleTyping = () => {
     if (!selectedChatId) return;
@@ -273,7 +284,7 @@ export default function ChatPage() {
       setGroupName("");
       setGroupDescription("");
       setSelectedInvitedUsers(new Set());
-      toast.success("Group chat created successfully!");
+      toast.success("Group chat created and invitations sent!");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Failed to create group");
@@ -291,7 +302,7 @@ export default function ChatPage() {
       });
       setIsInviteFriendsOpen(false);
       setSelectedInvitedUsers(new Set());
-      toast.success("Friends invited successfully!");
+      toast.success("Group invitations sent successfully!");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Failed to invite friends");

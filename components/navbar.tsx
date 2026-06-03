@@ -60,6 +60,10 @@ export default function Navbar() {
   const rejectFriendRequest = useMutation(api.social.rejectFriendRequest);
   const acceptWatchlistInvite = useMutation(api.sharedWatchlists.acceptWatchlistInvite);
   const declineWatchlistInvite = useMutation(api.sharedWatchlists.declineWatchlistInvite);
+  const acceptListInvite = useMutation(api.customLists.acceptListInvite);
+  const declineListInvite = useMutation(api.customLists.declineListInvite);
+  const acceptGroupInvite = useMutation(api.chats.acceptGroupInvite);
+  const declineGroupInvite = useMutation(api.chats.declineGroupInvite);
   const markRead = useMutation(api.social.markNotificationRead);
   const clearAll = useMutation(api.social.clearAllNotifications);
 
@@ -325,10 +329,28 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
-                                  {notif.type === "chat_message" &&
-                                    "sent you a message."}
+                                  {notif.type === "chat_message" && (
+                                    <>
+                                      {notif.groupName
+                                        ? `sent a message in "${notif.groupName}":`
+                                        : "sent you a message:"}
+                                      <span className="mt-0.5 block truncate max-w-full text-zinc-400 font-normal italic">
+                                        &quot;{notif.chatMessageContent || "Message"}&quot;
+                                      </span>
+                                    </>
+                                  )}
                                   {notif.type === "watchlist_invite" &&
-                                    "invited you to join a shared watchlist."}
+                                    (notif.targetName 
+                                      ? `invited you to join the shared watchlist "${notif.targetName}".`
+                                      : "invited you to join a shared watchlist.")}
+                                  {notif.type === "list_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to collaborate on the list "${notif.targetName}".`
+                                      : "invited you to collaborate on a list.")}
+                                  {notif.type === "group_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to join the group chat "${notif.targetName}".`
+                                      : "invited you to join a group chat.")}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -401,6 +423,83 @@ export default function Navbar() {
                                             watchlistId: notif.mediaId as Id<"sharedWatchlists">,
                                           });
                                           toast.success("Watchlist invitation declined.");
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* List Invite Actions */}
+                                {notif.type === "list_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptListInvite({
+                                            listId: notif.mediaId as Id<"customLists">,
+                                          });
+                                          toast.success("List invitation accepted!");
+                                          router.push(`/lists/${notif.mediaId}`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineListInvite({
+                                            listId: notif.mediaId as Id<"customLists">,
+                                          });
+                                          toast.success("List invitation declined.");
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Group Invite Actions */}
+                                {notif.type === "group_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptGroupInvite({
+                                            chatId: notif.mediaId as Id<"chats">,
+                                          });
+                                          localStorage.setItem("active_chat_id", notif.mediaId!);
+                                          toast.success("Group invitation accepted!");
+                                          router.push(`/chat`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineGroupInvite({
+                                            chatId: notif.mediaId as Id<"chats">,
+                                          });
+                                          toast.success("Group invitation declined.");
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
@@ -644,10 +743,28 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
-                                  {notif.type === "chat_message" &&
-                                    "sent you a message."}
+                                  {notif.type === "chat_message" && (
+                                    <>
+                                      {notif.groupName
+                                        ? `sent a message in "${notif.groupName}":`
+                                        : "sent you a message:"}
+                                      <span className="mt-0.5 block truncate max-w-full text-zinc-400 font-normal italic">
+                                        &quot;{notif.chatMessageContent || "Message"}&quot;
+                                      </span>
+                                    </>
+                                  )}
                                   {notif.type === "watchlist_invite" &&
-                                    "invited you to join a shared watchlist."}
+                                    (notif.targetName 
+                                      ? `invited you to join the shared watchlist "${notif.targetName}".`
+                                      : "invited you to join a shared watchlist.")}
+                                  {notif.type === "list_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to collaborate on the list "${notif.targetName}".`
+                                      : "invited you to collaborate on a list.")}
+                                  {notif.type === "group_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to join the group chat "${notif.targetName}".`
+                                      : "invited you to join a group chat.")}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -720,6 +837,83 @@ export default function Navbar() {
                                             watchlistId: notif.mediaId as Id<"sharedWatchlists">,
                                           });
                                           toast.success("Watchlist invitation declined.");
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* List Invite Actions */}
+                                {notif.type === "list_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptListInvite({
+                                            listId: notif.mediaId as Id<"customLists">,
+                                          });
+                                          toast.success("List invitation accepted!");
+                                          router.push(`/lists/${notif.mediaId}`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineListInvite({
+                                            listId: notif.mediaId as Id<"customLists">,
+                                          });
+                                          toast.success("List invitation declined.");
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Group Invite Actions */}
+                                {notif.type === "group_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptGroupInvite({
+                                            chatId: notif.mediaId as Id<"chats">,
+                                          });
+                                          localStorage.setItem("active_chat_id", notif.mediaId!);
+                                          toast.success("Group invitation accepted!");
+                                          router.push(`/chat`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineGroupInvite({
+                                            chatId: notif.mediaId as Id<"chats">,
+                                          });
+                                          toast.success("Group invitation declined.");
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
