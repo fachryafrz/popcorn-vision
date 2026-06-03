@@ -185,4 +185,169 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_reported", ["reportedUserId"]),
+
+  continueWatching: defineTable({
+    userId: v.string(),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    season: v.optional(v.number()),
+    episode: v.optional(v.number()),
+    updatedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_media", ["userId", "mediaId", "mediaType"])
+    .index("by_user_updated", ["userId", "updatedAt"]),
+
+  activities: defineTable({
+    userId: v.string(),
+    type: v.string(), // "rate" | "watchlist" | "favorite" | "review" | "completed_season"
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    rating: v.optional(v.number()),
+    review: v.optional(v.string()),
+    season: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_createdAt", ["createdAt"])
+    .index("by_type_createdAt", ["type", "createdAt"]),
+
+  activityLikes: defineTable({
+    activityId: v.id("activities"),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_activity", ["activityId"])
+    .index("by_user_activity", ["userId", "activityId"]),
+
+  activityComments: defineTable({
+    activityId: v.id("activities"),
+    userId: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_activity", ["activityId"])
+    .index("by_user", ["userId"]),
+
+  sharedWatchlists: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    createdById: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_creator", ["createdById"]),
+
+  sharedWatchlistMembers: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    userId: v.string(),
+    joinedAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_user", ["userId"])
+    .index("by_watchlist_user", ["watchlistId", "userId"]),
+
+  sharedWatchlistItems: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    releaseYear: v.string(),
+    addedById: v.string(),
+    addedAt: v.number(),
+    watched: v.boolean(),
+    watchedAt: v.optional(v.number()),
+    watchedById: v.optional(v.string()),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_media", ["watchlistId", "mediaId", "mediaType"]),
+
+  sharedWatchlistItemVotes: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    userId: v.string(),
+    vote: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_user", ["watchlistId", "userId"])
+    .index("by_item", ["watchlistId", "mediaId", "mediaType"])
+    .index("by_item_user", ["watchlistId", "mediaId", "mediaType", "userId"]),
+
+  sharedWatchlistActivities: defineTable({
+    watchlistId: v.id("sharedWatchlists"),
+    userId: v.string(),
+    type: v.string(),
+    mediaId: v.optional(v.string()),
+    mediaType: v.optional(v.string()),
+    title: v.optional(v.string()),
+    details: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_watchlist", ["watchlistId"])
+    .index("by_watchlist_created", ["watchlistId", "createdAt"]),
+
+  customLists: defineTable({
+    name: v.string(),
+    description: v.optional(v.string()),
+    createdById: v.string(),
+    createdAt: v.number(),
+    privacy: v.string(), // "public" | "private"
+    isCollaborative: v.boolean(),
+  })
+    .index("by_creator", ["createdById"])
+    .index("by_privacy", ["privacy"]),
+
+  customListItems: defineTable({
+    listId: v.id("customLists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    releaseYear: v.string(),
+    addedById: v.string(),
+    addedAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_list_media", ["listId", "mediaId", "mediaType"]),
+
+  customListCollaborators: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    joinedAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user", ["userId"])
+    .index("by_list_user", ["listId", "userId"]),
+
+  customListLikes: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user_list", ["userId", "listId"]),
+
+  customListComments: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_user", ["userId"]),
+
+  customListFavorites: defineTable({
+    listId: v.id("customLists"),
+    userId: v.string(),
+    savedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_list_user", ["listId", "userId"]),
 });
+

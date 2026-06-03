@@ -1,9 +1,14 @@
-import { RefObject } from "react";
-import { Loader2 } from "lucide-react";
+import { RefObject, useState } from "react";
+import { Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import moment from "moment";
 import { MediaDetails, SeasonDetails } from "./types";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { authClient } from "@/lib/auth-client";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { toast } from "sonner";
 
 interface SeasonsAccordionProps {
   details: MediaDetails;
@@ -28,6 +33,37 @@ export default function SeasonsAccordion({
   setEpisode,
   scrollToPlayer,
 }: SeasonsAccordionProps) {
+  const session = authClient.useSession();
+  const isLoggedIn = !!session.data?.user;
+  const openAuth = useAuthModalStore((state) => state.open);
+  const logSeasonCompletion = useMutation(api.activities.logSeasonCompletion);
+  const [completingSeasons, setCompletingSeasons] = useState<Record<number, boolean>>({});
+
+  const handleMarkCompleted = async (e: React.MouseEvent, seasonNumber: number) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      openAuth();
+      return;
+    }
+
+    setCompletingSeasons((prev) => ({ ...prev, [seasonNumber]: true }));
+    try {
+      await logSeasonCompletion({
+        mediaId: String(details.id),
+        mediaType: "tv",
+        title: details.name || details.title || "",
+        posterPath: details.poster_path || "",
+        season: seasonNumber,
+      });
+      toast.success(`Marked Season ${seasonNumber} as completed!`);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to mark season as completed");
+    } finally {
+      setCompletingSeasons((prev) => ({ ...prev, [seasonNumber]: false }));
+    }
+  };
+
   if (!details?.seasons || details.seasons.length === 0) return null;
 
   return (
@@ -41,6 +77,8 @@ export default function SeasonsAccordion({
             ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
             : "/logo/popcorn.png";
           const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
+          const isCompleting = completingSeasons[s.season_number];
+
           return (
             <div
               key={s.id}
@@ -60,9 +98,24 @@ export default function SeasonsAccordion({
                 />
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-center text-left font-medium">
-                <h4 className="truncate text-xs font-bold text-white transition-colors group-hover:text-blue-400">
-                  {s.name}
-                </h4>
+                <div className="flex items-start justify-between gap-1">
+                  <h4 className="truncate text-xs font-bold text-white transition-colors group-hover:text-blue-400">
+                    {s.name}
+                  </h4>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={(e) => handleMarkCompleted(e, s.season_number)}
+                    className="h-5 w-5 shrink-0 rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-green-500"
+                    title="Mark Completed"
+                  >
+                    {isCompleting ? (
+                      <Loader2 className="h-3 w-3 animate-spin text-zinc-400" />
+                    ) : (
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    )}
+                  </Button>
+                </div>
                 <span className="mt-1 text-[10px] font-semibold text-zinc-400">
                   {s.episode_count || 0} Episode
                   {s.episode_count !== 1 ? "s" : ""}

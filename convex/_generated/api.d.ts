@@ -8,13 +8,17 @@
  * @module
  */
 
+import type * as activities from "../activities.js";
 import type * as auth from "../auth.js";
 import type * as chats from "../chats.js";
 import type * as comments from "../comments.js";
+import type * as continueWatching from "../continueWatching.js";
+import type * as customLists from "../customLists.js";
 import type * as diary from "../diary.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
 import type * as ratings from "../ratings.js";
+import type * as sharedWatchlists from "../sharedWatchlists.js";
 import type * as social from "../social.js";
 import type * as users from "../users.js";
 import type * as watchlist from "../watchlist.js";
@@ -26,13 +30,17 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  activities: typeof activities;
   auth: typeof auth;
   chats: typeof chats;
   comments: typeof comments;
+  continueWatching: typeof continueWatching;
+  customLists: typeof customLists;
   diary: typeof diary;
   favorites: typeof favorites;
   http: typeof http;
   ratings: typeof ratings;
+  sharedWatchlists: typeof sharedWatchlists;
   social: typeof social;
   users: typeof users;
   watchlist: typeof watchlist;

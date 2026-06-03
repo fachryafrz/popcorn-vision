@@ -6,6 +6,8 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { toast } from "sonner";
 import {
   LogOut,
   Menu,
@@ -17,6 +19,10 @@ import {
   Trash2,
   Loader2,
   MessageSquare,
+  Activity,
+  Users,
+  Popcorn,
+  List,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -52,6 +58,8 @@ export default function Navbar() {
   );
   const acceptFriendRequest = useMutation(api.social.acceptFriendRequest);
   const rejectFriendRequest = useMutation(api.social.rejectFriendRequest);
+  const acceptWatchlistInvite = useMutation(api.sharedWatchlists.acceptWatchlistInvite);
+  const declineWatchlistInvite = useMutation(api.sharedWatchlists.declineWatchlistInvite);
   const markRead = useMutation(api.social.markNotificationRead);
   const clearAll = useMutation(api.social.clearAllNotifications);
 
@@ -192,17 +200,16 @@ export default function Navbar() {
 
           {/* User Controls (Desktop) */}
           <div className="hidden items-center gap-4 justify-self-end lg:flex">
+            <Link
+              href="/feed"
+              prefetch={false}
+              className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none"
+              title="Activity Feed"
+            >
+              <Activity className="h-4 w-4" />
+            </Link>
             {isLoggedIn && (
               <>
-                <Link
-                  href="/chat"
-                  prefetch={false}
-                  className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none"
-                  title="Chat Workspace"
-                >
-                  <MessageSquare className="h-4 w-4" />
-                </Link>
-
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none">
                     <Bell className="h-4 w-4" />
@@ -262,7 +269,15 @@ export default function Navbar() {
                                 if (!notif.read) {
                                   await markRead({ notifId: notif._id });
                                 }
-                                if (
+                                if (notif.type === "chat_message") {
+                                  if (notif.mediaId) {
+                                    localStorage.setItem(
+                                      "active_chat_id",
+                                      notif.mediaId,
+                                    );
+                                  }
+                                  router.push(`/chat`);
+                                } else if (
                                   notif.type === "comment_reply" ||
                                   notif.type === "comment_mention"
                                 ) {
@@ -310,6 +325,10 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
+                                  {notif.type === "chat_message" &&
+                                    "sent you a message."}
+                                  {notif.type === "watchlist_invite" &&
+                                    "invited you to join a shared watchlist."}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -344,6 +363,44 @@ export default function Navbar() {
                                             await rejectFriendRequest({
                                               targetUserId: notif.sender.userId,
                                             });
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Watchlist Invite Actions */}
+                                {notif.type === "watchlist_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptWatchlistInvite({
+                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          });
+                                          toast.success("Watchlist invitation accepted!");
+                                          router.push(`/shared-watchlists/${notif.mediaId}`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineWatchlistInvite({
+                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          });
+                                          toast.success("Watchlist invitation declined.");
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
@@ -418,6 +475,27 @@ export default function Navbar() {
 
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
+                  <DropdownMenuItem
+                    onClick={() => router.push("/chat")}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
+                    Chats
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push("/shared-watchlists")}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <Users className="mr-2 h-4 w-4 text-zinc-400" />
+                    Shared Watchlists
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => router.push("/lists")}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <List className="mr-2 h-4 w-4 text-zinc-400" />
+                    My Lists
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => router.push("/settings")}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
@@ -510,7 +588,15 @@ export default function Navbar() {
                                 if (!notif.read) {
                                   await markRead({ notifId: notif._id });
                                 }
-                                if (
+                                if (notif.type === "chat_message") {
+                                  if (notif.mediaId) {
+                                    localStorage.setItem(
+                                      "active_chat_id",
+                                      notif.mediaId,
+                                    );
+                                  }
+                                  router.push(`/chat`);
+                                } else if (
                                   notif.type === "comment_reply" ||
                                   notif.type === "comment_mention"
                                 ) {
@@ -558,6 +644,10 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
+                                  {notif.type === "chat_message" &&
+                                    "sent you a message."}
+                                  {notif.type === "watchlist_invite" &&
+                                    "invited you to join a shared watchlist."}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -592,6 +682,44 @@ export default function Navbar() {
                                             await rejectFriendRequest({
                                               targetUserId: notif.sender.userId,
                                             });
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Watchlist Invite Actions */}
+                                {notif.type === "watchlist_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptWatchlistInvite({
+                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          });
+                                          toast.success("Watchlist invitation accepted!");
+                                          router.push(`/shared-watchlists/${notif.mediaId}`);
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineWatchlistInvite({
+                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          });
+                                          toast.success("Watchlist invitation declined.");
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
@@ -666,9 +794,19 @@ export default function Navbar() {
                     href="/"
                     prefetch={false}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="hover:text-white"
+                    className="flex items-center gap-2 hover:text-white"
                   >
+                    <Popcorn className="h-4 w-4" />
                     Home
+                  </Link>
+                  <Link
+                    href="/feed"
+                    prefetch={false}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 hover:text-white"
+                  >
+                    <Activity className="h-4 w-4" />
+                    Feed
                   </Link>
                   <Link
                     href="/search"
@@ -680,15 +818,35 @@ export default function Navbar() {
                     Search
                   </Link>
                   {isLoggedIn && (
-                    <Link
-                      href="/chat"
-                      prefetch={false}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2 hover:text-white"
-                    >
-                      <MessageSquare className="h-4 w-4" />
-                      Chat
-                    </Link>
+                    <>
+                      <Link
+                        href="/shared-watchlists"
+                        prefetch={false}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 hover:text-white"
+                      >
+                        <Users className="h-4 w-4" />
+                        Shared Watchlists
+                      </Link>
+                      <Link
+                        href="/lists"
+                        prefetch={false}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 hover:text-white"
+                      >
+                        <List className="h-4 w-4" />
+                        My Lists
+                      </Link>
+                      <Link
+                        href="/chat"
+                        prefetch={false}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-2 hover:text-white"
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                        Chat
+                      </Link>
+                    </>
                   )}
                 </nav>
 

@@ -21,6 +21,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import LogWatchModal from "@/components/log-watch-modal";
+import ContinueWatchingCard from "@/components/continue-watching-card";
+import { Play } from "lucide-react";
 
 // Modular Subcomponents
 import { UserDoc, DiaryItem } from "@/components/profile/types";
@@ -33,6 +35,7 @@ import {
   MediaGridTab,
   GridMediaItem,
 } from "@/components/profile/media-grid-tab";
+import { InsightsTab } from "@/components/profile/insights-tab";
 
 interface UserProfilePageProps {
   params: Promise<{
@@ -45,7 +48,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [activeTab, setActiveTab] = useState<
-    "all" | "watchlist" | "favorites" | "ratings" | "diary"
+    | "all"
+    | "watchlist"
+    | "favorites"
+    | "ratings"
+    | "diary"
+    | "continueWatching"
+    | "insights"
   >("all");
   const [showFriendsDialog, setShowFriendsDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
@@ -208,6 +217,11 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     api.diary.getUserDiary,
     targetUserId && !showLockScreen ? { userId: targetUserId } : "skip",
   ) as DiaryItem[] | undefined;
+
+  const continueWatching = useQuery(
+    api.continueWatching.getProgress,
+    isOwner && isLoggedIn ? {} : "skip",
+  );
 
   const handleFriendAction = async () => {
     if (!isLoggedIn) {
@@ -422,8 +436,20 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const tabsList = [
     { id: "all" as const, label: "All", count: allItems.length, visible: true },
     {
+      id: "continueWatching" as const,
+      label: "Continue Watching",
+      count: continueWatching ? continueWatching.length : 0,
+      visible: isOwner,
+    },
+    {
       id: "diary" as const,
       label: "Diary",
+      count: diary ? diary.length : 0,
+      visible: true,
+    },
+    {
+      id: "insights" as const,
+      label: "Insights",
       count: diary ? diary.length : 0,
       visible: true,
     },
@@ -468,7 +494,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       ) : (
         <>
           {/* Tabs */}
-          <div className="mb-8 flex gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
+          <div className="mb-8 flex scrollbar-none gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
             {tabsList.map((tab) => (
               <button
                 key={tab.id}
@@ -494,6 +520,23 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
               handleDeleteDiary={handleDeleteDiary}
               setEditingEntry={setEditingEntry}
             />
+          ) : activeTab === "insights" ? (
+            <InsightsTab diary={diary} user={targetUser} />
+          ) : activeTab === "continueWatching" ? (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {continueWatching && continueWatching.length > 0 ? (
+                continueWatching.map((item) => (
+                  <ContinueWatchingCard key={item._id} item={item} />
+                ))
+              ) : (
+                <div className="col-span-full flex min-h-[30vh] flex-col items-center justify-center text-center">
+                  <Play className="mb-4 h-12 w-12 text-zinc-800" />
+                  <p className="text-sm text-zinc-500">
+                    Your Continue Watching list is empty.
+                  </p>
+                </div>
+              )}
+            </div>
           ) : (
             <>
               {activeTab !== "all" && (

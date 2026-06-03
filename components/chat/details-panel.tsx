@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { X, Users, LogOut } from "lucide-react";
+import { X, Users, LogOut, Trash2, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -14,6 +14,9 @@ interface DetailsPanelProps {
   setIsInviteFriendsOpen: (open: boolean) => void;
   setSelectedInvitedUsers: (users: Set<string>) => void;
   handleLeaveGroup: () => void;
+  handleDeleteChat: () => void;
+  currentUserId: string;
+  handleToggleMute: () => void | Promise<void>;
 }
 
 export default function DetailsPanel({
@@ -25,6 +28,9 @@ export default function DetailsPanel({
   setIsInviteFriendsOpen,
   setSelectedInvitedUsers,
   handleLeaveGroup,
+  handleDeleteChat,
+  currentUserId,
+  handleToggleMute,
 }: DetailsPanelProps) {
   const router = useRouter();
 
@@ -135,6 +141,23 @@ export default function DetailsPanel({
           {/* Group actions */}
           <div className="space-y-2 border-t border-zinc-900 pt-4">
             <Button
+              onClick={handleToggleMute}
+              variant="ghost"
+              className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+            >
+              {activeChat.isMuted ? (
+                <>
+                  <Volume2 className="mr-2 h-4 w-4" />
+                  Unmute Chat
+                </>
+              ) : (
+                <>
+                  <VolumeX className="mr-2 h-4 w-4" />
+                  Mute Chat
+                </>
+              )}
+            </Button>
+            <Button
               onClick={handleLeaveGroup}
               variant="ghost"
               className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-red-400 hover:bg-red-950/20 hover:text-red-300"
@@ -142,6 +165,16 @@ export default function DetailsPanel({
               <LogOut className="mr-2 h-4 w-4" />
               Leave Group Chat
             </Button>
+            {activeChat.adminIds?.includes(currentUserId) && (
+              <Button
+                onClick={handleDeleteChat}
+                variant="ghost"
+                className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/35 hover:text-red-400"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete Group Chat
+              </Button>
+            )}
           </div>
         </div>
       ) : (
@@ -166,6 +199,34 @@ export default function DetailsPanel({
             <span className="text-zinc-550 mt-0.5 block text-[10px] font-bold tracking-wider uppercase">
               @{activeChat.friend?.username}
             </span>
+          </div>
+
+          <div className="space-y-2 border-t border-zinc-900 pt-4">
+            <Button
+              onClick={handleToggleMute}
+              variant="ghost"
+              className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+            >
+              {activeChat.isMuted ? (
+                <>
+                  <Volume2 className="mr-2 h-4 w-4" />
+                  Unmute Chat
+                </>
+              ) : (
+                <>
+                  <VolumeX className="mr-2 h-4 w-4" />
+                  Mute Chat
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={handleDeleteChat}
+              variant="ghost"
+              className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/35 hover:text-red-400"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete Chat
+            </Button>
           </div>
         </div>
       )}
