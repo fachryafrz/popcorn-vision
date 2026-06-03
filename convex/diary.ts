@@ -1,6 +1,7 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+import { logActivity } from "./activities";
 
 // Helper to get current authenticated user profile
 async function getAuthedUser(ctx: QueryCtx | MutationCtx) {
@@ -41,6 +42,30 @@ export const logWatch = mutation({
 
     if (args.rating !== undefined && (args.rating < 1 || args.rating > 10)) {
       throw new Error("Rating must be between 1 and 10");
+    }
+
+    // Log Activity
+    if (args.review) {
+      await logActivity(ctx, {
+        userId: currentUser.userId,
+        type: "review",
+        mediaId: args.mediaId,
+        mediaType: args.mediaType,
+        title: args.title,
+        posterPath: args.posterPath,
+        rating: args.rating,
+        review: args.review,
+      });
+    } else if (args.rating !== undefined) {
+      await logActivity(ctx, {
+        userId: currentUser.userId,
+        type: "rate",
+        mediaId: args.mediaId,
+        mediaType: args.mediaType,
+        title: args.title,
+        posterPath: args.posterPath,
+        rating: args.rating,
+      });
     }
 
     // 1. Insert diary log

@@ -199,4 +199,37 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_user_media", ["userId", "mediaId", "mediaType"])
     .index("by_user_updated", ["userId", "updatedAt"]),
+
+  activities: defineTable({
+    userId: v.string(),
+    type: v.string(), // "rate" | "watchlist" | "favorite" | "review" | "completed_season"
+    mediaId: v.string(),
+    mediaType: v.string(),
+    title: v.string(),
+    posterPath: v.string(),
+    rating: v.optional(v.number()),
+    review: v.optional(v.string()),
+    season: v.optional(v.number()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_createdAt", ["createdAt"])
+    .index("by_type_createdAt", ["type", "createdAt"]),
+
+  activityLikes: defineTable({
+    activityId: v.id("activities"),
+    userId: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_activity", ["activityId"])
+    .index("by_user_activity", ["userId", "activityId"]),
+
+  activityComments: defineTable({
+    activityId: v.id("activities"),
+    userId: v.string(),
+    content: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_activity", ["activityId"])
+    .index("by_user", ["userId"]),
 });

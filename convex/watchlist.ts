@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+import { logActivity } from "./activities";
 
 // Add to Watchlist
 export const addToWatchlist = mutation({
@@ -28,6 +29,16 @@ export const addToWatchlist = mutation({
     if (existing) {
       return existing._id;
     }
+
+    // Log Activity
+    await logActivity(ctx, {
+      userId,
+      type: "watchlist",
+      mediaId: args.mediaId,
+      mediaType: args.mediaType,
+      title: args.title,
+      posterPath: args.posterPath,
+    });
 
     // 3. Insert new item
     return await ctx.db.insert("watchlist", {

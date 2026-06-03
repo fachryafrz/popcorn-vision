@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+import { logActivity } from "./activities";
 
 // Add or edit rating for media
 export const rateMedia = mutation({
@@ -19,6 +20,17 @@ export const rateMedia = mutation({
     if (args.rating < 1 || args.rating > 10) {
       throw new Error("Rating must be between 1 and 10");
     }
+
+    // Log Activity
+    await logActivity(ctx, {
+      userId,
+      type: "rate",
+      mediaId: args.mediaId,
+      mediaType: args.mediaType,
+      title: args.title,
+      posterPath: args.posterPath,
+      rating: args.rating,
+    });
 
     const existing = await ctx.db
       .query("ratings")

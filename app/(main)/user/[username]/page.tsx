@@ -481,7 +481,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       ) : (
         <>
           {/* Tabs */}
-          <div className="mb-8 flex gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
+          <div className="mb-8 flex scrollbar-none gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
             {tabsList.map((tab) => (
               <button
                 key={tab.id}
@@ -516,7 +516,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
               ) : (
                 <div className="col-span-full flex min-h-[30vh] flex-col items-center justify-center text-center">
                   <Play className="mb-4 h-12 w-12 text-zinc-800" />
-                  <p className="text-sm text-zinc-500">Your Continue Watching list is empty.</p>
+                  <p className="text-sm text-zinc-500">
+                    Your Continue Watching list is empty.
+                  </p>
                 </div>
               )}
             </div>

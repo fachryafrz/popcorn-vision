@@ -17,6 +17,7 @@ import {
   Trash2,
   Loader2,
   MessageSquare,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -192,6 +193,14 @@ export default function Navbar() {
 
           {/* User Controls (Desktop) */}
           <div className="hidden items-center gap-4 justify-self-end lg:flex">
+            <Link
+              href="/feed"
+              prefetch={false}
+              className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none"
+              title="Activity Feed"
+            >
+              <Activity className="h-4 w-4" />
+            </Link>
             {isLoggedIn && (
               <>
                 <Link
@@ -683,6 +692,15 @@ export default function Navbar() {
                     className="hover:text-white"
                   >
                     Home
+                  </Link>
+                  <Link
+                    href="/feed"
+                    prefetch={false}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2 hover:text-white"
+                  >
+                    <Activity className="h-4 w-4" />
+                    Feed
                   </Link>
                   <Link
                     href="/search"
