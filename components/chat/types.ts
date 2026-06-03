@@ -47,6 +47,7 @@ export interface ChatItem {
   };
   isTyping?: boolean;
   typingName?: string;
+  isMuted?: boolean;
 }
 
 export interface ChatMember {

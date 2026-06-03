@@ -21,6 +21,8 @@ import SidebarPanel from "@/components/chat/sidebar-panel";
 import ChatWorkspace from "@/components/chat/chat-workspace";
 import DetailsPanel from "@/components/chat/details-panel";
 import ChatModals from "@/components/chat/chat-modals";
+import QuickViewModal from "@/components/quick-view-modal";
+import { TMDBMedia } from "@/lib/tmdb";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -73,16 +75,42 @@ export default function ChatPage() {
   const setTypingStatus = useMutation(api.chats.setTypingStatus);
   const toggleMuteChat = useMutation(api.chats.toggleMuteChat);
   const reportUser = useMutation(api.chats.reportUser);
+  const deleteChatMessage = useMutation(api.chats.deleteMessage);
+  const deleteChat = useMutation(api.chats.deleteChat);
 
   // ----------------------------------------------------
   // LOCAL COMPONENT STATE
   // ----------------------------------------------------
   const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(
-    null,
+    () => {
+      if (typeof window !== "undefined") {
+        return localStorage.getItem("active_chat_id") as Id<"chats"> | null;
+      }
+      return null;
+    },
   );
+
+  // Save selectedChatId to localStoe when it changes
+  useEffect(() => {
+    if (selectedChatId) {
+      localStorage.setItem("active_chat_id", selectedChatId);
+    } else {
+      localStorage.removeItem("active_chat_id");
+    }
+  }, [selectedChatId]);
+
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("active_chat_id");
+      if (saved) {
+        return window.innerWidth >= 640; // sm breakpoint is 640px
+      }
+    }
+    return true;
+  });
+
   const [showRightPanel, setShowRightPanel] = useState(false);
   const [editingMessageId, setEditingMessageId] =
     useState<Id<"messages"> | null>(null);
@@ -90,6 +118,8 @@ export default function ChatPage() {
   const [activeContextMenuMessageId, setActiveContextMenuMessageId] = useState<
     string | null
   >(null);
+  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Modals
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
@@ -326,6 +356,37 @@ export default function ChatPage() {
     }
   };
 
+  // Delete message handler
+  const handleDeleteMessage = async (messageId: Id<"messages">) => {
+    try {
+      await deleteChatMessage({ messageId });
+      toast.success("Message deleted");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to delete message");
+    }
+  };
+
+  // Delete chat room/session handler
+  const handleDeleteChat = async () => {
+    if (!selectedChatId) return;
+    const confirmMsg =
+      activeChat?.type === "group"
+        ? "  Are u sure you want to delete this group chat for everyone? This will remove all messages and members."
+        : "  Are u sure you want to delete this conversation? This will delete all messages for both users.";
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+      await deleteChat({ chatId: selectedChatId });
+      setSelectedChatId(null);
+      toast.success("Chat deleted successfully");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to delete chat");
+    }
+  };
+
   // Filter messages dynamically by query
   const filteredMessages = useMemo(() => {
     if (!activeChatMessages) return [];
@@ -402,6 +463,11 @@ export default function ChatPage() {
         messageEndRef={messageEndRef}
         activeContextMenuMessageId={activeContextMenuMessageId}
         setActiveContextMenuMessageId={setActiveContextMenuMessageId}
+        handleDeleteMessage={handleDeleteMessage}
+        onQuickView={(media) => {
+          setQuickViewMedia(media);
+          setIsQuickViewOpen(true);
+        }}
       />
 
       {selectedChatId && activeChat && (
@@ -414,6 +480,9 @@ export default function ChatPage() {
           setIsInviteFriendsOpen={setIsInviteFriendsOpen}
           setSelectedInvitedUsers={setSelectedInvitedUsers}
           handleLeaveGroup={handleLeaveGroup}
+          handleDeleteChat={handleDeleteChat}
+          currentUserId={currentUserId}
+          handleToggleMute={handleToggleMute}
         />
       )}
 
@@ -444,6 +513,16 @@ export default function ChatPage() {
         handleSendGIF={handleSendGIF}
         handleSubmitReport={handleSubmitReport}
       />
+      {isQuickViewOpen && quickViewMedia && (
+        <QuickViewModal
+          isOpen={isQuickViewOpen}
+          onClose={() => {
+            setIsQuickViewOpen(false);
+            setQuickViewMedia(null);
+          }}
+          media={quickViewMedia}
+        />
+      )}
     </div>
   );
 }

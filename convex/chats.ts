@@ -814,3 +814,83 @@ export const editMessage = mutation({
     });
   },
 });
+
+// Delete an existing message
+export const deleteMessage = mutation({
+  args: {
+    messageId: v.id("messages"),
+  },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthedUser(ctx);
+
+    const message = await ctx.db.get(args.messageId);
+    if (!message) throw new Error("Message not found");
+
+    if (message.senderId !== currentUserId) {
+      throw new Error("You can only delete your own messages");
+    }
+
+    // Verify membership in the chat to prevent deleting in rooms the user was removed from
+    const membership = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_chat_user", (q) => q.eq("chatId", message.chatId).eq("userId", currentUserId))
+      .first();
+
+    if (!membership) throw new Error("You are not a member of this chat");
+
+    await ctx.db.delete(args.messageId);
+  },
+});
+
+// Delete the entire chat session (including memberships and messages)
+export const deleteChat = mutation({
+  args: { chatId: v.id("chats") },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthedUser(ctx);
+    const chat = await ctx.db.get(args.chatId);
+
+    if (!chat) throw new Error("Chat not found");
+
+    // Verify membership in the chat
+    const membership = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId))
+      .first();
+
+    if (!membership) throw new Error("Access denied: Not a member of this chat");
+
+    // If it's a group, only admins can delete the entire group chat, otherwise they just leave it.
+    if (chat.type === "group") {
+      const isAdmin = chat.adminIds?.includes(currentUserId);
+      if (!isAdmin) {
+        throw new Error("Only group admins can delete the group chat session");
+      }
+    }
+
+    // Delete all messages
+    const messages = await ctx.db
+      .query("messages")
+      .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+      .collect();
+
+    for (const msg of messages) {
+      await ctx.db.delete(msg._id);
+    }
+
+    // Delete all memberships
+    const memberships = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+      .collect();
+
+    for (const mem of memberships) {
+      await ctx.db.delete(mem._id);
+    }
+
+    // Delete the chat itself
+    await ctx.db.delete(args.chatId);
+
+    return { success: true };
+  },
+});
+

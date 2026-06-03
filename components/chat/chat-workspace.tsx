@@ -15,6 +15,7 @@ import {
   ChevronRight,
   Grid,
   Pencil,
+  Trash2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import moment from "moment";
 import { toast } from "sonner";
+import { TMDBMedia } from "@/lib/tmdb";
 import {
   ContextMenu,
   ContextMenuTrigger,
@@ -57,6 +59,8 @@ interface ChatWorkspaceProps {
   messageEndRef: React.RefObject<HTMLDivElement | null>;
   activeContextMenuMessageId: string | null;
   setActiveContextMenuMessageId: (id: string | null) => void;
+  handleDeleteMessage: (id: Id<"messages">) => void;
+  onQuickView: (media: TMDBMedia) => void;
 }
 
 export default function ChatWorkspace({
@@ -85,6 +89,8 @@ export default function ChatWorkspace({
   messageEndRef,
   activeContextMenuMessageId,
   setActiveContextMenuMessageId,
+  handleDeleteMessage,
+  onQuickView,
 }: ChatWorkspaceProps) {
   const router = useRouter();
 
@@ -429,9 +435,19 @@ export default function ChatWorkspace({
                             </button>
                             <button
                               onClick={() => {
-                                toast.success(
-                                  `${msg.sharedMediaTitle} opened! Click View Details to manage.`,
-                                );
+                                onQuickView({
+                                  id: Number(msg.sharedMediaId),
+                                  media_type: msg.sharedMediaType as "movie" | "tv",
+                                  title: msg.sharedMediaTitle || "",
+                                  name: msg.sharedMediaTitle || "",
+                                  poster_path: msg.sharedMediaPoster || "",
+                                  vote_average: msg.sharedMediaRating || 0,
+                                  release_date: msg.sharedMediaYear || "",
+                                  backdrop_path: "",
+                                  genre_ids: [],
+                                  overview: "",
+                                  popularity: 0,
+                                });
                               }}
                               className="cursor-pointer py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
                             >
@@ -483,6 +499,19 @@ export default function ChatWorkspace({
                         Edit Message
                       </ContextMenuItem>
                     )}
+                  {isMe && (
+                    <ContextMenuItem
+                      onClick={() => {
+                        if (confirm("Are you sure you want to delete this message?")) {
+                          handleDeleteMessage(msg._id);
+                        }
+                      }}
+                      className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-red-400 hover:bg-red-950/20 hover:text-red-300"
+                    >
+                      <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                      Delete Message
+                    </ContextMenuItem>
+                  )}
                   <ContextMenuItem
                     onClick={() => {
                       if (msg.content) {
