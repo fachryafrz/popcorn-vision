@@ -99,6 +99,11 @@ export const createOrGetPrivateChat = mutation({
           .first();
 
         if (otherMem) {
+          if (mem.deletedAt !== undefined) {
+            await ctx.db.patch(mem._id, {
+              deletedAt: undefined,
+            });
+          }
           return chat._id;
         }
       }
@@ -511,17 +516,24 @@ export const sendMessage = mutation({
       .collect();
 
     for (const mem of otherMembers) {
-      if (mem.userId !== currentUserId && !mem.isMuted) {
-        await ctx.db.insert("notifications", {
-          userId: mem.userId,
-          senderId: currentUserId,
-          type: "chat_message",
-          read: false,
-          createdAt: Date.now(),
-          mediaId: args.chatId,
-          mediaType: "chat",
-          messageId,
-        });
+      if (mem.userId !== currentUserId) {
+        if (mem.deletedAt !== undefined) {
+          await ctx.db.patch(mem._id, {
+            deletedAt: undefined,
+          });
+        }
+        if (!mem.isMuted) {
+          await ctx.db.insert("notifications", {
+            userId: mem.userId,
+            senderId: currentUserId,
+            type: "chat_message",
+            read: false,
+            createdAt: Date.now(),
+            mediaId: args.chatId,
+            mediaType: "chat",
+            messageId,
+          });
+        }
       }
     }
 
@@ -651,6 +663,7 @@ export const getChatsList = query({
 
     const results = [];
     for (const mem of memberships) {
+      if (mem.deletedAt !== undefined) continue;
       const chat = await ctx.db.get(mem.chatId);
       if (!chat) continue;
 
@@ -979,6 +992,44 @@ export const deleteChat = mutation({
       .first();
 
     if (!membership) throw new Error("Access denied: Not a member of this chat");
+
+    if (chat.type === "private") {
+      // 1. Soft delete: set deletedAt for current user membership
+      await ctx.db.patch(membership._id, {
+        deletedAt: Date.now(),
+      });
+
+      // 2. Fetch memberships to check if all participants have soft-deleted
+      const otherMembers = await ctx.db
+        .query("chatMemberships")
+        .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+        .collect();
+
+      const allDeleted = otherMembers.every(
+        (mem) => mem._id === membership._id || mem.deletedAt !== undefined
+      );
+
+      if (allDeleted) {
+        // Hard delete all messages, memberships, and the chat document
+        const messages = await ctx.db
+          .query("messages")
+          .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+          .collect();
+
+        for (const msg of messages) {
+          await ctx.db.delete(msg._id);
+        }
+
+        for (const mem of otherMembers) {
+          await ctx.db.delete(mem._id);
+        }
+
+        await ctx.db.delete(args.chatId);
+        return { success: true, hardDeleted: true };
+      }
+
+      return { success: true, hardDeleted: false };
+    }
 
     // If it's a group, only admins can delete the entire group chat, otherwise they just leave it.
     if (chat.type === "group") {

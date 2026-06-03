@@ -154,6 +154,7 @@ export default defineSchema({
     lastReadAt: v.optional(v.number()),
     typingUntil: v.optional(v.number()),
     isMuted: v.optional(v.boolean()),
+    deletedAt: v.optional(v.number()),
   })
     .index("by_user", ["userId"])
     .index("by_chat", ["chatId"])
