@@ -390,3 +390,95 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
   return results;
 }
 
+export interface StatsMetadata {
+  mediaId: string;
+  mediaType: "movie" | "tv";
+  runtime: number; // total runtime in minutes
+  genres: string[];
+  cast: string[];
+  directors: string[];
+  watchProviders: string[];
+}
+
+export async function batchFetchMediaMetadata(
+  items: { mediaId: string; mediaType: "movie" | "tv" }[],
+  countryCode: string = "US"
+): Promise<Record<string, StatsMetadata>> {
+  const uniqueItemsMap = new Map<string, { mediaId: string; mediaType: "movie" | "tv" }>();
+  for (const item of items) {
+    const key = `${item.mediaType}-${item.mediaId}`;
+    if (!uniqueItemsMap.has(key)) {
+      uniqueItemsMap.set(key, item);
+    }
+  }
+
+  const uniqueItems = Array.from(uniqueItemsMap.values());
+  const resultsMap: Record<string, StatsMetadata> = {};
+
+  // Batch process requests (e.g., 5 at a time) to prevent rate limits
+  const batchSize = 10;
+  for (let i = 0; i < uniqueItems.length; i += batchSize) {
+    const batch = uniqueItems.slice(i, i + batchSize);
+    await Promise.all(
+      batch.map(async (item) => {
+        const key = `${item.mediaType}-${item.mediaId}`;
+        try {
+          // Single call using append_to_response to retrieve details, credits, and watch providers
+          const res = await axios.get(`/${item.mediaType}/${item.mediaId}`, {
+            params: {
+              append_to_response: "credits,watch/providers",
+            },
+          });
+          const data = res.data;
+
+          // Parse genres
+          const genres: string[] = (data.genres || []).map((g: { id: number; name: string }) => g.name);
+
+          // Parse runtime
+          let runtime = 0;
+          if (item.mediaType === "movie") {
+            runtime = data.runtime || 0;
+          } else {
+            // TV show runtime: average episode runtime * number of episodes
+            const episodeRuntime = (data.episode_run_time && data.episode_run_time.length > 0)
+              ? data.episode_run_time[0]
+              : 45; // Default fallback to 45 mins
+            const numberOfEpisodes = data.number_of_episodes || 10; // Default fallback to 10 episodes
+            runtime = episodeRuntime * numberOfEpisodes;
+          }
+
+          // Parse credits (top 5 cast)
+          const cast: string[] = (data.credits?.cast || [])
+            .slice(0, 5)
+            .map((c: { name: string }) => c.name);
+
+          // Parse directors (crew with job === "Director")
+          const directors: string[] = (data.credits?.crew || [])
+            .filter((c: { job: string; name: string }) => c.job === "Director")
+            .map((c: { name: string }) => c.name);
+
+          // Parse watch providers (flatrate providers in countryCode)
+          const providerData = data["watch/providers"]?.results?.[countryCode] || data["watch/providers"]?.results?.US;
+          const watchProviders: string[] = (providerData?.flatrate || [])
+            .map((p: { provider_name: string }) => p.provider_name);
+
+          resultsMap[key] = {
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+            runtime,
+            genres,
+            cast,
+            directors,
+            watchProviders,
+          };
+        } catch (error) {
+          console.error(`Error fetching stats metadata for ${item.mediaType} ${item.mediaId}:`, error);
+        }
+      })
+    );
+  }
+
+  return resultsMap;
+}
+
+

@@ -35,6 +35,7 @@ import {
   MediaGridTab,
   GridMediaItem,
 } from "@/components/profile/media-grid-tab";
+import { InsightsTab } from "@/components/profile/insights-tab";
 
 interface UserProfilePageProps {
   params: Promise<{
@@ -47,7 +48,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [activeTab, setActiveTab] = useState<
-    "all" | "watchlist" | "favorites" | "ratings" | "diary" | "continueWatching"
+    | "all"
+    | "watchlist"
+    | "favorites"
+    | "ratings"
+    | "diary"
+    | "continueWatching"
+    | "insights"
   >("all");
   const [showFriendsDialog, setShowFriendsDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
@@ -429,8 +436,20 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const tabsList = [
     { id: "all" as const, label: "All", count: allItems.length, visible: true },
     {
+      id: "continueWatching" as const,
+      label: "Continue Watching",
+      count: continueWatching ? continueWatching.length : 0,
+      visible: isOwner,
+    },
+    {
       id: "diary" as const,
       label: "Diary",
+      count: diary ? diary.length : 0,
+      visible: true,
+    },
+    {
+      id: "insights" as const,
+      label: "Insights",
       count: diary ? diary.length : 0,
       visible: true,
     },
@@ -451,12 +470,6 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       label: "Ratings",
       count: ratings ? ratings.length : 0,
       visible: showRatingsTab,
-    },
-    {
-      id: "continueWatching" as const,
-      label: "Continue Watching",
-      count: continueWatching ? continueWatching.length : 0,
-      visible: isOwner,
     },
   ].filter((t) => t.visible);
 
@@ -507,6 +520,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
               handleDeleteDiary={handleDeleteDiary}
               setEditingEntry={setEditingEntry}
             />
+          ) : activeTab === "insights" ? (
+            <InsightsTab diary={diary} user={targetUser} />
           ) : activeTab === "continueWatching" ? (
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
               {continueWatching && continueWatching.length > 0 ? (
