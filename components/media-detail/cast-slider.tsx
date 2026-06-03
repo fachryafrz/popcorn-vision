@@ -14,7 +14,7 @@ export default function CastSlider({ cast }: CastSliderProps) {
   return (
     <div className="space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-        <Tv className="h-5 w-5 text-blue-500" />
+        <Tv className="text-primary h-5 w-5" />
         Key Cast & Characters
       </h2>
       <div className="swiper-cast-container relative w-full">

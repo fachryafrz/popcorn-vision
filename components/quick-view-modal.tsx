@@ -230,7 +230,7 @@ export default function QuickViewModal({
 
         {loading ? (
           <div className="flex flex-1 flex-col items-center justify-center">
-            <Loader2 className="mb-4 h-12 w-12 animate-spin text-blue-500" />
+            <Loader2 className="text-primary mb-4 h-12 w-12 animate-spin" />
             <p className="text-sm text-zinc-400">Loading details...</p>
           </div>
         ) : (

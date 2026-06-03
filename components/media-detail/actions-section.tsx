@@ -53,7 +53,7 @@ export default function ActionsSection({
     <div className="mt-6 flex flex-wrap items-center gap-3">
       <Button
         onClick={() => scrollToPlayer("watch")}
-        className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 hover:bg-blue-500 active:scale-98 sm:px-8 sm:text-base"
+        className="hover:bg-primary bg-primary flex items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base"
       >
         <Play className="h-5 w-5 fill-current" />
         Play
@@ -176,4 +176,3 @@ export default function ActionsSection({
     </div>
   );
 }
-

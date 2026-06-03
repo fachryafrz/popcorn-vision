@@ -89,7 +89,7 @@ export default function RegionSelect({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          "flex h-12 w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-left text-xs font-bold text-zinc-300 outline-hidden transition-all duration-200 select-none hover:text-white focus:border-blue-500/50 focus:bg-zinc-900",
+          "focus:border-primary/50 flex h-12 w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-left text-xs font-bold text-zinc-300 outline-hidden transition-all duration-200 select-none hover:text-white focus:bg-zinc-900",
           className,
         )}
       >
@@ -114,7 +114,7 @@ export default function RegionSelect({
             placeholder="Search region or code..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-zinc-900 bg-zinc-950 py-2 pr-3 pl-8 text-xs text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/30"
+            className="focus:border-primary/30 w-full rounded-xl border border-zinc-900 bg-zinc-950 py-2 pr-3 pl-8 text-xs text-white placeholder-zinc-600 outline-hidden transition-all"
           />
         </div>
 
@@ -141,7 +141,7 @@ export default function RegionSelect({
                 className={cn(
                   "flex w-full cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-left text-xs font-semibold transition-all",
                   isSelected
-                    ? "border border-blue-500/20 bg-blue-600/10 text-blue-400"
+                    ? "text-primary border-primary/20 bg-primary/10 border"
                     : "text-zinc-400 hover:bg-zinc-900/50 hover:text-white",
                 )}
               >
@@ -152,7 +152,7 @@ export default function RegionSelect({
                   <span className="truncate">{region.name}</span>
                 </span>
                 {isSelected && (
-                  <Check className="h-3.5 w-3.5 shrink-0 text-blue-400" />
+                  <Check className="text-primary h-3.5 w-3.5 shrink-0" />
                 )}
               </button>
             );

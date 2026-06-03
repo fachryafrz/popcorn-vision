@@ -138,7 +138,7 @@ export default function SharedWatchlistDetailPage({
   if (detail === undefined) {
     return (
       <div className="flex min-h-[85vh] items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }
@@ -372,7 +372,7 @@ export default function SharedWatchlistDetailPage({
                             {mem.image && (
                               <AvatarImage src={mem.image} alt={mem.name} />
                             )}
-                            <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                            <AvatarFallback className="bg-primary text-xs font-bold text-white">
                               {mem.username?.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
@@ -451,7 +451,7 @@ export default function SharedWatchlistDetailPage({
                                   alt={friend.name}
                                 />
                               )}
-                              <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                              <AvatarFallback className="bg-primary text-xs font-bold text-white">
                                 {friend.username?.charAt(0).toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
@@ -581,7 +581,7 @@ export default function SharedWatchlistDetailPage({
             )}
             {searchLoading && (
               <div className="absolute top-3.5 right-12 z-30">
-                <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                <Loader2 className="text-primary h-5 w-5 animate-spin" />
               </div>
             )}
           </div>
@@ -614,7 +614,7 @@ export default function SharedWatchlistDetailPage({
                   onClick={() => setSortBy(s)}
                   className={`rounded-lg px-2.5 py-1 font-bold transition-all ${
                     sortBy === s
-                      ? "bg-blue-950/20 text-blue-400"
+                      ? "text-primary bg-primary/10"
                       : "text-zinc-400 hover:text-white"
                   }`}
                 >
@@ -678,7 +678,7 @@ export default function SharedWatchlistDetailPage({
                         <div className="flex items-center gap-2">
                           <h4
                             onClick={() => setSelectedMedia(tmdbMedia)}
-                            className="cursor-pointer truncate text-base font-extrabold text-white transition-colors group-hover:text-blue-400"
+                            className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
                           >
                             {item.title}
                           </h4>
@@ -735,7 +735,7 @@ export default function SharedWatchlistDetailPage({
                         }
                         className={`flex cursor-pointer items-center gap-1.5 rounded-xl border px-3.5 py-2 transition-all hover:scale-105 active:scale-95 ${
                           item.userVoted
-                            ? "border-blue-500 bg-blue-600 text-white"
+                            ? "border-primary bg-primary text-white"
                             : "text-zinc-450 border-zinc-800 bg-zinc-900 hover:text-white"
                         }`}
                         title="Upvote this title"
@@ -776,7 +776,7 @@ export default function SharedWatchlistDetailPage({
         <div className="space-y-6">
           <div className="space-y-6 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-6">
             <h3 className="flex items-center gap-2 border-b border-zinc-900 pb-3 text-lg font-bold">
-              <Activity className="h-5 w-5 animate-pulse text-blue-400" />{" "}
+              <Activity className="text-primary h-5 w-5 animate-pulse" />{" "}
               Contributor Activity
             </h3>
 

@@ -604,7 +604,7 @@ export default function SettingsPage() {
   if (loadingSession || (isLoggedIn && convexProfile === undefined)) {
     return (
       <div className="flex min-h-[60vh] grow items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }

@@ -80,7 +80,7 @@ export default function PrivacySection({
               value={profilePrivacy}
               onValueChange={(val) => setProfilePrivacy(val || "public")}
             >
-              <SelectTrigger className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-sm text-white focus:border-blue-500/50 focus:bg-zinc-900">
+              <SelectTrigger className="focus:border-primary/50 h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-sm text-white focus:bg-zinc-900">
                 <SelectValue placeholder="Select Privacy" />
               </SelectTrigger>
               <SelectContent className="rounded-2xl border border-zinc-800 bg-zinc-900 text-white shadow-xl">
@@ -122,7 +122,7 @@ export default function PrivacySection({
               value={messagePrivacy}
               onValueChange={(val) => setMessagePrivacy(val || "friends")}
             >
-              <SelectTrigger className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-sm text-white focus:border-blue-500/50 focus:bg-zinc-900">
+              <SelectTrigger className="focus:border-primary/50 h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-sm text-white focus:bg-zinc-900">
                 <SelectValue placeholder="Select Message Privacy" />
               </SelectTrigger>
               <SelectContent className="rounded-2xl border border-zinc-800 bg-zinc-900 text-white shadow-xl">
@@ -243,7 +243,7 @@ export default function PrivacySection({
       <Button
         type="submit"
         disabled={savingPrivacy}
-        className="mt-4 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
+        className="to-primary hover:to-primary hover:from-primary from-primary mt-4 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98]"
       >
         {savingPrivacy ? (
           <Loader2 className="mx-auto h-5 w-5 animate-spin" />
@@ -259,7 +259,7 @@ export default function PrivacySection({
         </h3>
         {!blockedUsersList ? (
           <div className="flex items-center justify-center py-4">
-            <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+            <Loader2 className="text-primary h-4 w-4 animate-spin" />
           </div>
         ) : blockedUsersList.length === 0 ? (
           <p className="text-left text-xs text-zinc-500 italic">

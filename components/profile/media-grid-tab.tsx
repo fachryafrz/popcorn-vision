@@ -45,7 +45,7 @@ export function MediaGridTab({
   if (!items) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -94,7 +94,7 @@ export function MediaGridTab({
               {(activeTab === "ratings" ||
                 (activeTab === "all" && item.rating)) &&
               item.rating ? (
-                <div className="flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-600/90 px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
+                <div className="border-primary/30 bg-primary/90 flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-black tracking-wide text-white uppercase shadow-lg">
                   <Star className="h-3 w-3 fill-current text-yellow-300" />
                   <span>{Number(item.rating).toFixed(0)}/10</span>
                 </div>
@@ -124,7 +124,7 @@ export function MediaGridTab({
                   className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-xl border shadow-md transition-all",
                     selectedItems.has(itemKey)
-                      ? "scale-110 border-blue-500 bg-blue-600 text-white"
+                      ? "border-primary bg-primary scale-110 text-white"
                       : "border-zinc-700 bg-black/60 text-transparent hover:border-zinc-500",
                   )}
                 >

@@ -37,9 +37,14 @@ export default function SeasonsAccordion({
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
   const logSeasonCompletion = useMutation(api.activities.logSeasonCompletion);
-  const [completingSeasons, setCompletingSeasons] = useState<Record<number, boolean>>({});
+  const [completingSeasons, setCompletingSeasons] = useState<
+    Record<number, boolean>
+  >({});
 
-  const handleMarkCompleted = async (e: React.MouseEvent, seasonNumber: number) => {
+  const handleMarkCompleted = async (
+    e: React.MouseEvent,
+    seasonNumber: number,
+  ) => {
     e.stopPropagation();
     if (!isLoggedIn) {
       openAuth();
@@ -86,7 +91,7 @@ export default function SeasonsAccordion({
               className={cn(
                 "group flex cursor-pointer gap-3 rounded-2xl border p-2.5 transition-all duration-300 hover:-translate-y-0.5",
                 expandedSeason === s.season_number
-                  ? "border-blue-500 bg-zinc-900 shadow-lg shadow-blue-500/10"
+                  ? "border-primary shadow-primary/10 bg-zinc-900 shadow-lg"
                   : "border-zinc-850 bg-zinc-900/45 hover:border-zinc-800 hover:bg-zinc-900/80",
               )}
             >
@@ -99,7 +104,7 @@ export default function SeasonsAccordion({
               </div>
               <div className="flex min-w-0 flex-1 flex-col justify-center text-left font-medium">
                 <div className="flex items-start justify-between gap-1">
-                  <h4 className="truncate text-xs font-bold text-white transition-colors group-hover:text-blue-400">
+                  <h4 className="group-hover:text-primary truncate text-xs font-bold text-white transition-colors">
                     {s.name}
                   </h4>
                   <Button
@@ -137,7 +142,7 @@ export default function SeasonsAccordion({
         >
           {seasonDetailsLoading ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="mb-2 h-8 w-8 animate-spin text-blue-500" />
+              <Loader2 className="text-primary mb-2 h-8 w-8 animate-spin" />
               <p className="text-xs font-semibold text-zinc-500">
                 Loading season details...
               </p>
@@ -187,9 +192,9 @@ export default function SeasonsAccordion({
                                 setEpisode(ep.episode_number);
                                 scrollToPlayer("watch");
                               }}
-                              className="h-7 cursor-pointer rounded-full bg-blue-600 px-3.5 text-[10px] font-bold text-white shadow-md hover:bg-blue-500"
+                              className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-full px-3.5 text-[10px] font-bold text-white shadow-md"
                             >
-                              Play S{activeSeasonData.season_number}E
+                              Play S{activeSeasonData.season_number} E
                               {ep.episode_number}
                             </Button>
                           </div>
@@ -199,7 +204,7 @@ export default function SeasonsAccordion({
                         <div className="flex min-w-0 flex-1 flex-col justify-between text-left">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-blue-400">
+                              <span className="text-primary text-xs font-black">
                                 Episode {ep.episode_number}
                               </span>
                               {ep.runtime && (

@@ -15,7 +15,13 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { Users, Plus, Loader2, Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -28,7 +34,7 @@ export default function SharedWatchlistsPage() {
 
   const watchlists = useQuery(
     api.sharedWatchlists.getWatchlists,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   );
   const createWatchlist = useMutation(api.sharedWatchlists.createWatchlist);
 
@@ -70,7 +76,8 @@ export default function SharedWatchlistsPage() {
           Shared Watchlists
         </h1>
         <p className="mb-6 max-w-md text-sm text-zinc-400">
-          Create collaborative watchlists with your friends to track movies and TV shows together. Please sign in to access this feature.
+          Create collaborative watchlists with your friends to track movies and
+          TV shows together. Please sign in to access this feature.
         </p>
       </div>
     );
@@ -84,7 +91,8 @@ export default function SharedWatchlistsPage() {
             Shared Watchlists
           </h1>
           <p className="mt-2 text-sm text-zinc-400">
-            Collaborate on lists, invite friends, vote on titles, and track watched history together.
+            Collaborate on lists, invite friends, vote on titles, and track
+            watched history together.
           </p>
         </div>
 
@@ -96,13 +104,18 @@ export default function SharedWatchlistsPage() {
               </Button>
             }
           />
-          <DialogContent className="border border-zinc-800 bg-zinc-950 text-white rounded-3xl max-w-md">
+          <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold">New Collaborative Watchlist</DialogTitle>
+              <DialogTitle className="text-xl font-bold">
+                New Collaborative Watchlist
+              </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreate} className="space-y-4 py-4">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                <label
+                  htmlFor="name"
+                  className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                >
                   Watchlist Name
                 </label>
                 <Input
@@ -110,12 +123,15 @@ export default function SharedWatchlistsPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Movie Night, Family Favorites"
-                  className="border-zinc-800 bg-zinc-900 text-white rounded-xl placeholder:text-zinc-650"
+                  className="placeholder:text-zinc-650 rounded-xl border-zinc-800 bg-zinc-900 text-white"
                   required
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="desc" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                <label
+                  htmlFor="desc"
+                  className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                >
                   Description (Optional)
                 </label>
                 <Textarea
@@ -123,7 +139,7 @@ export default function SharedWatchlistsPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe the mood or purpose of this list..."
-                  className="border-zinc-800 bg-zinc-900 text-white rounded-xl placeholder:text-zinc-650 min-h-24 resize-none"
+                  className="placeholder:text-zinc-650 min-h-24 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-white"
                 />
               </div>
               <DialogFooter className="pt-4">
@@ -131,14 +147,14 @@ export default function SharedWatchlistsPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setIsOpen(false)}
-                  className="border-zinc-800 text-zinc-450 hover:bg-zinc-900 hover:text-white rounded-xl"
+                  className="text-zinc-450 rounded-xl border-zinc-800 hover:bg-zinc-900 hover:text-white"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isCreating}
-                  className="bg-white text-black hover:bg-zinc-200 rounded-xl font-bold"
+                  className="rounded-xl bg-white font-bold text-black hover:bg-zinc-200"
                 >
                   {isCreating ? (
                     <>
@@ -156,26 +172,33 @@ export default function SharedWatchlistsPage() {
 
       {watchlists === undefined ? (
         <div className="flex h-60 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
         </div>
       ) : watchlists.length === 0 ? (
-        <Card className="border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center rounded-3xl">
+        <Card className="rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center">
           <CardContent className="flex flex-col items-center justify-center p-0">
-            <Users className="mb-4 h-12 w-12 text-zinc-650" />
-            <h3 className="text-lg font-bold text-zinc-300">No watchlists found</h3>
-            <p className="mt-2 text-sm text-zinc-500 max-w-sm">
-              Create a new watchlist above or have your friends invite you to theirs to get started!
+            <Users className="text-zinc-650 mb-4 h-12 w-12" />
+            <h3 className="text-lg font-bold text-zinc-300">
+              No watchlists found
+            </h3>
+            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+              Create a new watchlist above or have your friends invite you to
+              theirs to get started!
             </p>
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {watchlists.map((watchlist) => (
-            <Link key={watchlist._id} href={`/shared-watchlists/${watchlist._id}`} className="group block">
-              <Card className="h-full border border-zinc-800 bg-zinc-900/30 transition-all hover:border-zinc-700 hover:bg-zinc-900/60 rounded-3xl">
+            <Link
+              key={watchlist._id}
+              href={`/shared-watchlists/${watchlist._id}`}
+              className="group block"
+            >
+              <Card className="h-full rounded-3xl border border-zinc-800 bg-zinc-900/30 transition-all hover:border-zinc-700 hover:bg-zinc-900/60">
                 <CardHeader className="flex flex-row items-start justify-between gap-4 p-6">
                   <div className="space-y-1">
-                    <CardTitle className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <CardTitle className="group-hover:text-primary text-lg font-bold text-white transition-colors">
                       {watchlist.name}
                     </CardTitle>
                     {watchlist.description && (
@@ -184,12 +207,13 @@ export default function SharedWatchlistsPage() {
                       </CardDescription>
                     )}
                   </div>
-                  <ChevronRight className="h-5 w-5 text-zinc-600 group-hover:text-white transition-colors shrink-0" />
+                  <ChevronRight className="h-5 w-5 shrink-0 text-zinc-600 transition-colors group-hover:text-white" />
                 </CardHeader>
                 <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-zinc-900 p-6 text-xs text-zinc-500">
                   <span className="flex items-center gap-1.5 font-semibold text-zinc-400">
                     <Users className="h-3.5 w-3.5" />
-                    {watchlist.memberCount} {watchlist.memberCount === 1 ? "member" : "members"}
+                    {watchlist.memberCount}{" "}
+                    {watchlist.memberCount === 1 ? "member" : "members"}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5" />
@@ -197,7 +221,10 @@ export default function SharedWatchlistsPage() {
                   </span>
                   {watchlist.creator && (
                     <span className="ml-auto text-zinc-500">
-                      by <span className="font-bold text-zinc-400">@{watchlist.creator.username}</span>
+                      by{" "}
+                      <span className="font-bold text-zinc-400">
+                        @{watchlist.creator.username}
+                      </span>
                     </span>
                   )}
                 </CardContent>

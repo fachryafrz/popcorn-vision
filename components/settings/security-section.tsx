@@ -48,7 +48,7 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="placeholder-zinc-650 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+            className="placeholder-zinc-650 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
           />
         </div>
 
@@ -62,7 +62,7 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="placeholder-zinc-655 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+            className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function SecuritySection({
             placeholder="••••••••"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className="placeholder-zinc-655 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+            className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
           />
         </div>
       </div>
@@ -84,7 +84,7 @@ export default function SecuritySection({
       <Button
         type="submit"
         disabled={updatingPassword}
-        className="mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
+        className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98]"
       >
         {updatingPassword ? (
           <Loader2 className="mx-auto h-5 w-5 animate-spin" />

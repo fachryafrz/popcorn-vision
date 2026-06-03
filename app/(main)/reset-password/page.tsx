@@ -93,7 +93,7 @@ function ResetPasswordForm() {
           so you can sign in with your new password...
         </p>
         <div className="flex items-center justify-center gap-2 text-xs text-zinc-500">
-          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+          <Loader2 className="text-primary h-4 w-4 animate-spin" />
           <span>Please wait</span>
         </div>
       </div>
@@ -141,7 +141,7 @@ function ResetPasswordForm() {
                 placeholder="••••••••"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                className="focus:border-primary/50 focus:ring-primary/30 w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:bg-zinc-900 focus:ring-1"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ function ResetPasswordForm() {
                 placeholder="••••••••"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                className="focus:border-primary/50 focus:ring-primary/30 w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all duration-200 outline-none focus:bg-zinc-900 focus:ring-1"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ function ResetPasswordForm() {
           <Button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-base font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
+            className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-base font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
           >
             {loading ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
@@ -199,7 +199,7 @@ export default function ResetPasswordPage() {
         <Suspense
           fallback={
             <div className="flex flex-col items-center justify-center gap-4 py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+              <Loader2 className="text-primary h-8 w-8 animate-spin" />
               <p className="text-sm text-zinc-400">Loading page resources...</p>
             </div>
           }

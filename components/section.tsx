@@ -109,7 +109,7 @@ export default function Section({
                   className={cn(
                     "cursor-pointer rounded-full px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all",
                     trendingTab === tab
-                      ? "bg-blue-600 text-white shadow-md"
+                      ? "bg-primary text-white shadow-md"
                       : "text-zinc-400 hover:text-white",
                   )}
                 >
@@ -177,7 +177,7 @@ export default function Section({
 
         {titleType === "dropdown-genre" && onGenreChange && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none hover:text-blue-400 sm:text-2xl">
+            <DropdownMenuTrigger className="hover:text-primary flex cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
               <span>{genreName}</span>
               <ChevronDown className="h-5 w-5 text-zinc-400" />
             </DropdownMenuTrigger>
@@ -189,7 +189,7 @@ export default function Section({
                   className={cn(
                     "w-full cursor-pointer rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition-all hover:bg-zinc-900/60 focus:outline-none",
                     genreName === name
-                      ? "bg-blue-500/10 text-blue-400 focus:bg-blue-500/10 focus:text-blue-400"
+                      ? "text-primary focus:text-primary bg-primary/10 focus:bg-primary/10"
                       : "text-zinc-300 hover:text-white",
                   )}
                 >

@@ -184,7 +184,10 @@ export default function ChatPage() {
 
   // Handle case where chat session is deleted or membership is revoked
   useEffect(() => {
-    if (selectedChatId && (rawActiveChatMessages === null || rawActiveChatMembers === null)) {
+    if (
+      selectedChatId &&
+      (rawActiveChatMessages === null || rawActiveChatMembers === null)
+    ) {
       const timer = setTimeout(() => {
         setSelectedChatId(null);
         toast.error("This chat session is no longer available.");
@@ -420,14 +423,14 @@ export default function ChatPage() {
   if (!isLoggedIn || !currentUserId) {
     return (
       <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
-        <Loader2 className="mb-4 h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary mb-4 h-10 w-10 animate-spin" />
         <h1 className="text-xl font-bold">Loading chats...</h1>
         <p className="text-zinc-550 mt-1 text-xs">
           Please log in to participate in direct and group chats.
         </p>
         <Button
           onClick={() => router.push("/")}
-          className="mt-4 cursor-pointer rounded-xl bg-blue-600 px-6 text-white hover:bg-blue-500"
+          className="hover:bg-primary bg-primary mt-4 cursor-pointer rounded-xl px-6 text-white"
         >
           Go Home
         </Button>

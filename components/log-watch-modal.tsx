@@ -156,7 +156,7 @@ export default function LogWatchModal({
       <DialogContent className="animate-in zoom-in-95 max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl duration-200">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-            <Calendar className="h-5 w-5 text-blue-500" />
+            <Calendar className="text-primary h-5 w-5" />
             {diaryId ? "Edit Watch Log" : "Log Watch"}
           </DialogTitle>
           <DialogDescription className="mt-1 text-xs text-zinc-500">
@@ -278,7 +278,7 @@ export default function LogWatchModal({
               id="rewatch-check"
               checked={rewatch}
               onCheckedChange={(checked) => setRewatch(checked === true)}
-              className="h-5 w-5 cursor-pointer rounded-lg border-zinc-800 bg-zinc-950 focus-visible:ring-0 focus-visible:ring-offset-0 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-600"
+              className="data-[state=checked]:border-primary data-[state=checked]:bg-primary h-5 w-5 cursor-pointer rounded-lg border-zinc-800 bg-zinc-950 focus-visible:ring-0 focus-visible:ring-offset-0"
             />
             <div className="min-w-0 flex-1">
               <Label

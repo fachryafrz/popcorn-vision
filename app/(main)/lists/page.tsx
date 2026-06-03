@@ -134,7 +134,7 @@ export default function ListsPage() {
     if (lists === undefined) {
       return (
         <div className="flex h-60 items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
         </div>
       );
     }
@@ -165,7 +165,7 @@ export default function ListsPage() {
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6">
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <CardTitle className="text-lg font-bold text-white transition-colors group-hover:text-blue-400">
+                    <CardTitle className="group-hover:text-primary text-lg font-bold text-white transition-colors">
                       {list.name}
                     </CardTitle>
                     <div className="flex gap-1">
@@ -179,7 +179,7 @@ export default function ListsPage() {
                         </span>
                       )}
                       {list.isCollaborative && (
-                        <span className="flex items-center gap-1 rounded-full border border-zinc-800 bg-blue-950/20 px-2 py-0.5 text-[10px] font-extrabold text-blue-400">
+                        <span className="text-primary flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold">
                           <Users className="h-3 w-3" /> Collaborative
                         </span>
                       )}

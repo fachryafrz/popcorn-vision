@@ -148,7 +148,9 @@ export default function CustomListDetailPage({
   const removeItemMutation = useMutation(api.customLists.removeItem);
   const updateListMutation = useMutation(api.customLists.updateList);
   const deleteListMutation = useMutation(api.customLists.deleteList);
-  const inviteCollaboratorMutation = useMutation(api.customLists.inviteCollaborator);
+  const inviteCollaboratorMutation = useMutation(
+    api.customLists.inviteCollaborator,
+  );
   const removeCollaboratorMutation = useMutation(
     api.customLists.removeCollaborator,
   );
@@ -204,7 +206,7 @@ export default function CustomListDetailPage({
   if (detail === undefined) {
     return (
       <div className="flex min-h-[85vh] items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }
@@ -415,7 +417,7 @@ export default function CustomListDetailPage({
                   </span>
                 )}
                 {list.isCollaborative && (
-                  <span className="flex items-center gap-1 rounded-full border border-zinc-800 bg-blue-950/20 px-2 py-0.5 text-[10px] font-extrabold text-blue-400">
+                  <span className="text-primary flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold">
                     <Users className="h-3 w-3" /> Collaborative
                   </span>
                 )}
@@ -668,7 +670,7 @@ export default function CustomListDetailPage({
                                     alt={friend.name}
                                   />
                                 )}
-                                <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                                <AvatarFallback className="bg-primary text-xs font-bold text-white">
                                   {friend.username?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
@@ -737,7 +739,7 @@ export default function CustomListDetailPage({
                       {collab.image && (
                         <AvatarImage src={collab.image} alt={collab.name} />
                       )}
-                      <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                      <AvatarFallback className="bg-primary text-xs font-bold text-white">
                         {collab.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -866,7 +868,7 @@ export default function CustomListDetailPage({
               )}
               {searchLoading && (
                 <div className="absolute top-3.5 right-12 z-35">
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
                 </div>
               )}
             </div>
@@ -926,7 +928,7 @@ export default function CustomListDetailPage({
                         <div className="flex items-center gap-2">
                           <h4
                             onClick={() => setSelectedMedia(tmdbMedia)}
-                            className="cursor-pointer truncate text-base font-extrabold text-white transition-colors group-hover:text-blue-400"
+                            className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
                           >
                             {item.title}
                           </h4>
@@ -971,7 +973,7 @@ export default function CustomListDetailPage({
         <div className="space-y-6">
           <div className="space-y-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-6">
             <h3 className="flex items-center gap-2 border-b border-zinc-900 pb-3 text-lg font-bold">
-              <MessageSquare className="h-5 w-5 text-blue-400" /> Comments
+              <MessageSquare className="text-primary h-5 w-5" /> Comments
             </h3>
 
             {/* Comment Form */}

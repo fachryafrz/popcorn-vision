@@ -230,7 +230,7 @@ export default function ChatModals({
                         className={cn(
                           "flex cursor-pointer items-center justify-between rounded-xl p-2 text-xs transition-colors",
                           isInvited
-                            ? "bg-blue-600/10 text-white"
+                            ? "bg-primary/10 text-white"
                             : "text-zinc-400 hover:bg-zinc-900/50",
                         )}
                       >
@@ -250,7 +250,7 @@ export default function ChatModals({
                           <span className="font-bold">{friend.name}</span>
                         </div>
                         {isInvited && (
-                          <Check className="h-3.5 w-3.5 text-blue-400" />
+                          <Check className="text-primary h-3.5 w-3.5" />
                         )}
                       </div>
                     );
@@ -261,7 +261,7 @@ export default function ChatModals({
 
             <Button
               onClick={handleCreateGroup}
-              className="mt-4 w-full cursor-pointer rounded-xl bg-blue-600 py-5 text-[10px] font-bold tracking-wider text-white uppercase hover:bg-blue-500"
+              className="hover:bg-primary bg-primary mt-4 w-full cursor-pointer rounded-xl py-5 text-[10px] font-bold tracking-wider text-white uppercase"
             >
               Create Group Chat
             </Button>
@@ -311,7 +311,7 @@ export default function ChatModals({
                         isAlreadyMember
                           ? "cursor-not-allowed opacity-40"
                           : isInvited
-                            ? "bg-blue-600/10 text-white"
+                            ? "bg-primary/10 text-white"
                             : "text-zinc-400 hover:bg-zinc-900/50",
                       )}
                     >
@@ -335,7 +335,7 @@ export default function ChatModals({
                           Member
                         </span>
                       ) : isInvited ? (
-                        <Check className="h-3.5 w-3.5 text-blue-400" />
+                        <Check className="text-primary h-3.5 w-3.5" />
                       ) : null}
                     </div>
                   );
@@ -345,7 +345,7 @@ export default function ChatModals({
 
             <Button
               onClick={handleInviteToGroup}
-              className="mt-4 w-full cursor-pointer rounded-xl bg-blue-600 py-5 text-[10px] font-bold tracking-wider text-white uppercase hover:bg-blue-500"
+              className="hover:bg-primary bg-primary mt-4 w-full cursor-pointer rounded-xl py-5 text-[10px] font-bold tracking-wider text-white uppercase"
             >
               Send Invitations
             </Button>
@@ -365,7 +365,7 @@ export default function ChatModals({
           </DialogHeader>
           <div className="mt-4 space-y-4 text-center">
             <h3 className="text-zinc-550 flex items-center justify-center gap-1.5 text-xs font-black tracking-wider uppercase">
-              <TrendingUp className="h-4 w-4 text-blue-400" />
+              <TrendingUp className="text-primary h-4 w-4" />
               Select a GIF reaction
             </h3>
             <div className="grid max-h-80 scrollbar-thin grid-cols-2 gap-3 overflow-y-auto pr-1">
@@ -373,7 +373,7 @@ export default function ChatModals({
                 <div
                   key={gif.name}
                   onClick={() => handleSendGIF(gif.url)}
-                  className="group border-zinc-850 relative aspect-video cursor-pointer overflow-hidden rounded-xl border bg-zinc-900 transition-all hover:scale-[1.02] hover:border-blue-500 active:scale-98"
+                  className="group border-zinc-850 hover:border-primary relative aspect-video cursor-pointer overflow-hidden rounded-xl border bg-zinc-900 transition-all hover:scale-[1.02] active:scale-98"
                 >
                   <img
                     src={gif.url}
@@ -412,12 +412,12 @@ export default function ChatModals({
                 placeholder="Explain the safety violation in detail (harassment, spam, abusive chat, etc.). Popcorn Vision security admins will review chat logs."
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value.slice(0, 500))}
-                className="border-zinc-850 placeholder-zinc-550 min-h-[120px] w-full resize-none rounded-2xl border bg-zinc-900/30 p-4 text-xs text-white outline-hidden focus:border-blue-500/50"
+                className="border-zinc-850 placeholder-zinc-550 focus:border-primary/50 min-h-[120px] w-full resize-none rounded-2xl border bg-zinc-900/30 p-4 text-xs text-white outline-hidden"
               />
             </div>
             <Button
               onClick={handleSubmitReport}
-              className="mt-4 w-full cursor-pointer rounded-xl bg-blue-600 py-5 text-[10px] font-bold tracking-wider text-white uppercase hover:bg-blue-500"
+              className="hover:bg-primary bg-primary mt-4 w-full cursor-pointer rounded-xl py-5 text-[10px] font-bold tracking-wider text-white uppercase"
             >
               Submit Safety Report
             </Button>

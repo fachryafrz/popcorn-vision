@@ -7,13 +7,13 @@ export default function AppearanceSection() {
   const themesList = [
     {
       id: "dark",
-      name: "Dark Mode (Default)",
-      bg: "bg-zinc-950 text-white border-zinc-800",
+      name: "Default",
+      bg: "bg-blue-900 text-white border-blue-800",
     },
     {
       id: "netflix",
       name: "Netflix Red",
-      bg: "bg-zinc-900 text-white border-red-600/30",
+      bg: "bg-red-500/20 text-white border-red-600/30",
     },
     {
       id: "hbo",
@@ -28,22 +28,22 @@ export default function AppearanceSection() {
     {
       id: "prime",
       name: "Prime Video Blue",
-      bg: "bg-slate-900 text-white border-sky-600/30",
+      bg: "bg-sky-600/20 text-white border-sky-600/30",
     },
     {
       id: "letterboxd",
       name: "Letterboxd Orange",
-      bg: "bg-zinc-900 text-white border-orange-500/30",
+      bg: "bg-orange-500/20 text-white border-orange-500/30",
     },
     {
       id: "cinema",
       name: "Cinema Gold",
-      bg: "bg-stone-900 text-white border-yellow-600/30",
+      bg: "bg-yellow-600/20 text-white border-yellow-600/30",
     },
     {
       id: "sakura",
       name: "Sakura Pink",
-      bg: "bg-zinc-900 text-white border-pink-500/30",
+      bg: "bg-pink-500/20 text-white border-pink-500/30",
     },
   ] as { id: ThemeType; name: string; bg: string }[];
 
@@ -74,7 +74,7 @@ export default function AppearanceSection() {
                 "flex min-h-16 cursor-pointer flex-col items-center justify-center rounded-2xl border p-4 text-center transition-all duration-200 hover:scale-[1.02]",
                 t.bg,
                 theme === t.id
-                  ? "scale-102 font-bold ring-2 ring-blue-500"
+                  ? "ring-primary scale-102 font-bold ring-2"
                   : "opacity-80 hover:opacity-100",
               )}
             >

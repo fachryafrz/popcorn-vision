@@ -342,7 +342,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   if (loadingProfile) {
     return (
       <div className="flex min-h-[50vh] grow items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }
@@ -356,7 +356,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         </h1>
         <p className="mb-6 max-w-md text-sm text-zinc-400">
           The user{" "}
-          <span className="font-semibold text-blue-400">@{username}</span> does
+          <span className="text-primary font-semibold">@{username}</span> does
           not exist or has not created a profile yet.
         </p>
       </div>
@@ -373,7 +373,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         </h1>
         <p className="mb-6 max-w-md text-sm text-zinc-400">
           The user{" "}
-          <span className="font-semibold text-blue-400">@{username}</span> has
+          <span className="text-primary font-semibold">@{username}</span> has
           temporarily deactivated their account.
         </p>
       </div>

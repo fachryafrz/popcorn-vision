@@ -92,7 +92,7 @@ export default function DetailsPanel({
                   setSelectedInvitedUsers(new Set());
                   setIsInviteFriendsOpen(true);
                 }}
-                className="cursor-pointer text-blue-400 hover:text-blue-300"
+                className="text-primary cursor-pointer hover:text-primary/50"
               >
                 + Add
               </button>
@@ -128,7 +128,7 @@ export default function DetailsPanel({
                       </div>
                     </div>
                     {isAdmin && (
-                      <span className="shrink-0 scale-90 rounded-full border border-blue-900/30 bg-blue-950/20 px-1.5 py-0.5 text-[8px] font-bold text-blue-400 uppercase">
+                      <span className="text-primary shrink-0 scale-90 rounded-full border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[8px] font-bold uppercase">
                         Admin
                       </span>
                     )}
