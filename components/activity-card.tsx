@@ -5,7 +5,15 @@ import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
-import { Heart, MessageSquare, Trash2, Send, Star, ExternalLink, Loader2 } from "lucide-react";
+import {
+  Heart,
+  MessageSquare,
+  Trash2,
+  Send,
+  Star,
+  ExternalLink,
+  Loader2,
+} from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -55,7 +63,10 @@ interface EnrichedComment {
   };
 }
 
-export default function ActivityCard({ activity, onRefresh }: ActivityCardProps) {
+export default function ActivityCard({
+  activity,
+  onRefresh,
+}: ActivityCardProps) {
   const session = authClient.useSession();
   const currentUserId = session.data?.user?.id;
   const isLoggedIn = !!currentUserId;
@@ -68,7 +79,7 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
   const [showComments, setShowComments] = useState(false);
   const details = useQuery(
     api.activities.getActivityDetails,
-    showComments ? { activityId: activity._id } : "skip"
+    showComments ? { activityId: activity._id } : "skip",
   );
 
   const [commentText, setCommentText] = useState("");
@@ -133,8 +144,8 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
   const renderActivityText = () => {
     const displayName = (
       <Link
-        href={`/user/${activity.user.username}`}
-        className="font-bold text-white hover:text-blue-400 transition-colors"
+        href={`/@/${activity.user.username}`}
+        className="hover:text-primary font-bold text-white transition-colors"
       >
         {activity.user.name}
       </Link>
@@ -143,10 +154,10 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
     const mediaLink = (
       <Link
         href={`/${activity.mediaType}/${activity.mediaId}`}
-        className="font-semibold text-zinc-200 hover:text-blue-400 transition-colors italic inline-flex items-center gap-0.5"
+        className="hover:text-primary inline-flex items-center gap-0.5 font-semibold text-zinc-200 italic transition-colors"
       >
         {activity.title}
-        <ExternalLink className="h-3 w-3 inline" />
+        <ExternalLink className="inline h-3 w-3" />
       </Link>
     );
 
@@ -167,7 +178,7 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
         return (
           <span className="flex flex-wrap items-center gap-1.5">
             {displayName} rated {mediaLink}
-            <span className="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-400 font-bold text-xs px-2 py-0.5 rounded-full border border-yellow-500/20">
+            <span className="inline-flex items-center gap-1 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-2 py-0.5 text-xs font-bold text-yellow-400">
               <Star className="h-3 w-3 fill-current" />
               {activity.rating}/10
             </span>
@@ -194,13 +205,15 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
     }
   };
 
-  const avatarFallback = activity.user.name ? activity.user.name.charAt(0).toUpperCase() : "?";
+  const avatarFallback = activity.user.name
+    ? activity.user.name.charAt(0).toUpperCase()
+    : "?";
   const posterUrl = activity.posterPath
     ? `https://image.tmdb.org/t/p/w185${activity.posterPath}`
     : "/logo/popcorn.png";
 
   return (
-    <div className="border border-zinc-800/60 bg-zinc-900/30 rounded-2xl p-5 backdrop-blur-md hover:border-zinc-800 hover:bg-zinc-900/50 transition-all duration-300 shadow-lg shadow-black/10">
+    <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/30 p-5 shadow-lg shadow-black/10 backdrop-blur-md transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/50">
       <div className="flex items-start gap-4">
         {/* User Avatar */}
         <Avatar className="h-10 w-10 border border-zinc-800/80 shadow-md">
@@ -211,33 +224,33 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
         </Avatar>
 
         {/* Content Column */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-            <div className="text-sm text-zinc-300 leading-normal">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div className="text-sm leading-normal text-zinc-300">
               {renderActivityText()}
             </div>
-            <span className="text-[10px] font-semibold text-zinc-500 shrink-0">
+            <span className="shrink-0 text-[10px] font-semibold text-zinc-500">
               {moment(activity.createdAt).fromNow()}
             </span>
           </div>
 
           {/* Optional Review Box */}
           {activity.type === "review" && activity.review && (
-            <div className="mt-3 border-l-2 border-blue-500 bg-zinc-950/40 px-3.5 py-2.5 rounded-r-xl">
+            <div className="border-primary mt-3 rounded-r-xl border-l-2 bg-zinc-950/40 px-3.5 py-2.5">
               {activity.rating && (
-                <div className="flex items-center gap-1 text-xs text-yellow-400 font-bold mb-1.5">
+                <div className="mb-1.5 flex items-center gap-1 text-xs font-bold text-yellow-400">
                   <Star className="h-3.5 w-3.5 fill-current" />
                   <span>{activity.rating}/10</span>
                 </div>
               )}
-              <p className="text-xs text-zinc-300 italic whitespace-pre-wrap leading-relaxed">
+              <p className="text-xs leading-relaxed whitespace-pre-wrap text-zinc-300 italic">
                 &ldquo;{activity.review}&rdquo;
               </p>
             </div>
           )}
 
           {/* Media Info / Banner preview */}
-          <div className="mt-4 flex gap-3.5 bg-zinc-950/20 p-2.5 border border-zinc-850/50 rounded-xl max-w-md">
+          <div className="border-zinc-850/50 mt-4 flex max-w-md gap-3.5 rounded-xl border bg-zinc-950/20 p-2.5">
             <Link
               href={`/${activity.mediaType}/${activity.mediaId}`}
               className="aspect-2/3 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-900"
@@ -248,10 +261,10 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
                 className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
               />
             </Link>
-            <div className="flex flex-col justify-center min-w-0">
+            <div className="flex min-w-0 flex-col justify-center">
               <Link
                 href={`/${activity.mediaType}/${activity.mediaId}`}
-                className="text-xs font-bold text-white hover:text-blue-400 transition-colors truncate"
+                className="hover:text-primary truncate text-xs font-bold text-white transition-colors"
               >
                 {activity.title}
               </Link>
@@ -262,32 +275,43 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
           </div>
 
           {/* Action Row */}
-          <div className="mt-5 flex items-center gap-6 border-t border-zinc-850/60 pt-3">
+          <div className="border-zinc-850/60 mt-5 flex items-center gap-6 border-t pt-3">
             <button
               onClick={handleLike}
               className={cn(
                 "flex items-center gap-2 text-xs font-bold transition-all duration-300 hover:scale-105 active:scale-95",
                 activity.isLikedByMe
-                  ? "text-rose-500 fill-rose-500"
-                  : "text-zinc-400 hover:text-rose-400"
+                  ? "fill-rose-500 text-rose-500"
+                  : "text-zinc-400 hover:text-rose-400",
               )}
             >
-              <Heart className={cn("h-4 w-4", activity.isLikedByMe && "fill-current")} />
-              <span>{activity.likesCount} {activity.likesCount === 1 ? "Like" : "Likes"}</span>
+              <Heart
+                className={cn(
+                  "h-4 w-4",
+                  activity.isLikedByMe && "fill-current",
+                )}
+              />
+              <span>
+                {activity.likesCount}{" "}
+                {activity.likesCount === 1 ? "Like" : "Likes"}
+              </span>
             </button>
 
             <button
               onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-blue-400 transition-all duration-300 hover:scale-105"
+              className="hover:text-primary flex items-center gap-2 text-xs font-bold text-zinc-400 transition-all duration-300 hover:scale-105"
             >
               <MessageSquare className="h-4 w-4" />
-              <span>{activity.commentsCount} {activity.commentsCount === 1 ? "Comment" : "Comments"}</span>
+              <span>
+                {activity.commentsCount}{" "}
+                {activity.commentsCount === 1 ? "Comment" : "Comments"}
+              </span>
             </button>
           </div>
 
           {/* Comments Section (Expandable) */}
           {showComments && (
-            <div className="mt-4 border-t border-zinc-850/45 pt-4 space-y-4">
+            <div className="border-zinc-850/45 mt-4 space-y-4 border-t pt-4">
               {/* Comment Input */}
               {isLoggedIn ? (
                 <form onSubmit={handleAddComment} className="flex gap-2">
@@ -297,13 +321,13 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     disabled={isSubmittingComment}
-                    className="flex-1 text-xs border border-zinc-800 bg-zinc-950/60 rounded-xl px-3 py-2 text-zinc-200 focus:outline-none focus:border-blue-500 transition-colors"
+                    className="focus:border-primary flex-1 rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-xs text-zinc-200 transition-colors focus:outline-none"
                   />
                   <Button
                     type="submit"
                     size="sm"
                     disabled={isSubmittingComment || !commentText.trim()}
-                    className="h-8 rounded-xl bg-blue-600 hover:bg-blue-500 font-bold px-3 text-[10px]"
+                    className="hover:bg-primary bg-primary h-8 rounded-xl px-3 text-[10px] font-bold"
                   >
                     {isSubmittingComment ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
@@ -313,7 +337,7 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
                   </Button>
                 </form>
               ) : (
-                <p className="text-[10px] text-zinc-500 font-semibold text-center italic">
+                <p className="text-center text-[10px] font-semibold text-zinc-500 italic">
                   Please log in to add comments.
                 </p>
               )}
@@ -324,11 +348,11 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
                   <Loader2 className="h-4 w-4 animate-spin text-zinc-500" />
                 </div>
               ) : details.comments.length === 0 ? (
-                <p className="text-[10px] text-zinc-500 font-semibold italic text-center py-2">
+                <p className="py-2 text-center text-[10px] font-semibold text-zinc-500 italic">
                   No comments yet. Be the first!
                 </p>
               ) : (
-                <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1">
+                <div className="flex max-h-60 flex-col gap-3 overflow-y-auto pr-1">
                   {details.comments.map((comment: EnrichedComment) => {
                     const cFallback = comment.user?.name
                       ? comment.user.name.charAt(0).toUpperCase()
@@ -339,31 +363,34 @@ export default function ActivityCard({ activity, onRefresh }: ActivityCardProps)
                     return (
                       <div
                         key={comment._id}
-                        className="group/comment flex items-start gap-2.5 bg-zinc-950/20 p-2.5 rounded-xl border border-zinc-850/30"
+                        className="group/comment border-zinc-850/30 flex items-start gap-2.5 rounded-xl border bg-zinc-950/20 p-2.5"
                       >
                         <Avatar className="h-6 w-6 shrink-0 border border-zinc-800/80">
-                          <AvatarImage src={comment.user?.image} alt={comment.user?.name} />
+                          <AvatarImage
+                            src={comment.user?.image}
+                            alt={comment.user?.name}
+                          />
                           <AvatarFallback className="bg-zinc-800 text-[9px] font-bold text-zinc-300">
                             {cFallback}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 min-w-0 text-left">
+                        <div className="min-w-0 flex-1 text-left">
                           <div className="flex items-center justify-between">
                             <span className="text-[10px] font-extrabold text-white">
                               {comment.user?.name}
                             </span>
-                            <span className="text-[9px] text-zinc-500 font-semibold">
+                            <span className="text-[9px] font-semibold text-zinc-500">
                               {moment(comment.createdAt).fromNow()}
                             </span>
                           </div>
-                          <p className="text-xs text-zinc-300 mt-0.5 leading-relaxed wrap-break-word">
+                          <p className="mt-0.5 text-xs leading-relaxed wrap-break-word text-zinc-300">
                             {comment.content}
                           </p>
                         </div>
                         {(isCommentOwner || isActivityOwner) && (
                           <button
                             onClick={() => handleDeleteComment(comment._id)}
-                            className="text-zinc-500 hover:text-rose-500 md:opacity-0 group-hover/comment:opacity-100 transition-opacity p-0.5"
+                            className="p-0.5 text-zinc-500 transition-opacity group-hover/comment:opacity-100 hover:text-rose-500 md:opacity-0"
                             title="Delete comment"
                           >
                             <Trash2 className="h-3 w-3" />

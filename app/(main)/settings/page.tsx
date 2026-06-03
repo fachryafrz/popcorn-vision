@@ -86,9 +86,6 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [messagePrivacy, setMessagePrivacy] = useState(
     convexProfile?.messagePrivacy || "friends",
   );
-  const [readReceiptsEnabled, setReadReceiptsEnabled] = useState(
-    convexProfile?.readReceiptsEnabled !== false,
-  );
   const [savingPrivacy, setSavingPrivacy] = useState(false);
 
   // Privacy mutations & queries
@@ -113,7 +110,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
         hideFavorites,
         hideRatings,
         messagePrivacy,
-        readReceiptsEnabled,
+        readReceiptsEnabled: true,
       });
       toast.success("Privacy settings updated successfully!");
     } catch (err: unknown) {
@@ -524,8 +521,6 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
             setHideFavorites={setHideFavorites}
             hideRatings={hideRatings}
             setHideRatings={setHideRatings}
-            readReceiptsEnabled={readReceiptsEnabled}
-            setReadReceiptsEnabled={setReadReceiptsEnabled}
             savingPrivacy={savingPrivacy}
             handleUpdatePrivacy={handleUpdatePrivacy}
             blockedUsersList={blockedUsersList}
@@ -604,7 +599,7 @@ export default function SettingsPage() {
   if (loadingSession || (isLoggedIn && convexProfile === undefined)) {
     return (
       <div className="flex min-h-[60vh] grow items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }

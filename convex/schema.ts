@@ -92,6 +92,7 @@ export default defineSchema({
     commentId: v.optional(v.id("comments")),
     mediaId: v.optional(v.string()),
     mediaType: v.optional(v.string()),
+    messageId: v.optional(v.id("messages")),
   })
     .index("by_user", ["userId"])
     .index("by_user_unread", ["userId", "read"]),
@@ -153,6 +154,7 @@ export default defineSchema({
     lastReadAt: v.optional(v.number()),
     typingUntil: v.optional(v.number()),
     isMuted: v.optional(v.boolean()),
+    deletedAt: v.optional(v.number()),
   })
     .index("by_user", ["userId"])
     .index("by_chat", ["chatId"])
@@ -233,65 +235,6 @@ export default defineSchema({
     .index("by_activity", ["activityId"])
     .index("by_user", ["userId"]),
 
-  sharedWatchlists: defineTable({
-    name: v.string(),
-    description: v.optional(v.string()),
-    createdById: v.string(),
-    createdAt: v.number(),
-  })
-    .index("by_creator", ["createdById"]),
-
-  sharedWatchlistMembers: defineTable({
-    watchlistId: v.id("sharedWatchlists"),
-    userId: v.string(),
-    joinedAt: v.number(),
-  })
-    .index("by_watchlist", ["watchlistId"])
-    .index("by_user", ["userId"])
-    .index("by_watchlist_user", ["watchlistId", "userId"]),
-
-  sharedWatchlistItems: defineTable({
-    watchlistId: v.id("sharedWatchlists"),
-    mediaId: v.string(),
-    mediaType: v.string(),
-    title: v.string(),
-    posterPath: v.string(),
-    releaseYear: v.string(),
-    addedById: v.string(),
-    addedAt: v.number(),
-    watched: v.boolean(),
-    watchedAt: v.optional(v.number()),
-    watchedById: v.optional(v.string()),
-  })
-    .index("by_watchlist", ["watchlistId"])
-    .index("by_watchlist_media", ["watchlistId", "mediaId", "mediaType"]),
-
-  sharedWatchlistItemVotes: defineTable({
-    watchlistId: v.id("sharedWatchlists"),
-    mediaId: v.string(),
-    mediaType: v.string(),
-    userId: v.string(),
-    vote: v.number(),
-    updatedAt: v.number(),
-  })
-    .index("by_watchlist", ["watchlistId"])
-    .index("by_watchlist_user", ["watchlistId", "userId"])
-    .index("by_item", ["watchlistId", "mediaId", "mediaType"])
-    .index("by_item_user", ["watchlistId", "mediaId", "mediaType", "userId"]),
-
-  sharedWatchlistActivities: defineTable({
-    watchlistId: v.id("sharedWatchlists"),
-    userId: v.string(),
-    type: v.string(),
-    mediaId: v.optional(v.string()),
-    mediaType: v.optional(v.string()),
-    title: v.optional(v.string()),
-    details: v.optional(v.string()),
-    createdAt: v.number(),
-  })
-    .index("by_watchlist", ["watchlistId"])
-    .index("by_watchlist_created", ["watchlistId", "createdAt"]),
-
   customLists: defineTable({
     name: v.string(),
     description: v.optional(v.string()),
@@ -299,6 +242,7 @@ export default defineSchema({
     createdAt: v.number(),
     privacy: v.string(), // "public" | "private"
     isCollaborative: v.boolean(),
+    isWatchlist: v.optional(v.boolean()),
   })
     .index("by_creator", ["createdById"])
     .index("by_privacy", ["privacy"]),
@@ -312,6 +256,9 @@ export default defineSchema({
     releaseYear: v.string(),
     addedById: v.string(),
     addedAt: v.number(),
+    watched: v.optional(v.boolean()),
+    watchedAt: v.optional(v.number()),
+    watchedById: v.optional(v.string()),
   })
     .index("by_list", ["listId"])
     .index("by_list_media", ["listId", "mediaId", "mediaType"]),
@@ -349,5 +296,18 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_list_user", ["listId", "userId"]),
+
+  customListItemVotes: defineTable({
+    listId: v.id("customLists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+    userId: v.string(),
+    vote: v.number(), // 1 for upvote
+    updatedAt: v.number(),
+  })
+    .index("by_list", ["listId"])
+    .index("by_list_user", ["listId", "userId"])
+    .index("by_item", ["listId", "mediaId", "mediaType"])
+    .index("by_item_user", ["listId", "mediaId", "mediaType", "userId"]),
 });
 

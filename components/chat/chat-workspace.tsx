@@ -98,7 +98,7 @@ export default function ChatWorkspace({
     return (
       <div className="flex grow flex-col items-center justify-center space-y-4 p-6 text-center">
         <div className="text-zinc-650 flex h-16 w-16 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900 shadow-xl select-none">
-          <Users className="h-8 w-8 text-blue-500" />
+          <Users className="text-primary h-8 w-8" />
         </div>
         <div>
           <h2 className="text-lg font-black text-white">POVI Chat</h2>
@@ -157,7 +157,7 @@ export default function ChatWorkspace({
                 : activeChat.friend?.name}
             </h2>
             {activeChatTyping && activeChatTyping.length > 0 ? (
-              <span className="mt-1 block animate-pulse text-[9px] font-bold text-blue-400 italic">
+              <span className="text-primary mt-1 block animate-pulse text-[9px] font-bold italic">
                 {activeChat.type === "group"
                   ? `${activeChatTyping.join(", ")} is typing...`
                   : "typing..."}
@@ -208,7 +208,7 @@ export default function ChatWorkspace({
       <div className="flex flex-1 scrollbar-thin flex-col overflow-y-auto p-4">
         {!activeChatMessages ? (
           <div className="flex flex-col items-center justify-center gap-3 py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            <Loader2 className="text-primary h-8 w-8 animate-spin" />
             <span className="text-zinc-550 text-[10px] font-bold tracking-wider uppercase">
               Loading message log...
             </span>
@@ -296,7 +296,7 @@ export default function ChatWorkspace({
                             "relative max-w-full shrink-0 p-3.5 text-left text-xs transition-all duration-300",
                             isMe
                               ? cn(
-                                  "bg-blue-600 text-white",
+                                  "bg-primary text-white",
                                   !isPrevSame &&
                                     !isNextSame &&
                                     "rounded-2xl rounded-br-[4px]",
@@ -333,7 +333,7 @@ export default function ChatWorkspace({
                               <textarea
                                 value={editingText}
                                 onChange={(e) => setEditingText(e.target.value)}
-                                className="w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-xs text-white outline-hidden focus:border-blue-500/50"
+                                className="focus:border-primary/50 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-xs text-white outline-hidden"
                                 rows={2}
                                 autoFocus
                               />
@@ -348,7 +348,7 @@ export default function ChatWorkspace({
                                 <button
                                   type="button"
                                   onClick={() => handleUpdateMessage(msg._id)}
-                                  className="cursor-pointer rounded-lg bg-blue-600 px-2 py-1 text-[10px] font-bold text-white transition-colors hover:bg-blue-500"
+                                  className="hover:bg-primary bg-primary cursor-pointer rounded-lg px-2 py-1 text-[10px] font-bold text-white transition-colors"
                                 >
                                   Save
                                 </button>
@@ -437,7 +437,9 @@ export default function ChatWorkspace({
                               onClick={() => {
                                 onQuickView({
                                   id: Number(msg.sharedMediaId),
-                                  media_type: msg.sharedMediaType as "movie" | "tv",
+                                  media_type: msg.sharedMediaType as
+                                    | "movie"
+                                    | "tv",
                                   title: msg.sharedMediaTitle || "",
                                   name: msg.sharedMediaTitle || "",
                                   poster_path: msg.sharedMediaPoster || "",
@@ -473,7 +475,7 @@ export default function ChatWorkspace({
                                 m.userId === currentUserId ||
                                 (m.lastReadAt && m.lastReadAt >= msg.createdAt),
                             ) ? (
-                              <CheckCheck className="h-3.5 w-3.5 stroke-3 text-blue-400" />
+                              <CheckCheck className="text-primary h-3.5 w-3.5 stroke-3" />
                             ) : (
                               <Check className="text-zinc-650 h-3.5 w-3.5" />
                             )}
@@ -502,7 +504,11 @@ export default function ChatWorkspace({
                   {isMe && (
                     <ContextMenuItem
                       onClick={() => {
-                        if (confirm("Are you sure you want to delete this message?")) {
+                        if (
+                          confirm(
+                            "Are you sure you want to delete this message?",
+                          )
+                        ) {
                           handleDeleteMessage(msg._id);
                         }
                       }}
@@ -580,7 +586,7 @@ export default function ChatWorkspace({
                 setMessageText(e.target.value);
                 handleTyping();
               }}
-              className="border-zinc-850 placeholder-zinc-550 w-full rounded-xl border bg-zinc-900/30 py-5 pr-10 pl-4 text-left text-xs text-white outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+              className="border-zinc-850 placeholder-zinc-550 focus:border-primary/50 w-full rounded-xl border bg-zinc-900/30 py-5 pr-10 pl-4 text-left text-xs text-white outline-hidden transition-all focus:bg-zinc-900"
             />
             <button
               type="button"
@@ -593,7 +599,7 @@ export default function ChatWorkspace({
           <Button
             type="submit"
             disabled={!messageText.trim()}
-            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-blue-600 text-white transition-all hover:bg-blue-500 active:scale-95"
+            className="hover:bg-primary bg-primary flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl text-white transition-all active:scale-95"
           >
             <Send className="h-4 w-4" />
           </Button>

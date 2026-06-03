@@ -5,7 +5,16 @@ import { usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import ActivityCard from "./activity-card";
-import { Loader2, Globe, Users, Film, CheckCircle, Star, Heart, Bookmark } from "lucide-react";
+import {
+  Loader2,
+  Globe,
+  Users,
+  Film,
+  CheckCircle,
+  Star,
+  Heart,
+  Bookmark,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +31,7 @@ export default function ActivityFeed() {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
-  const [scope, setScope] = useState<"global" | "friends">("global");
+  const [scope, setScope] = useState<"global" | "friends">("friends");
   const [activeFilter, setActiveFilter] = useState("all");
 
   const { results, status, loadMore } = usePaginatedQuery(
@@ -31,7 +40,7 @@ export default function ActivityFeed() {
       filter: activeFilter === "all" ? undefined : activeFilter,
       scope,
     },
-    { initialNumItems: 10 }
+    { initialNumItems: 10 },
   );
 
   const handleScopeChange = (newScope: "global" | "friends") => {
@@ -44,49 +53,51 @@ export default function ActivityFeed() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
       {/* Feed Title and Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-zinc-800/60 pb-5">
+      <div className="flex flex-col gap-4 border-b border-zinc-800/60 pb-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight sm:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
             Activity Feed
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
+          <p className="mt-1 text-xs text-zinc-400">
             See updates from friends and the popcorn community.
           </p>
         </div>
 
         {/* Global vs Friends scope toggle */}
-        <div className="flex bg-zinc-950/60 rounded-xl p-1 border border-zinc-850/60 self-start sm:self-auto shadow-inner">
+        <div className="border-zinc-850/60 flex self-start rounded-xl border bg-zinc-950/60 p-1 shadow-inner sm:self-auto">
+          <button
+            onClick={() => handleScopeChange("friends")}
+            disabled={!isLoggedIn}
+            className={cn(
+              "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40",
+              scope === "friends"
+                ? "bg-primary text-white shadow-md"
+                : "text-zinc-400 hover:text-zinc-200",
+            )}
+            title={
+              !isLoggedIn ? "Log in to see friends activity" : "Friends Feed"
+            }
+          >
+            <Users className="h-3.5 w-3.5" />
+            Friends
+          </button>
           <button
             onClick={() => handleScopeChange("global")}
             className={cn(
-              "flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300",
+              "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300",
               scope === "global"
-                ? "bg-blue-600 text-white shadow-md"
-                : "text-zinc-400 hover:text-zinc-200"
+                ? "bg-primary text-white shadow-md"
+                : "text-zinc-400 hover:text-zinc-200",
             )}
           >
             <Globe className="h-3.5 w-3.5" />
             Global
           </button>
-          <button
-            onClick={() => handleScopeChange("friends")}
-            disabled={!isLoggedIn}
-            className={cn(
-              "flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed",
-              scope === "friends"
-                ? "bg-blue-600 text-white shadow-md"
-                : "text-zinc-400 hover:text-zinc-200"
-            )}
-            title={!isLoggedIn ? "Log in to see friends activity" : "Friends Feed"}
-          >
-            <Users className="h-3.5 w-3.5" />
-            Friends
-          </button>
         </div>
       </div>
 
       {/* Filter Row */}
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+      <div className="flex scrollbar-none gap-2 overflow-x-auto pb-2">
         {FILTERS.map((f) => {
           const Icon = f.icon;
           const isActive = activeFilter === f.id;
@@ -95,10 +106,10 @@ export default function ActivityFeed() {
               key={f.id}
               onClick={() => setActiveFilter(f.id)}
               className={cn(
-                "flex items-center gap-1.5 shrink-0 px-3.5 py-1.5 rounded-xl border text-xs font-bold transition-all duration-300",
+                "flex shrink-0 items-center gap-1.5 rounded-xl border px-3.5 py-1.5 text-xs font-bold transition-all duration-300",
                 isActive
-                  ? "border-blue-500/30 bg-blue-600/10 text-blue-400"
-                  : "border-zinc-850 bg-zinc-900/20 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200"
+                  ? "text-primary border-primary/30 bg-primary/10"
+                  : "border-zinc-850 bg-zinc-900/20 text-zinc-400 hover:border-zinc-800 hover:text-zinc-200",
               )}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -115,11 +126,11 @@ export default function ActivityFeed() {
             <ActivityCard key={activity._id} activity={activity} />
           ))
         ) : status === "LoadingMore" || status === "LoadingFirstPage" ? null : (
-          <div className="flex flex-col items-center justify-center border border-zinc-800/40 bg-zinc-900/10 rounded-2xl py-16 px-4 text-center">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-zinc-800/40 bg-zinc-900/10 px-4 py-16 text-center">
             <p className="text-sm font-semibold text-zinc-400">
               No activities found
             </p>
-            <p className="text-xs text-zinc-500 mt-1 max-w-xs">
+            <p className="mt-1 max-w-xs text-xs text-zinc-500">
               {scope === "friends"
                 ? "Your friends haven't shared any activities yet. Start adding friends or browse the Global feed!"
                 : "No activities of this type are currently recorded."}
@@ -130,8 +141,8 @@ export default function ActivityFeed() {
         {/* Loading and Infinite Scroll trigger */}
         {(status === "LoadingFirstPage" || status === "LoadingMore") && (
           <div className="flex flex-col items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-            <span className="text-xs font-semibold text-zinc-500 mt-2">
+            <Loader2 className="text-primary h-6 w-6 animate-spin" />
+            <span className="mt-2 text-xs font-semibold text-zinc-500">
               Loading activities...
             </span>
           </div>
@@ -143,7 +154,7 @@ export default function ActivityFeed() {
               onClick={() => loadMore(10)}
               variant="outline"
               size="sm"
-              className="border-zinc-800 hover:bg-zinc-900 text-zinc-300 font-bold rounded-xl px-5 text-xs h-9"
+              className="h-9 rounded-xl border-zinc-800 px-5 text-xs font-bold text-zinc-300 hover:bg-zinc-900"
             >
               Load More
             </Button>

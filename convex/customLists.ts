@@ -31,6 +31,7 @@ export const createList = mutation({
     description: v.optional(v.string()),
     privacy: v.string(), // "public" | "private"
     isCollaborative: v.boolean(),
+    isWatchlist: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await authComponent.getAuthUser(ctx);
@@ -43,6 +44,7 @@ export const createList = mutation({
       createdAt: Date.now(),
       privacy: args.privacy,
       isCollaborative: args.isCollaborative,
+      isWatchlist: args.isWatchlist || false,
     });
 
     // Add creator as a collaborator if collaborative
@@ -66,6 +68,7 @@ export const updateList = mutation({
     description: v.optional(v.string()),
     privacy: v.string(),
     isCollaborative: v.boolean(),
+    isWatchlist: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const user = await authComponent.getAuthUser(ctx);
@@ -80,6 +83,7 @@ export const updateList = mutation({
       description: args.description,
       privacy: args.privacy,
       isCollaborative: args.isCollaborative,
+      isWatchlist: args.isWatchlist !== undefined ? args.isWatchlist : list.isWatchlist,
     });
 
     // Sync collaborators
@@ -264,8 +268,8 @@ export const removeItem = mutation({
   },
 });
 
-// Add collaborator to collaborative list
-export const addCollaborator = mutation({
+// Invite collaborator to collaborative list
+export const inviteCollaborator = mutation({
   args: {
     listId: v.id("customLists"),
     userId: v.string(),
@@ -283,15 +287,106 @@ export const addCollaborator = mutation({
       .query("customListCollaborators")
       .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", args.userId))
       .first();
-    if (existing) return existing._id;
+    if (existing) throw new Error("User is already a collaborator");
 
-    return await ctx.db.insert("customListCollaborators", {
-      listId: args.listId,
+    // Check if invitation is already pending
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    const existingInvite = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (existingInvite) throw new Error("Invitation already pending");
+
+    // Insert Notification
+    await ctx.db.insert("notifications", {
       userId: args.userId,
-      joinedAt: Date.now(),
+      senderId: currentUserId,
+      type: "list_invite",
+      read: false,
+      createdAt: Date.now(),
+      mediaId: String(args.listId),
+      mediaType: "list",
     });
+
+    return true;
   },
 });
+
+// Accept a collaborative list invitation
+export const acceptListInvite = mutation({
+  args: {
+    listId: v.id("customLists"),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const currentUserId = user._id;
+
+    const list = await ctx.db.get(args.listId);
+    if (!list) throw new Error("List not found");
+
+    // Check if already a collaborator
+    const existing = await ctx.db
+      .query("customListCollaborators")
+      .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", currentUserId))
+      .first();
+    if (existing) return;
+
+    // Add as collaborator
+    await ctx.db.insert("customListCollaborators", {
+      listId: args.listId,
+      userId: currentUserId,
+      joinedAt: Date.now(),
+    });
+
+    // Delete notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return true;
+  },
+});
+
+// Decline a collaborative list invitation
+export const declineListInvite = mutation({
+  args: {
+    listId: v.id("customLists"),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const currentUserId = user._id;
+
+    // Delete notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) =>
+        n.type === "list_invite" &&
+        n.mediaId === String(args.listId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return true;
+  },
+});
+
 
 // Remove collaborator (or leave)
 export const removeCollaborator = mutation({
@@ -612,18 +707,23 @@ export const getListDetail = query({
 
     // Check privacy
     if (list.privacy === "private") {
-      if (!userId) throw new Error("Unauthorized to view this private list");
-      const isOwner = list.createdById === userId;
-      let isCollab = false;
-      if (list.isCollaborative) {
-        const membership = await ctx.db
-          .query("customListCollaborators")
-          .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", userId))
-          .first();
-        isCollab = !!membership;
+      let isAllowed = false;
+      if (userId) {
+        const isOwner = list.createdById === userId;
+        let isCollab = false;
+        if (list.isCollaborative) {
+          const membership = await ctx.db
+            .query("customListCollaborators")
+            .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", userId))
+            .first();
+          isCollab = !!membership;
+        }
+        if (isOwner || isCollab) {
+          isAllowed = true;
+        }
       }
-      if (!isOwner && !isCollab) {
-        throw new Error("Unauthorized to view this private list");
+      if (!isAllowed) {
+        return { unauthorized: true };
       }
     }
 
@@ -655,6 +755,31 @@ export const getListDetail = query({
         .withIndex("by_userId", (q) => q.eq("userId", item.addedById))
         .first();
 
+      let watchedByUser = null;
+      if (item.watched && item.watchedById) {
+        const watchedByProfile = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", item.watchedById!))
+          .first();
+        if (watchedByProfile) {
+          watchedByUser = {
+            userId: watchedByProfile.userId,
+            username: watchedByProfile.username,
+            name: watchedByProfile.name,
+          };
+        }
+      }
+
+      const votes = await ctx.db
+        .query("customListItemVotes")
+        .withIndex("by_item", (q) =>
+          q.eq("listId", args.listId).eq("mediaId", item.mediaId).eq("mediaType", item.mediaType)
+        )
+        .collect();
+
+      const voteCount = votes.filter((v) => v.vote === 1).length;
+      const userVote = userId ? votes.find((v) => v.userId === userId)?.vote || 0 : 0;
+
       items.push({
         ...item,
         addedByUser: addedBy
@@ -664,10 +789,22 @@ export const getListDetail = query({
               name: addedBy.name,
             }
           : null,
+        watchedByUser,
+        voteCount,
+        userVote,
       });
     }
-    // Sort items by addedAt descending
-    items.sort((a, b) => b.addedAt - a.addedAt);
+    // Sort items by voteCount desc, then addedAt desc if watchlist, otherwise addedAt desc
+    if (list.isWatchlist) {
+      items.sort((a, b) => {
+        if (b.voteCount !== a.voteCount) {
+          return b.voteCount - a.voteCount;
+        }
+        return b.addedAt - a.addedAt;
+      });
+    } else {
+      items.sort((a, b) => b.addedAt - a.addedAt);
+    }
 
     // Likes count & status
     const likes = await ctx.db
@@ -809,6 +946,109 @@ export const getListsWithMediaStatus = query({
     }
 
     return results;
+  },
+});
+
+// Toggle watched state of an item in a list
+export const toggleItemWatched = mutation({
+  args: {
+    listId: v.id("customLists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    // Verify list and authorization (creator or collaborator)
+    const list = await ctx.db.get(args.listId);
+    if (!list) throw new Error("List not found");
+
+    const isOwner = list.createdById === userId;
+    let isCollab = false;
+    if (list.isCollaborative) {
+      const membership = await ctx.db
+        .query("customListCollaborators")
+        .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", userId))
+        .first();
+      isCollab = !!membership;
+    }
+    if (!isOwner && !isCollab) {
+      throw new Error("Unauthorized to mark items watched");
+    }
+
+    const item = await ctx.db
+      .query("customListItems")
+      .withIndex("by_list_media", (q) =>
+        q.eq("listId", args.listId).eq("mediaId", args.mediaId).eq("mediaType", args.mediaType)
+      )
+      .first();
+
+    if (!item) throw new Error("Item not found in this list");
+
+    const currentWatched = !!item.watched;
+    await ctx.db.patch(item._id, {
+      watched: !currentWatched,
+      watchedAt: !currentWatched ? Date.now() : undefined,
+      watchedById: !currentWatched ? userId : undefined,
+    });
+
+    return !currentWatched;
+  },
+});
+
+// Toggle upvote/vote on an item in a list
+export const toggleItemVote = mutation({
+  args: {
+    listId: v.id("customLists"),
+    mediaId: v.string(),
+    mediaType: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    // Verify list and authorization
+    const list = await ctx.db.get(args.listId);
+    if (!list) throw new Error("List not found");
+
+    const isOwner = list.createdById === userId;
+    let isCollab = false;
+    if (list.isCollaborative) {
+      const membership = await ctx.db
+        .query("customListCollaborators")
+        .withIndex("by_list_user", (q) => q.eq("listId", args.listId).eq("userId", userId))
+        .first();
+      isCollab = !!membership;
+    }
+    if (!isOwner && !isCollab) {
+      throw new Error("Unauthorized to vote on items");
+    }
+
+    const existingVote = await ctx.db
+      .query("customListItemVotes")
+      .withIndex("by_item_user", (q) =>
+        q.eq("listId", args.listId)
+         .eq("mediaId", args.mediaId)
+         .eq("mediaType", args.mediaType)
+         .eq("userId", userId)
+      )
+      .first();
+
+    if (existingVote) {
+      await ctx.db.delete(existingVote._id);
+      return 0; // Voted none
+    } else {
+      await ctx.db.insert("customListItemVotes", {
+        listId: args.listId,
+        mediaId: args.mediaId,
+        mediaType: args.mediaType,
+        userId: userId,
+        vote: 1,
+        updatedAt: Date.now(),
+      });
+      return 1; // Voted up
+    }
   },
 });
 

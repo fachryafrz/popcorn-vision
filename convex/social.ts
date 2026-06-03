@@ -1,5 +1,6 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 
 // Helper to get helper data for user social status
@@ -451,6 +452,27 @@ export const blockUser = mutation({
       .withIndex("by_users", (q) => q.eq("userId1", u1).eq("userId2", u2))
       .first();
     if (friendship) await ctx.db.delete(friendship._id);
+
+    // Soft delete any private chat between these two users
+    const myMemberships = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+
+    for (const mem of myMemberships) {
+      const chat = await ctx.db.get(mem.chatId);
+      if (chat && chat.type === "private") {
+        const otherMem = await ctx.db
+          .query("chatMemberships")
+          .withIndex("by_chat_user", (q) => q.eq("chatId", chat._id).eq("userId", args.targetUserId))
+          .first();
+
+        if (otherMem) {
+          await ctx.db.patch(mem._id, { deletedAt: Date.now() });
+          await ctx.db.patch(otherMem._id, { deletedAt: Date.now() });
+        }
+      }
+    }
   },
 });
 
@@ -567,6 +589,63 @@ export const getNotifications = query({
         .withIndex("by_userId", (q) => q.eq("userId", notif.senderId))
         .first();
       
+      let targetName: string | undefined = undefined;
+      if (notif.type === "list_invite" && notif.mediaId) {
+        try {
+          const customList = await ctx.db.get(notif.mediaId as Id<"customLists">);
+          if (customList) {
+            targetName = customList.name;
+          }
+        } catch {}
+      } else if (notif.type === "group_invite" && notif.mediaId) {
+        try {
+          const chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+          if (chat) {
+            targetName = chat.name;
+          }
+        } catch {}
+      }
+
+      // For chat message notifications, fetch the message details and group context
+      let chatMessageContent: string | undefined = undefined;
+      let groupName: string | undefined = undefined;
+      if (notif.type === "chat_message" && notif.mediaId) {
+        try {
+          const chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+          if (chat && chat.type === "group") {
+            groupName = chat.name || "Group";
+          }
+
+          let chatMsg = null;
+          if (notif.messageId) {
+            chatMsg = await ctx.db.get(notif.messageId);
+          }
+          if (!chatMsg) {
+            chatMsg = await ctx.db
+              .query("messages")
+              .withIndex("by_chat_created", (q) =>
+                q.eq("chatId", notif.mediaId as Id<"chats">).lte("createdAt", notif.createdAt)
+              )
+              .order("desc")
+              .first();
+          }
+
+          if (chatMsg) {
+            if (chatMsg.attachmentType === "gif") {
+              chatMessageContent = "👾 Sent a GIF";
+            } else if (chatMsg.attachmentType === "image") {
+              chatMessageContent = "📷 Sent an image";
+            } else if (chatMsg.attachmentType === "media") {
+              chatMessageContent = `🎬 Shared: ${chatMsg.sharedMediaTitle || "a movie/show"}`;
+            } else if (chatMsg.attachmentType === "list") {
+              chatMessageContent = `📋 Shared list: ${chatMsg.sharedListName || "a list"}`;
+            } else {
+              chatMessageContent = chatMsg.content;
+            }
+          }
+        } catch {}
+      }
+
       enriched.push({
         _id: notif._id,
         type: notif.type,
@@ -575,6 +654,9 @@ export const getNotifications = query({
         commentId: notif.commentId,
         mediaId: notif.mediaId,
         mediaType: notif.mediaType,
+        targetName,
+        chatMessageContent,
+        groupName,
         sender: sender ? {
           userId: sender.userId,
           name: sender.name,

@@ -65,7 +65,7 @@ export default function VideoPlayer({
               onClick={() => setActiveTab("trailer")}
               className={`cursor-pointer border-b-2 pb-1 text-sm font-bold transition-all ${
                 activeTab === "trailer"
-                  ? "border-blue-500 text-blue-500"
+                  ? "text-primary border-primary"
                   : "border-transparent text-zinc-400 hover:text-white"
               }`}
             >
@@ -76,7 +76,7 @@ export default function VideoPlayer({
             onClick={() => setActiveTab("watch")}
             className={`cursor-pointer border-b-2 pb-1 text-sm font-bold transition-all ${
               activeTab === "watch"
-                ? "border-blue-500 text-blue-500"
+                ? "text-primary border-primary"
                 : "border-transparent text-zinc-400 hover:text-white"
             }`}
           >
@@ -124,7 +124,7 @@ export default function VideoPlayer({
             {mediaType === "tv" && details && (
               <div className="border-zinc-850/80 space-y-3 rounded-2xl border bg-zinc-950 p-4 shadow-inner">
                 <h4 className="flex items-center gap-1.5 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
-                  <Tv className="h-3.5 w-3.5 text-blue-400" />
+                  <Tv className="text-primary h-3.5 w-3.5" />
                   Episode Navigation
                 </h4>
                 <div className="grid grid-cols-2 gap-2.5">
@@ -139,7 +139,7 @@ export default function VideoPlayer({
                         setEpisode(1);
                       }}
                     >
-                      <SelectTrigger className="h-8 w-full rounded-lg border-zinc-800 bg-zinc-900 px-2.5 text-xs text-white shadow-none hover:bg-zinc-800 focus:border-blue-500">
+                      <SelectTrigger className="focus:border-primary h-8 w-full rounded-lg border-zinc-800 bg-zinc-900 px-2.5 text-xs text-white shadow-none hover:bg-zinc-800">
                         <SelectValue placeholder="Select Season" />
                       </SelectTrigger>
                       <SelectContent className="rounded-lg border border-zinc-800 bg-zinc-900 text-white">
@@ -168,7 +168,7 @@ export default function VideoPlayer({
                       value={String(episode)}
                       onValueChange={(val) => setEpisode(Number(val))}
                     >
-                      <SelectTrigger className="h-8 w-full rounded-lg border-zinc-800 bg-zinc-900 px-2.5 text-xs text-white shadow-none hover:bg-zinc-800 focus:border-blue-500">
+                      <SelectTrigger className="focus:border-primary h-8 w-full rounded-lg border-zinc-800 bg-zinc-900 px-2.5 text-xs text-white shadow-none hover:bg-zinc-800">
                         <SelectValue placeholder="Select Episode" />
                       </SelectTrigger>
                       <SelectContent className="rounded-lg border border-zinc-800 bg-zinc-900 text-white">
@@ -198,7 +198,7 @@ export default function VideoPlayer({
             {/* Server Selection Buttons */}
             <div className="space-y-3">
               <h4 className="flex items-center gap-1.5 px-1 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
-                <Server className="h-3.5 w-3.5 text-blue-400" />
+                <Server className="text-primary h-3.5 w-3.5" />
                 Select Streaming Server
               </h4>
 
@@ -211,7 +211,7 @@ export default function VideoPlayer({
                     className={cn(
                       "group/btn flex h-auto w-full cursor-pointer items-center justify-between rounded-xl border p-3.5 text-left font-normal transition-all hover:bg-zinc-800/40",
                       selectedServer === index
-                        ? "border-blue-500 bg-blue-600/10 text-white hover:bg-blue-600/20"
+                        ? "border-primary bg-primary/10 hover:bg-primary/20 text-white"
                         : "border-zinc-850 bg-zinc-950/60 text-zinc-300 hover:border-zinc-700 hover:text-white",
                     )}
                   >
@@ -220,7 +220,7 @@ export default function VideoPlayer({
                         className={cn(
                           "h-3.5 w-3.5 transition-transform group-hover/btn:scale-110",
                           selectedServer === index
-                            ? "fill-blue-500/20 text-blue-400"
+                            ? "text-primary fill-primary/20"
                             : "text-zinc-500",
                         )}
                       />
@@ -235,7 +235,7 @@ export default function VideoPlayer({
                       </div>
                     </div>
                     {serv.recommended && (
-                      <span className="rounded-full bg-blue-500/20 px-2 py-0.5 text-[8px] font-bold tracking-wider text-blue-400 uppercase">
+                      <span className="text-primary bg-primary/20 rounded-full px-2 py-0.5 text-[8px] font-bold tracking-wider uppercase">
                         Recommended
                       </span>
                     )}

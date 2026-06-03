@@ -40,7 +40,7 @@ export default function HomeClient({
   const isLoggedIn = !!session.data?.user;
   const continueWatching = useQuery(
     api.continueWatching.getProgress,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   );
 
   const handleQuickView = (media: TMDBMedia) => {
@@ -63,7 +63,7 @@ export default function HomeClient({
           {isLoggedIn && continueWatching && continueWatching.length > 0 && (
             <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
               <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-                <Play className="h-5 w-5 fill-current text-blue-500" />
+                <Play className="text-primary h-5 w-5 fill-current" />
                 Continue Watching
               </h2>
               <div className="swiper-carousel-container relative w-full">

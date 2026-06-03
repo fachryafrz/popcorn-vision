@@ -24,6 +24,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -67,7 +68,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     async function loadMetadata() {
       setLoading(true);
       try {
-        const results = await batchFetchMediaMetadata(items, user?.country || "US");
+        const results = await batchFetchMediaMetadata(
+          items,
+          user?.country || "US",
+        );
         setMetadata(results);
       } catch (error) {
         console.error("Failed to load TMDB statistics metadata", error);
@@ -162,7 +166,8 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       }
     });
 
-    const averageRating = ratedCount > 0 ? (sumRating / ratedCount).toFixed(1) : "0.0";
+    const averageRating =
+      ratedCount > 0 ? (sumRating / ratedCount).toFixed(1) : "0.0";
     const hoursWatched = Math.round(totalMinutes / 60);
 
     // Sort mappings to get top items
@@ -235,10 +240,16 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
 
       if (period === "week" || period === "month") {
         // Format as short date: "MMM dd"
-        key = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        key = date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
       } else {
         // Format as month: "MMM yyyy"
-        key = date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+        key = date.toLocaleDateString("en-US", {
+          month: "short",
+          year: "2-digit",
+        });
       }
 
       counts[key] = (counts[key] || 0) + 1;
@@ -255,34 +266,41 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
         <Sparkles className="mb-4 h-12 w-12 text-zinc-800" />
         <p className="text-sm text-zinc-500">
-          No watch history available. Log titles to your diary to view statistics and insights.
+          No watch history available. Log titles to your diary to view
+          statistics and insights.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-10 text-white animate-in fade-in duration-300">
+    <div className="animate-in fade-in space-y-10 text-white duration-300">
       {/* Period Selector Tabs */}
-      <div className="flex justify-between items-center flex-wrap gap-4 border-b border-zinc-900 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-900 pb-5">
         <div>
           <h2 className="text-xl font-bold tracking-tight">Viewing Stats</h2>
-          <p className="text-xs text-zinc-500 mt-1">Analyze your watching patterns and preferences</p>
+          <p className="mt-1 text-xs text-zinc-500">
+            Analyze your watching patterns and preferences
+          </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex bg-zinc-900/60 p-1 rounded-2xl border border-zinc-800 gap-1">
+          <div className="flex gap-1 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-1">
             {(["week", "month", "all"] as Period[]).map((p) => (
               <button
                 key={p}
                 onClick={() => setPeriod(p)}
                 className={cn(
-                  "cursor-pointer px-4 py-1.5 rounded-xl text-xs font-bold uppercase transition-all duration-200",
+                  "cursor-pointer rounded-xl px-4 py-1.5 text-xs font-bold uppercase transition-all duration-200",
                   period === p
                     ? "bg-white text-black shadow-md"
-                    : "text-zinc-400 hover:text-zinc-200"
+                    : "text-zinc-400 hover:text-zinc-200",
                 )}
               >
-                {p === "all" ? "All Time" : p === "week" ? "This Week" : "This Month"}
+                {p === "all"
+                  ? "All Time"
+                  : p === "week"
+                    ? "This Week"
+                    : "This Month"}
               </button>
             ))}
           </div>
@@ -298,16 +316,26 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                 }
               }}
             >
-              <SelectTrigger className="cursor-pointer bg-zinc-900/60 hover:bg-zinc-900 border border-zinc-800 text-zinc-450 hover:text-zinc-200 rounded-2xl px-4 py-2 text-xs font-bold uppercase transition-all duration-200 h-9">
-                <SelectValue>{typeof period === "number" ? period : "All Year"}</SelectValue>
+              <SelectTrigger className="text-zinc-450 h-9 cursor-pointer rounded-2xl border border-zinc-800 bg-zinc-900/60 px-4 py-2 text-xs font-bold uppercase transition-all duration-200 hover:bg-zinc-900 hover:text-zinc-200">
+                <SelectValue>
+                  {typeof period === "number" ? period : "All Year"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white">
-                <SelectItem value="all" className="text-zinc-400">All Year</SelectItem>
-                {availableYears.map((yr) => (
-                  <SelectItem key={yr} value={String(yr)} className="text-white focus:bg-zinc-900 focus:text-white">
-                    {yr}
+                <SelectGroup>
+                  <SelectItem value="all" className="text-zinc-400">
+                    All Year
                   </SelectItem>
-                ))}
+                  {availableYears.map((yr) => (
+                    <SelectItem
+                      key={yr}
+                      value={String(yr)}
+                      className="text-white focus:bg-zinc-900 focus:text-white"
+                    >
+                      {yr}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           )}
@@ -316,8 +344,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
 
       {loading ? (
         <div className="flex min-h-[40vh] items-center justify-center">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <span className="ml-3 text-sm text-zinc-400">Compiling your stats dashboard...</span>
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="ml-3 text-sm text-zinc-400">
+            Summarizing your stats...
+          </span>
         </div>
       ) : (
         <>
@@ -325,40 +355,54 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Movies</span>
-                <Film className="h-5 w-5 text-blue-500" />
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  Movies
+                </span>
+                <Film className="text-primary h-5 w-5" />
               </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">{stats.moviesCount}</h3>
+              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
+                {stats.moviesCount}
+              </h3>
               <p className="mt-1 text-xs text-zinc-500">watched</p>
             </div>
 
             <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">TV Series</span>
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  TV Series
+                </span>
                 <Tv className="h-5 w-5 text-emerald-500" />
               </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">{stats.tvCount}</h3>
+              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
+                {stats.tvCount}
+              </h3>
               <p className="mt-1 text-xs text-zinc-500">watched</p>
             </div>
 
             <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Time</span>
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  Time
+                </span>
                 <Clock className="h-5 w-5 text-amber-500" />
               </div>
               <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.hoursWatched} <span className="text-lg font-bold text-zinc-500">hrs</span>
+                {stats.hoursWatched}{" "}
+                <span className="text-lg font-bold text-zinc-500">hrs</span>
               </h3>
               <p className="mt-1 text-xs text-zinc-500">total watch time</p>
             </div>
 
             <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Avg Rating</span>
-                <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  Avg Rating
+                </span>
+                <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
               </div>
               <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.averageRating} <span className="text-lg font-bold text-zinc-500">/10</span>
+                {stats.averageRating}{" "}
+                <span className="text-lg font-bold text-zinc-500">/10</span>
               </h3>
               <p className="mt-1 text-xs text-zinc-500">across rated items</p>
             </div>
@@ -368,17 +412,37 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {/* Rating Distribution */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="text-sm font-bold tracking-wider uppercase text-zinc-400 mb-6 flex items-center gap-2">
+              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
                 <Star className="h-4 w-4 text-yellow-500" /> Rating Distribution
               </h4>
               <div className="h-[250px] w-full">
-                <ChartContainer config={ratingChartConfig} className="h-full w-full">
-                  <BarChart data={stats.ratingsDistribution} margin={{ left: -20, right: 10 }}>
+                <ChartContainer
+                  config={ratingChartConfig}
+                  className="h-full w-full"
+                >
+                  <BarChart
+                    data={stats.ratingsDistribution}
+                    margin={{ left: -20, right: 10 }}
+                  >
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />
                     <XAxis dataKey="rating" fontSize={11} tickLine={false} />
-                    <YAxis fontSize={11} tickLine={false} allowDecimals={false} />
-                    <ChartTooltip content={<ChartTooltipContent labelFormatter={(label) => `Rating: ${label}/10`} />} />
-                    <Bar dataKey="count" fill="var(--color-count)" radius={[4, 4, 0, 0]} />
+                    <YAxis
+                      fontSize={11}
+                      tickLine={false}
+                      allowDecimals={false}
+                    />
+                    <ChartTooltip
+                      content={
+                        <ChartTooltipContent
+                          labelFormatter={(label) => `Rating: ${label}/10`}
+                        />
+                      }
+                    />
+                    <Bar
+                      dataKey="count"
+                      fill="var(--color-count)"
+                      radius={[4, 4, 0, 0]}
+                    />
                   </BarChart>
                 </ChartContainer>
               </div>
@@ -386,14 +450,17 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
 
             {/* Genre Breakdown */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="text-sm font-bold tracking-wider uppercase text-zinc-400 mb-6 flex items-center gap-2">
-                <Film className="h-4 w-4 text-blue-500" /> Genre Breakdown
+              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
+                <Film className="text-primary h-4 w-4" /> Genre Breakdown
               </h4>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 h-[250px]">
+              <div className="flex h-[250px] flex-col items-center justify-between gap-4 sm:flex-row">
                 {stats.topGenres.length > 0 ? (
                   <>
-                    <div className="h-full w-full sm:w-1/2 flex justify-center items-center">
-                      <ChartContainer config={genreChartConfig} className="h-full w-full max-h-[200px] aspect-square">
+                    <div className="flex h-full w-full items-center justify-center sm:w-1/2">
+                      <ChartContainer
+                        config={genreChartConfig}
+                        className="aspect-square h-full max-h-[200px] w-full"
+                      >
                         <PieChart>
                           <ChartTooltip content={<ChartTooltipContent />} />
                           <Pie
@@ -406,29 +473,41 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                             dataKey="value"
                           >
                             {stats.topGenres.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                              <Cell
+                                key={`cell-${index}`}
+                                fill={COLORS[index % COLORS.length]}
+                              />
                             ))}
                           </Pie>
                         </PieChart>
                       </ChartContainer>
                     </div>
-                    <div className="flex-1 w-full flex flex-col gap-2.5">
+                    <div className="flex w-full flex-1 flex-col gap-2.5">
                       {stats.topGenres.map((genre, index) => (
-                        <div key={genre.name} className="flex items-center justify-between text-xs">
+                        <div
+                          key={genre.name}
+                          className="flex items-center justify-between text-xs"
+                        >
                           <div className="flex items-center gap-2">
                             <div
                               className="h-2.5 w-2.5 rounded-full"
-                              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                              style={{
+                                backgroundColor: COLORS[index % COLORS.length],
+                              }}
                             />
-                            <span className="font-semibold text-zinc-300">{genre.name}</span>
+                            <span className="font-semibold text-zinc-300">
+                              {genre.name}
+                            </span>
                           </div>
-                          <span className="font-bold text-zinc-500">{genre.value} items</span>
+                          <span className="font-bold text-zinc-500">
+                            {genre.value} items
+                          </span>
                         </div>
                       ))}
                     </div>
                   </>
                 ) : (
-                  <div className="flex-1 flex items-center justify-center text-zinc-600 text-xs italic">
+                  <div className="flex flex-1 items-center justify-center text-xs text-zinc-600 italic">
                     Not enough data
                   </div>
                 )}
@@ -437,22 +516,47 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
 
             {/* Viewing Trends */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 lg:col-span-2">
-              <h4 className="text-sm font-bold tracking-wider uppercase text-zinc-400 mb-6 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-emerald-500" /> Viewing Trends
+              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
+                <TrendingUp className="h-4 w-4 text-emerald-500" /> Viewing
+                Trends
               </h4>
               <div className="h-[250px] w-full">
                 {trendsData.length > 0 ? (
-                  <ChartContainer config={trendsChartConfig} className="h-full w-full">
-                    <AreaChart data={trendsData} margin={{ left: -20, right: 10 }}>
+                  <ChartContainer
+                    config={trendsChartConfig}
+                    className="h-full w-full"
+                  >
+                    <AreaChart
+                      data={trendsData}
+                      margin={{ left: -20, right: 10 }}
+                    >
                       <defs>
-                        <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="var(--color-count)" stopOpacity={0.2} />
-                          <stop offset="95%" stopColor="var(--color-count)" stopOpacity={0} />
+                        <linearGradient
+                          id="trendGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="var(--color-count)"
+                            stopOpacity={0.2}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="var(--color-count)"
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} />
                       <XAxis dataKey="date" fontSize={11} tickLine={false} />
-                      <YAxis fontSize={11} tickLine={false} allowDecimals={false} />
+                      <YAxis
+                        fontSize={11}
+                        tickLine={false}
+                        allowDecimals={false}
+                      />
                       <ChartTooltip content={<ChartTooltipContent />} />
                       <Area
                         type="monotone"
@@ -465,7 +569,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                     </AreaChart>
                   </ChartContainer>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-zinc-600 text-xs italic">
+                  <div className="flex h-full items-center justify-center text-xs text-zinc-600 italic">
                     Not enough data
                   </div>
                 )}
@@ -477,63 +581,85 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             {/* Top Actors */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="text-xs font-bold tracking-wider uppercase text-zinc-500 mb-4 flex items-center gap-2">
-                <User className="h-4 w-4 text-blue-400" /> Top Actors
+              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                <User className="text-primary h-4 w-4" /> Top Actors
               </h4>
               <div className="space-y-3">
                 {stats.topActors.length > 0 ? (
                   stats.topActors.map((actor, idx) => (
-                    <div key={actor.name} className="flex items-center justify-between text-xs">
+                    <div
+                      key={actor.name}
+                      className="flex items-center justify-between text-xs"
+                    >
                       <span className="font-semibold text-zinc-300">
                         {idx + 1}. {actor.name}
                       </span>
-                      <span className="font-bold text-zinc-500">{actor.count} films</span>
+                      <span className="font-bold text-zinc-500">
+                        {actor.count} films
+                      </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-zinc-650 italic">No actor metadata available.</p>
+                  <p className="text-zinc-650 text-xs italic">
+                    No actor metadata available.
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Top Directors */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="text-xs font-bold tracking-wider uppercase text-zinc-500 mb-4 flex items-center gap-2">
+              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
                 <Video className="h-4 w-4 text-emerald-400" /> Top Directors
               </h4>
               <div className="space-y-3">
                 {stats.topDirectors.length > 0 ? (
                   stats.topDirectors.map((director, idx) => (
-                    <div key={director.name} className="flex items-center justify-between text-xs">
+                    <div
+                      key={director.name}
+                      className="flex items-center justify-between text-xs"
+                    >
                       <span className="font-semibold text-zinc-300">
                         {idx + 1}. {director.name}
                       </span>
-                      <span className="font-bold text-zinc-500">{director.count} titles</span>
+                      <span className="font-bold text-zinc-500">
+                        {director.count} titles
+                      </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-zinc-650 italic">No director metadata available.</p>
+                  <p className="text-zinc-650 text-xs italic">
+                    No director metadata available.
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Top Streaming Services */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="text-xs font-bold tracking-wider uppercase text-zinc-500 mb-4 flex items-center gap-2">
-                <Tv2 className="h-4 w-4 text-amber-400" /> Top Streaming Providers
+              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                <Tv2 className="h-4 w-4 text-amber-400" /> Top Streaming
+                Providers
               </h4>
               <div className="space-y-3">
                 {stats.topProviders.length > 0 ? (
                   stats.topProviders.map((provider, idx) => (
-                    <div key={provider.name} className="flex items-center justify-between text-xs">
+                    <div
+                      key={provider.name}
+                      className="flex items-center justify-between text-xs"
+                    >
                       <span className="font-semibold text-zinc-300">
                         {idx + 1}. {provider.name}
                       </span>
-                      <span className="font-bold text-zinc-500">{provider.count} watches</span>
+                      <span className="font-bold text-zinc-500">
+                        {provider.count} watches
+                      </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-xs text-zinc-650 italic">No streaming provider details found.</p>
+                  <p className="text-zinc-650 text-xs italic">
+                    No streaming provider details found.
+                  </p>
                 )}
               </div>
             </div>

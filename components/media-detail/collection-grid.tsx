@@ -38,7 +38,7 @@ export default function CollectionGrid({
                 />
               </div>
               <div className="px-1 text-left">
-                <h4 className="line-clamp-1 text-xs font-bold text-white transition-colors group-hover:text-blue-400">
+                <h4 className="group-hover:text-primary line-clamp-1 text-xs font-bold text-white transition-colors">
                   {part.title}
                 </h4>
                 <span className="text-[10px] font-semibold text-zinc-500">

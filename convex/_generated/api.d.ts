@@ -18,7 +18,6 @@ import type * as diary from "../diary.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
 import type * as ratings from "../ratings.js";
-import type * as sharedWatchlists from "../sharedWatchlists.js";
 import type * as social from "../social.js";
 import type * as users from "../users.js";
 import type * as watchlist from "../watchlist.js";
@@ -40,7 +39,6 @@ declare const fullApi: ApiFromModules<{
   favorites: typeof favorites;
   http: typeof http;
   ratings: typeof ratings;
-  sharedWatchlists: typeof sharedWatchlists;
   social: typeof social;
   users: typeof users;
   watchlist: typeof watchlist;

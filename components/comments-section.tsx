@@ -107,7 +107,7 @@ export default function CommentsSection({
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
-            <MessageSquare className="h-6 w-6 text-blue-500" />
+            <MessageSquare className="text-primary h-6 w-6" />
             Comments
             <span className="text-sm font-normal text-zinc-500">
               ({comments?.length ?? 0} discussions)
@@ -360,7 +360,7 @@ function CommentNode({
         <Link
           key={index}
           href={`/@/${username}`}
-          className="font-bold text-blue-400 hover:underline"
+          className="text-primary font-bold hover:underline"
         >
           @{username}
         </Link>,
@@ -560,7 +560,7 @@ function CommentNode({
                 }}
                 className={cn(
                   "flex cursor-pointer items-center gap-1 text-[11px] font-bold text-zinc-500 transition-colors hover:text-zinc-300",
-                  isReplying && "text-blue-400 hover:text-blue-300",
+                  isReplying && "text-primary hover:text-primary/50",
                 )}
               >
                 <Reply className="h-3.5 w-3.5" />
@@ -708,7 +708,7 @@ function CommentInputForm({
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-semibold text-white transition-colors group-hover:text-blue-400">
+                <p className="group-hover:text-primary truncate text-xs font-semibold text-white transition-colors">
                   {user.name}
                 </p>
                 <p className="truncate text-[10px] text-zinc-500">

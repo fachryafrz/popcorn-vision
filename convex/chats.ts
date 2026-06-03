@@ -99,6 +99,16 @@ export const createOrGetPrivateChat = mutation({
           .first();
 
         if (otherMem) {
+          if (mem.deletedAt !== undefined) {
+            await ctx.db.patch(mem._id, {
+              deletedAt: undefined,
+            });
+          }
+          if (otherMem.deletedAt !== undefined) {
+            await ctx.db.patch(otherMem._id, {
+              deletedAt: undefined,
+            });
+          }
           return chat._id;
         }
       }
@@ -172,13 +182,16 @@ export const createGroupChat = mutation({
       lastReadAt: Date.now(),
     });
 
-    // Create memberships for all invited friends
+    // Create pending invitations for all invited friends
     for (const inviteeId of args.invitedUserIds) {
-      await ctx.db.insert("chatMemberships", {
-        chatId,
+      await ctx.db.insert("notifications", {
         userId: inviteeId,
-        joinedAt: Date.now(),
-        lastReadAt: Date.now(),
+        senderId: currentUserId,
+        type: "group_invite",
+        read: false,
+        createdAt: Date.now(),
+        mediaId: String(chatId),
+        mediaType: "chat",
       });
     }
 
@@ -262,16 +275,91 @@ export const inviteToGroupChat = mutation({
         .first();
 
       if (!existing) {
-        await ctx.db.insert("chatMemberships", {
-          chatId: args.chatId,
-          userId,
-          joinedAt: Date.now(),
-          lastReadAt: Date.now(),
-        });
+        // Check if invitation is already pending
+        const notifications = await ctx.db
+          .query("notifications")
+          .withIndex("by_user", (q) => q.eq("userId", userId))
+          .collect();
+        const existingInvite = notifications.find(
+          (n) =>
+            n.type === "group_invite" &&
+            n.mediaId === String(args.chatId)
+        );
+        if (!existingInvite) {
+          await ctx.db.insert("notifications", {
+            userId,
+            senderId: currentUserId,
+            type: "group_invite",
+            read: false,
+            createdAt: Date.now(),
+            mediaId: String(args.chatId),
+            mediaType: "chat",
+          });
+        }
       }
     }
 
     return args.chatId;
+  },
+});
+
+// Accept a group invite
+export const acceptGroupInvite = mutation({
+  args: { chatId: v.id("chats") },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthedUser(ctx);
+    const chat = await ctx.db.get(args.chatId);
+    if (!chat || chat.type !== "group") throw new Error("Group chat not found");
+
+    const existing = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId))
+      .first();
+
+    if (!existing) {
+      await ctx.db.insert("chatMemberships", {
+        chatId: args.chatId,
+        userId: currentUserId,
+        joinedAt: Date.now(),
+        lastReadAt: Date.now(),
+      });
+    }
+
+    // Delete the notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) => n.type === "group_invite" && n.mediaId === String(args.chatId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return args.chatId;
+  },
+});
+
+// Decline a group invite
+export const declineGroupInvite = mutation({
+  args: { chatId: v.id("chats") },
+  handler: async (ctx, args) => {
+    const currentUserId = await getAuthedUser(ctx);
+
+    // Delete the notification
+    const notifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+    const inviteNotif = notifications.find(
+      (n) => n.type === "group_invite" && n.mediaId === String(args.chatId)
+    );
+    if (inviteNotif) {
+      await ctx.db.delete(inviteNotif._id);
+    }
+
+    return true;
   },
 });
 
@@ -434,15 +522,23 @@ export const sendMessage = mutation({
 
     for (const mem of otherMembers) {
       if (mem.userId !== currentUserId) {
-        await ctx.db.insert("notifications", {
-          userId: mem.userId,
-          senderId: currentUserId,
-          type: "chat_message",
-          read: false,
-          createdAt: Date.now(),
-          mediaId: args.chatId,
-          mediaType: "chat",
-        });
+        if (mem.deletedAt !== undefined) {
+          await ctx.db.patch(mem._id, {
+            deletedAt: undefined,
+          });
+        }
+        if (!mem.isMuted) {
+          await ctx.db.insert("notifications", {
+            userId: mem.userId,
+            senderId: currentUserId,
+            type: "chat_message",
+            read: false,
+            createdAt: Date.now(),
+            mediaId: args.chatId,
+            mediaType: "chat",
+            messageId,
+          });
+        }
       }
     }
 
@@ -572,6 +668,7 @@ export const getChatsList = query({
 
     const results = [];
     for (const mem of memberships) {
+      if (mem.deletedAt !== undefined) continue;
       const chat = await ctx.db.get(mem.chatId);
       if (!chat) continue;
 
@@ -614,6 +711,17 @@ export const getChatsList = query({
           .first();
 
         if (partnerProfile) {
+          // Check blocks
+          const block1 = await ctx.db
+            .query("blocks")
+            .withIndex("by_both", (q) => q.eq("blockerId", currentUserId!).eq("blockedId", partnerMem.userId))
+            .first();
+          const block2 = await ctx.db
+            .query("blocks")
+            .withIndex("by_both", (q) => q.eq("blockerId", partnerMem.userId).eq("blockedId", currentUserId!))
+            .first();
+          if (block1 || block2) continue;
+
           const isTyping = partnerMem.typingUntil ? partnerMem.typingUntil > Date.now() : false;
           results.push({
             chatId: chat._id,
@@ -691,15 +799,20 @@ export const getChatsList = query({
 export const getChatMessages = query({
   args: { chatId: v.id("chats") },
   handler: async (ctx, args) => {
-    const currentUserId = await getAuthedUser(ctx);
+    let currentUserId: string | null = null;
+    try {
+      currentUserId = await getAuthedUser(ctx);
+    } catch {
+      return null;
+    }
 
     // Verify user is in the chat
     const membership = await ctx.db
       .query("chatMemberships")
-      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId))
+      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId!))
       .first();
 
-    if (!membership) throw new Error("Access denied: Not a member of this chat");
+    if (!membership) return null;
 
     const messages = await ctx.db
       .query("messages")
@@ -746,14 +859,19 @@ export const getChatMessages = query({
 export const getChatMembers = query({
   args: { chatId: v.id("chats") },
   handler: async (ctx, args) => {
-    const currentUserId = await getAuthedUser(ctx);
+    let currentUserId: string | null = null;
+    try {
+      currentUserId = await getAuthedUser(ctx);
+    } catch {
+      return null;
+    }
 
     const membership = await ctx.db
       .query("chatMemberships")
-      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId))
+      .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId!))
       .first();
 
-    if (!membership) throw new Error("Access denied");
+    if (!membership) return null;
 
     const memberships = await ctx.db
       .query("chatMemberships")
@@ -890,6 +1008,44 @@ export const deleteChat = mutation({
       .first();
 
     if (!membership) throw new Error("Access denied: Not a member of this chat");
+
+    if (chat.type === "private") {
+      // 1. Soft delete: set deletedAt for current user membership
+      await ctx.db.patch(membership._id, {
+        deletedAt: Date.now(),
+      });
+
+      // 2. Fetch memberships to check if all participants have soft-deleted
+      const otherMembers = await ctx.db
+        .query("chatMemberships")
+        .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+        .collect();
+
+      const allDeleted = otherMembers.every(
+        (mem) => mem._id === membership._id || mem.deletedAt !== undefined
+      );
+
+      if (allDeleted) {
+        // Hard delete all messages, memberships, and the chat document
+        const messages = await ctx.db
+          .query("messages")
+          .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
+          .collect();
+
+        for (const msg of messages) {
+          await ctx.db.delete(msg._id);
+        }
+
+        for (const mem of otherMembers) {
+          await ctx.db.delete(mem._id);
+        }
+
+        await ctx.db.delete(args.chatId);
+        return { success: true, hardDeleted: true };
+      }
+
+      return { success: true, hardDeleted: false };
+    }
 
     // If it's a group, only admins can delete the entire group chat, otherwise they just leave it.
     if (chat.type === "group") {

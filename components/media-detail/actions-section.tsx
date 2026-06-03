@@ -8,7 +8,6 @@ import {
   Film,
   Calendar,
   Send,
-  Users,
   List,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,6 @@ interface ActionsSectionProps {
   openAuth: () => void;
   setIsLogModalOpen: (open: boolean) => void;
   setIsShareDialogOpen: (open: boolean) => void;
-  onClickSharedWatchlist: () => void;
   onClickCustomList: () => void;
   watchHistory: { watchCount: number } | null | undefined;
   scrollToPlayer: (tab: "trailer" | "watch") => void;
@@ -44,7 +42,6 @@ export default function ActionsSection({
   openAuth,
   setIsLogModalOpen,
   setIsShareDialogOpen,
-  onClickSharedWatchlist,
   onClickCustomList,
   watchHistory,
   scrollToPlayer,
@@ -53,7 +50,7 @@ export default function ActionsSection({
     <div className="mt-6 flex flex-wrap items-center gap-3">
       <Button
         onClick={() => scrollToPlayer("watch")}
-        className="flex items-center gap-2 rounded-full bg-blue-600 px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 hover:bg-blue-500 active:scale-98 sm:px-8 sm:text-base"
+        className="hover:bg-primary bg-primary flex items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base"
       >
         <Play className="h-5 w-5 fill-current" />
         Play
@@ -89,17 +86,6 @@ export default function ActionsSection({
             <Plus className="h-5 w-5" />
           )}
           {isWatchlisted ? "In Watchlist" : "Watchlist"}
-        </span>
-      </Button>
-
-      {/* Shared Watchlist Button */}
-      <Button
-        onClick={onClickSharedWatchlist}
-        className="cursor-pointer rounded-full border border-zinc-700 bg-black/40 px-5 py-6 text-sm font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:text-base"
-      >
-        <span className="flex items-center gap-1.5">
-          <Users className="h-5 w-5" />
-          Shared Watchlist
         </span>
       </Button>
 
@@ -176,4 +162,3 @@ export default function ActionsSection({
     </div>
   );
 }
-

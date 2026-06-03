@@ -265,7 +265,7 @@ export default function DataExporter() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-8 w-8 animate-spin" />
         <p className="text-xs text-zinc-500">
           Loading your profile data records...
         </p>

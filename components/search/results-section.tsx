@@ -172,18 +172,18 @@ export function ResultsSection({
         <div>
           <div className="mb-5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <User className="h-4 w-4 text-blue-400" />
+              <User className="text-primary h-4 w-4" />
               <h2 className="text-lg font-bold tracking-tight text-white">
                 Film Enthusiasts
               </h2>
-              <span className="rounded-full border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 text-[10px] font-semibold text-blue-400">
+              <span className="text-primary border-primary/20 bg-primary/10 rounded-full border px-2 py-0.5 text-[10px] font-semibold">
                 {userResults.length}
               </span>
             </div>
             {userResults.length > 4 && (
               <button
                 onClick={() => handleTypeChange("users")}
-                className="cursor-pointer text-xs font-semibold text-blue-400 transition-colors hover:text-blue-300"
+                className="text-primary cursor-pointer text-xs font-semibold transition-colors hover:text-primary/50"
               >
                 View all
               </button>

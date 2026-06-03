@@ -109,7 +109,7 @@ export default function UsernamePromptModal() {
         showCloseButton={false}
         className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-white shadow-2xl shadow-black/95 backdrop-blur-xl [&>button]:hidden"
       >
-        <div className="absolute -top-32 -left-32 -z-10 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="bg-primary/10 absolute -top-32 -left-32 -z-10 h-64 w-64 rounded-full blur-3xl" />
 
         <div className="mb-6 text-center">
           <div className="relative mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
@@ -150,7 +150,7 @@ export default function UsernamePromptModal() {
                 placeholder="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all outline-none focus:border-blue-500/50 focus:bg-zinc-900 focus:ring-1 focus:ring-blue-500/30"
+                className="focus:border-primary/50 focus:ring-primary/30 w-full rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 pr-4 pl-12 text-sm text-white placeholder-zinc-500 transition-all outline-none focus:bg-zinc-900 focus:ring-1"
               />
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function UsernamePromptModal() {
           <Button
             type="submit"
             disabled={loading}
-            className="mt-4 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-base font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
+            className="to-primary hover:to-primary hover:from-primary from-primary mt-4 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-base font-semibold text-white transition-all duration-200 active:scale-[0.98]"
           >
             {loading ? (
               <Loader2 className="h-5 w-5 animate-spin" />

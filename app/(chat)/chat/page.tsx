@@ -127,6 +127,7 @@ export default function ChatPage() {
   const [isInviteFriendsOpen, setIsInviteFriendsOpen] = useState(false);
   const [isGIFPickerOpen, setIsGIFPickerOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isPrivacyErrorOpen, setIsPrivacyErrorOpen] = useState(false);
 
   // Forms
   const [groupName, setGroupName] = useState("");
@@ -182,6 +183,20 @@ export default function ChatPage() {
     messageEndRef.current?.scrollIntoView({ behavior: "instant" });
   }, [activeChatMessages?.length]);
 
+  // Handle case where chat session is deleted or membership is revoked
+  useEffect(() => {
+    if (
+      selectedChatId &&
+      (rawActiveChatMessages === null || rawActiveChatMembers === null)
+    ) {
+      const timer = setTimeout(() => {
+        setSelectedChatId(null);
+        toast.error("This chat session is no longer available.");
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [rawActiveChatMessages, rawActiveChatMembers, selectedChatId]);
+
   // Handle typing triggers
   const handleTyping = () => {
     if (!selectedChatId) return;
@@ -216,7 +231,11 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      toast.error(errorObj.message || "Failed to send message");
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to send message");
+      }
     }
   };
 
@@ -250,8 +269,13 @@ export default function ChatPage() {
         attachmentUrl: gifUrl,
         attachmentType: "gif",
       });
-    } catch {
-      toast.error("Failed to send GIF");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to send GIF");
+      }
     }
   };
 
@@ -273,7 +297,7 @@ export default function ChatPage() {
       setGroupName("");
       setGroupDescription("");
       setSelectedInvitedUsers(new Set());
-      toast.success("Group chat created successfully!");
+      toast.success("Group chat created and invitations sent!");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Failed to create group");
@@ -291,7 +315,7 @@ export default function ChatPage() {
       });
       setIsInviteFriendsOpen(false);
       setSelectedInvitedUsers(new Set());
-      toast.success("Friends invited successfully!");
+      toast.success("Group invitations sent successfully!");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Failed to invite friends");
@@ -352,7 +376,11 @@ export default function ChatPage() {
       setIsNewChatOpen(false);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      toast.error(errorObj.message || "Failed to start direct message session");
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to start direct message session");
+      }
     }
   };
 
@@ -409,14 +437,14 @@ export default function ChatPage() {
   if (!isLoggedIn || !currentUserId) {
     return (
       <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
-        <Loader2 className="mb-4 h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary mb-4 h-10 w-10 animate-spin" />
         <h1 className="text-xl font-bold">Loading chats...</h1>
         <p className="text-zinc-550 mt-1 text-xs">
           Please log in to participate in direct and group chats.
         </p>
         <Button
           onClick={() => router.push("/")}
-          className="mt-4 cursor-pointer rounded-xl bg-blue-600 px-6 text-white hover:bg-blue-500"
+          className="hover:bg-primary bg-primary mt-4 cursor-pointer rounded-xl px-6 text-white"
         >
           Go Home
         </Button>
@@ -483,6 +511,10 @@ export default function ChatPage() {
           handleDeleteChat={handleDeleteChat}
           currentUserId={currentUserId}
           handleToggleMute={handleToggleMute}
+          onBlockSuccess={() => {
+            setSelectedChatId(null);
+            setShowRightPanel(false);
+          }}
         />
       )}
 
@@ -512,6 +544,8 @@ export default function ChatPage() {
         handleInviteToGroup={handleInviteToGroup}
         handleSendGIF={handleSendGIF}
         handleSubmitReport={handleSubmitReport}
+        isPrivacyErrorOpen={isPrivacyErrorOpen}
+        setIsPrivacyErrorOpen={setIsPrivacyErrorOpen}
       />
       {isQuickViewOpen && quickViewMedia && (
         <QuickViewModal

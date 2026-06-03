@@ -176,7 +176,7 @@ export default function AvatarCropModal({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             style={{ width: viewportSize, height: viewportSize }}
-            className="relative cursor-move touch-none overflow-hidden rounded-full border-2 border-blue-500/70 bg-zinc-900 shadow-inner select-none"
+            className="border-primary/70 relative cursor-move touch-none overflow-hidden rounded-full border-2 bg-zinc-900 shadow-inner select-none"
           >
             {imgSrc && (
               <img
@@ -234,7 +234,7 @@ export default function AvatarCropModal({
           <Button
             disabled={saving}
             onClick={handleSave}
-            className="flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 font-semibold text-white hover:bg-blue-500"
+            className="hover:bg-primary bg-primary flex cursor-pointer items-center justify-center gap-2 rounded-xl px-5 font-semibold text-white"
           >
             {saving ? (
               <Loader2 className="h-4 w-4 animate-spin" />

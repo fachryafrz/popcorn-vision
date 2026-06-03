@@ -20,7 +20,6 @@ import {
   Loader2,
   MessageSquare,
   Activity,
-  Users,
   Popcorn,
   List,
 } from "lucide-react";
@@ -58,8 +57,10 @@ export default function Navbar() {
   );
   const acceptFriendRequest = useMutation(api.social.acceptFriendRequest);
   const rejectFriendRequest = useMutation(api.social.rejectFriendRequest);
-  const acceptWatchlistInvite = useMutation(api.sharedWatchlists.acceptWatchlistInvite);
-  const declineWatchlistInvite = useMutation(api.sharedWatchlists.declineWatchlistInvite);
+  const acceptListInvite = useMutation(api.customLists.acceptListInvite);
+  const declineListInvite = useMutation(api.customLists.declineListInvite);
+  const acceptGroupInvite = useMutation(api.chats.acceptGroupInvite);
+  const declineGroupInvite = useMutation(api.chats.declineGroupInvite);
   const markRead = useMutation(api.social.markNotificationRead);
   const clearAll = useMutation(api.social.clearAllNotifications);
 
@@ -214,7 +215,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none">
                     <Bell className="h-4 w-4" />
                     {unreadCount > 0 && (
-                      <span className="ring-background absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[8px] font-black text-white ring-2">
+                      <span className="ring-background bg-primary absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full text-[8px] font-black text-white ring-2">
                         {unreadCount}
                       </span>
                     )}
@@ -250,7 +251,7 @@ export default function Navbar() {
                     <div className="max-h-80 overflow-y-auto py-1">
                       {!notifications ? (
                         <div className="flex items-center justify-center py-6 text-xs text-zinc-500">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin text-blue-500" />
+                          <Loader2 className="text-primary mr-2 h-4 w-4 animate-spin" />
                           Loading...
                         </div>
                       ) : notifications.length === 0 ? (
@@ -293,7 +294,7 @@ export default function Navbar() {
                               className={cn(
                                 "group relative flex cursor-pointer items-start gap-3 rounded-xl border border-transparent p-3 transition-all hover:border-zinc-800/40 hover:bg-zinc-900",
                                 !notif.read
-                                  ? "bg-blue-600/5 hover:bg-blue-600/10"
+                                  ? "bg-primary/5 hover:bg-primary/10"
                                   : "",
                               )}
                             >
@@ -325,10 +326,27 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
-                                  {notif.type === "chat_message" &&
-                                    "sent you a message."}
-                                  {notif.type === "watchlist_invite" &&
-                                    "invited you to join a shared watchlist."}
+                                  {notif.type === "chat_message" && (
+                                    <>
+                                      {notif.groupName
+                                        ? `sent a message in "${notif.groupName}":`
+                                        : "sent you a message:"}
+                                      <span className="mt-0.5 block max-w-full truncate font-normal text-zinc-400 italic">
+                                        &quot;
+                                        {notif.chatMessageContent || "Message"}
+                                        &quot;
+                                      </span>
+                                    </>
+                                  )}
+
+                                  {notif.type === "list_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to collaborate on the list "${notif.targetName}".`
+                                      : "invited you to collaborate on a list.")}
+                                  {notif.type === "group_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to join the group chat "${notif.targetName}".`
+                                      : "invited you to join a group chat.")}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -350,7 +368,7 @@ export default function Navbar() {
                                               targetUserId: notif.sender.userId,
                                             });
                                         }}
-                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
                                       >
                                         Accept
                                       </Button>
@@ -371,8 +389,10 @@ export default function Navbar() {
                                     </div>
                                   )}
 
-                                {/* Watchlist Invite Actions */}
-                                {notif.type === "watchlist_invite" &&
+
+
+                                {/* List Invite Actions */}
+                                {notif.type === "list_invite" &&
                                   notif.mediaId && (
                                     <div
                                       className="mt-2 flex items-center gap-2"
@@ -382,13 +402,18 @@ export default function Navbar() {
                                         size="xs"
                                         onClick={async (e) => {
                                           e.stopPropagation();
-                                          await acceptWatchlistInvite({
-                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          await acceptListInvite({
+                                            listId:
+                                              notif.mediaId as Id<"customLists">,
                                           });
-                                          toast.success("Watchlist invitation accepted!");
-                                          router.push(`/shared-watchlists/${notif.mediaId}`);
+                                          toast.success(
+                                            "List invitation accepted!",
+                                          );
+                                          router.push(
+                                            `/lists/${notif.mediaId}`,
+                                          );
                                         }}
-                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
                                       >
                                         Accept
                                       </Button>
@@ -397,10 +422,61 @@ export default function Navbar() {
                                         variant="outline"
                                         onClick={async (e) => {
                                           e.stopPropagation();
-                                          await declineWatchlistInvite({
-                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          await declineListInvite({
+                                            listId:
+                                              notif.mediaId as Id<"customLists">,
                                           });
-                                          toast.success("Watchlist invitation declined.");
+                                          toast.success(
+                                            "List invitation declined.",
+                                          );
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Group Invite Actions */}
+                                {notif.type === "group_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptGroupInvite({
+                                            chatId:
+                                              notif.mediaId as Id<"chats">,
+                                          });
+                                          localStorage.setItem(
+                                            "active_chat_id",
+                                            notif.mediaId!,
+                                          );
+                                          toast.success(
+                                            "Group invitation accepted!",
+                                          );
+                                          router.push(`/chat`);
+                                        }}
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineGroupInvite({
+                                            chatId:
+                                              notif.mediaId as Id<"chats">,
+                                          });
+                                          toast.success(
+                                            "Group invitation declined.",
+                                          );
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
@@ -417,10 +493,10 @@ export default function Navbar() {
                                     e.stopPropagation();
                                     await markRead({ notifId: notif._id });
                                   }}
-                                  className="absolute top-3 right-3 cursor-pointer text-blue-500 hover:text-blue-400"
+                                  className="hover:text-primary text-primary absolute top-3 right-3 cursor-pointer"
                                   title="Mark as read"
                                 >
-                                  <span className="block h-1.5 w-1.5 rounded-full bg-blue-500" />
+                                  <span className="bg-primary block h-1.5 w-1.5 rounded-full" />
                                 </button>
                               )}
                             </div>
@@ -444,7 +520,7 @@ export default function Navbar() {
                         className="object-cover"
                       />
                     )}
-                    <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                    <AvatarFallback className="bg-primary text-xs font-bold text-white">
                       {user?.username?.charAt(0).toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
@@ -483,19 +559,16 @@ export default function Navbar() {
                     Chats
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push("/shared-watchlists")}
-                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-                  >
-                    <Users className="mr-2 h-4 w-4 text-zinc-400" />
-                    Shared Watchlists
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
                     onClick={() => router.push("/lists")}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
                     <List className="mr-2 h-4 w-4 text-zinc-400" />
                     My Lists
                   </DropdownMenuItem>
+
+
+                  <DropdownMenuSeparator className="my-1 bg-zinc-800" />
+
                   <DropdownMenuItem
                     onClick={() => router.push("/settings")}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
@@ -533,7 +606,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger className="hover:border-zinc-705 relative cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:text-white focus:outline-none">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
-                      <span className="ring-background absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-blue-600 text-[8px] font-black text-white ring-2">
+                      <span className="ring-background bg-primary absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full text-[8px] font-black text-white ring-2">
                         {unreadCount}
                       </span>
                     )}
@@ -569,7 +642,7 @@ export default function Navbar() {
                     <div className="max-h-80 overflow-y-auto py-1">
                       {!notifications ? (
                         <div className="flex items-center justify-center py-6 text-xs text-zinc-500">
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin text-blue-500" />
+                          <Loader2 className="text-primary mr-2 h-4 w-4 animate-spin" />
                           Loading...
                         </div>
                       ) : notifications.length === 0 ? (
@@ -612,7 +685,7 @@ export default function Navbar() {
                               className={cn(
                                 "group relative flex cursor-pointer items-start gap-2.5 rounded-xl border border-transparent p-2.5 transition-all hover:border-zinc-800/40 hover:bg-zinc-900",
                                 !notif.read
-                                  ? "bg-blue-600/5 hover:bg-blue-600/10"
+                                  ? "bg-primary/5 hover:bg-primary/10"
                                   : "",
                               )}
                             >
@@ -644,10 +717,27 @@ export default function Navbar() {
                                     "replied to your comment."}
                                   {notif.type === "comment_mention" &&
                                     "mentioned you in a comment."}
-                                  {notif.type === "chat_message" &&
-                                    "sent you a message."}
-                                  {notif.type === "watchlist_invite" &&
-                                    "invited you to join a shared watchlist."}
+                                  {notif.type === "chat_message" && (
+                                    <>
+                                      {notif.groupName
+                                        ? `sent a message in "${notif.groupName}":`
+                                        : "sent you a message:"}
+                                      <span className="mt-0.5 block max-w-full truncate font-normal text-zinc-400 italic">
+                                        &quot;
+                                        {notif.chatMessageContent || "Message"}
+                                        &quot;
+                                      </span>
+                                    </>
+                                  )}
+
+                                  {notif.type === "list_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to collaborate on the list "${notif.targetName}".`
+                                      : "invited you to collaborate on a list.")}
+                                  {notif.type === "group_invite" &&
+                                    (notif.targetName
+                                      ? `invited you to join the group chat "${notif.targetName}".`
+                                      : "invited you to join a group chat.")}
                                 </p>
                                 <span className="mt-1 block text-[10px] font-semibold text-zinc-500">
                                   {formatTime(notif.createdAt)}
@@ -669,7 +759,7 @@ export default function Navbar() {
                                               targetUserId: notif.sender.userId,
                                             });
                                         }}
-                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
                                       >
                                         Accept
                                       </Button>
@@ -690,8 +780,10 @@ export default function Navbar() {
                                     </div>
                                   )}
 
-                                {/* Watchlist Invite Actions */}
-                                {notif.type === "watchlist_invite" &&
+
+
+                                {/* List Invite Actions */}
+                                {notif.type === "list_invite" &&
                                   notif.mediaId && (
                                     <div
                                       className="mt-2 flex items-center gap-2"
@@ -701,13 +793,18 @@ export default function Navbar() {
                                         size="xs"
                                         onClick={async (e) => {
                                           e.stopPropagation();
-                                          await acceptWatchlistInvite({
-                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          await acceptListInvite({
+                                            listId:
+                                              notif.mediaId as Id<"customLists">,
                                           });
-                                          toast.success("Watchlist invitation accepted!");
-                                          router.push(`/shared-watchlists/${notif.mediaId}`);
+                                          toast.success(
+                                            "List invitation accepted!",
+                                          );
+                                          router.push(
+                                            `/lists/${notif.mediaId}`,
+                                          );
                                         }}
-                                        className="h-7 cursor-pointer rounded-lg bg-blue-600 px-3 text-[10px] font-bold text-white hover:bg-blue-500"
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
                                       >
                                         Accept
                                       </Button>
@@ -716,10 +813,61 @@ export default function Navbar() {
                                         variant="outline"
                                         onClick={async (e) => {
                                           e.stopPropagation();
-                                          await declineWatchlistInvite({
-                                            watchlistId: notif.mediaId as Id<"sharedWatchlists">,
+                                          await declineListInvite({
+                                            listId:
+                                              notif.mediaId as Id<"customLists">,
                                           });
-                                          toast.success("Watchlist invitation declined.");
+                                          toast.success(
+                                            "List invitation declined.",
+                                          );
+                                        }}
+                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
+                                      >
+                                        Decline
+                                      </Button>
+                                    </div>
+                                  )}
+
+                                {/* Group Invite Actions */}
+                                {notif.type === "group_invite" &&
+                                  notif.mediaId && (
+                                    <div
+                                      className="mt-2 flex items-center gap-2"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      <Button
+                                        size="xs"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await acceptGroupInvite({
+                                            chatId:
+                                              notif.mediaId as Id<"chats">,
+                                          });
+                                          localStorage.setItem(
+                                            "active_chat_id",
+                                            notif.mediaId!,
+                                          );
+                                          toast.success(
+                                            "Group invitation accepted!",
+                                          );
+                                          router.push(`/chat`);
+                                        }}
+                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
+                                      >
+                                        Accept
+                                      </Button>
+                                      <Button
+                                        size="xs"
+                                        variant="outline"
+                                        onClick={async (e) => {
+                                          e.stopPropagation();
+                                          await declineGroupInvite({
+                                            chatId:
+                                              notif.mediaId as Id<"chats">,
+                                          });
+                                          toast.success(
+                                            "Group invitation declined.",
+                                          );
                                         }}
                                         className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
                                       >
@@ -736,10 +884,10 @@ export default function Navbar() {
                                     e.stopPropagation();
                                     await markRead({ notifId: notif._id });
                                   }}
-                                  className="absolute top-2.5 right-2.5 cursor-pointer text-blue-500 hover:text-blue-400"
+                                  className="hover:text-primary text-primary absolute top-2.5 right-2.5 cursor-pointer"
                                   title="Mark as read"
                                 >
-                                  <span className="block h-1.5 w-1.5 rounded-full bg-blue-500" />
+                                  <span className="bg-primary block h-1.5 w-1.5 rounded-full" />
                                 </button>
                               )}
                             </div>
@@ -820,13 +968,13 @@ export default function Navbar() {
                   {isLoggedIn && (
                     <>
                       <Link
-                        href="/shared-watchlists"
+                        href="/chat"
                         prefetch={false}
                         onClick={() => setMobileMenuOpen(false)}
                         className="flex items-center gap-2 hover:text-white"
                       >
-                        <Users className="h-4 w-4" />
-                        Shared Watchlists
+                        <MessageSquare className="h-4 w-4" />
+                        Chats
                       </Link>
                       <Link
                         href="/lists"
@@ -837,15 +985,7 @@ export default function Navbar() {
                         <List className="h-4 w-4" />
                         My Lists
                       </Link>
-                      <Link
-                        href="/chat"
-                        prefetch={false}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 hover:text-white"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        Chat
-                      </Link>
+
                     </>
                   )}
                 </nav>
@@ -871,7 +1011,7 @@ export default function Navbar() {
                               className="object-cover"
                             />
                           )}
-                          <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                          <AvatarFallback className="bg-primary text-xs font-bold text-white">
                             {user?.username?.charAt(0).toUpperCase() ?? "U"}
                           </AvatarFallback>
                         </Avatar>

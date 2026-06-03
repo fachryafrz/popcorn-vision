@@ -73,13 +73,6 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
 
     // Set custom theme tag
     root.setAttribute("data-theme", theme);
-
-    // Override hardcoded blue/indigo tailwind utilities with the theme's active primary color
-    root.style.setProperty("--color-blue-400", "var(--primary)");
-    root.style.setProperty("--color-blue-500", "var(--primary)");
-    root.style.setProperty("--color-blue-600", "var(--primary)");
-    root.style.setProperty("--color-indigo-500", "var(--primary)");
-    root.style.setProperty("--color-indigo-600", "var(--primary)");
   }, [theme]);
 
   return (

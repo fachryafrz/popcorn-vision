@@ -280,23 +280,11 @@ export default function MediaDetailClient({
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [isAddToSharedOpen, setIsAddToSharedOpen] = useState(false);
   const [isAddToCustomOpen, setIsAddToCustomOpen] = useState(false);
-
-  const sharedWatchlists = useQuery(
-    api.sharedWatchlists.getWatchlistsWithMediaStatus,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip"
-  );
-  const addSharedTitle = useMutation(api.sharedWatchlists.addTitle);
-  const removeSharedTitle = useMutation(api.sharedWatchlists.removeTitle);
 
   const customLists = useQuery(
     api.customLists.getListsWithMediaStatus,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip"
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const addCustomItem = useMutation(api.customLists.addItem);
   const removeCustomItem = useMutation(api.customLists.removeItem);
@@ -344,7 +332,15 @@ export default function MediaDetailClient({
         episode: mediaType === "tv" ? episode : undefined,
       }).catch((err) => console.error("Failed to save watch progress:", err));
     }
-  }, [activeTab, season, episode, isLoggedIn, mediaType, details, upsertWatchProgress]);
+  }, [
+    activeTab,
+    season,
+    episode,
+    isLoggedIn,
+    mediaType,
+    details,
+    upsertWatchProgress,
+  ]);
 
   const handleShareToChat = async (chatId: string, chatTitle: string) => {
     try {
@@ -619,12 +615,12 @@ export default function MediaDetailClient({
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-blue-400/30 bg-blue-600 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
+            <span className="border-primary/30 bg-primary rounded-full border px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
               {mediaType === "tv" ? "TV Series" : "Movie"}
             </span>
             {certification && (
               <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-black text-zinc-300 uppercase">
-                Rating: {certification}
+                Rated: {certification}
               </span>
             )}
             {(() => {
@@ -681,10 +677,6 @@ export default function MediaDetailClient({
             openAuth={openAuth}
             setIsLogModalOpen={setIsLogModalOpen}
             setIsShareDialogOpen={setIsShareDialogOpen}
-            onClickSharedWatchlist={() => {
-              if (!isLoggedIn) openAuth();
-              else setIsAddToSharedOpen(true);
-            }}
             onClickCustomList={() => {
               if (!isLoggedIn) openAuth();
               else setIsAddToCustomOpen(true);
@@ -789,7 +781,7 @@ export default function MediaDetailClient({
         {recommendations.length > 0 && (
           <div className="space-y-6">
             <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-              <TrendingUp className="h-5 w-5 text-blue-500" />
+              <TrendingUp className="text-primary h-5 w-5" />
               More Like This
             </h2>
             <Carousel
@@ -836,7 +828,7 @@ export default function MediaDetailClient({
             <div className="max-h-60 scrollbar-thin space-y-1.5 overflow-y-auto pr-1">
               {!chatsList ? (
                 <div className="flex items-center justify-center py-6">
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
                 </div>
               ) : chatsList.length === 0 ? (
                 <p className="py-4 text-center text-xs text-zinc-500 italic">
@@ -899,100 +891,32 @@ export default function MediaDetailClient({
         </DialogContent>
       </Dialog>
 
-      {/* Add to Shared Watchlist Dialog */}
-      <Dialog open={isAddToSharedOpen} onOpenChange={setIsAddToSharedOpen}>
-        <DialogContent className="border border-zinc-800 bg-zinc-950 text-white rounded-3xl max-w-md">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Add to Shared Watchlist</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4 max-h-[350px] overflow-y-auto pr-1">
-            {sharedWatchlists === undefined ? (
-              <div className="flex justify-center py-6">
-                <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-              </div>
-            ) : sharedWatchlists.length === 0 ? (
-              <div className="text-center py-6">
-                <p className="text-sm text-zinc-500 mb-4">You are not part of any shared watchlists yet.</p>
-                <Button
-                  onClick={() => {
-                    setIsAddToSharedOpen(false);
-                    router.push("/shared-watchlists");
-                  }}
-                  className="bg-white text-black hover:bg-zinc-200 rounded-xl font-bold px-4 py-2 text-xs"
-                >
-                  Create Watchlist
-                </Button>
-              </div>
-            ) : (
-              sharedWatchlists.map((list) => (
-                <div
-                  key={list._id}
-                  onClick={async () => {
-                    try {
-                      if (list.hasMedia) {
-                        await removeSharedTitle({
-                          watchlistId: list._id,
-                          mediaId: String(details.id),
-                          mediaType,
-                        });
-                        toast.success(`Removed from ${list.name}!`);
-                      } else {
-                        await addSharedTitle({
-                          watchlistId: list._id,
-                          mediaId: String(details.id),
-                          mediaType,
-                          title: details.title || details.name || "",
-                          posterPath: details.poster_path || "",
-                          releaseYear: releaseYear.toString(),
-                        });
-                        toast.success(`Added to ${list.name}!`);
-                      }
-                    } catch {
-                      toast.error("Failed to update watchlist");
-                    }
-                  }}
-                  className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-zinc-900 bg-zinc-900/20 hover:bg-zinc-900/60 hover:border-zinc-800 transition-all cursor-pointer group"
-                >
-                  <div>
-                    <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
-                      {list.name}
-                    </p>
-                    <p className="text-xs text-zinc-500 mt-0.5">
-                      {list.memberCount} {list.memberCount === 1 ? "member" : "members"}
-                    </p>
-                  </div>
-                  {list.hasMedia ? (
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  ) : (
-                    <Plus className="h-4 w-4 text-zinc-500 group-hover:text-white transition-colors" />
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       {/* Add to Custom List Dialog */}
       <Dialog open={isAddToCustomOpen} onOpenChange={setIsAddToCustomOpen}>
-        <DialogContent className="border border-zinc-800 bg-zinc-950 text-white rounded-3xl max-w-md">
+        <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Add to Custom List</DialogTitle>
+            <DialogTitle className="text-xl font-bold">
+              Add to Custom List
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-4 max-h-[350px] overflow-y-auto pr-1">
+          <div className="max-h-[350px] space-y-4 overflow-y-auto py-4 pr-1">
             {customLists === undefined ? (
               <div className="flex justify-center py-6">
-                <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                <Loader2 className="text-primary h-6 w-6 animate-spin" />
               </div>
             ) : customLists.length === 0 ? (
-              <div className="text-center py-6">
-                <p className="text-sm text-zinc-500 mb-4">You have not created or joined any custom lists yet.</p>
+              <div className="py-6 text-center">
+                <p className="mb-4 text-sm text-zinc-500">
+                  You have not created or joined any custom lists yet.
+                </p>
                 <Button
                   onClick={() => {
                     setIsAddToCustomOpen(false);
                     router.push("/lists");
                   }}
-                  className="bg-white text-black hover:bg-zinc-200 rounded-xl font-bold px-4 py-2 text-xs"
+                  className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-black hover:bg-zinc-200"
                 >
                   Create Custom List
                 </Button>
@@ -1025,14 +949,14 @@ export default function MediaDetailClient({
                       toast.error("Failed to update custom list");
                     }
                   }}
-                  className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-zinc-900 bg-zinc-900/20 hover:bg-zinc-900/60 hover:border-zinc-800 transition-all cursor-pointer group"
+                  className="group flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-zinc-900 bg-zinc-900/20 p-3 transition-all hover:border-zinc-800 hover:bg-zinc-900/60"
                 >
                   <div>
-                    <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
+                    <p className="group-hover:text-primary text-sm font-bold text-white transition-colors">
                       {list.name}
                     </p>
                     {list.isCollaborative && (
-                      <span className="inline-block bg-blue-950/20 text-blue-400 border border-blue-900/30 text-[9px] font-extrabold uppercase rounded px-1.5 py-0.5 mt-1">
+                      <span className="text-primary mt-1 inline-block rounded border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[9px] font-extrabold uppercase">
                         Collaborative
                       </span>
                     )}
@@ -1040,7 +964,7 @@ export default function MediaDetailClient({
                   {list.hasMedia ? (
                     <Check className="h-4 w-4 text-emerald-500" />
                   ) : (
-                    <Plus className="h-4 w-4 text-zinc-500 group-hover:text-white transition-colors" />
+                    <Plus className="h-4 w-4 text-zinc-500 transition-colors group-hover:text-white" />
                   )}
                 </div>
               ))

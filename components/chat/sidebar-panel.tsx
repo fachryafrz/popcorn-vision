@@ -7,6 +7,7 @@ import moment from "moment";
 import { ChatItem } from "./types";
 import { Id } from "@/convex/_generated/dataModel";
 import { siteConfig } from "@/config/site";
+import Link from "next/link";
 
 interface SidebarPanelProps {
   chats: ChatItem[] | undefined;
@@ -41,22 +42,28 @@ export default function SidebarPanel({
       <div className="flex grow flex-col overflow-hidden">
         {/* Header Controls */}
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
-          <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white select-none">
-            <img
-              src="/logo/popcorn.png"
-              alt={siteConfig.name}
-              className={cn(
-                "h-10 w-10 object-contain transition-all duration-500",
-              )}
-            />
-            <span
-              className={cn(
-                "bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-lg font-black tracking-wider text-transparent uppercase transition-all duration-500",
-              )}
-            >
-              POVI
-            </span>
-          </h1>
+          <Link
+            href="/"
+            prefetch={false}
+            className="flex max-w-fit cursor-pointer items-center gap-2"
+          >
+            <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white select-none">
+              <img
+                src="/logo/popcorn.png"
+                alt={siteConfig.name}
+                className={cn(
+                  "h-10 w-10 object-contain transition-all duration-500",
+                )}
+              />
+              <span
+                className={cn(
+                  "bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-lg font-black tracking-wider text-transparent uppercase transition-all duration-500",
+                )}
+              >
+                POVI
+              </span>
+            </h1>
+          </Link>
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -95,7 +102,7 @@ export default function SidebarPanel({
         <div className="flex-1 scrollbar-thin space-y-1 overflow-y-auto p-2">
           {!chats ? (
             <div className="flex flex-col items-center justify-center gap-2 py-10">
-              <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+              <Loader2 className="text-primary h-5 w-5 animate-spin" />
               <span className="text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
                 Syncing chats...
               </span>
@@ -131,7 +138,7 @@ export default function SidebarPanel({
                   className={cn(
                     "flex cursor-pointer items-center gap-3 rounded-2xl border border-transparent p-3 transition-all select-none",
                     isActive
-                      ? "border-blue-500/20 bg-blue-600/10 text-white"
+                      ? "border-primary/20 bg-primary/10 text-white"
                       : "text-zinc-300 hover:bg-zinc-900/40 hover:text-white",
                   )}
                 >
@@ -182,7 +189,7 @@ export default function SidebarPanel({
                     </div>
                     <div className="mt-0.5 flex items-center justify-between">
                       {c.isTyping ? (
-                        <span className="block max-w-[150px] animate-pulse truncate text-[10px] font-bold text-blue-400">
+                        <span className="text-primary block max-w-[150px] animate-pulse truncate text-[10px] font-bold">
                           {c.type === "group"
                             ? `${c.typingName} is typing...`
                             : "typing..."}
@@ -195,7 +202,7 @@ export default function SidebarPanel({
                         </span>
                       )}
                       {hasUnread && (
-                        <span className="flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full bg-blue-600 px-1 text-[8px] font-black text-white">
+                        <span className="bg-primary flex h-4 min-w-4 shrink-0 items-center justify-center rounded-full px-1 text-[8px] font-black text-white">
                           {c.unreadCount}
                         </span>
                       )}

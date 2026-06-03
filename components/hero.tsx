@@ -209,7 +209,7 @@ function HeroSlide({
           )}
 
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full border border-blue-400/40 bg-blue-600/90 px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
+            <span className="border-primary/40 bg-primary/90 rounded-full border px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
               {mediaLabel}
             </span>
             <div className="flex items-center gap-1.5 rounded-full border border-zinc-700/50 bg-zinc-900/80 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
@@ -228,7 +228,7 @@ function HeroSlide({
           <div className="mt-6 flex items-center gap-4">
             <Button
               onClick={() => router.push(`/${media.media_type}/${media.id}`)}
-              className="flex cursor-pointer items-center gap-2 rounded-full bg-blue-600 px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 hover:bg-blue-500 active:scale-98 sm:px-8 sm:text-base"
+              className="hover:bg-primary bg-primary flex cursor-pointer items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base"
             >
               <Play className="h-5 w-5 fill-current" />
               View Details

@@ -20,6 +20,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -41,6 +42,8 @@ import {
   Lock,
   MessageSquare,
   Edit2,
+  ThumbsUp,
+  CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -64,6 +67,7 @@ interface CustomList {
   createdAt: number;
   privacy: string;
   isCollaborative: boolean;
+  isWatchlist?: boolean;
 }
 
 interface CustomListItem {
@@ -81,6 +85,16 @@ interface CustomListItem {
     username: string;
     name: string;
   } | null;
+  watched?: boolean;
+  watchedAt?: number;
+  watchedById?: string;
+  watchedByUser?: {
+    userId: string;
+    username: string;
+    name: string;
+  } | null;
+  voteCount: number;
+  userVote: number;
 }
 
 interface CustomListComment {
@@ -116,30 +130,31 @@ export default function CustomListDetailPage({
   const router = useRouter();
 
   // Queries
-  const detail = useQuery(
-    api.customLists.getListDetail,
-    { listId }
-  ) as {
-    list: CustomList;
-    creator: ListCreator | null;
-    items: CustomListItem[];
-    likeCount: number;
-    isLiked: boolean;
-    isFavorited: boolean;
-    collaborators: ListCreator[];
-    comments: CustomListComment[];
-  } | undefined;
+  const detail = useQuery(api.customLists.getListDetail, { listId }) as
+    | {
+        list: CustomList;
+        creator: ListCreator | null;
+        items: CustomListItem[];
+        likeCount: number;
+        isLiked: boolean;
+        isFavorited: boolean;
+        collaborators: ListCreator[];
+        comments: CustomListComment[];
+        unauthorized?: undefined;
+      }
+    | { unauthorized: true }
+    | undefined;
 
   // Fetch current user's profile and friends for invites
   const currentUserProfile = useQuery(
     api.users.getCurrentUser,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   );
   const userSocialProfile = useQuery(
     api.social.getUserSocialProfile,
     isLoggedIn && currentUserProfile
       ? { username: currentUserProfile.username }
-      : "skip"
+      : "skip",
   );
   const friends = userSocialProfile?.friends || [];
 
@@ -148,12 +163,22 @@ export default function CustomListDetailPage({
   const removeItemMutation = useMutation(api.customLists.removeItem);
   const updateListMutation = useMutation(api.customLists.updateList);
   const deleteListMutation = useMutation(api.customLists.deleteList);
-  const addCollaboratorMutation = useMutation(api.customLists.addCollaborator);
-  const removeCollaboratorMutation = useMutation(api.customLists.removeCollaborator);
+  const inviteCollaboratorMutation = useMutation(
+    api.customLists.inviteCollaborator,
+  );
+  const removeCollaboratorMutation = useMutation(
+    api.customLists.removeCollaborator,
+  );
   const toggleLikeMutation = useMutation(api.customLists.toggleLikeList);
-  const toggleFavoriteMutation = useMutation(api.customLists.toggleFavoriteList);
+  const toggleFavoriteMutation = useMutation(
+    api.customLists.toggleFavoriteList,
+  );
   const addCommentMutation = useMutation(api.customLists.addListComment);
   const deleteCommentMutation = useMutation(api.customLists.deleteListComment);
+  const toggleItemWatchedMutation = useMutation(
+    api.customLists.toggleItemWatched,
+  );
+  const toggleItemVoteMutation = useMutation(api.customLists.toggleItemVote);
 
   // States
   const [searchQuery, setSearchQuery] = useState("");
@@ -167,15 +192,24 @@ export default function CustomListDetailPage({
   // Edit list states
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
-  const [editPrivacy, setEditPrivacy] = useState<"public" | "private">("public");
+  const [editPrivacy, setEditPrivacy] = useState<"public" | "private">(
+    "public",
+  );
   const [editCollab, setEditCollab] = useState(false);
+  const [editWatchlist, setEditWatchlist] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Comment state
   const [newComment, setNewComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
 
-
+  // Watchlist filter/sort state
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "watched" | "unwatched"
+  >("all");
+  const [sortBy, setSortBy] = useState<"recently_added" | "most_upvotes">(
+    "most_upvotes",
+  );
 
   // Search effect with debounce
   useEffect(() => {
@@ -200,15 +234,65 @@ export default function CustomListDetailPage({
   if (detail === undefined) {
     return (
       <div className="flex min-h-[85vh] items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
       </div>
     );
   }
 
-  const { list, creator, items, likeCount, isLiked, isFavorited, collaborators, comments } = detail;
+  if ("unauthorized" in detail && detail.unauthorized) {
+    return (
+      <div className="flex min-h-[80vh] flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800">
+          <Lock className="text-zinc-400 h-8 w-8" />
+        </div>
+        <h1 className="mt-6 text-2xl font-extrabold tracking-tight">This List is Private</h1>
+        <p className="mt-2 max-w-sm text-sm text-zinc-500">
+          You do not have permission to view this custom list. The creator has restricted access to list members and collaborators only.
+        </p>
+        <Button
+          onClick={() => router.push("/lists")}
+          className="mt-6 rounded-full font-bold bg-white text-black hover:bg-zinc-200"
+        >
+          Back to Custom Lists
+        </Button>
+      </div>
+    );
+  }
+
+  const {
+    list,
+    creator,
+    items,
+    likeCount,
+    isLiked,
+    isFavorited,
+    collaborators,
+    comments,
+  } = detail;
+
+  const filteredAndSortedItems = [...items]
+    .filter((item) => {
+      if (!list.isWatchlist) return true;
+      if (statusFilter === "watched") return !!item.watched;
+      if (statusFilter === "unwatched") return !item.watched;
+      return true;
+    })
+    .sort((a, b) => {
+      if (!list.isWatchlist) return 0;
+      if (sortBy === "most_upvotes") {
+        if (b.voteCount !== a.voteCount) {
+          return b.voteCount - a.voteCount;
+        }
+        return b.addedAt - a.addedAt;
+      } else {
+        return b.addedAt - a.addedAt;
+      }
+    });
 
   const isOwner = creator?.userId === currentUser?.id;
-  const isCollaborator = list.isCollaborative && (isOwner || collaborators.some((c) => c.userId === currentUser?.id));
+  const isCollaborator =
+    list.isCollaborative &&
+    (isOwner || collaborators.some((c) => c.userId === currentUser?.id));
   const canModify = isOwner || isCollaborator;
 
   // Handlers
@@ -232,7 +316,11 @@ export default function CustomListDetailPage({
     }
   };
 
-  const handleRemoveItem = async (mediaId: string, mediaType: string, title: string) => {
+  const handleRemoveItem = async (
+    mediaId: string,
+    mediaType: string,
+    title: string,
+  ) => {
     if (!confirm(`Are you sure you want to remove ${title}?`)) return;
     try {
       await removeItemMutation({ listId, mediaId, mediaType });
@@ -244,10 +332,10 @@ export default function CustomListDetailPage({
 
   const handleInvite = async (userId: string, name: string) => {
     try {
-      await addCollaboratorMutation({ listId, userId });
-      toast.success(`Added ${name} as a collaborator`);
+      await inviteCollaboratorMutation({ listId, userId });
+      toast.success(`Sent collaborator invitation to ${name}`);
     } catch {
-      toast.error("Failed to add collaborator");
+      toast.error("Failed to send collaborator invitation");
     }
   };
 
@@ -261,7 +349,9 @@ export default function CustomListDetailPage({
 
     try {
       await removeCollaboratorMutation({ listId, userId });
-      toast.success(isSelf ? "You have left the list" : `Removed ${name} from the list`);
+      toast.success(
+        isSelf ? "You have left the list" : `Removed ${name} from the list`,
+      );
       if (isSelf) {
         router.push("/lists");
       }
@@ -283,6 +373,26 @@ export default function CustomListDetailPage({
     }
   };
 
+  const handleToggleWatched = async (mediaId: string, mediaType: string) => {
+    try {
+      await toggleItemWatchedMutation({ listId, mediaId, mediaType });
+    } catch {
+      toast.error("Failed to update watched status");
+    }
+  };
+
+  const handleToggleVote = async (mediaId: string, mediaType: string) => {
+    if (!isLoggedIn) {
+      toast.error("Please sign in to vote");
+      return;
+    }
+    try {
+      await toggleItemVoteMutation({ listId, mediaId, mediaType });
+    } catch {
+      toast.error("Failed to toggle vote");
+    }
+  };
+
   const handleToggleFavorite = async () => {
     if (!isLoggedIn) {
       toast.error("Please sign in to save lists to favorites");
@@ -290,7 +400,9 @@ export default function CustomListDetailPage({
     }
     try {
       const saved = await toggleFavoriteMutation({ listId });
-      toast.success(saved ? "Saved list to favorites!" : "Removed from favorites.");
+      toast.success(
+        saved ? "Saved list to favorites!" : "Removed from favorites.",
+      );
     } catch {
       toast.error("Failed to toggle favorite");
     }
@@ -311,6 +423,7 @@ export default function CustomListDetailPage({
         description: editDesc.trim() || undefined,
         privacy: editPrivacy,
         isCollaborative: editCollab,
+        isWatchlist: editCollab ? editWatchlist : false,
       });
       toast.success("List updated!");
       setIsEditOpen(false);
@@ -322,7 +435,12 @@ export default function CustomListDetailPage({
   };
 
   const handleDeleteList = async () => {
-    if (!confirm("Are you sure you want to permanently delete this list? This cannot be undone.")) return;
+    if (
+      !confirm(
+        "Are you sure you want to permanently delete this list? This cannot be undone.",
+      )
+    )
+      return;
     try {
       await deleteListMutation({ listId });
       toast.success("List deleted successfully!");
@@ -372,7 +490,7 @@ export default function CustomListDetailPage({
       <div className="relative mb-8 overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/20 p-6 md:p-8">
         <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
           <div className="space-y-3">
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex flex-wrap items-center gap-2">
               <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
                 {list.name}
               </h1>
@@ -387,8 +505,13 @@ export default function CustomListDetailPage({
                   </span>
                 )}
                 {list.isCollaborative && (
-                  <span className="flex items-center gap-1 rounded-full border border-zinc-800 bg-blue-950/20 px-2 py-0.5 text-[10px] font-extrabold text-blue-400">
+                  <span className="text-primary border-primary/30 bg-primary/10 flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold">
                     <Users className="h-3 w-3" /> Collaborative
+                  </span>
+                )}
+                {list.isWatchlist && (
+                  <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold text-emerald-400">
+                    Watchlist
                   </span>
                 )}
               </div>
@@ -405,7 +528,13 @@ export default function CustomListDetailPage({
               </span>
               {creator && (
                 <span>
-                  by <Link href={`/@/${creator.username}`} className="font-bold text-zinc-400 hover:text-white">@{creator.username}</Link>
+                  by{" "}
+                  <Link
+                    href={`/@/${creator.username}`}
+                    className="font-bold text-zinc-400 hover:text-white"
+                  >
+                    @{creator.username}
+                  </Link>
                 </span>
               )}
               {list.isCollaborative && (
@@ -414,7 +543,10 @@ export default function CustomListDetailPage({
                   className="flex cursor-pointer items-center gap-1.5 font-semibold text-zinc-400 transition-colors hover:text-white"
                 >
                   <Users className="h-3.5 w-3.5" />
-                  {collaborators.length} {collaborators.length === 1 ? "collaborator" : "collaborators"}
+                  {collaborators.length}{" "}
+                  {collaborators.length === 1
+                    ? "collaborator"
+                    : "collaborators"}
                 </button>
               )}
             </div>
@@ -427,10 +559,14 @@ export default function CustomListDetailPage({
               variant="outline"
               onClick={handleToggleLike}
               className={`rounded-xl border-zinc-800 transition-all ${
-                isLiked ? "bg-rose-950/25 border-rose-900/40 text-rose-450 hover:bg-rose-950/40" : "text-zinc-300 hover:bg-zinc-900"
+                isLiked
+                  ? "text-rose-450 border-rose-900/40 bg-rose-950/25 hover:bg-rose-950/40"
+                  : "text-zinc-300 hover:bg-zinc-900"
               }`}
             >
-              <Heart className={`mr-2 h-4 w-4 ${isLiked ? "fill-rose-450" : ""}`} />
+              <Heart
+                className={`mr-2 h-4 w-4 ${isLiked ? "fill-rose-450" : ""}`}
+              />
               {likeCount} {likeCount === 1 ? "Like" : "Likes"}
             </Button>
 
@@ -439,10 +575,14 @@ export default function CustomListDetailPage({
               variant="outline"
               onClick={handleToggleFavorite}
               className={`rounded-xl border-zinc-800 transition-all ${
-                isFavorited ? "bg-yellow-950/25 border-yellow-900/40 text-yellow-450 hover:bg-yellow-950/40" : "text-zinc-300 hover:bg-zinc-900"
+                isFavorited
+                  ? "text-yellow-450 border-yellow-900/40 bg-yellow-950/25 hover:bg-yellow-950/40"
+                  : "text-zinc-300 hover:bg-zinc-900"
               }`}
             >
-              <Star className={`mr-2 h-4 w-4 ${isFavorited ? "fill-yellow-455" : ""}`} />
+              <Star
+                className={`mr-2 h-4 w-4 ${isFavorited ? "fill-yellow-455" : ""}`}
+              />
               {isFavorited ? "Favorited" : "Favorite"}
             </Button>
 
@@ -457,6 +597,7 @@ export default function CustomListDetailPage({
                     setEditDesc(detail.list.description || "");
                     setEditPrivacy(detail.list.privacy as "public" | "private");
                     setEditCollab(detail.list.isCollaborative);
+                    setEditWatchlist(detail.list.isWatchlist || false);
                   }
                 }}
               >
@@ -470,67 +611,104 @@ export default function CustomListDetailPage({
                     </Button>
                   }
                 />
-                <DialogContent className="border border-zinc-800 bg-zinc-950 text-white rounded-3xl max-w-md">
+                <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Edit List Details</DialogTitle>
+                    <DialogTitle className="text-xl font-bold">
+                      Edit List Details
+                    </DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleUpdateList} className="space-y-4 py-4">
                     <div className="space-y-2">
-                      <label htmlFor="edit-name" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                      <label
+                        htmlFor="edit-name"
+                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                      >
                         List Name
                       </label>
                       <Input
                         id="edit-name"
                         value={editName}
                         onChange={(e) => setEditName(e.target.value)}
-                        className="border-zinc-800 bg-zinc-900 text-white rounded-xl"
+                        className="rounded-xl border-zinc-800 bg-zinc-900 text-white"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <label htmlFor="edit-desc" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                      <label
+                        htmlFor="edit-desc"
+                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                      >
                         Description (Optional)
                       </label>
                       <Textarea
                         id="edit-desc"
                         value={editDesc}
                         onChange={(e) => setEditDesc(e.target.value)}
-                        className="border-zinc-800 bg-zinc-900 text-white rounded-xl min-h-24 resize-none"
+                        className="min-h-24 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-white"
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label htmlFor="edit-privacy" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                          Privacy
-                        </label>
-                        <Select
-                          value={editPrivacy}
-                          onValueChange={(val) => setEditPrivacy(val as "public" | "private")}
-                        >
-                          <SelectTrigger className="w-full border border-zinc-800 bg-zinc-900 text-white rounded-xl p-2.5 text-sm h-10 flex justify-between items-center">
-                            <SelectValue placeholder="Select privacy" />
-                          </SelectTrigger>
-                          <SelectContent className="border border-zinc-850 bg-zinc-950 text-white rounded-xl">
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="edit-privacy"
+                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                      >
+                        Privacy
+                      </label>
+                      <Select
+                        value={editPrivacy}
+                        onValueChange={(val) =>
+                          setEditPrivacy(val as "public" | "private")
+                        }
+                      >
+                        <SelectTrigger className="flex h-10 w-full items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-sm text-white">
+                          <SelectValue placeholder="Select privacy" />
+                        </SelectTrigger>
+                        <SelectContent className="border-zinc-850 rounded-xl border bg-zinc-950 text-white">
+                          <SelectGroup>
                             <SelectItem value="public">Public</SelectItem>
                             <SelectItem value="private">Private</SelectItem>
-                          </SelectContent>
-                        </Select>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="flex flex-col justify-end space-y-2 pb-1">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="edit-collab"
+                          checked={editCollab}
+                          onCheckedChange={(checked) => {
+                            setEditCollab(!!checked);
+                            if (!checked) setEditWatchlist(false);
+                          }}
+                          className="border-zinc-800 bg-zinc-900"
+                        />
+                        <label
+                          htmlFor="edit-collab"
+                          className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                        >
+                          Collaborative List
+                        </label>
                       </div>
-                      <div className="space-y-2 flex flex-col justify-end pb-1">
-                        <div className="flex items-center gap-2">
+                      {editCollab && (
+                        <div className="mt-1.5 flex items-center gap-2 pl-6">
                           <Checkbox
-                            id="edit-collab"
-                            checked={editCollab}
-                            onCheckedChange={(checked) => setEditCollab(!!checked)}
+                            id="edit-watchlist"
+                            checked={editWatchlist}
+                            onCheckedChange={(checked) =>
+                              setEditWatchlist(!!checked)
+                            }
                             className="border-zinc-800 bg-zinc-900"
                           />
-                          <label htmlFor="edit-collab" className="text-xs font-bold text-zinc-300 select-none cursor-pointer">
-                            Collaborative List
+                          <label
+                            htmlFor="edit-watchlist"
+                            className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                          >
+                            Watchlist Mode (Voting & Watched status)
                           </label>
                         </div>
-                      </div>
+                      )}
                     </div>
-                    <div className="flex justify-between items-center pt-4">
+                    <div className="flex items-center justify-between pt-4">
                       <Button
                         type="button"
                         variant="destructive"
@@ -544,14 +722,14 @@ export default function CustomListDetailPage({
                           type="button"
                           variant="outline"
                           onClick={() => setIsEditOpen(false)}
-                          className="border-zinc-800 text-zinc-450 hover:bg-zinc-900 hover:text-white rounded-xl"
+                          className="text-zinc-450 rounded-xl border-zinc-800 hover:bg-zinc-900 hover:text-white"
                         >
                           Cancel
                         </Button>
                         <Button
                           type="submit"
                           disabled={isUpdating}
-                          className="bg-white text-black hover:bg-zinc-200 rounded-xl font-bold"
+                          className="rounded-xl bg-white font-bold text-black hover:bg-zinc-200"
                         >
                           {isUpdating ? "Saving..." : "Save Changes"}
                         </Button>
@@ -574,18 +752,23 @@ export default function CustomListDetailPage({
                 />
                 <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">Add Collaborators</DialogTitle>
+                    <DialogTitle className="text-xl font-bold">
+                      Add Collaborators
+                    </DialogTitle>
                   </DialogHeader>
                   <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
                     {friends.length === 0 ? (
                       <p className="py-6 text-center text-sm text-zinc-500">
-                        Add friends on Popcorn Vision first to invite them to collaborate!
+                        Add friends on Popcorn Vision first to invite them to
+                        collaborate!
                       </p>
                     ) : (
                       friends
                         .filter(
                           (friend) =>
-                            !collaborators.some((c) => c.userId === friend.userId)
+                            !collaborators.some(
+                              (c) => c.userId === friend.userId,
+                            ),
                         )
                         .map((friend) => (
                           <div
@@ -600,19 +783,25 @@ export default function CustomListDetailPage({
                                     alt={friend.name}
                                   />
                                 )}
-                                <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                                <AvatarFallback className="bg-primary text-xs font-bold text-white">
                                   {friend.username?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
-                                <p className="text-sm font-bold text-white">{friend.name}</p>
-                                <p className="text-xs text-zinc-500">@{friend.username}</p>
+                                <p className="text-sm font-bold text-white">
+                                  {friend.name}
+                                </p>
+                                <p className="text-xs text-zinc-500">
+                                  @{friend.username}
+                                </p>
                               </div>
                             </div>
 
                             <Button
                               size="xs"
-                              onClick={() => handleInvite(friend.userId, friend.name)}
+                              onClick={() =>
+                                handleInvite(friend.userId, friend.name)
+                              }
                               className="rounded-lg bg-white text-black hover:bg-zinc-200"
                             >
                               Add
@@ -623,7 +812,9 @@ export default function CustomListDetailPage({
                     {friends.length > 0 &&
                       friends.filter(
                         (friend) =>
-                          !collaborators.some((c) => c.userId === friend.userId)
+                          !collaborators.some(
+                            (c) => c.userId === friend.userId,
+                          ),
                       ).length === 0 && (
                         <p className="py-6 text-center text-sm text-zinc-500">
                           All your friends are already collaborators!
@@ -641,20 +832,27 @@ export default function CustomListDetailPage({
       <Dialog open={isMembersOpen} onOpenChange={setIsMembersOpen}>
         <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">List Collaborators</DialogTitle>
+            <DialogTitle className="text-xl font-bold">
+              List Collaborators
+            </DialogTitle>
           </DialogHeader>
           <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
             {collaborators.map((collab) => {
               const isCollabCreator = collab.userId === creator?.userId;
-              const canRemove = (isOwner && !isCollabCreator) || collab.userId === currentUser?.id;
+              const canRemove =
+                (isOwner && !isCollabCreator) ||
+                collab.userId === currentUser?.id;
               return (
-                <div key={collab.userId} className="flex items-center justify-between gap-3">
+                <div
+                  key={collab.userId}
+                  className="flex items-center justify-between gap-3"
+                >
                   <div className="flex items-center gap-3">
                     <Avatar className="h-9 w-9 border border-zinc-800">
                       {collab.image && (
                         <AvatarImage src={collab.image} alt={collab.name} />
                       )}
-                      <AvatarFallback className="bg-blue-600 text-xs font-bold text-white">
+                      <AvatarFallback className="bg-primary text-xs font-bold text-white">
                         {collab.username?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -667,7 +865,9 @@ export default function CustomListDetailPage({
                           </span>
                         )}
                       </p>
-                      <p className="text-xs text-zinc-500">@{collab.username}</p>
+                      <p className="text-xs text-zinc-500">
+                        @{collab.username}
+                      </p>
                     </div>
                   </div>
 
@@ -675,7 +875,9 @@ export default function CustomListDetailPage({
                     <Button
                       size="xs"
                       variant="destructive"
-                      onClick={() => handleRemoveMember(collab.userId, collab.name)}
+                      onClick={() =>
+                        handleRemoveMember(collab.userId, collab.name)
+                      }
                       className="h-8 rounded-lg"
                     >
                       {collab.userId === currentUser?.id ? "Leave" : "Remove"}
@@ -725,7 +927,7 @@ export default function CustomListDetailPage({
                 <div className="absolute right-0 left-0 z-35 mt-2 rounded-2xl border border-zinc-800 bg-zinc-950 p-2 shadow-2xl">
                   {searchResults.map((media) => {
                     const alreadyAdded = items.some(
-                      (item) => String(item.mediaId) === String(media.id)
+                      (item) => String(item.mediaId) === String(media.id),
                     );
                     return (
                       <div
@@ -737,10 +939,10 @@ export default function CustomListDetailPage({
                             <img
                               src={`https://image.tmdb.org/t/p/w92${media.poster_path}`}
                               alt={media.title || media.name}
-                              className="border border-zinc-850 h-14 w-10 rounded-lg bg-zinc-900 object-cover"
+                              className="border-zinc-850 h-14 w-10 rounded-lg border bg-zinc-900 object-cover"
                             />
                           ) : (
-                            <div className="border border-zinc-850 flex h-14 w-10 items-center justify-center rounded-lg bg-zinc-900">
+                            <div className="border-zinc-850 flex h-14 w-10 items-center justify-center rounded-lg border bg-zinc-900">
                               <Film className="text-zinc-650 h-5 w-5" />
                             </div>
                           )}
@@ -752,7 +954,10 @@ export default function CustomListDetailPage({
                               {media.release_date
                                 ? new Date(media.release_date).getFullYear()
                                 : "N/A"}{" "}
-                              • {media.media_type === "tv" ? "TV Series" : "Movie"}
+                              •{" "}
+                              {media.media_type === "tv"
+                                ? "TV Series"
+                                : "Movie"}
                             </p>
                           </div>
                         </div>
@@ -776,9 +981,58 @@ export default function CustomListDetailPage({
               )}
               {searchLoading && (
                 <div className="absolute top-3.5 right-12 z-35">
-                  <Loader2 className="h-5 w-5 animate-spin text-blue-500" />
+                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Watchlist Filter & Sort Options */}
+          {list.isWatchlist && items.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex gap-2">
+                {(["all", "unwatched", "watched"] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setStatusFilter(f)}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold tracking-wide uppercase transition-all ${
+                      statusFilter === f
+                        ? "bg-white font-extrabold text-black"
+                        : "border border-zinc-800 text-zinc-400 hover:bg-zinc-900/50 hover:text-white"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  Sort:
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setSortBy("recently_added")}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+                      sortBy === "recently_added"
+                        ? "bg-primary/10 text-primary font-extrabold"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Recently Added
+                  </button>
+                  <button
+                    onClick={() => setSortBy("most_upvotes")}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+                      sortBy === "most_upvotes"
+                        ? "bg-primary/10 text-primary font-extrabold"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Most Upvotes
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -787,89 +1041,165 @@ export default function CustomListDetailPage({
             <Card className="rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <Film className="text-zinc-650 mb-4 h-12 w-12" />
-                <h3 className="text-lg font-bold text-zinc-300">This list is empty</h3>
+                <h3 className="text-lg font-bold text-zinc-300">
+                  This list is empty
+                </h3>
                 <p className="mt-2 max-w-sm text-sm text-zinc-500">
-                  {canModify ? "Search and add movies or TV shows above." : "The curator hasn't added any titles yet."}
+                  {canModify
+                    ? "Search and add movies or TV shows above."
+                    : "The curator hasn't added any titles yet."}
                 </p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-4">
-              {items.map((item) => {
-                const tmdbMedia = {
-                  id: Number(item.mediaId),
-                  title: item.mediaType === "movie" ? item.title : undefined,
-                  name: item.mediaType === "tv" ? item.title : undefined,
-                  media_type: item.mediaType as "movie" | "tv",
-                  poster_path: item.posterPath,
-                  release_date: `${item.releaseYear}-01-01`,
-                  popularity: 0,
-                } as TMDBMedia;
+              {filteredAndSortedItems.length === 0 ? (
+                <p className="py-12 text-center text-sm text-zinc-500 italic">
+                  No titles match the selected filter.
+                </p>
+              ) : (
+                filteredAndSortedItems.map((item) => {
+                  const tmdbMedia = {
+                    id: Number(item.mediaId),
+                    title: item.mediaType === "movie" ? item.title : undefined,
+                    name: item.mediaType === "tv" ? item.title : undefined,
+                    media_type: item.mediaType as "movie" | "tv",
+                    poster_path: item.posterPath,
+                    release_date: `${item.releaseYear}-01-01`,
+                    popularity: 0,
+                  } as TMDBMedia;
 
-                return (
-                  <div
-                    key={item._id}
-                    className="group relative flex items-center justify-between gap-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-4 transition-all hover:bg-zinc-900/30"
-                  >
-                    <div className="flex min-w-0 items-center gap-4">
-                      <div
-                        onClick={() => setSelectedMedia(tmdbMedia)}
-                        className="shrink-0 cursor-pointer hover:opacity-85"
-                      >
-                        {item.posterPath ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w154${item.posterPath}`}
-                            alt={item.title}
-                            className="border border-zinc-850 h-20 w-14 rounded-2xl bg-zinc-900 object-cover"
-                          />
-                        ) : (
-                          <div className="border border-zinc-850 flex h-20 w-14 items-center justify-center rounded-2xl bg-zinc-900">
-                            <Film className="text-zinc-650 h-6 w-6" />
+                  return (
+                    <div
+                      key={item._id}
+                      className="group relative flex items-center justify-between gap-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-4 transition-all hover:bg-zinc-900/30"
+                    >
+                      <div className="flex min-w-0 items-center gap-4">
+                        <div
+                          onClick={() => setSelectedMedia(tmdbMedia)}
+                          className="shrink-0 cursor-pointer hover:opacity-85"
+                        >
+                          {item.posterPath ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w154${item.posterPath}`}
+                              alt={item.title}
+                              className="border-zinc-850 h-20 w-14 rounded-2xl border bg-zinc-900 object-cover"
+                            />
+                          ) : (
+                            <div className="border-zinc-850 flex h-20 w-14 items-center justify-center rounded-2xl border bg-zinc-900">
+                              <Film className="text-zinc-650 h-6 w-6" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4
+                              onClick={() => setSelectedMedia(tmdbMedia)}
+                              className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
+                            >
+                              {item.title}
+                            </h4>
+                            <span className="text-zinc-550 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase">
+                              {item.mediaType}
+                            </span>
                           </div>
+                          <p className="mt-1 text-xs text-zinc-500">
+                            {item.releaseYear} • Added by{" "}
+                            <span className="font-bold text-zinc-400">
+                              {item.addedByUser
+                                ? `@${item.addedByUser.username}`
+                                : "member"}
+                            </span>
+                          </p>
+                          {list.isWatchlist && item.watched && (
+                            <div className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              Watched by{" "}
+                              {item.watchedByUser
+                                ? `@${item.watchedByUser.username}`
+                                : "member"}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-2">
+                        {list.isWatchlist && (
+                          <>
+                            {/* Vote Button */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleToggleVote(item.mediaId, item.mediaType)
+                              }
+                              className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
+                                item.userVote === 1
+                                  ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
+                                  : "text-zinc-400 hover:bg-zinc-900"
+                              }`}
+                            >
+                              <ThumbsUp
+                                className={`h-3.5 w-3.5 ${item.userVote === 1 ? "fill-current" : ""}`}
+                              />
+                              <span>{item.voteCount}</span>
+                            </Button>
+
+                            {/* Watched Toggle (Collaborators/Owner only) */}
+                            {canModify && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleToggleWatched(
+                                    item.mediaId,
+                                    item.mediaType,
+                                  )
+                                }
+                                className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
+                                  item.watched
+                                    ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
+                                    : "text-zinc-400 hover:bg-zinc-900"
+                                }`}
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                <span>
+                                  {item.watched ? "Watched" : "Watch"}
+                                </span>
+                              </Button>
+                            )}
+                          </>
+                        )}
+
+                        {canModify && (
+                          <button
+                            onClick={() =>
+                              handleRemoveItem(
+                                item.mediaId,
+                                item.mediaType,
+                                item.title,
+                              )
+                            }
+                            className="text-zinc-450 shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 transition-all hover:scale-105 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 active:scale-95"
+                            title="Remove title"
+                          >
+                            <Trash2 className="h-4.5 w-4.5" />
+                          </button>
                         )}
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4
-                            onClick={() => setSelectedMedia(tmdbMedia)}
-                            className="cursor-pointer truncate text-base font-extrabold text-white transition-colors group-hover:text-blue-400"
-                          >
-                            {item.title}
-                          </h4>
-                          <span className="text-zinc-550 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase">
-                            {item.mediaType}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs text-zinc-500">
-                          Released {item.releaseYear} • Added by{" "}
-                          <span className="font-bold text-zinc-400">
-                            {item.addedByUser ? `@${item.addedByUser.username}` : "member"}
-                          </span>
-                        </p>
-                      </div>
                     </div>
-
-                    {canModify && (
-                      <button
-                        onClick={() => handleRemoveItem(item.mediaId, item.mediaType, item.title)}
-                        className="text-zinc-450 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 transition-all hover:scale-105 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 active:scale-95 shrink-0"
-                        title="Remove title"
-                      >
-                        <Trash2 className="h-4.5 w-4.5" />
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>
 
         {/* Sidebar Comments Section */}
         <div className="space-y-6">
-          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/10 p-6 space-y-4">
+          <div className="space-y-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-6">
             <h3 className="flex items-center gap-2 border-b border-zinc-900 pb-3 text-lg font-bold">
-              <MessageSquare className="h-5 w-5 text-blue-400" /> Comments
+              <MessageSquare className="text-primary h-5 w-5" /> Comments
             </h3>
 
             {/* Comment Form */}
@@ -879,21 +1209,21 @@ export default function CustomListDetailPage({
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder="Share your thoughts on this list..."
-                  className="border-zinc-800 bg-zinc-900 text-white rounded-xl placeholder:text-zinc-500 text-xs min-h-16 resize-none"
+                  className="min-h-16 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-xs text-white placeholder:text-zinc-500"
                   required
                 />
                 <div className="flex justify-end">
                   <Button
                     type="submit"
                     disabled={submittingComment}
-                    className="bg-white text-black hover:bg-zinc-200 text-xs py-1.5 px-3 h-8 rounded-xl font-bold"
+                    className="h-8 rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-black hover:bg-zinc-200"
                   >
                     {submittingComment ? "Posting..." : "Post Comment"}
                   </Button>
                 </div>
               </form>
             ) : (
-              <p className="text-xs text-zinc-500 text-center py-2">
+              <p className="py-2 text-center text-xs text-zinc-500">
                 Sign in to post comments.
               </p>
             )}
@@ -910,33 +1240,41 @@ export default function CustomListDetailPage({
                   const canDelete = isOwner || isCommentAuthor;
 
                   return (
-                    <div key={comment._id} className="flex gap-3 text-xs border-b border-zinc-900/50 pb-3">
+                    <div
+                      key={comment._id}
+                      className="flex gap-3 border-b border-zinc-900/50 pb-3 text-xs"
+                    >
                       <Avatar className="h-7 w-7 shrink-0 border border-zinc-800">
                         {comment.author.image && (
-                          <AvatarImage src={comment.author.image} alt={comment.author.name} />
+                          <AvatarImage
+                            src={comment.author.image}
+                            alt={comment.author.name}
+                          />
                         )}
                         <AvatarFallback className="bg-zinc-850 text-[10px] font-bold text-zinc-400">
                           {comment.author.username?.charAt(0).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 space-y-1">
-                        <div className="flex justify-between items-center">
+                        <div className="flex items-center justify-between">
                           <p className="font-bold text-zinc-300">
                             {comment.author.name}{" "}
-                            <span className="text-zinc-500 font-normal">
+                            <span className="font-normal text-zinc-500">
                               @{comment.author.username}
                             </span>
                           </p>
                           {canDelete && (
                             <button
                               onClick={() => handleDeleteComment(comment._id)}
-                              className="text-zinc-500 hover:text-red-400 transition-colors"
+                              className="text-zinc-500 transition-colors hover:text-red-400"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </button>
                           )}
                         </div>
-                        <p className="text-zinc-400 leading-normal whitespace-pre-wrap">{comment.content}</p>
+                        <p className="leading-normal whitespace-pre-wrap text-zinc-400">
+                          {comment.content}
+                        </p>
                         <p className="text-[10px] text-zinc-500">
                           {new Date(comment.createdAt).toLocaleDateString()}
                         </p>

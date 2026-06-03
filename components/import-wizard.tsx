@@ -598,7 +598,7 @@ export default function ImportWizard() {
           <div className="group relative overflow-hidden rounded-3xl border border-dashed border-zinc-800 bg-zinc-950/20 p-8 text-center shadow-lg backdrop-blur-md transition-all duration-300 hover:border-zinc-700/80 hover:bg-zinc-950/30 md:p-12">
             <div className="flex flex-col items-center justify-center gap-4">
               <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 shadow-inner transition-transform duration-300 group-hover:scale-105">
-                <Upload className="h-7 w-7 text-blue-500" />
+                <Upload className="text-primary h-7 w-7" />
               </div>
               <div>
                 <h3 className="mb-1 text-base font-bold text-zinc-200">
@@ -667,7 +667,7 @@ export default function ImportWizard() {
       {/* STEP 2: Resolution loading view */}
       {step === "resolving" && (
         <div className="flex flex-col items-center justify-center gap-5 rounded-3xl border border-zinc-900 bg-zinc-950/20 py-20 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+          <Loader2 className="text-primary h-10 w-10 animate-spin" />
           <div>
             <h3 className="mb-1 text-base font-bold text-zinc-200">
               Resolving Items on TMDB
@@ -679,7 +679,7 @@ export default function ImportWizard() {
           <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
             <div
               style={{ width: `${resolveProgress}%` }}
-              className="h-full rounded-full bg-blue-600 transition-all duration-300"
+              className="bg-primary h-full rounded-full transition-all duration-300"
             />
           </div>
           <span className="text-xs font-bold text-zinc-400">
@@ -719,7 +719,7 @@ export default function ImportWizard() {
                       className={cn(
                         "cursor-pointer rounded-lg px-3 py-1.5 text-[10px] font-black tracking-wider uppercase transition-all",
                         targetTable === tab.id
-                          ? "scale-[1.02] bg-blue-600 text-white shadow-md"
+                          ? "bg-primary scale-[1.02] text-white shadow-md"
                           : "hover:text-zinc-350 text-zinc-500",
                       )}
                     >
@@ -758,7 +758,7 @@ export default function ImportWizard() {
               </span>
               <button
                 onClick={handleToggleAll}
-                className="cursor-pointer text-[10px] font-bold text-blue-400 hover:text-blue-300 hover:underline"
+                className="text-primary cursor-pointer text-[10px] font-bold hover:text-primary/50 hover:underline"
               >
                 {selectedItemIds.size > 0
                   ? "Deselect All"
@@ -836,7 +836,7 @@ export default function ImportWizard() {
                           className={cn(
                             "flex h-5 w-5 cursor-pointer items-center justify-center rounded-lg border transition-all",
                             isSelected
-                              ? "border-blue-500 bg-blue-600 text-white"
+                              ? "border-primary bg-primary text-white"
                               : "border-zinc-800 text-transparent hover:border-zinc-700",
                           )}
                         >
@@ -855,7 +855,7 @@ export default function ImportWizard() {
       {/* STEP 4: Importing Execution view */}
       {step === "importing" && (
         <div className="flex flex-col items-center justify-center gap-5 rounded-3xl border border-zinc-900 bg-zinc-950/20 py-20 text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
+          <Loader2 className="text-primary h-10 w-10 animate-spin" />
           <div>
             <h3 className="mb-1 text-base font-bold text-zinc-200">
               Adding Entries
@@ -867,7 +867,7 @@ export default function ImportWizard() {
           <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
             <div
               style={{ width: `${importProgress}%` }}
-              className="h-full rounded-full bg-blue-600 transition-all duration-300"
+              className="bg-primary h-full rounded-full transition-all duration-300"
             />
           </div>
           <span className="text-xs font-bold text-zinc-400">
@@ -899,7 +899,7 @@ export default function ImportWizard() {
                 {
                   label: "Watchlist",
                   value: summaryStats.watchlist,
-                  color: "text-blue-400",
+                  color: "text-primary",
                 },
                 {
                   label: "Favorites",

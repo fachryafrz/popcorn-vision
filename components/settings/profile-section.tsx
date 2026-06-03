@@ -70,14 +70,14 @@ export default function ProfileSection({
                 className="object-cover"
               />
             ) : null}
-            <AvatarFallback className="flex h-full w-full items-center justify-center bg-blue-600 text-3xl font-black text-white">
+            <AvatarFallback className="bg-primary flex h-full w-full items-center justify-center text-3xl font-black text-white">
               {name.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
 
             {/* Loading overlay spinner */}
             {uploadingImage && (
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60">
-                <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                <Loader2 className="text-primary h-6 w-6 animate-spin" />
               </div>
             )}
 
@@ -150,7 +150,7 @@ export default function ProfileSection({
               placeholder="Display Name"
               value={name}
               onChange={(e) => setName(e.target.value.slice(0, 50))}
-              className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+              className="focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:bg-zinc-900"
             />
           </div>
         </div>
@@ -181,7 +181,7 @@ export default function ProfileSection({
                     .slice(0, 15),
                 )
               }
-              className="w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+              className="focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 py-6 pr-4 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:bg-zinc-900"
             />
           </div>
           <p className="mt-1 pl-1 text-left text-[10px] text-zinc-500">
@@ -207,7 +207,7 @@ export default function ProfileSection({
               value={bio}
               onChange={(e) => setBio(e.target.value.slice(0, 200))}
               rows={3}
-              className="min-h-[90px] w-full resize-none rounded-2xl border border-zinc-800 bg-zinc-900/30 pt-3 pr-4 pb-3 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:border-blue-500/50 focus:bg-zinc-900"
+              className="focus:border-primary/50 min-h-[90px] w-full resize-none rounded-2xl border border-zinc-800 bg-zinc-900/30 pt-3 pr-4 pb-3 pl-12 text-left text-sm text-white placeholder-zinc-600 outline-hidden transition-all focus:bg-zinc-900"
             />
           </div>
         </div>
@@ -234,7 +234,7 @@ export default function ProfileSection({
       <Button
         type="submit"
         disabled={savingProfile}
-        className="mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r from-blue-600 to-indigo-600 py-6 text-sm font-semibold text-white transition-all duration-200 hover:from-blue-500 hover:to-indigo-500 active:scale-[0.98]"
+        className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98]"
       >
         {savingProfile ? (
           <Loader2 className="mx-auto h-5 w-5 animate-spin" />
