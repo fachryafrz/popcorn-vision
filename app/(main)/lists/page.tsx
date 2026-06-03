@@ -15,14 +15,32 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { List, Plus, Loader2, Calendar, ChevronRight, Globe, Lock, Heart, Users, Star } from "lucide-react";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import {
+  List,
+  Plus,
+  Loader2,
+  Calendar,
+  ChevronRight,
+  Globe,
+  Lock,
+  Heart,
+  Users,
+  Star,
+} from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -54,22 +72,23 @@ export default function ListsPage() {
   const isLoggedIn = !!session.data?.user;
   const router = useRouter();
 
-  const [activeTab, setActiveTab] = useState<"my" | "public" | "favorites">("my");
+  const [activeTab, setActiveTab] = useState<"my" | "public" | "favorites">(
+    "my",
+  );
 
   // Queries
   const myLists = useQuery(
     api.customLists.getUserLists,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   ) as CustomList[] | undefined;
 
-  const publicLists = useQuery(
-    api.customLists.getPublicLists,
-    {}
-  ) as CustomList[] | undefined;
+  const publicLists = useQuery(api.customLists.getPublicLists, {}) as
+    | CustomList[]
+    | undefined;
 
   const favoriteLists = useQuery(
     api.customLists.getFavoritedLists,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   ) as CustomList[] | undefined;
 
   // Mutations
@@ -122,11 +141,11 @@ export default function ListsPage() {
 
     if (lists.length === 0) {
       return (
-        <Card className="border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center rounded-3xl">
+        <Card className="rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center">
           <CardContent className="flex flex-col items-center justify-center p-0">
-            <List className="mb-4 h-12 w-12 text-zinc-650" />
+            <List className="text-zinc-650 mb-4 h-12 w-12" />
             <h3 className="text-lg font-bold text-zinc-300">No lists found</h3>
-            <p className="mt-2 text-sm text-zinc-500 max-w-sm">
+            <p className="mt-2 max-w-sm text-sm text-zinc-500">
               Create a custom collection or browse public lists to get started!
             </p>
           </CardContent>
@@ -137,12 +156,16 @@ export default function ListsPage() {
     return (
       <div className="grid gap-4 sm:grid-cols-2">
         {lists.map((list) => (
-          <Link key={list._id} href={`/lists/${list._id}`} className="group block">
-            <Card className="h-full border border-zinc-800 bg-zinc-900/30 transition-all hover:border-zinc-700 hover:bg-zinc-900/60 rounded-3xl">
+          <Link
+            key={list._id}
+            href={`/lists/${list._id}`}
+            className="group block"
+          >
+            <Card className="h-full rounded-3xl border border-zinc-800 bg-zinc-900/30 transition-all hover:border-zinc-700 hover:bg-zinc-900/60">
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6">
                 <div className="space-y-1.5">
-                  <div className="flex flex-wrap gap-2 items-center">
-                    <CardTitle className="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <CardTitle className="text-lg font-bold text-white transition-colors group-hover:text-blue-400">
                       {list.name}
                     </CardTitle>
                     <div className="flex gap-1">
@@ -168,7 +191,7 @@ export default function ListsPage() {
                     </CardDescription>
                   )}
                 </div>
-                <ChevronRight className="h-5 w-5 text-zinc-600 group-hover:text-white transition-colors shrink-0" />
+                <ChevronRight className="h-5 w-5 shrink-0 text-zinc-600 transition-colors group-hover:text-white" />
               </CardHeader>
               <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-zinc-900 p-6 text-xs text-zinc-500">
                 <span className="flex items-center gap-1.5 font-semibold text-zinc-400">
@@ -176,7 +199,7 @@ export default function ListsPage() {
                   {list.itemCount} {list.itemCount === 1 ? "title" : "titles"}
                 </span>
                 <span className="flex items-center gap-1.5 font-semibold text-rose-400">
-                  <Heart className="h-3.5 w-3.5 fill-rose-400/10 group-hover:fill-rose-400 transition-colors" />
+                  <Heart className="h-3.5 w-3.5 fill-rose-400/10 transition-colors group-hover:fill-rose-400" />
                   {list.likeCount} {list.likeCount === 1 ? "like" : "likes"}
                 </span>
                 <span className="flex items-center gap-1.5">
@@ -185,7 +208,10 @@ export default function ListsPage() {
                 </span>
                 {list.creator && (
                   <span className="ml-auto text-zinc-500">
-                    by <span className="font-bold text-zinc-400">@{list.creator.username}</span>
+                    by{" "}
+                    <span className="font-bold text-zinc-400">
+                      @{list.creator.username}
+                    </span>
                   </span>
                 )}
               </CardContent>
@@ -204,7 +230,8 @@ export default function ListsPage() {
             Custom Lists
           </h1>
           <p className="mt-2 text-sm text-zinc-400">
-            Create, share, and collaborate on personalized movie and TV show collections.
+            Create, share, and collaborate on personalized movie and TV show
+            collections.
           </p>
         </div>
 
@@ -217,13 +244,18 @@ export default function ListsPage() {
                 </Button>
               }
             />
-            <DialogContent className="border border-zinc-800 bg-zinc-950 text-white rounded-3xl max-w-md">
+            <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
               <DialogHeader>
-                <DialogTitle className="text-xl font-bold">New Custom List</DialogTitle>
+                <DialogTitle className="text-xl font-bold">
+                  New Custom List
+                </DialogTitle>
               </DialogHeader>
               <form onSubmit={handleCreate} className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <label htmlFor="name" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  <label
+                    htmlFor="name"
+                    className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                  >
                     List Name
                   </label>
                   <Input
@@ -231,12 +263,15 @@ export default function ListsPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="e.g. Best Sci-Fi Movies, Top Horror"
-                    className="border-zinc-800 bg-zinc-900 text-white rounded-xl placeholder:text-zinc-650"
+                    className="placeholder:text-zinc-650 rounded-xl border-zinc-800 bg-zinc-900 text-white"
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <label htmlFor="desc" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
+                  <label
+                    htmlFor="desc"
+                    className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                  >
                     Description (Optional)
                   </label>
                   <Textarea
@@ -244,39 +279,49 @@ export default function ListsPage() {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the theme of this list..."
-                    className="border-zinc-800 bg-zinc-900 text-white rounded-xl placeholder:text-zinc-650 min-h-24 resize-none"
+                    className="placeholder:text-zinc-650 min-h-24 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-white"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label htmlFor="privacy" className="text-xs font-bold text-zinc-400 uppercase tracking-wider">
-                      Privacy
-                    </label>
-                    <Select
-                      value={privacy}
-                      onValueChange={(val) => setPrivacy(val as "public" | "private")}
-                    >
-                      <SelectTrigger className="w-full border border-zinc-800 bg-zinc-900 text-white rounded-xl p-2.5 text-sm h-10 flex justify-between items-center">
-                        <SelectValue placeholder="Select privacy" />
-                      </SelectTrigger>
-                      <SelectContent className="border border-zinc-850 bg-zinc-950 text-white rounded-xl">
+                <div className="space-y-2">
+                  <label
+                    htmlFor="privacy"
+                    className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
+                  >
+                    Privacy
+                  </label>
+                  <Select
+                    value={privacy}
+                    onValueChange={(val) =>
+                      setPrivacy(val as "public" | "private")
+                    }
+                  >
+                    <SelectTrigger className="flex h-10 w-full items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-sm text-white">
+                      <SelectValue placeholder="Select privacy" />
+                    </SelectTrigger>
+                    <SelectContent className="border-zinc-850 rounded-xl border bg-zinc-950 text-white">
+                      <SelectGroup>
                         <SelectItem value="public">Public</SelectItem>
                         <SelectItem value="private">Private</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2 flex flex-col justify-end pb-1">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        id="collab"
-                        checked={isCollaborative}
-                        onCheckedChange={(checked) => setIsCollaborative(!!checked)}
-                        className="border-zinc-800 bg-zinc-900"
-                      />
-                      <label htmlFor="collab" className="text-xs font-bold text-zinc-300 select-none cursor-pointer">
-                        Collaborative List
-                      </label>
-                    </div>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex flex-col justify-end space-y-2 pb-1">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="collab"
+                      checked={isCollaborative}
+                      onCheckedChange={(checked) =>
+                        setIsCollaborative(!!checked)
+                      }
+                      className="border-zinc-800 bg-zinc-900"
+                    />
+                    <label
+                      htmlFor="collab"
+                      className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                    >
+                      Collaborative List
+                    </label>
                   </div>
                 </div>
                 <DialogFooter className="pt-4">
@@ -284,7 +329,7 @@ export default function ListsPage() {
                     type="button"
                     variant="outline"
                     onClick={() => setIsOpen(false)}
-                    className="border-zinc-800 text-zinc-450 hover:bg-zinc-900 hover:text-white rounded-xl"
+                    className="text-zinc-450 rounded-xl border-zinc-800 hover:bg-zinc-900 hover:text-white"
                   >
                     Cancel
                   </Button>
@@ -292,11 +337,12 @@ export default function ListsPage() {
                   <Button
                     type="submit"
                     disabled={isCreating}
-                    className="bg-white text-black hover:bg-zinc-200 rounded-xl font-bold"
+                    className="rounded-xl bg-white font-bold text-black hover:bg-zinc-200"
                   >
                     {isCreating ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                        Creating
                       </>
                     ) : (
                       "Create"
@@ -313,9 +359,9 @@ export default function ListsPage() {
       <div className="mb-8 flex border-b border-zinc-900 text-sm">
         <button
           onClick={() => setActiveTab("my")}
-          className={`border-b-2 pb-4 text-xs font-bold tracking-wider uppercase mr-6 transition-all ${
+          className={`mr-6 border-b-2 pb-4 text-xs font-bold tracking-wider uppercase transition-all ${
             activeTab === "my"
-              ? "text-white border-white font-extrabold"
+              ? "border-white font-extrabold text-white"
               : "border-transparent text-zinc-500 hover:text-zinc-300"
           }`}
         >
@@ -323,9 +369,9 @@ export default function ListsPage() {
         </button>
         <button
           onClick={() => setActiveTab("public")}
-          className={`border-b-2 pb-4 text-xs font-bold tracking-wider uppercase mr-6 transition-all ${
+          className={`mr-6 border-b-2 pb-4 text-xs font-bold tracking-wider uppercase transition-all ${
             activeTab === "public"
-              ? "text-white border-white font-extrabold"
+              ? "border-white font-extrabold text-white"
               : "border-transparent text-zinc-500 hover:text-zinc-300"
           }`}
         >
@@ -335,7 +381,7 @@ export default function ListsPage() {
           onClick={() => setActiveTab("favorites")}
           className={`border-b-2 pb-4 text-xs font-bold tracking-wider uppercase transition-all ${
             activeTab === "favorites"
-              ? "text-white border-white font-extrabold"
+              ? "border-white font-extrabold text-white"
               : "border-transparent text-zinc-500 hover:text-zinc-300"
           }`}
         >
@@ -344,29 +390,32 @@ export default function ListsPage() {
       </div>
 
       {/* Tab content */}
-      {activeTab === "my" && (
-        isLoggedIn ? renderListsList(myLists) : (
+      {activeTab === "my" &&
+        (isLoggedIn ? (
+          renderListsList(myLists)
+        ) : (
           <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
             <Lock className="mb-4 h-12 w-12 text-zinc-700" />
             <h3 className="text-lg font-bold text-white">Sign in required</h3>
-            <p className="mt-2 text-sm text-zinc-500 max-w-sm">
-              Please sign in to view your custom collections and create collaborative lists.
+            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+              Please sign in to view your custom collections and create
+              collaborative lists.
             </p>
           </div>
-        )
-      )}
+        ))}
       {activeTab === "public" && renderListsList(publicLists)}
-      {activeTab === "favorites" && (
-        isLoggedIn ? renderListsList(favoriteLists) : (
+      {activeTab === "favorites" &&
+        (isLoggedIn ? (
+          renderListsList(favoriteLists)
+        ) : (
           <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
             <Star className="mb-4 h-12 w-12 text-zinc-700" />
             <h3 className="text-lg font-bold text-white">Sign in required</h3>
-            <p className="mt-2 text-sm text-zinc-500 max-w-sm">
+            <p className="mt-2 max-w-sm text-sm text-zinc-500">
               Please sign in to view your saved favorite lists.
             </p>
           </div>
-        )
-      )}
+        ))}
     </div>
   );
 }

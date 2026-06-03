@@ -24,6 +24,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -302,12 +303,14 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                 <SelectValue>{typeof period === "number" ? period : "All Year"}</SelectValue>
               </SelectTrigger>
               <SelectContent className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white">
-                <SelectItem value="all" className="text-zinc-400">All Year</SelectItem>
-                {availableYears.map((yr) => (
-                  <SelectItem key={yr} value={String(yr)} className="text-white focus:bg-zinc-900 focus:text-white">
-                    {yr}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  <SelectItem value="all" className="text-zinc-400">All Year</SelectItem>
+                  {availableYears.map((yr) => (
+                    <SelectItem key={yr} value={String(yr)} className="text-white focus:bg-zinc-900 focus:text-white">
+                      {yr}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           )}
