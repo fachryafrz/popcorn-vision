@@ -27,8 +27,6 @@ interface PrivacySectionProps {
   setHideFavorites: (val: boolean) => void;
   hideRatings: boolean;
   setHideRatings: (val: boolean) => void;
-  readReceiptsEnabled: boolean;
-  setReadReceiptsEnabled: (val: boolean) => void;
   savingPrivacy: boolean;
   handleUpdatePrivacy: (e: React.FormEvent) => void;
   blockedUsersList: BlockedUser[] | undefined;
@@ -48,8 +46,6 @@ export default function PrivacySection({
   setHideFavorites,
   hideRatings,
   setHideRatings,
-  readReceiptsEnabled,
-  setReadReceiptsEnabled,
   savingPrivacy,
   handleUpdatePrivacy,
   blockedUsersList,
@@ -219,24 +215,6 @@ export default function PrivacySection({
             />
           </div>
 
-          {/* Read Receipts toggles */}
-          <div className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-4">
-            <div className="flex flex-col gap-0.5 text-left">
-              <span className="text-xs font-bold text-white">
-                Show Read Receipts
-              </span>
-              <span className="text-[10px] text-zinc-500">
-                Allow others to see when you have read their messages
-              </span>
-            </div>
-            <Checkbox
-              checked={readReceiptsEnabled}
-              onCheckedChange={(checked) =>
-                setReadReceiptsEnabled(checked === true)
-              }
-              className="animate-in h-5 w-5 cursor-pointer duration-200"
-            />
-          </div>
         </div>
       </div>
 

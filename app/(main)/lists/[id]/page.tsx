@@ -42,6 +42,8 @@ import {
   Lock,
   MessageSquare,
   Edit2,
+  ThumbsUp,
+  CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -65,6 +67,7 @@ interface CustomList {
   createdAt: number;
   privacy: string;
   isCollaborative: boolean;
+  isWatchlist?: boolean;
 }
 
 interface CustomListItem {
@@ -82,6 +85,16 @@ interface CustomListItem {
     username: string;
     name: string;
   } | null;
+  watched?: boolean;
+  watchedAt?: number;
+  watchedById?: string;
+  watchedByUser?: {
+    userId: string;
+    username: string;
+    name: string;
+  } | null;
+  voteCount: number;
+  userVote: number;
 }
 
 interface CustomListComment {
@@ -127,7 +140,9 @@ export default function CustomListDetailPage({
         isFavorited: boolean;
         collaborators: ListCreator[];
         comments: CustomListComment[];
+        unauthorized?: undefined;
       }
+    | { unauthorized: true }
     | undefined;
 
   // Fetch current user's profile and friends for invites
@@ -160,6 +175,10 @@ export default function CustomListDetailPage({
   );
   const addCommentMutation = useMutation(api.customLists.addListComment);
   const deleteCommentMutation = useMutation(api.customLists.deleteListComment);
+  const toggleItemWatchedMutation = useMutation(
+    api.customLists.toggleItemWatched,
+  );
+  const toggleItemVoteMutation = useMutation(api.customLists.toggleItemVote);
 
   // States
   const [searchQuery, setSearchQuery] = useState("");
@@ -177,11 +196,20 @@ export default function CustomListDetailPage({
     "public",
   );
   const [editCollab, setEditCollab] = useState(false);
+  const [editWatchlist, setEditWatchlist] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
 
   // Comment state
   const [newComment, setNewComment] = useState("");
   const [submittingComment, setSubmittingComment] = useState(false);
+
+  // Watchlist filter/sort state
+  const [statusFilter, setStatusFilter] = useState<
+    "all" | "watched" | "unwatched"
+  >("all");
+  const [sortBy, setSortBy] = useState<"recently_added" | "most_upvotes">(
+    "most_upvotes",
+  );
 
   // Search effect with debounce
   useEffect(() => {
@@ -211,6 +239,26 @@ export default function CustomListDetailPage({
     );
   }
 
+  if ("unauthorized" in detail && detail.unauthorized) {
+    return (
+      <div className="flex min-h-[80vh] flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800">
+          <Lock className="text-zinc-400 h-8 w-8" />
+        </div>
+        <h1 className="mt-6 text-2xl font-extrabold tracking-tight">This List is Private</h1>
+        <p className="mt-2 max-w-sm text-sm text-zinc-500">
+          You do not have permission to view this custom list. The creator has restricted access to list members and collaborators only.
+        </p>
+        <Button
+          onClick={() => router.push("/lists")}
+          className="mt-6 rounded-full font-bold bg-white text-black hover:bg-zinc-200"
+        >
+          Back to Custom Lists
+        </Button>
+      </div>
+    );
+  }
+
   const {
     list,
     creator,
@@ -221,6 +269,25 @@ export default function CustomListDetailPage({
     collaborators,
     comments,
   } = detail;
+
+  const filteredAndSortedItems = [...items]
+    .filter((item) => {
+      if (!list.isWatchlist) return true;
+      if (statusFilter === "watched") return !!item.watched;
+      if (statusFilter === "unwatched") return !item.watched;
+      return true;
+    })
+    .sort((a, b) => {
+      if (!list.isWatchlist) return 0;
+      if (sortBy === "most_upvotes") {
+        if (b.voteCount !== a.voteCount) {
+          return b.voteCount - a.voteCount;
+        }
+        return b.addedAt - a.addedAt;
+      } else {
+        return b.addedAt - a.addedAt;
+      }
+    });
 
   const isOwner = creator?.userId === currentUser?.id;
   const isCollaborator =
@@ -306,6 +373,26 @@ export default function CustomListDetailPage({
     }
   };
 
+  const handleToggleWatched = async (mediaId: string, mediaType: string) => {
+    try {
+      await toggleItemWatchedMutation({ listId, mediaId, mediaType });
+    } catch {
+      toast.error("Failed to update watched status");
+    }
+  };
+
+  const handleToggleVote = async (mediaId: string, mediaType: string) => {
+    if (!isLoggedIn) {
+      toast.error("Please sign in to vote");
+      return;
+    }
+    try {
+      await toggleItemVoteMutation({ listId, mediaId, mediaType });
+    } catch {
+      toast.error("Failed to toggle vote");
+    }
+  };
+
   const handleToggleFavorite = async () => {
     if (!isLoggedIn) {
       toast.error("Please sign in to save lists to favorites");
@@ -336,6 +423,7 @@ export default function CustomListDetailPage({
         description: editDesc.trim() || undefined,
         privacy: editPrivacy,
         isCollaborative: editCollab,
+        isWatchlist: editCollab ? editWatchlist : false,
       });
       toast.success("List updated!");
       setIsEditOpen(false);
@@ -417,8 +505,13 @@ export default function CustomListDetailPage({
                   </span>
                 )}
                 {list.isCollaborative && (
-                  <span className="text-primary flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold">
+                  <span className="text-primary border-primary/30 bg-primary/10 flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold">
                     <Users className="h-3 w-3" /> Collaborative
+                  </span>
+                )}
+                {list.isWatchlist && (
+                  <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold text-emerald-400">
+                    Watchlist
                   </span>
                 )}
               </div>
@@ -504,6 +597,7 @@ export default function CustomListDetailPage({
                     setEditDesc(detail.list.description || "");
                     setEditPrivacy(detail.list.privacy as "public" | "private");
                     setEditCollab(detail.list.isCollaborative);
+                    setEditWatchlist(detail.list.isWatchlist || false);
                   }
                 }}
               >
@@ -582,9 +676,10 @@ export default function CustomListDetailPage({
                         <Checkbox
                           id="edit-collab"
                           checked={editCollab}
-                          onCheckedChange={(checked) =>
-                            setEditCollab(!!checked)
-                          }
+                          onCheckedChange={(checked) => {
+                            setEditCollab(!!checked);
+                            if (!checked) setEditWatchlist(false);
+                          }}
                           className="border-zinc-800 bg-zinc-900"
                         />
                         <label
@@ -594,6 +689,24 @@ export default function CustomListDetailPage({
                           Collaborative List
                         </label>
                       </div>
+                      {editCollab && (
+                        <div className="mt-1.5 flex items-center gap-2 pl-6">
+                          <Checkbox
+                            id="edit-watchlist"
+                            checked={editWatchlist}
+                            onCheckedChange={(checked) =>
+                              setEditWatchlist(!!checked)
+                            }
+                            className="border-zinc-800 bg-zinc-900"
+                          />
+                          <label
+                            htmlFor="edit-watchlist"
+                            className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                          >
+                            Watchlist Mode (Voting & Watched status)
+                          </label>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center justify-between pt-4">
                       <Button
@@ -874,6 +987,55 @@ export default function CustomListDetailPage({
             </div>
           )}
 
+          {/* Watchlist Filter & Sort Options */}
+          {list.isWatchlist && items.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-4">
+              <div className="flex gap-2">
+                {(["all", "unwatched", "watched"] as const).map((f) => (
+                  <button
+                    key={f}
+                    onClick={() => setStatusFilter(f)}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold tracking-wide uppercase transition-all ${
+                      statusFilter === f
+                        ? "bg-white font-extrabold text-black"
+                        : "border border-zinc-800 text-zinc-400 hover:bg-zinc-900/50 hover:text-white"
+                    }`}
+                  >
+                    {f}
+                  </button>
+                ))}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                  Sort:
+                </span>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setSortBy("recently_added")}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+                      sortBy === "recently_added"
+                        ? "bg-primary/10 text-primary font-extrabold"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Recently Added
+                  </button>
+                  <button
+                    onClick={() => setSortBy("most_upvotes")}
+                    className={`cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all ${
+                      sortBy === "most_upvotes"
+                        ? "bg-primary/10 text-primary font-extrabold"
+                        : "text-zinc-400 hover:text-zinc-200"
+                    }`}
+                  >
+                    Most Upvotes
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* List items grid/list */}
           {items.length === 0 ? (
             <Card className="rounded-3xl border border-dashed border-zinc-800 bg-zinc-900/10 p-12 text-center">
@@ -891,80 +1053,144 @@ export default function CustomListDetailPage({
             </Card>
           ) : (
             <div className="space-y-4">
-              {items.map((item) => {
-                const tmdbMedia = {
-                  id: Number(item.mediaId),
-                  title: item.mediaType === "movie" ? item.title : undefined,
-                  name: item.mediaType === "tv" ? item.title : undefined,
-                  media_type: item.mediaType as "movie" | "tv",
-                  poster_path: item.posterPath,
-                  release_date: `${item.releaseYear}-01-01`,
-                  popularity: 0,
-                } as TMDBMedia;
+              {filteredAndSortedItems.length === 0 ? (
+                <p className="py-12 text-center text-sm text-zinc-500 italic">
+                  No titles match the selected filter.
+                </p>
+              ) : (
+                filteredAndSortedItems.map((item) => {
+                  const tmdbMedia = {
+                    id: Number(item.mediaId),
+                    title: item.mediaType === "movie" ? item.title : undefined,
+                    name: item.mediaType === "tv" ? item.title : undefined,
+                    media_type: item.mediaType as "movie" | "tv",
+                    poster_path: item.posterPath,
+                    release_date: `${item.releaseYear}-01-01`,
+                    popularity: 0,
+                  } as TMDBMedia;
 
-                return (
-                  <div
-                    key={item._id}
-                    className="group relative flex items-center justify-between gap-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-4 transition-all hover:bg-zinc-900/30"
-                  >
-                    <div className="flex min-w-0 items-center gap-4">
-                      <div
-                        onClick={() => setSelectedMedia(tmdbMedia)}
-                        className="shrink-0 cursor-pointer hover:opacity-85"
-                      >
-                        {item.posterPath ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w154${item.posterPath}`}
-                            alt={item.title}
-                            className="border-zinc-850 h-20 w-14 rounded-2xl border bg-zinc-900 object-cover"
-                          />
-                        ) : (
-                          <div className="border-zinc-850 flex h-20 w-14 items-center justify-center rounded-2xl border bg-zinc-900">
-                            <Film className="text-zinc-650 h-6 w-6" />
+                  return (
+                    <div
+                      key={item._id}
+                      className="group relative flex items-center justify-between gap-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-4 transition-all hover:bg-zinc-900/30"
+                    >
+                      <div className="flex min-w-0 items-center gap-4">
+                        <div
+                          onClick={() => setSelectedMedia(tmdbMedia)}
+                          className="shrink-0 cursor-pointer hover:opacity-85"
+                        >
+                          {item.posterPath ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w154${item.posterPath}`}
+                              alt={item.title}
+                              className="border-zinc-850 h-20 w-14 rounded-2xl border bg-zinc-900 object-cover"
+                            />
+                          ) : (
+                            <div className="border-zinc-850 flex h-20 w-14 items-center justify-center rounded-2xl border bg-zinc-900">
+                              <Film className="text-zinc-650 h-6 w-6" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h4
+                              onClick={() => setSelectedMedia(tmdbMedia)}
+                              className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
+                            >
+                              {item.title}
+                            </h4>
+                            <span className="text-zinc-550 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase">
+                              {item.mediaType}
+                            </span>
                           </div>
+                          <p className="mt-1 text-xs text-zinc-500">
+                            {item.releaseYear} • Added by{" "}
+                            <span className="font-bold text-zinc-400">
+                              {item.addedByUser
+                                ? `@${item.addedByUser.username}`
+                                : "member"}
+                            </span>
+                          </p>
+                          {list.isWatchlist && item.watched && (
+                            <div className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-emerald-400">
+                              <CheckCircle2 className="h-3.5 w-3.5" />
+                              Watched by{" "}
+                              {item.watchedByUser
+                                ? `@${item.watchedByUser.username}`
+                                : "member"}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex shrink-0 items-center gap-2">
+                        {list.isWatchlist && (
+                          <>
+                            {/* Vote Button */}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                handleToggleVote(item.mediaId, item.mediaType)
+                              }
+                              className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
+                                item.userVote === 1
+                                  ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
+                                  : "text-zinc-400 hover:bg-zinc-900"
+                              }`}
+                            >
+                              <ThumbsUp
+                                className={`h-3.5 w-3.5 ${item.userVote === 1 ? "fill-current" : ""}`}
+                              />
+                              <span>{item.voteCount}</span>
+                            </Button>
+
+                            {/* Watched Toggle (Collaborators/Owner only) */}
+                            {canModify && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() =>
+                                  handleToggleWatched(
+                                    item.mediaId,
+                                    item.mediaType,
+                                  )
+                                }
+                                className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
+                                  item.watched
+                                    ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
+                                    : "text-zinc-400 hover:bg-zinc-900"
+                                }`}
+                              >
+                                <CheckCircle2 className="h-3.5 w-3.5" />
+                                <span>
+                                  {item.watched ? "Watched" : "Watch"}
+                                </span>
+                              </Button>
+                            )}
+                          </>
+                        )}
+
+                        {canModify && (
+                          <button
+                            onClick={() =>
+                              handleRemoveItem(
+                                item.mediaId,
+                                item.mediaType,
+                                item.title,
+                              )
+                            }
+                            className="text-zinc-450 shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 transition-all hover:scale-105 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 active:scale-95"
+                            title="Remove title"
+                          >
+                            <Trash2 className="h-4.5 w-4.5" />
+                          </button>
                         )}
                       </div>
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h4
-                            onClick={() => setSelectedMedia(tmdbMedia)}
-                            className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
-                          >
-                            {item.title}
-                          </h4>
-                          <span className="text-zinc-550 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase">
-                            {item.mediaType}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs text-zinc-500">
-                          Released {item.releaseYear} • Added by{" "}
-                          <span className="font-bold text-zinc-400">
-                            {item.addedByUser
-                              ? `@${item.addedByUser.username}`
-                              : "member"}
-                          </span>
-                        </p>
-                      </div>
                     </div>
-
-                    {canModify && (
-                      <button
-                        onClick={() =>
-                          handleRemoveItem(
-                            item.mediaId,
-                            item.mediaType,
-                            item.title,
-                          )
-                        }
-                        className="text-zinc-450 shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 transition-all hover:scale-105 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 active:scale-95"
-                        title="Remove title"
-                      >
-                        <Trash2 className="h-4.5 w-4.5" />
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </div>
           )}
         </div>

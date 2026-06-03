@@ -20,7 +20,6 @@ import {
   Loader2,
   MessageSquare,
   Activity,
-  Users,
   Popcorn,
   List,
 } from "lucide-react";
@@ -58,12 +57,6 @@ export default function Navbar() {
   );
   const acceptFriendRequest = useMutation(api.social.acceptFriendRequest);
   const rejectFriendRequest = useMutation(api.social.rejectFriendRequest);
-  const acceptWatchlistInvite = useMutation(
-    api.sharedWatchlists.acceptWatchlistInvite,
-  );
-  const declineWatchlistInvite = useMutation(
-    api.sharedWatchlists.declineWatchlistInvite,
-  );
   const acceptListInvite = useMutation(api.customLists.acceptListInvite);
   const declineListInvite = useMutation(api.customLists.declineListInvite);
   const acceptGroupInvite = useMutation(api.chats.acceptGroupInvite);
@@ -345,10 +338,7 @@ export default function Navbar() {
                                       </span>
                                     </>
                                   )}
-                                  {notif.type === "watchlist_invite" &&
-                                    (notif.targetName
-                                      ? `invited you to join the shared watchlist "${notif.targetName}".`
-                                      : "invited you to join a shared watchlist.")}
+
                                   {notif.type === "list_invite" &&
                                     (notif.targetName
                                       ? `invited you to collaborate on the list "${notif.targetName}".`
@@ -399,51 +389,7 @@ export default function Navbar() {
                                     </div>
                                   )}
 
-                                {/* Watchlist Invite Actions */}
-                                {notif.type === "watchlist_invite" &&
-                                  notif.mediaId && (
-                                    <div
-                                      className="mt-2 flex items-center gap-2"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      <Button
-                                        size="xs"
-                                        onClick={async (e) => {
-                                          e.stopPropagation();
-                                          await acceptWatchlistInvite({
-                                            watchlistId:
-                                              notif.mediaId as Id<"sharedWatchlists">,
-                                          });
-                                          toast.success(
-                                            "Watchlist invitation accepted!",
-                                          );
-                                          router.push(
-                                            `/shared-watchlists/${notif.mediaId}`,
-                                          );
-                                        }}
-                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
-                                      >
-                                        Accept
-                                      </Button>
-                                      <Button
-                                        size="xs"
-                                        variant="outline"
-                                        onClick={async (e) => {
-                                          e.stopPropagation();
-                                          await declineWatchlistInvite({
-                                            watchlistId:
-                                              notif.mediaId as Id<"sharedWatchlists">,
-                                          });
-                                          toast.success(
-                                            "Watchlist invitation declined.",
-                                          );
-                                        }}
-                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                                      >
-                                        Decline
-                                      </Button>
-                                    </div>
-                                  )}
+
 
                                 {/* List Invite Actions */}
                                 {notif.type === "list_invite" &&
@@ -619,13 +565,7 @@ export default function Navbar() {
                     <List className="mr-2 h-4 w-4 text-zinc-400" />
                     My Lists
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => router.push("/shared-watchlists")}
-                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-                  >
-                    <Users className="mr-2 h-4 w-4 text-zinc-400" />
-                    Shared Watchlists
-                  </DropdownMenuItem>
+
 
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
@@ -789,10 +729,7 @@ export default function Navbar() {
                                       </span>
                                     </>
                                   )}
-                                  {notif.type === "watchlist_invite" &&
-                                    (notif.targetName
-                                      ? `invited you to join the shared watchlist "${notif.targetName}".`
-                                      : "invited you to join a shared watchlist.")}
+
                                   {notif.type === "list_invite" &&
                                     (notif.targetName
                                       ? `invited you to collaborate on the list "${notif.targetName}".`
@@ -843,51 +780,7 @@ export default function Navbar() {
                                     </div>
                                   )}
 
-                                {/* Watchlist Invite Actions */}
-                                {notif.type === "watchlist_invite" &&
-                                  notif.mediaId && (
-                                    <div
-                                      className="mt-2 flex items-center gap-2"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      <Button
-                                        size="xs"
-                                        onClick={async (e) => {
-                                          e.stopPropagation();
-                                          await acceptWatchlistInvite({
-                                            watchlistId:
-                                              notif.mediaId as Id<"sharedWatchlists">,
-                                          });
-                                          toast.success(
-                                            "Watchlist invitation accepted!",
-                                          );
-                                          router.push(
-                                            `/shared-watchlists/${notif.mediaId}`,
-                                          );
-                                        }}
-                                        className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-lg px-3 text-[10px] font-bold text-white"
-                                      >
-                                        Accept
-                                      </Button>
-                                      <Button
-                                        size="xs"
-                                        variant="outline"
-                                        onClick={async (e) => {
-                                          e.stopPropagation();
-                                          await declineWatchlistInvite({
-                                            watchlistId:
-                                              notif.mediaId as Id<"sharedWatchlists">,
-                                          });
-                                          toast.success(
-                                            "Watchlist invitation declined.",
-                                          );
-                                        }}
-                                        className="h-7 cursor-pointer rounded-lg border-zinc-800 px-3 text-[10px] font-bold text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                                      >
-                                        Decline
-                                      </Button>
-                                    </div>
-                                  )}
+
 
                                 {/* List Invite Actions */}
                                 {notif.type === "list_invite" &&
@@ -1092,15 +985,7 @@ export default function Navbar() {
                         <List className="h-4 w-4" />
                         My Lists
                       </Link>
-                      <Link
-                        href="/shared-watchlists"
-                        prefetch={false}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 hover:text-white"
-                      >
-                        <Users className="h-4 w-4" />
-                        Shared Watchlists
-                      </Link>
+
                     </>
                   )}
                 </nav>

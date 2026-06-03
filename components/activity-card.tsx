@@ -144,7 +144,7 @@ export default function ActivityCard({
   const renderActivityText = () => {
     const displayName = (
       <Link
-        href={`/user/${activity.user.username}`}
+        href={`/@/${activity.user.username}`}
         className="hover:text-primary font-bold text-white transition-colors"
       >
         {activity.user.name}

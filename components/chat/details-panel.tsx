@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Users, LogOut, Trash2, Volume2, VolumeX } from "lucide-react";
+import { X, Users, LogOut, Trash2, Volume2, VolumeX, UserX, Loader2 } from "lucide-react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -17,6 +21,7 @@ interface DetailsPanelProps {
   handleDeleteChat: () => void;
   currentUserId: string;
   handleToggleMute: () => void | Promise<void>;
+  onBlockSuccess?: () => void;
 }
 
 export default function DetailsPanel({
@@ -31,8 +36,32 @@ export default function DetailsPanel({
   handleDeleteChat,
   currentUserId,
   handleToggleMute,
+  onBlockSuccess,
 }: DetailsPanelProps) {
   const router = useRouter();
+  const blockUser = useMutation(api.social.blockUser);
+  const [blockLoading, setBlockLoading] = useState(false);
+
+  const handleBlockUser = async () => {
+    if (!activeChat.friend?.userId) return;
+    if (
+      !confirm(
+        `Are you sure you want to block ${activeChat.friend.name}? You will no longer be able to message each other, and they will be removed from your friends.`
+      )
+    ) {
+      return;
+    }
+    setBlockLoading(true);
+    try {
+      await blockUser({ targetUserId: activeChat.friend.userId });
+      toast.success(`${activeChat.friend.name} has been blocked.`);
+      onBlockSuccess?.();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to block user.");
+    } finally {
+      setBlockLoading(false);
+    }
+  };
 
   return (
     <div
@@ -226,6 +255,21 @@ export default function DetailsPanel({
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete Chat
+            </Button>
+            <Button
+              onClick={handleBlockUser}
+              disabled={blockLoading}
+              variant="ghost"
+              className="w-full cursor-pointer justify-start rounded-xl text-xs font-bold text-red-500 hover:bg-red-950/35 hover:text-red-400"
+            >
+              {blockLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <UserX className="mr-2 h-4 w-4" />
+                  Block User
+                </>
+              )}
             </Button>
           </div>
         </div>

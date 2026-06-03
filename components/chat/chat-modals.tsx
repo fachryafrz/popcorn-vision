@@ -1,4 +1,4 @@
-import { Check, TrendingUp } from "lucide-react";
+import { Check, TrendingUp, Lock, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,6 +80,8 @@ interface ChatModalsProps {
   handleInviteToGroup: () => void;
   handleSendGIF: (url: string) => void;
   handleSubmitReport: () => void;
+  isPrivacyErrorOpen: boolean;
+  setIsPrivacyErrorOpen: (open: boolean) => void;
 }
 
 export default function ChatModals({
@@ -108,6 +110,8 @@ export default function ChatModals({
   handleInviteToGroup,
   handleSendGIF,
   handleSubmitReport,
+  isPrivacyErrorOpen,
+  setIsPrivacyErrorOpen,
 }: ChatModalsProps) {
   return (
     <>
@@ -420,6 +424,32 @@ export default function ChatModals({
               className="hover:bg-primary bg-primary mt-4 w-full cursor-pointer rounded-xl py-5 text-[10px] font-bold tracking-wider text-white uppercase"
             >
               Submit Safety Report
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* ---------------------------------------------------- */}
+      {/* MODAL: Direct Messaging Privacy Settings Error      */}
+      {/* ---------------------------------------------------- */}
+      <Dialog open={isPrivacyErrorOpen} onOpenChange={setIsPrivacyErrorOpen}>
+        <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-md">
+          <DialogHeader className="flex flex-col items-center text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-950/40 border border-red-900/50">
+              <ShieldAlert className="text-red-500 h-6 w-6" />
+            </div>
+            <DialogTitle className="mt-4 text-base font-black tracking-wider text-white uppercase">
+              Messaging Restricted
+            </DialogTitle>
+          </DialogHeader>
+          <div className="mt-2 text-center space-y-4">
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              This user's messaging privacy settings do not allow direct messages. You cannot send messages to this user unless they adjust their privacy settings.
+            </p>
+            <Button
+              onClick={() => setIsPrivacyErrorOpen(false)}
+              className="hover:bg-primary bg-primary mt-2 w-full cursor-pointer rounded-xl py-5 text-[10px] font-bold tracking-wider text-white uppercase"
+            >
+              Close
             </Button>
           </div>
         </DialogContent>

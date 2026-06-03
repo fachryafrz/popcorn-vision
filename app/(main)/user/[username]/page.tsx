@@ -173,6 +173,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   // Unblock mutation in case user is blocked
   const unblockMutation = useMutation(api.social.unblockUser);
+  const blockMutation = useMutation(api.social.blockUser);
 
   // Friendship mutations
   const sendFriendRequest = useMutation(api.social.sendFriendRequest);
@@ -181,6 +182,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const removeFriend = useMutation(api.social.removeFriend);
 
   const [friendLoading, setFriendLoading] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
 
   // Privacy lock derivation
   const isPrivate = targetUser?.profilePrivacy === "private";
@@ -222,6 +224,24 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     api.continueWatching.getProgress,
     isOwner && isLoggedIn ? {} : "skip",
   );
+
+  const handleBlockAction = async () => {
+    if (!isLoggedIn) {
+      openAuth();
+      return;
+    }
+    if (!targetUserId || !targetUser) return;
+    if (!confirm(`Are you sure you want to block ${targetUser.name}? You will no longer be able to message each other, and they will be removed from your friends.`)) return;
+    setBlockLoading(true);
+    try {
+      await blockMutation({ targetUserId });
+      toast.success("User blocked successfully.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to block user.");
+    } finally {
+      setBlockLoading(false);
+    }
+  };
 
   const handleFriendAction = async () => {
     if (!isLoggedIn) {
@@ -487,6 +507,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         friendLoading={friendLoading}
         handleFriendAction={handleFriendAction}
         setShowFriendsDialog={setShowFriendsDialog}
+        handleBlockAction={handleBlockAction}
+        blockLoading={blockLoading}
       />
 
       {showLockScreen ? (

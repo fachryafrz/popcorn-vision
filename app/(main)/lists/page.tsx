@@ -62,6 +62,7 @@ interface CustomList {
   createdAt: number;
   privacy: string;
   isCollaborative: boolean;
+  isWatchlist?: boolean;
   itemCount: number;
   likeCount: number;
   creator: ListCreator | null;
@@ -98,6 +99,7 @@ export default function ListsPage() {
   const [description, setDescription] = useState("");
   const [privacy, setPrivacy] = useState<"public" | "private">("public");
   const [isCollaborative, setIsCollaborative] = useState(false);
+  const [isWatchlist, setIsWatchlist] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -115,6 +117,7 @@ export default function ListsPage() {
         description: description.trim() || undefined,
         privacy,
         isCollaborative,
+        isWatchlist: isCollaborative ? isWatchlist : false,
       });
       toast.success("List created successfully!");
       setIsOpen(false);
@@ -122,6 +125,7 @@ export default function ListsPage() {
       setDescription("");
       setPrivacy("public");
       setIsCollaborative(false);
+      setIsWatchlist(false);
       router.push(`/lists/${id}`);
     } catch {
       toast.error("Failed to create list");
@@ -181,6 +185,11 @@ export default function ListsPage() {
                       {list.isCollaborative && (
                         <span className="text-primary flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold">
                           <Users className="h-3 w-3" /> Collaborative
+                        </span>
+                      )}
+                      {list.isWatchlist && (
+                        <span className="text-emerald-400 flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold">
+                          Watchlist
                         </span>
                       )}
                     </div>
@@ -311,9 +320,10 @@ export default function ListsPage() {
                     <Checkbox
                       id="collab"
                       checked={isCollaborative}
-                      onCheckedChange={(checked) =>
-                        setIsCollaborative(!!checked)
-                      }
+                      onCheckedChange={(checked) => {
+                        setIsCollaborative(!!checked);
+                        if (!checked) setIsWatchlist(false);
+                      }}
                       className="border-zinc-800 bg-zinc-900"
                     />
                     <label
@@ -323,6 +333,24 @@ export default function ListsPage() {
                       Collaborative List
                     </label>
                   </div>
+                  {isCollaborative && (
+                    <div className="flex items-center gap-2 mt-1.5 pl-6">
+                      <Checkbox
+                        id="watchlist"
+                        checked={isWatchlist}
+                        onCheckedChange={(checked) =>
+                          setIsWatchlist(!!checked)
+                        }
+                        className="border-zinc-800 bg-zinc-900"
+                      />
+                      <label
+                        htmlFor="watchlist"
+                        className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                      >
+                        Watchlist Mode (Voting & Watched status)
+                      </label>
+                    </div>
+                  )}
                 </div>
                 <DialogFooter className="pt-4">
                   <Button

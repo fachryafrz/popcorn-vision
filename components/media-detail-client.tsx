@@ -280,15 +280,7 @@ export default function MediaDetailClient({
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
-  const [isAddToSharedOpen, setIsAddToSharedOpen] = useState(false);
   const [isAddToCustomOpen, setIsAddToCustomOpen] = useState(false);
-
-  const sharedWatchlists = useQuery(
-    api.sharedWatchlists.getWatchlistsWithMediaStatus,
-    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
-  );
-  const addSharedTitle = useMutation(api.sharedWatchlists.addTitle);
-  const removeSharedTitle = useMutation(api.sharedWatchlists.removeTitle);
 
   const customLists = useQuery(
     api.customLists.getListsWithMediaStatus,
@@ -685,10 +677,6 @@ export default function MediaDetailClient({
             openAuth={openAuth}
             setIsLogModalOpen={setIsLogModalOpen}
             setIsShareDialogOpen={setIsShareDialogOpen}
-            onClickSharedWatchlist={() => {
-              if (!isLoggedIn) openAuth();
-              else setIsAddToSharedOpen(true);
-            }}
             onClickCustomList={() => {
               if (!isLoggedIn) openAuth();
               else setIsAddToCustomOpen(true);
@@ -903,84 +891,7 @@ export default function MediaDetailClient({
         </DialogContent>
       </Dialog>
 
-      {/* Add to Shared Watchlist Dialog */}
-      <Dialog open={isAddToSharedOpen} onOpenChange={setIsAddToSharedOpen}>
-        <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              Add to Shared Watchlist
-            </DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[350px] space-y-4 overflow-y-auto py-4 pr-1">
-            {sharedWatchlists === undefined ? (
-              <div className="flex justify-center py-6">
-                <Loader2 className="text-primary h-6 w-6 animate-spin" />
-              </div>
-            ) : sharedWatchlists.length === 0 ? (
-              <div className="py-6 text-center">
-                <p className="mb-4 text-sm text-zinc-500">
-                  You are not part of any shared watchlists yet.
-                </p>
-                <Button
-                  onClick={() => {
-                    setIsAddToSharedOpen(false);
-                    router.push("/shared-watchlists");
-                  }}
-                  className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-black hover:bg-zinc-200"
-                >
-                  Create Watchlist
-                </Button>
-              </div>
-            ) : (
-              sharedWatchlists.map((list) => (
-                <div
-                  key={list._id}
-                  onClick={async () => {
-                    try {
-                      if (list.hasMedia) {
-                        await removeSharedTitle({
-                          watchlistId: list._id,
-                          mediaId: String(details.id),
-                          mediaType,
-                        });
-                        toast.success(`Removed from ${list.name}!`);
-                      } else {
-                        await addSharedTitle({
-                          watchlistId: list._id,
-                          mediaId: String(details.id),
-                          mediaType,
-                          title: details.title || details.name || "",
-                          posterPath: details.poster_path || "",
-                          releaseYear: releaseYear.toString(),
-                        });
-                        toast.success(`Added to ${list.name}!`);
-                      }
-                    } catch {
-                      toast.error("Failed to update watchlist");
-                    }
-                  }}
-                  className="group flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-zinc-900 bg-zinc-900/20 p-3 transition-all hover:border-zinc-800 hover:bg-zinc-900/60"
-                >
-                  <div>
-                    <p className="group-hover:text-primary text-sm font-bold text-white transition-colors">
-                      {list.name}
-                    </p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
-                      {list.memberCount}{" "}
-                      {list.memberCount === 1 ? "member" : "members"}
-                    </p>
-                  </div>
-                  {list.hasMedia ? (
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  ) : (
-                    <Plus className="h-4 w-4 text-zinc-500 transition-colors group-hover:text-white" />
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+
 
       {/* Add to Custom List Dialog */}
       <Dialog open={isAddToCustomOpen} onOpenChange={setIsAddToCustomOpen}>

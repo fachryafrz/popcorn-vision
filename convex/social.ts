@@ -452,6 +452,27 @@ export const blockUser = mutation({
       .withIndex("by_users", (q) => q.eq("userId1", u1).eq("userId2", u2))
       .first();
     if (friendship) await ctx.db.delete(friendship._id);
+
+    // Soft delete any private chat between these two users
+    const myMemberships = await ctx.db
+      .query("chatMemberships")
+      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
+      .collect();
+
+    for (const mem of myMemberships) {
+      const chat = await ctx.db.get(mem.chatId);
+      if (chat && chat.type === "private") {
+        const otherMem = await ctx.db
+          .query("chatMemberships")
+          .withIndex("by_chat_user", (q) => q.eq("chatId", chat._id).eq("userId", args.targetUserId))
+          .first();
+
+        if (otherMem) {
+          await ctx.db.patch(mem._id, { deletedAt: Date.now() });
+          await ctx.db.patch(otherMem._id, { deletedAt: Date.now() });
+        }
+      }
+    }
   },
 });
 
@@ -574,13 +595,6 @@ export const getNotifications = query({
           const customList = await ctx.db.get(notif.mediaId as Id<"customLists">);
           if (customList) {
             targetName = customList.name;
-          }
-        } catch {}
-      } else if (notif.type === "watchlist_invite" && notif.mediaId) {
-        try {
-          const watchlist = await ctx.db.get(notif.mediaId as Id<"sharedWatchlists">);
-          if (watchlist) {
-            targetName = watchlist.name;
           }
         } catch {}
       } else if (notif.type === "group_invite" && notif.mediaId) {

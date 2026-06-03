@@ -127,6 +127,7 @@ export default function ChatPage() {
   const [isInviteFriendsOpen, setIsInviteFriendsOpen] = useState(false);
   const [isGIFPickerOpen, setIsGIFPickerOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isPrivacyErrorOpen, setIsPrivacyErrorOpen] = useState(false);
 
   // Forms
   const [groupName, setGroupName] = useState("");
@@ -230,7 +231,11 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      toast.error(errorObj.message || "Failed to send message");
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to send message");
+      }
     }
   };
 
@@ -264,8 +269,13 @@ export default function ChatPage() {
         attachmentUrl: gifUrl,
         attachmentType: "gif",
       });
-    } catch {
-      toast.error("Failed to send GIF");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to send GIF");
+      }
     }
   };
 
@@ -366,7 +376,11 @@ export default function ChatPage() {
       setIsNewChatOpen(false);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      toast.error(errorObj.message || "Failed to start direct message session");
+      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+        setIsPrivacyErrorOpen(true);
+      } else {
+        toast.error(errorObj.message || "Failed to start direct message session");
+      }
     }
   };
 
@@ -497,6 +511,10 @@ export default function ChatPage() {
           handleDeleteChat={handleDeleteChat}
           currentUserId={currentUserId}
           handleToggleMute={handleToggleMute}
+          onBlockSuccess={() => {
+            setSelectedChatId(null);
+            setShowRightPanel(false);
+          }}
         />
       )}
 
@@ -526,6 +544,8 @@ export default function ChatPage() {
         handleInviteToGroup={handleInviteToGroup}
         handleSendGIF={handleSendGIF}
         handleSubmitReport={handleSubmitReport}
+        isPrivacyErrorOpen={isPrivacyErrorOpen}
+        setIsPrivacyErrorOpen={setIsPrivacyErrorOpen}
       />
       {isQuickViewOpen && quickViewMedia && (
         <QuickViewModal

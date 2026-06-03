@@ -104,6 +104,11 @@ export const createOrGetPrivateChat = mutation({
               deletedAt: undefined,
             });
           }
+          if (otherMem.deletedAt !== undefined) {
+            await ctx.db.patch(otherMem._id, {
+              deletedAt: undefined,
+            });
+          }
           return chat._id;
         }
       }
@@ -706,6 +711,17 @@ export const getChatsList = query({
           .first();
 
         if (partnerProfile) {
+          // Check blocks
+          const block1 = await ctx.db
+            .query("blocks")
+            .withIndex("by_both", (q) => q.eq("blockerId", currentUserId!).eq("blockedId", partnerMem.userId))
+            .first();
+          const block2 = await ctx.db
+            .query("blocks")
+            .withIndex("by_both", (q) => q.eq("blockerId", partnerMem.userId).eq("blockedId", currentUserId!))
+            .first();
+          if (block1 || block2) continue;
+
           const isTyping = partnerMem.typingUntil ? partnerMem.typingUntil > Date.now() : false;
           results.push({
             chatId: chat._id,

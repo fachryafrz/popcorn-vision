@@ -14,6 +14,8 @@ interface ProfileHeaderProps {
   friendLoading: boolean;
   handleFriendAction: () => void;
   setShowFriendsDialog: (show: boolean) => void;
+  handleBlockAction: () => void;
+  blockLoading: boolean;
 }
 
 export function ProfileHeader({
@@ -24,6 +26,8 @@ export function ProfileHeader({
   friendLoading,
   handleFriendAction,
   setShowFriendsDialog,
+  handleBlockAction,
+  blockLoading,
 }: ProfileHeaderProps) {
   // Determine Friend Button style & content
   let friendLabel = "Add Friend";
@@ -108,6 +112,21 @@ export function ProfileHeader({
                 <>
                   <FriendIcon className="mr-1.5 h-4 w-4" />
                   {friendLabel}
+                </>
+              )}
+            </Button>
+            <Button
+              variant="destructive"
+              disabled={blockLoading}
+              onClick={handleBlockAction}
+              className="h-10 flex-1 cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02] sm:flex-initial"
+            >
+              {blockLoading ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <>
+                  <UserX className="mr-1.5 h-4 w-4" />
+                  Block User
                 </>
               )}
             </Button>
