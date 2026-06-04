@@ -626,13 +626,13 @@ export default function ImportWizard() {
         if (item.sourceTable === "watchlist") {
           await addToWatchlist({
             ...args,
-            rating: item.rating || 5,
+            rating: item.rating,
           });
           wCount++;
         } else if (item.sourceTable === "favorites") {
           await addToFavorites({
             ...args,
-            rating: item.rating || 5,
+            rating: item.rating,
           });
           fCount++;
         } else if (item.sourceTable === "ratings") {
