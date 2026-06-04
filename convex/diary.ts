@@ -291,3 +291,54 @@ export const getMediaWatchHistory = query({
     };
   },
 });
+
+// Delete all watch logs in diary for the current user
+export const deleteAllDiary = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await getAuthedUser(ctx);
+    if (!currentUser) {
+      throw new Error("Must be logged in to delete diary entries");
+    }
+
+    const entries = await ctx.db
+      .query("diary")
+      .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
+      .collect();
+
+    for (const entry of entries) {
+      await ctx.db.delete(entry._id);
+    }
+
+    // Clean up review activities
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
+      .collect();
+
+    const reviewActivities = activities.filter((a) => a.type === "review");
+    for (const act of reviewActivities) {
+      await ctx.db.delete(act._id);
+      
+      // Clean up likes and comments associated with the review activities
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+
+    return true;
+  },
+});
+

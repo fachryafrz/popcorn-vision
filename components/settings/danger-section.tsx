@@ -13,6 +13,14 @@ interface DangerSectionProps {
   setDeletePassword: (val: string) => void;
   deletingAccount: boolean;
   handleDeleteAccount: (e: React.FormEvent) => void;
+  clearingDiary: boolean;
+  handleClearDiary: () => void;
+  clearingWatchlist: boolean;
+  handleClearWatchlist: () => void;
+  clearingFavorites: boolean;
+  handleClearFavorites: () => void;
+  clearingRatings: boolean;
+  handleClearRatings: () => void;
 }
 
 export default function DangerSection({
@@ -24,6 +32,14 @@ export default function DangerSection({
   setDeletePassword,
   deletingAccount,
   handleDeleteAccount,
+  clearingDiary,
+  handleClearDiary,
+  clearingWatchlist,
+  handleClearWatchlist,
+  clearingFavorites,
+  handleClearFavorites,
+  clearingRatings,
+  handleClearRatings,
 }: DangerSectionProps) {
   return (
     <div className="divide-y divide-zinc-900/80">
@@ -69,6 +85,108 @@ export default function DangerSection({
           )}
         </Button>
       </form>
+
+      {/* CLEAR DATA SECTION */}
+      <div className="space-y-6 py-10 text-left">
+        <div>
+          <h2 className="mb-1 text-xl font-bold tracking-tight text-white">
+            Clear Personal Data
+          </h2>
+          <p className="text-xs text-zinc-500">
+            Permanently delete specific categories of data from your account. This action cannot be undone.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Clear Diary */}
+          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+            <div>
+              <h3 className="font-bold text-sm text-white mb-1">Clear Diary</h3>
+              <p className="text-xs text-zinc-500 mb-4">
+                Delete all your logged watch logs and reviews.
+              </p>
+            </div>
+            <Button
+              type="button"
+              disabled={clearingDiary}
+              onClick={handleClearDiary}
+              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+              {clearingDiary ? (
+                <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                "Clear Diary Data"
+              )}
+            </Button>
+          </div>
+
+          {/* Clear Watchlist */}
+          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+            <div>
+              <h3 className="font-bold text-sm text-white mb-1">Clear Watchlist</h3>
+              <p className="text-xs text-zinc-500 mb-4">
+                Delete all movies and TV shows from your watchlist.
+              </p>
+            </div>
+            <Button
+              type="button"
+              disabled={clearingWatchlist}
+              onClick={handleClearWatchlist}
+              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+              {clearingWatchlist ? (
+                <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                "Clear Watchlist Data"
+              )}
+            </Button>
+          </div>
+
+          {/* Clear Favorites */}
+          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+            <div>
+              <h3 className="font-bold text-sm text-white mb-1">Clear Favorites</h3>
+              <p className="text-xs text-zinc-500 mb-4">
+                Delete all items from your favorites list.
+              </p>
+            </div>
+            <Button
+              type="button"
+              disabled={clearingFavorites}
+              onClick={handleClearFavorites}
+              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+              {clearingFavorites ? (
+                <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                "Clear Favorites Data"
+              )}
+            </Button>
+          </div>
+
+          {/* Clear Ratings */}
+          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+            <div>
+              <h3 className="font-bold text-sm text-white mb-1">Clear Ratings</h3>
+              <p className="text-xs text-zinc-500 mb-4">
+                Delete all ratings and clear ratings from your diary logs.
+              </p>
+            </div>
+            <Button
+              type="button"
+              disabled={clearingRatings}
+              onClick={handleClearRatings}
+              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+            >
+              {clearingRatings ? (
+                <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+              ) : (
+                "Clear Ratings Data"
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
 
       {/* DANGER ZONE DELETION */}
       <form onSubmit={handleDeleteAccount} className="space-y-6 pt-10">

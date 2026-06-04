@@ -126,3 +126,52 @@ export const checkWatchlistItem = query({
     return !!existing;
   },
 });
+
+// Clear watchlist for current user
+export const deleteAllWatchlist = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const items = await ctx.db
+      .query("watchlist")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    for (const item of items) {
+      await ctx.db.delete(item._id);
+    }
+
+    // Clean up watchlist activities
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    const watchlistActivities = activities.filter((a) => a.type === "watchlist");
+    for (const act of watchlistActivities) {
+      await ctx.db.delete(act._id);
+
+      // Clean up likes and comments associated with the watchlist activities
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+
+    return true;
+  },
+});
+

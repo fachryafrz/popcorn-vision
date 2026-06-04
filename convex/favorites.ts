@@ -126,3 +126,52 @@ export const checkFavoriteItem = query({
     return !!existing;
   },
 });
+
+// Clear favorites for current user
+export const deleteAllFavorites = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const items = await ctx.db
+      .query("favorites")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    for (const item of items) {
+      await ctx.db.delete(item._id);
+    }
+
+    // Clean up favorite activities
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    const favoriteActivities = activities.filter((a) => a.type === "favorite");
+    for (const act of favoriteActivities) {
+      await ctx.db.delete(act._id);
+
+      // Clean up likes and comments associated with the favorite activities
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+
+    return true;
+  },
+});
+
