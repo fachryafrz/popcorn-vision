@@ -12,6 +12,7 @@ import { useAuthModalStore } from "@/lib/auth-modal-store";
 import AvatarCropModal from "@/components/avatar-crop-modal";
 import ImportWizard from "@/components/import-wizard";
 import DataExporter from "@/components/data-exporter";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 // Import types and subcomponents
 import { ConvexProfile, User, BlockedUser } from "@/components/settings/types";
@@ -37,6 +38,7 @@ type SettingsSection =
 
 function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const router = useRouter();
+  const confirm = useConfirm();
   const updateProfile = useMutation(api.users.updateCurrentUserProfile);
   const deleteConvexAccountData = useMutation(
     api.users.deleteCurrentUserAccountData,
@@ -220,7 +222,13 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   };
 
   const handleRemoveImage = async () => {
-    if (!confirm("Are you sure you want to remove your profile picture?"))
+    if (
+      !(await confirm({
+        title: "Remove Profile Picture",
+        description: "Are you sure you want to remove your profile picture?",
+        confirmText: "Remove",
+      }))
+    )
       return;
 
     setUploadingImage(true);
@@ -365,9 +373,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     }
 
     if (
-      !confirm(
-        "Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.",
-      )
+      !(await confirm({
+        title: "Delete Account",
+        description: "Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.",
+        confirmText: "Delete",
+      }))
     ) {
       return;
     }
@@ -432,9 +442,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     }
 
     if (
-      !confirm(
-        "Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.",
-      )
+      !(await confirm({
+        title: "Close Account",
+        description: "Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.",
+        confirmText: "Close Account",
+      }))
     ) {
       return;
     }

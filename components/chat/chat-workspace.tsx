@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/context-menu";
 import { ChatItem, ChatMessage, ChatMember } from "./types";
 import { Id } from "@/convex/_generated/dataModel";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 interface ChatWorkspaceProps {
   selectedChatId: Id<"chats"> | null;
@@ -93,6 +94,7 @@ export default function ChatWorkspace({
   onQuickView,
 }: ChatWorkspaceProps) {
   const router = useRouter();
+  const confirm = useConfirm();
 
   if (!selectedChatId || !activeChat) {
     return (
@@ -503,11 +505,13 @@ export default function ChatWorkspace({
                     )}
                   {isMe && (
                     <ContextMenuItem
-                      onClick={() => {
+                      onClick={async () => {
                         if (
-                          confirm(
-                            "Are you sure you want to delete this message?",
-                          )
+                          await confirm({
+                            title: "Delete Message",
+                            description: "Are you sure you want to delete this message?",
+                            confirmText: "Delete",
+                          })
                         ) {
                           handleDeleteMessage(msg._id);
                         }
