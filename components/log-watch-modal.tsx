@@ -140,7 +140,7 @@ export default function LogWatchModal({
         try {
           const results = await batchFetchMediaMetadata(
             [{ mediaId, mediaType: mediaType as "movie" | "tv" }],
-            currentUser?.country || "US"
+            currentUser?.country || "US",
           );
           const meta = results[`${mediaType}-${mediaId}`];
           if (meta) {
@@ -215,7 +215,9 @@ export default function LogWatchModal({
               </h4>
               <p className="mt-1 text-[10px] font-semibold text-zinc-500 uppercase">
                 {mediaType} • {releaseYear}
-                {season !== undefined && episode !== undefined && ` • S${season} E${episode}`}
+                {season !== undefined &&
+                  episode !== undefined &&
+                  ` • S${season} E${episode}`}
               </p>
             </div>
           </div>
@@ -234,74 +236,55 @@ export default function LogWatchModal({
             />
           </div>
 
-          {/* Star Rating Selectors (5 stars supporting half stars, scales to 1-10) */}
+          {/* Star Rating Selectors (10 stars representing 1-10 rating scale) */}
           <div className="space-y-2">
             <Label className="block text-xs font-bold tracking-wider text-zinc-400 uppercase">
               Rating{" "}
               {rating > 0 ? (
-                `(${rating / 2} stars)`
+                `(${rating} / 10)`
               ) : (
                 <span className="font-normal text-zinc-600 italic">
                   (optional)
                 </span>
               )}
             </Label>
-            <div className="flex items-center gap-1.5 py-1">
-              {Array.from({ length: 5 }).map((_, starIndex) => {
-                const starPosition = starIndex + 1;
-                const leftValue = starPosition * 2 - 1;
-                const rightValue = starPosition * 2;
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1 py-1">
+                {Array.from({ length: 10 }).map((_, starIndex) => {
+                  const starValue = starIndex + 1;
+                  const displayRating = hoveredRating || rating;
 
-                const displayRating = hoveredRating || rating;
+                  return (
+                    <div
+                      className="relative h-5 w-5 shrink-0 cursor-pointer transition-transform duration-100 hover:scale-115"
+                      key={starIndex}
+                      onMouseEnter={() => setHoveredRating(starValue)}
+                      onMouseLeave={() => setHoveredRating(0)}
+                      onClick={() =>
+                        setRating(rating === starValue ? 0 : starValue)
+                      }
+                      title={`Rate ${starValue} / 10`}
+                    >
+                      {/* Base Empty Star */}
+                      <Star className="h-5 w-5 text-zinc-700" />
 
-                return (
-                  <div
-                    className="relative h-6 w-6 shrink-0 transition-transform duration-100 hover:scale-115"
-                    key={starIndex}
-                  >
-                    {/* Base Empty Star */}
-                    <Star className="h-6 w-6 text-zinc-700" />
-
-                    {/* Half Filled Overlay */}
-                    {displayRating === leftValue && (
-                      <div className="pointer-events-none absolute top-0 left-0 w-1/2 overflow-hidden">
-                        <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
-                      </div>
-                    )}
-
-                    {/* Fully Filled Overlay */}
-                    {displayRating >= rightValue && (
-                      <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden">
-                        <Star className="h-6 w-6 fill-yellow-500 text-yellow-500" />
-                      </div>
-                    )}
-
-                    {/* Hover/Click Areas */}
-                    <div className="absolute inset-0 flex">
-                      <button
-                        type="button"
-                        onMouseEnter={() => setHoveredRating(leftValue)}
-                        onMouseLeave={() => setHoveredRating(0)}
-                        onClick={() =>
-                          setRating(rating === leftValue ? 0 : leftValue)
-                        }
-                        className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
-                        title={`Rate ${leftValue / 2} stars`}
-                      />
-                      <button
-                        type="button"
-                        onMouseEnter={() => setHoveredRating(rightValue)}
-                        onMouseLeave={() => setHoveredRating(0)}
-                        onClick={() =>
-                          setRating(rating === rightValue ? 0 : rightValue)
-                        }
-                        className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
-                        title={`Rate ${rightValue / 2} stars`}
-                      />
+                      {/* Fully Filled Overlay */}
+                      {displayRating >= starValue && (
+                        <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden">
+                          <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
+                        </div>
+                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
+              <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
+                {hoveredRating
+                  ? `${hoveredRating} / 10`
+                  : rating
+                    ? `${rating} / 10`
+                    : "_ / 10"}
+              </span>
             </div>
           </div>
 

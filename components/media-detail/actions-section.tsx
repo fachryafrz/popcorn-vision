@@ -28,6 +28,8 @@ interface ActionsSectionProps {
   onClickCustomList: () => void;
   watchHistory: { watchCount: number } | null | undefined;
   scrollToPlayer: (tab: "trailer" | "watch") => void;
+  mediaType: "movie" | "tv";
+  watchProgress?: { season?: number; episode?: number } | null;
 }
 
 export default function ActionsSection({
@@ -45,6 +47,8 @@ export default function ActionsSection({
   onClickCustomList,
   watchHistory,
   scrollToPlayer,
+  mediaType,
+  watchProgress,
 }: ActionsSectionProps) {
   return (
     <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -151,13 +155,22 @@ export default function ActionsSection({
         </span>
       </Button>
 
-      {/* Watch count capsule */}
-      {watchHistory && watchHistory.watchCount > 0 && (
-        <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
-          <Check className="h-4 w-4 stroke-3" />
-          Watched {watchHistory.watchCount}{" "}
-          {watchHistory.watchCount === 1 ? "time" : "times"}
-        </span>
+      {/* Watch count/progress capsule */}
+      {mediaType === "tv" ? (
+        watchProgress && (watchProgress.season !== undefined || watchProgress.episode !== undefined) && (
+          <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+            <Check className="h-4 w-4 stroke-3" />
+            Last watch: S{watchProgress.season} E{watchProgress.episode}
+          </span>
+        )
+      ) : (
+        watchHistory && watchHistory.watchCount > 0 && (
+          <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+            <Check className="h-4 w-4 stroke-3" />
+            Watched {watchHistory.watchCount}{" "}
+            {watchHistory.watchCount === 1 ? "time" : "times"}
+          </span>
+        )
       )}
     </div>
   );

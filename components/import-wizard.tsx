@@ -621,25 +621,17 @@ export default function ImportWizard() {
           title: item.title,
           posterPath: item.posterPath,
           releaseYear: item.releaseYear,
+          rating: item.rating!,
         };
 
         if (item.sourceTable === "watchlist") {
-          await addToWatchlist({
-            ...args,
-            rating: item.rating,
-          });
+          await addToWatchlist(args);
           wCount++;
         } else if (item.sourceTable === "favorites") {
-          await addToFavorites({
-            ...args,
-            rating: item.rating,
-          });
+          await addToFavorites(args);
           fCount++;
         } else if (item.sourceTable === "ratings") {
-          await rateMedia({
-            ...args,
-            rating: item.rating || 5,
-          });
+          await rateMedia(args);
           rCount++;
         } else if (item.sourceTable === "diary") {
           const key = `${item.mediaType}-${item.mediaId}`;
@@ -661,7 +653,6 @@ export default function ImportWizard() {
             review: item.review || "",
             season: item.season,
             episode: item.episode,
-            rating: item.rating,
             ...metadataArgs,
           });
           dCount++;
@@ -979,9 +970,7 @@ export default function ImportWizard() {
             <h3 className="mb-1 text-base font-bold text-zinc-200">
               Adding Entries
             </h3>
-            <p className="text-xs text-zinc-500">
-              Saving your data securely...
-            </p>
+            <p className="text-xs text-zinc-500">Saving your data...</p>
           </div>
           <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
             <div

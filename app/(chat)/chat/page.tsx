@@ -87,7 +87,7 @@ export default function ChatPage() {
   const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(
     () => {
       if (typeof window !== "undefined") {
-        return localStorage.getItem("active_chat_id") as Id<"chats"> | null;
+        return sessionStorage.getItem("active_chat_id") as Id<"chats"> | null;
       }
       return null;
     },
@@ -96,9 +96,9 @@ export default function ChatPage() {
   // Save selectedChatId to localStoe when it changes
   useEffect(() => {
     if (selectedChatId) {
-      localStorage.setItem("active_chat_id", selectedChatId);
+      sessionStorage.setItem("active_chat_id", selectedChatId);
     } else {
-      localStorage.removeItem("active_chat_id");
+      sessionStorage.removeItem("active_chat_id");
     }
   }, [selectedChatId]);
 
@@ -106,7 +106,7 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("active_chat_id");
+      const saved = sessionStorage.getItem("active_chat_id");
       if (saved) {
         return window.innerWidth >= 640; // sm breakpoint is 640px
       }
