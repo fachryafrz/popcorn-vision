@@ -694,7 +694,7 @@ export default function ImportWizard() {
       {/* Wizard Header */}
       <div>
         <h2 className="mb-1 text-xl font-bold tracking-tight text-white">
-          Import Watchlist, Favorites & Ratings
+          Import Diary, Watchlist, Favorites & Ratings
         </h2>
         <p className="text-xs text-zinc-500">
           Migrate your personal lists and rating reviews from external platforms
