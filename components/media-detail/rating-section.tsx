@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { MediaDetails } from "./types";
@@ -34,6 +34,8 @@ export default function RatingSection({
   rateMedia,
   deleteRating,
 }: RatingSectionProps) {
+  const [hoveredRating, setHoveredRating] = useState<number>(0);
+
   const handleClearRating = async (e: React.MouseEvent) => {
     e.stopPropagation();
     try {
@@ -66,6 +68,8 @@ export default function RatingSection({
             const leftValue = starPosition * 2 - 1;
             const rightValue = starPosition * 2;
 
+            const displayRating = hoveredRating || userRating || 0;
+
             const handleRate = async (starValue: number) => {
               if (!isLoggedIn) {
                 openAuth();
@@ -96,14 +100,14 @@ export default function RatingSection({
                 <Star className="h-6 w-6 text-zinc-700" />
 
                 {/* Half Filled Overlay */}
-                {userRating === leftValue && (
+                {displayRating === leftValue && (
                   <div className="pointer-events-none absolute top-0 left-0 w-1/2 overflow-hidden">
                     <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
                   </div>
                 )}
 
                 {/* Fully Filled Overlay */}
-                {userRating && userRating >= rightValue && (
+                {displayRating >= rightValue && (
                   <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden">
                     <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
                   </div>
@@ -113,20 +117,24 @@ export default function RatingSection({
                 <div className="absolute inset-0 flex">
                   <button
                     type="button"
+                    onMouseEnter={() => setHoveredRating(leftValue)}
+                    onMouseLeave={() => setHoveredRating(0)}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRate(leftValue);
                     }}
-                    className="h-full w-1/2 cursor-pointer"
+                    className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
                     title={`Rate ${leftValue / 2} stars`}
                   />
                   <button
                     type="button"
+                    onMouseEnter={() => setHoveredRating(rightValue)}
+                    onMouseLeave={() => setHoveredRating(0)}
                     onClick={(e) => {
                       e.stopPropagation();
                       handleRate(rightValue);
                     }}
-                    className="h-full w-1/2 cursor-pointer"
+                    className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
                     title={`Rate ${rightValue / 2} stars`}
                   />
                 </div>
@@ -135,9 +143,10 @@ export default function RatingSection({
           })}
         </div>
         <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
-          {userRating ? `${userRating / 2} / 5` : "_ / 5"}
+          {hoveredRating ? `${hoveredRating / 2} / 5` : userRating ? `${userRating / 2} / 5` : "_ / 5"}
         </span>
       </div>
     </div>
   );
 }
+

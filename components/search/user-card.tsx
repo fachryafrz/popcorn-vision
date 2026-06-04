@@ -9,6 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { toast } from "sonner";
 import { SearchUserResult } from "./types";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 interface UserCardProps {
   user: SearchUserResult;
@@ -18,6 +19,7 @@ interface UserCardProps {
 
 export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
   const [friendLoading, setFriendLoading] = useState(false);
+  const confirm = useConfirm();
 
   const sendFriendRequest = useMutation(api.social.sendFriendRequest);
   const cancelFriendRequest = useMutation(api.social.cancelFriendRequest);
@@ -42,7 +44,11 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
         toast.success("Friend request accepted!");
       } else if (user.friendshipStatus === "friends") {
         if (
-          confirm(`Are you sure you want to remove ${user.name} from friends?`)
+          await confirm({
+            title: "Remove Friend",
+            description: `Are you sure you want to remove ${user.name} from friends?`,
+            confirmText: "Remove",
+          })
         ) {
           await removeFriend({ targetUserId: user.userId });
           toast.success("Friend removed.");

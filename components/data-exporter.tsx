@@ -64,6 +64,8 @@ interface ExportDiaryItem {
   watchedDate: number;
   rewatch: boolean;
   review?: string;
+  season?: number;
+  episode?: number;
   addedAt: number;
 }
 
@@ -203,6 +205,8 @@ export default function DataExporter() {
       "Rewatch",
       "Review",
       "Rating",
+      "Season",
+      "Episode",
       "AddedAt",
     ];
     const rows = existingDiary.map((item) => [
@@ -213,6 +217,8 @@ export default function DataExporter() {
       escapeCSVField(item.rewatch ? "Yes" : "No"),
       escapeCSVField(item.review || ""),
       escapeCSVField(item.rating || ""),
+      escapeCSVField(item.season !== undefined ? item.season : ""),
+      escapeCSVField(item.episode !== undefined ? item.episode : ""),
       escapeCSVField(new Date(item.addedAt).toISOString()),
     ]);
 

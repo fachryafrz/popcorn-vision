@@ -51,6 +51,8 @@ import { useRouter } from "next/navigation";
 import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useConfirm } from "@/components/ui/confirm-provider";
+import { siteConfig } from "@/config/site";
 
 interface ListCreator {
   userId: string;
@@ -128,6 +130,7 @@ export default function CustomListDetailPage({
   const currentUser = session.data?.user;
 
   const router = useRouter();
+  const confirm = useConfirm();
 
   // Queries
   const detail = useQuery(api.customLists.getListDetail, { listId }) as
@@ -321,7 +324,14 @@ export default function CustomListDetailPage({
     mediaType: string,
     title: string,
   ) => {
-    if (!confirm(`Are you sure you want to remove ${title}?`)) return;
+    if (
+      !(await confirm({
+        title: "Remove Item",
+        description: `Are you sure you want to remove ${title}?`,
+        confirmText: "Remove",
+      }))
+    )
+      return;
     try {
       await removeItemMutation({ listId, mediaId, mediaType });
       toast.success(`Removed ${title} from the list`);
@@ -345,7 +355,14 @@ export default function CustomListDetailPage({
       ? "Are you sure you want to leave this collaborative list?"
       : `Are you sure you want to remove ${name} from this list?`;
 
-    if (!confirm(confirmMsg)) return;
+    if (
+      !(await confirm({
+        title: isSelf ? "Leave List" : "Remove Member",
+        description: confirmMsg,
+        confirmText: isSelf ? "Leave" : "Remove",
+      }))
+    )
+      return;
 
     try {
       await removeCollaboratorMutation({ listId, userId });
@@ -436,9 +453,11 @@ export default function CustomListDetailPage({
 
   const handleDeleteList = async () => {
     if (
-      !confirm(
-        "Are you sure you want to permanently delete this list? This cannot be undone.",
-      )
+      !(await confirm({
+        title: "Delete List",
+        description: "Are you sure you want to permanently delete this list? This cannot be undone.",
+        confirmText: "Delete",
+      }))
     )
       return;
     try {
@@ -467,7 +486,14 @@ export default function CustomListDetailPage({
   };
 
   const handleDeleteComment = async (commentId: Id<"customListComments">) => {
-    if (!confirm("Are you sure you want to delete this comment?")) return;
+    if (
+      !(await confirm({
+        title: "Delete Comment",
+        description: "Are you sure you want to delete this comment?",
+        confirmText: "Delete",
+      }))
+    )
+      return;
     try {
       await deleteCommentMutation({ commentId });
       toast.success("Comment deleted");
@@ -759,7 +785,7 @@ export default function CustomListDetailPage({
                   <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
                     {friends.length === 0 ? (
                       <p className="py-6 text-center text-sm text-zinc-500">
-                        Add friends on Popcorn Vision first to invite them to
+                        Add friends on {siteConfig.name} first to invite them to
                         collaborate!
                       </p>
                     ) : (

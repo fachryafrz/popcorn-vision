@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 // Props for CommentsSection
 interface CommentsSectionProps {
@@ -229,6 +230,7 @@ function CommentNode({
   mediaType,
   onAuthRequired,
 }: CommentNodeProps) {
+  const confirm = useConfirm();
   const [isReplying, setIsReplying] = useState(false);
   const [replyContent, setReplyContent] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
@@ -328,9 +330,11 @@ function CommentNode({
 
   const handleDelete = async () => {
     if (
-      confirm(
-        "Are you sure you want to delete this comment? This will also delete all replies to it.",
-      )
+      await confirm({
+        title: "Delete Comment",
+        description: "Are you sure you want to delete this comment? This will also delete all replies to it.",
+        confirmText: "Delete",
+      })
     ) {
       try {
         await deleteCommentMutation({

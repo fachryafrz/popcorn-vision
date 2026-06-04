@@ -34,6 +34,8 @@ interface LogWatchModalProps {
   initialRewatch?: boolean;
   initialRating?: number;
   initialReview?: string;
+  season?: number;
+  episode?: number;
 }
 
 export default function LogWatchModal({
@@ -50,6 +52,8 @@ export default function LogWatchModal({
   initialRewatch,
   initialRating,
   initialReview,
+  season,
+  episode,
 }: LogWatchModalProps) {
   const [watchedDate, setWatchedDate] = useState("");
   const [rewatch, setRewatch] = useState(false);
@@ -124,6 +128,8 @@ export default function LogWatchModal({
           rewatch,
           review: review.trim() || undefined,
           rating: rating > 0 ? rating : undefined,
+          season,
+          episode,
         });
         toast.success(`Updated watch log for "${title}" successfully!`);
       } else {
@@ -137,6 +143,8 @@ export default function LogWatchModal({
           rewatch,
           review: review.trim() || undefined,
           rating: rating > 0 ? rating : undefined,
+          season,
+          episode,
         });
         toast.success(`Logged watch for "${title}" successfully!`);
       }
@@ -183,6 +191,7 @@ export default function LogWatchModal({
               </h4>
               <p className="mt-1 text-[10px] font-semibold text-zinc-500 uppercase">
                 {mediaType} • {releaseYear}
+                {season !== undefined && episode !== undefined && ` • S${season} E${episode}`}
               </p>
             </div>
           </div>

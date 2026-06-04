@@ -43,8 +43,10 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 export default function Navbar() {
+  const confirm = useConfirm();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const user = session.data?.user;
@@ -234,7 +236,13 @@ export default function Navbar() {
                         <button
                           onClick={async (e) => {
                             e.stopPropagation();
-                            if (confirm("Clear all notifications?")) {
+                            if (
+                              await confirm({
+                                title: "Clear Notifications",
+                                description: "Clear all notifications?",
+                                confirmText: "Clear",
+                              })
+                            ) {
                               await clearAll();
                             }
                           }}
@@ -625,7 +633,13 @@ export default function Navbar() {
                         <button
                           onClick={async (e) => {
                             e.stopPropagation();
-                            if (confirm("Clear all notifications?")) {
+                            if (
+                              await confirm({
+                                title: "Clear Notifications",
+                                description: "Clear all notifications?",
+                                confirmText: "Clear",
+                              })
+                            ) {
                               await clearAll();
                             }
                           }}

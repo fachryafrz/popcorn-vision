@@ -27,6 +27,10 @@ interface PrivacySectionProps {
   setHideFavorites: (val: boolean) => void;
   hideRatings: boolean;
   setHideRatings: (val: boolean) => void;
+  hideDiary: boolean;
+  setHideDiary: (val: boolean) => void;
+  hideInsights: boolean;
+  setHideInsights: (val: boolean) => void;
   savingPrivacy: boolean;
   handleUpdatePrivacy: (e: React.FormEvent) => void;
   blockedUsersList: BlockedUser[] | undefined;
@@ -46,6 +50,10 @@ export default function PrivacySection({
   setHideFavorites,
   hideRatings,
   setHideRatings,
+  hideDiary,
+  setHideDiary,
+  hideInsights,
+  setHideInsights,
   savingPrivacy,
   handleUpdatePrivacy,
   blockedUsersList,
@@ -166,6 +174,38 @@ export default function PrivacySection({
             />
           </div>
 
+          {/* Hide Diary */}
+          <div className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-4">
+            <div className="flex flex-col gap-0.5 text-left">
+              <span className="text-xs font-bold text-white">Hide Diary</span>
+              <span className="text-[10px] text-zinc-500">
+                Conceal your Diary tab from other users
+              </span>
+            </div>
+            <Checkbox
+              checked={hideDiary}
+              onCheckedChange={(checked) => setHideDiary(checked === true)}
+              className="animate-in h-5 w-5 cursor-pointer duration-200"
+            />
+          </div>
+
+          {/* Hide Insights */}
+          <div className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-4">
+            <div className="flex flex-col gap-0.5 text-left">
+              <span className="text-xs font-bold text-white">
+                Hide Insights
+              </span>
+              <span className="text-[10px] text-zinc-500">
+                Conceal your Insights tab from other users
+              </span>
+            </div>
+            <Checkbox
+              checked={hideInsights}
+              onCheckedChange={(checked) => setHideInsights(checked === true)}
+              className="animate-in h-5 w-5 cursor-pointer duration-200"
+            />
+          </div>
+
           {/* Hide Watchlist */}
           <div className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-4">
             <div className="flex flex-col gap-0.5 text-left">
@@ -214,7 +254,6 @@ export default function PrivacySection({
               className="animate-in h-5 w-5 cursor-pointer duration-200"
             />
           </div>
-
         </div>
       </div>
 

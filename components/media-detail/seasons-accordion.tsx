@@ -1,11 +1,9 @@
-import { RefObject, useState } from "react";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { RefObject } from "react";
+import { Loader2, CheckCircle2, Check, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import moment from "moment";
 import { MediaDetails, SeasonDetails } from "./types";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { toast } from "sonner";
@@ -20,6 +18,19 @@ interface SeasonsAccordionProps {
   setSeason: (season: number) => void;
   setEpisode: (episode: number) => void;
   scrollToPlayer: (tab: "trailer" | "watch") => void;
+  watchProgress?: {
+    season?: number;
+    episode?: number;
+  } | null;
+  upsertWatchProgress: (args: {
+    mediaId: string;
+    mediaType: string;
+    title: string;
+    posterPath: string;
+    season?: number;
+    episode?: number;
+  }) => Promise<string>;
+  onLogEpisode?: (season: number, episode: number) => void;
 }
 
 export default function SeasonsAccordion({
@@ -32,43 +43,13 @@ export default function SeasonsAccordion({
   setSeason,
   setEpisode,
   scrollToPlayer,
+  watchProgress,
+  upsertWatchProgress,
+  onLogEpisode,
 }: SeasonsAccordionProps) {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
-  const logSeasonCompletion = useMutation(api.activities.logSeasonCompletion);
-  const [completingSeasons, setCompletingSeasons] = useState<
-    Record<number, boolean>
-  >({});
-
-  const handleMarkCompleted = async (
-    e: React.MouseEvent,
-    seasonNumber: number,
-  ) => {
-    e.stopPropagation();
-    if (!isLoggedIn) {
-      openAuth();
-      return;
-    }
-
-    setCompletingSeasons((prev) => ({ ...prev, [seasonNumber]: true }));
-    try {
-      await logSeasonCompletion({
-        mediaId: String(details.id),
-        mediaType: "tv",
-        title: details.name || details.title || "",
-        posterPath: details.poster_path || "",
-        season: seasonNumber,
-      });
-      toast.success(`Marked Season ${seasonNumber} as completed!`);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to mark season as completed");
-    } finally {
-      setCompletingSeasons((prev) => ({ ...prev, [seasonNumber]: false }));
-    }
-  };
-
   if (!details?.seasons || details.seasons.length === 0) return null;
 
   return (
@@ -82,7 +63,14 @@ export default function SeasonsAccordion({
             ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
             : "/logo/popcorn.png";
           const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
-          const isCompleting = completingSeasons[s.season_number];
+          const isSeasonCompleted = !!(
+            watchProgress &&
+            watchProgress.season !== undefined &&
+            (watchProgress.season > s.season_number ||
+              (watchProgress.season === s.season_number &&
+                watchProgress.episode !== undefined &&
+                watchProgress.episode >= s.episode_count))
+          );
 
           return (
             <div
@@ -107,19 +95,14 @@ export default function SeasonsAccordion({
                   <h4 className="group-hover:text-primary truncate text-xs font-bold text-white transition-colors">
                     {s.name}
                   </h4>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    onClick={(e) => handleMarkCompleted(e, s.season_number)}
-                    className="h-5 w-5 shrink-0 rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-green-500"
-                    title="Mark Completed"
-                  >
-                    {isCompleting ? (
-                      <Loader2 className="h-3 w-3 animate-spin text-zinc-400" />
-                    ) : (
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                    )}
-                  </Button>
+                  {isSeasonCompleted && (
+                    <div
+                      className="animate-in fade-in zoom-in flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-950/20 text-emerald-500 duration-300"
+                      title="Season Completed"
+                    >
+                      <Check className="h-3.5 w-3.5 stroke-[2.5]" />
+                    </div>
+                  )}
                 </div>
                 <span className="mt-1 text-[10px] font-semibold text-zinc-400">
                   {s.episode_count || 0} Episode
@@ -172,6 +155,17 @@ export default function SeasonsAccordion({
                       ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
                       : "/logo/popcorn.png";
                     const duration = moment.duration(ep.runtime, "minutes");
+
+                    const isEpisodeCompleted = !!(
+                      watchProgress &&
+                      watchProgress.season !== undefined &&
+                      watchProgress.episode !== undefined &&
+                      (watchProgress.season > activeSeasonData.season_number ||
+                        (watchProgress.season ===
+                          activeSeasonData.season_number &&
+                          watchProgress.episode >= ep.episode_number))
+                    );
+
                     return (
                       <div
                         key={ep.id}
@@ -203,20 +197,89 @@ export default function SeasonsAccordion({
                         {/* Episode Info */}
                         <div className="flex min-w-0 flex-1 flex-col justify-between text-left">
                           <div>
-                            <div className="flex items-center gap-2">
-                              <span className="text-primary text-xs font-black">
-                                Episode {ep.episode_number}
-                              </span>
-                              {ep.runtime && (
-                                <span className="border-zinc-850 rounded border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold text-zinc-500">
-                                  {duration.hours() > 0
-                                    ? `${duration.hours()}h `
-                                    : ""}
-                                  {duration.minutes() > 0
-                                    ? `${duration.minutes()}m`
-                                    : ""}
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-primary text-xs font-black">
+                                  Episode {ep.episode_number}
                                 </span>
-                              )}
+                                {ep.runtime && (
+                                  <span className="border-zinc-850 rounded border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold text-zinc-500">
+                                    {duration.hours() > 0
+                                      ? `${duration.hours()}h `
+                                      : ""}
+                                    {duration.minutes() > 0
+                                      ? `${duration.minutes()}m`
+                                      : ""}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (!isLoggedIn) {
+                                      openAuth();
+                                      return;
+                                    }
+                                    onLogEpisode?.(
+                                      activeSeasonData.season_number,
+                                      ep.episode_number,
+                                    );
+                                  }}
+                                  className="h-6 w-6 rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-white"
+                                  title="Log Episode to Diary"
+                                >
+                                  <Calendar className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    if (!isLoggedIn) {
+                                      openAuth();
+                                      return;
+                                    }
+                                    try {
+                                      await upsertWatchProgress({
+                                        mediaId: String(details.id),
+                                        mediaType: "tv",
+                                        title:
+                                          details.name || details.title || "",
+                                        posterPath: details.poster_path || "",
+                                        season: activeSeasonData.season_number,
+                                        episode: ep.episode_number,
+                                      });
+                                      toast.success(
+                                        `Marked S${activeSeasonData.season_number} E${ep.episode_number} as completed!`,
+                                      );
+                                    } catch {
+                                      toast.error(
+                                        "Failed to mark episode as completed",
+                                      );
+                                    }
+                                  }}
+                                  className={cn(
+                                    "h-6 w-6 rounded-full transition-colors",
+                                    isEpisodeCompleted
+                                      ? "text-emerald-500 hover:bg-emerald-950/20"
+                                      : "text-zinc-500 hover:bg-zinc-800 hover:text-white",
+                                  )}
+                                  title={
+                                    isEpisodeCompleted
+                                      ? "Completed"
+                                      : "Mark Completed"
+                                  }
+                                >
+                                  {isEpisodeCompleted ? (
+                                    <Check className="h-3.5 w-3.5 stroke-[2.5]" />
+                                  ) : (
+                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                  )}
+                                </Button>
+                              </div>
                             </div>
                             <h6 className="mt-1 truncate text-xs font-extrabold text-white">
                               {ep.name}

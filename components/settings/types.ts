@@ -9,6 +9,8 @@ export interface ConvexProfile {
   hideWatchlist?: boolean;
   hideFavorites?: boolean;
   hideRatings?: boolean;
+  hideDiary?: boolean;
+  hideInsights?: boolean;
   messagePrivacy?: string;
   readReceiptsEnabled?: boolean;
 }

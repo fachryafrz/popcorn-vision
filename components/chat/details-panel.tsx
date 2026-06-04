@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ChatItem, ChatMember, ChatMessage } from "./types";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 interface DetailsPanelProps {
   activeChat: ChatItem;
@@ -39,15 +40,18 @@ export default function DetailsPanel({
   onBlockSuccess,
 }: DetailsPanelProps) {
   const router = useRouter();
+  const confirm = useConfirm();
   const blockUser = useMutation(api.social.blockUser);
   const [blockLoading, setBlockLoading] = useState(false);
 
   const handleBlockUser = async () => {
     if (!activeChat.friend?.userId) return;
     if (
-      !confirm(
-        `Are you sure you want to block ${activeChat.friend.name}? You will no longer be able to message each other, and they will be removed from your friends.`
-      )
+      !(await confirm({
+        title: "Block User",
+        description: `Are you sure you want to block ${activeChat.friend.name}? You will no longer be able to message each other, and they will be removed from your friends.`,
+        confirmText: "Block",
+      }))
     ) {
       return;
     }

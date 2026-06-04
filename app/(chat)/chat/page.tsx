@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 // Import types and subcomponents
 import {
@@ -23,9 +24,11 @@ import DetailsPanel from "@/components/chat/details-panel";
 import ChatModals from "@/components/chat/chat-modals";
 import QuickViewModal from "@/components/quick-view-modal";
 import { TMDBMedia } from "@/lib/tmdb";
+import { siteConfig } from "@/config/site";
 
 export default function ChatPage() {
   const router = useRouter();
+  const confirm = useConfirm();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const currentUserId = session.data?.user?.id;
@@ -325,7 +328,14 @@ export default function ChatPage() {
   // Leave active group chat
   const handleLeaveGroup = async () => {
     if (!selectedChatId) return;
-    if (!confirm("Are you sure you want to leave this group chat?")) return;
+    if (
+      !(await confirm({
+        title: "Leave Group Chat",
+        description: "Are you sure you want to leave this group chat?",
+        confirmText: "Leave",
+      }))
+    )
+      return;
 
     try {
       await leaveGroupChat({ chatId: selectedChatId });
@@ -359,7 +369,7 @@ export default function ChatPage() {
       setReportReason("");
       setReportedUserId(null);
       toast.success(
-        "User reported successfully. Popcorn Vision safety admins will review this chat session.",
+        `User reported successfully. ${siteConfig.name} safety admins will review this chat session.`,
       );
     } catch {
       toast.error("Failed to submit report");
@@ -398,12 +408,19 @@ export default function ChatPage() {
   // Delete chat room/session handler
   const handleDeleteChat = async () => {
     if (!selectedChatId) return;
-    const confirmMsg =
-      activeChat?.type === "group"
-        ? "  Are u sure you want to delete this group chat for everyone? This will remove all messages and members."
-        : "  Are u sure you want to delete this conversation? This will delete all messages for both users.";
+    const isGroup = activeChat?.type === "group";
+    const confirmMsg = isGroup
+      ? "Are you sure you want to delete this group chat for everyone? This will remove all messages and members."
+      : "Are you sure you want to delete this conversation? This will delete all messages for both users.";
 
-    if (!confirm(confirmMsg)) return;
+    if (
+      !(await confirm({
+        title: isGroup ? "Delete Group Chat" : "Delete Chat",
+        description: confirmMsg.trim(),
+        confirmText: "Delete",
+      }))
+    )
+      return;
 
     try {
       await deleteChat({ chatId: selectedChatId });

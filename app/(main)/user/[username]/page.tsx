@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import LogWatchModal from "@/components/log-watch-modal";
 import ContinueWatchingCard from "@/components/continue-watching-card";
 import { Play } from "lucide-react";
+import { useConfirm } from "@/components/ui/confirm-provider";
 
 // Modular Subcomponents
 import { UserDoc, DiaryItem } from "@/components/profile/types";
@@ -45,6 +46,7 @@ interface UserProfilePageProps {
 
 export default function UserProfilePage({ params }: UserProfilePageProps) {
   const { username } = use(params);
+  const confirm = useConfirm();
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [activeTab, setActiveTab] = useState<
@@ -63,7 +65,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const deleteDiaryEntry = useMutation(api.diary.deleteDiaryEntry);
 
   const handleDeleteDiary = async (diaryId: string) => {
-    if (!confirm("Are you sure you want to delete this watch log entry?"))
+    if (
+      !(await confirm({
+        title: "Delete Diary Entry",
+        description: "Are you sure you want to delete this watch log entry?",
+        confirmText: "Delete",
+      }))
+    )
       return;
     setDeletingId(diaryId);
     try {
@@ -117,9 +125,11 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const handleBulkDelete = async () => {
     if (selectedItems.size === 0) return;
     if (
-      !confirm(
-        `Are you sure you want to delete the ${selectedItems.size} selected items?`,
-      )
+      !(await confirm({
+        title: "Delete Items",
+        description: `Are you sure you want to delete the ${selectedItems.size} selected items?`,
+        confirmText: "Delete",
+      }))
     )
       return;
 
@@ -195,6 +205,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const showWatchlistTab = isOwner || !targetUser?.hideWatchlist;
   const showFavoritesTab = isOwner || !targetUser?.hideFavorites;
   const showRatingsTab = isOwner || !targetUser?.hideRatings;
+  const showDiaryTab = isOwner || !targetUser?.hideDiary;
+  const showInsightsTab = isOwner || !targetUser?.hideInsights;
 
   // Query target user lists if profile exists and content is visible
   const watchlist = useQuery(
@@ -217,7 +229,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   ) as GridMediaItem[] | undefined;
   const diary = useQuery(
     api.diary.getUserDiary,
-    targetUserId && !showLockScreen ? { userId: targetUserId } : "skip",
+    targetUserId && (showDiaryTab || showInsightsTab) && !showLockScreen
+      ? { userId: targetUserId }
+      : "skip",
   ) as DiaryItem[] | undefined;
 
   const continueWatching = useQuery(
@@ -231,7 +245,14 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       return;
     }
     if (!targetUserId || !targetUser) return;
-    if (!confirm(`Are you sure you want to block ${targetUser.name}? You will no longer be able to message each other, and they will be removed from your friends.`)) return;
+    if (
+      !(await confirm({
+        title: "Block User",
+        description: `Are you sure you want to block ${targetUser.name}? You will no longer be able to message each other, and they will be removed from your friends.`,
+        confirmText: "Block",
+      }))
+    )
+      return;
     setBlockLoading(true);
     try {
       await blockMutation({ targetUserId });
@@ -262,9 +283,11 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         toast.success("Friend request accepted!");
       } else if (profileData.friendshipStatus === "friends") {
         if (
-          confirm(
-            `Are you sure you want to remove ${targetUser.name} from friends?`,
-          )
+          await confirm({
+            title: "Remove Friend",
+            description: `Are you sure you want to remove ${targetUser.name} from friends?`,
+            confirmText: "Remove",
+          })
         ) {
           await removeFriend({ targetUserId });
           toast.success("Friend removed.");
@@ -465,13 +488,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       id: "diary" as const,
       label: "Diary",
       count: diary ? diary.length : 0,
-      visible: true,
+      visible: showDiaryTab,
     },
     {
       id: "insights" as const,
       label: "Insights",
       count: diary ? diary.length : 0,
-      visible: true,
+      visible: showInsightsTab,
     },
     {
       id: "watchlist" as const,
