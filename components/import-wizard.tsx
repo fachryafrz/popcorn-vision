@@ -5,8 +5,10 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import {
   matchImportItemsAction,
+  batchFetchMediaMetadata,
   ImportItem,
   MatchedImportItem,
+  StatsMetadata,
 } from "@/lib/tmdb-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -511,6 +513,27 @@ export default function ImportWizard() {
 
     const duplicates = getDuplicatePairs();
 
+    // Fetch stats metadata in batch for diary entries
+    const diaryImportItems = importIndices
+      .map((idx) => resolvedItems[idx])
+      .filter((item) => item.sourceTable === "diary" && !checkItemIsDuplicate(item, duplicates));
+
+    let statsMetadataMap: Record<string, StatsMetadata> = {};
+    if (diaryImportItems.length > 0) {
+      try {
+        const uniqueItems = diaryImportItems.map((item) => ({
+          mediaId: item.mediaId,
+          mediaType: item.mediaType as "movie" | "tv",
+        }));
+        statsMetadataMap = await batchFetchMediaMetadata(
+          uniqueItems,
+          currentUser?.country || "US"
+        );
+      } catch (err) {
+        console.error("Failed to batch fetch metadata for imported diary entries:", err);
+      }
+    }
+
     for (let i = 0; i < importIndices.length; i++) {
       const itemIdx = importIndices[i];
       const item = resolvedItems[itemIdx];
@@ -540,11 +563,24 @@ export default function ImportWizard() {
           await rateMedia(args);
           rCount++;
         } else if (item.sourceTable === "diary") {
+          const key = `${item.mediaType}-${item.mediaId}`;
+          const meta = statsMetadataMap[key];
+          const metadataArgs = meta
+            ? {
+                runtime: meta.runtime,
+                genres: meta.genres,
+                cast: meta.cast,
+                directors: meta.directors,
+                watchProviders: meta.watchProviders,
+              }
+            : {};
+
           await logWatch({
             ...args,
             watchedDate: item.watchedDate || getNowTimestamp(),
             rewatch: item.rewatch || false,
             review: item.review || "",
+            ...metadataArgs,
           });
           dCount++;
         }

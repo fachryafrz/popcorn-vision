@@ -35,6 +35,11 @@ export const logWatch = mutation({
     rating: v.optional(v.number()), // optional rating (1-10)
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
+    runtime: v.optional(v.number()),
+    genres: v.optional(v.array(v.string())),
+    cast: v.optional(v.array(v.string())),
+    directors: v.optional(v.array(v.string())),
+    watchProviders: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -85,6 +90,11 @@ export const logWatch = mutation({
       season: args.season,
       episode: args.episode,
       addedAt: Date.now(),
+      runtime: args.runtime,
+      genres: args.genres,
+      cast: args.cast,
+      directors: args.directors,
+      watchProviders: args.watchProviders,
     });
 
     // 2. Sync to ratings table if rating is provided
