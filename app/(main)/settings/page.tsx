@@ -45,6 +45,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   );
   const closeConvexAccount = useMutation(api.users.closeCurrentUserAccount);
 
+  const deleteAllDiary = useMutation(api.diary.deleteAllDiary);
+  const deleteAllWatchlist = useMutation(api.watchlist.deleteAllWatchlist);
+  const deleteAllFavorites = useMutation(api.favorites.deleteAllFavorites);
+  const deleteAllRatings = useMutation(api.ratings.deleteAllRatings);
+
   // Convex image storage mutations
   const generateUploadUrl = useMutation(api.users.generateUploadUrl);
   const updateProfileImage = useMutation(api.users.updateProfileImage);
@@ -158,6 +163,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [closePassword, setClosePassword] = useState("");
   const [closingAccount, setClosingAccount] = useState(false);
+
+  // Clear data fields state
+  const [clearingDiary, setClearingDiary] = useState(false);
+  const [clearingWatchlist, setClearingWatchlist] = useState(false);
+  const [clearingFavorites, setClearingFavorites] = useState(false);
+  const [clearingRatings, setClearingRatings] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -495,6 +506,98 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     }
   };
 
+  const handleClearDiary = async () => {
+    if (
+      !(await confirm({
+        title: "Clear Diary Data",
+        description: "Are you sure you want to delete all your diary entries and watch history? This action is permanent and cannot be undone.",
+        confirmText: "Clear All",
+      }))
+    ) {
+      return;
+    }
+
+    setClearingDiary(true);
+    try {
+      await deleteAllDiary();
+      toast.success("All diary entries have been deleted.");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to clear diary data.");
+    } finally {
+      setClearingDiary(false);
+    }
+  };
+
+  const handleClearWatchlist = async () => {
+    if (
+      !(await confirm({
+        title: "Clear Watchlist Data",
+        description: "Are you sure you want to delete all items from your watchlist? This action is permanent and cannot be undone.",
+        confirmText: "Clear All",
+      }))
+    ) {
+      return;
+    }
+
+    setClearingWatchlist(true);
+    try {
+      await deleteAllWatchlist();
+      toast.success("Watchlist has been cleared.");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to clear watchlist.");
+    } finally {
+      setClearingWatchlist(false);
+    }
+  };
+
+  const handleClearFavorites = async () => {
+    if (
+      !(await confirm({
+        title: "Clear Favorites Data",
+        description: "Are you sure you want to delete all items from your favorites list? This action is permanent and cannot be undone.",
+        confirmText: "Clear All",
+      }))
+    ) {
+      return;
+    }
+
+    setClearingFavorites(true);
+    try {
+      await deleteAllFavorites();
+      toast.success("Favorites list has been cleared.");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to clear favorites.");
+    } finally {
+      setClearingFavorites(false);
+    }
+  };
+
+  const handleClearRatings = async () => {
+    if (
+      !(await confirm({
+        title: "Clear Ratings Data",
+        description: "Are you sure you want to delete all your ratings? This will also remove rating values from your watch history. This action is permanent and cannot be undone.",
+        confirmText: "Clear All",
+      }))
+    ) {
+      return;
+    }
+
+    setClearingRatings(true);
+    try {
+      await deleteAllRatings();
+      toast.success("All ratings have been cleared.");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to clear ratings.");
+    } finally {
+      setClearingRatings(false);
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
       <SidebarNav
@@ -575,6 +678,14 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
             setDeletePassword={setDeletePassword}
             deletingAccount={deletingAccount}
             handleDeleteAccount={handleDeleteAccount}
+            clearingDiary={clearingDiary}
+            handleClearDiary={handleClearDiary}
+            clearingWatchlist={clearingWatchlist}
+            handleClearWatchlist={handleClearWatchlist}
+            clearingFavorites={clearingFavorites}
+            handleClearFavorites={handleClearFavorites}
+            clearingRatings={clearingRatings}
+            handleClearRatings={handleClearRatings}
           />
         )}
 

@@ -300,6 +300,30 @@ export default function DataExporter() {
 
       {/* Grid of exportable modules */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {/* Diary card */}
+        <div className="group relative flex flex-col justify-between gap-4 overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950/20 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:border-zinc-800/80">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-900/30 bg-emerald-950/30 shadow-inner">
+              <Calendar className="h-5 w-5 text-emerald-400" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-zinc-200">Film Diary</h3>
+              <p className="text-[10px] text-zinc-500">
+                {dCount} chronologically logged watches
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            onClick={handleExportDiary}
+            disabled={dCount === 0}
+            className="w-full cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 py-4 text-xs font-semibold text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+          >
+            <Download className="mr-1.5 h-3.5 w-3.5" />
+            Download CSV
+          </Button>
+        </div>
+
         {/* Watchlist card */}
         <div className="group relative flex flex-col justify-between gap-4 overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950/20 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:border-zinc-800/80">
           <div className="flex items-center gap-3">
@@ -365,30 +389,6 @@ export default function DataExporter() {
             size="sm"
             onClick={handleExportRatings}
             disabled={rCount === 0}
-            className="w-full cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 py-4 text-xs font-semibold text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
-          >
-            <Download className="mr-1.5 h-3.5 w-3.5" />
-            Download CSV
-          </Button>
-        </div>
-
-        {/* Diary card */}
-        <div className="group relative flex flex-col justify-between gap-4 overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950/20 p-6 shadow-md backdrop-blur-md transition-all duration-300 hover:border-zinc-800/80">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-900/30 bg-emerald-950/30 shadow-inner">
-              <Calendar className="h-5 w-5 text-emerald-400" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-zinc-200">Film Diary</h3>
-              <p className="text-[10px] text-zinc-500">
-                {dCount} chronologically logged watches
-              </p>
-            </div>
-          </div>
-          <Button
-            size="sm"
-            onClick={handleExportDiary}
-            disabled={dCount === 0}
             className="w-full cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 py-4 text-xs font-semibold text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
           >
             <Download className="mr-1.5 h-3.5 w-3.5" />

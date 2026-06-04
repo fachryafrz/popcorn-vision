@@ -146,3 +146,66 @@ export const getCommunityRatingStats = query({
     };
   },
 });
+
+// Clear ratings for current user
+export const deleteAllRatings = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const user = await authComponent.getAuthUser(ctx);
+    const userId = user._id;
+
+    const items = await ctx.db
+      .query("ratings")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    for (const item of items) {
+      await ctx.db.delete(item._id);
+    }
+
+    // Clean up rating activities
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    const rateActivities = activities.filter((a) => a.type === "rate");
+    for (const act of rateActivities) {
+      await ctx.db.delete(act._id);
+
+      // Clean up likes and comments associated with the rate activities
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+
+    // Clear rating values in diary logs
+    const diaryEntries = await ctx.db
+      .query("diary")
+      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .collect();
+
+    for (const entry of diaryEntries) {
+      if (entry.rating !== undefined) {
+        await ctx.db.patch(entry._id, {
+          rating: undefined,
+        });
+      }
+    }
+
+    return true;
+  },
+});
+

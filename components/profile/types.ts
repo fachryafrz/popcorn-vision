@@ -30,6 +30,11 @@ export interface DiaryItem {
   review?: string;
   season?: number;
   episode?: number;
+  runtime?: number;
+  genres?: string[];
+  cast?: string[];
+  directors?: string[];
+  watchProviders?: string[];
 }
 
 export interface ProfileFriend {

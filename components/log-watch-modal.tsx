@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
 import {
   Dialog,
   DialogContent,
@@ -64,6 +65,7 @@ export default function LogWatchModal({
 
   const logWatchMutation = useMutation(api.diary.logWatch);
   const editDiaryEntryMutation = useMutation(api.diary.editDiaryEntry);
+  const currentUser = useQuery(api.users.getCurrentUser);
 
   // Set default watch date to today or initial values if editing (local YYYY-MM-DD)
   useEffect(() => {
@@ -133,6 +135,27 @@ export default function LogWatchModal({
         });
         toast.success(`Updated watch log for "${title}" successfully!`);
       } else {
+        // Fetch metadata properties from TMDB server action
+        let metadataArgs = {};
+        try {
+          const results = await batchFetchMediaMetadata(
+            [{ mediaId, mediaType: mediaType as "movie" | "tv" }],
+            currentUser?.country || "US"
+          );
+          const meta = results[`${mediaType}-${mediaId}`];
+          if (meta) {
+            metadataArgs = {
+              runtime: meta.runtime,
+              genres: meta.genres,
+              cast: meta.cast,
+              directors: meta.directors,
+              watchProviders: meta.watchProviders,
+            };
+          }
+        } catch (err) {
+          console.error("Failed to fetch TMDB metadata for diary entry:", err);
+        }
+
         await logWatchMutation({
           mediaId,
           mediaType,
@@ -145,6 +168,7 @@ export default function LogWatchModal({
           rating: rating > 0 ? rating : undefined,
           season,
           episode,
+          ...metadataArgs,
         });
         toast.success(`Logged watch for "${title}" successfully!`);
       }

@@ -35,6 +35,11 @@ export const logWatch = mutation({
     rating: v.optional(v.number()), // optional rating (1-10)
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
+    runtime: v.optional(v.number()),
+    genres: v.optional(v.array(v.string())),
+    cast: v.optional(v.array(v.string())),
+    directors: v.optional(v.array(v.string())),
+    watchProviders: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -85,6 +90,11 @@ export const logWatch = mutation({
       season: args.season,
       episode: args.episode,
       addedAt: Date.now(),
+      runtime: args.runtime,
+      genres: args.genres,
+      cast: args.cast,
+      directors: args.directors,
+      watchProviders: args.watchProviders,
     });
 
     // 2. Sync to ratings table if rating is provided
@@ -281,3 +291,54 @@ export const getMediaWatchHistory = query({
     };
   },
 });
+
+// Delete all watch logs in diary for the current user
+export const deleteAllDiary = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const currentUser = await getAuthedUser(ctx);
+    if (!currentUser) {
+      throw new Error("Must be logged in to delete diary entries");
+    }
+
+    const entries = await ctx.db
+      .query("diary")
+      .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
+      .collect();
+
+    for (const entry of entries) {
+      await ctx.db.delete(entry._id);
+    }
+
+    // Clean up review activities
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
+      .collect();
+
+    const reviewActivities = activities.filter((a) => a.type === "review");
+    for (const act of reviewActivities) {
+      await ctx.db.delete(act._id);
+      
+      // Clean up likes and comments associated with the review activities
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+
+    return true;
+  },
+});
+

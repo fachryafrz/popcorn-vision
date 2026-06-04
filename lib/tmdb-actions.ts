@@ -267,6 +267,8 @@ export interface ImportItem {
   watchedDate?: number;
   rewatch?: boolean;
   review?: string;
+  season?: number;
+  episode?: number;
 }
 
 export interface MatchedImportItem {
@@ -281,6 +283,8 @@ export interface MatchedImportItem {
   watchedDate?: number;
   rewatch?: boolean;
   review?: string;
+  season?: number;
+  episode?: number;
 }
 
 export async function matchImportItemsAction(items: ImportItem[]): Promise<MatchedImportItem[]> {
@@ -369,6 +373,8 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         watchedDate: item.watchedDate,
         rewatch: item.rewatch,
         review: item.review,
+        season: item.season,
+        episode: item.episode,
       });
     } else {
       results.push({
@@ -383,6 +389,8 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         watchedDate: item.watchedDate,
         rewatch: item.rewatch,
         review: item.review,
+        season: item.season,
+        episode: item.episode,
       });
     }
   }

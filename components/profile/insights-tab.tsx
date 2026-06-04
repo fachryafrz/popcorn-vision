@@ -57,24 +57,61 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
   const [metadata, setMetadata] = useState<Record<string, StatsMetadata>>({});
   const [loading, setLoading] = useState(false);
 
-  // Fetch metadata for all diary items
+  // Fetch metadata for legacy/missing items, load the rest from database
   useEffect(() => {
     if (!diary || diary.length === 0) return;
-    const items = diary.map((item) => ({
-      mediaId: item.mediaId,
-      mediaType: item.mediaType as "movie" | "tv",
-    }));
+
+    const dbMetadata: Record<string, StatsMetadata> = {};
+    const missingMetadataItems: { mediaId: string; mediaType: "movie" | "tv" }[] = [];
+
+    diary.forEach((item) => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      if (
+        item.runtime !== undefined &&
+        item.genres &&
+        item.cast &&
+        item.directors &&
+        item.watchProviders
+      ) {
+        dbMetadata[key] = {
+          mediaId: item.mediaId,
+          mediaType: item.mediaType as "movie" | "tv",
+          runtime: item.runtime,
+          genres: item.genres,
+          cast: item.cast,
+          directors: item.directors,
+          watchProviders: item.watchProviders,
+        };
+      } else {
+        missingMetadataItems.push({
+          mediaId: item.mediaId,
+          mediaType: item.mediaType as "movie" | "tv",
+        });
+      }
+    });
+
+    if (missingMetadataItems.length === 0) {
+      Promise.resolve().then(() => {
+        setMetadata(dbMetadata);
+        setLoading(false);
+      });
+      return;
+    }
 
     async function loadMetadata() {
       setLoading(true);
       try {
         const results = await batchFetchMediaMetadata(
-          items,
+          missingMetadataItems,
           user?.country || "US",
         );
-        setMetadata(results);
+        setMetadata({
+          ...dbMetadata,
+          ...results,
+        });
       } catch (error) {
         console.error("Failed to load TMDB statistics metadata", error);
+        setMetadata(dbMetadata);
       } finally {
         setLoading(false);
       }

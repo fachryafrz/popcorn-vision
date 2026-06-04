@@ -5,8 +5,10 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import {
   matchImportItemsAction,
+  batchFetchMediaMetadata,
   ImportItem,
   MatchedImportItem,
+  StatsMetadata,
 } from "@/lib/tmdb-actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +28,7 @@ import { cn } from "@/lib/utils";
 import { siteConfig } from "@/config/site";
 
 // Types
-type PlatformSource = "imdb" | "letterboxd" | "tmdb" | "unknown";
+type PlatformSource = "imdb" | "letterboxd" | "tmdb" | "popcorn" | "unknown";
 type ImportStep = "upload" | "resolving" | "preview" | "importing" | "summary";
 
 interface LocalDuplicatesState {
@@ -114,7 +116,7 @@ export default function ImportWizard() {
 
         if (detected === "unknown") {
           toast.error(
-            "Could not automatically identify the CSV export source. Please make sure you are uploading a valid IMDb, Letterboxd, or TMDB export.",
+            "Could not automatically identify the CSV export source. Please make sure you are uploading a valid IMDb, Letterboxd, TMDB, or Popcorn Vision export.",
           );
           return;
         }
@@ -122,7 +124,7 @@ export default function ImportWizard() {
         setPlatform(detected);
 
         // Parse Rows
-        const parsedRows = mapCSVToImportItems(rows, detected, headers);
+        const parsedRows = mapCSVToImportItems(rows, detected, headers, file.name);
         if (parsedRows.length === 0) {
           toast.error(
             "Failed to parse any valid movies or TV series from this file.",
@@ -131,7 +133,7 @@ export default function ImportWizard() {
         }
 
         toast.success(
-          `Successfully parsed ${parsedRows.length} items from ${detected.toUpperCase()}!`,
+          `Successfully parsed ${parsedRows.length} items from ${detected === "popcorn" ? "Popcorn Vision" : detected.toUpperCase()}!`,
         );
 
         // Proceed to Resolution
@@ -155,9 +157,14 @@ export default function ImportWizard() {
     if (
       headers.includes("tmdb id") ||
       headers.includes("tmdb_id") ||
-      headers.includes("media_type")
+      (headers.includes("media_type") && !headers.includes("addedat"))
     )
       return "tmdb";
+    if (
+      headers.includes("mediatype") &&
+      headers.includes("addedat")
+    )
+      return "popcorn";
     return "unknown";
   };
 
@@ -166,6 +173,7 @@ export default function ImportWizard() {
     rows: string[][],
     source: PlatformSource,
     headers: string[],
+    filename?: string,
   ): ImportItem[] => {
     const dataRows = rows.slice(1);
     const items: ImportItem[] = [];
@@ -175,9 +183,17 @@ export default function ImportWizard() {
 
     const titleIdx = idxOf("title") !== -1 ? idxOf("title") : idxOf("name");
     const yearIdx =
-      idxOf("year") !== -1 ? idxOf("year") : idxOf("release year");
+      idxOf("year") !== -1
+        ? idxOf("year")
+        : idxOf("release year") !== -1
+        ? idxOf("release year")
+        : idxOf("releaseyear");
     const typeIdx =
-      idxOf("title type") !== -1 ? idxOf("title type") : idxOf("media type");
+      idxOf("title type") !== -1
+        ? idxOf("title type")
+        : idxOf("media type") !== -1
+        ? idxOf("media type")
+        : idxOf("mediatype");
     const imdbIdx = idxOf("const") !== -1 ? idxOf("const") : idxOf("imdb id");
 
     // Ratings columns
@@ -186,21 +202,50 @@ export default function ImportWizard() {
 
     // Diary / watched date columns
     const watchedDateIdx =
-      idxOf("watched date") !== -1 ? idxOf("watched date") : idxOf("date");
+      idxOf("watched date") !== -1
+        ? idxOf("watched date")
+        : idxOf("watcheddate") !== -1
+        ? idxOf("watcheddate")
+        : idxOf("date");
     const rewatchIdx = idxOf("rewatch");
+    const seasonIdx = idxOf("season");
+    const episodeIdx = idxOf("episode");
 
-    // Automatically infer import target based on columns
+    // Automatically infer import target based on columns and filename
     let inferredTable: "watchlist" | "favorites" | "ratings" | "diary" =
       "watchlist";
-    if (
-      watchedDateIdx !== -1 &&
-      (rewatchIdx !== -1 ||
-        headers.includes("rewatch") ||
-        headers.includes("tags"))
-    ) {
-      inferredTable = "diary";
-    } else if (ratingIdx !== -1) {
-      inferredTable = "ratings";
+
+    if (filename) {
+      const lowerFile = filename.toLowerCase();
+      if (lowerFile.includes("watchlist")) {
+        inferredTable = "watchlist";
+      } else if (lowerFile.includes("favorite")) {
+        inferredTable = "favorites";
+      } else if (lowerFile.includes("rating")) {
+        inferredTable = "ratings";
+      } else if (lowerFile.includes("diary")) {
+        inferredTable = "diary";
+      } else if (
+        watchedDateIdx !== -1 &&
+        (rewatchIdx !== -1 ||
+          headers.includes("rewatch") ||
+          headers.includes("tags"))
+      ) {
+        inferredTable = "diary";
+      } else if (ratingIdx !== -1) {
+        inferredTable = "ratings";
+      }
+    } else {
+      if (
+        watchedDateIdx !== -1 &&
+        (rewatchIdx !== -1 ||
+          headers.includes("rewatch") ||
+          headers.includes("tags"))
+      ) {
+        inferredTable = "diary";
+      } else if (ratingIdx !== -1) {
+        inferredTable = "ratings";
+      }
     }
 
     setTargetTable(inferredTable);
@@ -251,7 +296,8 @@ export default function ImportWizard() {
       // Diary fields extraction
       let rewatch = false;
       if (rewatchIdx !== -1 && row[rewatchIdx]) {
-        rewatch = row[rewatchIdx].toLowerCase() === "yes";
+        const val = row[rewatchIdx].toLowerCase();
+        rewatch = val === "yes" || val === "true";
       }
 
       let watchedDate: number | undefined = undefined;
@@ -267,10 +313,27 @@ export default function ImportWizard() {
         }
       }
 
-      const tagsIdx = idxOf("tags");
       let review = "";
-      if (tagsIdx !== -1 && row[tagsIdx]) {
-        review = `Tags: ${row[tagsIdx]}`;
+      const reviewIdx = idxOf("review");
+      if (reviewIdx !== -1 && row[reviewIdx]) {
+        review = row[reviewIdx];
+      } else {
+        const tagsIdx = idxOf("tags");
+        if (tagsIdx !== -1 && row[tagsIdx]) {
+          review = `Tags: ${row[tagsIdx]}`;
+        }
+      }
+
+      let season: number | undefined = undefined;
+      if (seasonIdx !== -1 && row[seasonIdx]) {
+        const s = parseInt(row[seasonIdx], 10);
+        if (!isNaN(s)) season = s;
+      }
+
+      let episode: number | undefined = undefined;
+      if (episodeIdx !== -1 && row[episodeIdx]) {
+        const e = parseInt(row[episodeIdx], 10);
+        if (!isNaN(e)) episode = e;
       }
 
       items.push({
@@ -283,12 +346,13 @@ export default function ImportWizard() {
         watchedDate,
         rewatch,
         review: review || undefined,
+        season,
+        episode,
       });
     }
 
     return items;
   };
-
   // Convert Letterboxd rating format (float/stars) to 1-10 scale
   const parseLetterboxdRating = (val: string): number => {
     const num = parseFloat(val);
@@ -511,6 +575,27 @@ export default function ImportWizard() {
 
     const duplicates = getDuplicatePairs();
 
+    // Fetch stats metadata in batch for diary entries
+    const diaryImportItems = importIndices
+      .map((idx) => resolvedItems[idx])
+      .filter((item) => item.sourceTable === "diary" && !checkItemIsDuplicate(item, duplicates));
+
+    let statsMetadataMap: Record<string, StatsMetadata> = {};
+    if (diaryImportItems.length > 0) {
+      try {
+        const uniqueItems = diaryImportItems.map((item) => ({
+          mediaId: item.mediaId,
+          mediaType: item.mediaType as "movie" | "tv",
+        }));
+        statsMetadataMap = await batchFetchMediaMetadata(
+          uniqueItems,
+          currentUser?.country || "US"
+        );
+      } catch (err) {
+        console.error("Failed to batch fetch metadata for imported diary entries:", err);
+      }
+    }
+
     for (let i = 0; i < importIndices.length; i++) {
       const itemIdx = importIndices[i];
       const item = resolvedItems[itemIdx];
@@ -540,11 +625,26 @@ export default function ImportWizard() {
           await rateMedia(args);
           rCount++;
         } else if (item.sourceTable === "diary") {
+          const key = `${item.mediaType}-${item.mediaId}`;
+          const meta = statsMetadataMap[key];
+          const metadataArgs = meta
+            ? {
+                runtime: meta.runtime,
+                genres: meta.genres,
+                cast: meta.cast,
+                directors: meta.directors,
+                watchProviders: meta.watchProviders,
+              }
+            : {};
+
           await logWatch({
             ...args,
             watchedDate: item.watchedDate || getNowTimestamp(),
             rewatch: item.rewatch || false,
             review: item.review || "",
+            season: item.season,
+            episode: item.episode,
+            ...metadataArgs,
           });
           dCount++;
         }

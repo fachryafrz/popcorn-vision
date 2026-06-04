@@ -134,6 +134,11 @@ export default defineSchema({
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
     addedAt: v.number(),
+    runtime: v.optional(v.number()),
+    genres: v.optional(v.array(v.string())),
+    cast: v.optional(v.array(v.string())),
+    directors: v.optional(v.array(v.string())),
+    watchProviders: v.optional(v.array(v.string())),
   })
     .index("by_user", ["userId"])
     .index("by_user_media", ["userId", "mediaId", "mediaType"])
