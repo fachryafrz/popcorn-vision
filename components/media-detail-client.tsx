@@ -687,6 +687,8 @@ export default function MediaDetailClient({
             }}
             watchHistory={watchHistory}
             scrollToPlayer={scrollToPlayer}
+            mediaType={mediaType}
+            watchProgress={watchProgress}
           />
 
           <RatingSection
