@@ -140,7 +140,7 @@ export default function LogWatchModal({
         try {
           const results = await batchFetchMediaMetadata(
             [{ mediaId, mediaType: mediaType as "movie" | "tv" }],
-            currentUser?.country || "US"
+            currentUser?.country || "US",
           );
           const meta = results[`${mediaType}-${mediaId}`];
           if (meta) {
@@ -215,7 +215,9 @@ export default function LogWatchModal({
               </h4>
               <p className="mt-1 text-[10px] font-semibold text-zinc-500 uppercase">
                 {mediaType} • {releaseYear}
-                {season !== undefined && episode !== undefined && ` • S${season} E${episode}`}
+                {season !== undefined &&
+                  episode !== undefined &&
+                  ` • S${season} E${episode}`}
               </p>
             </div>
           </div>
@@ -254,7 +256,7 @@ export default function LogWatchModal({
 
                   return (
                     <div
-                      className="relative h-5 w-5 shrink-0 transition-transform duration-100 hover:scale-115 cursor-pointer"
+                      className="relative h-5 w-5 shrink-0 cursor-pointer transition-transform duration-100 hover:scale-115"
                       key={starIndex}
                       onMouseEnter={() => setHoveredRating(starValue)}
                       onMouseLeave={() => setHoveredRating(0)}
@@ -277,7 +279,11 @@ export default function LogWatchModal({
                 })}
               </div>
               <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
-                {hoveredRating ? `${hoveredRating} / 10` : rating ? `${rating} / 10` : "_ / 10"}
+                {hoveredRating
+                  ? `${hoveredRating} / 10`
+                  : rating
+                    ? `${rating} / 10`
+                    : "_ / 10"}
               </span>
             </div>
           </div>
