@@ -10,7 +10,7 @@ export const addToFavorites = mutation({
     mediaType: v.string(), // "movie" or "tv"
     title: v.string(),
     posterPath: v.string(),
-    rating: v.number(),
+    rating: v.optional(v.number()),
     releaseYear: v.string(),
   },
   handler: async (ctx, args) => {

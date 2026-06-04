@@ -32,20 +32,20 @@ export default defineSchema({
     mediaType: v.string(), // "movie" or "tv"
     title: v.string(),
     posterPath: v.string(),
-    rating: v.number(),
+    rating: v.optional(v.number()),
     releaseYear: v.string(),
     addedAt: v.number(),
   })
     .index("by_user", ["userId"])
     .index("by_user_media", ["userId", "mediaId", "mediaType"]),
-  
+
   favorites: defineTable({
     userId: v.string(), // Better Auth user ID
     mediaId: v.string(), // TMDB media ID
     mediaType: v.string(), // "movie" or "tv"
     title: v.string(),
     posterPath: v.string(),
-    rating: v.number(),
+    rating: v.optional(v.number()),
     releaseYear: v.string(),
     addedAt: v.number(),
   })
@@ -153,8 +153,7 @@ export default defineSchema({
     createdById: v.optional(v.string()),
     createdAt: v.number(),
     updatedAt: v.number(),
-  })
-    .index("by_updatedAt", ["updatedAt"]),
+  }).index("by_updatedAt", ["updatedAt"]),
 
   chatMemberships: defineTable({
     chatId: v.id("chats"),
@@ -194,8 +193,7 @@ export default defineSchema({
     reportedUserId: v.string(),
     reason: v.string(),
     createdAt: v.number(),
-  })
-    .index("by_reported", ["reportedUserId"]),
+  }).index("by_reported", ["reportedUserId"]),
 
   continueWatching: defineTable({
     userId: v.string(),
@@ -319,4 +317,3 @@ export default defineSchema({
     .index("by_item", ["listId", "mediaId", "mediaType"])
     .index("by_item_user", ["listId", "mediaId", "mediaType", "userId"]),
 });
-
