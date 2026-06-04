@@ -35,7 +35,10 @@ export const rateMedia = mutation({
     const existing = await ctx.db
       .query("ratings")
       .withIndex("by_user_media", (q) =>
-        q.eq("userId", userId).eq("mediaId", args.mediaId).eq("mediaType", args.mediaType)
+        q
+          .eq("userId", userId)
+          .eq("mediaId", args.mediaId)
+          .eq("mediaType", args.mediaType),
       )
       .first();
 
@@ -73,7 +76,10 @@ export const deleteRating = mutation({
     const existing = await ctx.db
       .query("ratings")
       .withIndex("by_user_media", (q) =>
-        q.eq("userId", userId).eq("mediaId", args.mediaId).eq("mediaType", args.mediaType)
+        q
+          .eq("userId", userId)
+          .eq("mediaId", args.mediaId)
+          .eq("mediaType", args.mediaType),
       )
       .first();
 
@@ -98,7 +104,10 @@ export const getUserRating = query({
     const existing = await ctx.db
       .query("ratings")
       .withIndex("by_user_media", (q) =>
-        q.eq("userId", user._id).eq("mediaId", args.mediaId).eq("mediaType", args.mediaType)
+        q
+          .eq("userId", user._id)
+          .eq("mediaId", args.mediaId)
+          .eq("mediaType", args.mediaType),
       )
       .first();
 
@@ -127,7 +136,9 @@ export const getCommunityRatingStats = query({
   handler: async (ctx, args) => {
     const ratings = await ctx.db
       .query("ratings")
-      .withIndex("by_media", (q) => q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType))
+      .withIndex("by_media", (q) =>
+        q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType),
+      )
       .collect();
 
     if (ratings.length === 0) {
@@ -138,7 +149,9 @@ export const getCommunityRatingStats = query({
     }
 
     const sum = ratings.reduce((acc, curr) => acc + curr.rating, 0);
-    const average = Number((sum / ratings.length).toFixed(1));
+    const average = Number(
+      (sum / ratings.length).toFixed(sum / ratings.length < 10 ? 1 : 0),
+    );
 
     return {
       averageRating: average,
@@ -208,4 +221,3 @@ export const deleteAllRatings = mutation({
     return true;
   },
 });
-

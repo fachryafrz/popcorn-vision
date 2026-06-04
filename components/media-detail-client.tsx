@@ -392,7 +392,7 @@ export default function MediaDetailClient({
   });
 
   const rating = details?.vote_average
-    ? details.vote_average.toFixed(1)
+    ? details.vote_average.toFixed(details.vote_average < 10 ? 1 : 0)
     : "0.0";
 
   // Find regional release date and content certification
@@ -631,7 +631,9 @@ export default function MediaDetailClient({
               const hasCommunity =
                 communityStats && communityStats.totalRatings > 0;
               const displayRating = hasCommunity
-                ? communityStats.averageRating.toFixed(1)
+                ? communityStats.averageRating.toFixed(
+                    communityStats.averageRating < 10 ? 1 : 0,
+                  )
                 : rating;
               const sourceLabel = hasCommunity ? "Community" : "TMDB";
               return (
@@ -764,7 +766,9 @@ export default function MediaDetailClient({
               scrollToPlayer={scrollToPlayer}
               watchProgress={watchProgress}
               upsertWatchProgress={upsertWatchProgress}
-              onLogEpisode={(s, e) => setLogWatchEpisode({ season: s, episode: e })}
+              onLogEpisode={(s, e) =>
+                setLogWatchEpisode({ season: s, episode: e })
+              }
             />
           </div>
 
@@ -907,8 +911,6 @@ export default function MediaDetailClient({
         </DialogContent>
       </Dialog>
 
-
-
       {/* Add to Custom List Dialog */}
       <Dialog open={isAddToCustomOpen} onOpenChange={setIsAddToCustomOpen}>
         <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
@@ -972,7 +974,7 @@ export default function MediaDetailClient({
                       {list.name}
                     </p>
                     {list.isCollaborative && (
-                      <span className="text-primary mt-1 inline-block rounded border border-primary/30 bg-primary/10 px-1.5 py-0.5 text-[9px] font-extrabold uppercase">
+                      <span className="text-primary border-primary/30 bg-primary/10 mt-1 inline-block rounded border px-1.5 py-0.5 text-[9px] font-extrabold uppercase">
                         Collaborative
                       </span>
                     )}

@@ -418,7 +418,10 @@ export default function ChatWorkspace({
                                   <div className="mt-1 flex items-center gap-1 text-[9px] font-black text-yellow-400">
                                     <Bookmark className="h-3 w-3 fill-current" />
                                     <span>
-                                      {msg.sharedMediaRating.toFixed(1)}/10
+                                      {msg.sharedMediaRating.toFixed(
+                                        msg.sharedMediaRating < 10 ? 1 : 0,
+                                      )}
+                                      /10
                                     </span>
                                   </div>
                                 )}
@@ -509,7 +512,8 @@ export default function ChatWorkspace({
                         if (
                           await confirm({
                             title: "Delete Message",
-                            description: "Are you sure you want to delete this message?",
+                            description:
+                              "Are you sure you want to delete this message?",
                             confirmText: "Delete",
                           })
                         ) {

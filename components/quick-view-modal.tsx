@@ -145,7 +145,9 @@ export default function QuickViewModal({
   const releaseYear = media.release_date
     ? new Date(media.release_date).getFullYear()
     : "N/A";
-  const voteRating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
+  const voteRating = media.vote_average
+    ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
+    : "0.0";
   const backdropUrl = media.backdrop_path
     ? `https://image.tmdb.org/t/p/w780${media.backdrop_path}`
     : "/logo/popcorn.png";
@@ -346,7 +348,9 @@ export default function QuickViewModal({
                   const hasCommunity =
                     communityStats && communityStats.totalRatings > 0;
                   const displayRating = hasCommunity
-                    ? communityStats.averageRating.toFixed(1)
+                    ? communityStats.averageRating.toFixed(
+                        communityStats.averageRating < 10 ? 1 : 0,
+                      )
                     : voteRating;
                   const sourceLabel = hasCommunity ? "Community" : "TMDB";
                   const ratingCount = hasCommunity

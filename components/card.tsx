@@ -119,7 +119,9 @@ export default function Card({
     ? `${process.env.NEXT_PUBLIC_API_IMAGE_300 || "https://image.tmdb.org/t/p/w300"}${media.poster_path}`
     : "/logo/popcorn.png";
 
-  const rating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
+  const rating = media.vote_average
+    ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
+    : "0.0";
   const releaseYear = media.release_date
     ? new Date(media.release_date).getFullYear()
     : "N/A";
