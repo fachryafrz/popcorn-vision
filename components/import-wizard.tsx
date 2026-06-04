@@ -23,6 +23,7 @@ import {
   Database,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { siteConfig } from "@/config/site";
 
 // Types
 type PlatformSource = "imdb" | "letterboxd" | "tmdb" | "unknown";
@@ -888,7 +889,7 @@ export default function ImportWizard() {
                 </h3>
                 <p className="text-xs text-zinc-500">
                   Your data has been successfully processed and synced with
-                  Popcorn Vision database.
+                  {siteConfig.name} database.
                 </p>
               </div>
             </div>

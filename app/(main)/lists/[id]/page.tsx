@@ -52,6 +52,7 @@ import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import QuickViewModal from "@/components/quick-view-modal";
 import { useConfirm } from "@/components/ui/confirm-provider";
+import { siteConfig } from "@/config/site";
 
 interface ListCreator {
   userId: string;
@@ -784,7 +785,7 @@ export default function CustomListDetailPage({
                   <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
                     {friends.length === 0 ? (
                       <p className="py-6 text-center text-sm text-zinc-500">
-                        Add friends on Popcorn Vision first to invite them to
+                        Add friends on {siteConfig.name} first to invite them to
                         collaborate!
                       </p>
                     ) : (

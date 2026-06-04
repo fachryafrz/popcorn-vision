@@ -2,6 +2,7 @@
 
 import { siteConfig } from "@/config/site";
 import moment from "moment";
+import Link from "next/link";
 
 export default function Footer() {
   const createdDate = "2023-02-17";
@@ -20,6 +21,15 @@ export default function Footer() {
         Explore movies and TV shows, track your favorite titles, and watch
         trailers.
       </p>
+      <div className="mt-2 flex items-center gap-3 text-xs font-semibold text-zinc-600">
+        <Link href="/privacy" className="hover:text-zinc-400 transition-colors">
+          Privacy Policy
+        </Link>
+        <span className="h-1 w-1 rounded-full bg-zinc-800" />
+        <Link href="/terms" className="hover:text-zinc-400 transition-colors">
+          Terms & Conditions
+        </Link>
+      </div>
       <p className="mt-2 text-xs text-zinc-600">
         &copy; {moment(createdDate).format("MMM YYYY")} -{" "}
         {moment().format("MMM YYYY")} {siteConfig.name}. All rights reserved.

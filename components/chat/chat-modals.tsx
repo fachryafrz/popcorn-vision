@@ -1,4 +1,4 @@
-import { Check, TrendingUp, Lock, ShieldAlert } from "lucide-react";
+import { Check, TrendingUp, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Friend, ChatMember } from "./types";
+import { siteConfig } from "@/config/site";
 
 const REACTION_GIFS = [
   {
@@ -413,7 +414,7 @@ export default function ChatModals({
               </label>
               <textarea
                 rows={4}
-                placeholder="Explain the safety violation in detail (harassment, spam, abusive chat, etc.). Popcorn Vision security admins will review chat logs."
+                placeholder={`Explain the safety violation in detail (harassment, spam, abusive chat, etc.). ${siteConfig.name} security admins will review chat logs.`}
                 value={reportReason}
                 onChange={(e) => setReportReason(e.target.value.slice(0, 500))}
                 className="border-zinc-850 placeholder-zinc-550 focus:border-primary/50 min-h-[120px] w-full resize-none rounded-2xl border bg-zinc-900/30 p-4 text-xs text-white outline-hidden"
@@ -434,16 +435,18 @@ export default function ChatModals({
       <Dialog open={isPrivacyErrorOpen} onOpenChange={setIsPrivacyErrorOpen}>
         <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-md">
           <DialogHeader className="flex flex-col items-center text-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-950/40 border border-red-900/50">
-              <ShieldAlert className="text-red-500 h-6 w-6" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-red-900/50 bg-red-950/40">
+              <ShieldAlert className="h-6 w-6 text-red-500" />
             </div>
             <DialogTitle className="mt-4 text-base font-black tracking-wider text-white uppercase">
               Messaging Restricted
             </DialogTitle>
           </DialogHeader>
-          <div className="mt-2 text-center space-y-4">
-            <p className="text-xs text-zinc-400 leading-relaxed">
-              This user's messaging privacy settings do not allow direct messages. You cannot send messages to this user unless they adjust their privacy settings.
+          <div className="mt-2 space-y-4 text-center">
+            <p className="text-xs leading-relaxed text-zinc-400">
+              This user&apos;s messaging privacy settings do not allow direct
+              messages. You cannot send messages to this user unless they adjust
+              their privacy settings.
             </p>
             <Button
               onClick={() => setIsPrivacyErrorOpen(false)}

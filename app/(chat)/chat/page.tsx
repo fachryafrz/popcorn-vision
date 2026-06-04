@@ -24,6 +24,7 @@ import DetailsPanel from "@/components/chat/details-panel";
 import ChatModals from "@/components/chat/chat-modals";
 import QuickViewModal from "@/components/quick-view-modal";
 import { TMDBMedia } from "@/lib/tmdb";
+import { siteConfig } from "@/config/site";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -368,7 +369,7 @@ export default function ChatPage() {
       setReportReason("");
       setReportedUserId(null);
       toast.success(
-        "User reported successfully. Popcorn Vision safety admins will review this chat session.",
+        `User reported successfully. ${siteConfig.name} safety admins will review this chat session.`,
       );
     } catch {
       toast.error("Failed to submit report");
