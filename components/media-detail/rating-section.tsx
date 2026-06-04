@@ -48,7 +48,7 @@ export default function RatingSection({
   };
 
   return (
-    <div className="mt-6 flex max-w-sm flex-col gap-2 bg-zinc-900/10 backdrop-blur-sm">
+    <div className="mt-6 flex max-w-sm flex-col gap-2">
       <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
         <span>{userRating ? "Your Rating" : "Rate this title"}</span>
         {userRating && (
@@ -62,12 +62,9 @@ export default function RatingSection({
         )}
       </div>
       <div className="mt-1 flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-1.5">
-          {Array.from({ length: 5 }).map((_, starIndex) => {
-            const starPosition = starIndex + 1;
-            const leftValue = starPosition * 2 - 1;
-            const rightValue = starPosition * 2;
-
+        <div className="flex items-center gap-1">
+          {Array.from({ length: 10 }).map((_, starIndex) => {
+            const starValue = starIndex + 1;
             const displayRating = hoveredRating || userRating || 0;
 
             const handleRate = async (starValue: number) => {
@@ -84,7 +81,7 @@ export default function RatingSection({
                   rating: starValue,
                   releaseYear: releaseYear,
                 });
-                toast.success(`Rated ${starValue / 2} stars successfully!`);
+                toast.success(`Rated ${starValue} / 10 successfully!`);
               } catch (err) {
                 console.error("Rating failed:", err);
                 toast.error("Failed to submit rating");
@@ -93,60 +90,37 @@ export default function RatingSection({
 
             return (
               <div
-                className="relative transition-transform duration-100 hover:scale-110"
+                className="relative cursor-pointer transition-transform duration-100 hover:scale-110"
                 key={starIndex}
+                onMouseEnter={() => setHoveredRating(starValue)}
+                onMouseLeave={() => setHoveredRating(0)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRate(starValue);
+                }}
+                title={`Rate ${starValue} / 10`}
               >
                 {/* Base Empty Star */}
-                <Star className="h-6 w-6 text-zinc-700" />
-
-                {/* Half Filled Overlay */}
-                {displayRating === leftValue && (
-                  <div className="pointer-events-none absolute top-0 left-0 w-1/2 overflow-hidden">
-                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
-                  </div>
-                )}
+                <Star className="h-5 w-5 text-zinc-700" />
 
                 {/* Fully Filled Overlay */}
-                {displayRating >= rightValue && (
+                {displayRating >= starValue && (
                   <div className="pointer-events-none absolute top-0 left-0 w-full overflow-hidden">
-                    <Star className="h-6 w-6 fill-yellow-400 text-yellow-400" />
+                    <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
                   </div>
                 )}
-
-                {/* Hover/Click Areas */}
-                <div className="absolute inset-0 flex">
-                  <button
-                    type="button"
-                    onMouseEnter={() => setHoveredRating(leftValue)}
-                    onMouseLeave={() => setHoveredRating(0)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRate(leftValue);
-                    }}
-                    className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
-                    title={`Rate ${leftValue / 2} stars`}
-                  />
-                  <button
-                    type="button"
-                    onMouseEnter={() => setHoveredRating(rightValue)}
-                    onMouseLeave={() => setHoveredRating(0)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRate(rightValue);
-                    }}
-                    className="h-full w-1/2 cursor-pointer border-none bg-transparent p-0 outline-none"
-                    title={`Rate ${rightValue / 2} stars`}
-                  />
-                </div>
               </div>
             );
           })}
         </div>
         <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
-          {hoveredRating ? `${hoveredRating / 2} / 5` : userRating ? `${userRating / 2} / 5` : "_ / 5"}
+          {hoveredRating
+            ? `${hoveredRating} / 10`
+            : userRating
+              ? `${userRating} / 10`
+              : "_ / 10"}
         </span>
       </div>
     </div>
   );
 }
-
