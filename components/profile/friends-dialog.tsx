@@ -27,7 +27,7 @@ export function FriendsDialog({
 }: FriendsDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[80vh] flex-col overflow-hidden sm:max-w-md">
+      <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-left text-lg font-bold">
             <Users className="text-primary h-5 w-5" />
