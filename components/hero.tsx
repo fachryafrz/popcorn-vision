@@ -141,7 +141,9 @@ function HeroSlide({
     ? new Date(media.release_date).getFullYear()
     : "N/A";
   const genres = getGenreNames(media.genre_ids).slice(0, 3);
-  const rating = media.vote_average ? media.vote_average.toFixed(1) : "0.0";
+  const rating = media.vote_average
+    ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
+    : "0.0";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
 
   const router = useRouter();
