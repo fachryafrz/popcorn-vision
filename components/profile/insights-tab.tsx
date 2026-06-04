@@ -490,7 +490,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
               <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
                 <Film className="text-primary h-4 w-4" /> Genre Breakdown
               </h4>
-              <div className="flex h-[250px] flex-col items-center justify-between gap-4 sm:flex-row">
+              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:h-[250px]">
                 {stats.topGenres.length > 0 ? (
                   <>
                     <div className="flex h-full w-full items-center justify-center sm:w-1/2">
