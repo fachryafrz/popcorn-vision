@@ -33,6 +33,8 @@ export const logWatch = mutation({
     rewatch: v.boolean(),
     review: v.optional(v.string()), // optional diary notes
     rating: v.optional(v.number()), // optional rating (1-10)
+    season: v.optional(v.number()),
+    episode: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -80,6 +82,8 @@ export const logWatch = mutation({
       rewatch: args.rewatch,
       review: args.review,
       rating: args.rating,
+      season: args.season,
+      episode: args.episode,
       addedAt: Date.now(),
     });
 
@@ -123,6 +127,8 @@ export const editDiaryEntry = mutation({
     rewatch: v.boolean(),
     review: v.optional(v.string()),
     rating: v.optional(v.number()),
+    season: v.optional(v.number()),
+    episode: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -149,6 +155,8 @@ export const editDiaryEntry = mutation({
       rewatch: args.rewatch,
       review: args.review,
       rating: args.rating,
+      season: args.season,
+      episode: args.episode,
     });
 
     // 2. Sync to ratings table if rating is provided

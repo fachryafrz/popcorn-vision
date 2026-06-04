@@ -279,6 +279,10 @@ export default function MediaDetailClient({
       : "skip",
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [logWatchEpisode, setLogWatchEpisode] = useState<{
+    season: number;
+    episode: number;
+  } | null>(null);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isAddToCustomOpen, setIsAddToCustomOpen] = useState(false);
 
@@ -756,6 +760,9 @@ export default function MediaDetailClient({
               setSeason={setSeason}
               setEpisode={setEpisode}
               scrollToPlayer={scrollToPlayer}
+              watchProgress={watchProgress}
+              upsertWatchProgress={upsertWatchProgress}
+              onLogEpisode={(s, e) => setLogWatchEpisode({ season: s, episode: e })}
             />
           </div>
 
@@ -803,15 +810,22 @@ export default function MediaDetailClient({
       )}
 
       {/* Log Watch Modal */}
-      <LogWatchModal
-        isOpen={isLogModalOpen}
-        onClose={() => setIsLogModalOpen(false)}
-        mediaId={details.id.toString()}
-        mediaType={mediaType}
-        title={details.title || details.name || ""}
-        posterPath={details.poster_path || ""}
-        releaseYear={releaseYear.toString()}
-      />
+      {(isLogModalOpen || logWatchEpisode) && (
+        <LogWatchModal
+          isOpen={isLogModalOpen || !!logWatchEpisode}
+          onClose={() => {
+            setIsLogModalOpen(false);
+            setLogWatchEpisode(null);
+          }}
+          mediaId={details.id.toString()}
+          mediaType={mediaType}
+          title={details.title || details.name || ""}
+          posterPath={details.poster_path || ""}
+          releaseYear={releaseYear.toString()}
+          season={logWatchEpisode?.season}
+          episode={logWatchEpisode?.episode}
+        />
+      )}
 
       {/* Share to Chat Dialog */}
       <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>

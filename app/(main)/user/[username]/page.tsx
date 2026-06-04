@@ -205,6 +205,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const showWatchlistTab = isOwner || !targetUser?.hideWatchlist;
   const showFavoritesTab = isOwner || !targetUser?.hideFavorites;
   const showRatingsTab = isOwner || !targetUser?.hideRatings;
+  const showDiaryTab = isOwner || !targetUser?.hideDiary;
+  const showInsightsTab = isOwner || !targetUser?.hideInsights;
 
   // Query target user lists if profile exists and content is visible
   const watchlist = useQuery(
@@ -227,7 +229,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   ) as GridMediaItem[] | undefined;
   const diary = useQuery(
     api.diary.getUserDiary,
-    targetUserId && !showLockScreen ? { userId: targetUserId } : "skip",
+    targetUserId && (showDiaryTab || showInsightsTab) && !showLockScreen
+      ? { userId: targetUserId }
+      : "skip",
   ) as DiaryItem[] | undefined;
 
   const continueWatching = useQuery(
@@ -484,13 +488,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       id: "diary" as const,
       label: "Diary",
       count: diary ? diary.length : 0,
-      visible: true,
+      visible: showDiaryTab,
     },
     {
       id: "insights" as const,
       label: "Insights",
       count: diary ? diary.length : 0,
-      visible: true,
+      visible: showInsightsTab,
     },
     {
       id: "watchlist" as const,

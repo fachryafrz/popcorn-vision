@@ -536,6 +536,8 @@ export const updatePrivacySettings = mutation({
     hideWatchlist: v.boolean(),
     hideFavorites: v.boolean(),
     hideRatings: v.boolean(),
+    hideDiary: v.optional(v.boolean()),
+    hideInsights: v.optional(v.boolean()),
     messagePrivacy: v.optional(v.string()),
     readReceiptsEnabled: v.optional(v.boolean()),
   },
@@ -557,6 +559,8 @@ export const updatePrivacySettings = mutation({
       hideWatchlist: args.hideWatchlist,
       hideFavorites: args.hideFavorites,
       hideRatings: args.hideRatings,
+      hideDiary: args.hideDiary,
+      hideInsights: args.hideInsights,
       messagePrivacy: args.messagePrivacy,
       readReceiptsEnabled: args.readReceiptsEnabled,
     });

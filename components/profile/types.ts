@@ -13,6 +13,8 @@ export interface UserDoc {
   hideWatchlist?: boolean;
   hideFavorites?: boolean;
   hideRatings?: boolean;
+  hideDiary?: boolean;
+  hideInsights?: boolean;
 }
 
 export interface DiaryItem {
@@ -26,6 +28,8 @@ export interface DiaryItem {
   rewatch: boolean;
   rating?: number;
   review?: string;
+  season?: number;
+  episode?: number;
 }
 
 export interface ProfileFriend {

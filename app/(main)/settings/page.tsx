@@ -85,6 +85,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [hideRatings, setHideRatings] = useState(
     convexProfile?.hideRatings === true,
   );
+  const [hideDiary, setHideDiary] = useState(
+    convexProfile?.hideDiary === true,
+  );
+  const [hideInsights, setHideInsights] = useState(
+    convexProfile?.hideInsights === true,
+  );
   const [messagePrivacy, setMessagePrivacy] = useState(
     convexProfile?.messagePrivacy || "friends",
   );
@@ -111,6 +117,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
         hideWatchlist,
         hideFavorites,
         hideRatings,
+        hideDiary,
+        hideInsights,
         messagePrivacy,
         readReceiptsEnabled: true,
       });
@@ -533,6 +541,10 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
             setHideFavorites={setHideFavorites}
             hideRatings={hideRatings}
             setHideRatings={setHideRatings}
+            hideDiary={hideDiary}
+            setHideDiary={setHideDiary}
+            hideInsights={hideInsights}
+            setHideInsights={setHideInsights}
             savingPrivacy={savingPrivacy}
             handleUpdatePrivacy={handleUpdatePrivacy}
             blockedUsersList={blockedUsersList}

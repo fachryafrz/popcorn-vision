@@ -17,6 +17,8 @@ export default defineSchema({
     hideWatchlist: v.optional(v.boolean()),
     hideFavorites: v.optional(v.boolean()),
     hideRatings: v.optional(v.boolean()),
+    hideDiary: v.optional(v.boolean()),
+    hideInsights: v.optional(v.boolean()),
     status: v.optional(v.string()), // "active" | "deleted" | "closed"
     messagePrivacy: v.optional(v.string()), // "friends" | "disabled"
     readReceiptsEnabled: v.optional(v.boolean()), // true = visible, false = hidden
@@ -129,6 +131,8 @@ export default defineSchema({
     watchedDate: v.number(),
     rewatch: v.boolean(),
     review: v.optional(v.string()),
+    season: v.optional(v.number()),
+    episode: v.optional(v.number()),
     addedAt: v.number(),
   })
     .index("by_user", ["userId"])
