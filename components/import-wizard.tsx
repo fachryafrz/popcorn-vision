@@ -124,7 +124,12 @@ export default function ImportWizard() {
         setPlatform(detected);
 
         // Parse Rows
-        const parsedRows = mapCSVToImportItems(rows, detected, headers, file.name);
+        const parsedRows = mapCSVToImportItems(
+          rows,
+          detected,
+          headers,
+          file.name,
+        );
         if (parsedRows.length === 0) {
           toast.error(
             "Failed to parse any valid movies or TV series from this file.",
@@ -160,10 +165,7 @@ export default function ImportWizard() {
       (headers.includes("media_type") && !headers.includes("addedat"))
     )
       return "tmdb";
-    if (
-      headers.includes("mediatype") &&
-      headers.includes("addedat")
-    )
+    if (headers.includes("mediatype") && headers.includes("addedat"))
       return "popcorn";
     return "unknown";
   };
@@ -186,14 +188,14 @@ export default function ImportWizard() {
       idxOf("year") !== -1
         ? idxOf("year")
         : idxOf("release year") !== -1
-        ? idxOf("release year")
-        : idxOf("releaseyear");
+          ? idxOf("release year")
+          : idxOf("releaseyear");
     const typeIdx =
       idxOf("title type") !== -1
         ? idxOf("title type")
         : idxOf("media type") !== -1
-        ? idxOf("media type")
-        : idxOf("mediatype");
+          ? idxOf("media type")
+          : idxOf("mediatype");
     const imdbIdx = idxOf("const") !== -1 ? idxOf("const") : idxOf("imdb id");
 
     // Ratings columns
@@ -205,8 +207,8 @@ export default function ImportWizard() {
       idxOf("watched date") !== -1
         ? idxOf("watched date")
         : idxOf("watcheddate") !== -1
-        ? idxOf("watcheddate")
-        : idxOf("date");
+          ? idxOf("watcheddate")
+          : idxOf("date");
     const rewatchIdx = idxOf("rewatch");
     const seasonIdx = idxOf("season");
     const episodeIdx = idxOf("episode");
@@ -578,7 +580,11 @@ export default function ImportWizard() {
     // Fetch stats metadata in batch for diary entries
     const diaryImportItems = importIndices
       .map((idx) => resolvedItems[idx])
-      .filter((item) => item.sourceTable === "diary" && !checkItemIsDuplicate(item, duplicates));
+      .filter(
+        (item) =>
+          item.sourceTable === "diary" &&
+          !checkItemIsDuplicate(item, duplicates),
+      );
 
     let statsMetadataMap: Record<string, StatsMetadata> = {};
     if (diaryImportItems.length > 0) {
@@ -589,10 +595,13 @@ export default function ImportWizard() {
         }));
         statsMetadataMap = await batchFetchMediaMetadata(
           uniqueItems,
-          currentUser?.country || "US"
+          currentUser?.country || "US",
         );
       } catch (err) {
-        console.error("Failed to batch fetch metadata for imported diary entries:", err);
+        console.error(
+          "Failed to batch fetch metadata for imported diary entries:",
+          err,
+        );
       }
     }
 
@@ -611,18 +620,26 @@ export default function ImportWizard() {
           mediaType: item.mediaType,
           title: item.title,
           posterPath: item.posterPath,
-          rating: item.rating || 5, // fallback rating
           releaseYear: item.releaseYear,
         };
 
         if (item.sourceTable === "watchlist") {
-          await addToWatchlist(args);
+          await addToWatchlist({
+            ...args,
+            rating: item.rating || 5,
+          });
           wCount++;
         } else if (item.sourceTable === "favorites") {
-          await addToFavorites(args);
+          await addToFavorites({
+            ...args,
+            rating: item.rating || 5,
+          });
           fCount++;
         } else if (item.sourceTable === "ratings") {
-          await rateMedia(args);
+          await rateMedia({
+            ...args,
+            rating: item.rating || 5,
+          });
           rCount++;
         } else if (item.sourceTable === "diary") {
           const key = `${item.mediaType}-${item.mediaId}`;
@@ -644,6 +661,7 @@ export default function ImportWizard() {
             review: item.review || "",
             season: item.season,
             episode: item.episode,
+            rating: item.rating,
             ...metadataArgs,
           });
           dCount++;
@@ -859,7 +877,7 @@ export default function ImportWizard() {
               </span>
               <button
                 onClick={handleToggleAll}
-                className="text-primary cursor-pointer text-[10px] font-bold hover:text-primary/50 hover:underline"
+                className="text-primary hover:text-primary/50 cursor-pointer text-[10px] font-bold hover:underline"
               >
                 {selectedItemIds.size > 0
                   ? "Deselect All"
