@@ -41,7 +41,7 @@ export default function CastSlider({ cast }: CastSliderProps) {
               : "/logo/popcorn.png";
             return (
               <SwiperSlide key={actor.id} className="py-1">
-                <div className="flex w-full flex-col items-center text-center">
+                <div className="group flex w-full flex-col items-center text-center">
                   <div
                     className="mb-2 h-16 w-16 rounded-full border-2 border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md sm:h-20 sm:w-20"
                     style={{ backgroundImage: `url(${actorPic})` }}
@@ -49,7 +49,7 @@ export default function CastSlider({ cast }: CastSliderProps) {
                   <span className="w-full truncate text-xs font-semibold text-white">
                     {actor.name}
                   </span>
-                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500">
+                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500 group-hover:whitespace-pre-wrap">
                     {actor.character}
                   </span>
                 </div>

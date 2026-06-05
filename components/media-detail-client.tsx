@@ -37,6 +37,7 @@ import moment from "moment";
 // Import types and subcomponents
 import {
   CastItem,
+  CrewItem,
   VideoItem,
   ProviderItem,
   MediaDetails,
@@ -60,7 +61,7 @@ interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
   initialData: {
     details: MediaDetails;
-    credits?: { cast?: CastItem[] };
+    credits?: { cast?: CastItem[]; crew?: CrewItem[] };
     videos?: VideoItem[];
     watchProviders?: Record<string, { flatrate?: ProviderItem[] }>;
     logoPath?: string | null;
@@ -369,6 +370,9 @@ export default function MediaDetailClient({
   };
 
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
+  const directors =
+    initialData.credits?.crew?.filter((c) => c.job === "Director") || [];
+  const creators = details.created_by || [];
   const recommendations = initialData.recommendations || [];
   const providers =
     initialData.watchProviders?.[selectedRegion]?.flatrate || [];
@@ -667,6 +671,27 @@ export default function MediaDetailClient({
             )}
           </div>
 
+          {mediaType === "movie" && directors.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
+              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                Directed By:
+              </span>
+              <span className="font-bold text-zinc-200">
+                {directors.map((d) => d.name).join(", ")}
+              </span>
+            </div>
+          )}
+          {mediaType === "tv" && creators.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
+              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                Created By:
+              </span>
+              <span className="font-bold text-zinc-200">
+                {creators.map((c) => c.name).join(", ")}
+              </span>
+            </div>
+          )}
+
           <p className="mt-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
             {details?.overview || "No overview available."}
           </p>
@@ -723,6 +748,69 @@ export default function MediaDetailClient({
           setEpisode={setEpisode}
           servers={servers}
         />
+
+        {((mediaType === "movie" && directors.length > 0) ||
+          (mediaType === "tv" && creators.length > 0)) && (
+          <div className="space-y-4">
+            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
+              <Users className="text-primary h-5 w-5" />
+              {mediaType === "movie"
+                ? `Director${directors.length > 1 ? "s" : ""}`
+                : `Creator${creators.length > 1 ? "s" : ""}`}
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              {mediaType === "movie"
+                ? directors.map((director) => {
+                    const pic = director.profile_path
+                      ? `https://image.tmdb.org/t/p/w185${director.profile_path}`
+                      : "/logo/popcorn.png";
+                    return (
+                      <div
+                        key={director.id}
+                        className="flex items-center gap-3 py-1.5 pr-4 pl-1.5"
+                      >
+                        <div
+                          className="h-20 w-20 rounded-full border border-zinc-700 bg-zinc-800 bg-cover bg-center shadow-inner"
+                          style={{ backgroundImage: `url(${pic})` }}
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm leading-tight font-semibold text-white">
+                            {director.name}
+                          </span>
+                          <span className="text-[10px] tracking-wider text-zinc-500 uppercase">
+                            Director
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })
+                : creators.map((creator) => {
+                    const pic = creator.profile_path
+                      ? `https://image.tmdb.org/t/p/w185${creator.profile_path}`
+                      : "/logo/popcorn.png";
+                    return (
+                      <div
+                        key={creator.id}
+                        className="flex items-center gap-3 py-1.5 pr-4 pl-1.5"
+                      >
+                        <div
+                          className="h-20 w-20 rounded-full border border-zinc-700 bg-zinc-800 bg-cover bg-center shadow-inner"
+                          style={{ backgroundImage: `url(${pic})` }}
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm leading-tight font-semibold text-white">
+                            {creator.name}
+                          </span>
+                          <span className="text-[10px] tracking-wider text-zinc-500 uppercase">
+                            Creator
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+            </div>
+          </div>
+        )}
 
         <CastSlider cast={cast} />
 
