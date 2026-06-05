@@ -297,7 +297,7 @@ export default function Navbar() {
                                     );
                                   }
                                 } else if (notif.sender) {
-                                  router.push(`/@/${notif.sender.username}`);
+                                  router.push(`/@${notif.sender.username}`);
                                 }
                               }}
                               className={cn(
@@ -548,7 +548,7 @@ export default function Navbar() {
                   <Button
                     onClick={() => {
                       setDropdownMenuOpen(false);
-                      router.push(`/@/${user?.username}`);
+                      router.push(`/@${user?.username}`);
                     }}
                     variant={"ghost"}
                     className="mb-1 h-fit w-full flex-col items-start rounded-xl px-3 py-2"
@@ -708,7 +708,7 @@ export default function Navbar() {
                                     );
                                   }
                                 } else if (notif.sender) {
-                                  router.push(`/@/${notif.sender.username}`);
+                                  router.push(`/@${notif.sender.username}`);
                                 }
                               }}
                               className={cn(
@@ -1024,7 +1024,7 @@ export default function Navbar() {
                         variant={"ghost"}
                         onClick={() => {
                           setMobileMenuOpen(false);
-                          router.push(`/@/${user?.username}`);
+                          router.push(`/@${user?.username}`);
                         }}
                         className="flex h-fit items-center gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3"
                       >

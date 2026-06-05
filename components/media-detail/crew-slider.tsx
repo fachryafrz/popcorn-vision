@@ -2,6 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import { Users } from "lucide-react";
+import Link from "next/link";
 
 interface CrewSliderItem {
   id: number;
@@ -48,18 +49,21 @@ export default function CrewSlider({ title, items }: CrewSliderProps) {
               : "/logo/popcorn.png";
             return (
               <SwiperSlide key={item.id} className="py-1">
-                <div className="group flex w-full flex-col items-center text-center">
+                <Link
+                  href={`/person/${item.id}`}
+                  className="group flex w-full flex-col items-center text-center cursor-pointer"
+                >
                   <div
-                    className="mb-2 h-16 w-16 rounded-full border-2 border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md sm:h-20 sm:w-20"
+                    className="mb-2 h-16 w-16 rounded-full border-2 border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md sm:h-20 sm:w-20 transition-all duration-300 group-hover:scale-105 group-hover:border-primary"
                     style={{ backgroundImage: `url(${pic})` }}
                   />
-                  <span className="w-full truncate text-xs font-semibold text-white group-hover:whitespace-pre-wrap">
+                  <span className="w-full truncate text-xs font-semibold text-white group-hover:text-primary transition-colors">
                     {item.name}
                   </span>
-                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500">
+                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500 transition-colors">
                     {item.role}
                   </span>
-                </div>
+                </Link>
               </SwiperSlide>
             );
           })}
@@ -68,3 +72,4 @@ export default function CrewSlider({ title, items }: CrewSliderProps) {
     </div>
   );
 }
+
