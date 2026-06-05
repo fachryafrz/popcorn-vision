@@ -139,7 +139,7 @@ export default function SearchClient({
                 ? "Search users by display name or username…"
                 : "Search movies, TV shows…"
             }
-            autoFocus
+            autoFocus={!hasQuery}
             className="h-14 w-full rounded-2xl border-zinc-700/60 bg-zinc-900 pr-12 pl-12 text-base text-white transition-all placeholder:text-zinc-500 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-500"
           />
           {inputValue && (

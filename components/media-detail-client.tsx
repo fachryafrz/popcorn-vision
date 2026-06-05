@@ -52,6 +52,7 @@ import ActionsSection from "./media-detail/actions-section";
 import RatingSection from "./media-detail/rating-section";
 import VideoPlayer from "./media-detail/video-player";
 import CastSlider from "./media-detail/cast-slider";
+import CrewSlider from "./media-detail/crew-slider";
 import CollectionGrid from "./media-detail/collection-grid";
 import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
@@ -749,68 +750,28 @@ export default function MediaDetailClient({
           servers={servers}
         />
 
-        {((mediaType === "movie" && directors.length > 0) ||
-          (mediaType === "tv" && creators.length > 0)) && (
-          <div className="space-y-4">
-            <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-              <Users className="text-primary h-5 w-5" />
-              {mediaType === "movie"
-                ? `Director${directors.length > 1 ? "s" : ""}`
-                : `Creator${creators.length > 1 ? "s" : ""}`}
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              {mediaType === "movie"
-                ? directors.map((director) => {
-                    const pic = director.profile_path
-                      ? `https://image.tmdb.org/t/p/w185${director.profile_path}`
-                      : "/logo/popcorn.png";
-                    return (
-                      <div
-                        key={director.id}
-                        className="flex items-center gap-3 py-1.5 pr-4 pl-1.5"
-                      >
-                        <div
-                          className="h-20 w-20 rounded-full border border-zinc-700 bg-zinc-800 bg-cover bg-center shadow-inner"
-                          style={{ backgroundImage: `url(${pic})` }}
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-sm leading-tight font-semibold text-white">
-                            {director.name}
-                          </span>
-                          <span className="text-[10px] tracking-wider text-zinc-500 uppercase">
-                            Director
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })
-                : creators.map((creator) => {
-                    const pic = creator.profile_path
-                      ? `https://image.tmdb.org/t/p/w185${creator.profile_path}`
-                      : "/logo/popcorn.png";
-                    return (
-                      <div
-                        key={creator.id}
-                        className="flex items-center gap-3 py-1.5 pr-4 pl-1.5"
-                      >
-                        <div
-                          className="h-20 w-20 rounded-full border border-zinc-700 bg-zinc-800 bg-cover bg-center shadow-inner"
-                          style={{ backgroundImage: `url(${pic})` }}
-                        />
-                        <div className="flex flex-col">
-                          <span className="text-sm leading-tight font-semibold text-white">
-                            {creator.name}
-                          </span>
-                          <span className="text-[10px] tracking-wider text-zinc-500 uppercase">
-                            Creator
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-            </div>
-          </div>
-        )}
+        <CrewSlider
+          title={
+            mediaType === "movie"
+              ? `Director${directors.length > 1 ? "s" : ""}`
+              : `Creator${creators.length > 1 ? "s" : ""}`
+          }
+          items={
+            mediaType === "movie"
+              ? directors.map((d) => ({
+                  id: d.id,
+                  name: d.name,
+                  profile_path: d.profile_path,
+                  role: "Director",
+                }))
+              : creators.map((c) => ({
+                  id: c.id,
+                  name: c.name,
+                  profile_path: c.profile_path,
+                  role: "Creator",
+                }))
+          }
+        />
 
         <CastSlider cast={cast} />
 

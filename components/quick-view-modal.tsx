@@ -33,6 +33,20 @@ interface MediaDetails {
   number_of_seasons?: number;
   vote_count?: number;
   genres?: { id: number; name: string }[];
+  created_by?: {
+    id: number;
+    credit_id: string;
+    name: string;
+    profile_path: string | null;
+  }[];
+}
+
+interface CrewItem {
+  id: number;
+  profile_path: string | null;
+  name: string;
+  job: string;
+  department: string;
 }
 
 interface VideoItem {
@@ -76,6 +90,7 @@ export default function QuickViewModal({
   const [details, setDetails] = useState<MediaDetails | null>(null);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [cast, setCast] = useState<CastItem[]>([]);
+  const [directors, setDirectors] = useState<CrewItem[]>([]);
   const [providers, setProviders] = useState<WatchProviders>({});
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [logoError, setLogoError] = useState(false);
@@ -121,6 +136,7 @@ export default function QuickViewModal({
       setDetails(null);
       setVideos([]);
       setCast([]);
+      setDirectors([]);
       setProviders({});
       setLogoPath(null);
       setLogoError(false);
@@ -132,6 +148,11 @@ export default function QuickViewModal({
           setDetails(data.details);
           setVideos(data.videos || []);
           setCast(data.credits?.cast?.slice(0, 5) || []);
+          setDirectors(
+            (data.credits?.crew || []).filter(
+              (c: { job: string }) => c.job === "Director",
+            ),
+          );
           setProviders(data.watchProviders || {});
           setLogoPath(data.logoPath || null);
         }
@@ -435,6 +456,59 @@ export default function QuickViewModal({
                   {media.overview || "No overview available."}
                 </p>
               </div>
+
+              {/* Director / Creator Section */}
+              {((media.media_type === "movie" || !media.media_type) && directors.length > 0) && (
+                <div>
+                  <h4 className="mb-2.5 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                    Director{directors.length > 1 ? "s" : ""}
+                  </h4>
+                  <div className="flex flex-wrap gap-4">
+                    {directors.map((director) => {
+                      const pic = director.profile_path
+                        ? `https://image.tmdb.org/t/p/w185${director.profile_path}`
+                        : "/logo/popcorn.png";
+                      return (
+                        <div key={director.id} className="flex items-center gap-2">
+                          <div
+                            className="h-8 w-8 rounded-full border border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md"
+                            style={{ backgroundImage: `url(${pic})` }}
+                          />
+                          <span className="text-xs font-semibold text-white">
+                            {director.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {media.media_type === "tv" && details?.created_by && details.created_by.length > 0 && (
+                <div>
+                  <h4 className="mb-2.5 text-xs font-bold tracking-wider text-zinc-500 uppercase">
+                    Creator{details.created_by.length > 1 ? "s" : ""}
+                  </h4>
+                  <div className="flex flex-wrap gap-4">
+                    {details.created_by.map((creator) => {
+                      const pic = creator.profile_path
+                        ? `https://image.tmdb.org/t/p/w185${creator.profile_path}`
+                        : "/logo/popcorn.png";
+                      return (
+                        <div key={creator.id} className="flex items-center gap-2">
+                          <div
+                            className="h-8 w-8 rounded-full border border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md"
+                            style={{ backgroundImage: `url(${pic})` }}
+                          />
+                          <span className="text-xs font-semibold text-white">
+                            {creator.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Cast Grid */}
               {cast.length > 0 && (
