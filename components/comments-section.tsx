@@ -332,7 +332,8 @@ function CommentNode({
     if (
       await confirm({
         title: "Delete Comment",
-        description: "Are you sure you want to delete this comment? This will also delete all replies to it.",
+        description:
+          "Are you sure you want to delete this comment? This will also delete all replies to it.",
         confirmText: "Delete",
       })
     ) {
@@ -363,7 +364,7 @@ function CommentNode({
       parts.push(
         <Link
           key={index}
-          href={`/@/${username}`}
+          href={`/@${username}`}
           className="text-primary font-bold hover:underline"
         >
           @{username}
@@ -409,7 +410,7 @@ function CommentNode({
             </AvatarFallback>
           </Avatar>
         ) : (
-          <Link href={`/@/${comment.author.username}`}>
+          <Link href={`/@${comment.author.username}`}>
             <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/30">
               {comment.author.image && (
                 <AvatarImage
@@ -435,7 +436,7 @@ function CommentNode({
                 </span>
               ) : (
                 <Link
-                  href={`/@/${comment.author.username}`}
+                  href={`/@${comment.author.username}`}
                   className="text-sm font-bold text-white hover:underline"
                 >
                   {comment.author.name}

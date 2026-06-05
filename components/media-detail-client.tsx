@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -52,7 +54,6 @@ import ActionsSection from "./media-detail/actions-section";
 import RatingSection from "./media-detail/rating-section";
 import VideoPlayer from "./media-detail/video-player";
 import CastSlider from "./media-detail/cast-slider";
-import CrewSlider from "./media-detail/crew-slider";
 import CollectionGrid from "./media-detail/collection-grid";
 import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
@@ -677,8 +678,18 @@ export default function MediaDetailClient({
               <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
                 Directed By:
               </span>
-              <span className="font-bold text-zinc-200">
-                {directors.map((d) => d.name).join(", ")}
+              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+                {directors.map((d, index) => (
+                  <span key={d.id}>
+                    <Link
+                      href={`/person/${d.id}`}
+                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {d.name}
+                    </Link>
+                    {index < directors.length - 1 && ", "}
+                  </span>
+                ))}
               </span>
             </div>
           )}
@@ -687,8 +698,18 @@ export default function MediaDetailClient({
               <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
                 Created By:
               </span>
-              <span className="font-bold text-zinc-200">
-                {creators.map((c) => c.name).join(", ")}
+              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+                {creators.map((c, index) => (
+                  <span key={c.id}>
+                    <Link
+                      href={`/person/${c.id}`}
+                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {c.name}
+                    </Link>
+                    {index < creators.length - 1 && ", "}
+                  </span>
+                ))}
               </span>
             </div>
           )}
@@ -750,28 +771,7 @@ export default function MediaDetailClient({
           servers={servers}
         />
 
-        <CrewSlider
-          title={
-            mediaType === "movie"
-              ? `Director${directors.length > 1 ? "s" : ""}`
-              : `Creator${creators.length > 1 ? "s" : ""}`
-          }
-          items={
-            mediaType === "movie"
-              ? directors.map((d) => ({
-                  id: d.id,
-                  name: d.name,
-                  profile_path: d.profile_path,
-                  role: "Director",
-                }))
-              : creators.map((c) => ({
-                  id: c.id,
-                  name: c.name,
-                  profile_path: c.profile_path,
-                  role: "Creator",
-                }))
-          }
-        />
+
 
         <CastSlider cast={cast} />
 
