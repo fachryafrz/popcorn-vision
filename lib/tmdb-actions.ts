@@ -489,4 +489,25 @@ export async function batchFetchMediaMetadata(
   return resultsMap;
 }
 
+export async function getPersonDetails(personId: string) {
+  try {
+    const res = await axios.get(`/person/${personId}`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching person details for ${personId}:`, error);
+    return null;
+  }
+}
+
+export async function getPersonCredits(personId: string) {
+  try {
+    const res = await axios.get(`/person/${personId}/combined_credits`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching person credits for ${personId}:`, error);
+    return null;
+  }
+}
+
+
 

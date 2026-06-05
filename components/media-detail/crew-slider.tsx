@@ -1,22 +1,29 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
-import { Tv } from "lucide-react";
-import { CastItem } from "./types";
+import { Users } from "lucide-react";
 import Link from "next/link";
 
-interface CastSliderProps {
-  cast: CastItem[];
+interface CrewSliderItem {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  role: string;
 }
 
-export default function CastSlider({ cast }: CastSliderProps) {
-  if (cast.length === 0) return null;
+interface CrewSliderProps {
+  title: string;
+  items: CrewSliderItem[];
+}
+
+export default function CrewSlider({ title, items }: CrewSliderProps) {
+  if (items.length === 0) return null;
 
   return (
     <div className="space-y-4">
       <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
-        <Tv className="text-primary h-5 w-5" />
-        Key Cast & Characters
+        <Users className="text-primary h-5 w-5" />
+        {title}
       </h2>
       <div className="swiper-cast-container relative w-full">
         <Swiper
@@ -36,25 +43,25 @@ export default function CastSlider({ cast }: CastSliderProps) {
           }}
           className="w-full pb-4"
         >
-          {cast.map((actor) => {
-            const actorPic = actor.profile_path
-              ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+          {items.map((item) => {
+            const pic = item.profile_path
+              ? `https://image.tmdb.org/t/p/w185${item.profile_path}`
               : "/logo/popcorn.png";
             return (
-              <SwiperSlide key={actor.id} className="py-1">
+              <SwiperSlide key={item.id} className="py-1">
                 <Link
-                  href={`/person/${actor.id}`}
+                  href={`/person/${item.id}`}
                   className="group flex w-full flex-col items-center text-center cursor-pointer"
                 >
                   <div
                     className="mb-2 h-16 w-16 rounded-full border-2 border-zinc-800 bg-zinc-900 bg-cover bg-center shadow-md sm:h-20 sm:w-20 transition-all duration-300 group-hover:scale-105 group-hover:border-primary"
-                    style={{ backgroundImage: `url(${actorPic})` }}
+                    style={{ backgroundImage: `url(${pic})` }}
                   />
                   <span className="w-full truncate text-xs font-semibold text-white group-hover:text-primary transition-colors">
-                    {actor.name}
+                    {item.name}
                   </span>
-                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500 group-hover:whitespace-pre-wrap transition-colors">
-                    {actor.character}
+                  <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500 transition-colors">
+                    {item.role}
                   </span>
                 </Link>
               </SwiperSlide>

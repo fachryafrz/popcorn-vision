@@ -87,7 +87,7 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
         {/* User Info */}
         <div className="mb-4 flex items-start gap-4">
           <Link
-            href={`/@/${user.username}`}
+            href={`/@${user.username}`}
             prefetch={false}
             className="cursor-pointer"
           >
@@ -106,7 +106,7 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
           </Link>
           <div className="min-w-0 flex-1">
             <Link
-              href={`/@/${user.username}`}
+              href={`/@${user.username}`}
               prefetch={false}
               className="block cursor-pointer transition-colors group-hover:text-white"
             >

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
+import Link from "next/link";
+
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
@@ -33,6 +35,20 @@ interface MediaDetails {
   number_of_seasons?: number;
   vote_count?: number;
   genres?: { id: number; name: string }[];
+  created_by?: {
+    id: number;
+    credit_id: string;
+    name: string;
+    profile_path: string | null;
+  }[];
+}
+
+interface CrewItem {
+  id: number;
+  profile_path: string | null;
+  name: string;
+  job: string;
+  department: string;
 }
 
 interface VideoItem {
@@ -76,6 +92,7 @@ export default function QuickViewModal({
   const [details, setDetails] = useState<MediaDetails | null>(null);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [cast, setCast] = useState<CastItem[]>([]);
+  const [directors, setDirectors] = useState<CrewItem[]>([]);
   const [providers, setProviders] = useState<WatchProviders>({});
   const [logoPath, setLogoPath] = useState<string | null>(null);
   const [logoError, setLogoError] = useState(false);
@@ -121,6 +138,7 @@ export default function QuickViewModal({
       setDetails(null);
       setVideos([]);
       setCast([]);
+      setDirectors([]);
       setProviders({});
       setLogoPath(null);
       setLogoError(false);
@@ -132,6 +150,11 @@ export default function QuickViewModal({
           setDetails(data.details);
           setVideos(data.videos || []);
           setCast(data.credits?.cast?.slice(0, 5) || []);
+          setDirectors(
+            (data.credits?.crew || []).filter(
+              (c: { job: string }) => c.job === "Director",
+            ),
+          );
           setProviders(data.watchProviders || {});
           setLogoPath(data.logoPath || null);
         }
@@ -426,6 +449,54 @@ export default function QuickViewModal({
                 </div>
               )}
 
+              {/* Director / Creator Section */}
+              {(media.media_type === "movie" || !media.media_type) &&
+                directors.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400">
+                    <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                      Directed By:
+                    </span>
+                    <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
+                      {directors.map((d, index) => (
+                        <span key={d.id}>
+                          <Link
+                            href={`/person/${d.id}`}
+                            onClick={onClose}
+                            className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
+                          >
+                            {d.name}
+                          </Link>
+                          {index < directors.length - 1 && ", "}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                )}
+
+              {media.media_type === "tv" &&
+                details?.created_by &&
+                details.created_by.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400">
+                    <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                      Created By:
+                    </span>
+                    <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
+                      {details.created_by.map((c, index) => (
+                        <span key={c.id}>
+                          <Link
+                            href={`/person/${c.id}`}
+                            onClick={onClose}
+                            className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
+                          >
+                            {c.name}
+                          </Link>
+                          {index < details.created_by!.length - 1 && ", "}
+                        </span>
+                      ))}
+                    </span>
+                  </div>
+                )}
+
               {/* Description */}
               <div>
                 <h4 className="mb-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
@@ -448,21 +519,23 @@ export default function QuickViewModal({
                         ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
                         : "/logo/popcorn.png";
                       return (
-                        <div
+                        <Link
                           key={actor.id}
-                          className="flex flex-col items-center text-center"
+                          href={`/person/${actor.id}`}
+                          onClick={onClose}
+                          className="group flex cursor-pointer flex-col items-center text-center"
                         >
                           <div
-                            className="mb-1.5 h-10 w-10 rounded-full border border-zinc-800 bg-cover bg-center shadow-md sm:h-12 sm:w-12"
+                            className="group-hover:border-primary mb-1.5 h-10 w-10 rounded-full border border-zinc-800 bg-cover bg-center shadow-md transition-all duration-300 group-hover:scale-105 sm:h-12 sm:w-12"
                             style={{ backgroundImage: `url(${actorPic})` }}
                           />
-                          <span className="w-full truncate text-[10px] font-semibold text-white">
+                          <span className="group-hover:text-primary w-full truncate text-[10px] font-semibold text-white transition-colors">
                             {actor.name}
                           </span>
-                          <span className="w-full truncate text-[9px] text-zinc-500">
+                          <span className="w-full truncate text-[9px] text-zinc-500 transition-colors">
                             {actor.character}
                           </span>
-                        </div>
+                        </Link>
                       );
                     })}
                   </div>

@@ -245,16 +245,19 @@ export default function CustomListDetailPage({
   if ("unauthorized" in detail && detail.unauthorized) {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900 border border-zinc-800">
-          <Lock className="text-zinc-400 h-8 w-8" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900">
+          <Lock className="h-8 w-8 text-zinc-400" />
         </div>
-        <h1 className="mt-6 text-2xl font-extrabold tracking-tight">This List is Private</h1>
+        <h1 className="mt-6 text-2xl font-extrabold tracking-tight">
+          This List is Private
+        </h1>
         <p className="mt-2 max-w-sm text-sm text-zinc-500">
-          You do not have permission to view this custom list. The creator has restricted access to list members and collaborators only.
+          You do not have permission to view this custom list. The creator has
+          restricted access to list members and collaborators only.
         </p>
         <Button
           onClick={() => router.push("/lists")}
-          className="mt-6 rounded-full font-bold bg-white text-black hover:bg-zinc-200"
+          className="mt-6 rounded-full bg-white font-bold text-black hover:bg-zinc-200"
         >
           Back to Custom Lists
         </Button>
@@ -455,7 +458,8 @@ export default function CustomListDetailPage({
     if (
       !(await confirm({
         title: "Delete List",
-        description: "Are you sure you want to permanently delete this list? This cannot be undone.",
+        description:
+          "Are you sure you want to permanently delete this list? This cannot be undone.",
         confirmText: "Delete",
       }))
     )
@@ -556,7 +560,7 @@ export default function CustomListDetailPage({
                 <span>
                   by{" "}
                   <Link
-                    href={`/@/${creator.username}`}
+                    href={`/@${creator.username}`}
                     className="font-bold text-zinc-400 hover:text-white"
                   >
                     @{creator.username}

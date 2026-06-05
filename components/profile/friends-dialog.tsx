@@ -40,7 +40,7 @@ export function FriendsDialog({
               {friends.map((friend) => (
                 <Link
                   key={friend.userId}
-                  href={`/@/${friend.username}`}
+                  href={`/@${friend.username}`}
                   onClick={() => onOpenChange(false)}
                   className="group/friend flex items-center gap-3 rounded-2xl p-3 transition-colors hover:bg-zinc-900/50"
                 >

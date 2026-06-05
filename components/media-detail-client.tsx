@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -37,6 +39,7 @@ import moment from "moment";
 // Import types and subcomponents
 import {
   CastItem,
+  CrewItem,
   VideoItem,
   ProviderItem,
   MediaDetails,
@@ -60,7 +63,7 @@ interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
   initialData: {
     details: MediaDetails;
-    credits?: { cast?: CastItem[] };
+    credits?: { cast?: CastItem[]; crew?: CrewItem[] };
     videos?: VideoItem[];
     watchProviders?: Record<string, { flatrate?: ProviderItem[] }>;
     logoPath?: string | null;
@@ -369,6 +372,9 @@ export default function MediaDetailClient({
   };
 
   const cast = initialData.credits?.cast?.slice(0, 15) || [];
+  const directors =
+    initialData.credits?.crew?.filter((c) => c.job === "Director") || [];
+  const creators = details.created_by || [];
   const recommendations = initialData.recommendations || [];
   const providers =
     initialData.watchProviders?.[selectedRegion]?.flatrate || [];
@@ -667,6 +673,47 @@ export default function MediaDetailClient({
             )}
           </div>
 
+          {mediaType === "movie" && directors.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
+              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                Directed By:
+              </span>
+              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+                {directors.map((d, index) => (
+                  <span key={d.id}>
+                    <Link
+                      href={`/person/${d.id}`}
+                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {d.name}
+                    </Link>
+                    {index < directors.length - 1 && ", "}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
+          {mediaType === "tv" && creators.length > 0 && (
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
+              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
+                Created By:
+              </span>
+              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+                {creators.map((c, index) => (
+                  <span key={c.id}>
+                    <Link
+                      href={`/person/${c.id}`}
+                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {c.name}
+                    </Link>
+                    {index < creators.length - 1 && ", "}
+                  </span>
+                ))}
+              </span>
+            </div>
+          )}
+
           <p className="mt-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
             {details?.overview || "No overview available."}
           </p>
@@ -723,6 +770,8 @@ export default function MediaDetailClient({
           setEpisode={setEpisode}
           servers={servers}
         />
+
+
 
         <CastSlider cast={cast} />
 

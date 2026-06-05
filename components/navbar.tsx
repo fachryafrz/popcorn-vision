@@ -92,6 +92,7 @@ export default function Navbar() {
     close: closeAuth,
   } = useAuthModalStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -296,7 +297,7 @@ export default function Navbar() {
                                     );
                                   }
                                 } else if (notif.sender) {
-                                  router.push(`/@/${notif.sender.username}`);
+                                  router.push(`/@${notif.sender.username}`);
                                 }
                               }}
                               className={cn(
@@ -346,7 +347,6 @@ export default function Navbar() {
                                       </span>
                                     </>
                                   )}
-
                                   {notif.type === "list_invite" &&
                                     (notif.targetName
                                       ? `invited you to collaborate on the list "${notif.targetName}".`
@@ -396,8 +396,6 @@ export default function Navbar() {
                                       </Button>
                                     </div>
                                   )}
-
-
 
                                 {/* List Invite Actions */}
                                 {notif.type === "list_invite" &&
@@ -518,7 +516,10 @@ export default function Navbar() {
             )}
 
             {isLoggedIn ? (
-              <DropdownMenu>
+              <DropdownMenu
+                open={dropdownMenuOpen}
+                onOpenChange={setDropdownMenuOpen}
+              >
                 <DropdownMenuTrigger className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 py-1.5 pr-3 pl-1.5 text-sm transition-all hover:border-zinc-700 hover:bg-zinc-800 focus:outline-none">
                   <Avatar className="h-7 w-7">
                     {user?.image && (
@@ -545,7 +546,10 @@ export default function Navbar() {
                 >
                   {/* User header — plain div, not GroupLabel (avoids Group context requirement) */}
                   <Button
-                    onClick={() => router.push(`/@/${user?.username}`)}
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push(`/@${user?.username}`);
+                    }}
                     variant={"ghost"}
                     className="mb-1 h-fit w-full flex-col items-start rounded-xl px-3 py-2"
                   >
@@ -560,25 +564,33 @@ export default function Navbar() {
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
                   <DropdownMenuItem
-                    onClick={() => router.push("/chat")}
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push("/chat");
+                    }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
                     <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
                     Chats
                   </DropdownMenuItem>
                   <DropdownMenuItem
-                    onClick={() => router.push("/lists")}
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push("/lists");
+                    }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
                     <List className="mr-2 h-4 w-4 text-zinc-400" />
                     My Lists
                   </DropdownMenuItem>
 
-
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
                   <DropdownMenuItem
-                    onClick={() => router.push("/settings")}
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push("/settings");
+                    }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
                     <Settings className="mr-2 h-4 w-4 text-zinc-400" />
@@ -588,7 +600,10 @@ export default function Navbar() {
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
                   <DropdownMenuItem
-                    onClick={handleSignOut}
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      handleSignOut();
+                    }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-red-400 hover:bg-red-950/60 hover:text-red-300 focus:bg-red-950/60 focus:text-red-300"
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -693,7 +708,7 @@ export default function Navbar() {
                                     );
                                   }
                                 } else if (notif.sender) {
-                                  router.push(`/@/${notif.sender.username}`);
+                                  router.push(`/@${notif.sender.username}`);
                                 }
                               }}
                               className={cn(
@@ -743,7 +758,6 @@ export default function Navbar() {
                                       </span>
                                     </>
                                   )}
-
                                   {notif.type === "list_invite" &&
                                     (notif.targetName
                                       ? `invited you to collaborate on the list "${notif.targetName}".`
@@ -793,8 +807,6 @@ export default function Navbar() {
                                       </Button>
                                     </div>
                                   )}
-
-
 
                                 {/* List Invite Actions */}
                                 {notif.type === "list_invite" &&
@@ -999,7 +1011,6 @@ export default function Navbar() {
                         <List className="h-4 w-4" />
                         My Lists
                       </Link>
-
                     </>
                   )}
                 </nav>
@@ -1013,7 +1024,7 @@ export default function Navbar() {
                         variant={"ghost"}
                         onClick={() => {
                           setMobileMenuOpen(false);
-                          router.push(`/@/${user?.username}`);
+                          router.push(`/@${user?.username}`);
                         }}
                         className="flex h-fit items-center gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3"
                       >

@@ -5,6 +5,21 @@ export interface CastItem {
   character: string;
 }
 
+export interface CrewItem {
+  id: number;
+  profile_path: string | null;
+  name: string;
+  job: string;
+  department: string;
+}
+
+export interface Creator {
+  id: number;
+  credit_id: string;
+  name: string;
+  profile_path: string | null;
+}
+
 export interface VideoItem {
   type: string;
   site: string;
@@ -54,7 +69,9 @@ export interface MediaDetails {
   number_of_seasons?: number;
   number_of_episodes?: number;
   seasons?: Season[];
+  created_by?: Creator[];
 }
+
 
 export interface RegionalRelease {
   iso_3166_1: string;
