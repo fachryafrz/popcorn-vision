@@ -316,4 +316,10 @@ export default defineSchema({
     .index("by_list_user", ["listId", "userId"])
     .index("by_item", ["listId", "mediaId", "mediaType"])
     .index("by_item_user", ["listId", "mediaId", "mediaType", "userId"]),
+
+  exchangeRates: defineTable({
+    base: v.string(), // "USD"
+    rates: v.record(v.string(), v.number()), // e.g. { IDR: 16200, JPY: 155, ... }
+    updatedAt: v.number(), // timestamp of last update
+  }).index("by_base", ["base"]),
 });

@@ -10,7 +10,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AFN"
   },
   {
     "name": "Åland Islands",
@@ -23,7 +24,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Albania",
@@ -36,7 +38,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "ALL"
   },
   {
     "name": "Algeria",
@@ -49,7 +52,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "DZD"
   },
   {
     "name": "American Samoa",
@@ -62,7 +66,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Andorra",
@@ -75,7 +80,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Angola",
@@ -88,7 +94,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "AOA"
   },
   {
     "name": "Anguilla",
@@ -101,7 +108,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Antarctica",
@@ -114,7 +122,8 @@
     "intermediate-region": "",
     "region-code": "",
     "sub-region-code": "",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Antigua and Barbuda",
@@ -127,7 +136,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Argentina",
@@ -140,7 +150,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "ARS"
   },
   {
     "name": "Armenia",
@@ -153,7 +164,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AMD"
   },
   {
     "name": "Aruba",
@@ -166,7 +178,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "AWG"
   },
   {
     "name": "Australia",
@@ -179,7 +192,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Austria",
@@ -192,7 +206,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Azerbaijan",
@@ -205,7 +220,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AZN"
   },
   {
     "name": "Bahamas",
@@ -218,7 +234,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "BSD"
   },
   {
     "name": "Bahrain",
@@ -231,7 +248,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BHD"
   },
   {
     "name": "Bangladesh",
@@ -244,7 +262,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BDT"
   },
   {
     "name": "Barbados",
@@ -257,7 +276,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "BBD"
   },
   {
     "name": "Belarus",
@@ -270,7 +290,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BYN"
   },
   {
     "name": "Belgium",
@@ -283,7 +304,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Belize",
@@ -296,7 +318,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "BZD"
   },
   {
     "name": "Benin",
@@ -309,7 +332,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Bermuda",
@@ -322,7 +346,8 @@
     "intermediate-region": "",
     "region-code": "019",
     "sub-region-code": "021",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BMD"
   },
   {
     "name": "Bhutan",
@@ -335,7 +360,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BTN"
   },
   {
     "name": "Bolivia, Plurinational State of",
@@ -348,7 +374,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "BOB"
   },
   {
     "name": "Bonaire, Sint Eustatius and Saba",
@@ -361,7 +388,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "USD"
   },
   {
     "name": "Bosnia and Herzegovina",
@@ -374,7 +402,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BAM"
   },
   {
     "name": "Botswana",
@@ -387,7 +416,8 @@
     "intermediate-region": "Southern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "018"
+    "intermediate-region-code": "018",
+    "currency": "BWP"
   },
   {
     "name": "Bouvet Island",
@@ -400,7 +430,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "USD"
   },
   {
     "name": "Brazil",
@@ -413,7 +444,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "BRL"
   },
   {
     "name": "British Indian Ocean Territory",
@@ -426,7 +458,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "USD"
   },
   {
     "name": "Brunei Darussalam",
@@ -439,7 +472,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BND"
   },
   {
     "name": "Bulgaria",
@@ -452,7 +486,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "BGN"
   },
   {
     "name": "Burkina Faso",
@@ -465,7 +500,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Burundi",
@@ -478,7 +514,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "BIF"
   },
   {
     "name": "Cabo Verde",
@@ -491,7 +528,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "CVE"
   },
   {
     "name": "Cambodia",
@@ -504,7 +542,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KHR"
   },
   {
     "name": "Cameroon",
@@ -517,7 +556,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Canada",
@@ -530,7 +570,8 @@
     "intermediate-region": "",
     "region-code": "019",
     "sub-region-code": "021",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CAD"
   },
   {
     "name": "Cayman Islands",
@@ -543,7 +584,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "KYD"
   },
   {
     "name": "Central African Republic",
@@ -556,7 +598,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Chad",
@@ -569,7 +612,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Chile",
@@ -582,7 +626,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "CLP"
   },
   {
     "name": "China",
@@ -595,7 +640,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CNY"
   },
   {
     "name": "Christmas Island",
@@ -608,7 +654,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Cocos (Keeling) Islands",
@@ -621,7 +668,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Colombia",
@@ -634,7 +682,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "COP"
   },
   {
     "name": "Comoros",
@@ -647,7 +696,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "KMF"
   },
   {
     "name": "Congo",
@@ -660,7 +710,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Congo, Democratic Republic of the",
@@ -673,7 +724,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "CDF"
   },
   {
     "name": "Cook Islands",
@@ -686,7 +738,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CKD"
   },
   {
     "name": "Costa Rica",
@@ -699,7 +752,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "CRC"
   },
   {
     "name": "Côte d'Ivoire",
@@ -712,7 +766,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Croatia",
@@ -725,7 +780,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Cuba",
@@ -738,7 +794,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "CUC"
   },
   {
     "name": "Curaçao",
@@ -751,7 +808,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "ANG"
   },
   {
     "name": "Cyprus",
@@ -764,7 +822,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Czechia",
@@ -777,7 +836,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CZK"
   },
   {
     "name": "Denmark",
@@ -790,7 +850,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "DKK"
   },
   {
     "name": "Djibouti",
@@ -803,7 +864,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "DJF"
   },
   {
     "name": "Dominica",
@@ -816,7 +878,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Dominican Republic",
@@ -829,7 +892,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "DOP"
   },
   {
     "name": "Ecuador",
@@ -842,7 +906,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "USD"
   },
   {
     "name": "Egypt",
@@ -855,7 +920,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EGP"
   },
   {
     "name": "El Salvador",
@@ -868,7 +934,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "USD"
   },
   {
     "name": "Equatorial Guinea",
@@ -881,7 +948,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Eritrea",
@@ -894,7 +962,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "ERN"
   },
   {
     "name": "Estonia",
@@ -907,7 +976,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Eswatini",
@@ -920,7 +990,8 @@
     "intermediate-region": "Southern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "018"
+    "intermediate-region-code": "018",
+    "currency": "SZL"
   },
   {
     "name": "Ethiopia",
@@ -933,7 +1004,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "ETB"
   },
   {
     "name": "Falkland Islands (Malvinas)",
@@ -946,7 +1018,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "FKP"
   },
   {
     "name": "Faroe Islands",
@@ -959,7 +1032,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "DKK"
   },
   {
     "name": "Fiji",
@@ -972,7 +1046,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "054",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "FJD"
   },
   {
     "name": "Finland",
@@ -985,7 +1060,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "France",
@@ -998,7 +1074,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "French Guiana",
@@ -1011,7 +1088,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "EUR"
   },
   {
     "name": "French Polynesia",
@@ -1024,7 +1102,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "XPF"
   },
   {
     "name": "French Southern Territories",
@@ -1037,7 +1116,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "EUR"
   },
   {
     "name": "Gabon",
@@ -1050,7 +1130,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "XAF"
   },
   {
     "name": "Gambia",
@@ -1063,7 +1144,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "GMD"
   },
   {
     "name": "Georgia",
@@ -1076,7 +1158,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GEL"
   },
   {
     "name": "Germany",
@@ -1089,7 +1172,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Ghana",
@@ -1102,7 +1186,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "GHS"
   },
   {
     "name": "Gibraltar",
@@ -1115,7 +1200,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GIP"
   },
   {
     "name": "Greece",
@@ -1128,7 +1214,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Greenland",
@@ -1141,7 +1228,8 @@
     "intermediate-region": "",
     "region-code": "019",
     "sub-region-code": "021",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "DKK"
   },
   {
     "name": "Grenada",
@@ -1154,7 +1242,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Guadeloupe",
@@ -1167,7 +1256,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "EUR"
   },
   {
     "name": "Guam",
@@ -1180,7 +1270,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Guatemala",
@@ -1193,7 +1284,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "GTQ"
   },
   {
     "name": "Guernsey",
@@ -1206,7 +1298,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GBP"
   },
   {
     "name": "Guinea",
@@ -1219,7 +1312,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "GNF"
   },
   {
     "name": "Guinea-Bissau",
@@ -1232,7 +1326,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Guyana",
@@ -1245,7 +1340,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "GYD"
   },
   {
     "name": "Haiti",
@@ -1258,7 +1354,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "HTG"
   },
   {
     "name": "Heard Island and McDonald Islands",
@@ -1271,7 +1368,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Holy See",
@@ -1284,7 +1382,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Honduras",
@@ -1297,7 +1396,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "HNL"
   },
   {
     "name": "Hong Kong",
@@ -1310,7 +1410,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "HKD"
   },
   {
     "name": "Hungary",
@@ -1323,7 +1424,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "HUF"
   },
   {
     "name": "Iceland",
@@ -1336,7 +1438,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "ISK"
   },
   {
     "name": "India",
@@ -1349,7 +1452,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "INR"
   },
   {
     "name": "Indonesia",
@@ -1362,7 +1466,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "IDR"
   },
   {
     "name": "Iran, Islamic Republic of",
@@ -1375,7 +1480,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "IRR"
   },
   {
     "name": "Iraq",
@@ -1388,7 +1494,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "IQD"
   },
   {
     "name": "Ireland",
@@ -1401,7 +1508,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Isle of Man",
@@ -1414,7 +1522,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GBP"
   },
   {
     "name": "Israel",
@@ -1427,7 +1536,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "ILS"
   },
   {
     "name": "Italy",
@@ -1440,7 +1550,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Jamaica",
@@ -1453,7 +1564,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "JMD"
   },
   {
     "name": "Japan",
@@ -1466,7 +1578,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "JPY"
   },
   {
     "name": "Jersey",
@@ -1479,7 +1592,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GBP"
   },
   {
     "name": "Jordan",
@@ -1492,7 +1606,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "JOD"
   },
   {
     "name": "Kazakhstan",
@@ -1505,7 +1620,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "143",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KZT"
   },
   {
     "name": "Kenya",
@@ -1518,7 +1634,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "KES"
   },
   {
     "name": "Kiribati",
@@ -1531,7 +1648,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Korea, Democratic People's Republic of",
@@ -1544,7 +1662,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KPW"
   },
   {
     "name": "Korea, Republic of",
@@ -1557,7 +1676,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KRW"
   },
   {
     "name": "Kuwait",
@@ -1570,7 +1690,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KWD"
   },
   {
     "name": "Kyrgyzstan",
@@ -1583,7 +1704,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "143",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "KGS"
   },
   {
     "name": "Lao People's Democratic Republic",
@@ -1596,7 +1718,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "LAK"
   },
   {
     "name": "Latvia",
@@ -1609,7 +1732,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Lebanon",
@@ -1622,7 +1746,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "LBP"
   },
   {
     "name": "Lesotho",
@@ -1635,7 +1760,8 @@
     "intermediate-region": "Southern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "018"
+    "intermediate-region-code": "018",
+    "currency": "LSL"
   },
   {
     "name": "Liberia",
@@ -1648,7 +1774,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "LRD"
   },
   {
     "name": "Libya",
@@ -1661,7 +1788,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "LYD"
   },
   {
     "name": "Liechtenstein",
@@ -1674,7 +1802,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CHF"
   },
   {
     "name": "Lithuania",
@@ -1687,7 +1816,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Luxembourg",
@@ -1700,7 +1830,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Macao",
@@ -1713,7 +1844,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MOP"
   },
   {
     "name": "Madagascar",
@@ -1726,7 +1858,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "MGA"
   },
   {
     "name": "Malawi",
@@ -1739,7 +1872,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "MWK"
   },
   {
     "name": "Malaysia",
@@ -1752,7 +1886,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MYR"
   },
   {
     "name": "Maldives",
@@ -1765,7 +1900,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MVR"
   },
   {
     "name": "Mali",
@@ -1778,7 +1914,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Malta",
@@ -1791,7 +1928,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Marshall Islands",
@@ -1804,7 +1942,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Martinique",
@@ -1817,7 +1956,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "EUR"
   },
   {
     "name": "Mauritania",
@@ -1830,7 +1970,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "MRU"
   },
   {
     "name": "Mauritius",
@@ -1843,7 +1984,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "MUR"
   },
   {
     "name": "Mayotte",
@@ -1856,7 +1998,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "EUR"
   },
   {
     "name": "Mexico",
@@ -1869,7 +2012,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "MXN"
   },
   {
     "name": "Micronesia, Federated States of",
@@ -1882,7 +2026,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Moldova, Republic of",
@@ -1895,7 +2040,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MDL"
   },
   {
     "name": "Monaco",
@@ -1908,7 +2054,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Mongolia",
@@ -1921,7 +2068,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "030",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MNT"
   },
   {
     "name": "Montenegro",
@@ -1934,7 +2082,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Montserrat",
@@ -1947,7 +2096,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Morocco",
@@ -1960,7 +2110,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MAD"
   },
   {
     "name": "Mozambique",
@@ -1973,7 +2124,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "MZN"
   },
   {
     "name": "Myanmar",
@@ -1986,7 +2138,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MMK"
   },
   {
     "name": "Namibia",
@@ -1999,7 +2152,8 @@
     "intermediate-region": "Southern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "018"
+    "intermediate-region-code": "018",
+    "currency": "NAD"
   },
   {
     "name": "Nauru",
@@ -2012,7 +2166,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Nepal",
@@ -2025,7 +2180,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NPR"
   },
   {
     "name": "Netherlands, Kingdom of the",
@@ -2038,7 +2194,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "New Caledonia",
@@ -2051,7 +2208,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "054",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "XPF"
   },
   {
     "name": "New Zealand",
@@ -2064,7 +2222,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NZD"
   },
   {
     "name": "Nicaragua",
@@ -2077,7 +2236,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "NIO"
   },
   {
     "name": "Niger",
@@ -2090,7 +2250,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Nigeria",
@@ -2103,7 +2264,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "NGN"
   },
   {
     "name": "Niue",
@@ -2116,7 +2278,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NZD"
   },
   {
     "name": "Norfolk Island",
@@ -2129,7 +2292,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "053",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "North Macedonia",
@@ -2142,7 +2306,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "MKD"
   },
   {
     "name": "Northern Mariana Islands",
@@ -2155,7 +2320,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Norway",
@@ -2168,7 +2334,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NOK"
   },
   {
     "name": "Oman",
@@ -2181,7 +2348,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "OMR"
   },
   {
     "name": "Pakistan",
@@ -2194,7 +2362,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "PKR"
   },
   {
     "name": "Palau",
@@ -2207,7 +2376,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Palestine, State of",
@@ -2220,7 +2390,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EGP"
   },
   {
     "name": "Panama",
@@ -2233,7 +2404,8 @@
     "intermediate-region": "Central America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "013"
+    "intermediate-region-code": "013",
+    "currency": "PAB"
   },
   {
     "name": "Papua New Guinea",
@@ -2246,7 +2418,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "054",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "PGK"
   },
   {
     "name": "Paraguay",
@@ -2259,7 +2432,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "PYG"
   },
   {
     "name": "Peru",
@@ -2272,7 +2446,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "PEN"
   },
   {
     "name": "Philippines",
@@ -2285,7 +2460,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "PHP"
   },
   {
     "name": "Pitcairn",
@@ -2298,7 +2474,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NZD"
   },
   {
     "name": "Poland",
@@ -2311,7 +2488,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "PLN"
   },
   {
     "name": "Portugal",
@@ -2324,7 +2502,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Puerto Rico",
@@ -2337,7 +2516,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "USD"
   },
   {
     "name": "Qatar",
@@ -2350,7 +2530,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "QAR"
   },
   {
     "name": "Réunion",
@@ -2363,7 +2544,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "EUR"
   },
   {
     "name": "Romania",
@@ -2376,7 +2558,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "RON"
   },
   {
     "name": "Russian Federation",
@@ -2389,7 +2572,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "RUB"
   },
   {
     "name": "Rwanda",
@@ -2402,7 +2586,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "RWF"
   },
   {
     "name": "Saint Barthélemy",
@@ -2415,7 +2600,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "EUR"
   },
   {
     "name": "Saint Helena, Ascension and Tristan da Cunha",
@@ -2428,7 +2614,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "GBP"
   },
   {
     "name": "Saint Kitts and Nevis",
@@ -2441,7 +2628,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Saint Lucia",
@@ -2454,7 +2642,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Saint Martin (French part)",
@@ -2467,7 +2656,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "EUR"
   },
   {
     "name": "Saint Pierre and Miquelon",
@@ -2480,7 +2670,8 @@
     "intermediate-region": "",
     "region-code": "019",
     "sub-region-code": "021",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Saint Vincent and the Grenadines",
@@ -2493,7 +2684,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "XCD"
   },
   {
     "name": "Samoa",
@@ -2506,7 +2698,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "WST"
   },
   {
     "name": "San Marino",
@@ -2519,7 +2712,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Sao Tome and Principe",
@@ -2532,7 +2726,8 @@
     "intermediate-region": "Middle Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "017"
+    "intermediate-region-code": "017",
+    "currency": "STN"
   },
   {
     "name": "Saudi Arabia",
@@ -2545,7 +2740,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SAR"
   },
   {
     "name": "Senegal",
@@ -2558,7 +2754,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Serbia",
@@ -2571,7 +2768,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "RSD"
   },
   {
     "name": "Seychelles",
@@ -2584,7 +2782,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "SCR"
   },
   {
     "name": "Sierra Leone",
@@ -2597,7 +2796,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "SLL"
   },
   {
     "name": "Singapore",
@@ -2610,7 +2810,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SGD"
   },
   {
     "name": "Sint Maarten (Dutch part)",
@@ -2623,7 +2824,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "ANG"
   },
   {
     "name": "Slovakia",
@@ -2636,7 +2838,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Slovenia",
@@ -2649,7 +2852,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Solomon Islands",
@@ -2662,7 +2866,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "054",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SBD"
   },
   {
     "name": "Somalia",
@@ -2675,7 +2880,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "SOS"
   },
   {
     "name": "South Africa",
@@ -2688,7 +2894,8 @@
     "intermediate-region": "Southern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "018"
+    "intermediate-region-code": "018",
+    "currency": "ZAR"
   },
   {
     "name": "South Georgia and the South Sandwich Islands",
@@ -2701,7 +2908,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "SHP"
   },
   {
     "name": "South Sudan",
@@ -2714,7 +2922,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "SSP"
   },
   {
     "name": "Spain",
@@ -2727,7 +2936,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "039",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "EUR"
   },
   {
     "name": "Sri Lanka",
@@ -2740,7 +2950,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "034",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "LKR"
   },
   {
     "name": "Sudan",
@@ -2753,7 +2964,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SDG"
   },
   {
     "name": "Suriname",
@@ -2766,7 +2978,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "SRD"
   },
   {
     "name": "Svalbard and Jan Mayen",
@@ -2779,7 +2992,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NOK"
   },
   {
     "name": "Sweden",
@@ -2792,7 +3006,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SEK"
   },
   {
     "name": "Switzerland",
@@ -2805,7 +3020,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "155",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "CHF"
   },
   {
     "name": "Syrian Arab Republic",
@@ -2818,7 +3034,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "SYP"
   },
   {
     "name": "Taiwan, Province of China",
@@ -2831,7 +3048,8 @@
     "intermediate-region": null,
     "region-code": null,
     "sub-region-code": null,
-    "intermediate-region-code": null
+    "intermediate-region-code": null,
+    "currency": "TWD"
   },
   {
     "name": "Tajikistan",
@@ -2844,7 +3062,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "143",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "TJS"
   },
   {
     "name": "Tanzania, United Republic of",
@@ -2857,7 +3076,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "TZS"
   },
   {
     "name": "Thailand",
@@ -2870,7 +3090,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "THB"
   },
   {
     "name": "Timor-Leste",
@@ -2883,7 +3104,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Togo",
@@ -2896,7 +3118,8 @@
     "intermediate-region": "Western Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "011"
+    "intermediate-region-code": "011",
+    "currency": "XOF"
   },
   {
     "name": "Tokelau",
@@ -2909,7 +3132,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "NZD"
   },
   {
     "name": "Tonga",
@@ -2922,7 +3146,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "TOP"
   },
   {
     "name": "Trinidad and Tobago",
@@ -2935,7 +3160,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "TTD"
   },
   {
     "name": "Tunisia",
@@ -2948,7 +3174,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "TND"
   },
   {
     "name": "Türkiye",
@@ -2961,7 +3188,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "TRY"
   },
   {
     "name": "Turkmenistan",
@@ -2974,7 +3202,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "143",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "TMT"
   },
   {
     "name": "Turks and Caicos Islands",
@@ -2987,7 +3216,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "USD"
   },
   {
     "name": "Tuvalu",
@@ -3000,7 +3230,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AUD"
   },
   {
     "name": "Uganda",
@@ -3013,7 +3244,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "UGX"
   },
   {
     "name": "Ukraine",
@@ -3026,7 +3258,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "151",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "UAH"
   },
   {
     "name": "United Arab Emirates",
@@ -3039,7 +3272,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "AED"
   },
   {
     "name": "United Kingdom of Great Britain and Northern Ireland",
@@ -3052,7 +3286,8 @@
     "intermediate-region": "",
     "region-code": "150",
     "sub-region-code": "154",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "GBP"
   },
   {
     "name": "United States of America",
@@ -3065,7 +3300,8 @@
     "intermediate-region": "",
     "region-code": "019",
     "sub-region-code": "021",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "United States Minor Outlying Islands",
@@ -3078,7 +3314,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "057",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "USD"
   },
   {
     "name": "Uruguay",
@@ -3091,7 +3328,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "UYU"
   },
   {
     "name": "Uzbekistan",
@@ -3104,7 +3342,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "143",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "UZS"
   },
   {
     "name": "Vanuatu",
@@ -3117,7 +3356,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "054",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "VUV"
   },
   {
     "name": "Venezuela, Bolivarian Republic of",
@@ -3130,7 +3370,8 @@
     "intermediate-region": "South America",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "005"
+    "intermediate-region-code": "005",
+    "currency": "VES"
   },
   {
     "name": "Viet Nam",
@@ -3143,7 +3384,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "035",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "VND"
   },
   {
     "name": "Virgin Islands (British)",
@@ -3156,7 +3398,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "USD"
   },
   {
     "name": "Virgin Islands (U.S.)",
@@ -3169,7 +3412,8 @@
     "intermediate-region": "Caribbean",
     "region-code": "019",
     "sub-region-code": "419",
-    "intermediate-region-code": "029"
+    "intermediate-region-code": "029",
+    "currency": "USD"
   },
   {
     "name": "Wallis and Futuna",
@@ -3182,7 +3426,8 @@
     "intermediate-region": "",
     "region-code": "009",
     "sub-region-code": "061",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "XPF"
   },
   {
     "name": "Western Sahara",
@@ -3195,7 +3440,8 @@
     "intermediate-region": "",
     "region-code": "002",
     "sub-region-code": "015",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "DZD"
   },
   {
     "name": "Yemen",
@@ -3208,7 +3454,8 @@
     "intermediate-region": "",
     "region-code": "142",
     "sub-region-code": "145",
-    "intermediate-region-code": ""
+    "intermediate-region-code": "",
+    "currency": "YER"
   },
   {
     "name": "Zambia",
@@ -3221,7 +3468,8 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "ZMW"
   },
   {
     "name": "Zimbabwe",
@@ -3234,6 +3482,7 @@
     "intermediate-region": "Eastern Africa",
     "region-code": "002",
     "sub-region-code": "202",
-    "intermediate-region-code": "014"
+    "intermediate-region-code": "014",
+    "currency": "BWP"
   }
 ]

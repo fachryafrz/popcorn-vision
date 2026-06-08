@@ -15,6 +15,7 @@ import type * as comments from "../comments.js";
 import type * as continueWatching from "../continueWatching.js";
 import type * as customLists from "../customLists.js";
 import type * as diary from "../diary.js";
+import type * as exchangeRates from "../exchangeRates.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
 import type * as ratings from "../ratings.js";
@@ -36,6 +37,7 @@ declare const fullApi: ApiFromModules<{
   continueWatching: typeof continueWatching;
   customLists: typeof customLists;
   diary: typeof diary;
+  exchangeRates: typeof exchangeRates;
   favorites: typeof favorites;
   http: typeof http;
   ratings: typeof ratings;

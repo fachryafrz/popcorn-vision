@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
@@ -34,6 +34,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Id } from "@/convex/_generated/dataModel";
 import moment from "moment";
+import isoCountries from "@/data/iso-3166.json";
 
 // Import types and subcomponents
 import {
@@ -72,21 +73,44 @@ interface MediaDetailClientProps {
   };
 }
 
-// Map full country name string from profile/settings to ISO 2-letter code for TMDB
-const countryNameToCode: Record<string, string> = {
-  "United States": "US",
-  Indonesia: "ID",
-  Japan: "JP",
-  "South Korea": "KR",
-  "United Kingdom": "GB",
-  Canada: "CA",
-  Australia: "AU",
-  Germany: "DE",
-  France: "FR",
-  Singapore: "SG",
-  India: "IN",
-  Brazil: "BR",
-  Mexico: "MX",
+// Map full country name string from profile/settings to ISO 2-letter code for TMDB dynamically
+const countryNameToCode: Record<string, string> = {};
+// Map country codes (alpha-2) to their default currency codes dynamically from the JSON file
+const regionToCurrencyCode: Record<string, string> = {};
+
+isoCountries.forEach((c) => {
+  if (c.name && c["alpha-2"]) {
+    countryNameToCode[c.name.toLowerCase()] = c["alpha-2"];
+  }
+  if (c["alpha-2"] && c.currency) {
+    regionToCurrencyCode[c["alpha-2"].toUpperCase()] = c.currency;
+  }
+});
+
+const getRegionCurrency = (region: string): string => {
+  return regionToCurrencyCode[region.toUpperCase()] || "USD";
+};
+
+const getRegionLocale = (region: string): string => {
+  const locales: Record<string, string> = {
+    US: "en-US",
+    GB: "en-GB",
+    ID: "id-ID",
+    JP: "ja-JP",
+    KR: "ko-KR",
+    CA: "en-CA",
+    AU: "en-AU",
+    DE: "de-DE",
+    FR: "fr-FR",
+    SG: "en-SG",
+    IN: "en-IN",
+    BR: "pt-BR",
+    MX: "es-MX",
+  };
+  return (
+    locales[region.toUpperCase()] ||
+    `${region.toLowerCase()}-${region.toUpperCase()}`
+  );
 };
 
 export default function MediaDetailClient({
@@ -114,7 +138,9 @@ export default function MediaDetailClient({
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(null);
+  const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(
+    null,
+  );
 
   const [selectedRegion, setSelectedRegion] = useState("US");
 
@@ -128,8 +154,8 @@ export default function MediaDetailClient({
   useEffect(() => {
     // 1. Prioritize user profile country preference if set
     if (convexProfile?.country) {
-      const mappedCode =
-        countryNameToCode[convexProfile.country] || convexProfile.country;
+      const countryKey = convexProfile.country.toLowerCase();
+      const mappedCode = countryNameToCode[countryKey] || convexProfile.country;
       Promise.resolve().then(() => {
         setSelectedRegion(mappedCode);
       });
@@ -350,6 +376,25 @@ export default function MediaDetailClient({
     upsertWatchProgress,
   ]);
 
+  // Convex exchange rates query and action
+  const exchangeRatesData = useQuery(api.exchangeRates.getRates);
+  const fetchRates = useAction(api.exchangeRates.fetchAndStoreRates);
+
+  useEffect(() => {
+    if (exchangeRatesData === undefined) return;
+
+    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+    const isOutdated =
+      !exchangeRatesData ||
+      Date.now() - exchangeRatesData.updatedAt > ONE_WEEK_MS;
+
+    if (isOutdated) {
+      fetchRates().catch((err: unknown) => {
+        console.error("Failed to fetch and store exchange rates:", err);
+      });
+    }
+  }, [exchangeRatesData, fetchRates]);
+
   const handleShareToChat = async (chatId: string, chatTitle: string) => {
     try {
       await sendChatMessage({
@@ -478,33 +523,36 @@ export default function MediaDetailClient({
   const formatCurrency = (amount?: number) => {
     if (!amount) return "N/A";
 
-    let currency = "USD";
-    let exchangeRate = 1;
-    let locale = "en-US";
+    const currencyCode = getRegionCurrency(selectedRegion);
+    const locale = getRegionLocale(selectedRegion);
+    const rates = exchangeRatesData?.rates;
 
-    if (selectedRegion === "ID") {
-      currency = "IDR";
-      exchangeRate = 17800;
-      locale = "id-ID";
-    } else if (selectedRegion === "JP") {
-      currency = "JPY";
-      exchangeRate = 159;
-      locale = "ja-JP";
-    } else if (selectedRegion === "KR") {
-      currency = "KRW";
-      exchangeRate = 1507;
-      locale = "ko-KR";
-    } else if (selectedRegion === "GB") {
-      currency = "GBP";
-      exchangeRate = 0.74;
-      locale = "en-GB";
+    let exchangeRate = 1;
+    if (currencyCode !== "USD") {
+      const fallbackRates: Record<string, number> = {
+        IDR: 17800,
+        JPY: 159,
+        KRW: 1507,
+        GBP: 0.74,
+        CAD: 1.37,
+        AUD: 1.5,
+        EUR: 0.92,
+        SGD: 1.35,
+        INR: 83.5,
+        BRL: 5.25,
+        MXN: 17.5,
+      };
+      exchangeRate = rates?.[currencyCode] ?? fallbackRates[currencyCode] ?? 1;
     }
 
     const convertedAmount = amount * exchangeRate;
+
+    // Use native Intl.NumberFormat with compact notation to format any currency/region dynamically
     return new Intl.NumberFormat(locale, {
       style: "currency",
-      currency: currency,
-      maximumFractionDigits: 0,
+      currency: currencyCode,
+      notation: "compact",
+      maximumFractionDigits: 2,
     }).format(convertedAmount);
   };
 
@@ -802,7 +850,10 @@ export default function MediaDetailClient({
           isUnreleased={isUnreleased}
         />
 
-        <CastSlider cast={cast} onPersonClick={(id) => setQuickViewPersonId(id)} />
+        <CastSlider
+          cast={cast}
+          onPersonClick={(id) => setQuickViewPersonId(id)}
+        />
 
         {/* Metadata Details Grid */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
