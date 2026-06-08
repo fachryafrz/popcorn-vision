@@ -4,14 +4,15 @@ import React from "react";
 import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { DiaryItem } from "./types";
 
 interface EditToolbarProps {
   isOwner: boolean;
-  items: { mediaId: string; mediaType: string }[] | undefined;
+  items: ({ mediaId: string; mediaType: string } | DiaryItem)[] | undefined;
   isEditMode: boolean;
   setIsEditMode: (mode: boolean) => void;
   selectedItems: Set<string>;
-  handleSelectAll: (items: { mediaId: string; mediaType: string }[]) => void;
+  handleSelectAll: (items: ({ mediaId: string; mediaType: string } | DiaryItem)[]) => void;
   handleBulkDelete: () => void;
   isBulkDeleting: boolean;
 }

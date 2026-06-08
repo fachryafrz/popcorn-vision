@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { Loader2, Calendar, History, Edit2, Trash2, Star, Search, X } from "lucide-react";
+import { Loader2, Calendar, History, Edit2, Trash2, Star, Search, X, Check } from "lucide-react";
 import Link from "next/link";
 import { DiaryItem } from "./types";
+import { cn } from "@/lib/utils";
 
 interface DiaryTabProps {
   diary: DiaryItem[] | undefined;
@@ -11,6 +12,9 @@ interface DiaryTabProps {
   deletingId: string | null;
   handleDeleteDiary: (diaryId: string) => void;
   setEditingEntry: (entry: DiaryItem) => void;
+  isEditMode?: boolean;
+  selectedItems?: Set<string>;
+  handleToggleSelectItem?: (diaryId: string) => void;
 }
 
 export function DiaryTab({
@@ -19,6 +23,9 @@ export function DiaryTab({
   deletingId,
   handleDeleteDiary,
   setEditingEntry,
+  isEditMode = false,
+  selectedItems = new Set(),
+  handleToggleSelectItem,
 }: DiaryTabProps) {
   const [searchQuery, setSearchQuery] = React.useState("");
 
@@ -145,10 +152,39 @@ export function DiaryTab({
                   {entries.map((entry) => (
                     <div
                       key={entry._id}
-                      className="group relative flex items-start gap-4 rounded-2xl border border-zinc-900/50 bg-zinc-900/10 p-4 shadow-md transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/30"
+                      onClick={(e) => {
+                        if (isEditMode && handleToggleSelectItem) {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleToggleSelectItem(entry._id);
+                        }
+                      }}
+                      className={cn(
+                        "group relative flex items-start gap-4 rounded-2xl border border-zinc-900/50 bg-zinc-900/10 p-4 shadow-md transition-all duration-300",
+                        isEditMode
+                          ? "cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/40"
+                          : "hover:border-zinc-800 hover:bg-zinc-900/30",
+                        isEditMode && selectedItems.has(entry._id) && "border-primary/50 bg-primary/5"
+                      )}
                     >
                       {/* Timeline dot */}
                       <div className="border-primary ring-background absolute top-1/2 left-[-31px] h-2.5 w-2.5 -translate-y-1/2 rounded-full border-2 bg-zinc-950 ring-4 sm:left-[-39px]" />
+
+                      {/* Edit Selection Checkbox */}
+                      {isEditMode && (
+                        <div className="flex items-center shrink-0 self-center">
+                          <div
+                            className={cn(
+                              "flex h-5 w-5 items-center justify-center rounded-md border shadow-md transition-all",
+                              selectedItems.has(entry._id)
+                                ? "border-primary bg-primary scale-110 text-white"
+                                : "border-zinc-700 bg-black/60 text-transparent hover:border-zinc-500",
+                            )}
+                          >
+                            <Check className="h-3.5 w-3.5 stroke-3" />
+                          </div>
+                        </div>
+                      )}
 
                       {/* Thumbnail poster */}
                       <div className="relative h-20 w-14 shrink-0 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900 shadow-md">
@@ -172,12 +208,18 @@ export function DiaryTab({
                       {/* Watch Details */}
                       <div className="min-w-0 flex-1 space-y-1.5 text-left">
                         <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-                          <Link href={`/${entry.mediaType}/${entry.mediaId}`}>
-                            <h3 className="cursor-pointer text-sm font-bold text-white hover:underline">
+                          {isEditMode ? (
+                            <h3 className="text-sm font-bold text-white">
                               {entry.title}
                             </h3>
-                          </Link>
-                          {isOwner && (
+                          ) : (
+                            <Link href={`/${entry.mediaType}/${entry.mediaId}`}>
+                              <h3 className="cursor-pointer text-sm font-bold text-white hover:underline">
+                                {entry.title}
+                              </h3>
+                            </Link>
+                          )}
+                          {isOwner && !isEditMode && (
                             <div className="flex items-center gap-1.5 transition-opacity duration-200 md:opacity-0 md:group-hover:opacity-100">
                               <button
                                 type="button"
