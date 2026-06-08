@@ -269,6 +269,8 @@ export interface ImportItem {
   review?: string;
   season?: number;
   episode?: number;
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
 }
 
 export interface MatchedImportItem {
@@ -285,6 +287,8 @@ export interface MatchedImportItem {
   review?: string;
   season?: number;
   episode?: number;
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
 }
 
 export async function matchImportItemsAction(items: ImportItem[]): Promise<MatchedImportItem[]> {
@@ -375,6 +379,8 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         review: item.review,
         season: item.season,
         episode: item.episode,
+        numberOfSeasons: item.numberOfSeasons,
+        numberOfEpisodes: item.numberOfEpisodes,
       });
     } else {
       results.push({
@@ -391,6 +397,8 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         review: item.review,
         season: item.season,
         episode: item.episode,
+        numberOfSeasons: item.numberOfSeasons,
+        numberOfEpisodes: item.numberOfEpisodes,
       });
     }
   }
