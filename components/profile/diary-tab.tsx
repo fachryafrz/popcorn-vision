@@ -47,9 +47,33 @@ export function DiaryTab({
     return entry.title.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // Group filtered diary entries by date
+  // Sort diary entries: descending by watchedDate, then TV episodes descending, then added time descending
+  const sortedFilteredDiary = [...filteredDiary].sort((a, b) => {
+    if (b.watchedDate !== a.watchedDate) {
+      return b.watchedDate - a.watchedDate;
+    }
+
+    // If same show (TV), sort by season and episode descending
+    if (a.mediaId === b.mediaId && a.mediaType === "tv" && b.mediaType === "tv") {
+      const aSeason = a.season ?? 0;
+      const bSeason = b.season ?? 0;
+      if (bSeason !== aSeason) {
+        return bSeason - aSeason;
+      }
+      const aEpisode = a.episode ?? 0;
+      const bEpisode = b.episode ?? 0;
+      return bEpisode - aEpisode;
+    }
+
+    // Fallback: sort by addedAt or _creationTime descending
+    const aAdded = a.addedAt ?? a._creationTime ?? 0;
+    const bAdded = b.addedAt ?? b._creationTime ?? 0;
+    return bAdded - aAdded;
+  });
+
+  // Group sorted diary entries by date
   const groups: { [key: string]: DiaryItem[] } = {};
-  filteredDiary.forEach((entry) => {
+  sortedFilteredDiary.forEach((entry) => {
     const dateKey = new Date(entry.watchedDate).toISOString().split("T")[0];
     if (!groups[dateKey]) {
       groups[dateKey] = [];

@@ -30,6 +30,8 @@ export interface DiaryItem {
   review?: string;
   season?: number;
   episode?: number;
+  addedAt?: number;
+  _creationTime?: number;
   runtime?: number;
   genres?: string[];
   cast?: string[];
