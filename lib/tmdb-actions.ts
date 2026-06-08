@@ -406,6 +406,8 @@ export interface StatsMetadata {
   cast: string[];
   directors: string[];
   watchProviders: string[];
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
 }
 
 export async function batchFetchMediaMetadata(
@@ -502,6 +504,8 @@ export async function batchFetchMediaMetadata(
             cast,
             directors,
             watchProviders,
+            numberOfSeasons: item.mediaType === "tv" ? data.number_of_seasons : undefined,
+            numberOfEpisodes: item.mediaType === "tv" ? data.number_of_episodes : undefined,
           };
         } catch (error) {
           console.error(`Error fetching stats metadata for ${item.mediaType} ${item.mediaId}:`, error);

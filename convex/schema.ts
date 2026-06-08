@@ -133,6 +133,8 @@ export default defineSchema({
     review: v.optional(v.string()),
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
+    numberOfSeasons: v.optional(v.number()),
+    numberOfEpisodes: v.optional(v.number()),
     addedAt: v.number(),
     runtime: v.optional(v.number()),
     genres: v.optional(v.array(v.string())),

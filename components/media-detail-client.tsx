@@ -968,6 +968,8 @@ export default function MediaDetailClient({
           releaseYear={releaseYear.toString()}
           season={logWatchEpisode?.season}
           episode={logWatchEpisode?.episode}
+          numberOfSeasons={mediaType === "tv" ? details.number_of_seasons : undefined}
+          numberOfEpisodes={mediaType === "tv" ? details.number_of_episodes : undefined}
         />
       )}
 
