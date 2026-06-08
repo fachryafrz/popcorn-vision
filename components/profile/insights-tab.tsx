@@ -196,6 +196,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     let ratedCount = 0;
     let sumRating = 0;
 
+    const uniqueTvSeries = new Set<string>();
+    const uniqueTvSeasons = new Set<string>();
+    const uniqueTvEpisodes = new Set<string>();
+
     const genreCounts: Record<string, number> = {};
     const actorMediaIds: Record<string, Set<string>> = {};
     const directorMediaIds: Record<string, Set<string>> = {};
@@ -216,6 +220,11 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
         moviesCount++;
       } else {
         tvCount++;
+        uniqueTvSeries.add(item.mediaId);
+        const seasonVal = item.season !== undefined ? item.season : 1;
+        const episodeVal = item.episode !== undefined ? item.episode : 1;
+        uniqueTvSeasons.add(`${item.mediaId}-S${seasonVal}`);
+        uniqueTvEpisodes.add(`${item.mediaId}-S${seasonVal}-E${episodeVal}`);
       }
 
       if (item.rating) {
@@ -277,6 +286,9 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     return {
       moviesCount,
       tvCount,
+      tvSeriesCount: uniqueTvSeries.size,
+      tvSeasonsCount: uniqueTvSeasons.size,
+      tvEpisodesCount: uniqueTvEpisodes.size,
       hoursWatched,
       averageRating,
       topGenres,
@@ -436,7 +448,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
         <>
           {/* Key Metric Cards */}
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
+            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
                   Movies
@@ -449,7 +461,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
               <p className="mt-1 text-xs text-zinc-500">watched</p>
             </div>
 
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
+            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
                   TV Series
@@ -457,12 +469,14 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                 <Tv className="h-5 w-5 text-emerald-500" />
               </div>
               <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.tvCount}
+                {stats.tvSeriesCount}
               </h3>
-              <p className="mt-1 text-xs text-zinc-500">watched</p>
+              <p className="mt-1 text-xs text-zinc-500">
+                {stats.tvSeasonsCount} {stats.tvSeasonsCount === 1 ? "season" : "seasons"} · {stats.tvEpisodesCount} {stats.tvEpisodesCount === 1 ? "episode" : "episodes"}
+              </p>
             </div>
 
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
+            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
                   Time
@@ -476,7 +490,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
               <p className="mt-1 text-xs text-zinc-500">total watch time</p>
             </div>
 
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:-translate-y-1 hover:border-zinc-800 hover:bg-zinc-900/40">
+            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
                   Avg Rating
