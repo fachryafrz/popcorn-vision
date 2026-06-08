@@ -39,6 +39,7 @@ export interface DiaryItem {
   cast?: string[];
   directors?: string[];
   watchProviders?: string[];
+  diaryType?: string;
 }
 
 export interface ProfileFriend {

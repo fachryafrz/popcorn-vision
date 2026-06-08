@@ -970,6 +970,7 @@ export default function MediaDetailClient({
           episode={logWatchEpisode?.episode}
           numberOfSeasons={mediaType === "tv" ? details.number_of_seasons : undefined}
           numberOfEpisodes={mediaType === "tv" ? details.number_of_episodes : undefined}
+          seasons={mediaType === "tv" ? details.seasons : undefined}
         />
       )}
 

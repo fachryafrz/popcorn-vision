@@ -220,6 +220,12 @@ export default function ImportWizard() {
       idxOf("numberofepisodes") !== -1
         ? idxOf("numberofepisodes")
         : idxOf("number of episodes");
+    const diaryTypeIdx =
+      idxOf("diarytype") !== -1
+        ? idxOf("diarytype")
+        : idxOf("diary type") !== -1
+          ? idxOf("diary type")
+          : idxOf("diary_type");
 
     // Automatically infer import target based on columns and filename
     let inferredTable: "watchlist" | "favorites" | "ratings" | "diary" =
@@ -358,6 +364,14 @@ export default function ImportWizard() {
         if (!isNaN(ne)) numberOfEpisodes = ne;
       }
 
+      let diaryType: string | undefined = undefined;
+      if (diaryTypeIdx !== -1 && row[diaryTypeIdx]) {
+        const dt = row[diaryTypeIdx].trim().toLowerCase();
+        if (["movie", "tv", "season", "episode"].includes(dt)) {
+          diaryType = dt;
+        }
+      }
+
       items.push({
         title: rawTitle,
         year: year || undefined,
@@ -372,6 +386,7 @@ export default function ImportWizard() {
         episode,
         numberOfSeasons,
         numberOfEpisodes,
+        diaryType,
       });
     }
 
@@ -660,7 +675,9 @@ export default function ImportWizard() {
         } else if (item.sourceTable === "diary") {
           const key = item.season !== undefined && item.episode !== undefined
             ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-            : `${item.mediaType}-${item.mediaId}`;
+            : item.season !== undefined
+              ? `${item.mediaType}-${item.mediaId}-S${item.season}`
+              : `${item.mediaType}-${item.mediaId}`;
           const meta = statsMetadataMap[key];
           const metadataArgs = meta
             ? {
@@ -683,6 +700,7 @@ export default function ImportWizard() {
             episode: item.episode,
             numberOfSeasons: item.season === undefined && item.episode === undefined ? (item.numberOfSeasons ?? metadataArgs.numberOfSeasons) : undefined,
             numberOfEpisodes: item.season === undefined && item.episode === undefined ? (item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes) : undefined,
+            diaryType: item.diaryType,
             ...metadataArgs,
           });
           dCount++;

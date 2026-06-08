@@ -249,7 +249,20 @@ export function DiaryTab({
                         <div className="flex items-center gap-3">
                           <span className="border-zinc-850 rounded-lg border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold tracking-wide text-zinc-400 uppercase">
                             {entry.mediaType} • {entry.releaseYear}
-                            {entry.season !== undefined && entry.episode !== undefined && ` • S${entry.season} E${entry.episode}`}
+                            {(() => {
+                              const type = entry.diaryType ?? (entry.season !== undefined && entry.episode !== undefined
+                                ? "episode"
+                                : entry.season !== undefined
+                                  ? "season"
+                                  : "tv");
+                              if (type === "episode" && entry.season !== undefined && entry.episode !== undefined) {
+                                return ` • S${entry.season} E${entry.episode}`;
+                              }
+                              if (type === "season" && entry.season !== undefined) {
+                                return ` • Season ${entry.season}`;
+                              }
+                              return "";
+                            })()}
                           </span>
                           {entry.rating && (
                             <div className="flex items-center gap-1 text-[10px] font-black text-yellow-500">

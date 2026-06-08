@@ -135,6 +135,7 @@ export default defineSchema({
     episode: v.optional(v.number()),
     numberOfSeasons: v.optional(v.number()),
     numberOfEpisodes: v.optional(v.number()),
+    diaryType: v.optional(v.string()), // "movie" | "tv" | "season" | "episode"
     addedAt: v.number(),
     runtime: v.optional(v.number()),
     genres: v.optional(v.array(v.string())),

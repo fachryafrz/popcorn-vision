@@ -262,54 +262,56 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     let tvSeasonsCount = 0;
     let tvEpisodesCount = 0;
 
-    Object.entries(tvEntriesByShow).forEach(([mediaId, entries]) => {
-      let maxWholeSeasons = 0;
-      let sumWholeEpisodes = 0;
-      let sumWholeSeasons = 0;
-      let hasWholeShowEntry = false;
-
-      const indSeasons = new Set<number>();
-      const indEpisodes = new Set<string>();
+    Object.entries(tvEntriesByShow).forEach(([, entries]) => {
+      const fullyWatchedSeasons = new Set<number>();
+      let wholeSeasonsCount = 0;
+      let wholeEpisodesCount = 0;
+      const individualEpisodes = new Set<string>();
 
       entries.forEach((item) => {
-        if (item.season !== undefined && item.episode !== undefined) {
-          indSeasons.add(item.season);
-          indEpisodes.add(`S${item.season}-E${item.episode}`);
+        const type = item.diaryType ?? (item.season !== undefined && item.episode !== undefined
+          ? "episode"
+          : item.season !== undefined
+            ? "season"
+            : "tv");
+
+        if (type === "episode") {
+          const s = item.season ?? 1;
+          const e = item.episode ?? 1;
+          individualEpisodes.add(`S${s}-E${e}`);
+        } else if (type === "season") {
+          // Specific Season log
+          const s = item.season ?? 1;
+          fullyWatchedSeasons.add(s);
+          wholeSeasonsCount += 1;
+          wholeEpisodesCount += item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : 1;
         } else {
-          hasWholeShowEntry = true;
+          // Entire Show log
           const numSeasons = item.numberOfSeasons !== undefined ? item.numberOfSeasons : 1;
-          const numEpisodes = item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : 1;
-          
-          sumWholeSeasons += numSeasons;
-          sumWholeEpisodes += numEpisodes;
-          if (numSeasons > maxWholeSeasons) {
-            maxWholeSeasons = numSeasons;
+          for (let s = 1; s <= numSeasons; s++) {
+            fullyWatchedSeasons.add(s);
           }
+          wholeSeasonsCount += numSeasons;
+          wholeEpisodesCount += item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : 1;
         }
       });
 
-      if (hasWholeShowEntry) {
-        let uncovSeasonsCount = 0;
-        indSeasons.forEach((s) => {
-          if (s > maxWholeSeasons) {
-            uncovSeasonsCount++;
-          }
-        });
+      const partiallyWatchedSeasons = new Set<number>();
+      let uncoveredEpisodesCount = 0;
 
-        let uncovEpisodesCount = 0;
-        indEpisodes.forEach((epKey) => {
-          const s = parseInt(epKey.substring(1).split("-")[0], 10);
-          if (s > maxWholeSeasons) {
-            uncovEpisodesCount++;
-          }
-        });
+      individualEpisodes.forEach((epKey) => {
+        const parts = epKey.substring(1).split("-E");
+        const s = parseInt(parts[0], 10);
+        if (fullyWatchedSeasons.has(s)) {
+          // Episode is already covered by a fully watched season or show log
+          return;
+        }
+        uncoveredEpisodesCount += 1;
+        partiallyWatchedSeasons.add(s);
+      });
 
-        tvSeasonsCount += sumWholeSeasons + uncovSeasonsCount;
-        tvEpisodesCount += sumWholeEpisodes + uncovEpisodesCount;
-      } else {
-        tvSeasonsCount += indSeasons.size;
-        tvEpisodesCount += indEpisodes.size;
-      }
+      tvSeasonsCount += wholeSeasonsCount + partiallyWatchedSeasons.size;
+      tvEpisodesCount += wholeEpisodesCount + uncoveredEpisodesCount;
     });
 
     const averageRating =
@@ -769,7 +771,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
             {/* Top Directors */}
             <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
               <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                <Video className="h-4 w-4 text-emerald-400" /> Top Directors
+                <Video className="h-4 w-4 text-emerald-400" /> Top Directors / Creators
               </h4>
               <div className="space-y-3">
                 {stats.topDirectors.length > 0 ? (

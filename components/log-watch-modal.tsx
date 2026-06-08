@@ -17,6 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { Calendar, Star, Loader2 } from "lucide-react";
 
@@ -39,6 +47,15 @@ interface LogWatchModalProps {
   episode?: number;
   numberOfSeasons?: number;
   numberOfEpisodes?: number;
+  seasons?: Array<{
+    season_number: number;
+    name: string;
+    episode_count: number;
+    air_date?: string | null;
+    id: number;
+    poster_path?: string | null;
+  }>;
+  initialDiaryType?: string;
 }
 
 export default function LogWatchModal({
@@ -59,6 +76,8 @@ export default function LogWatchModal({
   episode,
   numberOfSeasons,
   numberOfEpisodes,
+  seasons,
+  initialDiaryType,
 }: LogWatchModalProps) {
   const [watchedDate, setWatchedDate] = useState("");
   const [rewatch, setRewatch] = useState(false);
@@ -67,6 +86,10 @@ export default function LogWatchModal({
   const [review, setReview] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // TV logging options
+  const [logScope, setLogScope] = useState<"show" | "season">("show");
+  const [selectedSeasonNumber, setSelectedSeasonNumber] = useState<number>(1);
+
   const logWatchMutation = useMutation(api.diary.logWatch);
   const editDiaryEntryMutation = useMutation(api.diary.editDiaryEntry);
   const currentUser = useQuery(api.users.getCurrentUser);
@@ -74,6 +97,12 @@ export default function LogWatchModal({
   // Set default watch date to today or initial values if editing (local YYYY-MM-DD)
   useEffect(() => {
     if (isOpen) {
+      let initialSeasonNum = 1;
+      if (seasons && seasons.length > 0) {
+        const firstSeason =
+          seasons.find((s) => s.season_number > 0) || seasons[0];
+        initialSeasonNum = firstSeason.season_number;
+      }
       if (diaryId) {
         // Editing Mode
         const dateObj = new Date(initialWatchedDate || Date.now());
@@ -86,6 +115,7 @@ export default function LogWatchModal({
           setRewatch(initialRewatch || false);
           setRating(initialRating || 0);
           setReview(initialReview || "");
+          setSelectedSeasonNumber(initialSeasonNum);
         }, 0);
 
         return () => clearTimeout(timer);
@@ -101,6 +131,8 @@ export default function LogWatchModal({
           setRewatch(false);
           setRating(0);
           setReview("");
+          setLogScope("show");
+          setSelectedSeasonNumber(initialSeasonNum);
         }, 0);
 
         return () => clearTimeout(timer);
@@ -113,6 +145,7 @@ export default function LogWatchModal({
     initialRewatch,
     initialRating,
     initialReview,
+    seasons,
   ]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -127,6 +160,37 @@ export default function LogWatchModal({
       // Parse YYYY-MM-DD date to timestamp
       const timestamp = new Date(watchedDate).getTime();
 
+      const isTvShow = mediaType === "tv";
+      const finalSeason = diaryId
+        ? season
+        : isTvShow &&
+            season === undefined &&
+            episode === undefined &&
+            logScope === "season"
+          ? selectedSeasonNumber
+          : season;
+      const finalEpisode = diaryId
+        ? episode
+        : season !== undefined
+          ? episode
+          : undefined;
+
+      const finalDiaryType = diaryId
+        ? (initialDiaryType || (isTvShow
+            ? finalSeason !== undefined && finalEpisode !== undefined
+              ? "episode"
+              : finalSeason !== undefined
+                ? "season"
+                : "tv"
+            : "movie"))
+        : (isTvShow
+            ? finalSeason !== undefined && finalEpisode !== undefined
+              ? "episode"
+              : finalSeason !== undefined || logScope === "season"
+                ? "season"
+                : "tv"
+            : "movie");
+
       if (diaryId) {
         await editDiaryEntryMutation({
           diaryId: diaryId as Id<"diary">,
@@ -134,23 +198,39 @@ export default function LogWatchModal({
           rewatch,
           review: review.trim() || undefined,
           rating: rating > 0 ? rating : undefined,
-          season,
-          episode,
-          numberOfSeasons: season === undefined && episode === undefined ? numberOfSeasons : undefined,
-          numberOfEpisodes: season === undefined && episode === undefined ? numberOfEpisodes : undefined,
+          season: finalSeason,
+          episode: finalEpisode,
+          numberOfSeasons,
+          numberOfEpisodes,
+          diaryType: finalDiaryType,
         });
         toast.success(`Updated watch log for "${title}" successfully!`);
       } else {
         // Fetch metadata properties from TMDB server action
-        let metadataArgs: Partial<StatsMetadata & { numberOfSeasons?: number; numberOfEpisodes?: number }> = {};
+        let metadataArgs: Partial<
+          StatsMetadata & {
+            numberOfSeasons?: number;
+            numberOfEpisodes?: number;
+          }
+        > = {};
         try {
           const results = await batchFetchMediaMetadata(
-            [{ mediaId, mediaType: mediaType as "movie" | "tv", season, episode }],
+            [
+              {
+                mediaId,
+                mediaType: mediaType as "movie" | "tv",
+                season: finalSeason,
+                episode: finalEpisode,
+              },
+            ],
             currentUser?.country || "US",
           );
-          const lookupKey = season !== undefined && episode !== undefined
-            ? `${mediaType}-${mediaId}-S${season}E${episode}`
-            : `${mediaType}-${mediaId}`;
+          const lookupKey =
+            finalSeason !== undefined && finalEpisode !== undefined
+              ? `${mediaType}-${mediaId}-S${finalSeason}E${finalEpisode}`
+              : finalSeason !== undefined
+                ? `${mediaType}-${mediaId}-S${finalSeason}`
+                : `${mediaType}-${mediaId}`;
           const meta = results[lookupKey];
           if (meta) {
             metadataArgs = {
@@ -159,12 +239,27 @@ export default function LogWatchModal({
               cast: meta.cast,
               directors: meta.directors,
               watchProviders: meta.watchProviders,
-              numberOfSeasons: season === undefined && episode === undefined ? meta.numberOfSeasons : undefined,
-              numberOfEpisodes: season === undefined && episode === undefined ? meta.numberOfEpisodes : undefined,
+              numberOfSeasons: meta.numberOfSeasons,
+              numberOfEpisodes: meta.numberOfEpisodes,
             };
           }
         } catch (err) {
           console.error("Failed to fetch TMDB metadata for diary entry:", err);
+        }
+
+        let finalNumSeasons = metadataArgs.numberOfSeasons;
+        let finalNumEpisodes = metadataArgs.numberOfEpisodes;
+
+        if (finalNumSeasons === undefined || finalNumEpisodes === undefined) {
+          if (finalSeason === undefined && finalEpisode === undefined) {
+            finalNumSeasons = numberOfSeasons;
+            finalNumEpisodes = numberOfEpisodes;
+          } else if (finalSeason !== undefined && finalEpisode === undefined) {
+            finalNumSeasons = 1;
+            finalNumEpisodes =
+              seasons?.find((s) => s.season_number === finalSeason)
+                ?.episode_count ?? 1;
+          }
         }
 
         await logWatchMutation({
@@ -177,10 +272,11 @@ export default function LogWatchModal({
           rewatch,
           review: review.trim() || undefined,
           rating: rating > 0 ? rating : undefined,
-          season,
-          episode,
-          numberOfSeasons: season === undefined && episode === undefined ? (metadataArgs.numberOfSeasons ?? numberOfSeasons) : undefined,
-          numberOfEpisodes: season === undefined && episode === undefined ? (metadataArgs.numberOfEpisodes ?? numberOfEpisodes) : undefined,
+          season: finalSeason,
+          episode: finalEpisode,
+          numberOfSeasons: finalNumSeasons,
+          numberOfEpisodes: finalNumEpisodes,
+          diaryType: finalDiaryType,
           ...metadataArgs,
         });
         toast.success(`Logged watch for "${title}" successfully!`);
@@ -228,12 +324,104 @@ export default function LogWatchModal({
               </h4>
               <p className="mt-1 text-[10px] font-semibold text-zinc-500 uppercase">
                 {mediaType} • {releaseYear}
-                {season !== undefined &&
-                  episode !== undefined &&
-                  ` • S${season} E${episode}`}
+                {(() => {
+                  if (diaryId) {
+                    if (season !== undefined) {
+                      return episode !== undefined
+                        ? ` • S${season} E${episode}`
+                        : ` • Season ${season}`;
+                    }
+                  } else {
+                    if (season !== undefined && episode !== undefined) {
+                      return ` • S${season} E${episode}`;
+                    } else if (mediaType === "tv" && logScope === "season") {
+                      return ` • Season ${selectedSeasonNumber}`;
+                    }
+                  }
+                  return "";
+                })()}
               </p>
             </div>
           </div>
+
+          {/* TV Show Log Options */}
+          {mediaType === "tv" && !diaryId && season === undefined && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                  Log Type
+                </Label>
+                <Select
+                  value={logScope}
+                  onValueChange={(val) => setLogScope(val as "show" | "season")}
+                >
+                  <SelectTrigger className="rounded-xl border-zinc-800 bg-zinc-900 text-white focus:ring-zinc-700 focus:ring-offset-0 focus-visible:ring-0">
+                    <SelectValue placeholder="Select scope">
+                      {logScope === "show"
+                        ? "Entire Series"
+                        : "Specific Season"}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent className="border-zinc-800 bg-zinc-950 text-white">
+                    <SelectGroup>
+                      <SelectItem value="show">Entire Series</SelectItem>
+                      <SelectItem value="season">Specific Season</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {logScope === "season" && (
+                <div className="animate-in fade-in slide-in-from-left-2 space-y-1.5 duration-200">
+                  <Label className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                    Season
+                  </Label>
+                  <Select
+                    value={String(selectedSeasonNumber)}
+                    onValueChange={(val) =>
+                      setSelectedSeasonNumber(Number(val))
+                    }
+                  >
+                    <SelectTrigger className="rounded-xl border-zinc-800 bg-zinc-900 text-white focus:ring-zinc-700 focus:ring-offset-0 focus-visible:ring-0">
+                      <SelectValue placeholder="Select season">
+                        {(() => {
+                          if (seasons && seasons.length > 0) {
+                            const found = seasons.find(
+                              (s) => s.season_number === selectedSeasonNumber,
+                            );
+                            return found
+                              ? `${found.name} (${found.episode_count} eps)`
+                              : `Season ${selectedSeasonNumber}`;
+                          }
+                          return `Season ${selectedSeasonNumber}`;
+                        })()}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60 overflow-y-auto border-zinc-800 bg-zinc-950 text-white">
+                      <SelectGroup>
+                        {seasons && seasons.length > 0
+                          ? seasons.map((s) => (
+                              <SelectItem
+                                key={s.season_number}
+                                value={String(s.season_number)}
+                              >
+                                {s.name} ({s.episode_count} eps)
+                              </SelectItem>
+                            ))
+                          : Array.from({ length: numberOfSeasons || 1 }).map(
+                              (_, i) => (
+                                <SelectItem key={i + 1} value={String(i + 1)}>
+                                  Season {i + 1}
+                                </SelectItem>
+                              ),
+                            )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Watched Date */}
           <div className="space-y-1.5">

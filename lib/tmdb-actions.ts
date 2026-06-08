@@ -271,6 +271,7 @@ export interface ImportItem {
   episode?: number;
   numberOfSeasons?: number;
   numberOfEpisodes?: number;
+  diaryType?: string;
 }
 
 export interface MatchedImportItem {
@@ -289,6 +290,7 @@ export interface MatchedImportItem {
   episode?: number;
   numberOfSeasons?: number;
   numberOfEpisodes?: number;
+  diaryType?: string;
 }
 
 export async function matchImportItemsAction(items: ImportItem[]): Promise<MatchedImportItem[]> {
@@ -381,6 +383,7 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         episode: item.episode,
         numberOfSeasons: item.numberOfSeasons,
         numberOfEpisodes: item.numberOfEpisodes,
+        diaryType: item.diaryType,
       });
     } else {
       results.push({
@@ -399,6 +402,7 @@ export async function matchImportItemsAction(items: ImportItem[]): Promise<Match
         episode: item.episode,
         numberOfSeasons: item.numberOfSeasons,
         numberOfEpisodes: item.numberOfEpisodes,
+        diaryType: item.diaryType,
       });
     }
   }
@@ -429,7 +433,9 @@ export async function batchFetchMediaMetadata(
   for (const item of items) {
     const key = item.season !== undefined && item.episode !== undefined
       ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-      : `${item.mediaType}-${item.mediaId}`;
+      : item.season !== undefined
+        ? `${item.mediaType}-${item.mediaId}-S${item.season}`
+        : `${item.mediaType}-${item.mediaId}`;
     if (!uniqueItemsMap.has(key)) {
       uniqueItemsMap.set(key, item);
     }
@@ -446,7 +452,9 @@ export async function batchFetchMediaMetadata(
       batch.map(async (item) => {
         const key = item.season !== undefined && item.episode !== undefined
           ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-          : `${item.mediaType}-${item.mediaId}`;
+          : item.season !== undefined
+            ? `${item.mediaType}-${item.mediaId}-S${item.season}`
+            : `${item.mediaType}-${item.mediaId}`;
         try {
           // Single call using append_to_response to retrieve details, credits, and watch providers
           const res = await axios.get(`/${item.mediaType}/${item.mediaId}`, {
@@ -461,6 +469,16 @@ export async function batchFetchMediaMetadata(
 
           // Parse runtime
           let runtime = 0;
+          let seasonEpisodesCount = 10;
+          if (item.mediaType === "tv" && item.season !== undefined) {
+            const seasonObj = (data.seasons || []).find(
+              (s: { season_number: number; episode_count: number }) => s.season_number === item.season
+            );
+            if (seasonObj) {
+              seasonEpisodesCount = seasonObj.episode_count || 10;
+            }
+          }
+
           if (item.mediaType === "movie") {
             runtime = data.runtime || 0;
           } else if (item.season !== undefined && item.episode !== undefined) {
@@ -480,6 +498,36 @@ export async function batchFetchMediaMetadata(
                 ? data.episode_run_time[0]
                 : 45;
             }
+          } else if (item.season !== undefined) {
+            // Fetch season details to sum actual episode runtimes
+            try {
+              const seasonRes = await axios.get(`/tv/${item.mediaId}/season/${item.season}`);
+              const episodes = seasonRes.data.episodes || [];
+              let totalSeasonRuntime = 0;
+              let validEpisodesCount = 0;
+              for (const ep of episodes) {
+                if (ep.runtime) {
+                  totalSeasonRuntime += ep.runtime;
+                  validEpisodesCount++;
+                }
+              }
+              const remainingEpisodes = episodes.length - validEpisodesCount;
+              if (remainingEpisodes > 0) {
+                const defaultEpRuntime = (data.episode_run_time && data.episode_run_time.length > 0)
+                  ? data.episode_run_time[0]
+                  : 45;
+                totalSeasonRuntime += remainingEpisodes * defaultEpRuntime;
+              }
+              runtime = totalSeasonRuntime || (data.episode_run_time && data.episode_run_time.length > 0
+                ? data.episode_run_time[0] * seasonEpisodesCount
+                : 45 * seasonEpisodesCount);
+            } catch (err) {
+              console.error(`Error fetching season details for tv ${item.mediaId} S${item.season}:`, err);
+              const episodeRuntime = (data.episode_run_time && data.episode_run_time.length > 0)
+                ? data.episode_run_time[0]
+                : 45; // Default fallback to 45 mins
+              runtime = episodeRuntime * seasonEpisodesCount;
+            }
           } else {
             // TV show runtime: average episode runtime * number of episodes
             const episodeRuntime = (data.episode_run_time && data.episode_run_time.length > 0)
@@ -494,10 +542,12 @@ export async function batchFetchMediaMetadata(
             .slice(0, 5)
             .map((c: { name: string }) => c.name);
 
-          // Parse directors (crew with job === "Director")
-          const directors: string[] = (data.credits?.crew || [])
-            .filter((c: { job: string; name: string }) => c.job === "Director")
-            .map((c: { name: string }) => c.name);
+          // Parse directors (crew with job === "Director" for movies, or created_by for TV shows)
+          const directors: string[] = item.mediaType === "tv"
+            ? (data.created_by || []).map((c: { name: string }) => c.name)
+            : (data.credits?.crew || [])
+                .filter((c: { job: string; name: string }) => c.job === "Director")
+                .map((c: { name: string }) => c.name);
 
           // Parse watch providers (flatrate providers in countryCode)
           const providerData = data["watch/providers"]?.results?.[countryCode] || data["watch/providers"]?.results?.US;
@@ -512,8 +562,12 @@ export async function batchFetchMediaMetadata(
             cast,
             directors,
             watchProviders,
-            numberOfSeasons: item.mediaType === "tv" ? data.number_of_seasons : undefined,
-            numberOfEpisodes: item.mediaType === "tv" ? data.number_of_episodes : undefined,
+            numberOfSeasons: item.season !== undefined
+              ? 1
+              : item.mediaType === "tv" ? data.number_of_seasons : undefined,
+            numberOfEpisodes: item.season !== undefined
+              ? seasonEpisodesCount
+              : item.mediaType === "tv" ? data.number_of_episodes : undefined,
           };
         } catch (error) {
           console.error(`Error fetching stats metadata for ${item.mediaType} ${item.mediaId}:`, error);

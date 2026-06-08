@@ -685,6 +685,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
           episode={editingEntry.episode}
           numberOfSeasons={editingEntry.numberOfSeasons}
           numberOfEpisodes={editingEntry.numberOfEpisodes}
+          initialDiaryType={editingEntry.diaryType}
         />
       )}
 

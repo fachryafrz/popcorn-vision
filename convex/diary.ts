@@ -42,6 +42,7 @@ export const logWatch = mutation({
     watchProviders: v.optional(v.array(v.string())),
     numberOfSeasons: v.optional(v.number()),
     numberOfEpisodes: v.optional(v.number()),
+    diaryType: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -77,6 +78,14 @@ export const logWatch = mutation({
       });
     }
 
+    const diaryType = args.diaryType ?? (args.mediaType === "movie"
+      ? "movie"
+      : args.season !== undefined && args.episode !== undefined
+        ? "episode"
+        : args.season !== undefined
+          ? "season"
+          : "tv");
+
     // 1. Insert diary log
     const diaryId = await ctx.db.insert("diary", {
       userId: currentUser.userId,
@@ -93,6 +102,7 @@ export const logWatch = mutation({
       episode: args.episode,
       numberOfSeasons: args.numberOfSeasons,
       numberOfEpisodes: args.numberOfEpisodes,
+      diaryType,
       addedAt: Date.now(),
       runtime: args.runtime,
       genres: args.genres,
@@ -145,6 +155,7 @@ export const editDiaryEntry = mutation({
     episode: v.optional(v.number()),
     numberOfSeasons: v.optional(v.number()),
     numberOfEpisodes: v.optional(v.number()),
+    diaryType: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const currentUser = await getAuthedUser(ctx);
@@ -165,6 +176,16 @@ export const editDiaryEntry = mutation({
       throw new Error("Rating must be between 1 and 10");
     }
 
+    const newSeason = args.season !== undefined ? args.season : entry.season;
+    const newEpisode = args.episode !== undefined ? args.episode : entry.episode;
+    const diaryType = args.diaryType ?? (entry.mediaType === "movie"
+      ? "movie"
+      : newSeason !== undefined && newEpisode !== undefined
+        ? "episode"
+        : newSeason !== undefined
+          ? "season"
+          : "tv");
+
     // 1. Update diary log
     await ctx.db.patch(args.diaryId, {
       watchedDate: args.watchedDate,
@@ -175,6 +196,7 @@ export const editDiaryEntry = mutation({
       episode: args.episode,
       numberOfSeasons: args.numberOfSeasons,
       numberOfEpisodes: args.numberOfEpisodes,
+      diaryType,
     });
 
     // 2. Sync to ratings table if rating is provided
