@@ -103,8 +103,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     return () => clearTimeout(timer);
   }, [activeTab]);
 
-  const handleToggleSelectItem = (mediaType: string, mediaId: string) => {
-    const key = `${mediaType}-${mediaId}`;
+  const handleToggleSelectItem = (idOrMediaType: string, mediaId?: string) => {
+    const key = mediaId ? `${idOrMediaType}-${mediaId}` : idOrMediaType;
     const updated = new Set(selectedItems);
     if (updated.has(key)) {
       updated.delete(key);
@@ -114,10 +114,18 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     setSelectedItems(updated);
   };
 
-  const handleSelectAll = (items: { mediaId: string; mediaType: string }[]) => {
+  const handleSelectAll = (
+    items: ({ mediaId: string; mediaType: string } | DiaryItem)[]
+  ) => {
     const updated = new Set<string>();
     if (selectedItems.size < items.length) {
-      items.forEach((item) => updated.add(`${item.mediaType}-${item.mediaId}`));
+      if (activeTab === "diary") {
+        (items as DiaryItem[]).forEach((item) => updated.add(item._id));
+      } else {
+        (items as { mediaId: string; mediaType: string }[]).forEach((item) =>
+          updated.add(`${item.mediaType}-${item.mediaId}`)
+        );
+      }
     }
     setSelectedItems(updated);
   };
@@ -134,31 +142,39 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       return;
 
     setIsBulkDeleting(true);
-    const itemsToDelete = Array.from(selectedItems).map((key) => {
-      const [mediaType, mediaId] = key.split("-");
-      return { mediaType, mediaId };
-    });
 
     try {
-      for (const item of itemsToDelete) {
-        if (activeTab === "watchlist") {
-          await removeFromWatchlist({
-            mediaId: item.mediaId,
-            mediaType: item.mediaType,
-          });
-        } else if (activeTab === "favorites") {
-          await removeFromFavorites({
-            mediaId: item.mediaId,
-            mediaType: item.mediaType,
-          });
-        } else if (activeTab === "ratings") {
-          await deleteRating({
-            mediaId: item.mediaId,
-            mediaType: item.mediaType,
-          });
+      if (activeTab === "diary") {
+        const diaryIdsToDelete = Array.from(selectedItems) as Id<"diary">[];
+        for (const diaryId of diaryIdsToDelete) {
+          await deleteDiaryEntry({ diaryId });
         }
+        toast.success(`Successfully removed ${diaryIdsToDelete.length} diary entries!`);
+      } else {
+        const itemsToDelete = Array.from(selectedItems).map((key) => {
+          const [mediaType, mediaId] = key.split("-");
+          return { mediaType, mediaId };
+        });
+        for (const item of itemsToDelete) {
+          if (activeTab === "watchlist") {
+            await removeFromWatchlist({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          } else if (activeTab === "favorites") {
+            await removeFromFavorites({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          } else if (activeTab === "ratings") {
+            await deleteRating({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          }
+        }
+        toast.success(`Successfully removed ${itemsToDelete.length} items!`);
       }
-      toast.success(`Successfully removed ${itemsToDelete.length} items!`);
       setSelectedItems(new Set());
       setIsEditMode(false);
     } catch {
@@ -558,13 +574,28 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
           {/* Tab Contents */}
           {activeTab === "diary" ? (
-            <DiaryTab
-              diary={diary}
-              isOwner={isOwner || false}
-              deletingId={deletingId}
-              handleDeleteDiary={handleDeleteDiary}
-              setEditingEntry={setEditingEntry}
-            />
+            <>
+              <EditToolbar
+                isOwner={isOwner || false}
+                items={diary}
+                isEditMode={isEditMode}
+                setIsEditMode={setIsEditMode}
+                selectedItems={selectedItems}
+                handleSelectAll={handleSelectAll}
+                handleBulkDelete={handleBulkDelete}
+                isBulkDeleting={isBulkDeleting}
+              />
+              <DiaryTab
+                diary={diary}
+                isOwner={isOwner || false}
+                deletingId={deletingId}
+                handleDeleteDiary={handleDeleteDiary}
+                setEditingEntry={setEditingEntry}
+                isEditMode={isEditMode}
+                selectedItems={selectedItems}
+                handleToggleSelectItem={handleToggleSelectItem}
+              />
+            </>
           ) : activeTab === "insights" ? (
             <InsightsTab diary={diary} user={targetUser} />
           ) : activeTab === "continueWatching" ? (

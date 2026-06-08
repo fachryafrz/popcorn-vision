@@ -287,6 +287,8 @@ export const getMediaWatchHistory = query({
         rewatch: e.rewatch,
         rating: e.rating,
         review: e.review,
+        season: e.season,
+        episode: e.episode,
       })),
     };
   },

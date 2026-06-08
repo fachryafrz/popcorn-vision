@@ -7,6 +7,9 @@ import { MediaDetails, SeasonDetails } from "./types";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { toast } from "sonner";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
 
 interface SeasonsAccordionProps {
   details: MediaDetails;
@@ -21,6 +24,18 @@ interface SeasonsAccordionProps {
   watchProgress?: {
     season?: number;
     episode?: number;
+  } | null;
+  watchHistory?: {
+    watchCount: number;
+    history: Array<{
+      _id: string;
+      watchedDate: number;
+      rewatch: boolean;
+      rating?: number;
+      review?: string;
+      season?: number;
+      episode?: number;
+    }>;
   } | null;
   upsertWatchProgress: (args: {
     mediaId: string;
@@ -43,7 +58,7 @@ export default function SeasonsAccordion({
   setSeason,
   setEpisode,
   scrollToPlayer,
-  watchProgress,
+  watchHistory,
   upsertWatchProgress,
   onLogEpisode,
 }: SeasonsAccordionProps) {
@@ -51,6 +66,12 @@ export default function SeasonsAccordion({
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
   const [now] = useState(() => Date.now());
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const logWatch = useMutation(api.diary.logWatch);
+
+  const mainReleaseYear = details.first_air_date
+    ? new Date(details.first_air_date).getFullYear().toString()
+    : "N/A";
   if (!details?.seasons || details.seasons.length === 0) return null;
 
   return (
@@ -64,14 +85,15 @@ export default function SeasonsAccordion({
             ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
             : "/logo/popcorn.png";
           const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
-          const isSeasonCompleted = !!(
-            watchProgress &&
-            watchProgress.season !== undefined &&
-            (watchProgress.season > s.season_number ||
-              (watchProgress.season === s.season_number &&
-                watchProgress.episode !== undefined &&
-                watchProgress.episode >= s.episode_count))
-          );
+          const isSeasonCompleted = (() => {
+            if (!watchHistory || !watchHistory.history || !s.episode_count) return false;
+            const watchedEpisodes = new Set(
+              watchHistory.history
+                .filter((entry) => entry.season === s.season_number && entry.episode !== undefined)
+                .map((entry) => entry.episode)
+            );
+            return watchedEpisodes.size >= s.episode_count;
+          })();
 
           return (
             <div
@@ -158,13 +180,13 @@ export default function SeasonsAccordion({
                     const duration = moment.duration(ep.runtime, "minutes");
 
                     const isEpisodeCompleted = !!(
-                      watchProgress &&
-                      watchProgress.season !== undefined &&
-                      watchProgress.episode !== undefined &&
-                      (watchProgress.season > activeSeasonData.season_number ||
-                        (watchProgress.season ===
-                          activeSeasonData.season_number &&
-                          watchProgress.episode >= ep.episode_number))
+                      watchHistory &&
+                      watchHistory.history &&
+                      watchHistory.history.some(
+                        (entry) =>
+                          entry.season === activeSeasonData.season_number &&
+                          entry.episode === ep.episode_number
+                      )
                     );
 
                     const isEpisodeUnreleased =
@@ -255,6 +277,47 @@ export default function SeasonsAccordion({
                                       return;
                                     }
                                     try {
+                                      if (!isEpisodeCompleted) {
+                                        let metadataArgs = {};
+                                        try {
+                                          const results = await batchFetchMediaMetadata(
+                                            [{ 
+                                              mediaId: String(details.id), 
+                                              mediaType: "tv", 
+                                              season: activeSeasonData.season_number, 
+                                              episode: ep.episode_number 
+                                            }],
+                                            currentUser?.country || "US"
+                                          );
+                                          const lookupKey = `tv-${details.id}-S${activeSeasonData.season_number}E${ep.episode_number}`;
+                                          const meta = results[lookupKey];
+                                          if (meta) {
+                                            metadataArgs = {
+                                              runtime: meta.runtime,
+                                              genres: meta.genres,
+                                              cast: meta.cast,
+                                              directors: meta.directors,
+                                              watchProviders: meta.watchProviders,
+                                            };
+                                          }
+                                        } catch (err) {
+                                          console.error("Failed to fetch TMDB metadata for diary entry:", err);
+                                        }
+
+                                        await logWatch({
+                                          mediaId: String(details.id),
+                                          mediaType: "tv",
+                                          title: details.name || details.title || "",
+                                          posterPath: details.poster_path || "",
+                                          releaseYear: mainReleaseYear,
+                                          watchedDate: Date.now(),
+                                          rewatch: false,
+                                          season: activeSeasonData.season_number,
+                                          episode: ep.episode_number,
+                                          ...metadataArgs,
+                                        });
+                                      }
+
                                       await upsertWatchProgress({
                                         mediaId: String(details.id),
                                         mediaType: "tv",
@@ -264,6 +327,7 @@ export default function SeasonsAccordion({
                                         season: activeSeasonData.season_number,
                                         episode: ep.episode_number,
                                       });
+                                      
                                       toast.success(
                                         `Marked S${activeSeasonData.season_number} E${ep.episode_number} as completed!`,
                                       );
