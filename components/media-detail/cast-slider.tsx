@@ -7,9 +7,10 @@ import Link from "next/link";
 
 interface CastSliderProps {
   cast: CastItem[];
+  onPersonClick?: (id: number) => void;
 }
 
-export default function CastSlider({ cast }: CastSliderProps) {
+export default function CastSlider({ cast, onPersonClick }: CastSliderProps) {
   if (cast.length === 0) return null;
 
   return (
@@ -42,8 +43,9 @@ export default function CastSlider({ cast }: CastSliderProps) {
               : "/logo/popcorn.png";
             return (
               <SwiperSlide key={actor.id} className="py-1">
-                <Link
-                  href={`/person/${actor.id}`}
+                <div
+                  role="button"
+                  onClick={() => onPersonClick?.(actor.id)}
                   className="group flex w-full flex-col items-center text-center cursor-pointer"
                 >
                   <div
@@ -56,7 +58,7 @@ export default function CastSlider({ cast }: CastSliderProps) {
                   <span className="mt-0.5 w-full truncate text-[10px] text-zinc-500 group-hover:whitespace-pre-wrap transition-colors">
                     {actor.character}
                   </span>
-                </Link>
+                </div>
               </SwiperSlide>
             );
           })}
