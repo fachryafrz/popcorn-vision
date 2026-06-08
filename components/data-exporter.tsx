@@ -66,6 +66,8 @@ interface ExportDiaryItem {
   review?: string;
   season?: number;
   episode?: number;
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
   addedAt: number;
 }
 
@@ -207,6 +209,8 @@ export default function DataExporter() {
       "Rating",
       "Season",
       "Episode",
+      "NumberOfSeasons",
+      "NumberOfEpisodes",
       "AddedAt",
     ];
     const rows = existingDiary.map((item) => [
@@ -219,6 +223,8 @@ export default function DataExporter() {
       escapeCSVField(item.rating || ""),
       escapeCSVField(item.season !== undefined ? item.season : ""),
       escapeCSVField(item.episode !== undefined ? item.episode : ""),
+      escapeCSVField(item.numberOfSeasons !== undefined ? item.numberOfSeasons : ""),
+      escapeCSVField(item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : ""),
       escapeCSVField(new Date(item.addedAt).toISOString()),
     ]);
 

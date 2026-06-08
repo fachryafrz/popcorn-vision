@@ -212,6 +212,14 @@ export default function ImportWizard() {
     const rewatchIdx = idxOf("rewatch");
     const seasonIdx = idxOf("season");
     const episodeIdx = idxOf("episode");
+    const numberOfSeasonsIdx =
+      idxOf("numberofseasons") !== -1
+        ? idxOf("numberofseasons")
+        : idxOf("number of seasons");
+    const numberOfEpisodesIdx =
+      idxOf("numberofepisodes") !== -1
+        ? idxOf("numberofepisodes")
+        : idxOf("number of episodes");
 
     // Automatically infer import target based on columns and filename
     let inferredTable: "watchlist" | "favorites" | "ratings" | "diary" =
@@ -338,6 +346,18 @@ export default function ImportWizard() {
         if (!isNaN(e)) episode = e;
       }
 
+      let numberOfSeasons: number | undefined = undefined;
+      if (numberOfSeasonsIdx !== -1 && row[numberOfSeasonsIdx]) {
+        const ns = parseInt(row[numberOfSeasonsIdx], 10);
+        if (!isNaN(ns)) numberOfSeasons = ns;
+      }
+
+      let numberOfEpisodes: number | undefined = undefined;
+      if (numberOfEpisodesIdx !== -1 && row[numberOfEpisodesIdx]) {
+        const ne = parseInt(row[numberOfEpisodesIdx], 10);
+        if (!isNaN(ne)) numberOfEpisodes = ne;
+      }
+
       items.push({
         title: rawTitle,
         year: year || undefined,
@@ -350,6 +370,8 @@ export default function ImportWizard() {
         review: review || undefined,
         season,
         episode,
+        numberOfSeasons,
+        numberOfEpisodes,
       });
     }
 
@@ -647,6 +669,8 @@ export default function ImportWizard() {
                 cast: meta.cast,
                 directors: meta.directors,
                 watchProviders: meta.watchProviders,
+                numberOfSeasons: item.season === undefined && item.episode === undefined ? meta.numberOfSeasons : undefined,
+                numberOfEpisodes: item.season === undefined && item.episode === undefined ? meta.numberOfEpisodes : undefined,
               }
             : {};
 
@@ -657,6 +681,8 @@ export default function ImportWizard() {
             review: item.review || "",
             season: item.season,
             episode: item.episode,
+            numberOfSeasons: item.season === undefined && item.episode === undefined ? (item.numberOfSeasons ?? metadataArgs.numberOfSeasons) : undefined,
+            numberOfEpisodes: item.season === undefined && item.episode === undefined ? (item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes) : undefined,
             ...metadataArgs,
           });
           dCount++;
