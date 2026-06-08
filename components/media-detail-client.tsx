@@ -840,7 +840,7 @@ export default function MediaDetailClient({
               setSeason={setSeason}
               setEpisode={setEpisode}
               scrollToPlayer={scrollToPlayer}
-              watchProgress={watchProgress}
+              watchHistory={watchHistory}
               upsertWatchProgress={upsertWatchProgress}
               onLogEpisode={(s, e) =>
                 setLogWatchEpisode({ season: s, episode: e })
