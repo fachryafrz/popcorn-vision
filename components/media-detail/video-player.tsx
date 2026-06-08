@@ -34,6 +34,7 @@ interface VideoPlayerProps {
   episode: number;
   setEpisode: (episode: number) => void;
   servers: ServerSource[];
+  isUnreleased?: boolean;
 }
 
 export default function VideoPlayer({
@@ -50,6 +51,7 @@ export default function VideoPlayer({
   episode,
   setEpisode,
   servers,
+  isUnreleased,
 }: VideoPlayerProps) {
   return (
     <div
@@ -108,15 +110,28 @@ export default function VideoPlayer({
       ) : (
         <div className="flex w-full flex-col overflow-hidden bg-zinc-950 lg:flex-row">
           {/* Player Frame */}
-          <div className="aspect-video w-full bg-black lg:aspect-auto lg:h-[60svh] lg:w-2/3">
-            <iframe
-              src={servers[selectedServer]?.source}
-              title="Streaming Player"
-              className="h-full w-full border-none"
-              allowFullScreen
-              allow="autoplay; encrypted-media"
-            />
-          </div>
+          {isUnreleased ? (
+            <div className="flex aspect-video w-full flex-col items-center justify-center bg-black p-6 text-center text-zinc-500 lg:aspect-auto lg:h-[60svh] lg:w-2/3">
+              <Tv className="mb-2.5 h-10 w-10 text-zinc-700" />
+              <h5 className="text-sm font-bold text-zinc-300">
+                Unreleased Content
+              </h5>
+              <p className="mt-1 max-w-sm text-xs text-zinc-500">
+                This title has not been officially released yet. Streaming will
+                become available once it is released.
+              </p>
+            </div>
+          ) : (
+            <div className="aspect-video w-full bg-black lg:aspect-auto lg:h-[60svh] lg:w-2/3">
+              <iframe
+                src={servers[selectedServer]?.source}
+                title="Streaming Player"
+                className="h-full w-full border-none"
+                allowFullScreen
+                allow="autoplay; encrypted-media"
+              />
+            </div>
+          )}
 
           {/* Servers & Episode selectors (Right Sidebar) */}
           <div className="flex w-full scrollbar-thin flex-col gap-5 overflow-y-auto border-t border-zinc-800 bg-zinc-900/40 p-6 lg:max-h-[60svh] lg:w-1/3 lg:border-t-0 lg:border-l">
