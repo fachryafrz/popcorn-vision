@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -22,6 +20,7 @@ import {
 import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
+import PersonQuickViewModal from "./person-quick-view-modal";
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
@@ -115,6 +114,7 @@ export default function MediaDetailClient({
   const [season, setSeason] = useState(1);
   const [episode, setEpisode] = useState(1);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(null);
 
   const [selectedRegion, setSelectedRegion] = useState("US");
 
@@ -707,12 +707,13 @@ export default function MediaDetailClient({
               <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
                 {directors.map((d, index) => (
                   <span key={d.id}>
-                    <Link
-                      href={`/person/${d.id}`}
+                    <span
+                      onClick={() => setQuickViewPersonId(d.id)}
+                      role="button"
                       className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
                     >
                       {d.name}
-                    </Link>
+                    </span>
                     {index < directors.length - 1 && ", "}
                   </span>
                 ))}
@@ -727,12 +728,13 @@ export default function MediaDetailClient({
               <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
                 {creators.map((c, index) => (
                   <span key={c.id}>
-                    <Link
-                      href={`/person/${c.id}`}
+                    <span
+                      onClick={() => setQuickViewPersonId(c.id)}
+                      role="button"
                       className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
                     >
                       {c.name}
-                    </Link>
+                    </span>
                     {index < creators.length - 1 && ", "}
                   </span>
                 ))}
@@ -800,7 +802,7 @@ export default function MediaDetailClient({
           isUnreleased={isUnreleased}
         />
 
-        <CastSlider cast={cast} />
+        <CastSlider cast={cast} onPersonClick={(id) => setQuickViewPersonId(id)} />
 
         {/* Metadata Details Grid */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
@@ -888,6 +890,15 @@ export default function MediaDetailClient({
           media={quickViewMedia}
           isOpen={!!quickViewMedia}
           onClose={() => setQuickViewMedia(null)}
+        />
+      )}
+
+      {/* Person Quick View Modal */}
+      {quickViewPersonId && (
+        <PersonQuickViewModal
+          personId={quickViewPersonId}
+          isOpen={!!quickViewPersonId}
+          onClose={() => setQuickViewPersonId(null)}
         />
       )}
 
