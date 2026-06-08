@@ -31,7 +31,9 @@ export default function ActivityFeed() {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
-  const [scope, setScope] = useState<"global" | "friends">("friends");
+  const [scope, setScope] = useState<"global" | "friends">(
+    isLoggedIn ? "friends" : "global",
+  );
   const [activeFilter, setActiveFilter] = useState("all");
 
   const { results, status, loadMore } = usePaginatedQuery(
