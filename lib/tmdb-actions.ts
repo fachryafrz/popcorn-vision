@@ -533,5 +533,22 @@ export async function getPersonCredits(personId: string) {
   }
 }
 
+export async function searchPersonByName(name: string): Promise<number | null> {
+  try {
+    const res = await axios.get("/search/person", {
+      params: { query: name, include_adult: false },
+    });
+    const results = res.data.results as { id: number }[] | undefined;
+    if (results && results.length > 0) {
+      return results[0].id;
+    }
+    return null;
+  } catch (error) {
+    console.error(`Error searching person by name ${name}:`, error);
+    return null;
+  }
+}
+
+
 
 

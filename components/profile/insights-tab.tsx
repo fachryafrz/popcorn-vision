@@ -1,8 +1,13 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { DiaryItem, UserDoc } from "./types";
-import { batchFetchMediaMetadata, StatsMetadata } from "@/lib/tmdb-actions";
+import {
+  batchFetchMediaMetadata,
+  StatsMetadata,
+  searchPersonByName,
+} from "@/lib/tmdb-actions";
 import {
   BarChart,
   Bar,
@@ -53,9 +58,29 @@ interface InsightsTabProps {
 type Period = "week" | "month" | "all" | number;
 
 export function InsightsTab({ diary, user }: InsightsTabProps) {
+  const router = useRouter();
   const [period, setPeriod] = useState<Period>("all");
   const [metadata, setMetadata] = useState<Record<string, StatsMetadata>>({});
   const [loading, setLoading] = useState(false);
+  const [searchingPerson, setSearchingPerson] = useState<string | null>(null);
+
+  const handlePersonClick = async (name: string) => {
+    if (searchingPerson) return;
+    setSearchingPerson(name);
+    try {
+      const id = await searchPersonByName(name);
+      if (id) {
+        router.push(`/person/${id}`);
+      } else {
+        router.push(`/search?q=${encodeURIComponent(name)}`);
+      }
+    } catch (error) {
+      console.error("Failed to navigate to person page:", error);
+      router.push(`/search?q=${encodeURIComponent(name)}`);
+    } finally {
+      setSearchingPerson(null);
+    }
+  };
 
   // Fetch metadata for legacy/missing items, load the rest from database
   useEffect(() => {
@@ -70,9 +95,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     }[] = [];
 
     diary.forEach((item) => {
-      const key = item.season !== undefined && item.episode !== undefined
-        ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-        : `${item.mediaType}-${item.mediaId}`;
+      const key =
+        item.season !== undefined && item.episode !== undefined
+          ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+          : `${item.mediaType}-${item.mediaId}`;
       if (
         item.runtime !== undefined &&
         item.genres &&
@@ -171,8 +197,8 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     let sumRating = 0;
 
     const genreCounts: Record<string, number> = {};
-    const actorCounts: Record<string, number> = {};
-    const directorCounts: Record<string, number> = {};
+    const actorMediaIds: Record<string, Set<string>> = {};
+    const directorMediaIds: Record<string, Set<string>> = {};
     const providerCounts: Record<string, number> = {};
     const ratingsDistribution = Array.from({ length: 10 }, (_, i) => ({
       rating: i + 1,
@@ -180,9 +206,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     }));
 
     filteredDiary.forEach((item) => {
-      const key = item.season !== undefined && item.episode !== undefined
-        ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-        : `${item.mediaType}-${item.mediaId}`;
+      const key =
+        item.season !== undefined && item.episode !== undefined
+          ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+          : `${item.mediaType}-${item.mediaId}`;
       const meta = metadata[key];
 
       if (item.mediaType === "movie") {
@@ -203,10 +230,16 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
           genreCounts[g] = (genreCounts[g] || 0) + 1;
         });
         meta.cast.forEach((a) => {
-          actorCounts[a] = (actorCounts[a] || 0) + 1;
+          if (!actorMediaIds[a]) {
+            actorMediaIds[a] = new Set<string>();
+          }
+          actorMediaIds[a].add(item.mediaId);
         });
         meta.directors.forEach((d) => {
-          directorCounts[d] = (directorCounts[d] || 0) + 1;
+          if (!directorMediaIds[d]) {
+            directorMediaIds[d] = new Set<string>();
+          }
+          directorMediaIds[d].add(item.mediaId);
         });
         meta.watchProviders.forEach((p) => {
           providerCounts[p] = (providerCounts[p] || 0) + 1;
@@ -226,13 +259,13 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       .sort((a, b) => b.value - a.value)
       .slice(0, 5);
 
-    const topActors = Object.entries(actorCounts)
-      .map(([name, count]) => ({ name, count }))
+    const topActors = Object.entries(actorMediaIds)
+      .map(([name, mediaIds]) => ({ name, count: mediaIds.size }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
-    const topDirectors = Object.entries(directorCounts)
-      .map(([name, count]) => ({ name, count }))
+    const topDirectors = Object.entries(directorMediaIds)
+      .map(([name, mediaIds]) => ({ name, count: mediaIds.size }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 5);
 
@@ -639,10 +672,16 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                   stats.topActors.map((actor, idx) => (
                     <div
                       key={actor.name}
-                      className="flex items-center justify-between text-xs"
+                      onClick={() => handlePersonClick(actor.name)}
+                      className={cn(
+                        "group flex cursor-pointer items-center justify-between rounded-lg text-xs transition-all duration-200",
+                      )}
                     >
-                      <span className="font-semibold text-zinc-300">
-                        {idx + 1}. {actor.name}
+                      <span className="flex items-center gap-1.5 font-semibold text-zinc-300">
+                        <span>{idx + 1}.</span>
+                        <span className="group-hover:underline">
+                          {actor.name}
+                        </span>
                       </span>
                       <span className="font-bold text-zinc-500">
                         {actor.count} films
@@ -667,10 +706,16 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                   stats.topDirectors.map((director, idx) => (
                     <div
                       key={director.name}
-                      className="flex items-center justify-between text-xs"
+                      onClick={() => handlePersonClick(director.name)}
+                      className={cn(
+                        "group flex cursor-pointer items-center justify-between rounded-lg text-xs transition-all duration-200",
+                      )}
                     >
-                      <span className="font-semibold text-zinc-300">
-                        {idx + 1}. {director.name}
+                      <span className="flex items-center gap-1.5 font-semibold text-zinc-300">
+                        <span>{idx + 1}.</span>
+                        <span className="group-hover:underline">
+                          {director.name}
+                        </span>
                       </span>
                       <span className="font-bold text-zinc-500">
                         {director.count} titles
