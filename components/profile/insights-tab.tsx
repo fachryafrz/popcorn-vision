@@ -197,8 +197,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     let sumRating = 0;
 
     const uniqueTvSeries = new Set<string>();
-    const uniqueTvSeasons = new Set<string>();
-    const uniqueTvEpisodes = new Set<string>();
+    const tvEntriesByShow: Record<string, DiaryItem[]> = {};
 
     const genreCounts: Record<string, number> = {};
     const actorMediaIds: Record<string, Set<string>> = {};
@@ -221,10 +220,10 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       } else {
         tvCount++;
         uniqueTvSeries.add(item.mediaId);
-        const seasonVal = item.season !== undefined ? item.season : 1;
-        const episodeVal = item.episode !== undefined ? item.episode : 1;
-        uniqueTvSeasons.add(`${item.mediaId}-S${seasonVal}`);
-        uniqueTvEpisodes.add(`${item.mediaId}-S${seasonVal}-E${episodeVal}`);
+        if (!tvEntriesByShow[item.mediaId]) {
+          tvEntriesByShow[item.mediaId] = [];
+        }
+        tvEntriesByShow[item.mediaId].push(item);
       }
 
       if (item.rating) {
@@ -253,6 +252,59 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
         meta.watchProviders.forEach((p) => {
           providerCounts[p] = (providerCounts[p] || 0) + 1;
         });
+      }
+    });
+
+    let tvSeasonsCount = 0;
+    let tvEpisodesCount = 0;
+
+    Object.entries(tvEntriesByShow).forEach(([mediaId, entries]) => {
+      let maxWholeSeasons = 0;
+      let sumWholeEpisodes = 0;
+      let sumWholeSeasons = 0;
+      let hasWholeShowEntry = false;
+
+      const indSeasons = new Set<number>();
+      const indEpisodes = new Set<string>();
+
+      entries.forEach((item) => {
+        if (item.season !== undefined && item.episode !== undefined) {
+          indSeasons.add(item.season);
+          indEpisodes.add(`S${item.season}-E${item.episode}`);
+        } else {
+          hasWholeShowEntry = true;
+          const numSeasons = item.numberOfSeasons !== undefined ? item.numberOfSeasons : 1;
+          const numEpisodes = item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : 1;
+          
+          sumWholeSeasons += numSeasons;
+          sumWholeEpisodes += numEpisodes;
+          if (numSeasons > maxWholeSeasons) {
+            maxWholeSeasons = numSeasons;
+          }
+        }
+      });
+
+      if (hasWholeShowEntry) {
+        let uncovSeasonsCount = 0;
+        indSeasons.forEach((s) => {
+          if (s > maxWholeSeasons) {
+            uncovSeasonsCount++;
+          }
+        });
+
+        let uncovEpisodesCount = 0;
+        indEpisodes.forEach((epKey) => {
+          const s = parseInt(epKey.substring(1).split("-")[0], 10);
+          if (s > maxWholeSeasons) {
+            uncovEpisodesCount++;
+          }
+        });
+
+        tvSeasonsCount += sumWholeSeasons + uncovSeasonsCount;
+        tvEpisodesCount += sumWholeEpisodes + uncovEpisodesCount;
+      } else {
+        tvSeasonsCount += indSeasons.size;
+        tvEpisodesCount += indEpisodes.size;
       }
     });
 
@@ -287,8 +339,8 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       moviesCount,
       tvCount,
       tvSeriesCount: uniqueTvSeries.size,
-      tvSeasonsCount: uniqueTvSeasons.size,
-      tvEpisodesCount: uniqueTvEpisodes.size,
+      tvSeasonsCount,
+      tvEpisodesCount,
       hoursWatched,
       averageRating,
       topGenres,

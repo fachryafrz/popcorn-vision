@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
+import { batchFetchMediaMetadata, StatsMetadata } from "@/lib/tmdb-actions";
 import {
   Dialog,
   DialogContent,
@@ -37,6 +37,8 @@ interface LogWatchModalProps {
   initialReview?: string;
   season?: number;
   episode?: number;
+  numberOfSeasons?: number;
+  numberOfEpisodes?: number;
 }
 
 export default function LogWatchModal({
@@ -55,6 +57,8 @@ export default function LogWatchModal({
   initialReview,
   season,
   episode,
+  numberOfSeasons,
+  numberOfEpisodes,
 }: LogWatchModalProps) {
   const [watchedDate, setWatchedDate] = useState("");
   const [rewatch, setRewatch] = useState(false);
@@ -132,11 +136,13 @@ export default function LogWatchModal({
           rating: rating > 0 ? rating : undefined,
           season,
           episode,
+          numberOfSeasons: season === undefined && episode === undefined ? numberOfSeasons : undefined,
+          numberOfEpisodes: season === undefined && episode === undefined ? numberOfEpisodes : undefined,
         });
         toast.success(`Updated watch log for "${title}" successfully!`);
       } else {
         // Fetch metadata properties from TMDB server action
-        let metadataArgs = {};
+        let metadataArgs: Partial<StatsMetadata & { numberOfSeasons?: number; numberOfEpisodes?: number }> = {};
         try {
           const results = await batchFetchMediaMetadata(
             [{ mediaId, mediaType: mediaType as "movie" | "tv", season, episode }],
@@ -153,6 +159,8 @@ export default function LogWatchModal({
               cast: meta.cast,
               directors: meta.directors,
               watchProviders: meta.watchProviders,
+              numberOfSeasons: season === undefined && episode === undefined ? meta.numberOfSeasons : undefined,
+              numberOfEpisodes: season === undefined && episode === undefined ? meta.numberOfEpisodes : undefined,
             };
           }
         } catch (err) {
@@ -171,6 +179,8 @@ export default function LogWatchModal({
           rating: rating > 0 ? rating : undefined,
           season,
           episode,
+          numberOfSeasons: season === undefined && episode === undefined ? (metadataArgs.numberOfSeasons ?? numberOfSeasons) : undefined,
+          numberOfEpisodes: season === undefined && episode === undefined ? (metadataArgs.numberOfEpisodes ?? numberOfEpisodes) : undefined,
           ...metadataArgs,
         });
         toast.success(`Logged watch for "${title}" successfully!`);

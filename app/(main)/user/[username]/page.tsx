@@ -681,6 +681,10 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
           initialRewatch={editingEntry.rewatch}
           initialRating={editingEntry.rating}
           initialReview={editingEntry.review}
+          season={editingEntry.season}
+          episode={editingEntry.episode}
+          numberOfSeasons={editingEntry.numberOfSeasons}
+          numberOfEpisodes={editingEntry.numberOfEpisodes}
         />
       )}
 
