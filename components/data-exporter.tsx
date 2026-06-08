@@ -69,6 +69,7 @@ interface ExportDiaryItem {
   numberOfSeasons?: number;
   numberOfEpisodes?: number;
   addedAt: number;
+  diaryType?: string;
 }
 
 export default function DataExporter() {
@@ -211,6 +212,7 @@ export default function DataExporter() {
       "Episode",
       "NumberOfSeasons",
       "NumberOfEpisodes",
+      "DiaryType",
       "AddedAt",
     ];
     const rows = existingDiary.map((item) => [
@@ -225,6 +227,7 @@ export default function DataExporter() {
       escapeCSVField(item.episode !== undefined ? item.episode : ""),
       escapeCSVField(item.numberOfSeasons !== undefined ? item.numberOfSeasons : ""),
       escapeCSVField(item.numberOfEpisodes !== undefined ? item.numberOfEpisodes : ""),
+      escapeCSVField(item.diaryType || ""),
       escapeCSVField(new Date(item.addedAt).toISOString()),
     ]);
 
