@@ -1,4 +1,4 @@
-import { RefObject } from "react";
+import { RefObject, useState } from "react";
 import { Loader2, CheckCircle2, Check, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,7 @@ export default function SeasonsAccordion({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
+  const [now] = useState(() => Date.now());
   if (!details?.seasons || details.seasons.length === 0) return null;
 
   return (
@@ -166,6 +167,9 @@ export default function SeasonsAccordion({
                           watchProgress.episode >= ep.episode_number))
                     );
 
+                    const isEpisodeUnreleased =
+                      !ep.air_date || new Date(ep.air_date).getTime() > now;
+
                     return (
                       <div
                         key={ep.id}
@@ -178,20 +182,22 @@ export default function SeasonsAccordion({
                             alt={ep.name}
                             className="h-full w-full object-cover"
                           />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/45 transition-opacity group-hover:opacity-100 md:opacity-0">
-                            <Button
-                              size="sm"
-                              onClick={() => {
-                                setSeason(activeSeasonData.season_number);
-                                setEpisode(ep.episode_number);
-                                scrollToPlayer("watch");
-                              }}
-                              className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-full px-3.5 text-[10px] font-bold text-white shadow-md"
-                            >
-                              Play S{activeSeasonData.season_number} E
-                              {ep.episode_number}
-                            </Button>
-                          </div>
+                          {!isEpisodeUnreleased && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/45 transition-opacity group-hover:opacity-100 md:opacity-0">
+                              <Button
+                                size="sm"
+                                onClick={() => {
+                                  setSeason(activeSeasonData.season_number);
+                                  setEpisode(ep.episode_number);
+                                  scrollToPlayer("watch");
+                                }}
+                                className="hover:bg-primary bg-primary h-7 cursor-pointer rounded-full px-3.5 text-[10px] font-bold text-white shadow-md"
+                              >
+                                Play S{activeSeasonData.season_number} E
+                                {ep.episode_number}
+                              </Button>
+                            </div>
+                          )}
                         </div>
 
                         {/* Episode Info */}
@@ -217,6 +223,7 @@ export default function SeasonsAccordion({
                                 <Button
                                   size="icon"
                                   variant="ghost"
+                                  disabled={isEpisodeUnreleased}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     if (!isLoggedIn) {
@@ -228,14 +235,19 @@ export default function SeasonsAccordion({
                                       ep.episode_number,
                                     );
                                   }}
-                                  className="h-6 w-6 rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-white"
-                                  title="Log Episode to Diary"
+                                  className="h-6 w-6 rounded-full text-zinc-500 hover:bg-zinc-800 hover:text-white disabled:pointer-events-none disabled:opacity-30"
+                                  title={
+                                    isEpisodeUnreleased
+                                      ? "Episode Unreleased"
+                                      : "Log Episode to Diary"
+                                  }
                                 >
                                   <Calendar className="h-3.5 w-3.5" />
                                 </Button>
                                 <Button
                                   size="icon"
                                   variant="ghost"
+                                  disabled={isEpisodeUnreleased}
                                   onClick={async (e) => {
                                     e.stopPropagation();
                                     if (!isLoggedIn) {
@@ -262,15 +274,17 @@ export default function SeasonsAccordion({
                                     }
                                   }}
                                   className={cn(
-                                    "h-6 w-6 rounded-full transition-colors",
+                                    "h-6 w-6 rounded-full transition-colors disabled:pointer-events-none disabled:opacity-30",
                                     isEpisodeCompleted
                                       ? "text-emerald-500 hover:bg-emerald-950/20"
                                       : "text-zinc-500 hover:bg-zinc-800 hover:text-white",
                                   )}
                                   title={
-                                    isEpisodeCompleted
-                                      ? "Completed"
-                                      : "Mark Completed"
+                                    isEpisodeUnreleased
+                                      ? "Episode Unreleased"
+                                      : isEpisodeCompleted
+                                        ? "Completed"
+                                        : "Mark Completed"
                                   }
                                 >
                                   {isEpisodeCompleted ? (

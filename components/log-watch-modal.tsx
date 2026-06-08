@@ -139,10 +139,13 @@ export default function LogWatchModal({
         let metadataArgs = {};
         try {
           const results = await batchFetchMediaMetadata(
-            [{ mediaId, mediaType: mediaType as "movie" | "tv" }],
+            [{ mediaId, mediaType: mediaType as "movie" | "tv", season, episode }],
             currentUser?.country || "US",
           );
-          const meta = results[`${mediaType}-${mediaId}`];
+          const lookupKey = season !== undefined && episode !== undefined
+            ? `${mediaType}-${mediaId}-S${season}E${episode}`
+            : `${mediaType}-${mediaId}`;
+          const meta = results[lookupKey];
           if (meta) {
             metadataArgs = {
               runtime: meta.runtime,

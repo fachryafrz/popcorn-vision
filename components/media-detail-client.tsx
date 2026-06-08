@@ -107,6 +107,7 @@ export default function MediaDetailClient({
 
   // Logo render error state
   const [logoError, setLogoError] = useState(false);
+  const [now] = useState(() => Date.now());
 
   // Player tabs & selections
   const [activeTab, setActiveTab] = useState<"trailer" | "watch">("trailer");
@@ -448,6 +449,31 @@ export default function MediaDetailClient({
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : "N/A";
   const runtime = details?.runtime || details?.episode_run_time?.[0] || null;
 
+  const isUnreleased = (() => {
+    if (!details) return false;
+    const status = details.status;
+    if (status) {
+      const unreleasedStatuses = [
+        "Rumored",
+        "Planned",
+        "In Production",
+        "Post Production",
+      ];
+      if (unreleasedStatuses.includes(status)) {
+        return true;
+      }
+    }
+    const releaseDateStr =
+      mediaType === "movie" ? details.release_date : details.first_air_date;
+    if (releaseDateStr) {
+      const releaseTime = new Date(releaseDateStr).getTime();
+      if (!isNaN(releaseTime) && releaseTime > now) {
+        return true;
+      }
+    }
+    return false;
+  })();
+
   // Format currency helpers based on active region
   const formatCurrency = (amount?: number) => {
     if (!amount) return "N/A";
@@ -678,12 +704,12 @@ export default function MediaDetailClient({
               <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
                 Directed By:
               </span>
-              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+              <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
                 {directors.map((d, index) => (
                   <span key={d.id}>
                     <Link
                       href={`/person/${d.id}`}
-                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                      className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
                     >
                       {d.name}
                     </Link>
@@ -698,12 +724,12 @@ export default function MediaDetailClient({
               <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
                 Created By:
               </span>
-              <span className="font-bold text-zinc-200 flex flex-wrap items-center gap-1">
+              <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
                 {creators.map((c, index) => (
                   <span key={c.id}>
                     <Link
                       href={`/person/${c.id}`}
-                      className="underline decoration-dotted hover:text-primary transition-colors cursor-pointer"
+                      className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
                     >
                       {c.name}
                     </Link>
@@ -738,6 +764,7 @@ export default function MediaDetailClient({
             scrollToPlayer={scrollToPlayer}
             mediaType={mediaType}
             watchProgress={watchProgress}
+            isUnreleased={isUnreleased}
           />
 
           <RatingSection
@@ -749,6 +776,7 @@ export default function MediaDetailClient({
             userRating={userRating}
             rateMedia={rateMedia}
             deleteRating={deleteRating}
+            isUnreleased={isUnreleased}
           />
         </div>
       </div>
@@ -769,9 +797,8 @@ export default function MediaDetailClient({
           episode={episode}
           setEpisode={setEpisode}
           servers={servers}
+          isUnreleased={isUnreleased}
         />
-
-
 
         <CastSlider cast={cast} />
 

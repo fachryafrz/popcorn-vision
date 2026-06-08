@@ -592,6 +592,8 @@ export default function ImportWizard() {
         const uniqueItems = diaryImportItems.map((item) => ({
           mediaId: item.mediaId,
           mediaType: item.mediaType as "movie" | "tv",
+          season: item.season,
+          episode: item.episode,
         }));
         statsMetadataMap = await batchFetchMediaMetadata(
           uniqueItems,
@@ -634,7 +636,9 @@ export default function ImportWizard() {
           await rateMedia(args);
           rCount++;
         } else if (item.sourceTable === "diary") {
-          const key = `${item.mediaType}-${item.mediaId}`;
+          const key = item.season !== undefined && item.episode !== undefined
+            ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+            : `${item.mediaType}-${item.mediaId}`;
           const meta = statsMetadataMap[key];
           const metadataArgs = meta
             ? {

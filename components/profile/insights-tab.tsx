@@ -65,10 +65,14 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     const missingMetadataItems: {
       mediaId: string;
       mediaType: "movie" | "tv";
+      season?: number;
+      episode?: number;
     }[] = [];
 
     diary.forEach((item) => {
-      const key = `${item.mediaType}-${item.mediaId}`;
+      const key = item.season !== undefined && item.episode !== undefined
+        ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+        : `${item.mediaType}-${item.mediaId}`;
       if (
         item.runtime !== undefined &&
         item.genres &&
@@ -89,6 +93,8 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
         missingMetadataItems.push({
           mediaId: item.mediaId,
           mediaType: item.mediaType as "movie" | "tv",
+          season: item.season,
+          episode: item.episode,
         });
       }
     });
@@ -174,7 +180,9 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
     }));
 
     filteredDiary.forEach((item) => {
-      const key = `${item.mediaType}-${item.mediaId}`;
+      const key = item.season !== undefined && item.episode !== undefined
+        ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+        : `${item.mediaType}-${item.mediaId}`;
       const meta = metadata[key];
 
       if (item.mediaType === "movie") {

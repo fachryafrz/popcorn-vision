@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Star } from "lucide-react";
 import { toast } from "sonner";
 import { MediaDetails } from "./types";
+import { cn } from "@/lib/utils";
 
 interface RatingSectionProps {
   details: MediaDetails;
@@ -22,6 +23,7 @@ interface RatingSectionProps {
     mediaId: string;
     mediaType: "movie" | "tv";
   }) => Promise<unknown>;
+  isUnreleased?: boolean;
 }
 
 export default function RatingSection({
@@ -33,6 +35,7 @@ export default function RatingSection({
   userRating,
   rateMedia,
   deleteRating,
+  isUnreleased,
 }: RatingSectionProps) {
   const [hoveredRating, setHoveredRating] = useState<number>(0);
 
@@ -48,10 +51,21 @@ export default function RatingSection({
   };
 
   return (
-    <div className="mt-6 flex max-w-sm flex-col gap-2">
+    <div
+      className={cn(
+        "mt-6 flex max-w-sm flex-col gap-2",
+        isUnreleased && "pointer-events-none opacity-50",
+      )}
+    >
       <div className="flex items-center justify-between text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
-        <span>{userRating ? "Your Rating" : "Rate this title"}</span>
-        {userRating && (
+        <span>
+          {isUnreleased
+            ? "Rating Unavailable (Unreleased)"
+            : userRating
+              ? "Your Rating"
+              : "Rate this title"}
+        </span>
+        {userRating && !isUnreleased && (
           <button
             type="button"
             onClick={handleClearRating}
@@ -68,6 +82,7 @@ export default function RatingSection({
             const displayRating = hoveredRating || userRating || 0;
 
             const handleRate = async (starValue: number) => {
+              if (isUnreleased) return;
               if (!isLoggedIn) {
                 openAuth();
                 return;
@@ -90,15 +105,26 @@ export default function RatingSection({
 
             return (
               <div
-                className="relative cursor-pointer transition-transform duration-100 hover:scale-110"
+                className={cn(
+                  "relative transition-transform duration-100",
+                  isUnreleased
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer hover:scale-110",
+                )}
                 key={starIndex}
-                onMouseEnter={() => setHoveredRating(starValue)}
-                onMouseLeave={() => setHoveredRating(0)}
+                onMouseEnter={() =>
+                  !isUnreleased && setHoveredRating(starValue)
+                }
+                onMouseLeave={() => !isUnreleased && setHoveredRating(0)}
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRate(starValue);
+                  if (!isUnreleased) handleRate(starValue);
                 }}
-                title={`Rate ${starValue} / 10`}
+                title={
+                  isUnreleased
+                    ? "Cannot rate unreleased title"
+                    : `Rate ${starValue} / 10`
+                }
               >
                 {/* Base Empty Star */}
                 <Star className="h-5 w-5 text-zinc-700" />
@@ -114,11 +140,13 @@ export default function RatingSection({
           })}
         </div>
         <span className="ml-2 rounded-md border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-sm font-black text-white">
-          {hoveredRating
-            ? `${hoveredRating} / 10`
-            : userRating
-              ? `${userRating} / 10`
-              : "_ / 10"}
+          {isUnreleased
+            ? "_ / 10"
+            : hoveredRating
+              ? `${hoveredRating} / 10`
+              : userRating
+                ? `${userRating} / 10`
+                : "_ / 10"}
         </span>
       </div>
     </div>

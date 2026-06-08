@@ -30,6 +30,7 @@ interface ActionsSectionProps {
   scrollToPlayer: (tab: "trailer" | "watch") => void;
   mediaType: "movie" | "tv";
   watchProgress?: { season?: number; episode?: number } | null;
+  isUnreleased?: boolean;
 }
 
 export default function ActionsSection({
@@ -49,12 +50,17 @@ export default function ActionsSection({
   scrollToPlayer,
   mediaType,
   watchProgress,
+  isUnreleased,
 }: ActionsSectionProps) {
   return (
     <div className="mt-6 flex flex-wrap items-center gap-3">
       <Button
         onClick={() => scrollToPlayer("watch")}
-        className="hover:bg-primary bg-primary flex items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base"
+        disabled={isUnreleased}
+        className={cn(
+          "hover:bg-primary bg-primary flex items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base",
+          isUnreleased && "pointer-events-none opacity-50",
+        )}
       >
         <Play className="h-5 w-5 fill-current" />
         Play
@@ -132,7 +138,11 @@ export default function ActionsSection({
           if (!isLoggedIn) openAuth();
           else setIsLogModalOpen(true);
         }}
-        className="cursor-pointer rounded-full border border-zinc-700 bg-black/40 px-5 py-6 text-sm font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:text-base"
+        disabled={isUnreleased}
+        className={cn(
+          "cursor-pointer rounded-full border border-zinc-700 bg-black/40 px-5 py-6 text-sm font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:text-base",
+          isUnreleased && "pointer-events-none opacity-50",
+        )}
       >
         <span className="flex items-center gap-1.5">
           <Calendar className="h-5 w-5" />
@@ -156,22 +166,23 @@ export default function ActionsSection({
       </Button>
 
       {/* Watch count/progress capsule */}
-      {mediaType === "tv" ? (
-        watchProgress && (watchProgress.season !== undefined || watchProgress.episode !== undefined) && (
-          <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
-            <Check className="h-4 w-4 stroke-3" />
-            Last watch: S{watchProgress.season} E{watchProgress.episode}
-          </span>
-        )
-      ) : (
-        watchHistory && watchHistory.watchCount > 0 && (
-          <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
-            <Check className="h-4 w-4 stroke-3" />
-            Watched {watchHistory.watchCount}{" "}
-            {watchHistory.watchCount === 1 ? "time" : "times"}
-          </span>
-        )
-      )}
+      {mediaType === "tv"
+        ? watchProgress &&
+          (watchProgress.season !== undefined ||
+            watchProgress.episode !== undefined) && (
+            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+              <Check className="h-4 w-4 stroke-3" />
+              Last watch: S{watchProgress.season} E{watchProgress.episode}
+            </span>
+          )
+        : watchHistory &&
+          watchHistory.watchCount > 0 && (
+            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+              <Check className="h-4 w-4 stroke-3" />
+              Watched {watchHistory.watchCount}{" "}
+              {watchHistory.watchCount === 1 ? "time" : "times"}
+            </span>
+          )}
     </div>
   );
 }

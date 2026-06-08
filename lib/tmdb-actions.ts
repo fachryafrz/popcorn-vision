@@ -409,12 +409,17 @@ export interface StatsMetadata {
 }
 
 export async function batchFetchMediaMetadata(
-  items: { mediaId: string; mediaType: "movie" | "tv" }[],
+  items: { mediaId: string; mediaType: "movie" | "tv"; season?: number; episode?: number }[],
   countryCode: string = "US"
 ): Promise<Record<string, StatsMetadata>> {
-  const uniqueItemsMap = new Map<string, { mediaId: string; mediaType: "movie" | "tv" }>();
+  const uniqueItemsMap = new Map<
+    string,
+    { mediaId: string; mediaType: "movie" | "tv"; season?: number; episode?: number }
+  >();
   for (const item of items) {
-    const key = `${item.mediaType}-${item.mediaId}`;
+    const key = item.season !== undefined && item.episode !== undefined
+      ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+      : `${item.mediaType}-${item.mediaId}`;
     if (!uniqueItemsMap.has(key)) {
       uniqueItemsMap.set(key, item);
     }
@@ -429,7 +434,9 @@ export async function batchFetchMediaMetadata(
     const batch = uniqueItems.slice(i, i + batchSize);
     await Promise.all(
       batch.map(async (item) => {
-        const key = `${item.mediaType}-${item.mediaId}`;
+        const key = item.season !== undefined && item.episode !== undefined
+          ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+          : `${item.mediaType}-${item.mediaId}`;
         try {
           // Single call using append_to_response to retrieve details, credits, and watch providers
           const res = await axios.get(`/${item.mediaType}/${item.mediaId}`, {
@@ -446,6 +453,23 @@ export async function batchFetchMediaMetadata(
           let runtime = 0;
           if (item.mediaType === "movie") {
             runtime = data.runtime || 0;
+          } else if (item.season !== undefined && item.episode !== undefined) {
+            // Fetch specific episode details to get the correct runtime
+            try {
+              const episodeRes = await axios.get(`/tv/${item.mediaId}/season/${item.season}/episode/${item.episode}`);
+              runtime = episodeRes.data.runtime || 0;
+              // If episode runtime is 0 or null, fallback to the average episode runtime or 45 mins
+              if (!runtime) {
+                runtime = (data.episode_run_time && data.episode_run_time.length > 0)
+                  ? data.episode_run_time[0]
+                  : 45;
+              }
+            } catch (err) {
+              console.error(`Error fetching episode runtime for tv ${item.mediaId} S${item.season}E${item.episode}:`, err);
+              runtime = (data.episode_run_time && data.episode_run_time.length > 0)
+                ? data.episode_run_time[0]
+                : 45;
+            }
           } else {
             // TV show runtime: average episode runtime * number of episodes
             const episodeRuntime = (data.episode_run_time && data.episode_run_time.length > 0)
