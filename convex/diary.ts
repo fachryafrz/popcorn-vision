@@ -17,6 +17,87 @@ async function getAuthedUser(ctx: QueryCtx | MutationCtx) {
   }
 }
 
+// Helper to check if all episodes of a season are completed and update activity feed
+async function updateSeasonCompletionStatus(
+  ctx: MutationCtx,
+  userId: string,
+  mediaId: string,
+  title: string,
+  posterPath: string,
+  season: number,
+  numberOfEpisodes?: number
+) {
+  // Query all diary entries for this user, show, and season
+  const entries = await ctx.db
+    .query("diary")
+    .withIndex("by_user_media", (q) =>
+      q.eq("userId", userId).eq("mediaId", mediaId).eq("mediaType", "tv")
+    )
+    .collect();
+
+  const seasonEntries = entries.filter(
+    (e) => e.season === season && e.episode !== undefined
+  );
+  const uniqueEpisodes = new Set(seasonEntries.map((e) => e.episode));
+
+  let totalEpisodes = numberOfEpisodes;
+  if (!totalEpisodes) {
+    const entryWithEpisodes = seasonEntries.find((e) => e.numberOfEpisodes !== undefined);
+    if (entryWithEpisodes) {
+      totalEpisodes = entryWithEpisodes.numberOfEpisodes;
+    }
+  }
+
+  // Find if there is an existing completed_season activity
+  const activities = await ctx.db
+    .query("activities")
+    .withIndex("by_user", (q) => q.eq("userId", userId))
+    .collect();
+  
+  const existingActivity = activities.find(
+    (a) =>
+      a.type === "completed_season" &&
+      a.mediaId === mediaId &&
+      a.mediaType === "tv" &&
+      a.season === season
+  );
+
+  if (totalEpisodes && uniqueEpisodes.size >= totalEpisodes) {
+    if (!existingActivity) {
+      await logActivity(ctx, {
+        userId,
+        type: "completed_season",
+        mediaId,
+        mediaType: "tv",
+        title,
+        posterPath,
+        season,
+      });
+    }
+  } else {
+    if (existingActivity) {
+      await ctx.db.delete(existingActivity._id);
+
+      // Clean up likes and comments associated with the deleted activity
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", existingActivity._id))
+        .collect();
+      for (const l of likes) {
+        await ctx.db.delete(l._id);
+      }
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", existingActivity._id))
+        .collect();
+      for (const c of comments) {
+        await ctx.db.delete(c._id);
+      }
+    }
+  }
+}
+
 // ----------------------------------------------------
 // WRITE MUTATIONS
 // ----------------------------------------------------
@@ -139,6 +220,18 @@ export const logWatch = mutation({
       }
     }
 
+    if (args.mediaType === "tv" && args.season !== undefined && args.episode !== undefined) {
+      await updateSeasonCompletionStatus(
+        ctx,
+        currentUser.userId,
+        args.mediaId,
+        args.title,
+        args.posterPath,
+        args.season,
+        args.numberOfEpisodes
+      );
+    }
+
     return diaryId;
   },
 });
@@ -186,6 +279,11 @@ export const editDiaryEntry = mutation({
           ? "season"
           : "tv");
 
+    const oldMediaType = entry.mediaType;
+    const oldSeason = entry.season;
+    const oldEpisode = entry.episode;
+    const oldNumEpisodes = entry.numberOfEpisodes;
+
     // 1. Update diary log
     await ctx.db.patch(args.diaryId, {
       watchedDate: args.watchedDate,
@@ -198,6 +296,37 @@ export const editDiaryEntry = mutation({
       numberOfEpisodes: args.numberOfEpisodes,
       diaryType,
     });
+
+    if (oldMediaType === "tv" && oldSeason !== undefined && oldEpisode !== undefined) {
+      await updateSeasonCompletionStatus(
+        ctx,
+        currentUser.userId,
+        entry.mediaId,
+        entry.title,
+        entry.posterPath,
+        oldSeason,
+        oldNumEpisodes
+      );
+    }
+
+    const updatedEntry = await ctx.db.get(args.diaryId);
+    if (
+      updatedEntry &&
+      updatedEntry.mediaType === "tv" &&
+      updatedEntry.season !== undefined &&
+      updatedEntry.episode !== undefined &&
+      (updatedEntry.season !== oldSeason || updatedEntry.episode !== oldEpisode)
+    ) {
+      await updateSeasonCompletionStatus(
+        ctx,
+        currentUser.userId,
+        updatedEntry.mediaId,
+        updatedEntry.title,
+        updatedEntry.posterPath,
+        updatedEntry.season,
+        updatedEntry.numberOfEpisodes
+      );
+    }
 
     // 2. Sync to ratings table if rating is provided
     if (args.rating !== undefined) {
@@ -252,6 +381,19 @@ export const deleteDiaryEntry = mutation({
     }
 
     await ctx.db.delete(args.diaryId);
+
+    if (entry.mediaType === "tv" && entry.season !== undefined && entry.episode !== undefined) {
+      await updateSeasonCompletionStatus(
+        ctx,
+        currentUser.userId,
+        entry.mediaId,
+        entry.title,
+        entry.posterPath,
+        entry.season,
+        entry.numberOfEpisodes
+      );
+    }
+
     return true;
   },
 });
@@ -348,8 +490,10 @@ export const deleteAllDiary = mutation({
       .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
       .collect();
 
-    const reviewActivities = activities.filter((a) => a.type === "review");
-    for (const act of reviewActivities) {
+    const activitiesToDelete = activities.filter(
+      (a) => a.type === "review" || a.type === "completed_season"
+    );
+    for (const act of activitiesToDelete) {
       await ctx.db.delete(act._id);
       
       // Clean up likes and comments associated with the review activities
