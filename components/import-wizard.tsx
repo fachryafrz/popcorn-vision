@@ -686,8 +686,8 @@ export default function ImportWizard() {
                 cast: meta.cast,
                 directors: meta.directors,
                 watchProviders: meta.watchProviders,
-                numberOfSeasons: item.season === undefined && item.episode === undefined ? meta.numberOfSeasons : undefined,
-                numberOfEpisodes: item.season === undefined && item.episode === undefined ? meta.numberOfEpisodes : undefined,
+                numberOfSeasons: meta.numberOfSeasons,
+                numberOfEpisodes: meta.numberOfEpisodes,
               }
             : {};
 
@@ -698,8 +698,8 @@ export default function ImportWizard() {
             review: item.review || "",
             season: item.season,
             episode: item.episode,
-            numberOfSeasons: item.season === undefined && item.episode === undefined ? (item.numberOfSeasons ?? metadataArgs.numberOfSeasons) : undefined,
-            numberOfEpisodes: item.season === undefined && item.episode === undefined ? (item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes) : undefined,
+            numberOfSeasons: item.numberOfSeasons ?? metadataArgs.numberOfSeasons,
+            numberOfEpisodes: item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes,
             diaryType: item.diaryType,
             ...metadataArgs,
           });

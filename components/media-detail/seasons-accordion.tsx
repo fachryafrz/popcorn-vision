@@ -298,6 +298,8 @@ export default function SeasonsAccordion({
                                               cast: meta.cast,
                                               directors: meta.directors,
                                               watchProviders: meta.watchProviders,
+                                              numberOfEpisodes: meta.numberOfEpisodes,
+                                              numberOfSeasons: meta.numberOfSeasons,
                                             };
                                           }
                                         } catch (err) {
