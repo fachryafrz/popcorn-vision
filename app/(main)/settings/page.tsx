@@ -159,9 +159,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [updatingPassword, setUpdatingPassword] = useState(false);
 
   // Delete account fields state
-  const [deletePassword, setDeletePassword] = useState("");
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
-  const [closePassword, setClosePassword] = useState("");
+  const [closeConfirmation, setCloseConfirmation] = useState("");
   const [closingAccount, setClosingAccount] = useState(false);
 
   // Clear data fields state
@@ -266,7 +266,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       setProfileImage("");
       toast.success("Profile picture removed");
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -380,8 +380,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!deletePassword) {
-      toast.error("Please enter your current password to confirm deletion");
+    if (deleteConfirmation !== "Delete My Account") {
+      toast.error("Please type 'Delete My Account' to confirm deletion");
       return;
     }
 
@@ -404,25 +404,11 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     setDeletingAccount(true);
 
     try {
-      // 1. Verify password by calling signIn (will fail if password is wrong)
-      const verifyResult = await authClient.signIn.email({
-        email,
-        password: deletePassword,
-      });
-
-      if (verifyResult.error) {
-        throw new Error(
-          "Incorrect password. Please verify your current password.",
-        );
-      }
-
-      // 2. Remove user data from Convex tables (while still authenticated!)
+      // 1. Remove user data from Convex tables (while still authenticated!)
       await deleteConvexAccountData({});
 
-      // 3. Delete user from Better Auth
-      const deleteResult = await authClient.deleteUser({
-        password: deletePassword,
-      });
+      // 2. Delete user from Better Auth
+      const deleteResult = await authClient.deleteUser();
 
       if (deleteResult.error) {
         throw new Error(
@@ -434,7 +420,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       toast.success("Your account has been deleted. Goodbye!");
       router.push("/");
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -447,9 +433,9 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const handleCloseAccount = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!closePassword) {
+    if (closeConfirmation !== "Close My Account") {
       toast.error(
-        "Please enter your current password to confirm closing your account",
+        "Please type 'Close My Account' to confirm closing your account",
       );
       return;
     }
@@ -473,22 +459,10 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     setClosingAccount(true);
 
     try {
-      // 1. Verify password by calling signIn (will fail if password is wrong)
-      const verifyResult = await authClient.signIn.email({
-        email,
-        password: closePassword,
-      });
-
-      if (verifyResult.error) {
-        throw new Error(
-          "Incorrect password. Please verify your current password.",
-        );
-      }
-
-      // 2. Mark user account as closed in Convex
+      // 1. Mark user account as closed in Convex
       await closeConvexAccount({});
 
-      // 3. Sign out the user
+      // 2. Sign out the user
       await authClient.signOut();
 
       toast.success(
@@ -496,7 +470,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
       );
       router.push("/");
       setTimeout(() => {
-        window.location.reload();
+        router.refresh();
       }, 1000);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -670,12 +644,12 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
         {activeSection === "danger" && (
           <DangerSection
-            closePassword={closePassword}
-            setClosePassword={setClosePassword}
+            closeConfirmation={closeConfirmation}
+            setCloseConfirmation={setCloseConfirmation}
             closingAccount={closingAccount}
             handleCloseAccount={handleCloseAccount}
-            deletePassword={deletePassword}
-            setDeletePassword={setDeletePassword}
+            deleteConfirmation={deleteConfirmation}
+            setDeleteConfirmation={setDeleteConfirmation}
             deletingAccount={deletingAccount}
             handleDeleteAccount={handleDeleteAccount}
             clearingDiary={clearingDiary}

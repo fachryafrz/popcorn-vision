@@ -12,12 +12,17 @@ export const authComponent = createClient<DataModel>(components.betterAuth);
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
     database: authComponent.adapter(ctx),
-    secret: process.env.BETTER_AUTH_SECRET || "default_local_dev_secret_for_popcorn_vision_32_chars_long",
+    secret:
+      process.env.BETTER_AUTH_SECRET ||
+      "default_local_dev_secret_for_popcorn_vision_32_chars_long",
     trustedOrigins: [process.env.SITE_URL || "http://localhost:3000"],
-    plugins: [
-      convex({ authConfig }),
-      username()
-    ],
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID || "",
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      },
+    },
+    plugins: [convex({ authConfig }), username()],
     user: {
       deleteUser: {
         enabled: true,
@@ -28,7 +33,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
       sendResetPassword: async (data) => {
         const resendApiKey = process.env.RESEND_API_KEY;
         if (!resendApiKey) {
-          console.log(`\n========================================\n[RESET PASSWORD - DEV MODE] Link for ${data.user.email}:\n${data.url}\n========================================\n`);
+          console.log(
+            `\n========================================\n[RESET PASSWORD - DEV MODE] Link for ${data.user.email}:\n${data.url}\n========================================\n`,
+          );
           return;
         }
 
@@ -62,12 +69,21 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
 
           if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Resend API error: ${response.status} - ${errorText}`);
+            throw new Error(
+              `Resend API error: ${response.status} - ${errorText}`,
+            );
           }
-          console.log(`Password reset email sent successfully to ${data.user.email} via Resend.`);
+          console.log(
+            `Password reset email sent successfully to ${data.user.email} via Resend.`,
+          );
         } catch (error) {
-          console.error("Failed to send password reset email via Resend:", error);
-          console.log(`\n================[FALLBACK RESET PASSWORD]================\nLink for ${data.user.email}:\n${data.url}\n=========================================================\n`);
+          console.error(
+            "Failed to send password reset email via Resend:",
+            error,
+          );
+          console.log(
+            `\n================[FALLBACK RESET PASSWORD]================\nLink for ${data.user.email}:\n${data.url}\n=========================================================\n`,
+          );
         }
       },
     },

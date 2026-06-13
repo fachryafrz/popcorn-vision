@@ -5,12 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 interface DangerSectionProps {
-  closePassword: string;
-  setClosePassword: (val: string) => void;
+  closeConfirmation: string;
+  setCloseConfirmation: (val: string) => void;
   closingAccount: boolean;
   handleCloseAccount: (e: React.FormEvent) => void;
-  deletePassword: string;
-  setDeletePassword: (val: string) => void;
+  deleteConfirmation: string;
+  setDeleteConfirmation: (val: string) => void;
   deletingAccount: boolean;
   handleDeleteAccount: (e: React.FormEvent) => void;
   clearingDiary: boolean;
@@ -24,12 +24,12 @@ interface DangerSectionProps {
 }
 
 export default function DangerSection({
-  closePassword,
-  setClosePassword,
+  closeConfirmation,
+  setCloseConfirmation,
   closingAccount,
   handleCloseAccount,
-  deletePassword,
-  setDeletePassword,
+  deleteConfirmation,
+  setDeleteConfirmation,
   deletingAccount,
   handleDeleteAccount,
   clearingDiary,
@@ -59,15 +59,16 @@ export default function DangerSection({
 
         <div className="space-y-4">
           <div>
-            <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-              Enter Password to Confirm Closing Account
+            <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400">
+              Type <span className="text-white">"Close My Account"</span> to
+              Confirm
             </Label>
             <Input
-              type="password"
+              type="text"
               required
-              placeholder="Current Password"
-              value={closePassword}
-              onChange={(e) => setClosePassword(e.target.value)}
+              placeholder="Close My Account"
+              value={closeConfirmation}
+              onChange={(e) => setCloseConfirmation(e.target.value)}
               className="placeholder-zinc-650 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-zinc-500/30 focus:bg-zinc-900"
             />
           </div>
@@ -75,8 +76,8 @@ export default function DangerSection({
 
         <Button
           type="submit"
-          disabled={closingAccount}
-          className="mt-6 h-12 w-full cursor-pointer rounded-2xl bg-zinc-800 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-700 active:scale-[0.98]"
+          disabled={closingAccount || closeConfirmation !== "Close My Account"}
+          className="mt-6 h-12 w-full cursor-pointer rounded-2xl bg-zinc-800 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-700 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {closingAccount ? (
             <Loader2 className="mx-auto h-5 w-5 animate-spin" />
@@ -93,16 +94,17 @@ export default function DangerSection({
             Clear Personal Data
           </h2>
           <p className="text-xs text-zinc-500">
-            Permanently delete specific categories of data from your account. This action cannot be undone.
+            Permanently delete specific categories of data from your account.
+            This action cannot be undone.
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Clear Diary */}
-          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+          <div className="flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5">
             <div>
-              <h3 className="font-bold text-sm text-white mb-1">Clear Diary</h3>
-              <p className="text-xs text-zinc-500 mb-4">
+              <h3 className="mb-1 text-sm font-bold text-white">Clear Diary</h3>
+              <p className="mb-4 text-xs text-zinc-500">
                 Delete all your logged watch logs and reviews.
               </p>
             </div>
@@ -110,7 +112,7 @@ export default function DangerSection({
               type="button"
               disabled={clearingDiary}
               onClick={handleClearDiary}
-              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+              className="h-10 w-full cursor-pointer rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
               {clearingDiary ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -121,10 +123,12 @@ export default function DangerSection({
           </div>
 
           {/* Clear Watchlist */}
-          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+          <div className="flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5">
             <div>
-              <h3 className="font-bold text-sm text-white mb-1">Clear Watchlist</h3>
-              <p className="text-xs text-zinc-500 mb-4">
+              <h3 className="mb-1 text-sm font-bold text-white">
+                Clear Watchlist
+              </h3>
+              <p className="mb-4 text-xs text-zinc-500">
                 Delete all movies and TV shows from your watchlist.
               </p>
             </div>
@@ -132,7 +136,7 @@ export default function DangerSection({
               type="button"
               disabled={clearingWatchlist}
               onClick={handleClearWatchlist}
-              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+              className="h-10 w-full cursor-pointer rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
               {clearingWatchlist ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -143,10 +147,12 @@ export default function DangerSection({
           </div>
 
           {/* Clear Favorites */}
-          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+          <div className="flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5">
             <div>
-              <h3 className="font-bold text-sm text-white mb-1">Clear Favorites</h3>
-              <p className="text-xs text-zinc-500 mb-4">
+              <h3 className="mb-1 text-sm font-bold text-white">
+                Clear Favorites
+              </h3>
+              <p className="mb-4 text-xs text-zinc-500">
                 Delete all items from your favorites list.
               </p>
             </div>
@@ -154,7 +160,7 @@ export default function DangerSection({
               type="button"
               disabled={clearingFavorites}
               onClick={handleClearFavorites}
-              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+              className="h-10 w-full cursor-pointer rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
               {clearingFavorites ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -165,10 +171,12 @@ export default function DangerSection({
           </div>
 
           {/* Clear Ratings */}
-          <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5 flex flex-col justify-between">
+          <div className="flex flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-950/20 p-5">
             <div>
-              <h3 className="font-bold text-sm text-white mb-1">Clear Ratings</h3>
-              <p className="text-xs text-zinc-500 mb-4">
+              <h3 className="mb-1 text-sm font-bold text-white">
+                Clear Ratings
+              </h3>
+              <p className="mb-4 text-xs text-zinc-500">
                 Delete all ratings and clear ratings from your diary logs.
               </p>
             </div>
@@ -176,7 +184,7 @@ export default function DangerSection({
               type="button"
               disabled={clearingRatings}
               onClick={handleClearRatings}
-              className="w-full cursor-pointer h-10 rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
+              className="h-10 w-full cursor-pointer rounded-xl bg-zinc-800 text-xs font-semibold text-white transition-all hover:bg-zinc-700 active:scale-[0.98]"
             >
               {clearingRatings ? (
                 <Loader2 className="mx-auto h-4 w-4 animate-spin" />
@@ -216,15 +224,16 @@ export default function DangerSection({
 
         <div className="space-y-4">
           <div>
-            <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">
-              Enter Password to Confirm Deletion
+            <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400">
+              Type <span className="text-white">"Delete My Account"</span> to
+              Confirm
             </Label>
             <Input
-              type="password"
+              type="text"
               required
-              placeholder="Current Password"
-              value={deletePassword}
-              onChange={(e) => setDeletePassword(e.target.value)}
+              placeholder="Delete My Account"
+              value={deleteConfirmation}
+              onChange={(e) => setDeleteConfirmation(e.target.value)}
               className="placeholder-zinc-650 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:border-red-500/30 focus:bg-zinc-900"
             />
           </div>
@@ -232,8 +241,10 @@ export default function DangerSection({
 
         <Button
           type="submit"
-          disabled={deletingAccount}
-          className="bg-red-955 mt-6 h-12 w-full cursor-pointer rounded-2xl border border-red-900/50 text-sm font-semibold text-red-200 transition-all duration-200 hover:bg-red-900 active:scale-[0.98]"
+          disabled={
+            deletingAccount || deleteConfirmation !== "Delete My Account"
+          }
+          className="bg-red-955 mt-6 h-12 w-full cursor-pointer rounded-2xl border border-red-900/50 text-sm font-semibold text-red-200 transition-all duration-200 hover:bg-red-900 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {deletingAccount ? (
             <Loader2 className="mx-auto h-5 w-5 animate-spin" />

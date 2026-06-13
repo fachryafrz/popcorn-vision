@@ -17,8 +17,10 @@ import { useConvex, useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { siteConfig } from "@/config/site";
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function UsernamePromptModal() {
+  const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const user = session.data?.user;
@@ -93,7 +95,7 @@ export default function UsernamePromptModal() {
         });
 
         setIsSubmitted(true);
-        window.location.reload();
+        router.refresh();
       }
     } catch (err: unknown) {
       const errorObj = err as { message?: string };

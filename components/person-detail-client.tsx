@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { TMDBMedia, cleanMediaData, TMDBRawItem } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import {
@@ -485,7 +485,9 @@ export default function PersonDetailClient({
       )}
 
       {/* Auth Modal */}
-      <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      <Suspense>
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      </Suspense>
     </main>
   );
 }
