@@ -130,7 +130,7 @@ export default function Card({
   return (
     <div
       onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
-      className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1"
+      className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden transition-all duration-300 md:hover:-translate-y-1"
     >
       {/* Poster area */}
       <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
