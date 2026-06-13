@@ -19,6 +19,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import { Play } from "lucide-react";
+import { ContinueWatchingCarouselSkeleton } from "./skeletons";
+
 
 interface HomeClientProps {
   initialHero: TMDBMedia[];
@@ -60,35 +62,39 @@ export default function HomeClient({
         {/* Categories Section Carousels */}
         <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
           {/* Continue Watching Section */}
-          {isLoggedIn && continueWatching && continueWatching.length > 0 && (
+          {isLoggedIn && (continueWatching === undefined || continueWatching.length > 0) && (
             <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
               <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
                 <Play className="text-primary h-5 w-5 fill-current" />
                 Continue Watching
               </h2>
               <div className="swiper-carousel-container relative w-full">
-                <Swiper
-                  modules={[Mousewheel, FreeMode]}
-                  freeMode={true}
-                  spaceBetween={16}
-                  slidesPerView={2}
-                  breakpoints={{
-                    640: { slidesPerView: 3, spaceBetween: 24 },
-                    768: { slidesPerView: 4, spaceBetween: 24 },
-                    1024: { slidesPerView: 5, spaceBetween: 24 },
-                    1280: { slidesPerView: 6, spaceBetween: 24 },
-                  }}
-                  mousewheel={{
-                    forceToAxis: true,
-                  }}
-                  className="w-full pb-4"
-                >
-                  {continueWatching.map((item) => (
-                    <SwiperSlide key={item._id} className="py-1">
-                      <ContinueWatchingCard item={item} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                {continueWatching === undefined ? (
+                  <ContinueWatchingCarouselSkeleton />
+                ) : (
+                  <Swiper
+                    modules={[Mousewheel, FreeMode]}
+                    freeMode={true}
+                    spaceBetween={16}
+                    slidesPerView={2}
+                    breakpoints={{
+                      640: { slidesPerView: 3, spaceBetween: 24 },
+                      768: { slidesPerView: 4, spaceBetween: 24 },
+                      1024: { slidesPerView: 5, spaceBetween: 24 },
+                      1280: { slidesPerView: 6, spaceBetween: 24 },
+                    }}
+                    mousewheel={{
+                      forceToAxis: true,
+                    }}
+                    className="w-full pb-4"
+                  >
+                    {continueWatching.map((item) => (
+                      <SwiperSlide key={item._id} className="py-1">
+                        <ContinueWatchingCard item={item} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                )}
               </div>
             </div>
           )}
