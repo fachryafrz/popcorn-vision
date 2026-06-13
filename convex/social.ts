@@ -69,11 +69,8 @@ export const searchUsers = query({
     const q = args.query.trim().toLowerCase();
     if (!q) return [];
 
-    let currentUserId: string | null = null;
-    try {
-      const user = await authComponent.getAuthUser(ctx);
-      if (user) currentUserId = user._id;
-    } catch {}
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const currentUserId = user?._id || null;
 
     // Fetch all profiles (capped for search)
     const allUsers = await ctx.db.query("users").collect();
@@ -136,11 +133,8 @@ export const getUserSocialProfile = query({
     
     if (!targetUser) return null;
 
-    let currentUserId: string | null = null;
-    try {
-      const user = await authComponent.getAuthUser(ctx);
-      if (user) currentUserId = user._id;
-    } catch {}
+    const user = await authComponent.safeGetAuthUser(ctx);
+    const currentUserId = user?._id || null;
 
     const isOwner = currentUserId && targetUser.userId === currentUserId;
     if (targetUser.status === "deleted") return null;
@@ -217,7 +211,7 @@ export const getUserSocialProfile = query({
 export const sendFriendRequest = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -279,7 +273,7 @@ export const sendFriendRequest = mutation({
 export const acceptFriendRequest = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -328,7 +322,7 @@ export const acceptFriendRequest = mutation({
 export const rejectFriendRequest = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -360,7 +354,7 @@ export const rejectFriendRequest = mutation({
 export const cancelFriendRequest = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -396,7 +390,7 @@ export const cancelFriendRequest = mutation({
 export const removeFriend = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -424,7 +418,7 @@ export const removeFriend = mutation({
 export const blockUser = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -479,7 +473,7 @@ export const blockUser = mutation({
 export const unblockUser = mutation({
   args: { targetUserId: v.string() },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -497,7 +491,7 @@ export const unblockUser = mutation({
 export const getBlockedUsers = query({
   args: {},
   handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) return [];
     const currentUserId = user._id;
 
@@ -542,7 +536,7 @@ export const updatePrivacySettings = mutation({
     readReceiptsEnabled: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 
@@ -574,7 +568,7 @@ export const updatePrivacySettings = mutation({
 export const getNotifications = query({
   args: {},
   handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) return [];
     const currentUserId = user._id;
 
@@ -677,7 +671,7 @@ export const getNotifications = query({
 export const markNotificationRead = mutation({
   args: { notifId: v.id("notifications") },
   handler: async (ctx, args) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
 
     await ctx.db.patch(args.notifId, { read: true });
@@ -687,7 +681,7 @@ export const markNotificationRead = mutation({
 export const clearAllNotifications = mutation({
   args: {},
   handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) throw new Error("Unauthorized");
     const currentUserId = user._id;
 

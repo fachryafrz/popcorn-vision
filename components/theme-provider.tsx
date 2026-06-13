@@ -12,6 +12,7 @@ import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type ThemeType =
   | "light"
@@ -34,6 +35,7 @@ const PersonalizationContext = createContext<
 >(undefined);
 
 export function PersonalizationProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
@@ -104,7 +106,7 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
                   try {
                     const res = await reopenAccount();
                     if (res?.reopened) {
-                      window.location.reload();
+                      router.refresh();
                     }
                   } catch (err: unknown) {
                     console.error("Failed to reopen account:", err);
@@ -125,7 +127,7 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
                   setReopening(true);
                   try {
                     await authClient.signOut();
-                    window.location.reload();
+                    router.refresh();
                   } catch (err: unknown) {
                     console.error("Failed to sign out:", err);
                     setReopening(false);

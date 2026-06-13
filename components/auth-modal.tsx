@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { authClient } from "@/lib/auth-client";
 import { Mail, Lock, User, Loader2, AtSign } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,7 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
+  const router = useRouter();
   const convex = useConvex();
   const updateProfile = useMutation(api.users.createOrUpdateProfile);
 
@@ -29,13 +32,66 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<"submit" | "google" | null>(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const searchParams = useSearchParams();
+  const openAuth = useAuthModalStore((state) => state.open);
+
+  useEffect(() => {
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      const decodedError = errorParam.toLowerCase();
+
+      // Clean query parameter from URL using Next.js router to update its internal state
+      const url = new URL(window.location.href);
+      url.searchParams.delete("error");
+      router.replace(url.pathname + url.search, { scroll: false });
+
+      if (
+        decodedError.includes("account_not_linked") ||
+        decodedError.includes("account-not-linked")
+      ) {
+        setError(
+          "This Google account is not linked to your email-based account. Please sign in using your email/username and password first, then go to Settings > Security to link your Google account.",
+        );
+        openAuth();
+      } else {
+        setError(`Authentication failed: ${errorParam}`);
+        openAuth();
+      }
+    }
+  }, [searchParams, openAuth, router]);
+
+  const handleGoogleSignIn = async () => {
+    setLoading("google");
+    setError("");
+    setSuccess("");
+
+    try {
+      const { error: googleError } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: window.location.origin,
+      });
+
+      if (googleError) {
+        setError(googleError.message || "Failed to sign in with Google");
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred during Google sign in",
+      );
+    } finally {
+      setLoading(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setLoading("submit");
     setError("");
     setSuccess("");
 
@@ -43,7 +99,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       if (mode === "forgot") {
         if (!email.includes("@")) {
           setError("Please enter a valid email address");
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
@@ -89,12 +145,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             }
           }
           onClose();
-          window.location.reload();
+          router.refresh();
         }
       } else {
         if (!name) {
           setError("Name is required");
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
@@ -103,7 +159,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           setError(
             "Username must be between 3 and 15 alphanumeric characters or underscores",
           );
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
@@ -113,7 +169,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         });
         if (!isUnique) {
           setError("Username is already taken");
-          setLoading(false);
+          setLoading(null);
           return;
         }
 
@@ -140,7 +196,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           }
 
           onClose();
-          window.location.reload();
+          router.refresh();
         }
       }
     } catch (err) {
@@ -150,7 +206,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           : "An error occurred. Please try again.",
       );
     } finally {
-      setLoading(false);
+      setLoading(null);
     }
   };
 
@@ -170,7 +226,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         }
       }}
     >
-      <DialogContent className="animate-in fade-in zoom-in max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950/85 p-8 text-white shadow-2xl shadow-black/80 backdrop-blur-xl duration-300">
+      <DialogContent className="animate-in fade-in zoom-in max-w-md rounded-3xl border border-zinc-800 bg-zinc-950/85 p-8 text-white shadow-2xl shadow-black/80 backdrop-blur-xl duration-300">
         {/* Header */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
@@ -208,6 +264,59 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           <div className="mb-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-400">
             {success}
           </div>
+        )}
+
+        {mode !== "forgot" && (
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={loading !== null}
+              onClick={handleGoogleSignIn}
+              className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900/50 py-6 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-900 active:scale-[0.98]"
+            >
+              {loading === "google" ? (
+                <Loader2 className="h-5 w-5 animate-spin text-white" />
+              ) : (
+                <svg
+                  className="h-5 w-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.35 11.1H12V13.8H17.38C17.14 15.08 16.42 16.17 15.34 16.9V19.47H18.64C20.57 17.69 21.68 15.07 21.68 12C21.68 11.39 21.62 10.8 21.51 10.21L21.35 11.1Z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 20.58C14.43 20.58 16.47 19.78 17.96 18.4L14.66 15.83C13.76 16.43 12.59 16.8 11.36 16.8C8.99 16.8 6.98 15.2 6.26 13.04H2.86V15.7C4.34 18.64 7.4 20.58 10.9 20.58H12Z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M6.9 13.1C6.72 12.56 6.62 11.99 6.62 11.4C6.62 10.81 6.72 10.24 6.9 9.7V7.04H2.86C2.26 8.24 1.92 9.58 1.92 11.4C1.92 13.22 2.26 14.56 2.86 15.76L6.9 13.1Z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.22C13.32 5.22 14.5 5.67 15.44 6.57L18.02 3.99C16.47 2.5 14.43 1.7 12 1.7C8.5 1.7 5.44 3.64 3.96 6.58L8 9.74C8.72 7.58 10.73 5.98 13.1 5.98L12 5.22Z"
+                    fill="#EA4335"
+                  />
+                </svg>
+              )}
+              <span>
+                {mode === "login"
+                  ? "Sign in with Google"
+                  : "Sign up with Google"}
+              </span>
+            </Button>
+
+            <div className="relative my-3 flex items-center gap-3">
+              <div className="h-px flex-1 bg-zinc-800" />
+              <span className="text-xs font-semibold tracking-wider text-zinc-500 uppercase">
+                Or
+              </span>
+              <div className="h-px flex-1 bg-zinc-800" />
+            </div>
+          </>
         )}
 
         {/* Form */}
@@ -321,10 +430,10 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
           <Button
             type="submit"
-            disabled={loading}
+            disabled={loading !== null}
             className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-base font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50"
           >
-            {loading ? (
+            {loading === "submit" ? (
               <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : mode === "login" ? (
               "Sign In"

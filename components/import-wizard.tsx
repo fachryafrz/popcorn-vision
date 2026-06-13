@@ -1108,7 +1108,7 @@ export default function ImportWizard() {
                 Import Another File
               </Button>
               <Button
-                onClick={() => window.location.reload()}
+                onClick={handleReset}
                 className="h-11 w-full cursor-pointer rounded-xl bg-white text-xs font-bold text-black shadow-md hover:bg-zinc-200 sm:w-1/2"
               >
                 Done

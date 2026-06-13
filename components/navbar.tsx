@@ -108,7 +108,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await authClient.signOut();
-    window.location.reload();
+    router.refresh();
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
