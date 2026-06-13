@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useCallback, useRef } from "react";
+import { useState, useTransition, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
@@ -198,7 +198,9 @@ export default function SearchClient({
       )}
 
       {/* Auth Modal */}
-      <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      <Suspense>
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      </Suspense>
     </main>
   );
 }

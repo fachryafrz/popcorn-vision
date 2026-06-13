@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
@@ -1091,7 +1091,9 @@ export default function Navbar() {
       </header>
 
       {/* Global AuthModal */}
-      <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      <Suspense>
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
+      </Suspense>
     </>
   );
 }
