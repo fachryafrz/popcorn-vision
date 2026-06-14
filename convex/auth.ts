@@ -22,6 +22,9 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       },
     },
+    session: {
+      expiresIn: 60 * 60 * 24 * 30, // 30 days
+    },
     plugins: [convex({ authConfig }), username()],
     user: {
       deleteUser: {
