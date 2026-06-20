@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface SecuritySectionProps {
   currentPassword: string;
@@ -51,12 +52,13 @@ export default function SecuritySection({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchAccounts();
   }, []);
 
   const isGoogleLinked = accounts.some(
-    (acc: LinkedAccount) => acc.providerId === "google"
+    (acc: LinkedAccount) => acc.providerId === "google",
   );
 
   const handleLinkGoogle = async () => {
@@ -95,6 +97,12 @@ export default function SecuritySection({
     }
   };
 
+  const hasPassword = accounts.some(
+    (acc: LinkedAccount) => acc.providerId === "credential",
+  );
+
+  const isPasswordDisabled = !loadingAccounts && !hasPassword;
+
   return (
     <div className="space-y-8">
       <form onSubmit={handleUpdatePassword} className="space-y-6">
@@ -106,6 +114,15 @@ export default function SecuritySection({
             Change your password. Upon updating, you will be logged out of other
             devices.
           </p>
+          {isPasswordDisabled && (
+            <Alert className="mt-4 border-amber-500/20 bg-amber-500/10 text-amber-500 [&>svg]:text-amber-500">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle className="font-semibold text-white">Password Change Disabled</AlertTitle>
+              <AlertDescription className="text-xs text-zinc-400">
+                You are logged in via a social provider. Changing password is only supported for email & password accounts.
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -115,11 +132,12 @@ export default function SecuritySection({
             </Label>
             <Input
               type="password"
-              required
+              required={!isPasswordDisabled}
+              disabled={isPasswordDisabled}
               placeholder="••••••••"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              className="placeholder-zinc-650 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
+              className="placeholder-zinc-650 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -129,11 +147,12 @@ export default function SecuritySection({
             </Label>
             <Input
               type="password"
-              required
+              required={!isPasswordDisabled}
+              disabled={isPasswordDisabled}
               placeholder="••••••••"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
+              className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -143,19 +162,20 @@ export default function SecuritySection({
             </Label>
             <Input
               type="password"
-              required
+              required={!isPasswordDisabled}
+              disabled={isPasswordDisabled}
               placeholder="••••••••"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900"
+              className="placeholder-zinc-655 focus:border-primary/50 w-full rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 py-6 text-left text-sm text-white outline-hidden transition-all focus:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
             />
           </div>
         </div>
 
         <Button
           type="submit"
-          disabled={updatingPassword}
-          className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98]"
+          disabled={updatingPassword || isPasswordDisabled}
+          className="to-primary hover:to-primary hover:from-primary from-primary mt-6 w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-semibold text-white transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {updatingPassword ? (
             <Loader2 className="mx-auto h-5 w-5 animate-spin" />
@@ -165,7 +185,7 @@ export default function SecuritySection({
         </Button>
       </form>
 
-      <div className="border-t border-zinc-900 pt-8 mt-8">
+      <div className="mt-8 border-t border-zinc-900 pt-8">
         <div>
           <h2 className="mb-1 text-xl font-bold tracking-tight text-white">
             Linked Accounts
@@ -176,7 +196,7 @@ export default function SecuritySection({
         </div>
 
         <div className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/10 p-5">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
                 <svg
@@ -223,7 +243,7 @@ export default function SecuritySection({
                 variant="outline"
                 disabled={unlinking}
                 onClick={handleUnlinkGoogle}
-                className="cursor-pointer border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl px-4 py-2 text-xs font-semibold"
+                className="cursor-pointer rounded-xl border-red-500/20 px-4 py-2 text-xs font-semibold text-red-400 hover:bg-red-500/10 hover:text-red-300"
               >
                 {unlinking ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -237,7 +257,7 @@ export default function SecuritySection({
                 variant="outline"
                 disabled={linking}
                 onClick={handleLinkGoogle}
-                className="cursor-pointer border-zinc-800 hover:bg-zinc-900 rounded-xl px-4 py-2 text-xs font-semibold text-white"
+                className="cursor-pointer rounded-xl border-zinc-800 px-4 py-2 text-xs font-semibold text-white hover:bg-zinc-900"
               >
                 {linking ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
