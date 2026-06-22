@@ -129,7 +129,7 @@ export default function LogWatchModal({
         const timer = setTimeout(() => {
           setWatchedDate(todayStr);
           setRewatch(false);
-          setRating(0);
+          setRating(initialRating || 0);
           setReview("");
           setLogScope("show");
           setSelectedSeasonNumber(initialSeasonNum);

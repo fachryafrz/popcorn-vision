@@ -966,6 +966,7 @@ export default function MediaDetailClient({
           title={details.title || details.name || ""}
           posterPath={details.poster_path || ""}
           releaseYear={releaseYear.toString()}
+          initialRating={userRating ?? undefined}
           season={logWatchEpisode?.season}
           episode={logWatchEpisode?.episode}
           numberOfSeasons={mediaType === "tv" ? details.number_of_seasons : undefined}
