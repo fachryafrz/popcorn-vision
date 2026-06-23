@@ -18,8 +18,9 @@ import ContinueWatchingCard from "./continue-watching-card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
-import { Play } from "lucide-react";
-import { ContinueWatchingCarouselSkeleton } from "./skeletons";
+import { Play, Bookmark } from "lucide-react";
+import { CarouselSkeleton } from "./skeletons";
+import Card from "./card";
 
 
 interface HomeClientProps {
@@ -44,6 +45,11 @@ export default function HomeClient({
     api.continueWatching.getProgress,
     isLoggedIn ? {} : "skip",
   );
+  const watchlist = useQuery(
+    api.watchlist.getWatchlist,
+    isLoggedIn ? {} : "skip",
+  );
+
 
   const handleQuickView = (media: TMDBMedia) => {
     setQuickViewMedia(media);
@@ -62,42 +68,92 @@ export default function HomeClient({
         {/* Categories Section Carousels */}
         <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
           {/* Continue Watching Section */}
-          {isLoggedIn && (continueWatching === undefined || continueWatching.length > 0) && (
+          {isLoggedIn && continueWatching !== undefined && continueWatching.length > 0 && (
             <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
               <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
                 <Play className="text-primary h-5 w-5 fill-current" />
                 Continue Watching
               </h2>
               <div className="swiper-carousel-container relative w-full">
-                {continueWatching === undefined ? (
-                  <ContinueWatchingCarouselSkeleton />
-                ) : (
-                  <Swiper
-                    modules={[Mousewheel, FreeMode]}
-                    freeMode={true}
-                    spaceBetween={16}
-                    slidesPerView={2}
-                    breakpoints={{
-                      640: { slidesPerView: 3, spaceBetween: 24 },
-                      768: { slidesPerView: 4, spaceBetween: 24 },
-                      1024: { slidesPerView: 5, spaceBetween: 24 },
-                      1280: { slidesPerView: 6, spaceBetween: 24 },
-                    }}
-                    mousewheel={{
-                      forceToAxis: true,
-                    }}
-                    className="w-full pb-4"
-                  >
-                    {continueWatching.map((item) => (
-                      <SwiperSlide key={item._id} className="py-1">
-                        <ContinueWatchingCard item={item} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                )}
+                <Swiper
+                  modules={[Mousewheel, FreeMode]}
+                  freeMode={true}
+                  spaceBetween={16}
+                  slidesPerView={2}
+                  breakpoints={{
+                    640: { slidesPerView: 3, spaceBetween: 24 },
+                    768: { slidesPerView: 4, spaceBetween: 24 },
+                    1024: { slidesPerView: 5, spaceBetween: 24 },
+                    1280: { slidesPerView: 6, spaceBetween: 24 },
+                  }}
+                  mousewheel={{
+                    forceToAxis: true,
+                  }}
+                  className="w-full pb-4"
+                >
+                  {continueWatching.map((item) => (
+                    <SwiperSlide key={item._id} className="py-1">
+                      <ContinueWatchingCard item={item} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
               </div>
             </div>
           )}
+
+          {/* Watchlist Section */}
+          {isLoggedIn && watchlist !== undefined && watchlist.length > 0 && (
+            <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+                <Bookmark className="text-primary h-5 w-5 fill-current" />
+                My Watchlist
+              </h2>
+              <div className="swiper-carousel-container relative w-full">
+                <Swiper
+                  modules={[Mousewheel, FreeMode]}
+                  freeMode={true}
+                  spaceBetween={16}
+                  slidesPerView={2}
+                  breakpoints={{
+                    640: { slidesPerView: 3, spaceBetween: 24 },
+                    768: { slidesPerView: 4, spaceBetween: 24 },
+                    1024: { slidesPerView: 5, spaceBetween: 24 },
+                    1280: { slidesPerView: 6, spaceBetween: 24 },
+                  }}
+                  mousewheel={{
+                    forceToAxis: true,
+                  }}
+                  className="w-full pb-4"
+                >
+                  {watchlist.map((item) => {
+                    const mediaItem: TMDBMedia = {
+                      id: Number(item.mediaId),
+                      media_type: item.mediaType as "movie" | "tv",
+                      title: item.title,
+                      name: item.title,
+                      poster_path: item.posterPath,
+                      vote_average: item.rating || 0,
+                      release_date: item.releaseYear,
+                      backdrop_path: "",
+                      genre_ids: [],
+                      overview: "",
+                      popularity: 0,
+                    };
+                    return (
+                      <SwiperSlide key={item._id} className="py-1">
+                        <Card
+                          media={mediaItem}
+                          onQuickView={handleQuickView}
+                          onAuthRequired={openAuth}
+                        />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              </div>
+            </div>
+          )}
+
 
           {/* Trending Now */}
           <div id="trending">
