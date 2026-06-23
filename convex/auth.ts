@@ -50,7 +50,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
               Authorization: `Bearer ${resendApiKey}`,
             },
             body: JSON.stringify({
-              from: `${siteConfig.name} <noreply@popcorn.fachryafrz.com>`,
+              from: `${siteConfig.name} <noreply@fachryafrz.com>`,
               to: data.user.email,
               subject: `Reset your ${siteConfig.name} Password`,
               html: `
