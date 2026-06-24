@@ -6,6 +6,7 @@ import { DataModel } from "./_generated/dataModel";
 import authConfig from "./auth.config";
 import { username } from "better-auth/plugins";
 import { siteConfig } from "@/config/site";
+import { getResetPasswordEmailHtml } from "./emails";
 
 export const authComponent = createClient<DataModel>(components.betterAuth);
 
@@ -53,20 +54,7 @@ export const createAuth = (ctx: GenericCtx<DataModel>) => {
               from: `${siteConfig.name} <noreply@fachryafrz.com>`,
               to: data.user.email,
               subject: `Reset your ${siteConfig.name} Password`,
-              html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #1f2937;">
-                  <h2 style="font-size: 24px; font-weight: bold; color: #111827; margin-bottom: 16px;">Reset your ${siteConfig.name} Password</h2>
-                  <p style="margin-bottom: 24px;">Hello ${data.user.name || "there"},</p>
-                  <p style="margin-bottom: 24px;">We received a request to reset the password for your ${siteConfig.name} account. Click the button below to set a new password:</p>
-                  <div style="margin-bottom: 32px;">
-                    <a href="${data.url}" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 12px; font-weight: 600; text-decoration: none;">Reset Password</a>
-                  </div>
-                  <p style="margin-bottom: 12px;">Or copy and paste this URL into your browser:</p>
-                  <p style="word-break: break-all; color: #4b5563; font-size: 14px; background-color: #f3f4f6; padding: 12px; border-radius: 8px;">${data.url}</p>
-                  <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 32px 0;" />
-                  <p style="font-size: 12px; color: #9ca3af;">If you did not request a password reset, you can safely ignore this email.</p>
-                </div>
-              `,
+              html: getResetPasswordEmailHtml(data.user.name, data.url),
             }),
           });
 
