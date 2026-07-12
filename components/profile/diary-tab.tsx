@@ -1,7 +1,17 @@
 "use client";
 
 import React from "react";
-import { Loader2, Calendar, History, Edit2, Trash2, Star, Search, X, Check } from "lucide-react";
+import {
+  Loader2,
+  Calendar,
+  History,
+  Edit2,
+  Trash2,
+  Star,
+  Search,
+  X,
+  Check,
+} from "lucide-react";
 import Link from "next/link";
 import { DiaryItem } from "./types";
 import { cn } from "@/lib/utils";
@@ -61,7 +71,11 @@ export function DiaryTab({
     }
 
     // If same show (TV), sort by season and episode descending
-    if (a.mediaId === b.mediaId && a.mediaType === "tv" && b.mediaType === "tv") {
+    if (
+      a.mediaId === b.mediaId &&
+      a.mediaType === "tv" &&
+      b.mediaType === "tv"
+    ) {
       const aSeason = a.season ?? 0;
       const bSeason = b.season ?? 0;
       if (bSeason !== aSeason) {
@@ -100,7 +114,7 @@ export function DiaryTab({
           placeholder="Search diary by title..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="h-9 w-full rounded-full border border-zinc-800/80 bg-zinc-950/30 pl-9 pr-8 text-xs text-white placeholder-zinc-500 outline-none transition-all focus:border-zinc-700 focus:bg-zinc-950/60"
+          className="h-9 w-full rounded-full border border-zinc-800/80 bg-zinc-950/30 pr-8 pl-9 text-xs text-white placeholder-zinc-500 transition-all outline-none focus:border-zinc-700 focus:bg-zinc-950/60"
         />
         {searchQuery && (
           <button
@@ -121,7 +135,7 @@ export function DiaryTab({
           <button
             type="button"
             onClick={() => setSearchQuery("")}
-            className="text-xs font-bold text-primary hover:underline"
+            className="text-primary text-xs font-bold hover:underline"
           >
             Clear search
           </button>
@@ -141,7 +155,7 @@ export function DiaryTab({
               <div key={dateKey} className="relative space-y-3.5">
                 {/* Day Header */}
                 <div className="mb-2 flex items-center gap-2">
-                  <span className="border-zinc-850 rounded-full border bg-zinc-900 px-2.5 py-1 text-[10px] leading-none font-black tracking-wider text-zinc-500 uppercase shadow-inner select-none">
+                  <span className="border-zinc-850 rounded-full border bg-zinc-900 px-2.5 py-1 text-[10px] leading-none font-black tracking-wider text-zinc-500 uppercase shadow-inner">
                     {dateStr}
                   </span>
                   <div className="h-px flex-1 bg-zinc-900/50" />
@@ -164,7 +178,9 @@ export function DiaryTab({
                         isEditMode
                           ? "cursor-pointer hover:border-zinc-700 hover:bg-zinc-900/40"
                           : "hover:border-zinc-800 hover:bg-zinc-900/30",
-                        isEditMode && selectedItems.has(entry._id) && "border-primary/50 bg-primary/5"
+                        isEditMode &&
+                          selectedItems.has(entry._id) &&
+                          "border-primary/50 bg-primary/5",
                       )}
                     >
                       {/* Timeline dot */}
@@ -172,7 +188,7 @@ export function DiaryTab({
 
                       {/* Edit Selection Checkbox */}
                       {isEditMode && (
-                        <div className="flex items-center shrink-0 self-center">
+                        <div className="flex shrink-0 items-center self-center">
                           <div
                             className={cn(
                               "flex h-5 w-5 items-center justify-center rounded-md border shadow-md transition-all",
@@ -250,15 +266,25 @@ export function DiaryTab({
                           <span className="border-zinc-850 rounded-lg border bg-zinc-900 px-2 py-0.5 text-[9px] font-bold tracking-wide text-zinc-400 uppercase">
                             {entry.mediaType} • {entry.releaseYear}
                             {(() => {
-                              const type = entry.diaryType ?? (entry.season !== undefined && entry.episode !== undefined
-                                ? "episode"
-                                : entry.season !== undefined
-                                  ? "season"
-                                  : "tv");
-                              if (type === "episode" && entry.season !== undefined && entry.episode !== undefined) {
+                              const type =
+                                entry.diaryType ??
+                                (entry.season !== undefined &&
+                                entry.episode !== undefined
+                                  ? "episode"
+                                  : entry.season !== undefined
+                                    ? "season"
+                                    : "tv");
+                              if (
+                                type === "episode" &&
+                                entry.season !== undefined &&
+                                entry.episode !== undefined
+                              ) {
                                 return ` • S${entry.season} E${entry.episode}`;
                               }
-                              if (type === "season" && entry.season !== undefined) {
+                              if (
+                                type === "season" &&
+                                entry.season !== undefined
+                              ) {
                                 return ` • Season ${entry.season}`;
                               }
                               return "";

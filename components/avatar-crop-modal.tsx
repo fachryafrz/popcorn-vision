@@ -176,7 +176,7 @@ export default function AvatarCropModal({
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             style={{ width: viewportSize, height: viewportSize }}
-            className="border-primary/70 relative cursor-move touch-none overflow-hidden rounded-full border-2 bg-zinc-900 shadow-inner select-none"
+            className="border-primary/70 relative cursor-move touch-none overflow-hidden rounded-full border-2 bg-zinc-900 shadow-inner"
           >
             {imgSrc && (
               <img

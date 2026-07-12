@@ -641,7 +641,7 @@ export default function MediaDetailClient({
   const duration = moment.duration(runtime, "minutes");
 
   return (
-    <div className="bg-background text-foreground min-h-svh transition-colors duration-300 select-none">
+    <div className="bg-background text-foreground min-h-svh transition-colors duration-300">
       {/* Hero Header Section - Stacked Backdrop */}
       <MediaHero
         backdropRef={backdropRef}
@@ -789,10 +789,6 @@ export default function MediaDetailClient({
               </span>
             </div>
           )}
-
-          <p className="mt-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
-            {details?.overview || "No overview available."}
-          </p>
 
           <ActionsSection
             trailerKey={trailerKey}
@@ -969,8 +965,12 @@ export default function MediaDetailClient({
           initialRating={userRating ?? undefined}
           season={logWatchEpisode?.season}
           episode={logWatchEpisode?.episode}
-          numberOfSeasons={mediaType === "tv" ? details.number_of_seasons : undefined}
-          numberOfEpisodes={mediaType === "tv" ? details.number_of_episodes : undefined}
+          numberOfSeasons={
+            mediaType === "tv" ? details.number_of_seasons : undefined
+          }
+          numberOfEpisodes={
+            mediaType === "tv" ? details.number_of_episodes : undefined
+          }
           seasons={mediaType === "tv" ? details.seasons : undefined}
         />
       )}

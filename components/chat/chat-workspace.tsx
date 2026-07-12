@@ -99,7 +99,7 @@ export default function ChatWorkspace({
   if (!selectedChatId || !activeChat) {
     return (
       <div className="flex grow flex-col items-center justify-center space-y-4 p-6 text-center">
-        <div className="text-zinc-650 flex h-16 w-16 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900 shadow-xl select-none">
+        <div className="text-zinc-650 flex h-16 w-16 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900 shadow-xl">
           <Users className="text-primary h-8 w-8" />
         </div>
         <div>
@@ -116,7 +116,7 @@ export default function ChatWorkspace({
   return (
     <div className="flex flex-1 flex-col justify-between overflow-hidden bg-zinc-950/20">
       {/* Header controls of active room */}
-      <div className="flex items-center justify-between border-b border-zinc-900 bg-zinc-950 p-4 select-none">
+      <div className="flex items-center justify-between border-b border-zinc-900 bg-zinc-950 p-4">
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -362,7 +362,7 @@ export default function ChatWorkspace({
                                 <p className="leading-relaxed wrap-break-word whitespace-pre-wrap">
                                   {msg.content}
                                   {msg.editedAt && (
-                                    <span className="ml-1.5 text-[8px] font-bold text-zinc-500 lowercase italic select-none">
+                                    <span className="ml-1.5 text-[8px] font-bold text-zinc-500 lowercase italic">
                                       (edited)
                                     </span>
                                   )}
@@ -467,7 +467,7 @@ export default function ChatWorkspace({
                       {/* Timestamp Details */}
                       <div
                         className={cn(
-                          "mt-1 flex items-center gap-1.5 text-[9px] text-zinc-500 select-none",
+                          "mt-1 flex items-center gap-1.5 text-[9px] text-zinc-500",
                           isMe ? "justify-end pr-1" : "justify-start pl-1",
                         )}
                       >
@@ -552,7 +552,7 @@ export default function ChatWorkspace({
 
         {/* Real-time Typing Indicators */}
         {activeChatTyping && activeChatTyping.length > 0 && (
-          <div className="text-zinc-550 flex animate-pulse items-center gap-2 py-1 pl-11 text-[10px] font-semibold italic select-none">
+          <div className="text-zinc-550 flex animate-pulse items-center gap-2 py-1 pl-11 text-[10px] font-semibold italic">
             <div className="flex gap-1">
               <span className="bg-zinc-650 h-1.5 w-1.5 animate-bounce rounded-full" />
               <span className="bg-zinc-650 h-1.5 w-1.5 animate-bounce rounded-full delay-150" />

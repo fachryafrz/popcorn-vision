@@ -53,7 +53,7 @@ export default function ActionsSection({
   isUnreleased,
 }: ActionsSectionProps) {
   return (
-    <div className="mt-6 flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <Button
         onClick={() => scrollToPlayer("watch")}
         disabled={isUnreleased}
@@ -170,14 +170,14 @@ export default function ActionsSection({
         ? watchProgress &&
           (watchProgress.season !== undefined ||
             watchProgress.episode !== undefined) && (
-            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase">
               <Check className="h-4 w-4 stroke-3" />
               Last watch: S{watchProgress.season} E{watchProgress.episode}
             </span>
           )
         : watchHistory &&
           watchHistory.watchCount > 0 && (
-            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase select-none">
+            <span className="flex h-fit items-center gap-1.5 rounded-full border border-emerald-900/30 bg-emerald-950/20 px-4 py-2.5 text-xs font-bold text-emerald-400 uppercase">
               <Check className="h-4 w-4 stroke-3" />
               Watched {watchHistory.watchCount}{" "}
               {watchHistory.watchCount === 1 ? "time" : "times"}

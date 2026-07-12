@@ -127,7 +127,7 @@ export default function Section({
         {titleType === "dropdown-streaming" && onStreamingChange && (
           <DropdownMenu>
             <DropdownMenuTrigger className="group flex cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
-              <span className="flex items-center gap-1.5 select-none">
+              <span className="flex items-center gap-1.5">
                 <span
                   className={cn(
                     "transition-colors",
@@ -155,7 +155,7 @@ export default function Section({
                           : "text-zinc-300 hover:text-white",
                       )}
                     >
-                      <span className="flex items-center gap-1.5 select-none">
+                      <span className="flex items-center gap-1.5">
                         <span className={PROVIDER_COLORS[key].textClass}>
                           {PROVIDERS[key].name.replace(" Originals", "")}
                         </span>

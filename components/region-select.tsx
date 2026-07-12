@@ -146,7 +146,7 @@ export default function RegionSelect({
                 )}
               >
                 <span className="flex items-center gap-2.5 truncate">
-                  <span className="shrink-0 text-sm leading-none select-none">
+                  <span className="shrink-0 text-sm leading-none">
                     {getFlagEmoji(region["alpha-2"])}
                   </span>
                   <span className="truncate">{region.name}</span>

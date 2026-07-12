@@ -673,11 +673,12 @@ export default function ImportWizard() {
           await rateMedia(args);
           rCount++;
         } else if (item.sourceTable === "diary") {
-          const key = item.season !== undefined && item.episode !== undefined
-            ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
-            : item.season !== undefined
-              ? `${item.mediaType}-${item.mediaId}-S${item.season}`
-              : `${item.mediaType}-${item.mediaId}`;
+          const key =
+            item.season !== undefined && item.episode !== undefined
+              ? `${item.mediaType}-${item.mediaId}-S${item.season}E${item.episode}`
+              : item.season !== undefined
+                ? `${item.mediaType}-${item.mediaId}-S${item.season}`
+                : `${item.mediaType}-${item.mediaId}`;
           const meta = statsMetadataMap[key];
           const metadataArgs = meta
             ? {
@@ -698,8 +699,10 @@ export default function ImportWizard() {
             review: item.review || "",
             season: item.season,
             episode: item.episode,
-            numberOfSeasons: item.numberOfSeasons ?? metadataArgs.numberOfSeasons,
-            numberOfEpisodes: item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes,
+            numberOfSeasons:
+              item.numberOfSeasons ?? metadataArgs.numberOfSeasons,
+            numberOfEpisodes:
+              item.numberOfEpisodes ?? metadataArgs.numberOfEpisodes,
             diaryType: item.diaryType,
             ...metadataArgs,
           });
@@ -980,12 +983,12 @@ export default function ImportWizard() {
                     {/* Checkbox Status indicators */}
                     <div className="flex shrink-0 items-center gap-3">
                       {isDuplicate ? (
-                        <span className="flex items-center gap-1 rounded-lg border border-red-900/30 bg-red-950/20 px-2 py-1 text-[9px] font-bold text-red-400/90 uppercase select-none">
+                        <span className="flex items-center gap-1 rounded-lg border border-red-900/30 bg-red-950/20 px-2 py-1 text-[9px] font-bold text-red-400/90 uppercase">
                           <AlertTriangle className="h-3 w-3" />
                           Duplicate
                         </span>
                       ) : !item.matched ? (
-                        <span className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1 text-[9px] font-bold text-zinc-500 uppercase select-none">
+                        <span className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1 text-[9px] font-bold text-zinc-500 uppercase">
                           Unmatched
                         </span>
                       ) : (
