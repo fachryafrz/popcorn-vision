@@ -231,21 +231,21 @@ export async function getSeasonDetails(tvId: number, seasonNumber: number) {
 }
 
 // Search movies and TV shows by query string
-export async function searchMedia(query: string, type: "all" | "movie" | "tv" = "all"): Promise<TMDBMedia[]> {
+export async function searchMedia(query: string, type: "all" | "movie" | "tv" = "all", page: number = 1): Promise<TMDBMedia[]> {
   if (!query.trim()) return [];
   try {
     if (type === "movie") {
-      const res = await axios.get("/search/movie", { params: { query, include_adult: false } });
+      const res = await axios.get("/search/movie", { params: { query, page, include_adult: false } });
       return cleanMediaData(res.data.results || [], "movie");
     }
     if (type === "tv") {
-      const res = await axios.get("/search/tv", { params: { query, include_adult: false } });
+      const res = await axios.get("/search/tv", { params: { query, page, include_adult: false } });
       return cleanMediaData(res.data.results || [], "tv");
     }
     // all: search both and merge
     const [movieRes, tvRes] = await Promise.all([
-      axios.get("/search/movie", { params: { query, include_adult: false } }),
-      axios.get("/search/tv", { params: { query, include_adult: false } }),
+      axios.get("/search/movie", { params: { query, page, include_adult: false } }),
+      axios.get("/search/tv", { params: { query, page, include_adult: false } }),
     ]);
     const movies = cleanMediaData(movieRes.data.results || [], "movie");
     const tv = cleanMediaData(tvRes.data.results || [], "tv");
@@ -615,6 +615,139 @@ export async function searchPersonByName(name: string): Promise<number | null> {
   }
 }
 
+export interface DiscoverFilters {
+  genre?: string;
+  startDate?: string;
+  endDate?: string;
+  providerId?: string;
+  minRuntime?: string;
+  maxRuntime?: string;
+}
 
+export async function discoverMedia(filters: DiscoverFilters, type: "all" | "movie" | "tv" = "all", page: number = 1): Promise<TMDBMedia[]> {
+  try {
+    const movieParams: Record<string, string | number | boolean> = {
+      include_adult: false,
+      sort_by: "popularity.desc",
+      page,
+    };
+    const tvParams: Record<string, string | number | boolean> = {
+      include_adult: false,
+      sort_by: "popularity.desc",
+      page,
+    };
 
+    if (filters.genre) {
+      movieParams.with_genres = filters.genre;
+      tvParams.with_genres = filters.genre;
+    }
 
+    if (filters.startDate) {
+      movieParams["primary_release_date.gte"] = filters.startDate;
+      tvParams["first_air_date.gte"] = filters.startDate;
+    }
+
+    if (filters.endDate) {
+      movieParams["primary_release_date.lte"] = filters.endDate;
+      tvParams["first_air_date.lte"] = filters.endDate;
+    }
+
+    if (filters.providerId) {
+      movieParams.with_watch_providers = filters.providerId;
+      movieParams.watch_region = "US";
+      tvParams.with_watch_providers = filters.providerId;
+      tvParams.watch_region = "US";
+    }
+
+    if (filters.minRuntime) {
+      movieParams["with_runtime.gte"] = filters.minRuntime;
+    }
+
+    if (filters.maxRuntime) {
+      movieParams["with_runtime.lte"] = filters.maxRuntime;
+    }
+
+    if (type === "movie") {
+      const res = await axios.get("/discover/movie", { params: movieParams });
+      return cleanMediaData(res.data.results || [], "movie");
+    }
+
+    if (type === "tv") {
+      const res = await axios.get("/discover/tv", { params: tvParams });
+      return cleanMediaData(res.data.results || [], "tv");
+    }
+
+    // all: query both and merge
+    const [movieRes, tvRes] = await Promise.all([
+      axios.get("/discover/movie", { params: movieParams }),
+      axios.get("/discover/tv", { params: tvParams }),
+    ]);
+
+    const movies = cleanMediaData(movieRes.data.results || [], "movie");
+    const tv = cleanMediaData(tvRes.data.results || [], "tv");
+
+    return [...movies, ...tv].sort((a, b) => b.popularity - a.popularity);
+  } catch (error) {
+    console.error("Error discovering media:", error);
+    return [];
+  }
+}
+export interface TMDBProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
+export async function getTMDBGenres(): Promise<{ id: number; name: string }[]> {
+  try {
+    const [movieGenresRes, tvGenresRes] = await Promise.all([
+      axios.get("/genre/movie/list"),
+      axios.get("/genre/tv/list"),
+    ]);
+    const movieGenres = movieGenresRes.data.genres || [];
+    const tvGenres = tvGenresRes.data.genres || [];
+    const allGenresMap = new Map<number, string>();
+    movieGenres.forEach((g: { id: number; name: string }) => allGenresMap.set(g.id, g.name));
+    tvGenres.forEach((g: { id: number; name: string }) => allGenresMap.set(g.id, g.name));
+    return Array.from(allGenresMap.entries())
+      .map(([id, name]) => ({ id, name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    return [];
+  }
+}
+
+export async function getTMDBProviders(): Promise<TMDBProvider[]> {
+  try {
+    const [movieProvidersRes, tvProvidersRes] = await Promise.all([
+      axios.get("/watch/providers/movie", { params: { watch_region: "US" } }),
+      axios.get("/watch/providers/tv", { params: { watch_region: "US" } }),
+    ]);
+    const movieProviders = movieProvidersRes.data.results || [];
+    const tvProviders = tvProvidersRes.data.results || [];
+    
+    const allProvidersMap = new Map<number, TMDBProvider>();
+    movieProviders.forEach((p: TMDBProvider) => {
+      allProvidersMap.set(p.provider_id, {
+        provider_id: p.provider_id,
+        provider_name: p.provider_name,
+        logo_path: p.logo_path,
+      });
+    });
+    tvProviders.forEach((p: TMDBProvider) => {
+      allProvidersMap.set(p.provider_id, {
+        provider_id: p.provider_id,
+        provider_name: p.provider_name,
+        logo_path: p.logo_path,
+      });
+    });
+    
+    return Array.from(allProvidersMap.values()).sort((a, b) =>
+      a.provider_name.localeCompare(b.provider_name)
+    );
+  } catch (error) {
+    console.error("Error fetching watch providers:", error);
+    return [];
+  }
+}

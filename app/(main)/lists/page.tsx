@@ -183,12 +183,12 @@ export default function ListsPage() {
                         </span>
                       )}
                       {list.isCollaborative && (
-                        <span className="text-primary flex items-center gap-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-[10px] font-extrabold">
+                        <span className="text-primary border-primary/30 bg-primary/10 flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold">
                           <Users className="h-3 w-3" /> Collaborative
                         </span>
                       )}
                       {list.isWatchlist && (
-                        <span className="text-emerald-400 flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold">
+                        <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold text-emerald-400">
                           Watchlist
                         </span>
                       )}
@@ -328,24 +328,22 @@ export default function ListsPage() {
                     />
                     <label
                       htmlFor="collab"
-                      className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                      className="cursor-pointer text-xs font-bold text-zinc-300"
                     >
                       Collaborative List
                     </label>
                   </div>
                   {isCollaborative && (
-                    <div className="flex items-center gap-2 mt-1.5 pl-6">
+                    <div className="mt-1.5 flex items-center gap-2 pl-6">
                       <Checkbox
                         id="watchlist"
                         checked={isWatchlist}
-                        onCheckedChange={(checked) =>
-                          setIsWatchlist(!!checked)
-                        }
+                        onCheckedChange={(checked) => setIsWatchlist(!!checked)}
                         className="border-zinc-800 bg-zinc-900"
                       />
                       <label
                         htmlFor="watchlist"
-                        className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                        className="cursor-pointer text-xs font-bold text-zinc-300"
                       >
                         Watchlist Mode (Voting & Watched status)
                       </label>

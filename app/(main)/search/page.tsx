@@ -1,9 +1,24 @@
 import SearchClient from "@/components/search-client";
 import { siteConfig } from "@/config/site";
-import { searchMedia } from "@/lib/tmdb-actions";
+import { TMDBMedia } from "@/lib/tmdb";
+import {
+  searchMedia,
+  discoverMedia,
+  getTMDBGenres,
+  getTMDBProviders,
+} from "@/lib/tmdb-actions";
 
 interface SearchPageProps {
-  searchParams: Promise<{ q?: string; type?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    type?: string;
+    genre?: string;
+    startDate?: string;
+    endDate?: string;
+    providerId?: string;
+    minRuntime?: string;
+    maxRuntime?: string;
+  }>;
 }
 
 export async function generateMetadata({ searchParams }: SearchPageProps) {
@@ -18,18 +33,54 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
+  const [genres, providers] = await Promise.all([
+    getTMDBGenres(),
+    getTMDBProviders(),
+  ]);
+
   const params = await searchParams;
   const query = params.q || "";
   const type = (params.type as "all" | "movie" | "tv" | "users") || "all";
+  const genre = params.genre || "";
+  const startDate = params.startDate || "";
+  const endDate = params.endDate || "";
+  const providerId = params.providerId || "";
+  const minRuntime = params.minRuntime || "";
+  const maxRuntime = params.maxRuntime || "";
 
-  const results =
-    query && type !== "users" ? await searchMedia(query, type) : [];
+  let results: TMDBMedia[] = [];
+  if (query && type !== "users") {
+    results = await searchMedia(query, type);
+  } else if (
+    (genre || startDate || endDate || providerId || minRuntime || maxRuntime) &&
+    type !== "users"
+  ) {
+    results = await discoverMedia(
+      {
+        genre,
+        startDate,
+        endDate,
+        providerId,
+        minRuntime,
+        maxRuntime,
+      },
+      type
+    );
+  }
 
   return (
     <SearchClient
       initialResults={results}
       initialQuery={query}
       initialType={type}
+      initialGenre={genre}
+      initialStartDate={startDate}
+      initialEndDate={endDate}
+      initialProviderId={providerId}
+      initialMinRuntime={minRuntime}
+      initialMaxRuntime={maxRuntime}
+      genres={genres}
+      providers={providers}
     />
   );
 }

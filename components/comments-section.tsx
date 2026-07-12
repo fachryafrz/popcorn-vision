@@ -397,7 +397,7 @@ function CommentNode({
     >
       <div className="flex items-start gap-3 rounded-2xl border border-transparent bg-zinc-900/10 p-3 transition-all duration-300 hover:border-zinc-800/30 hover:bg-zinc-900/30">
         {isDeletedUser ? (
-          <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 select-none">
+          <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300">
             {comment.author.image && (
               <AvatarImage
                 src={comment.author.image}

@@ -164,7 +164,6 @@
   --ring: oklch(0.62 0.21 350);
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -172,10 +171,18 @@
   body {
     @apply bg-background text-foreground;
   }
-  button:not(:disabled), [role="button"]:not(:disabled) {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
     cursor: pointer;
   }
   html {
     @apply font-sans;
+  }
+  @media (display-mode: standalone) {
+    * {
+      -webkit-user-select: none;
+      user-select: none;
+      overscroll-behavior: contain;
+    }
   }
 }

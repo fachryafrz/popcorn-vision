@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import UsernamePromptModal from "@/components/username-prompt-modal";
@@ -10,7 +11,9 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Navbar />
+      <Suspense fallback={<div className="h-16 bg-zinc-950" />}>
+        <Navbar />
+      </Suspense>
       <DisclaimerModal />
       <UsernamePromptModal />
       <div className="grow">{children}</div>
@@ -18,3 +21,4 @@ export default function MainLayout({
     </>
   );
 }
+

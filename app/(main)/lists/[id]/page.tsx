@@ -714,7 +714,7 @@ export default function CustomListDetailPage({
                         />
                         <label
                           htmlFor="edit-collab"
-                          className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                          className="cursor-pointer text-xs font-bold text-zinc-300"
                         >
                           Collaborative List
                         </label>
@@ -731,7 +731,7 @@ export default function CustomListDetailPage({
                           />
                           <label
                             htmlFor="edit-watchlist"
-                            className="cursor-pointer text-xs font-bold text-zinc-300 select-none"
+                            className="cursor-pointer text-xs font-bold text-zinc-300"
                           >
                             Watchlist Mode (Voting & Watched status)
                           </label>

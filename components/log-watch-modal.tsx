@@ -176,20 +176,21 @@ export default function LogWatchModal({
           : undefined;
 
       const finalDiaryType = diaryId
-        ? (initialDiaryType || (isTvShow
+        ? initialDiaryType ||
+          (isTvShow
             ? finalSeason !== undefined && finalEpisode !== undefined
               ? "episode"
               : finalSeason !== undefined
                 ? "season"
                 : "tv"
-            : "movie"))
-        : (isTvShow
-            ? finalSeason !== undefined && finalEpisode !== undefined
-              ? "episode"
-              : finalSeason !== undefined || logScope === "season"
-                ? "season"
-                : "tv"
-            : "movie");
+            : "movie")
+        : isTvShow
+          ? finalSeason !== undefined && finalEpisode !== undefined
+            ? "episode"
+            : finalSeason !== undefined || logScope === "season"
+              ? "season"
+              : "tv"
+          : "movie";
 
       if (diaryId) {
         await editDiaryEntryMutation({
@@ -500,7 +501,7 @@ export default function LogWatchModal({
             <div className="min-w-0 flex-1">
               <Label
                 htmlFor="rewatch-check"
-                className="block cursor-pointer text-xs font-bold text-white select-none"
+                className="block cursor-pointer text-xs font-bold text-white"
               >
                 I&apos;ve watched this film before
               </Label>
@@ -516,7 +517,7 @@ export default function LogWatchModal({
               <Label className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
                 Diary Notes / Review
               </Label>
-              <span className="text-[10px] font-bold text-zinc-600 select-none">
+              <span className="text-[10px] font-bold text-zinc-600">
                 optional
               </span>
             </div>

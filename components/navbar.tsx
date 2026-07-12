@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, Suspense } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery, useMutation } from "convex/react";
@@ -51,6 +51,9 @@ export default function Navbar() {
   const isLoggedIn = !!session.data?.user;
   const user = session.data?.user;
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const isSearchPage = pathname === "/search";
 
   // Notifications query & mutations
   const notifications = useQuery(
@@ -94,9 +97,16 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const q = searchParams.get("q") || "";
+  const [searchValue, setSearchValue] = useState(q);
+  const [prevQ, setPrevQ] = useState(q);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
+
+  if (q !== prevQ) {
+    setPrevQ(q);
+    setSearchValue(q);
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -137,6 +147,7 @@ export default function Navbar() {
             scrolled
               ? "bg-background/80 border-border/80 mx-auto max-w-5xl rounded-full border px-6 py-2 shadow-xl shadow-black/60 backdrop-blur-md lg:pr-2"
               : "mx-auto max-w-7xl border border-transparent px-6 py-4 sm:px-12 md:px-16",
+            isSearchPage && "lg:grid-cols-2",
           )}
         >
           {/* Logo */}
@@ -164,43 +175,45 @@ export default function Navbar() {
           </Link>
 
           {/* Search Bar (Desktop Center) */}
-          <form
-            onSubmit={handleSearchSubmit}
-            className="hidden items-center justify-self-center lg:flex"
-          >
-            <div
-              className={cn(
-                "relative flex h-9 items-center overflow-hidden rounded-full border border-zinc-800/65 bg-zinc-900/60 transition-all duration-300",
-                scrolled ? "w-48 lg:w-64" : "w-56 lg:w-72",
-                isSearchFocused
-                  ? "border-zinc-700/80 bg-zinc-900/90 ring-1 ring-zinc-800"
-                  : "bg-zinc-900/40",
-              )}
+          {!isSearchPage && (
+            <form
+              onSubmit={handleSearchSubmit}
+              className="hidden items-center justify-self-center lg:flex"
             >
-              <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
-              <input
-                ref={searchInputRef}
-                id="navbar-search"
-                type="text"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                placeholder="Search movies, shows…"
-                className="w-full bg-transparent pr-7 pl-8 text-xs text-white outline-none placeholder:text-zinc-500"
-              />
-              {searchValue && (
-                <button
-                  type="button"
-                  onClick={handleSearchClear}
-                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-zinc-500 transition-colors hover:text-white"
-                  aria-label="Clear"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </div>
-          </form>
+              <div
+                className={cn(
+                  "relative flex h-9 items-center overflow-hidden rounded-full border border-zinc-800/65 bg-zinc-900/60 transition-all duration-300",
+                  scrolled ? "w-48 lg:w-64" : "w-56 lg:w-72",
+                  isSearchFocused
+                    ? "border-zinc-700/80 bg-zinc-900/90 ring-1 ring-zinc-800"
+                    : "bg-zinc-900/40",
+                )}
+              >
+                <Search className="pointer-events-none absolute top-1/2 left-3 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
+                <input
+                  ref={searchInputRef}
+                  id="navbar-search"
+                  type="text"
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                  placeholder="Search movies, shows…"
+                  className="w-full bg-transparent pr-7 pl-8 text-xs text-white outline-none placeholder:text-zinc-500"
+                />
+                {searchValue && (
+                  <button
+                    type="button"
+                    onClick={handleSearchClear}
+                    className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-zinc-500 transition-colors hover:text-white"
+                    aria-label="Clear"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            </form>
+          )}
 
           {/* User Controls (Desktop) */}
           <div className="hidden items-center gap-4 justify-self-end lg:flex">
@@ -943,25 +956,27 @@ export default function Navbar() {
                 </SheetDescription>
 
                 {/* Mobile Search */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const q = searchValue.trim();
-                    setMobileMenuOpen(false);
-                    if (q) router.push(`/search?q=${encodeURIComponent(q)}`);
-                    else router.push("/search");
-                  }}
-                  className="relative mt-6"
-                >
-                  <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-500" />
-                  <input
-                    type="text"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                    placeholder="Search movies, shows…"
-                    className="w-full rounded-xl border border-zinc-700 bg-zinc-900 py-2.5 pr-4 pl-9 text-sm text-white transition-all outline-none placeholder:text-zinc-500 focus:border-zinc-500"
-                  />
-                </form>
+                {!isSearchPage && (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      const q = searchValue.trim();
+                      setMobileMenuOpen(false);
+                      if (q) router.push(`/search?q=${encodeURIComponent(q)}`);
+                      else router.push("/search");
+                    }}
+                    className="relative mt-6"
+                  >
+                    <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                    <input
+                      type="text"
+                      value={searchValue}
+                      onChange={(e) => setSearchValue(e.target.value)}
+                      placeholder="Search movies, shows…"
+                      className="w-full rounded-xl border border-zinc-700 bg-zinc-900 py-2.5 pr-4 pl-9 text-sm text-white transition-all outline-none placeholder:text-zinc-500 focus:border-zinc-500"
+                    />
+                  </form>
+                )}
 
                 <nav className="mt-4 flex flex-col gap-4 text-base font-semibold text-zinc-300">
                   <Link

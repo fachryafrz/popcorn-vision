@@ -61,7 +61,7 @@ export default function ProfileSection({
 
       {/* Profile Picture Uploader Area */}
       <div className="flex flex-col items-center gap-6 border-b border-zinc-900 pb-6 sm:flex-row">
-        <div className="group/avatar relative cursor-pointer select-none">
+        <div className="group/avatar relative cursor-pointer">
           <Avatar className="relative h-24 w-24 overflow-hidden border border-zinc-800 shadow-xl sm:h-28 sm:w-28">
             {profileImage ? (
               <AvatarImage
@@ -166,7 +166,7 @@ export default function ProfileSection({
           </div>
           <div className="relative">
             <span className="text-zinc-550 absolute inset-y-0 left-0 z-10 flex items-center pl-4">
-              <span className="text-sm font-semibold select-none">@</span>
+              <span className="text-sm font-semibold">@</span>
             </span>
             <Input
               type="text"

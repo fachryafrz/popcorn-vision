@@ -47,7 +47,7 @@ export default function SidebarPanel({
             prefetch={false}
             className="flex max-w-fit cursor-pointer items-center gap-2"
           >
-            <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white select-none">
+            <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">
               <img
                 src="/logo/popcorn.png"
                 alt={siteConfig.name}
@@ -136,7 +136,7 @@ export default function SidebarPanel({
                     setIsSidebarOpen(false); // Close sidebar on mobile
                   }}
                   className={cn(
-                    "flex cursor-pointer items-center gap-3 rounded-2xl border border-transparent p-3 transition-all select-none",
+                    "flex cursor-pointer items-center gap-3 rounded-2xl border border-transparent p-3 transition-all",
                     isActive
                       ? "border-primary/20 bg-primary/10 text-white"
                       : "text-zinc-300 hover:bg-zinc-900/40 hover:text-white",
