@@ -626,12 +626,12 @@ export interface DiscoverFilters {
 
 export async function discoverMedia(filters: DiscoverFilters, type: "all" | "movie" | "tv" = "all", page: number = 1): Promise<TMDBMedia[]> {
   try {
-    const movieParams: any = {
+    const movieParams: Record<string, string | number | boolean> = {
       include_adult: false,
       sort_by: "popularity.desc",
       page,
     };
-    const tvParams: any = {
+    const tvParams: Record<string, string | number | boolean> = {
       include_adult: false,
       sort_by: "popularity.desc",
       page,
@@ -707,8 +707,8 @@ export async function getTMDBGenres(): Promise<{ id: number; name: string }[]> {
     const movieGenres = movieGenresRes.data.genres || [];
     const tvGenres = tvGenresRes.data.genres || [];
     const allGenresMap = new Map<number, string>();
-    movieGenres.forEach((g: any) => allGenresMap.set(g.id, g.name));
-    tvGenres.forEach((g: any) => allGenresMap.set(g.id, g.name));
+    movieGenres.forEach((g: { id: number; name: string }) => allGenresMap.set(g.id, g.name));
+    tvGenres.forEach((g: { id: number; name: string }) => allGenresMap.set(g.id, g.name));
     return Array.from(allGenresMap.entries())
       .map(([id, name]) => ({ id, name }))
       .sort((a, b) => a.name.localeCompare(b.name));
@@ -728,14 +728,14 @@ export async function getTMDBProviders(): Promise<TMDBProvider[]> {
     const tvProviders = tvProvidersRes.data.results || [];
     
     const allProvidersMap = new Map<number, TMDBProvider>();
-    movieProviders.forEach((p: any) => {
+    movieProviders.forEach((p: TMDBProvider) => {
       allProvidersMap.set(p.provider_id, {
         provider_id: p.provider_id,
         provider_name: p.provider_name,
         logo_path: p.logo_path,
       });
     });
-    tvProviders.forEach((p: any) => {
+    tvProviders.forEach((p: TMDBProvider) => {
       allProvidersMap.set(p.provider_id, {
         provider_id: p.provider_id,
         provider_name: p.provider_name,
