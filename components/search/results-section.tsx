@@ -116,7 +116,7 @@ export function ResultsSection({
         <p className="mb-6 animate-pulse text-left text-sm text-zinc-500">
           Searching…
         </p>
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 @sm:grid-cols-3 @sm:gap-5 @md:grid-cols-4 @3xl:grid-cols-5 @4xl:grid-cols-6">
           {Array.from({ length: 12 }).map((_, i) => (
             <SkeletonCard key={i} />
           ))}
@@ -183,7 +183,7 @@ export function ResultsSection({
             {userResults.length > 4 && (
               <button
                 onClick={() => handleTypeChange("users")}
-                className="text-primary cursor-pointer text-xs font-semibold transition-colors hover:text-primary/50"
+                className="text-primary hover:text-primary/50 cursor-pointer text-xs font-semibold transition-colors"
               >
                 View all
               </button>
@@ -226,7 +226,7 @@ export function ResultsSection({
                   </span>
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              <div className="grid grid-cols-2 gap-4 @sm:grid-cols-3 @sm:gap-5 @md:grid-cols-4 @3xl:grid-cols-5 @4xl:grid-cols-6">
                 {results.map((media) => (
                   <Card
                     key={`${media.media_type}-${media.id}`}
