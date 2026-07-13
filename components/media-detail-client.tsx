@@ -790,6 +790,10 @@ export default function MediaDetailClient({
             </div>
           )}
 
+          <p className="my-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
+            {details?.overview || "No overview available."}
+          </p>
+
           <ActionsSection
             trailerKey={trailerKey}
             watchlistLoading={watchlistLoading}
