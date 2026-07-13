@@ -182,7 +182,9 @@
     * {
       -webkit-user-select: none;
       user-select: none;
-      overscroll-behavior: auto;
+    }
+    html {
+      overscroll-behavior: contain;
     }
   }
 }
