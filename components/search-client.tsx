@@ -1139,7 +1139,7 @@ export default function SearchClient({
                 : "border-transparent text-zinc-400 hover:text-zinc-200",
             )}
           >
-            Search Mode
+            Search
           </button>
           <button
             onClick={() => handleSearchModeChange("discover")}
@@ -1150,7 +1150,7 @@ export default function SearchClient({
                 : "border-transparent text-zinc-400 hover:text-zinc-200",
             )}
           >
-            Discover Mode
+            Discover
           </button>
         </div>
 
@@ -1182,7 +1182,7 @@ export default function SearchClient({
             {/* Sticky Search Header */}
             <div
               className={cn(
-                "sticky top-22 z-50 mb-6 w-fit backdrop-blur-md transition-all duration-500 lg:top-22",
+                "sticky top-22 z-50 mb-6 backdrop-blur-md transition-all duration-500 lg:top-22 lg:w-fit",
                 isScrolled
                   ? "mx-2 rounded-4xl border border-zinc-800/80 bg-zinc-900/95 p-4 shadow-xl"
                   : "bg-background/95 rounded-none border border-transparent px-0",
@@ -1191,7 +1191,7 @@ export default function SearchClient({
               {/* Search input and mobile trigger flex container */}
               {/* Search input container */}
               {searchMode === "search" && (
-                <div className="mb-4 flex w-2xl items-center gap-3 lg:max-w-none">
+                <div className="mb-4 flex w-full items-center gap-3 lg:w-2xl lg:max-w-none">
                   <div
                     className={cn(
                       "relative flex-1 transition-all duration-300",
