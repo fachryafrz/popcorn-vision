@@ -1039,50 +1039,52 @@ export default function SearchClient({
           </div>
         </div>
 
-        {/* Start Date Picker */}
+        {/* Release Date Range Pickers */}
         <div className="flex flex-col gap-2">
           <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-            Start Date
+            Release Date
           </span>
-          <Popover>
-            <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
-              <span>{formatDateDisplay(startDate)}</span>
-              <CalendarIcon className="h-4 w-4 text-zinc-500" />
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="w-auto border border-zinc-800 bg-zinc-950 p-0"
-            >
-              <Calendar
-                mode="single"
-                selected={parseLocalDate(startDate)}
-                onSelect={handleStartDateChange}
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Popover>
+                <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
+                  <span>{formatDateDisplay(startDate)}</span>
+                  <CalendarIcon className="h-4 w-4 text-zinc-500" />
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  className="w-auto border border-zinc-800 bg-zinc-950 p-0"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={parseLocalDate(startDate)}
+                    onSelect={handleStartDateChange}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
 
-        {/* End Date Picker */}
-        <div className="flex flex-col gap-2">
-          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-            End Date
-          </span>
-          <Popover>
-            <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
-              <span>{formatDateDisplay(endDate)}</span>
-              <CalendarIcon className="h-4 w-4 text-zinc-500" />
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              className="w-auto border border-zinc-800 bg-zinc-950 p-0"
-            >
-              <Calendar
-                mode="single"
-                selected={parseLocalDate(endDate)}
-                onSelect={handleEndDateChange}
-              />
-            </PopoverContent>
-          </Popover>
+            <span className="text-xs font-medium text-zinc-500">-</span>
+
+            <div className="flex-1">
+              <Popover>
+                <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
+                  <span>{formatDateDisplay(endDate)}</span>
+                  <CalendarIcon className="h-4 w-4 text-zinc-500" />
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  className="w-auto border border-zinc-800 bg-zinc-950 p-0"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={parseLocalDate(endDate)}
+                    onSelect={handleEndDateChange}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
         </div>
 
         {/* Runtime Slider (2-Point) */}
@@ -1156,7 +1158,7 @@ export default function SearchClient({
         <div className="flex flex-col items-start gap-8 lg:flex-row">
           {/* Left Sticky Sidebar (Desktop only, always visible when searchMode === "discover") */}
           {searchMode === "discover" && (
-            <aside className="no-scrollbar sticky top-22 hidden h-fit max-h-[calc(100vh-160px)] w-72 shrink-0 flex-col gap-6 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 backdrop-blur-md lg:flex">
+            <aside className="sticky top-22 hidden h-fit max-h-[calc(100vh-160px)] w-72 shrink-0 scrollbar-thumb-zinc-500 scrollbar-track-transparent flex-col gap-6 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 backdrop-blur-md lg:flex">
               <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                 <span className="flex items-center gap-2 text-sm font-bold text-white">
                   <SlidersHorizontal className="h-4 w-4 text-zinc-400" />
@@ -1180,7 +1182,7 @@ export default function SearchClient({
             {/* Sticky Search Header */}
             <div
               className={cn(
-                "sticky top-22 z-50 mb-6 backdrop-blur-md transition-all duration-500 lg:top-22",
+                "sticky top-22 z-50 mb-6 w-fit backdrop-blur-md transition-all duration-500 lg:top-22",
                 isScrolled
                   ? "mx-2 rounded-4xl border border-zinc-800/80 bg-zinc-900/95 p-4 shadow-xl"
                   : "bg-background/95 rounded-none border border-transparent px-0",
@@ -1189,7 +1191,7 @@ export default function SearchClient({
               {/* Search input and mobile trigger flex container */}
               {/* Search input container */}
               {searchMode === "search" && (
-                <div className="mb-4 flex w-full max-w-2xl items-center gap-3 lg:max-w-none">
+                <div className="mb-4 flex w-2xl items-center gap-3 lg:max-w-none">
                   <div
                     className={cn(
                       "relative flex-1 transition-all duration-300",

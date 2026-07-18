@@ -868,13 +868,37 @@ export default function MediaDetailClient({
 
             {details?.production_companies &&
               details.production_companies.length > 0 && (
-                <div>
-                  <h3 className="mb-2 text-xs font-bold tracking-wider text-zinc-400 uppercase">
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
                     Production Companies
                   </h3>
-                  <p className="text-sm text-zinc-300">
-                    {details.production_companies.map((c) => c.name).join(", ")}
-                  </p>
+                  <div className="flex flex-wrap gap-2.5">
+                    {details.production_companies.map((c) => (
+                      <div
+                        key={c.id || c.name}
+                        onClick={() =>
+                          router.push(
+                            `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
+                          )
+                        }
+                        className="flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 pr-3 transition duration-200 hover:bg-zinc-800/50 active:scale-95"
+                      >
+                        {c.logo_path && (
+                          <div className="flex h-10 w-20 items-center justify-center rounded-lg bg-white/95 p-1 shadow-sm">
+                            <img
+                              src={`https://image.tmdb.org/t/p/w92${c.logo_path}`}
+                              alt={c.name}
+                              className="max-h-full max-w-full object-contain"
+                              draggable={false}
+                            />
+                          </div>
+                        )}
+                        <span className="text-xs leading-tight font-medium text-zinc-300">
+                          {c.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
