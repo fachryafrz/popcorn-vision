@@ -19,7 +19,6 @@ import {
   Search,
   Film,
   Tv,
-  LayoutGrid,
   X,
   User,
   SlidersHorizontal,
@@ -64,12 +63,20 @@ interface SearchClientProps {
   initialProviderId?: string;
   initialMinRuntime?: string;
   initialMaxRuntime?: string;
-  genres: { id: number; name: string }[];
+  initialActor?: string;
+  initialCrew?: string;
+  initialCompany?: string;
+  initialRatingMin?: string;
+  initialRatingMax?: string;
+  initialLanguage?: string;
+  initialKeywords?: string;
+  genres: { id: number; name: string; types?: ("movie" | "tv")[] }[];
   providers: {
     provider_id: number;
     provider_name: string;
     logo_path: string;
   }[];
+  userCountryCode?: string;
 }
 
 const TYPE_FILTERS: {
@@ -77,10 +84,23 @@ const TYPE_FILTERS: {
   value: SearchType;
   icon: React.ReactNode;
 }[] = [
-  { label: "All", value: "all", icon: <LayoutGrid className="h-3.5 w-3.5" /> },
   { label: "Movies", value: "movie", icon: <Film className="h-3.5 w-3.5" /> },
   { label: "TV Series", value: "tv", icon: <Tv className="h-3.5 w-3.5" /> },
   { label: "Users", value: "users", icon: <User className="h-3.5 w-3.5" /> },
+];
+
+const LANGUAGES = [
+  { code: "", name: "Any Language" },
+  { code: "en", name: "English" },
+  { code: "id", name: "Indonesian" },
+  { code: "ja", name: "Japanese" },
+  { code: "ko", name: "Korean" },
+  { code: "es", name: "Spanish" },
+  { code: "fr", name: "French" },
+  { code: "de", name: "German" },
+  { code: "zh", name: "Chinese" },
+  { code: "it", name: "Italian" },
+  { code: "ru", name: "Russian" },
 ];
 
 export default function SearchClient({
@@ -93,8 +113,16 @@ export default function SearchClient({
   initialProviderId = "",
   initialMinRuntime = "",
   initialMaxRuntime = "",
+  initialActor = "",
+  initialCrew = "",
+  initialCompany = "",
+  initialRatingMin = "",
+  initialRatingMax = "",
+  initialLanguage = "",
+  initialKeywords = "",
   genres = [],
   providers = [],
+  userCountryCode = "US",
 }: SearchClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -105,6 +133,24 @@ export default function SearchClient({
   } = useAuthModalStore();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
+
+  const [searchMode, setSearchMode] = useState<"search" | "discover">(
+    initialGenre ||
+      initialStartDate ||
+      initialEndDate ||
+      initialProviderId ||
+      initialMinRuntime ||
+      initialMaxRuntime ||
+      initialActor ||
+      initialCrew ||
+      initialCompany ||
+      initialRatingMin ||
+      initialRatingMax ||
+      initialLanguage ||
+      initialKeywords
+      ? "discover"
+      : "search",
+  );
 
   const [query, setQuery] = useState(initialQuery);
   const [inputValue, setInputValue] = useState(initialQuery);
@@ -120,6 +166,13 @@ export default function SearchClient({
   const [providerId, setProviderId] = useState(initialProviderId); // holds provider ID string
   const [minRuntime, setMinRuntime] = useState(initialMinRuntime);
   const [maxRuntime, setMaxRuntime] = useState(initialMaxRuntime);
+  const [actor, setActor] = useState(initialActor);
+  const [crew, setCrew] = useState(initialCrew);
+  const [company, setCompany] = useState(initialCompany);
+  const [ratingMin, setRatingMin] = useState(initialRatingMin);
+  const [ratingMax, setRatingMax] = useState(initialRatingMax);
+  const [language, setLanguage] = useState(initialLanguage);
+  const [keywords, setKeywords] = useState(initialKeywords);
 
   // Infinite Scroll State
   const [page, setPage] = useState(1);
@@ -135,8 +188,75 @@ export default function SearchClient({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const [actorInput, setActorInput] = useState(initialActor);
+  const [crewInput, setCrewInput] = useState(initialCrew);
+  const [companyInput, setCompanyInput] = useState(initialCompany);
+  const [keywordsInput, setKeywordsInput] = useState(initialKeywords);
+
+  const handleActorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setActorInput(val);
+    if (actorDebounceRef.current) clearTimeout(actorDebounceRef.current);
+    actorDebounceRef.current = setTimeout(() => {
+      setActor(val);
+      performSearch({ actor: val });
+    }, 500);
+  };
+
+  const handleCrewChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCrewInput(val);
+    if (crewDebounceRef.current) clearTimeout(crewDebounceRef.current);
+    crewDebounceRef.current = setTimeout(() => {
+      setCrew(val);
+      performSearch({ crew: val });
+    }, 500);
+  };
+
+  const handleCompanyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCompanyInput(val);
+    if (companyDebounceRef.current) clearTimeout(companyDebounceRef.current);
+    companyDebounceRef.current = setTimeout(() => {
+      setCompany(val);
+      performSearch({ company: val });
+    }, 500);
+  };
+
+  const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setKeywordsInput(val);
+    if (keywordsDebounceRef.current) clearTimeout(keywordsDebounceRef.current);
+    keywordsDebounceRef.current = setTimeout(() => {
+      setKeywords(val);
+      performSearch({ keywords: val });
+    }, 500);
+  };
+
+  const handleRatingChange = (values: number | readonly number[]) => {
+    if (Array.isArray(values)) {
+      const minVal = values[0];
+      const maxVal = values[1];
+      setRatingMin(String(minVal));
+      setRatingMax(String(maxVal));
+
+      if (ratingDebounceRef.current) clearTimeout(ratingDebounceRef.current);
+      ratingDebounceRef.current = setTimeout(() => {
+        performSearch({
+          ratingMin: String(minVal),
+          ratingMax: String(maxVal),
+        });
+      }, 400);
+    }
+  };
+
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const runtimeDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const actorDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const crewDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const companyDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const ratingDebounceRef = useRef<NodeJS.Timeout | null>(null);
+  const keywordsDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
   // Convex Query for Users
@@ -189,6 +309,13 @@ export default function SearchClient({
       providerId?: string;
       minRuntime?: string;
       maxRuntime?: string;
+      actor?: string;
+      crew?: string;
+      company?: string;
+      ratingMin?: string;
+      ratingMax?: string;
+      language?: string;
+      keywords?: string;
     }) => {
       const params = new URLSearchParams(searchParams.toString());
 
@@ -206,6 +333,18 @@ export default function SearchClient({
         paramsObj.minRuntime !== undefined ? paramsObj.minRuntime : minRuntime;
       const newMaxRuntime =
         paramsObj.maxRuntime !== undefined ? paramsObj.maxRuntime : maxRuntime;
+      const newActor = paramsObj.actor !== undefined ? paramsObj.actor : actor;
+      const newCrew = paramsObj.crew !== undefined ? paramsObj.crew : crew;
+      const newCompany =
+        paramsObj.company !== undefined ? paramsObj.company : company;
+      const newRatingMin =
+        paramsObj.ratingMin !== undefined ? paramsObj.ratingMin : ratingMin;
+      const newRatingMax =
+        paramsObj.ratingMax !== undefined ? paramsObj.ratingMax : ratingMax;
+      const newLanguage =
+        paramsObj.language !== undefined ? paramsObj.language : language;
+      const newKeywords =
+        paramsObj.keywords !== undefined ? paramsObj.keywords : keywords;
 
       if (newQuery) params.set("q", newQuery);
       else params.delete("q");
@@ -231,6 +370,27 @@ export default function SearchClient({
       if (newMaxRuntime) params.set("maxRuntime", newMaxRuntime);
       else params.delete("maxRuntime");
 
+      if (newActor) params.set("actor", newActor);
+      else params.delete("actor");
+
+      if (newCrew) params.set("crew", newCrew);
+      else params.delete("crew");
+
+      if (newCompany) params.set("company", newCompany);
+      else params.delete("company");
+
+      if (newRatingMin) params.set("ratingMin", newRatingMin);
+      else params.delete("ratingMin");
+
+      if (newRatingMax) params.set("ratingMax", newRatingMax);
+      else params.delete("ratingMax");
+
+      if (newLanguage) params.set("language", newLanguage);
+      else params.delete("language");
+
+      if (newKeywords) params.set("keywords", newKeywords);
+      else params.delete("keywords");
+
       router.push(`/search?${params.toString()}`, { scroll: false });
 
       if (newType !== "users") {
@@ -240,14 +400,7 @@ export default function SearchClient({
           let data: TMDBMedia[] = [];
           if (newQuery) {
             data = await searchMedia(newQuery, newType, 1);
-          } else if (
-            newGenre ||
-            newStartDate ||
-            newEndDate ||
-            newProviderId ||
-            newMinRuntime ||
-            newMaxRuntime
-          ) {
+          } else {
             data = await discoverMedia(
               {
                 genre: newGenre,
@@ -256,13 +409,18 @@ export default function SearchClient({
                 providerId: newProviderId,
                 minRuntime: newMinRuntime,
                 maxRuntime: newMaxRuntime,
+                actor: newActor,
+                crew: newCrew,
+                company: newCompany,
+                ratingMin: newRatingMin,
+                ratingMax: newRatingMax,
+                language: newLanguage,
+                keywords: newKeywords,
               },
               newType,
               1,
+              userCountryCode,
             );
-          } else {
-            data = [];
-            setHasMore(false);
           }
           setResults(data);
           if (data.length < 20) {
@@ -282,6 +440,14 @@ export default function SearchClient({
       providerId,
       minRuntime,
       maxRuntime,
+      actor,
+      crew,
+      company,
+      ratingMin,
+      ratingMax,
+      language,
+      keywords,
+      userCountryCode,
     ],
   );
 
@@ -304,6 +470,17 @@ export default function SearchClient({
     setProviderId("");
     setMinRuntime("");
     setMaxRuntime("");
+    setActor("");
+    setCrew("");
+    setCompany("");
+    setRatingMin("");
+    setRatingMax("");
+    setLanguage("");
+    setKeywords("");
+    setActorInput("");
+    setCrewInput("");
+    setCompanyInput("");
+    setKeywordsInput("");
     setPage(1);
     setHasMore(false);
     setResults([]);
@@ -312,18 +489,115 @@ export default function SearchClient({
 
   const handleTypeChange = (type: SearchType) => {
     setActiveType(type);
-    performSearch({ type });
+
+    let nextGenre = genre;
+    if (searchMode === "discover" && genre && type !== "all") {
+      const currentGenreObj = genres.find((g) => String(g.id) === genre);
+      if (
+        currentGenreObj &&
+        currentGenreObj.types &&
+        !currentGenreObj.types.includes(type as "movie" | "tv")
+      ) {
+        nextGenre = "";
+        setGenre("");
+      }
+    }
+
+    performSearch({ type, genre: nextGenre });
   };
 
-  const hasQuery = query.trim().length > 0;
-  const hasFilters = !!(
-    genre ||
-    startDate ||
-    endDate ||
-    providerId ||
-    minRuntime ||
-    maxRuntime
-  );
+  const handleSearchModeChange = (mode: "search" | "discover") => {
+    if (mode === searchMode) return;
+    setSearchMode(mode);
+
+    // Clear opposite modes states
+    if (mode === "search") {
+      setGenre("");
+      setStartDate("");
+      setEndDate("");
+      setProviderId("");
+      setMinRuntime("");
+      setMaxRuntime("");
+      setActor("");
+      setCrew("");
+      setCompany("");
+      setRatingMin("");
+      setRatingMax("");
+      setLanguage("");
+      setKeywords("");
+      setActorInput("");
+      setCrewInput("");
+      setCompanyInput("");
+      setKeywordsInput("");
+
+      performSearch({
+        q: query,
+        genre: "",
+        startDate: "",
+        endDate: "",
+        providerId: "",
+        minRuntime: "",
+        maxRuntime: "",
+        actor: "",
+        crew: "",
+        company: "",
+        ratingMin: "",
+        ratingMax: "",
+        language: "",
+        keywords: "",
+      });
+    } else {
+      setInputValue("");
+      setQuery("");
+
+      const nextType = activeType === "users" ? "movie" : activeType;
+      if (activeType === "users") {
+        setActiveType("movie");
+      }
+
+      performSearch({
+        q: "",
+        type: nextType,
+        genre: genre,
+        startDate: startDate,
+        endDate: endDate,
+        providerId: providerId,
+        minRuntime: minRuntime,
+        maxRuntime: maxRuntime,
+        actor: actor,
+        crew: crew,
+        company: company,
+        ratingMin: ratingMin,
+        ratingMax: ratingMax,
+        language: language,
+        keywords: keywords,
+      });
+    }
+  };
+
+  const hasQuery = searchMode === "search" && query.trim().length > 0;
+  const hasFilters =
+    searchMode === "discover" &&
+    !!(
+      genre ||
+      startDate ||
+      endDate ||
+      providerId ||
+      minRuntime ||
+      maxRuntime ||
+      actor ||
+      crew ||
+      company ||
+      ratingMin ||
+      ratingMax ||
+      language ||
+      keywords
+    );
+
+  const visibleTypeFilters =
+    searchMode === "discover"
+      ? TYPE_FILTERS.filter((f) => f.value !== "users")
+      : TYPE_FILTERS;
 
   // Client-side filtering when text query is active (best effort)
   const filteredResults = results.filter((item) => {
@@ -406,6 +680,17 @@ export default function SearchClient({
     setProviderId("");
     setMinRuntime("");
     setMaxRuntime("");
+    setActor("");
+    setCrew("");
+    setCompany("");
+    setRatingMin("");
+    setRatingMax("");
+    setLanguage("");
+    setKeywords("");
+    setActorInput("");
+    setCrewInput("");
+    setCompanyInput("");
+    setKeywordsInput("");
     setPage(1);
     setHasMore(true);
     performSearch({
@@ -415,6 +700,13 @@ export default function SearchClient({
       providerId: "",
       minRuntime: "",
       maxRuntime: "",
+      actor: "",
+      crew: "",
+      company: "",
+      ratingMin: "",
+      ratingMax: "",
+      language: "",
+      keywords: "",
     });
   };
 
@@ -441,7 +733,7 @@ export default function SearchClient({
       const typeParam = activeType !== "users" ? activeType : "all";
       if (query) {
         nextResults = await searchMedia(query, typeParam, nextPage);
-      } else if (hasFilters) {
+      } else if (searchMode === "discover") {
         nextResults = await discoverMedia(
           {
             genre,
@@ -450,9 +742,17 @@ export default function SearchClient({
             providerId,
             minRuntime,
             maxRuntime,
+            actor,
+            crew,
+            company,
+            ratingMin,
+            ratingMax,
+            language,
+            keywords,
           },
           typeParam,
           nextPage,
+          userCountryCode,
         );
       }
 
@@ -482,6 +782,7 @@ export default function SearchClient({
     hasMore,
     page,
     query,
+    searchMode,
     activeType,
     genre,
     startDate,
@@ -489,6 +790,14 @@ export default function SearchClient({
     providerId,
     minRuntime,
     maxRuntime,
+    actor,
+    crew,
+    company,
+    ratingMin,
+    ratingMax,
+    language,
+    keywords,
+    userCountryCode,
   ]);
 
   // Observer sentinel element ref callback
@@ -509,168 +818,302 @@ export default function SearchClient({
   );
 
   // DRY reusable filters content
-  const renderFiltersContent = () => (
-    <div className="flex flex-col gap-5">
-      {/* Genre Combobox */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-          Genre
-        </span>
-        <Combobox
-          value={getGenreName(genre)}
-          onValueChange={(val) => {
-            const name = (val as string) || "";
-            const id = getGenreIdByName(name);
-            setGenre(id);
-            performSearch({ genre: id });
-          }}
-          items={genres.map((g) => g.name)}
-        >
-          <ComboboxInput
-            placeholder="Search genre..."
-            showClear
-            className="focus:border-zinc-750 h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 text-xs text-white"
-          />
-          <ComboboxContent className="max-h-60 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-xl">
-            <ComboboxEmpty className="py-2 text-center text-xs text-zinc-500">
-              No genre found.
-            </ComboboxEmpty>
-            <ComboboxList>
-              {(name) => (
-                <ComboboxItem
-                  key={name}
-                  value={name}
-                  className="cursor-pointer rounded-xl px-3 py-2 text-xs hover:bg-zinc-900"
-                >
-                  {name}
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      </div>
+  const renderFiltersContent = () => {
+    const filteredGenres = genres.filter((g) => {
+      if (!g.types) return true;
+      return g.types.includes(activeType === "tv" ? "tv" : "movie");
+    });
 
-      {/* Streaming Services Combobox */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-          Streaming Service (US)
-        </span>
-        <Combobox
-          value={getProviderName(providerId)}
-          onValueChange={(val) => {
-            const name = (val as string) || "";
-            const id = getProviderIdByName(name);
-            setProviderId(id);
-            performSearch({ providerId: id });
-          }}
-          items={providers.map((p) => p.provider_name)}
-        >
-          <ComboboxInput
-            placeholder="Search provider..."
-            showClear
-            className="focus:border-zinc-750 h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 text-xs text-white"
-          />
-          <ComboboxContent className="max-h-60 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-xl">
-            <ComboboxEmpty className="py-2 text-center text-xs text-zinc-500">
-              No provider found.
-            </ComboboxEmpty>
-            <ComboboxList>
-              {(name) => {
-                const p = providers.find((prov) => prov.provider_name === name);
-                return (
+    return (
+      <div className="flex flex-col gap-5">
+        {/* Genre Combobox */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Genre
+          </span>
+          <Combobox
+            value={getGenreName(genre)}
+            onValueChange={(val) => {
+              const name = (val as string) || "";
+              const id = getGenreIdByName(name);
+              setGenre(id);
+              performSearch({ genre: id });
+            }}
+            items={filteredGenres.map((g) => g.name)}
+          >
+            <ComboboxInput
+              placeholder="Search genre..."
+              showClear
+              className="focus:border-zinc-750 h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 text-xs text-white"
+            />
+            <ComboboxContent className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-xl">
+              <ComboboxEmpty className="py-2 text-center text-xs text-zinc-500">
+                No genre found.
+              </ComboboxEmpty>
+              <ComboboxList>
+                {(name) => (
                   <ComboboxItem
                     key={name}
                     value={name}
-                    className="flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-xs hover:bg-zinc-900"
+                    className="cursor-pointer rounded-xl px-3 py-2 text-xs hover:bg-zinc-900"
                   >
-                    {p && (
-                      <img
-                        src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
-                        alt={name}
-                        className="h-4 w-4 rounded-md object-cover"
-                      />
-                    )}
                     {name}
                   </ComboboxItem>
-                );
-              }}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      </div>
-
-      {/* Start Date Picker */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-          Start Date
-        </span>
-        <Popover>
-          <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
-            <span>{formatDateDisplay(startDate)}</span>
-            <CalendarIcon className="h-4 w-4 text-zinc-500" />
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="w-auto border border-zinc-800 bg-zinc-950 p-0"
-          >
-            <Calendar
-              mode="single"
-              selected={parseLocalDate(startDate)}
-              onSelect={handleStartDateChange}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      {/* End Date Picker */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-          End Date
-        </span>
-        <Popover>
-          <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
-            <span>{formatDateDisplay(endDate)}</span>
-            <CalendarIcon className="h-4 w-4 text-zinc-500" />
-          </PopoverTrigger>
-          <PopoverContent
-            align="start"
-            className="w-auto border border-zinc-800 bg-zinc-950 p-0"
-          >
-            <Calendar
-              mode="single"
-              selected={parseLocalDate(endDate)}
-              onSelect={handleEndDateChange}
-            />
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      {/* Runtime Slider (2-Point) */}
-      <div className="mt-2 flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
-            Runtime (Minutes)
-          </span>
-          <span className="text-xs font-bold text-zinc-400">
-            {minRuntime || "0"}m - {maxRuntime || "360"}m
-          </span>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
         </div>
-        <div className="px-2">
-          <Slider
-            min={0}
-            max={360}
-            step={5}
-            value={[
-              minRuntime ? parseInt(minRuntime) : 0,
-              maxRuntime ? parseInt(maxRuntime) : 360,
-            ]}
-            onValueChange={handleRuntimeChange}
-            className="w-full"
+
+        {/* Streaming Services Combobox */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Streaming Service ({userCountryCode})
+          </span>
+          <Combobox
+            value={getProviderName(providerId)}
+            onValueChange={(val) => {
+              const name = (val as string) || "";
+              const id = getProviderIdByName(name);
+              setProviderId(id);
+              performSearch({ providerId: id });
+            }}
+            items={providers.map((p) => p.provider_name)}
+          >
+            <ComboboxInput
+              placeholder="Search provider..."
+              showClear
+              className="focus:border-zinc-750 h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 text-xs text-white"
+            />
+            <ComboboxContent className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-xl">
+              <ComboboxEmpty className="py-2 text-center text-xs text-zinc-500">
+                No provider found.
+              </ComboboxEmpty>
+              <ComboboxList>
+                {(name) => {
+                  const p = providers.find(
+                    (prov) => prov.provider_name === name,
+                  );
+                  return (
+                    <ComboboxItem
+                      key={name}
+                      value={name}
+                      className="flex cursor-pointer items-center gap-2 rounded-xl px-3 py-2 text-xs hover:bg-zinc-900"
+                    >
+                      {p && (
+                        <img
+                          src={`https://image.tmdb.org/t/p/original${p.logo_path}`}
+                          alt={name}
+                          className="h-4 w-4 rounded-md object-cover"
+                        />
+                      )}
+                      {name}
+                    </ComboboxItem>
+                  );
+                }}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+        </div>
+
+        {/* Actor Input */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Actor
+          </span>
+          <Input
+            type="text"
+            value={actorInput}
+            onChange={handleActorChange}
+            placeholder="e.g. Keanu Reeves"
+            className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-white placeholder:text-zinc-500 focus-visible:border-zinc-700 focus-visible:ring-0"
           />
         </div>
+
+        {/* Crew Input */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Crew / Director
+          </span>
+          <Input
+            type="text"
+            value={crewInput}
+            onChange={handleCrewChange}
+            placeholder="e.g. Christopher Nolan"
+            className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-white placeholder:text-zinc-500 focus-visible:border-zinc-700 focus-visible:ring-0"
+          />
+        </div>
+
+        {/* Company Input */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Production Company
+          </span>
+          <Input
+            type="text"
+            value={companyInput}
+            onChange={handleCompanyChange}
+            placeholder="e.g. Marvel Studios"
+            className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-white placeholder:text-zinc-500 focus-visible:border-zinc-700 focus-visible:ring-0"
+          />
+        </div>
+
+        {/* Keywords Input */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Keywords
+          </span>
+          <Input
+            type="text"
+            value={keywordsInput}
+            onChange={handleKeywordsChange}
+            placeholder="e.g. time travel"
+            className="h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-white placeholder:text-zinc-500 focus-visible:border-zinc-700 focus-visible:ring-0"
+          />
+        </div>
+
+        {/* Language Combobox */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Original Language
+          </span>
+          <Combobox
+            value={
+              LANGUAGES.find((l) => l.code === language)?.name || "Any Language"
+            }
+            onValueChange={(val) => {
+              const name = (val as string) || "";
+              const lang = LANGUAGES.find((l) => l.name === name);
+              const code = lang ? lang.code : "";
+              setLanguage(code);
+              performSearch({ language: code });
+            }}
+            items={LANGUAGES.map((l) => l.name)}
+          >
+            <ComboboxInput
+              placeholder="Search language..."
+              showClear
+              className="focus:border-zinc-750 h-10 w-full rounded-xl border border-zinc-800 bg-zinc-900/60 text-xs text-white"
+            />
+            <ComboboxContent className="rounded-2xl border border-zinc-800 bg-zinc-950 text-white shadow-xl">
+              <ComboboxEmpty className="py-2 text-center text-xs text-zinc-500">
+                No language found.
+              </ComboboxEmpty>
+              <ComboboxList>
+                {(name) => (
+                  <ComboboxItem
+                    key={name}
+                    value={name}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-xs hover:bg-zinc-900"
+                  >
+                    {name}
+                  </ComboboxItem>
+                )}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+        </div>
+
+        {/* Rating Slider (2-Point) */}
+        <div className="mt-2 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+              Rating
+            </span>
+            <span className="text-xs font-bold text-zinc-400">
+              {ratingMin || "0"} - {ratingMax || "10"}
+            </span>
+          </div>
+          <div className="px-2">
+            <Slider
+              min={0}
+              max={10}
+              step={0.5}
+              value={[
+                ratingMin ? parseFloat(ratingMin) : 0,
+                ratingMax ? parseFloat(ratingMax) : 10,
+              ]}
+              onValueChange={handleRatingChange}
+              className="w-full"
+            />
+          </div>
+        </div>
+
+        {/* Release Date Range Pickers */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+            Release Date
+          </span>
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <Popover>
+                <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
+                  <span>{formatDateDisplay(startDate)}</span>
+                  <CalendarIcon className="h-4 w-4 text-zinc-500" />
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  className="w-auto border border-zinc-800 bg-zinc-950 p-0"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={parseLocalDate(startDate)}
+                    onSelect={handleStartDateChange}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <span className="text-xs font-medium text-zinc-500">-</span>
+
+            <div className="flex-1">
+              <Popover>
+                <PopoverTrigger className="flex h-10 w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900/60 px-3 text-xs text-zinc-400 hover:text-white focus:border-zinc-700 focus:outline-none">
+                  <span>{formatDateDisplay(endDate)}</span>
+                  <CalendarIcon className="h-4 w-4 text-zinc-500" />
+                </PopoverTrigger>
+                <PopoverContent
+                  align="start"
+                  className="w-auto border border-zinc-800 bg-zinc-950 p-0"
+                >
+                  <Calendar
+                    mode="single"
+                    selected={parseLocalDate(endDate)}
+                    onSelect={handleEndDateChange}
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        </div>
+
+        {/* Runtime Slider (2-Point) */}
+        <div className="mt-2 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black tracking-wider text-zinc-500 uppercase">
+              Runtime (Minutes)
+            </span>
+            <span className="text-xs font-bold text-zinc-400">
+              {minRuntime || "0"}m - {maxRuntime || "360"}m
+            </span>
+          </div>
+          <div className="px-2">
+            <Slider
+              min={0}
+              max={360}
+              step={5}
+              value={[
+                minRuntime ? parseInt(minRuntime) : 0,
+                maxRuntime ? parseInt(maxRuntime) : 360,
+              ]}
+              onValueChange={handleRuntimeChange}
+              className="w-full"
+            />
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <main className="bg-background text-foreground min-h-svh pt-28 pb-16 transition-colors duration-300">
@@ -685,11 +1128,37 @@ export default function SearchClient({
           </p>
         </div>
 
+        {/* Mode Tabs Switcher */}
+        <div className="mb-6 flex w-fit gap-1 rounded-xl border border-zinc-800 bg-zinc-900/60 p-1">
+          <button
+            onClick={() => handleSearchModeChange("search")}
+            className={cn(
+              "flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-1.5 text-xs font-bold transition-all duration-200",
+              searchMode === "search"
+                ? "border-white bg-white text-black shadow-md"
+                : "border-transparent text-zinc-400 hover:text-zinc-200",
+            )}
+          >
+            Search Mode
+          </button>
+          <button
+            onClick={() => handleSearchModeChange("discover")}
+            className={cn(
+              "flex cursor-pointer items-center gap-1.5 rounded-lg border px-4 py-1.5 text-xs font-bold transition-all duration-200",
+              searchMode === "discover"
+                ? "border-white bg-white text-black shadow-md"
+                : "border-transparent text-zinc-400 hover:text-zinc-200",
+            )}
+          >
+            Discover Mode
+          </button>
+        </div>
+
         {/* Sidebar + Content Flex Container */}
         <div className="flex flex-col items-start gap-8 lg:flex-row">
-          {/* Left Sticky Sidebar (Desktop only, always visible when activeType !== "users") */}
-          {activeType !== "users" && (
-            <aside className="no-scrollbar sticky top-22 hidden h-fit max-h-[calc(100vh-160px)] w-72 shrink-0 flex-col gap-6 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 backdrop-blur-md lg:flex">
+          {/* Left Sticky Sidebar (Desktop only, always visible when searchMode === "discover") */}
+          {searchMode === "discover" && (
+            <aside className="sticky top-22 hidden h-fit max-h-[calc(100vh-160px)] w-72 shrink-0 scrollbar-thumb-zinc-500 scrollbar-track-transparent flex-col gap-6 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/30 p-6 backdrop-blur-md lg:flex">
               <div className="flex items-center justify-between border-b border-zinc-800/80 pb-3">
                 <span className="flex items-center gap-2 text-sm font-bold text-white">
                   <SlidersHorizontal className="h-4 w-4 text-zinc-400" />
@@ -713,82 +1182,97 @@ export default function SearchClient({
             {/* Sticky Search Header */}
             <div
               className={cn(
-                "sticky top-22 z-50 mb-6 backdrop-blur-md transition-all duration-500 lg:top-22",
+                "sticky top-22 z-50 mb-6 w-fit backdrop-blur-md transition-all duration-500 lg:top-22",
                 isScrolled
                   ? "mx-2 rounded-4xl border border-zinc-800/80 bg-zinc-900/95 p-4 shadow-xl"
                   : "bg-background/95 rounded-none border border-transparent px-0",
               )}
             >
               {/* Search input and mobile trigger flex container */}
-              <div className="flex w-full max-w-2xl items-center gap-3 lg:max-w-none">
-                {/* Search Input */}
-                <div
-                  className={cn(
-                    "relative flex-1 transition-all duration-300",
-                    isScrolled ? "mb-0" : "mb-0", // simplified since container handles layout
-                  )}
-                >
-                  <Search
+              {/* Search input container */}
+              {searchMode === "search" && (
+                <div className="mb-4 flex w-2xl items-center gap-3 lg:max-w-none">
+                  <div
                     className={cn(
-                      "pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-zinc-500 transition-all duration-300",
-                      isScrolled ? "h-4 w-4" : "h-5 w-5",
+                      "relative flex-1 transition-all duration-300",
+                      isScrolled ? "mb-0" : "mb-0",
                     )}
-                  />
-                  <Input
-                    id="search-input"
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    placeholder={
-                      activeType === "users"
-                        ? "Search users by display name or username…"
-                        : "Search movies, TV shows…"
-                    }
-                    autoFocus={!hasQuery && !hasFilters}
-                    className={cn(
-                      "w-full rounded-2xl border-zinc-700/60 bg-zinc-900 pr-12 pl-12 text-white transition-all duration-300 placeholder:text-zinc-500 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-500",
-                      isScrolled ? "h-10 text-sm" : "h-14 text-base",
+                  >
+                    <Search
+                      className={cn(
+                        "pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-zinc-500 transition-all duration-300",
+                        isScrolled ? "h-4 w-4" : "h-5 w-5",
+                      )}
+                    />
+                    <Input
+                      id="search-input"
+                      type="text"
+                      value={inputValue}
+                      onChange={handleInputChange}
+                      placeholder={
+                        activeType === "users"
+                          ? "Search users by display name or username…"
+                          : "Search movies, TV shows…"
+                      }
+                      autoFocus={!hasQuery && !hasFilters}
+                      className={cn(
+                        "w-full rounded-2xl border-zinc-700/60 bg-zinc-900 pr-12 pl-12 text-white transition-all duration-300 placeholder:text-zinc-500 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-500",
+                        isScrolled ? "h-10 text-sm" : "h-14 text-base",
+                      )}
+                    />
+                    {inputValue && (
+                      <button
+                        onClick={handleClear}
+                        className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-zinc-500 transition-colors hover:text-white"
+                        aria-label="Clear search"
+                      >
+                        <X
+                          className={cn(
+                            "transition-all duration-300",
+                            isScrolled ? "h-3.5 w-3.5" : "h-4 w-4",
+                          )}
+                        />
+                      </button>
                     )}
-                  />
-                  {inputValue && (
-                    <button
-                      onClick={handleClear}
-                      className="absolute top-1/2 right-4 -translate-y-1/2 cursor-pointer text-zinc-500 transition-colors hover:text-white"
-                      aria-label="Clear search"
-                    >
-                      <X
-                        className={cn(
-                          "transition-all duration-300",
-                          isScrolled ? "h-3.5 w-3.5" : "h-4 w-4",
-                        )}
-                      />
-                    </button>
-                  )}
+                  </div>
                 </div>
+              )}
+
+              {/* Type filter tabs */}
+              <div className="flex flex-wrap items-center gap-2">
+                {visibleTypeFilters.map((f) => (
+                  <button
+                    key={f.value}
+                    onClick={() => handleTypeChange(f.value)}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200",
+                      activeType === f.value
+                        ? "border-white bg-white text-black shadow-lg"
+                        : "border-zinc-700/60 bg-zinc-900 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200",
+                    )}
+                  >
+                    {f.icon}
+                    {f.label}
+                  </button>
+                ))}
 
                 {/* Mobile Slide-out Sheet Trigger */}
-                {activeType !== "users" && (
+                {searchMode === "discover" && (
                   <div className="shrink-0 lg:hidden">
                     <Sheet>
                       <SheetTrigger
                         className={cn(
-                          "relative flex cursor-pointer items-center justify-center rounded-2xl border border-zinc-700/60 bg-zinc-900 text-zinc-400 transition-all duration-300 hover:border-zinc-500 hover:text-zinc-200",
-                          isScrolled ? "h-10 w-10" : "h-14 w-14",
+                          "relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-zinc-700/60 bg-zinc-900 text-zinc-400 transition-all duration-300 hover:border-zinc-500 hover:text-zinc-200",
                         )}
                       >
-                        <SlidersHorizontal
-                          className={cn(
-                            "transition-all duration-300",
-                            isScrolled ? "h-4 w-4" : "h-5 w-5",
-                          )}
-                        />
+                        <SlidersHorizontal className="h-4 w-4" />
                         {hasFilters && (
-                          <span className="absolute top-2 right-2 h-2 w-2 animate-pulse rounded-full bg-blue-500" />
+                          <span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500" />
                         )}
                       </SheetTrigger>
                       <SheetContent
                         side="right"
-                        className="no-scrollbar w-[300px] overflow-y-auto border-l border-zinc-800 bg-zinc-950 p-6"
+                        className="no-scrollbar flex w-[300px] flex-col gap-6 overflow-y-auto rounded-l-3xl border-l border-zinc-800 bg-zinc-950/95 p-6 text-white backdrop-blur-xl"
                       >
                         <SheetHeader className="mb-6 border-b border-zinc-800/80 p-0 pb-3">
                           <SheetTitle className="flex items-center gap-2 text-sm font-bold text-white">
@@ -812,32 +1296,13 @@ export default function SearchClient({
                   </div>
                 )}
               </div>
-
-              {/* Type filter tabs */}
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                {TYPE_FILTERS.map((f) => (
-                  <button
-                    key={f.value}
-                    onClick={() => handleTypeChange(f.value)}
-                    className={cn(
-                      "flex cursor-pointer items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200",
-                      activeType === f.value
-                        ? "border-white bg-white text-black shadow-lg"
-                        : "border-zinc-700/60 bg-zinc-900 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200",
-                    )}
-                  >
-                    {f.icon}
-                    {f.label}
-                  </button>
-                ))}
-              </div>
             </div>
 
             {/* Results area */}
             <ResultsSection
               activeType={activeType}
               query={query}
-              hasQuery={hasQuery || hasFilters}
+              hasQuery={searchMode === "discover" || hasQuery || hasFilters}
               isUsersLoading={isUsersLoading}
               isPending={isPending}
               userResults={userResults}
@@ -849,16 +1314,18 @@ export default function SearchClient({
             />
 
             {/* Infinite Scroll Sentinel element */}
-            {hasMore && (hasQuery || hasFilters) && activeType !== "users" && (
-              <div
-                ref={sentinelRef}
-                className="mt-8 flex justify-center py-6 text-xs font-bold text-zinc-500"
-              >
-                {isLoadingMore
-                  ? "Loading more titles..."
-                  : "Scroll down to load more"}
-              </div>
-            )}
+            {hasMore &&
+              (searchMode === "discover" || hasQuery || hasFilters) &&
+              activeType !== "users" && (
+                <div
+                  ref={sentinelRef}
+                  className="mt-8 flex justify-center py-6 text-xs font-bold text-zinc-500"
+                >
+                  {isLoadingMore
+                    ? "Loading more titles..."
+                    : "Scroll down to load more"}
+                </div>
+              )}
           </div>
         </div>
       </div>

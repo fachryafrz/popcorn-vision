@@ -11,7 +11,7 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Suspense fallback={<div className="h-16 bg-zinc-950" />}>
+      <Suspense>
         <Navbar />
       </Suspense>
       <DisclaimerModal />
@@ -21,4 +21,3 @@ export default function MainLayout({
     </>
   );
 }
-

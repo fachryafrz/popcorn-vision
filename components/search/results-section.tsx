@@ -220,10 +220,17 @@ export function ResultsSection({
             <>
               {activeType !== "all" && (
                 <p className="mb-6 text-left text-sm text-zinc-500">
-                  {results.length} result{results.length !== 1 ? "s" : ""} for{" "}
-                  <span className="font-semibold text-zinc-300">
-                    &ldquo;{query}&rdquo;
-                  </span>
+                  {results.length} result{results.length !== 1 ? "s" : ""}{" "}
+                  {query ? (
+                    <>
+                      for{" "}
+                      <span className="font-semibold text-zinc-300">
+                        &ldquo;{query}&rdquo;
+                      </span>
+                    </>
+                  ) : (
+                    "discovered"
+                  )}
                 </p>
               )}
               <div className="grid grid-cols-2 gap-4 @sm:grid-cols-3 @sm:gap-5 @md:grid-cols-4 @3xl:grid-cols-5 @4xl:grid-cols-6">

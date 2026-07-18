@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -28,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import moment from "moment";
+import isoCountries from "@/data/iso-3166.json";
 
 interface MediaDetails {
   tagline?: string;
@@ -65,13 +67,15 @@ interface CastItem {
 }
 
 interface WatchProviders {
-  US?: {
-    flatrate?: {
-      provider_id: number;
-      provider_name: string;
-      logo_path: string;
-    }[];
-  };
+  [countryCode: string]:
+    | {
+        flatrate?: {
+          provider_id: number;
+          provider_name: string;
+          logo_path: string;
+        }[];
+      }
+    | undefined;
 }
 
 interface QuickViewModalProps {
@@ -88,6 +92,18 @@ export default function QuickViewModal({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
+  const router = useRouter();
+
+  const currentUser = useQuery(api.users.getCurrentUser);
+  const userCountryCode = currentUser?.country
+    ? currentUser.country.length === 2
+      ? currentUser.country.toUpperCase()
+      : isoCountries
+          .find(
+            (c) => c.name?.toLowerCase() === currentUser.country!.toLowerCase(),
+          )
+          ?.["alpha-2"]?.toUpperCase() || "US"
+    : "US";
 
   const [details, setDetails] = useState<MediaDetails | null>(null);
   const [videos, setVideos] = useState<VideoItem[]>([]);
@@ -543,16 +559,20 @@ export default function QuickViewModal({
               )}
 
               {/* Watch Providers */}
-              {providers.US?.flatrate && (
+              {providers[userCountryCode]?.flatrate && (
                 <div className="pt-2">
                   <h4 className="mb-2.5 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                    Streaming on (US)
+                    Streaming on ({userCountryCode})
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {providers.US.flatrate.map((prov) => (
+                    {providers[userCountryCode].flatrate.map((prov) => (
                       <div
                         key={prov.provider_id}
-                        className="group border-zinc-850 relative flex h-9 w-9 overflow-hidden rounded-xl border bg-zinc-900"
+                        onClick={() => {
+                          onClose();
+                          router.push(`/search?type=${media?.media_type || "movie"}&providerId=${prov.provider_id}`);
+                        }}
+                        className="group border-zinc-850 relative flex h-9 w-9 overflow-hidden rounded-xl border bg-zinc-900 cursor-pointer transition duration-200 active:scale-90 hover:border-zinc-500"
                         title={prov.provider_name}
                       >
                         <img

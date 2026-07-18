@@ -1,5 +1,8 @@
+"use client";
+
 import RegionSelect from "@/components/region-select";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 import { MediaDetails, ProviderItem } from "./types";
 
 interface InfoSidebarProps {
@@ -21,6 +24,7 @@ export default function InfoSidebar({
   formatCurrency,
   providers,
 }: InfoSidebarProps) {
+  const router = useRouter();
   return (
     <div className="border-zinc-850 sticky top-22 h-fit space-y-6 rounded-2xl border bg-zinc-900/10 p-6">
       <h3 className="border-zinc-805 border-b pb-2 text-base font-bold text-white">
@@ -118,7 +122,8 @@ export default function InfoSidebar({
             {providers.slice(0, 5).map((prov) => (
               <div
                 key={prov.provider_id}
-                className="h-9 w-9 overflow-hidden rounded-lg border border-zinc-800"
+                onClick={() => router.push(`/search?type=${mediaType}&providerId=${prov.provider_id}`)}
+                className="h-9 w-9 overflow-hidden rounded-lg border border-zinc-800 cursor-pointer transition duration-200 active:scale-90 hover:border-zinc-500"
                 title={prov.provider_name}
               >
                 <img
