@@ -1,5 +1,5 @@
 import { RefObject, useState } from "react";
-import { Loader2, CheckCircle2, Check, Calendar } from "lucide-react";
+import { Loader2, CheckCircle2, Check, CalendarPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import moment from "moment";
@@ -264,7 +264,7 @@ export default function SeasonsAccordion({
                                       : "Log Episode to Diary"
                                   }
                                 >
-                                  <Calendar className="h-3.5 w-3.5" />
+                                  <CalendarPlus className="h-3.5 w-3.5" />
                                 </Button>
                                 <Button
                                   size="icon"

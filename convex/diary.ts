@@ -167,6 +167,20 @@ export const logWatch = mutation({
           ? "season"
           : "tv");
 
+    // Automatically remove from watchlist
+    const watchlistExisting = await ctx.db
+      .query("watchlist")
+      .withIndex("by_user_media", (q) =>
+        q
+          .eq("userId", currentUser.userId)
+          .eq("mediaId", args.mediaId)
+          .eq("mediaType", args.mediaType)
+      )
+      .first();
+    if (watchlistExisting) {
+      await ctx.db.delete(watchlistExisting._id);
+    }
+
     // 1. Insert diary log
     const diaryId = await ctx.db.insert("diary", {
       userId: currentUser.userId,

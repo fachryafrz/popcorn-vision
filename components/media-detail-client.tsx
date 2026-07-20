@@ -298,7 +298,6 @@ export default function MediaDetailClient({
       ? { mediaId: String(initialData.details.id), mediaType }
       : "skip",
   );
-  const rateMedia = useMutation(api.ratings.rateMedia);
   const deleteRating = useMutation(api.ratings.deleteRating);
 
   // Convex diary history queries/mutations
@@ -309,6 +308,9 @@ export default function MediaDetailClient({
       : "skip",
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  const [selectedRatingForLog, setSelectedRatingForLog] = useState<
+    number | undefined
+  >(undefined);
   const [logWatchEpisode, setLogWatchEpisode] = useState<{
     season: number;
     episode: number;
@@ -657,6 +659,7 @@ export default function MediaDetailClient({
             src={posterUrl}
             alt={details?.title || details?.name}
             className="h-auto w-full object-cover"
+            draggable={false}
           />
         </div>
 
@@ -684,6 +687,7 @@ export default function MediaDetailClient({
                 alt={details?.title || details?.name}
                 className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                 onError={() => setLogoError(true)}
+                draggable={false}
               />
             </div>
           ) : (
@@ -824,7 +828,10 @@ export default function MediaDetailClient({
             isLoggedIn={isLoggedIn}
             openAuth={openAuth}
             userRating={userRating}
-            rateMedia={rateMedia}
+            rateMedia={async (args) => {
+              setSelectedRatingForLog(args.rating);
+              setIsLogModalOpen(true);
+            }}
             deleteRating={deleteRating}
             isUnreleased={isUnreleased}
           />
@@ -984,13 +991,18 @@ export default function MediaDetailClient({
           onClose={() => {
             setIsLogModalOpen(false);
             setLogWatchEpisode(null);
+            setSelectedRatingForLog(undefined);
           }}
           mediaId={details.id.toString()}
           mediaType={mediaType}
           title={details.title || details.name || ""}
           posterPath={details.poster_path || ""}
           releaseYear={releaseYear.toString()}
-          initialRating={userRating ?? undefined}
+          initialRating={
+            selectedRatingForLog !== undefined
+              ? selectedRatingForLog
+              : (userRating ?? undefined)
+          }
           season={logWatchEpisode?.season}
           episode={logWatchEpisode?.episode}
           numberOfSeasons={

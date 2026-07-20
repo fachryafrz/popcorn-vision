@@ -6,7 +6,7 @@ import {
   Heart,
   Loader2,
   Film,
-  Calendar,
+  CalendarPlus,
   Send,
   List,
 } from "lucide-react";
@@ -145,7 +145,7 @@ export default function ActionsSection({
         )}
       >
         <span className="flex items-center gap-1.5">
-          <Calendar className="h-5 w-5" />
+          <CalendarPlus className="h-5 w-5" />
           Log Watch
         </span>
       </Button>

@@ -96,10 +96,8 @@ export default function RatingSection({
                   rating: starValue,
                   releaseYear: releaseYear,
                 });
-                toast.success(`Rated ${starValue} / 10 successfully!`);
               } catch (err) {
                 console.error("Rating failed:", err);
-                toast.error("Failed to submit rating");
               }
             };
 

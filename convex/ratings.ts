@@ -32,6 +32,20 @@ export const rateMedia = mutation({
       rating: args.rating,
     });
 
+    // Automatically remove from watchlist
+    const watchlistExisting = await ctx.db
+      .query("watchlist")
+      .withIndex("by_user_media", (q) =>
+        q
+          .eq("userId", userId)
+          .eq("mediaId", args.mediaId)
+          .eq("mediaType", args.mediaType)
+      )
+      .first();
+    if (watchlistExisting) {
+      await ctx.db.delete(watchlistExisting._id);
+    }
+
     const existing = await ctx.db
       .query("ratings")
       .withIndex("by_user_media", (q) =>
