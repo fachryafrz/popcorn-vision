@@ -890,10 +890,10 @@ export default function MediaDetailClient({
                                 `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
                               )
                         }
-                        className="flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 pr-3 transition duration-200 hover:bg-zinc-800/50 active:scale-95"
+                        className="flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 pr-4 transition duration-200 hover:bg-zinc-800/50 active:scale-95"
                       >
                         {c.logo_path && (
-                          <div className="flex h-10 w-20 items-center justify-center rounded-lg bg-white/95 p-1 shadow-sm">
+                          <div className="flex aspect-[4/3] w-[100px] items-center justify-center rounded-lg bg-white/95 p-3 shadow-sm">
                             <img
                               src={`https://image.tmdb.org/t/p/w92${c.logo_path}`}
                               alt={c.name}

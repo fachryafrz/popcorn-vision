@@ -129,7 +129,7 @@ export default function CompanyDetailClient({
         <div className="mb-12 overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 backdrop-blur-xl sm:p-8 md:p-10">
           <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:gap-10">
             {/* Studio Logo */}
-            <div className="flex h-36 w-full max-w-[220px] shrink-0 items-center justify-center rounded-2xl bg-white/95 p-6 shadow-2xl shadow-red-950/20 sm:h-44">
+            <div className="flex aspect-[4/3] w-[220px] shrink-0 items-center justify-center rounded-2xl bg-white/95 p-6 shadow-2xl shadow-red-950/20">
               {company.logo_path ? (
                 <img
                   src={`https://image.tmdb.org/t/p/w500${company.logo_path}`}
@@ -154,7 +154,7 @@ export default function CompanyDetailClient({
                   {company.name}
                 </h1>
                 {company.origin_country && (
-                  <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-bold uppercase text-red-400">
+                  <span className="rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-bold text-red-400 uppercase">
                     {company.origin_country}
                   </span>
                 )}
@@ -204,7 +204,7 @@ export default function CompanyDetailClient({
                   {company.description}
                 </p>
               ) : (
-                <p className="mt-5 text-sm italic text-zinc-500">
+                <p className="mt-5 text-sm text-zinc-500 italic">
                   No description available for this production company.
                 </p>
               )}
@@ -270,7 +270,7 @@ export default function CompanyDetailClient({
 
           {/* Sort Select */}
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+            <span className="text-xs font-semibold tracking-wider text-zinc-400 uppercase">
               Sort By:
             </span>
             <Select
@@ -326,7 +326,6 @@ export default function CompanyDetailClient({
         media={quickViewMedia}
         onClose={() => setQuickViewMedia(null)}
       />
-
 
       {/* Auth Modal */}
       <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
