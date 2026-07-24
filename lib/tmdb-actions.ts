@@ -869,3 +869,61 @@ export async function getTMDBProviders(watchRegion: string = "US"): Promise<TMDB
     return [];
   }
 }
+
+export interface TMDBCompanyDetails {
+  id: number;
+  name: string;
+  description: string;
+  headquarters: string;
+  homepage: string;
+  logo_path: string | null;
+  origin_country: string;
+  parent_company: {
+    id: number;
+    name: string;
+    logo_path: string | null;
+  } | null;
+}
+
+export async function getCompanyDetails(companyId: string): Promise<TMDBCompanyDetails | null> {
+  try {
+    const res = await axios.get(`/company/${companyId}`);
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching company details for ${companyId}:`, error);
+    return null;
+  }
+}
+
+export async function getCompanyMovies(companyId: string, page: number = 1): Promise<TMDBMedia[]> {
+  try {
+    const res = await axios.get(`/discover/movie`, {
+      params: {
+        with_companies: companyId,
+        sort_by: "popularity.desc",
+        page,
+      },
+    });
+    return cleanMediaData(res.data.results || [], "movie");
+  } catch (error) {
+    console.error(`Error fetching movies for company ${companyId}:`, error);
+    return [];
+  }
+}
+
+export async function getCompanyTVShows(companyId: string, page: number = 1): Promise<TMDBMedia[]> {
+  try {
+    const res = await axios.get(`/discover/tv`, {
+      params: {
+        with_companies: companyId,
+        sort_by: "popularity.desc",
+        page,
+      },
+    });
+    return cleanMediaData(res.data.results || [], "tv");
+  } catch (error) {
+    console.error(`Error fetching TV shows for company ${companyId}:`, error);
+    return [];
+  }
+}
+
