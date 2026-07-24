@@ -884,9 +884,11 @@ export default function MediaDetailClient({
                       <div
                         key={c.id || c.name}
                         onClick={() =>
-                          router.push(
-                            `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
-                          )
+                          c.id
+                            ? router.push(`/company/${c.id}`)
+                            : router.push(
+                                `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
+                              )
                         }
                         className="flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 pr-3 transition duration-200 hover:bg-zinc-800/50 active:scale-95"
                       >
