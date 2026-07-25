@@ -111,8 +111,6 @@ export default function UsernamePromptModal() {
         showCloseButton={false}
         className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-white shadow-2xl shadow-black/95 backdrop-blur-xl [&>button]:hidden"
       >
-        <div className="bg-primary/10 absolute -top-32 -left-32 -z-10 h-64 w-64 rounded-full blur-3xl" />
-
         <div className="mb-6 text-center">
           <div className="relative mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
             <Image

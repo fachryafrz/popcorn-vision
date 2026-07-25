@@ -109,12 +109,6 @@ export default function CompanyDetailClient({
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Background Decorator */}
-      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 h-[500px] w-[500px] rounded-full bg-red-600/10 blur-[140px]" />
-        <div className="absolute top-1/3 -right-40 h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[140px]" />
-      </div>
-
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Back Link */}
         <Link
