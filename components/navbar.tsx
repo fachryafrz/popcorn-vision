@@ -576,16 +576,7 @@ export default function Navbar() {
 
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setDropdownMenuOpen(false);
-                      router.push("/chat");
-                    }}
-                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-                  >
-                    <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
-                    Chats
-                  </DropdownMenuItem>
+                  {/* Chats link hidden */}
                   <DropdownMenuItem
                     onClick={() => {
                       setDropdownMenuOpen(false);
@@ -1008,15 +999,6 @@ export default function Navbar() {
                   </Link>
                   {isLoggedIn && (
                     <>
-                      <Link
-                        href="/chat"
-                        prefetch={false}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 hover:text-white"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        Chats
-                      </Link>
                       <Link
                         href="/lists"
                         prefetch={false}
