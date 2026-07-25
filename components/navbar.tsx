@@ -59,7 +59,7 @@ export default function Navbar() {
   // Get current user profile (including role)
   const userProfile = useQuery(
     api.users.getCurrentUser,
-    isLoggedIn ? {} : "skip"
+    isLoggedIn ? {} : "skip",
   );
 
   // Notifications query & mutations
@@ -152,7 +152,7 @@ export default function Navbar() {
           className={cn(
             "grid w-full grid-cols-2 transition-all duration-500 lg:grid-cols-3",
             scrolled
-              ? "bg-background/80 border-border/80 mx-auto max-w-5xl rounded-full border px-6 py-2 shadow-xl shadow-black/60 backdrop-blur-md lg:pr-2"
+              ? "bg-background/80 border-border/80 mx-auto max-w-5xl rounded-full border px-6 py-2 shadow-xl shadow-black/60 backdrop-blur-md lg:pr-2 lg:pl-3"
               : "mx-auto max-w-7xl border border-transparent px-6 py-4 sm:px-12 md:px-16",
             isSearchPage && "lg:grid-cols-2",
           )}
@@ -584,7 +584,8 @@ export default function Navbar() {
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
                   {/* Chats link hidden */}
-                  {(userProfile?.role === "owner" || userProfile?.role === "admin") && (
+                  {(userProfile?.role === "owner" ||
+                    userProfile?.role === "admin") && (
                     <>
                       <DropdownMenuItem
                         onClick={() => {
