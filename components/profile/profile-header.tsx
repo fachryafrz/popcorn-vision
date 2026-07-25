@@ -4,6 +4,7 @@ import React from "react";
 import { Users, Loader2, UserPlus, UserCheck, UserX } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserRoleBadge } from "@/components/user-role-badge";
 import { UserDoc } from "./types";
 
 interface ProfileHeaderProps {
@@ -74,6 +75,17 @@ export function ProfileHeader({
               <span className="text-primary text-sm font-semibold">
                 @{targetUser?.username}
               </span>
+              <UserRoleBadge role={targetUser?.role} />
+              {targetUser?.status === "suspended" && (
+                <span className="rounded-md border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-amber-400">
+                  Suspended
+                </span>
+              )}
+              {targetUser?.status === "banned" && (
+                <span className="rounded-md border border-rose-500/30 bg-rose-500/10 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-rose-400">
+                  Banned
+                </span>
+              )}
               {targetUser?.country && (
                 <span className="rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-400 uppercase">
                   {targetUser?.country}

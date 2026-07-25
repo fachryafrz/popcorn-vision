@@ -2,6 +2,7 @@ import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 import { Id } from "./_generated/dataModel";
+import { ensureActiveUser } from "./users";
 
 // Helper to get current authenticated user profile
 async function getAuthedUserProfile(ctx: QueryCtx | MutationCtx) {
@@ -164,10 +165,7 @@ export const addComment = mutation({
     parentId: v.optional(v.id("comments")),
   },
   handler: async (ctx, args) => {
-    const currentUser = await getAuthedUserProfile(ctx);
-    if (!currentUser) {
-      throw new Error("Must be logged in to post a comment");
-    }
+    const currentUser = await ensureActiveUser(ctx);
 
     const trimmedContent = args.content.trim();
     if (trimmedContent.length === 0) {
@@ -241,10 +239,7 @@ export const editComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const currentUser = await getAuthedUserProfile(ctx);
-    if (!currentUser) {
-      throw new Error("Must be logged in to edit a comment");
-    }
+    const currentUser = await ensureActiveUser(ctx);
 
     const comment = await ctx.db.get(args.commentId);
     if (!comment) {
@@ -306,10 +301,7 @@ export const deleteComment = mutation({
     commentId: v.id("comments"),
   },
   handler: async (ctx, args) => {
-    const currentUser = await getAuthedUserProfile(ctx);
-    if (!currentUser) {
-      throw new Error("Must be logged in to delete a comment");
-    }
+    const currentUser = await ensureActiveUser(ctx);
 
     const comment = await ctx.db.get(args.commentId);
     if (!comment) {
@@ -329,10 +321,7 @@ export const toggleLikeComment = mutation({
     commentId: v.id("comments"),
   },
   handler: async (ctx, args) => {
-    const currentUser = await getAuthedUserProfile(ctx);
-    if (!currentUser) {
-      throw new Error("Must be logged in to like a comment");
-    }
+    const currentUser = await ensureActiveUser(ctx);
 
     const comment = await ctx.db.get(args.commentId);
     if (!comment) {

@@ -1,6 +1,40 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+
+export async function getAuthedUser(ctx: QueryCtx | MutationCtx) {
+  try {
+    const user = await authComponent.getAuthUser(ctx);
+    if (!user) return null;
+    return await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", user._id))
+      .first();
+  } catch {
+    return null;
+  }
+}
+
+export async function ensureActiveUser(ctx: QueryCtx | MutationCtx) {
+  const user = await getAuthedUser(ctx);
+  if (!user) {
+    throw new Error("Unauthorized: Please sign in");
+  }
+
+  if (user.status === "banned") {
+    throw new Error("Your account has been banned due to violations of our community guidelines.");
+  }
+
+  if (user.status === "suspended") {
+    throw new Error("Your account is currently suspended and restricted from performing interactive actions.");
+  }
+
+  if (user.status === "closed" || user.status === "deleted") {
+    throw new Error("Your account is deactivated.");
+  }
+
+  return user;
+}
 
 // Check if username is already taken (unique check)
 export const checkUsernameUnique = query({
@@ -428,6 +462,118 @@ export const migrateUserRoles = mutation({
     };
   },
 });
+
+// ----------------------------------------------------
+// ADMIN / OWNER MANAGEMENT
+// ----------------------------------------------------
+
+export const getAdminUsersList = query({
+  args: {
+    search: v.optional(v.string()),
+    roleFilter: v.optional(v.string()),
+    statusFilter: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const caller = await getAuthedUser(ctx);
+    if (!caller || (caller.role !== "owner" && caller.role !== "admin")) {
+      throw new Error("Unauthorized: Admin or Owner access required");
+    }
+
+    let users = await ctx.db.query("users").collect();
+
+    if (args.search) {
+      const q = args.search.toLowerCase().trim();
+      users = users.filter(
+        (u) =>
+          u.name.toLowerCase().includes(q) ||
+          u.username.toLowerCase().includes(q) ||
+          u.email.toLowerCase().includes(q)
+      );
+    }
+
+    if (args.roleFilter && args.roleFilter !== "all") {
+      users = users.filter((u) => (u.role || "user") === args.roleFilter);
+    }
+
+    if (args.statusFilter && args.statusFilter !== "all") {
+      users = users.filter((u) => (u.status || "active") === args.statusFilter);
+    }
+
+    return users.map((u) => ({
+      _id: u._id,
+      userId: u.userId,
+      name: u.name,
+      username: u.username,
+      email: u.email,
+      image: u.image,
+      role: u.role || "user",
+      status: u.status || "active",
+      country: u.country,
+      bio: u.bio,
+    }));
+  },
+});
+
+export const updateUserRole = mutation({
+  args: {
+    targetUserId: v.id("users"),
+    newRole: v.string(), // "user" | "admin" | "owner"
+  },
+  handler: async (ctx, args) => {
+    const caller = await getAuthedUser(ctx);
+    if (!caller || caller.role !== "owner") {
+      throw new Error("Unauthorized: Only the Owner can change user roles");
+    }
+
+    const targetUser = await ctx.db.get(args.targetUserId);
+    if (!targetUser) throw new Error("User not found");
+
+    if (targetUser.role === "owner" && targetUser._id !== caller._id) {
+      throw new Error("Cannot modify role of another Owner");
+    }
+
+    if (!["user", "admin", "owner"].includes(args.newRole)) {
+      throw new Error("Invalid role specified");
+    }
+
+    await ctx.db.patch(args.targetUserId, {
+      role: args.newRole,
+    });
+
+    return { success: true, message: `Role updated to ${args.newRole}` };
+  },
+});
+
+export const updateUserStatus = mutation({
+  args: {
+    targetUserId: v.id("users"),
+    newStatus: v.string(), // "active" | "suspended" | "banned"
+  },
+  handler: async (ctx, args) => {
+    const caller = await getAuthedUser(ctx);
+    if (!caller || (caller.role !== "owner" && caller.role !== "admin")) {
+      throw new Error("Unauthorized: Admin or Owner access required");
+    }
+
+    const targetUser = await ctx.db.get(args.targetUserId);
+    if (!targetUser) throw new Error("User not found");
+
+    if (targetUser.role === "owner" && targetUser._id !== caller._id) {
+      throw new Error("Cannot modify status of an Owner");
+    }
+
+    if (!["active", "suspended", "banned"].includes(args.newStatus)) {
+      throw new Error("Invalid status specified");
+    }
+
+    await ctx.db.patch(args.targetUserId, {
+      status: args.newStatus,
+    });
+
+    return { success: true, message: `Status updated to ${args.newStatus}` };
+  },
+});
+
 
 
 
