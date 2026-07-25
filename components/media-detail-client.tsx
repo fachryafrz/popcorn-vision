@@ -58,6 +58,7 @@ import CollectionGrid from "./media-detail/collection-grid";
 import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
 import { Button } from "./ui/button";
+import { cn } from "@/lib/utils";
 
 interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
@@ -890,7 +891,10 @@ export default function MediaDetailClient({
                                 `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
                               )
                         }
-                        className="flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 pr-4 transition duration-200 hover:bg-zinc-800/50 active:scale-95"
+                        className={cn(
+                          "flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 transition duration-200 hover:bg-zinc-800/50 active:scale-95",
+                          c.logo_path ? "pr-4" : "px-4",
+                        )}
                       >
                         {c.logo_path && (
                           <div className="flex aspect-[4/3] w-[100px] items-center justify-center rounded-lg bg-white/95 p-3 shadow-sm">
