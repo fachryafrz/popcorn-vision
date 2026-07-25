@@ -20,11 +20,13 @@ import { cn } from "@/lib/utils";
 import moment from "moment";
 import Link from "next/link";
 import { toast } from "sonner";
+import { UserRoleBadge } from "@/components/user-role-badge";
 
 interface ActivityUser {
   name: string;
   username: string;
   image?: string;
+  role?: string;
 }
 
 interface Activity {
@@ -60,6 +62,7 @@ interface EnrichedComment {
     name: string;
     username: string;
     image?: string;
+    role?: string;
   };
 }
 
@@ -143,12 +146,15 @@ export default function ActivityCard({
   // Helper to generate the text based on activity type
   const renderActivityText = () => {
     const displayName = (
-      <Link
-        href={`/@${activity.user.username}`}
-        className="hover:text-primary font-bold text-white transition-colors"
-      >
-        {activity.user.name}
-      </Link>
+      <span className="inline-flex items-center gap-1.5 flex-wrap">
+        <Link
+          href={`/@${activity.user.username}`}
+          className="hover:text-primary font-bold text-white transition-colors"
+        >
+          {activity.user.name}
+        </Link>
+        <UserRoleBadge role={activity.user.role} />
+      </span>
     );
 
     const mediaLink = (
@@ -376,9 +382,12 @@ export default function ActivityCard({
                         </Avatar>
                         <div className="min-w-0 flex-1 text-left">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-extrabold text-white">
-                              {comment.user?.name}
-                            </span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] font-extrabold text-white">
+                                {comment.user?.name}
+                              </span>
+                              <UserRoleBadge role={comment.user?.role} />
+                            </div>
                             <span className="text-[9px] font-semibold text-zinc-500">
                               {moment(comment.createdAt).fromNow()}
                             </span>

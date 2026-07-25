@@ -176,6 +176,7 @@ export const getFeed = query({
           name: activityUser.name,
           username: activityUser.username,
           image: activityUser.image,
+          role: activityUser.role,
         },
         likesCount: likes.length,
         commentsCount: comments.length,
@@ -228,6 +229,7 @@ export const getActivityDetails = query({
             name: commentUser.name,
             username: commentUser.username,
             image: commentUser.image,
+            role: commentUser.role,
           },
         });
       }
@@ -246,6 +248,7 @@ export const getActivityDetails = query({
         name: activityUser.name,
         username: activityUser.username,
         image: activityUser.image,
+        role: activityUser.role,
       } : null,
       likes,
       comments: enrichedComments,

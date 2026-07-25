@@ -70,6 +70,7 @@ export const createOrUpdateProfile = mutation({
         name: args.name,
         email: args.email,
         status: "active",
+        role: "user",
       });
     }
   },
@@ -164,6 +165,7 @@ export const updateCurrentUserProfile = mutation({
         bio: args.bio,
         country: args.country,
         status: "active",
+        role: "user",
       });
     }
   },
@@ -402,5 +404,30 @@ export const updateUserThemeSettings = mutation({
     return profile._id;
   },
 });
+
+// Migration helper to backfill missing/undefined roles to "user"
+export const migrateUserRoles = mutation({
+  args: {},
+  handler: async (ctx) => {
+    const allUsers = await ctx.db.query("users").collect();
+    let updatedCount = 0;
+
+    for (const user of allUsers) {
+      if (!user.role) {
+        await ctx.db.patch(user._id, {
+          role: "user",
+        });
+        updatedCount++;
+      }
+    }
+
+    return {
+      message: `Migration completed successfully`,
+      updatedUsersCount: updatedCount,
+      totalUsersCount: allUsers.length,
+    };
+  },
+});
+
 
 
