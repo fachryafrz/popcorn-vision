@@ -23,6 +23,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/components/ui/confirm-provider";
+import { UserRoleBadge } from "@/components/user-role-badge";
 
 // Props for CommentsSection
 interface CommentsSectionProps {
@@ -47,6 +48,7 @@ interface CommentType {
     name: string;
     username: string;
     image?: string;
+    role?: string;
   };
   likeCount: number;
   replyCount: number;
@@ -446,6 +448,9 @@ function CommentNode({
                 <span className="text-xs text-zinc-500">
                   @{comment.author.username}
                 </span>
+              )}
+              {!isDeletedUser && (
+                <UserRoleBadge role={comment.author.role} />
               )}
               <span className="text-xs font-semibold text-zinc-600">•</span>
               <span

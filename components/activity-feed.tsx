@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { usePaginatedQuery } from "convex/react";
+import { usePaginatedQuery, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import ActivityCard from "./activity-card";
@@ -31,9 +31,14 @@ export default function ActivityFeed() {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
-  const [scope, setScope] = useState<"global" | "friends">(
-    isLoggedIn ? "friends" : "global",
+  const currentUserProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip"
   );
+  const isOwnerOrAdmin =
+    currentUserProfile?.role === "owner" || currentUserProfile?.role === "admin";
+
+  const [scope, setScope] = useState<"global" | "friends">("friends");
   const [activeFilter, setActiveFilter] = useState("all");
 
   const { results, status, loadMore } = usePaginatedQuery(
@@ -46,9 +51,8 @@ export default function ActivityFeed() {
   );
 
   const handleScopeChange = (newScope: "global" | "friends") => {
-    if (newScope === "friends" && !isLoggedIn) {
-      return; // disable switching to friends feed if not logged in
-    }
+    if (newScope === "friends" && !isLoggedIn) return;
+    if (newScope === "global" && !isOwnerOrAdmin) return;
     setScope(newScope);
   };
 
@@ -61,41 +65,39 @@ export default function ActivityFeed() {
             Activity Feed
           </h1>
           <p className="mt-1 text-xs text-zinc-400">
-            See updates from friends and the popcorn community.
+            See updates from your friends.
           </p>
         </div>
 
-        {/* Global vs Friends scope toggle */}
-        <div className="border-zinc-850/60 flex self-start rounded-xl border bg-zinc-950/60 p-1 shadow-inner sm:self-auto">
-          <button
-            onClick={() => handleScopeChange("friends")}
-            disabled={!isLoggedIn}
-            className={cn(
-              "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-40",
-              scope === "friends"
-                ? "bg-primary text-white shadow-md"
-                : "text-zinc-400 hover:text-zinc-200",
-            )}
-            title={
-              !isLoggedIn ? "Log in to see friends activity" : "Friends Feed"
-            }
-          >
-            <Users className="h-3.5 w-3.5" />
-            Friends
-          </button>
-          <button
-            onClick={() => handleScopeChange("global")}
-            className={cn(
-              "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300",
-              scope === "global"
-                ? "bg-primary text-white shadow-md"
-                : "text-zinc-400 hover:text-zinc-200",
-            )}
-          >
-            <Globe className="h-3.5 w-3.5" />
-            Global
-          </button>
-        </div>
+        {/* Global vs Friends scope toggle - Global only visible for Owner/Admin */}
+        {isOwnerOrAdmin && (
+          <div className="border-zinc-850/60 flex self-start rounded-xl border bg-zinc-950/60 p-1 shadow-inner sm:self-auto">
+            <button
+              onClick={() => handleScopeChange("friends")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300",
+                scope === "friends"
+                  ? "bg-primary text-white shadow-md"
+                  : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              <Users className="h-3.5 w-3.5" />
+              Friends
+            </button>
+            <button
+              onClick={() => handleScopeChange("global")}
+              className={cn(
+                "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold transition-all duration-300",
+                scope === "global"
+                  ? "bg-primary text-white shadow-md"
+                  : "text-zinc-400 hover:text-zinc-200",
+              )}
+            >
+              <Globe className="h-3.5 w-3.5" />
+              Global
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Filter Row */}

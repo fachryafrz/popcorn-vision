@@ -22,6 +22,7 @@ import {
   Activity,
   Popcorn,
   List,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -54,6 +55,12 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const isSearchPage = pathname === "/search";
+
+  // Get current user profile (including role)
+  const userProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip"
+  );
 
   // Notifications query & mutations
   const notifications = useQuery(
@@ -576,16 +583,23 @@ export default function Navbar() {
 
                   <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setDropdownMenuOpen(false);
-                      router.push("/chat");
-                    }}
-                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-                  >
-                    <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
-                    Chats
-                  </DropdownMenuItem>
+                  {/* Chats link hidden */}
+                  {(userProfile?.role === "owner" || userProfile?.role === "admin") && (
+                    <>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setDropdownMenuOpen(false);
+                          router.push("/admin/users");
+                        }}
+                        className="cursor-pointer rounded-xl px-3 py-2 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 focus:bg-amber-500/10 focus:text-amber-300"
+                      >
+                        <ShieldCheck className="mr-2 h-4 w-4 text-amber-400" />
+                        Admin Panel
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="my-1 bg-zinc-800" />
+                    </>
+                  )}
+
                   <DropdownMenuItem
                     onClick={() => {
                       setDropdownMenuOpen(false);
@@ -1008,15 +1022,6 @@ export default function Navbar() {
                   </Link>
                   {isLoggedIn && (
                     <>
-                      <Link
-                        href="/chat"
-                        prefetch={false}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="flex items-center gap-2 hover:text-white"
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                        Chats
-                      </Link>
                       <Link
                         href="/lists"
                         prefetch={false}

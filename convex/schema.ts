@@ -22,6 +22,7 @@ export default defineSchema({
     status: v.optional(v.string()), // "active" | "deleted" | "closed"
     messagePrivacy: v.optional(v.string()), // "friends" | "disabled"
     readReceiptsEnabled: v.optional(v.boolean()), // true = visible, false = hidden
+    role: v.optional(v.string()), // "owner" | "admin" | "user"
   })
     .index("by_username", ["username"])
     .index("by_userId", ["userId"]),

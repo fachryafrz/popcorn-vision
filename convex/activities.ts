@@ -1,6 +1,7 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
+import { ensureActiveUser } from "./users";
 
 // ----------------------------------------------------
 // INTERNAL HELPERS
@@ -34,6 +35,15 @@ export async function logActivity(
     season?: number;
   }
 ) {
+  // Validate that user is active (not suspended/banned)
+  const user = await ctx.db
+    .query("users")
+    .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+    .first();
+
+  if (user && (user.status === "banned" || user.status === "suspended")) {
+    throw new Error(`Your account is ${user.status} and cannot log activities.`);
+  }
   // To keep the feed clean, remove existing activities of the same type for this user + media
   // (e.g. if they re-add to watchlist or re-rate, we delete the old activity so the new one floats to top)
   if (args.type === "watchlist" || args.type === "favorite" || args.type === "rate" || args.type === "completed_season") {
@@ -123,7 +133,12 @@ export const getFeed = query({
 
     let allowedUserIds: string[] | null = null;
 
-    if (scope === "friends") {
+    if (scope === "global") {
+      // Only Owner and Admin can access global scope feed
+      if (!user || (user.role !== "owner" && user.role !== "admin")) {
+        return { page: [], isDone: true, continueCursor: "" };
+      }
+    } else if (scope === "friends") {
       if (!user) return { page: [], isDone: true, continueCursor: "" };
       const friends = await getFriendsIds(ctx, user.userId);
       allowedUserIds = [user.userId, ...friends];
@@ -176,6 +191,7 @@ export const getFeed = query({
           name: activityUser.name,
           username: activityUser.username,
           image: activityUser.image,
+          role: activityUser.role,
         },
         likesCount: likes.length,
         commentsCount: comments.length,
@@ -228,6 +244,7 @@ export const getActivityDetails = query({
             name: commentUser.name,
             username: commentUser.username,
             image: commentUser.image,
+            role: commentUser.role,
           },
         });
       }
@@ -246,6 +263,7 @@ export const getActivityDetails = query({
         name: activityUser.name,
         username: activityUser.username,
         image: activityUser.image,
+        role: activityUser.role,
       } : null,
       likes,
       comments: enrichedComments,
@@ -261,8 +279,7 @@ export const getActivityDetails = query({
 export const likeActivity = mutation({
   args: { activityId: v.id("activities") },
   handler: async (ctx, args) => {
-    const user = await getAuthedUser(ctx);
-    if (!user) throw new Error("Must be logged in to like activities");
+    const user = await ensureActiveUser(ctx);
 
     const existingLike = await ctx.db
       .query("activityLikes")
@@ -291,8 +308,7 @@ export const addComment = mutation({
     content: v.string(),
   },
   handler: async (ctx, args) => {
-    const user = await getAuthedUser(ctx);
-    if (!user) throw new Error("Must be logged in to comment on activities");
+    const user = await ensureActiveUser(ctx);
 
     const content = args.content.trim();
     if (!content) throw new Error("Comment content cannot be empty");
@@ -311,8 +327,7 @@ export const addComment = mutation({
 export const deleteComment = mutation({
   args: { commentId: v.id("activityComments") },
   handler: async (ctx, args) => {
-    const user = await getAuthedUser(ctx);
-    if (!user) throw new Error("Must be logged in to delete comments");
+    const user = await ensureActiveUser(ctx);
 
     const comment = await ctx.db.get(args.commentId);
     if (!comment) throw new Error("Comment not found");
