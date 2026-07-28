@@ -108,12 +108,12 @@ export default function CompanyDetailClient({
   const tvCount = tvShows.length;
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-20 text-white">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         {/* Back Link */}
         <Link
           href="/"
-          className="mb-8 inline-flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-2 text-sm font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
+          className="mb-8 flex w-fit items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Home
