@@ -1,9 +1,10 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
-import { logActivity } from "./activities";
+import { logActivity, deleteActivitiesByTypeAndMedia } from "./activities";
 
 // Add to Favorites
+// ... (lines omitted for brevity, but let's replace the whole top section)
 export const addToFavorites = mutation({
   args: {
     mediaId: v.string(),
@@ -73,6 +74,10 @@ export const removeFromFavorites = mutation({
 
     if (existing) {
       await ctx.db.delete(existing._id);
+      
+      // Clean up favorite activity
+      await deleteActivitiesByTypeAndMedia(ctx, userId, "favorite", args.mediaId, args.mediaType);
+      
       return true;
     }
     return false;

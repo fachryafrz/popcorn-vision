@@ -1,9 +1,10 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
-import { logActivity } from "./activities";
+import { logActivity, deleteActivitiesByTypeAndMedia } from "./activities";
 
 // Add or edit rating for media
+// ... (omitted code)
 export const rateMedia = mutation({
   args: {
     mediaId: v.string(),
@@ -99,6 +100,10 @@ export const deleteRating = mutation({
 
     if (existing) {
       await ctx.db.delete(existing._id);
+      
+      // Clean up rate activity
+      await deleteActivitiesByTypeAndMedia(ctx, userId, "rate", args.mediaId, args.mediaType);
+      
       return true;
     }
     return false;

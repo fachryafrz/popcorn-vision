@@ -366,3 +366,44 @@ export const logSeasonCompletion = mutation({
     });
   },
 });
+
+// Helper to delete specific activities and their associated likes/comments
+export async function deleteActivitiesByTypeAndMedia(
+  ctx: MutationCtx,
+  userId: string,
+  type: "rate" | "watchlist" | "favorite" | "review" | "completed_season",
+  mediaId: string,
+  mediaType: string
+) {
+  const existing = await ctx.db
+    .query("activities")
+    .withIndex("by_user", (q) => q.eq("userId", userId))
+    .collect();
+
+  const targets = existing.filter(
+    (a) => a.type === type && a.mediaId === mediaId && a.mediaType === mediaType
+  );
+
+  for (const act of targets) {
+    await ctx.db.delete(act._id);
+
+    // Clean up likes
+    const likes = await ctx.db
+      .query("activityLikes")
+      .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+      .collect();
+    for (const l of likes) {
+      await ctx.db.delete(l._id);
+    }
+
+    // Clean up comments
+    const comments = await ctx.db
+      .query("activityComments")
+      .withIndex("by_activity", (q) => q.eq("activityId", act._id))
+      .collect();
+    for (const c of comments) {
+      await ctx.db.delete(c._id);
+    }
+  }
+}
+

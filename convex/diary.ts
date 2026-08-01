@@ -1,7 +1,7 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
-import { logActivity } from "./activities";
+import { logActivity, deleteActivitiesByTypeAndMedia } from "./activities";
 
 // Helper to get current authenticated user profile
 async function getAuthedUser(ctx: QueryCtx | MutationCtx) {
@@ -395,6 +395,13 @@ export const deleteDiaryEntry = mutation({
     }
 
     await ctx.db.delete(args.diaryId);
+
+    // Clean up activity log
+    if (entry.review) {
+      await deleteActivitiesByTypeAndMedia(ctx, currentUser.userId, "review", entry.mediaId, entry.mediaType);
+    } else if (entry.rating !== undefined) {
+      await deleteActivitiesByTypeAndMedia(ctx, currentUser.userId, "rate", entry.mediaId, entry.mediaType);
+    }
 
     if (entry.mediaType === "tv" && entry.season !== undefined && entry.episode !== undefined) {
       await updateSeasonCompletionStatus(

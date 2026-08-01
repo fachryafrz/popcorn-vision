@@ -28,15 +28,6 @@ import { siteConfig } from "@/config/site";
 
 export default function ChatPage() {
   const router = useRouter();
-  useEffect(() => {
-    router.replace("/");
-  }, [router]);
-
-  return null;
-}
-
-function ChatPageDisabled() {
-  const router = useRouter();
   const confirm = useConfirm();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
