@@ -41,11 +41,11 @@ import {
   Clock,
   Star,
   Loader2,
-  Sparkles,
   TrendingUp,
   User,
   Video,
   Tv2,
+  ChartPie,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -417,7 +417,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
   if (!diary || diary.length === 0) {
     return (
       <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
-        <Sparkles className="mb-4 h-12 w-12 text-zinc-800" />
+        <ChartPie className="mb-4 h-12 w-12 text-zinc-800" />
         <p className="text-sm text-zinc-500">
           No watch history available. Log titles to your diary to view
           statistics and insights.

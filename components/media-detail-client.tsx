@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -134,10 +135,29 @@ export default function MediaDetailClient({
   const [now] = useState(() => Date.now());
 
   // Player tabs & selections
-  const [activeTab, setActiveTab] = useState<"trailer" | "watch">("trailer");
+  const [activeTabState, setActiveTabState] = useQueryState("playTab", {
+    defaultValue: "trailer",
+  });
+  const activeTab = (activeTabState === "watch" ? "watch" : "trailer") as
+    | "trailer"
+    | "watch";
+  const setActiveTab = (tab: "trailer" | "watch") => {
+    setActiveTabState(tab);
+  };
+
   const [selectedServer, setSelectedServer] = useState<number>(0);
-  const [season, setSeason] = useState(1);
-  const [episode, setEpisode] = useState(1);
+
+  const [seasonState, setSeasonState] = useQueryState("season");
+  const season = seasonState ? parseInt(seasonState) || 1 : 1;
+  const setSeason = (s: number) => {
+    setSeasonState(String(s));
+  };
+
+  const [episodeState, setEpisodeState] = useQueryState("episode");
+  const episode = episodeState ? parseInt(episodeState) || 1 : 1;
+  const setEpisode = (e: number) => {
+    setEpisodeState(String(e));
+  };
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(
     null,
@@ -355,7 +375,45 @@ export default function MediaDetailClient({
         }
       });
     }
-  }, [watchProgress]);
+  }, [watchProgress, setSeason, setEpisode]);
+
+  // Scroll player section into view on mount if playTab query param is "watch"
+  const hasScrolledOnMount = useRef(false);
+  useEffect(() => {
+    if (activeTabState === "watch" && !hasScrolledOnMount.current) {
+      const timer = setTimeout(() => {
+        if (playerSectionRef.current) {
+          hasScrolledOnMount.current = true;
+          playerSectionRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [activeTabState]);
+
+  // Fetch active season details automatically for TV series
+  useEffect(() => {
+    if (mediaType === "tv" && details?.id && season) {
+      getSeasonDetails(details.id, season).then((data) => {
+        if (data) {
+          setActiveSeasonData(data as SeasonDetails);
+        }
+      });
+    }
+  }, [mediaType, details?.id, season]);
+
+  const currentEpisodeStill = useMemo(() => {
+    if (mediaType === "tv" && activeSeasonData && activeSeasonData.episodes) {
+      const epObj = activeSeasonData.episodes.find(
+        (e) => e.episode_number === episode,
+      );
+      return epObj?.still_path || undefined;
+    }
+    return undefined;
+  }, [mediaType, activeSeasonData, episode]);
 
   // Track and save watch progress
   useEffect(() => {
@@ -365,6 +423,8 @@ export default function MediaDetailClient({
         mediaType,
         title: details.title || details.name || "",
         posterPath: details.poster_path || "",
+        backdropPath: details.backdrop_path || undefined,
+        episodeStillPath: currentEpisodeStill,
         season: mediaType === "tv" ? season : undefined,
         episode: mediaType === "tv" ? episode : undefined,
       }).catch((err) => console.error("Failed to save watch progress:", err));
@@ -376,6 +436,7 @@ export default function MediaDetailClient({
     isLoggedIn,
     mediaType,
     details,
+    currentEpisodeStill,
     upsertWatchProgress,
   ]);
 

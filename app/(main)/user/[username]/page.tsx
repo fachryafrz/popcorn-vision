@@ -2,6 +2,7 @@
 
 import { useState, use, useEffect } from "react";
 import { useQuery, useMutation } from "convex/react";
+import { useQueryState } from "nuqs";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
@@ -49,15 +50,16 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const confirm = useConfirm();
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [activeTab, setActiveTab] = useState<
+  const [activeTabState, setActiveTab] = useQueryState("tab", {
+    defaultValue: "all",
+  });
+  const activeTab = (activeTabState || "all") as
     | "all"
     | "watchlist"
     | "favorites"
     | "ratings"
     | "diary"
-    | "continueWatching"
-    | "insights"
-  >("all");
+    | "continue-watching";
   const [showFriendsDialog, setShowFriendsDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -115,7 +117,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   };
 
   const handleSelectAll = (
-    items: ({ mediaId: string; mediaType: string } | DiaryItem)[]
+    items: ({ mediaId: string; mediaType: string } | DiaryItem)[],
   ) => {
     const updated = new Set<string>();
     if (selectedItems.size < items.length) {
@@ -123,7 +125,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         (items as DiaryItem[]).forEach((item) => updated.add(item._id));
       } else {
         (items as { mediaId: string; mediaType: string }[]).forEach((item) =>
-          updated.add(`${item.mediaType}-${item.mediaId}`)
+          updated.add(`${item.mediaType}-${item.mediaId}`),
         );
       }
     }
@@ -149,7 +151,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         for (const diaryId of diaryIdsToDelete) {
           await deleteDiaryEntry({ diaryId });
         }
-        toast.success(`Successfully removed ${diaryIdsToDelete.length} diary entries!`);
+        toast.success(
+          `Successfully removed ${diaryIdsToDelete.length} diary entries!`,
+        );
       } else {
         const itemsToDelete = Array.from(selectedItems).map((key) => {
           const [mediaType, mediaId] = key.split("-");
@@ -224,35 +228,51 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const showDiaryTab = isOwner || !targetUser?.hideDiary;
   const showInsightsTab = isOwner || !targetUser?.hideInsights;
 
-  // Query target user lists if profile exists and content is visible
+  // Query target user lists if profile exists, content is visible, and the relevant tab is active
   const watchlist = useQuery(
     api.watchlist.getPublicWatchlist,
-    targetUserId && showWatchlistTab && !showLockScreen
+    targetUserId &&
+      showWatchlistTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "watchlist")
       ? { userId: targetUserId }
       : "skip",
   ) as GridMediaItem[] | undefined;
   const favorites = useQuery(
     api.favorites.getPublicFavorites,
-    targetUserId && showFavoritesTab && !showLockScreen
+    targetUserId &&
+      showFavoritesTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "favorites")
       ? { userId: targetUserId }
       : "skip",
   ) as GridMediaItem[] | undefined;
   const ratings = useQuery(
     api.ratings.getUserRatings,
-    targetUserId && showRatingsTab && !showLockScreen
+    targetUserId &&
+      showRatingsTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "ratings")
       ? { userId: targetUserId }
       : "skip",
   ) as GridMediaItem[] | undefined;
   const diary = useQuery(
     api.diary.getUserDiary,
-    targetUserId && (showDiaryTab || showInsightsTab) && !showLockScreen
+    targetUserId &&
+      !showLockScreen &&
+      (showInsightsTab ||
+        (showDiaryTab && (activeTab === "all" || activeTab === "diary")))
       ? { userId: targetUserId }
       : "skip",
   ) as DiaryItem[] | undefined;
 
   const continueWatching = useQuery(
     api.continueWatching.getProgress,
-    isOwner && isLoggedIn ? {} : "skip",
+    isOwner &&
+      isLoggedIn &&
+      (activeTab === "all" || activeTab === "continue-watching")
+      ? {}
+      : "skip",
   );
 
   const handleBlockAction = async () => {
@@ -398,6 +418,15 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   // Loading states
   const loadingProfile = profileData === undefined;
 
+  const isTabLoading =
+    (activeTab === "all" &&
+      (watchlist === undefined ||
+        favorites === undefined ||
+        ratings === undefined)) ||
+    (activeTab === "watchlist" && watchlist === undefined) ||
+    (activeTab === "favorites" && favorites === undefined) ||
+    (activeTab === "ratings" && ratings === undefined);
+
   if (loadingProfile) {
     return (
       <div className="flex min-h-[50vh] grow items-center justify-center bg-zinc-950 text-white">
@@ -493,41 +522,30 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
 
   // Define tab navigation dynamically based on visitor visibility settings
   const tabsList = [
-    { id: "all" as const, label: "All", count: allItems.length, visible: true },
+    { id: "all" as const, label: "All", visible: true },
     {
-      id: "continueWatching" as const,
+      id: "continue-watching" as const,
       label: "Continue Watching",
-      count: continueWatching ? continueWatching.length : 0,
       visible: isOwner,
     },
     {
       id: "diary" as const,
       label: "Diary",
-      count: diary ? diary.length : 0,
       visible: showDiaryTab,
-    },
-    {
-      id: "insights" as const,
-      label: "Insights",
-      count: diary ? diary.length : 0,
-      visible: showInsightsTab,
     },
     {
       id: "watchlist" as const,
       label: "Watchlist",
-      count: watchlist ? watchlist.length : 0,
       visible: showWatchlistTab,
     },
     {
       id: "favorites" as const,
       label: "Favorites",
-      count: favorites ? favorites.length : 0,
       visible: showFavoritesTab,
     },
     {
       id: "ratings" as const,
       label: "Ratings",
-      count: ratings ? ratings.length : 0,
       visible: showRatingsTab,
     },
   ].filter((t) => t.visible);
@@ -554,6 +572,19 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         <LockScreen isFriendsOnly={isFriendsOnly} />
       ) : (
         <>
+          {/* Insights (Always visible if showInsightsTab is true) */}
+          {showInsightsTab && (
+            <div className="mb-12 border-b border-zinc-900 pb-12">
+              {diary === undefined ? (
+                <div className="flex items-center justify-center py-20">
+                  <Loader2 className="text-primary h-8 w-8 animate-spin" />
+                </div>
+              ) : (
+                <InsightsTab diary={diary} user={targetUser} />
+              )}
+            </div>
+          )}
+
           {/* Tabs */}
           <div className="mb-8 flex scrollbar-none gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
             {tabsList.map((tab) => (
@@ -567,7 +598,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                     : "border-transparent text-zinc-500 hover:text-zinc-300",
                 )}
               >
-                {tab.label} ({tab.count})
+                {tab.label}
               </button>
             ))}
           </div>
@@ -596,22 +627,30 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                 handleToggleSelectItem={handleToggleSelectItem}
               />
             </>
-          ) : activeTab === "insights" ? (
-            <InsightsTab diary={diary} user={targetUser} />
-          ) : activeTab === "continueWatching" ? (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-              {continueWatching && continueWatching.length > 0 ? (
-                continueWatching.map((item) => (
-                  <ContinueWatchingCard key={item._id} item={item} />
-                ))
-              ) : (
-                <div className="col-span-full flex min-h-[30vh] flex-col items-center justify-center text-center">
-                  <Play className="mb-4 h-12 w-12 text-zinc-800" />
-                  <p className="text-sm text-zinc-500">
-                    Your Continue Watching list is empty.
-                  </p>
-                </div>
-              )}
+          ) : activeTab === "continue-watching" ? (
+            continueWatching === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4">
+                {continueWatching.length > 0 ? (
+                  continueWatching.map((item) => (
+                    <ContinueWatchingCard key={item._id} item={item} />
+                  ))
+                ) : (
+                  <div className="col-span-full flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <Play className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">
+                      Your Continue Watching list is empty.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : isTabLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="text-primary h-8 w-8 animate-spin" />
             </div>
           ) : (
             <>

@@ -18,8 +18,11 @@ import ContinueWatchingCard from "./continue-watching-card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
-import { Play, Bookmark } from "lucide-react";
-import { CarouselSkeleton } from "./skeletons";
+import {
+  CarouselSkeleton,
+  ContinueWatchingCarouselSkeleton,
+  Skeleton,
+} from "./skeletons";
 import Card from "./card";
 
 interface HomeClientProps {
@@ -67,12 +70,58 @@ export default function HomeClient({
         <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
           {/* Continue Watching Section */}
           {isLoggedIn &&
-            continueWatching !== undefined &&
-            continueWatching.length > 0 && (
+            (continueWatching === undefined ? (
               <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-6 w-44 rounded-md" />
+                </div>
+                <ContinueWatchingCarouselSkeleton />
+              </div>
+            ) : continueWatching.length > 0 ? (
+              <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
                 <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-                  <Play className="text-primary h-5 w-5 fill-current" />
                   Continue Watching
+                </h2>
+                <div className="swiper-carousel-container relative w-full">
+                  <Swiper
+                    modules={[Mousewheel, FreeMode]}
+                    freeMode={true}
+                    spaceBetween={16}
+                    slidesPerView={1.3}
+                    breakpoints={{
+                      640: { slidesPerView: 1.2, spaceBetween: 20 },
+                      768: { slidesPerView: 2.7, spaceBetween: 24 },
+                      1024: { slidesPerView: 3.7, spaceBetween: 24 },
+                      1280: { slidesPerView: 4, spaceBetween: 24 },
+                    }}
+                    mousewheel={{
+                      forceToAxis: true,
+                    }}
+                    className="w-full pb-4"
+                  >
+                    {continueWatching.map((item) => (
+                      <SwiperSlide key={item._id} className="py-1">
+                        <ContinueWatchingCard item={item} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                </div>
+              </div>
+            ) : null)}
+
+          {/* Watchlist Section */}
+          {isLoggedIn &&
+            (watchlist === undefined ? (
+              <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-6 w-36 rounded-md" />
+                </div>
+                <CarouselSkeleton />
+              </div>
+            ) : watchlist.length > 0 ? (
+              <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
+                <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+                  My Watchlist
                 </h2>
                 <div className="swiper-carousel-container relative w-full">
                   <Swiper
@@ -91,68 +140,34 @@ export default function HomeClient({
                     }}
                     className="w-full pb-4"
                   >
-                    {continueWatching.map((item) => (
-                      <SwiperSlide key={item._id} className="py-1">
-                        <ContinueWatchingCard item={item} />
-                      </SwiperSlide>
-                    ))}
+                    {watchlist.map((item) => {
+                      const mediaItem: TMDBMedia = {
+                        id: Number(item.mediaId),
+                        media_type: item.mediaType as "movie" | "tv",
+                        title: item.title,
+                        name: item.title,
+                        poster_path: item.posterPath,
+                        vote_average: item.rating || 0,
+                        release_date: item.releaseYear,
+                        backdrop_path: "",
+                        genre_ids: [],
+                        overview: "",
+                        popularity: 0,
+                      };
+                      return (
+                        <SwiperSlide key={item._id} className="py-1">
+                          <Card
+                            media={mediaItem}
+                            onQuickView={handleQuickView}
+                            onAuthRequired={openAuth}
+                          />
+                        </SwiperSlide>
+                      );
+                    })}
                   </Swiper>
                 </div>
               </div>
-            )}
-
-          {/* Watchlist Section */}
-          {isLoggedIn && watchlist !== undefined && watchlist.length > 0 && (
-            <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
-              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-                <Bookmark className="text-primary h-5 w-5 fill-current" />
-                My Watchlist
-              </h2>
-              <div className="swiper-carousel-container relative w-full">
-                <Swiper
-                  modules={[Mousewheel, FreeMode]}
-                  freeMode={true}
-                  spaceBetween={16}
-                  slidesPerView={2}
-                  breakpoints={{
-                    640: { slidesPerView: 3, spaceBetween: 24 },
-                    768: { slidesPerView: 4, spaceBetween: 24 },
-                    1024: { slidesPerView: 5, spaceBetween: 24 },
-                    1280: { slidesPerView: 6, spaceBetween: 24 },
-                  }}
-                  mousewheel={{
-                    forceToAxis: true,
-                  }}
-                  className="w-full pb-4"
-                >
-                  {watchlist.map((item) => {
-                    const mediaItem: TMDBMedia = {
-                      id: Number(item.mediaId),
-                      media_type: item.mediaType as "movie" | "tv",
-                      title: item.title,
-                      name: item.title,
-                      poster_path: item.posterPath,
-                      vote_average: item.rating || 0,
-                      release_date: item.releaseYear,
-                      backdrop_path: "",
-                      genre_ids: [],
-                      overview: "",
-                      popularity: 0,
-                    };
-                    return (
-                      <SwiperSlide key={item._id} className="py-1">
-                        <Card
-                          media={mediaItem}
-                          onQuickView={handleQuickView}
-                          onAuthRequired={openAuth}
-                        />
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-              </div>
-            </div>
-          )}
+            ) : null)}
 
           {/* Trending Now */}
           <div id="trending">

@@ -205,6 +205,8 @@ export default defineSchema({
     mediaType: v.string(),
     title: v.string(),
     posterPath: v.string(),
+    backdropPath: v.optional(v.string()),
+    episodeStillPath: v.optional(v.string()),
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
     updatedAt: v.number(),
