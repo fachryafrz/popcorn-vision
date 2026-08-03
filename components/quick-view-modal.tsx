@@ -18,6 +18,7 @@ import {
   Plus,
   Check,
   Heart,
+  Play,
 } from "lucide-react";
 import {
   Dialog,
@@ -331,8 +332,22 @@ export default function QuickViewModal({
                 )}
               </div>
 
-              {/* Watchlist & Favorite Buttons */}
+              {/* Action Buttons: View Details, Watchlist & Favorite */}
               <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  onClick={() => {
+                    onClose();
+                    const mType = media.media_type || "movie";
+                    router.push(`/${mType}/${media.id}`);
+                  }}
+                  className="bg-primary hover:bg-primary/90 h-9 cursor-pointer rounded-full px-4 py-4 text-xs font-semibold text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 active:scale-98"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Play className="h-3.5 w-3.5 fill-current" />
+                    View Details
+                  </span>
+                </Button>
+
                 <Button
                   onClick={handleWatchlistToggle}
                   disabled={watchlistLoading}

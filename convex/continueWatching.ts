@@ -9,6 +9,8 @@ export const upsertProgress = mutation({
     mediaType: v.string(), // "movie" or "tv"
     title: v.string(),
     posterPath: v.string(),
+    backdropPath: v.optional(v.string()),
+    episodeStillPath: v.optional(v.string()),
     season: v.optional(v.number()),
     episode: v.optional(v.number()),
   },
@@ -26,6 +28,8 @@ export const upsertProgress = mutation({
 
     if (existing) {
       await ctx.db.patch(existing._id, {
+        backdropPath: args.backdropPath,
+        episodeStillPath: args.episodeStillPath,
         season: args.season,
         episode: args.episode,
         updatedAt: Date.now(),
@@ -40,6 +44,8 @@ export const upsertProgress = mutation({
       mediaType: args.mediaType,
       title: args.title,
       posterPath: args.posterPath,
+      backdropPath: args.backdropPath,
+      episodeStillPath: args.episodeStillPath,
       season: args.season,
       episode: args.episode,
       updatedAt: Date.now(),

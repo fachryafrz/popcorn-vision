@@ -298,11 +298,33 @@ export default function Hero({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
+  const [initialIndex] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("hero_active_index");
+      if (saved !== null) {
+        const parsed = parseInt(saved, 10);
+        if (!isNaN(parsed) && parsed >= 0 && parsed < (items?.length || 0)) {
+          return parsed;
+        }
+      }
+    }
+    return 0;
+  });
+
   if (!items || items.length === 0) return null;
 
   return (
     <div className="relative h-[90svh] w-full overflow-hidden bg-zinc-950 select-none sm:h-svh">
       <Swiper
+        initialSlide={initialIndex}
+        onSwiper={(swiper) => {
+          if (initialIndex > 0) {
+            swiper.slideToLoop(initialIndex, 0);
+          }
+        }}
+        onSlideChange={(swiper) => {
+          sessionStorage.setItem("hero_active_index", String(swiper.realIndex));
+        }}
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"
         pagination={{ clickable: true }}

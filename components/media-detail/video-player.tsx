@@ -266,7 +266,7 @@ export default function VideoPlayer({
       <div className="border-t border-zinc-800/80 bg-zinc-900/40 p-4 text-center text-xs text-zinc-400">
         {activeTab === "watch"
           ? "Tip: Enable an ad-blocker extension in your browser to prevent popup ads from third-party streaming providers."
-          : "Now displaying the official trailer. Click 'Watch Movie/Show' to stream."}
+          : "Now displaying the official trailer. Click 'Watch Movie/TV Show' to stream."}
       </div>
     </div>
   );

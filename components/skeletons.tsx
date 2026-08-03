@@ -109,14 +109,14 @@ export function CarouselSkeleton() {
 export function ContinueWatchingCardSkeleton() {
   return (
     <div className="flex w-full shrink-0 flex-col gap-3">
-      {/* Poster area */}
-      <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+      {/* Backdrop area (Landscape) */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
         <Skeleton className="h-full w-full rounded-none" />
       </div>
       {/* Info / Metadata */}
       <div className="flex flex-col gap-1.5 px-1">
         <Skeleton className="h-4 w-11/12 rounded" />
-        <Skeleton className="h-3.5 w-1/3 rounded-sm bg-primary/25" />
+        <Skeleton className="bg-primary/25 h-3.5 w-1/3 rounded-sm" />
         <Skeleton className="h-3 w-1/2 rounded-sm" />
       </div>
     </div>
@@ -129,12 +129,12 @@ export function ContinueWatchingCarouselSkeleton() {
     <div className="swiper-carousel-container relative w-full">
       <Swiper
         spaceBetween={16}
-        slidesPerView={2}
+        slidesPerView={1.3}
         breakpoints={{
-          640: { slidesPerView: 3, spaceBetween: 24 },
-          768: { slidesPerView: 4, spaceBetween: 24 },
-          1024: { slidesPerView: 5, spaceBetween: 24 },
-          1280: { slidesPerView: 6, spaceBetween: 24 },
+          640: { slidesPerView: 1.2, spaceBetween: 20 },
+          768: { slidesPerView: 2.7, spaceBetween: 24 },
+          1024: { slidesPerView: 3.7, spaceBetween: 24 },
+          1280: { slidesPerView: 4, spaceBetween: 24 },
         }}
         className="w-full pb-4"
         allowTouchMove={false}
@@ -148,4 +148,3 @@ export function ContinueWatchingCarouselSkeleton() {
     </div>
   );
 }
-

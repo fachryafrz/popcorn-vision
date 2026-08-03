@@ -222,15 +222,7 @@ export default function Navbar() {
           )}
 
           {/* User Controls (Desktop) */}
-          <div className="hidden items-center gap-4 justify-self-end lg:flex">
-            <Link
-              href="/feed"
-              prefetch={false}
-              className="relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:border-zinc-700 hover:text-white focus:outline-none"
-              title="Activity Feed"
-            >
-              <Activity className="h-4 w-4" />
-            </Link>
+          <div className="hidden items-center gap-2 justify-self-end lg:flex">
             {isLoggedIn && (
               <>
                 <DropdownMenu>
@@ -592,6 +584,17 @@ export default function Navbar() {
                     <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
                     Chats
                   </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push("/feed");
+                    }}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <Activity className="mr-2 h-4 w-4 text-zinc-400" />
+                    Feed
+                  </DropdownMenuItem>
                   {(userProfile?.role === "owner" ||
                     userProfile?.role === "admin") && (
                     <>
@@ -662,7 +665,7 @@ export default function Navbar() {
             {isLoggedIn && (
               <>
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="hover:border-zinc-705 relative cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:text-white focus:outline-none">
+                  <DropdownMenuTrigger className="hover:border-zinc-705 relative cursor-pointer rounded-full border border-zinc-800 bg-zinc-900 p-2 text-zinc-400 transition-all hover:text-white focus:outline-none">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
                       <span className="ring-background bg-primary absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full text-[8px] font-black text-white ring-2">
@@ -964,7 +967,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button & Drawer via Shadcn Sheet */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetTrigger className="border-zinc-805 cursor-pointer rounded-xl border bg-zinc-900/60 p-2 text-zinc-300 hover:text-white">
+              <SheetTrigger className="border-zinc-805 cursor-pointer rounded-full border bg-zinc-900/60 p-2 text-zinc-300 hover:text-white">
                 <Menu className="h-6 w-6" />
               </SheetTrigger>
               <SheetContent

@@ -14,6 +14,8 @@ interface ContinueWatchingItem {
   mediaType: string;
   title: string;
   posterPath: string;
+  backdropPath?: string;
+  episodeStillPath?: string;
   season?: number;
   episode?: number;
   updatedAt: number;
@@ -50,21 +52,45 @@ export default function ContinueWatchingCard({
     }
   };
 
-  const posterPath = item.posterPath
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_300 || "https://image.tmdb.org/t/p/w300"}${item.posterPath}`
-    : "/logo/popcorn.png";
+  let rawImage = "/logo/popcorn.png";
+
+  if (item.mediaType === "tv") {
+    // TV Series: Prioritize episode still image, then backdrop, then poster
+    const still = item.episodeStillPath || item.backdropPath || item.posterPath;
+    if (still) {
+      rawImage = `${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${still}`;
+    }
+  } else {
+    // Movie: Prioritize backdrop image, then poster
+    const backdrop = item.backdropPath || item.posterPath;
+    if (backdrop) {
+      rawImage = `${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${backdrop}`;
+    }
+  }
+
+  const imagePath = rawImage;
 
   const relativeTime = moment(item.updatedAt).fromNow();
 
   return (
     <div
-      onClick={() => router.push(`/${item.mediaType}/${item.mediaId}`)}
+      onClick={() => {
+        const queryParams = new URLSearchParams();
+        queryParams.set("playTab", "watch");
+        if (item.season !== undefined) {
+          queryParams.set("season", String(item.season));
+        }
+        if (item.episode !== undefined) {
+          queryParams.set("episode", String(item.episode));
+        }
+        router.push(`/${item.mediaType}/${item.mediaId}?${queryParams.toString()}`, { scroll: false });
+      }}
       className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1"
     >
-      {/* Poster area */}
-      <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+      {/* Backdrop area (Landscape) */}
+      <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
         <img
-          src={posterPath}
+          src={imagePath}
           alt={item.title}
           className="h-full w-full object-cover transition-transform duration-500 md:group-hover:scale-105"
           loading="lazy"

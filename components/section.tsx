@@ -47,17 +47,67 @@ export default function Section({
   const [loading, setLoading] = useState(true);
 
   // States for interactive controls
-  const [trendingTab, setTrendingTab] = useState<"all" | "movie" | "tv">("all");
-  const [streamingProv, setStreamingProv] =
-    useState<keyof typeof PROVIDERS>("netflix");
-  const [genreName, setGenreName] = useState<string>("Action");
+  const [trendingTab, setTrendingTab] = useState<"all" | "movie" | "tv">(() => {
+    if (titleType === "text" && typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("trending_tab");
+      if (saved === "all" || saved === "movie" || saved === "tv") {
+        return saved;
+      }
+    }
+    return "all";
+  });
+  const [streamingProv, setStreamingProv] = useState<keyof typeof PROVIDERS>(
+    () => {
+      if (titleType === "dropdown-streaming" && typeof window !== "undefined") {
+        const saved = sessionStorage.getItem("streaming_prov");
+        if (saved && saved in PROVIDERS) {
+          return saved as keyof typeof PROVIDERS;
+        }
+      }
+      return "netflix";
+    },
+  );
+  const [genreName, setGenreName] = useState<string>(() => {
+    if (titleType === "dropdown-genre" && typeof window !== "undefined") {
+      const saved = sessionStorage.getItem("genre_name");
+      if (saved) {
+        return saved;
+      }
+    }
+    return "Action";
+  });
 
   // Fetch initial data
   useEffect(() => {
-    defaultFetch().then((data) => {
-      setItems(data);
-      setLoading(false);
-    });
+    if (titleType === "text" && trendingTab !== "all" && onTrendingChange) {
+      onTrendingChange(trendingTab).then((data) => {
+        setItems(data);
+        setLoading(false);
+      });
+    } else if (
+      titleType === "dropdown-streaming" &&
+      streamingProv !== "netflix" &&
+      onStreamingChange
+    ) {
+      onStreamingChange(streamingProv).then((data) => {
+        setItems(data);
+        setLoading(false);
+      });
+    } else if (
+      titleType === "dropdown-genre" &&
+      genreName !== "Action" &&
+      onGenreChange
+    ) {
+      onGenreChange(genreName).then((data) => {
+        setItems(data);
+        setLoading(false);
+      });
+    } else {
+      defaultFetch().then((data) => {
+        setItems(data);
+        setLoading(false);
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -65,6 +115,9 @@ export default function Section({
   const handleTrendingChange = async (type: "all" | "movie" | "tv") => {
     if (!onTrendingChange) return;
     setTrendingTab(type);
+    if (titleType === "text") {
+      sessionStorage.setItem("trending_tab", type);
+    }
     setLoading(true);
     const data = await onTrendingChange(type);
     setItems(data);
@@ -74,6 +127,9 @@ export default function Section({
   const handleStreamingChange = async (prov: keyof typeof PROVIDERS) => {
     if (!onStreamingChange) return;
     setStreamingProv(prov);
+    if (titleType === "dropdown-streaming") {
+      sessionStorage.setItem("streaming_prov", prov);
+    }
     setLoading(true);
     const data = await onStreamingChange(prov);
     setItems(data);
@@ -83,6 +139,9 @@ export default function Section({
   const handleGenreChange = async (name: string) => {
     if (!onGenreChange) return;
     setGenreName(name);
+    if (titleType === "dropdown-genre") {
+      sessionStorage.setItem("genre_name", name);
+    }
     setLoading(true);
     const data = await onGenreChange(name);
     setItems(data);

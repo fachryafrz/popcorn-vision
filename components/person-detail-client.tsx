@@ -14,6 +14,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
@@ -64,6 +65,7 @@ export default function PersonDetailClient({
   person,
   credits,
 }: PersonDetailClientProps) {
+  const router = useRouter();
   const {
     open: openAuth,
     isOpen: isAuthOpen,
@@ -187,13 +189,14 @@ export default function PersonDetailClient({
     <main className="bg-background text-foreground min-h-svh pt-24 pb-16 transition-colors duration-300">
       <div className="mx-auto max-w-7xl px-6 sm:px-10 md:px-16">
         {/* Back Link */}
-        <Link
-          href="/"
-          className="mb-8 flex w-fit items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
+          Back
+        </button>
 
         {/* Profile Header Grid */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-[280px_1fr] lg:gap-16">

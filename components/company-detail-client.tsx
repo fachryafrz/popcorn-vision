@@ -15,6 +15,7 @@ import {
   Info,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
 import AuthModal from "@/components/auth-modal";
@@ -41,6 +42,7 @@ export default function CompanyDetailClient({
   movies,
   tvShows,
 }: CompanyDetailClientProps) {
+  const router = useRouter();
   const {
     open: openAuth,
     isOpen: isAuthOpen,
@@ -111,13 +113,14 @@ export default function CompanyDetailClient({
     <div className="min-h-screen bg-black pt-20 text-white">
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
         {/* Back Link */}
-        <Link
-          href="/"
-          className="mb-8 flex w-fit items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Home
-        </Link>
+          Back
+        </button>
 
         {/* Company Profile Header */}
         <div className="mb-12 overflow-hidden rounded-3xl border border-zinc-800/80 bg-zinc-900/40 p-6 backdrop-blur-xl sm:p-8 md:p-10">
