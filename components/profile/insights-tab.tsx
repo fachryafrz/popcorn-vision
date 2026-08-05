@@ -624,7 +624,6 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
                             cy="50%"
                             innerRadius={55}
                             outerRadius={80}
-                            paddingAngle={3}
                             dataKey="value"
                           >
                             {stats.topGenres.map((entry, index) => (
