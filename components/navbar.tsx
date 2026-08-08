@@ -152,7 +152,7 @@ export default function Navbar() {
           className={cn(
             "grid w-full grid-cols-2 transition-all duration-500 lg:grid-cols-3",
             scrolled
-              ? "bg-background/80 border-border/80 mx-auto max-w-5xl rounded-full border px-6 py-2 shadow-xl shadow-black/60 backdrop-blur-md lg:pr-2 lg:pl-3"
+              ? "bg-background/80 border-border/80 mx-auto max-w-5xl rounded-full border p-2 shadow-xl shadow-black/60 backdrop-blur-md"
               : "mx-auto max-w-7xl border border-transparent px-4 py-4 sm:px-12 md:px-16",
             isSearchPage && "lg:grid-cols-2",
           )}
@@ -161,7 +161,7 @@ export default function Navbar() {
           <Link
             href="/"
             prefetch={false}
-            className="flex max-w-fit cursor-pointer items-center gap-2"
+            className="ml-1 flex max-w-fit cursor-pointer items-center gap-2"
           >
             <img
               src="/logo/popcorn.png"
