@@ -1,10 +1,5 @@
 import { Metadata } from "next";
-import {
-  getCompanyDetails,
-  getCompanyMovies,
-  getCompanyTVShows,
-} from "@/lib/tmdb-actions";
-import { notFound } from "next/navigation";
+import { getCompanyDetails } from "@/lib/tmdb-actions";
 import { siteConfig } from "@/config/site";
 import CompanyDetailClient from "@/components/company-detail-client";
 
@@ -39,22 +34,5 @@ export async function generateMetadata({
 
 export default async function CompanyDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const company = await getCompanyDetails(id);
-
-  if (!company) {
-    notFound();
-  }
-
-  const [movies, tvShows] = await Promise.all([
-    getCompanyMovies(id),
-    getCompanyTVShows(id),
-  ]);
-
-  return (
-    <CompanyDetailClient
-      company={company}
-      movies={movies}
-      tvShows={tvShows}
-    />
-  );
+  return <CompanyDetailClient id={id} />;
 }

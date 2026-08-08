@@ -1,22 +1,17 @@
 import { Metadata } from "next";
 import { getMediaDetails } from "@/lib/tmdb-actions";
-import { notFound } from "next/navigation";
-import MediaDetailClient from "@/components/media-detail-client";
 import { siteConfig } from "@/config/site";
+import MediaDetailClient from "@/components/media-detail-client";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const data = await getMediaDetails("tv", id);
   if (!data || !data.details) {
-    return {
-      title: `TV Show Not Found | ${siteConfig.name}`,
-    };
+    return { title: `TV Show Not Found | ${siteConfig.name}` };
   }
   const show = data.details;
   const releaseYear = show.first_air_date
@@ -39,11 +34,5 @@ export async function generateMetadata({
 
 export default async function TvDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const mediaData = await getMediaDetails("tv", id);
-
-  if (!mediaData || !mediaData.details) {
-    notFound();
-  }
-
-  return <MediaDetailClient mediaType="tv" initialData={mediaData} />;
+  return <MediaDetailClient mediaType="tv" id={id} />;
 }

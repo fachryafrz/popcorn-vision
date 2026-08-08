@@ -1,22 +1,17 @@
 import { Metadata } from "next";
 import { getMediaDetails } from "@/lib/tmdb-actions";
-import { notFound } from "next/navigation";
-import MediaDetailClient from "@/components/media-detail-client";
 import { siteConfig } from "@/config/site";
+import MediaDetailClient from "@/components/media-detail-client";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const data = await getMediaDetails("movie", id);
   if (!data || !data.details) {
-    return {
-      title: `Movie Not Found | ${siteConfig.name}`,
-    };
+    return { title: `Movie Not Found | ${siteConfig.name}` };
   }
   const movie = data.details;
   const releaseYear = movie.release_date
@@ -39,11 +34,5 @@ export async function generateMetadata({
 
 export default async function MovieDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const mediaData = await getMediaDetails("movie", id);
-
-  if (!mediaData || !mediaData.details) {
-    notFound();
-  }
-
-  return <MediaDetailClient mediaType="movie" initialData={mediaData} />;
+  return <MediaDetailClient mediaType="movie" id={id} />;
 }

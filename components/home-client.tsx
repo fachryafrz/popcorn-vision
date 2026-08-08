@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import {
   getTrending,
@@ -21,25 +21,33 @@ import { FreeMode, Mousewheel } from "swiper/modules";
 import {
   CarouselSkeleton,
   ContinueWatchingCarouselSkeleton,
+  HeroSkeleton,
   Skeleton,
 } from "./skeletons";
 import Card from "./card";
 
-interface HomeClientProps {
-  initialHero: TMDBMedia[];
-  initialTrending: TMDBMedia[];
-  initialStreaming: TMDBMedia[];
-  initialGenre: TMDBMedia[];
-}
-
-export default function HomeClient({
-  initialHero,
-  initialTrending,
-  initialStreaming,
-  initialGenre,
-}: HomeClientProps) {
+export default function HomeClient() {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+
+  const [heroItems, setHeroItems] = useState<TMDBMedia[]>([]);
+  const [trendingItems, setTrendingItems] = useState<TMDBMedia[]>([]);
+  const [streamingItems, setStreamingItems] = useState<TMDBMedia[]>([]);
+  const [categoryItems, setCategoryItems] = useState<TMDBMedia[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/tmdb/home")
+      .then((res) => res.json())
+      .then((data) => {
+        setHeroItems(data.hero ?? []);
+        setTrendingItems(data.trending ?? []);
+        setStreamingItems(data.streaming ?? []);
+        setCategoryItems(data.category ?? []);
+      })
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+  }, []);
 
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -56,12 +64,28 @@ export default function HomeClient({
     setQuickViewMedia(media);
   };
 
+  if (isLoading) {
+    return (
+      <div className="bg-background text-foreground flex min-h-svh flex-col overflow-x-hidden font-sans">
+        <HeroSkeleton />
+        <div className="bg-background relative z-20 flex flex-col gap-6 pb-20">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+              <Skeleton className="h-6 w-44 rounded-md" />
+              <CarouselSkeleton />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background text-foreground flex min-h-svh flex-col overflow-x-hidden font-sans transition-colors duration-300">
       <main className="flex grow flex-col">
         {/* Fullscreen Hero Carousel */}
         <Hero
-          items={initialHero}
+          items={heroItems}
           onQuickView={handleQuickView}
           onAuthRequired={openAuth}
         />
@@ -173,7 +197,7 @@ export default function HomeClient({
           <div id="trending">
             <Section
               titleType="text"
-              defaultFetch={async () => initialTrending}
+              defaultFetch={async () => trendingItems}
               onTrendingChange={async (type) => getTrending(type)}
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
@@ -184,7 +208,7 @@ export default function HomeClient({
           <div id="originals">
             <Section
               titleType="dropdown-streaming"
-              defaultFetch={async () => initialStreaming}
+              defaultFetch={async () => streamingItems}
               onStreamingChange={async (key) => getStreamingOriginals(key)}
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
@@ -195,7 +219,7 @@ export default function HomeClient({
           <div id="category">
             <Section
               titleType="dropdown-genre"
-              defaultFetch={async () => initialGenre}
+              defaultFetch={async () => categoryItems}
               onGenreChange={async (name) => getByCategory(name)}
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}

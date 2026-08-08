@@ -1,23 +1,17 @@
 import { Metadata } from "next";
-import { getPersonDetails, getPersonCredits } from "@/lib/tmdb-actions";
-import { notFound } from "next/navigation";
+import { getPersonDetails } from "@/lib/tmdb-actions";
 import { siteConfig } from "@/config/site";
 import PersonDetailClient from "@/components/person-detail-client";
 
-// Page props interface
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   const person = await getPersonDetails(id);
   if (!person) {
-    return {
-      title: `Person Not Found | ${siteConfig.name}`,
-    };
+    return { title: `Person Not Found | ${siteConfig.name}` };
   }
   return {
     title: `${person.name} - Filmography & Biography | ${siteConfig.name}`,
@@ -36,12 +30,5 @@ export async function generateMetadata({
 
 export default async function PersonDetailPage({ params }: PageProps) {
   const { id } = await params;
-  const person = await getPersonDetails(id);
-  const credits = await getPersonCredits(id);
-
-  if (!person) {
-    notFound();
-  }
-
-  return <PersonDetailClient person={person} credits={credits} />;
+  return <PersonDetailClient id={id} />;
 }

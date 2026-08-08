@@ -174,33 +174,37 @@ export async function getByCategory(genreName: string): Promise<TMDBMedia[]> {
 // Get specific details for Quick View / Detail Page (including videos/trailer, watch providers, logo, and recommendations)
 export async function getMediaDetails(mediaType: "movie" | "tv", id: string) {
   try {
-    const regionDataPromise = (
-      mediaType === "movie"
-        ? axios.get(`/movie/${id}/release_dates`)
-        : axios.get(`/tv/${id}/content_ratings`)
-    ).catch(() => ({ data: { results: [] } }));
+    const regionAppend = mediaType === "movie" ? "release_dates" : "content_ratings";
 
-    const [detailsRes, creditsRes, videosRes, watchRes, recommendationsRes, regionDataRes] = await Promise.all([
-      axios.get(`/${mediaType}/${id}`),
-      axios.get(`/${mediaType}/${id}/credits`),
-      axios.get(`/${mediaType}/${id}/videos`),
-      axios.get(`/${mediaType}/${id}/watch/providers`),
-      axios.get(`/${mediaType}/${id}/recommendations`),
-      regionDataPromise,
-    ]);
+    // Single TMDB request — images, credits, videos, providers, recommendations all appended
+    const res = await axios.get(`/${mediaType}/${id}`, {
+      params: {
+        append_to_response: `credits,videos,watch/providers,recommendations,images,${regionAppend}`,
+        include_image_language: "en,null",
+      },
+    });
 
-    const { logoPath, textlessPosterPath } = await getMediaImages(mediaType, Number(id));
-    const recommendations = cleanMediaData(recommendationsRes.data.results || [], mediaType);
+    const data = res.data;
+    const logos = (data.images?.logos || []) as TMDBLogo[];
+    const posters = (data.images?.posters || []) as TMDBPoster[];
+
+    const englishLogo = logos.find((l) => l.iso_639_1 === "en");
+    const logoPath: string | null = logos.length > 0 ? ((englishLogo || logos[0]).file_path ?? null) : null;
+
+    const textlessPoster = posters.find((p) => p.iso_639_1 === null);
+    const textlessPosterPath: string | null = posters.length > 0 ? ((textlessPoster || posters[0]).file_path ?? null) : null;
+
+    const recommendations = cleanMediaData(data.recommendations?.results || [], mediaType);
 
     return {
-      details: detailsRes.data,
-      credits: creditsRes.data,
-      videos: videosRes.data.results || [],
-      watchProviders: watchRes.data.results || {},
+      details: data,
+      credits: data.credits ?? { cast: [], crew: [] },
+      videos: data.videos?.results || [],
+      watchProviders: data["watch/providers"]?.results || {},
       logoPath,
       textlessPosterPath,
       recommendations,
-      regionalData: regionDataRes.data.results || [],
+      regionalData: data[regionAppend]?.results || [],
     };
   } catch (error) {
     console.error(`Error fetching details for ${mediaType} ${id}:`, error);

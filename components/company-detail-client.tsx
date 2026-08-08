@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, Suspense, useEffect } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import { TMDBCompanyDetails } from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { CompanyDetailSkeleton } from "@/components/skeletons";
 import {
   ArrowLeft,
   Film,
@@ -14,8 +15,8 @@ import {
   ExternalLink,
   Info,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
 import AuthModal from "@/components/auth-modal";
@@ -29,18 +30,14 @@ import {
 } from "@/components/ui/select";
 
 interface CompanyDetailClientProps {
-  company: TMDBCompanyDetails;
-  movies: TMDBMedia[];
-  tvShows: TMDBMedia[];
+  id: string;
 }
 
 type MediaFilter = "all" | "movie" | "tv";
 type SortOption = "popularity" | "release_date" | "vote_average";
 
 export default function CompanyDetailClient({
-  company,
-  movies,
-  tvShows,
+  id,
 }: CompanyDetailClientProps) {
   const router = useRouter();
   const {
@@ -48,6 +45,26 @@ export default function CompanyDetailClient({
     isOpen: isAuthOpen,
     close: closeAuth,
   } = useAuthModalStore();
+
+  const [company, setCompany] = useState<TMDBCompanyDetails | null>(null);
+  const [movies, setMovies] = useState<TMDBMedia[]>([]);
+  const [tvShows, setTvShows] = useState<TMDBMedia[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/tmdb/company/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then((data) => {
+        setCompany(data.company);
+        setMovies(data.movies ?? []);
+        setTvShows(data.tvShows ?? []);
+      })
+      .catch(() => router.push("/"))
+      .finally(() => setIsLoading(false));
+  }, [id, router]);
 
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
@@ -108,6 +125,9 @@ export default function CompanyDetailClient({
   // Count stats
   const movieCount = movies.length;
   const tvCount = tvShows.length;
+
+  if (isLoading) return <CompanyDetailSkeleton />;
+  if (!company) return null;
 
   return (
     <div className="min-h-screen bg-black pt-20 text-white">

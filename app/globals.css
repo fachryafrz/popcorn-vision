@@ -164,6 +164,17 @@
   --ring: oklch(0.62 0.21 350);
 }
 
+/* Suppress focus outline on Recharts for mouse clicks, keep for keyboard nav */
+.recharts-wrapper,
+.recharts-wrapper *,
+svg.recharts-surface,
+.recharts-surface,
+.recharts-layer {
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none !important;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
