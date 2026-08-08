@@ -1,4 +1,5 @@
 import HomeClient from "@/components/home-client";
+import { Suspense } from "react";
 
 export const metadata = {
   title: "PopcornVision — Watch Movies & TV Shows Free",
@@ -7,5 +8,9 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <HomeClient />;
+  return (
+    <Suspense>
+      <HomeClient />
+    </Suspense>
+  );
 }

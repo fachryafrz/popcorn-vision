@@ -8,3 +8,9 @@ export const USER_LOCATION = "user-location";
 export const AND_SEPARATION = "AND";
 export const OR_SEPARATION = "OR";
 export const DISCLAIMER_READ = "disclaimer-read";
+
+export const QUERY_PARAMS = {
+  QUICK_VIEW: "quick-view",
+  PERSON: "person",
+  AUTH: "auth",
+} as const;

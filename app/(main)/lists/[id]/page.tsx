@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use, useEffect } from "react";
+import React, { useState, use, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -51,6 +51,7 @@ import { useRouter } from "next/navigation";
 import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { useConfirm } from "@/components/ui/confirm-provider";
 import { siteConfig } from "@/config/site";
 
@@ -190,7 +191,23 @@ export default function CustomListDetailPage({
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedMedia, setSelectedMedia] = useState<TMDBMedia | null>(null);
+  const [selectedMediaRef, setSelectedMediaRef] = useQuickViewMediaState();
+
+  const selectedMedia = useMemo<TMDBMedia | null>(() => {
+    if (!selectedMediaRef) return null;
+    return {
+      id: Number(selectedMediaRef.id),
+      media_type: selectedMediaRef.media_type,
+    } as TMDBMedia;
+  }, [selectedMediaRef]);
+
+  const setSelectedMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setSelectedMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setSelectedMediaRef(null);
+    }
+  }, [setSelectedMediaRef]);
 
   // Edit list states
   const [editName, setEditName] = useState("");

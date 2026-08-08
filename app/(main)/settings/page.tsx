@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -90,9 +90,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   const [hideRatings, setHideRatings] = useState(
     convexProfile?.hideRatings === true,
   );
-  const [hideDiary, setHideDiary] = useState(
-    convexProfile?.hideDiary === true,
-  );
+  const [hideDiary, setHideDiary] = useState(convexProfile?.hideDiary === true);
   const [hideInsights, setHideInsights] = useState(
     convexProfile?.hideInsights === true,
   );
@@ -394,7 +392,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Delete Account",
-        description: "Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.",
+        description:
+          "Are you absolutely sure you want to delete your account? This action is permanent and cannot be undone.",
         confirmText: "Delete",
       }))
     ) {
@@ -449,7 +448,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Close Account",
-        description: "Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.",
+        description:
+          "Are you sure you want to close your account? You will be logged out, but you can reopen your account anytime simply by logging back in.",
         confirmText: "Close Account",
       }))
     ) {
@@ -484,7 +484,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Clear Diary Data",
-        description: "Are you sure you want to delete all your diary entries and watch history? This action is permanent and cannot be undone.",
+        description:
+          "Are you sure you want to delete all your diary entries and watch history? This action is permanent and cannot be undone.",
         confirmText: "Clear All",
       }))
     ) {
@@ -507,7 +508,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Clear Watchlist Data",
-        description: "Are you sure you want to delete all items from your watchlist? This action is permanent and cannot be undone.",
+        description:
+          "Are you sure you want to delete all items from your watchlist? This action is permanent and cannot be undone.",
         confirmText: "Clear All",
       }))
     ) {
@@ -530,7 +532,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Clear Favorites Data",
-        description: "Are you sure you want to delete all items from your favorites list? This action is permanent and cannot be undone.",
+        description:
+          "Are you sure you want to delete all items from your favorites list? This action is permanent and cannot be undone.",
         confirmText: "Clear All",
       }))
     ) {
@@ -553,7 +556,8 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
     if (
       !(await confirm({
         title: "Clear Ratings Data",
-        description: "Are you sure you want to delete all your ratings? This will also remove rating values from your watch history. This action is permanent and cannot be undone.",
+        description:
+          "Are you sure you want to delete all your ratings? This will also remove rating values from your watch history. This action is permanent and cannot be undone.",
         confirmText: "Clear All",
       }))
     ) {
@@ -687,7 +691,7 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
   );
 }
 
-export default function SettingsPage() {
+function SettingsPageContent() {
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const loadingSession = session.isPending;
@@ -744,5 +748,13 @@ export default function SettingsPage() {
 
       <SettingsForm convexProfile={convexProfile || null} user={user || {}} />
     </div>
+  );
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense>
+      <SettingsPageContent />
+    </Suspense>
   );
 }

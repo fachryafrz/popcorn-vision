@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  Suspense,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -23,10 +30,11 @@ import ChatWorkspace from "@/components/chat/chat-workspace";
 import DetailsPanel from "@/components/chat/details-panel";
 import ChatModals from "@/components/chat/chat-modals";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { siteConfig } from "@/config/site";
 
-export default function ChatPage() {
+function ChatPageContent() {
   const router = useRouter();
   const confirm = useConfirm();
   const session = authClient.useSession();
@@ -121,8 +129,31 @@ export default function ChatPage() {
   const [activeContextMenuMessageId, setActiveContextMenuMessageId] = useState<
     string | null
   >(null);
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback(
+    (media: TMDBMedia | null) => {
+      if (media) {
+        setQuickViewMediaRef({
+          id: String(media.id),
+          media_type: media.media_type || "movie",
+        });
+      } else {
+        setQuickViewMediaRef(null);
+      }
+    },
+    [setQuickViewMediaRef],
+  );
+
+  const isQuickViewOpen = quickViewMedia !== null;
 
   // Modals
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
@@ -234,7 +265,10 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
         toast.error(errorObj.message || "Failed to send message");
@@ -274,7 +308,10 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
         toast.error(errorObj.message || "Failed to send GIF");
@@ -386,10 +423,15 @@ export default function ChatPage() {
       setIsNewChatOpen(false);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
-        toast.error(errorObj.message || "Failed to start direct message session");
+        toast.error(
+          errorObj.message || "Failed to start direct message session",
+        );
       }
     }
   };
@@ -511,7 +553,6 @@ export default function ChatPage() {
         handleDeleteMessage={handleDeleteMessage}
         onQuickView={(media) => {
           setQuickViewMedia(media);
-          setIsQuickViewOpen(true);
         }}
       />
 
@@ -568,12 +609,19 @@ export default function ChatPage() {
         <QuickViewModal
           isOpen={isQuickViewOpen}
           onClose={() => {
-            setIsQuickViewOpen(false);
             setQuickViewMedia(null);
           }}
           media={quickViewMedia}
         />
       )}
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense>
+      <ChatPageContent />
+    </Suspense>
   );
 }

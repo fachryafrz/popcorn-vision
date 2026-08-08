@@ -9,6 +9,7 @@ import {
   searchPersonByName,
 } from "@/lib/tmdb-actions";
 import PersonQuickViewModal from "@/components/person-quick-view-modal";
+import { useQuickViewPersonState } from "@/hooks/use-query-modal-state";
 import {
   BarChart,
   Bar,
@@ -64,8 +65,7 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
   const [metadata, setMetadata] = useState<Record<string, StatsMetadata>>({});
   const [loading, setLoading] = useState(false);
   const [searchingPerson, setSearchingPerson] = useState<string | null>(null);
-  const [selectedPersonId, setSelectedPersonId] = useState<number | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedPersonId, setSelectedPersonId] = useQuickViewPersonState();
 
   const handlePersonClick = async (name: string) => {
     if (searchingPerson) return;
@@ -74,7 +74,6 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       const id = await searchPersonByName(name);
       if (id) {
         setSelectedPersonId(id);
-        setIsModalOpen(true);
       } else {
         router.push(`/search?q=${encodeURIComponent(name)}`);
       }
@@ -833,8 +832,8 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
         </>
       )}
       <PersonQuickViewModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        isOpen={selectedPersonId !== null}
+        onClose={() => setSelectedPersonId(null)}
         personId={selectedPersonId}
       />
     </div>

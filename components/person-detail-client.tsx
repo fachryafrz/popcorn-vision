@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from "react";
+import { useState, useMemo, Suspense, useEffect, useCallback } from "react";
 import { TMDBMedia, cleanMediaData, TMDBRawItem } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { PersonDetailSkeleton } from "@/components/skeletons";
@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import AuthModal from "@/components/auth-modal";
 import moment from "moment";
 import {
@@ -92,7 +93,23 @@ export default function PersonDetailClient({
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [roleFilter, setRoleFilter] = useState<RoleFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
 
   // Merge cast & crew details uniquely
   const mergedCredits = useMemo(() => {
