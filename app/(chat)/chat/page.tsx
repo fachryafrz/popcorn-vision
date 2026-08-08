@@ -1,6 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  Suspense,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -27,7 +34,7 @@ import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { siteConfig } from "@/config/site";
 
-export default function ChatPage() {
+function ChatPageContent() {
   const router = useRouter();
   const confirm = useConfirm();
   const session = authClient.useSession();
@@ -132,13 +139,19 @@ export default function ChatPage() {
     } as TMDBMedia;
   }, [quickViewMediaRef]);
 
-  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
-    if (media) {
-      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
-    } else {
-      setQuickViewMediaRef(null);
-    }
-  }, [setQuickViewMediaRef]);
+  const setQuickViewMedia = useCallback(
+    (media: TMDBMedia | null) => {
+      if (media) {
+        setQuickViewMediaRef({
+          id: String(media.id),
+          media_type: media.media_type || "movie",
+        });
+      } else {
+        setQuickViewMediaRef(null);
+      }
+    },
+    [setQuickViewMediaRef],
+  );
 
   const isQuickViewOpen = quickViewMedia !== null;
 
@@ -252,7 +265,10 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
         toast.error(errorObj.message || "Failed to send message");
@@ -292,7 +308,10 @@ export default function ChatPage() {
       });
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
         toast.error(errorObj.message || "Failed to send GIF");
@@ -404,10 +423,15 @@ export default function ChatPage() {
       setIsNewChatOpen(false);
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
-      if (errorObj.message?.includes("privacy settings") || errorObj.message?.includes("direct messaging")) {
+      if (
+        errorObj.message?.includes("privacy settings") ||
+        errorObj.message?.includes("direct messaging")
+      ) {
         setIsPrivacyErrorOpen(true);
       } else {
-        toast.error(errorObj.message || "Failed to start direct message session");
+        toast.error(
+          errorObj.message || "Failed to start direct message session",
+        );
       }
     }
   };
@@ -591,5 +615,13 @@ export default function ChatPage() {
         />
       )}
     </div>
+  );
+}
+
+export default function ChatPage() {
+  return (
+    <Suspense>
+      <ChatPageContent />
+    </Suspense>
   );
 }
