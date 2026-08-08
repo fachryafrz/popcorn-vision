@@ -9,6 +9,7 @@ import {
   Suspense,
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { searchMedia, discoverMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
@@ -54,7 +55,6 @@ import { SearchType, SearchUserResult } from "./search/types";
 import { ResultsSection } from "./search/results-section";
 
 interface SearchClientProps {
-  initialResults: TMDBMedia[];
   initialQuery: string;
   initialType: SearchType;
   initialGenre?: string;
@@ -70,13 +70,6 @@ interface SearchClientProps {
   initialRatingMax?: string;
   initialLanguage?: string;
   initialKeywords?: string;
-  genres: { id: number; name: string; types?: ("movie" | "tv")[] }[];
-  providers: {
-    provider_id: number;
-    provider_name: string;
-    logo_path: string;
-  }[];
-  userCountryCode?: string;
 }
 
 const TYPE_FILTERS: {
@@ -104,7 +97,6 @@ const LANGUAGES = [
 ];
 
 export default function SearchClient({
-  initialResults,
   initialQuery,
   initialType,
   initialGenre = "",
@@ -120,9 +112,6 @@ export default function SearchClient({
   initialRatingMax = "",
   initialLanguage = "",
   initialKeywords = "",
-  genres = [],
-  providers = [],
-  userCountryCode = "US",
 }: SearchClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -134,8 +123,41 @@ export default function SearchClient({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
-  const [searchMode, setSearchMode] = useState<"search" | "discover">(
-    initialGenre ||
+  // Detect country from browser locale for provider filtering
+  const [userCountryCode, setUserCountryCode] = useState(() => {
+    let detectedCountry = "US";
+    if (typeof window !== "undefined" && typeof navigator !== "undefined") {
+      const locale =
+        navigator.language || (navigator.languages && navigator.languages[0]);
+      if (locale) {
+        const parts = locale.split("-");
+        detectedCountry = parts[1]
+          ? parts[1].toUpperCase()
+          : parts[0].toUpperCase();
+      }
+    }
+    return detectedCountry;
+  });
+  const [genres, setGenres] = useState<
+    { id: number; name: string; types?: ("movie" | "tv")[] }[]
+  >([]);
+  const [providers, setProviders] = useState<
+    { provider_id: number; provider_name: string; logo_path: string }[]
+  >([]);
+
+  useEffect(() => {
+    fetch(`/api/tmdb/search/meta?countryCode=${userCountryCode}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setGenres(data.genres ?? []);
+        setProviders(data.providers ?? []);
+      })
+      .catch(console.error);
+  }, [userCountryCode]);
+
+  const [searchModeState, setSearchModeState] = useQueryState("mode", {
+    defaultValue:
+      initialGenre ||
       initialStartDate ||
       initialEndDate ||
       initialProviderId ||
@@ -148,35 +170,59 @@ export default function SearchClient({
       initialRatingMax ||
       initialLanguage ||
       initialKeywords
-      ? "discover"
-      : "search",
-  );
+        ? "discover"
+        : "search",
+  });
+  const searchMode = (
+    searchModeState === "discover" ? "discover" : "search"
+  ) as "search" | "discover";
+  const setSearchMode = (mode: "search" | "discover") => {
+    setSearchModeState(mode);
+  };
 
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useQueryState("q", { defaultValue: "" });
   const [inputValue, setInputValue] = useState(initialQuery);
-  const [activeType, setActiveType] = useState<SearchType>(initialType);
-  const [results, setResults] = useState<TMDBMedia[]>(initialResults);
+  const [activeType, setActiveType] = useQueryState("type", {
+    defaultValue: "movie",
+  });
+  const [results, setResults] = useState<TMDBMedia[]>([]);
   const [isPending, startTransition] = useTransition();
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
 
-  // Advanced Filters State
-  const [genre, setGenre] = useState(initialGenre); // holds genre ID string
-  const [startDate, setStartDate] = useState(initialStartDate);
-  const [endDate, setEndDate] = useState(initialEndDate);
-  const [providerId, setProviderId] = useState(initialProviderId); // holds provider ID string
-  const [minRuntime, setMinRuntime] = useState(initialMinRuntime);
-  const [maxRuntime, setMaxRuntime] = useState(initialMaxRuntime);
-  const [actor, setActor] = useState(initialActor);
-  const [crew, setCrew] = useState(initialCrew);
-  const [company, setCompany] = useState(initialCompany);
-  const [ratingMin, setRatingMin] = useState(initialRatingMin);
-  const [ratingMax, setRatingMax] = useState(initialRatingMax);
-  const [language, setLanguage] = useState(initialLanguage);
-  const [keywords, setKeywords] = useState(initialKeywords);
+  // Advanced Filters State using nuqs useQueryState
+  const [genre, setGenre] = useQueryState("genre", { defaultValue: "" });
+  const [startDate, setStartDate] = useQueryState("startDate", {
+    defaultValue: "",
+  });
+  const [endDate, setEndDate] = useQueryState("endDate", { defaultValue: "" });
+  const [providerId, setProviderId] = useQueryState("providerId", {
+    defaultValue: "",
+  });
+  const [minRuntime, setMinRuntime] = useQueryState("minRuntime", {
+    defaultValue: "",
+  });
+  const [maxRuntime, setMaxRuntime] = useQueryState("maxRuntime", {
+    defaultValue: "",
+  });
+  const [actor, setActor] = useQueryState("actor", { defaultValue: "" });
+  const [crew, setCrew] = useQueryState("crew", { defaultValue: "" });
+  const [company, setCompany] = useQueryState("company", { defaultValue: "" });
+  const [ratingMin, setRatingMin] = useQueryState("ratingMin", {
+    defaultValue: "",
+  });
+  const [ratingMax, setRatingMax] = useQueryState("ratingMax", {
+    defaultValue: "",
+  });
+  const [language, setLanguage] = useQueryState("language", {
+    defaultValue: "",
+  });
+  const [keywords, setKeywords] = useQueryState("keywords", {
+    defaultValue: "",
+  });
 
   // Infinite Scroll State
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(initialResults.length >= 20);
+  const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -199,7 +245,6 @@ export default function SearchClient({
     if (actorDebounceRef.current) clearTimeout(actorDebounceRef.current);
     actorDebounceRef.current = setTimeout(() => {
       setActor(val);
-      performSearch({ actor: val });
     }, 500);
   };
 
@@ -209,7 +254,6 @@ export default function SearchClient({
     if (crewDebounceRef.current) clearTimeout(crewDebounceRef.current);
     crewDebounceRef.current = setTimeout(() => {
       setCrew(val);
-      performSearch({ crew: val });
     }, 500);
   };
 
@@ -219,7 +263,6 @@ export default function SearchClient({
     if (companyDebounceRef.current) clearTimeout(companyDebounceRef.current);
     companyDebounceRef.current = setTimeout(() => {
       setCompany(val);
-      performSearch({ company: val });
     }, 500);
   };
 
@@ -229,7 +272,6 @@ export default function SearchClient({
     if (keywordsDebounceRef.current) clearTimeout(keywordsDebounceRef.current);
     keywordsDebounceRef.current = setTimeout(() => {
       setKeywords(val);
-      performSearch({ keywords: val });
     }, 500);
   };
 
@@ -239,14 +281,6 @@ export default function SearchClient({
       const maxVal = values[1];
       setRatingMin(String(minVal));
       setRatingMax(String(maxVal));
-
-      if (ratingDebounceRef.current) clearTimeout(ratingDebounceRef.current);
-      ratingDebounceRef.current = setTimeout(() => {
-        performSearch({
-          ratingMin: String(minVal),
-          ratingMax: String(maxVal),
-        });
-      }, 400);
     }
   };
 
@@ -298,158 +332,65 @@ export default function SearchClient({
     return found ? String(found.provider_id) : "";
   };
 
-  // Push URL update and fetch results
-  const performSearch = useCallback(
-    (paramsObj: {
-      q?: string;
-      type?: SearchType;
-      genre?: string;
-      startDate?: string;
-      endDate?: string;
-      providerId?: string;
-      minRuntime?: string;
-      maxRuntime?: string;
-      actor?: string;
-      crew?: string;
-      company?: string;
-      ratingMin?: string;
-      ratingMax?: string;
-      language?: string;
-      keywords?: string;
-    }) => {
-      const params = new URLSearchParams(searchParams.toString());
+  // Push URL update and fetch results triggered by state changes
+  useEffect(() => {
+    if (activeType === "users") return;
 
-      const newQuery = paramsObj.q !== undefined ? paramsObj.q : query;
-      const newType =
-        paramsObj.type !== undefined ? paramsObj.type : activeType;
-      const newGenre = paramsObj.genre !== undefined ? paramsObj.genre : genre;
-      const newStartDate =
-        paramsObj.startDate !== undefined ? paramsObj.startDate : startDate;
-      const newEndDate =
-        paramsObj.endDate !== undefined ? paramsObj.endDate : endDate;
-      const newProviderId =
-        paramsObj.providerId !== undefined ? paramsObj.providerId : providerId;
-      const newMinRuntime =
-        paramsObj.minRuntime !== undefined ? paramsObj.minRuntime : minRuntime;
-      const newMaxRuntime =
-        paramsObj.maxRuntime !== undefined ? paramsObj.maxRuntime : maxRuntime;
-      const newActor = paramsObj.actor !== undefined ? paramsObj.actor : actor;
-      const newCrew = paramsObj.crew !== undefined ? paramsObj.crew : crew;
-      const newCompany =
-        paramsObj.company !== undefined ? paramsObj.company : company;
-      const newRatingMin =
-        paramsObj.ratingMin !== undefined ? paramsObj.ratingMin : ratingMin;
-      const newRatingMax =
-        paramsObj.ratingMax !== undefined ? paramsObj.ratingMax : ratingMax;
-      const newLanguage =
-        paramsObj.language !== undefined ? paramsObj.language : language;
-      const newKeywords =
-        paramsObj.keywords !== undefined ? paramsObj.keywords : keywords;
-
-      if (newQuery) params.set("q", newQuery);
-      else params.delete("q");
-
-      if (newType !== "all") params.set("type", newType);
-      else params.delete("type");
-
-      if (newGenre) params.set("genre", newGenre);
-      else params.delete("genre");
-
-      if (newStartDate) params.set("startDate", newStartDate);
-      else params.delete("startDate");
-
-      if (newEndDate) params.set("endDate", newEndDate);
-      else params.delete("endDate");
-
-      if (newProviderId) params.set("providerId", newProviderId);
-      else params.delete("providerId");
-
-      if (newMinRuntime) params.set("minRuntime", newMinRuntime);
-      else params.delete("minRuntime");
-
-      if (newMaxRuntime) params.set("maxRuntime", newMaxRuntime);
-      else params.delete("maxRuntime");
-
-      if (newActor) params.set("actor", newActor);
-      else params.delete("actor");
-
-      if (newCrew) params.set("crew", newCrew);
-      else params.delete("crew");
-
-      if (newCompany) params.set("company", newCompany);
-      else params.delete("company");
-
-      if (newRatingMin) params.set("ratingMin", newRatingMin);
-      else params.delete("ratingMin");
-
-      if (newRatingMax) params.set("ratingMax", newRatingMax);
-      else params.delete("ratingMax");
-
-      if (newLanguage) params.set("language", newLanguage);
-      else params.delete("language");
-
-      if (newKeywords) params.set("keywords", newKeywords);
-      else params.delete("keywords");
-
-      router.push(`/search?${params.toString()}`, { scroll: false });
-
-      if (newType !== "users") {
-        startTransition(async () => {
-          setPage(1);
-          setHasMore(true);
-          let data: TMDBMedia[] = [];
-          if (newQuery) {
-            data = await searchMedia(newQuery, newType, 1);
-          } else {
-            data = await discoverMedia(
-              {
-                genre: newGenre,
-                startDate: newStartDate,
-                endDate: newEndDate,
-                providerId: newProviderId,
-                minRuntime: newMinRuntime,
-                maxRuntime: newMaxRuntime,
-                actor: newActor,
-                crew: newCrew,
-                company: newCompany,
-                ratingMin: newRatingMin,
-                ratingMax: newRatingMax,
-                language: newLanguage,
-                keywords: newKeywords,
-              },
-              newType,
-              1,
-              userCountryCode,
-            );
-          }
-          setResults(data);
-          if (data.length < 20) {
-            setHasMore(false);
-          }
-        });
+    startTransition(async () => {
+      setPage(1);
+      setHasMore(true);
+      let data: TMDBMedia[] = [];
+      if (query) {
+        data = await searchMedia(
+          query,
+          activeType as "all" | "movie" | "tv",
+          1,
+        );
+      } else {
+        data = await discoverMedia(
+          {
+            genre: genre || "",
+            startDate: startDate || "",
+            endDate: endDate || "",
+            providerId: providerId || "",
+            minRuntime: minRuntime || "",
+            maxRuntime: maxRuntime || "",
+            actor: actor || "",
+            crew: crew || "",
+            company: company || "",
+            ratingMin: ratingMin || "",
+            ratingMax: ratingMax || "",
+            language: language || "",
+            keywords: keywords || "",
+          },
+          activeType as "all" | "movie" | "tv",
+          1,
+          userCountryCode,
+        );
       }
-    },
-    [
-      router,
-      searchParams,
-      query,
-      activeType,
-      genre,
-      startDate,
-      endDate,
-      providerId,
-      minRuntime,
-      maxRuntime,
-      actor,
-      crew,
-      company,
-      ratingMin,
-      ratingMax,
-      language,
-      keywords,
-      userCountryCode,
-    ],
-  );
+      setResults(data);
+      if (data.length < 20) {
+        setHasMore(false);
+      }
+    });
+  }, [
+    query,
+    activeType,
+    genre,
+    startDate,
+    endDate,
+    providerId,
+    minRuntime,
+    maxRuntime,
+    actor,
+    crew,
+    company,
+    ratingMin,
+    ratingMax,
+    language,
+    keywords,
+    userCountryCode,
+  ]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -457,7 +398,6 @@ export default function SearchClient({
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setQuery(val);
-      performSearch({ q: val });
     }, 400);
   };
 
@@ -484,7 +424,6 @@ export default function SearchClient({
     setPage(1);
     setHasMore(false);
     setResults([]);
-    router.push("/search", { scroll: false });
   };
 
   const handleTypeChange = (type: SearchType) => {
@@ -502,8 +441,6 @@ export default function SearchClient({
         setGenre("");
       }
     }
-
-    performSearch({ type, genre: nextGenre });
   };
 
   const handleSearchModeChange = (mode: "search" | "discover") => {
@@ -529,49 +466,13 @@ export default function SearchClient({
       setCrewInput("");
       setCompanyInput("");
       setKeywordsInput("");
-
-      performSearch({
-        q: query,
-        genre: "",
-        startDate: "",
-        endDate: "",
-        providerId: "",
-        minRuntime: "",
-        maxRuntime: "",
-        actor: "",
-        crew: "",
-        company: "",
-        ratingMin: "",
-        ratingMax: "",
-        language: "",
-        keywords: "",
-      });
     } else {
       setInputValue("");
       setQuery("");
 
-      const nextType = activeType === "users" ? "movie" : activeType;
       if (activeType === "users") {
         setActiveType("movie");
       }
-
-      performSearch({
-        q: "",
-        type: nextType,
-        genre: genre,
-        startDate: startDate,
-        endDate: endDate,
-        providerId: providerId,
-        minRuntime: minRuntime,
-        maxRuntime: maxRuntime,
-        actor: actor,
-        crew: crew,
-        company: company,
-        ratingMin: ratingMin,
-        ratingMax: ratingMax,
-        language: language,
-        keywords: keywords,
-      });
     }
   };
 
@@ -630,7 +531,6 @@ export default function SearchClient({
   const handleStartDateChange = (date: Date | undefined) => {
     if (!date) {
       setStartDate("");
-      performSearch({ startDate: "" });
       return;
     }
     const year = date.getFullYear();
@@ -638,13 +538,11 @@ export default function SearchClient({
     const day = String(date.getDate()).padStart(2, "0");
     const formatted = `${year}-${month}-${day}`;
     setStartDate(formatted);
-    performSearch({ startDate: formatted });
   };
 
   const handleEndDateChange = (date: Date | undefined) => {
     if (!date) {
       setEndDate("");
-      performSearch({ endDate: "" });
       return;
     }
     const year = date.getFullYear();
@@ -652,7 +550,6 @@ export default function SearchClient({
     const day = String(date.getDate()).padStart(2, "0");
     const formatted = `${year}-${month}-${day}`;
     setEndDate(formatted);
-    performSearch({ endDate: formatted });
   };
 
   const handleRuntimeChange = (values: number | readonly number[]) => {
@@ -661,14 +558,6 @@ export default function SearchClient({
       const maxVal = values[1];
       setMinRuntime(String(minVal));
       setMaxRuntime(String(maxVal));
-
-      if (runtimeDebounceRef.current) clearTimeout(runtimeDebounceRef.current);
-      runtimeDebounceRef.current = setTimeout(() => {
-        performSearch({
-          minRuntime: String(minVal),
-          maxRuntime: String(maxVal),
-        });
-      }, 400);
     }
   };
 
@@ -693,21 +582,6 @@ export default function SearchClient({
     setKeywordsInput("");
     setPage(1);
     setHasMore(true);
-    performSearch({
-      genre: "",
-      startDate: "",
-      endDate: "",
-      providerId: "",
-      minRuntime: "",
-      maxRuntime: "",
-      actor: "",
-      crew: "",
-      company: "",
-      ratingMin: "",
-      ratingMax: "",
-      language: "",
-      keywords: "",
-    });
   };
 
   // Helper to format date display
@@ -730,25 +604,28 @@ export default function SearchClient({
 
     try {
       let nextResults: TMDBMedia[] = [];
-      const typeParam = activeType !== "users" ? activeType : "all";
+      const typeParam =
+        activeType !== "users" && activeType
+          ? (activeType as "all" | "movie" | "tv")
+          : "all";
       if (query) {
         nextResults = await searchMedia(query, typeParam, nextPage);
       } else if (searchMode === "discover") {
         nextResults = await discoverMedia(
           {
-            genre,
-            startDate,
-            endDate,
-            providerId,
-            minRuntime,
-            maxRuntime,
-            actor,
-            crew,
-            company,
-            ratingMin,
-            ratingMax,
-            language,
-            keywords,
+            genre: genre || "",
+            startDate: startDate || "",
+            endDate: endDate || "",
+            providerId: providerId || "",
+            minRuntime: minRuntime || "",
+            maxRuntime: maxRuntime || "",
+            actor: actor || "",
+            crew: crew || "",
+            company: company || "",
+            ratingMin: ratingMin || "",
+            ratingMax: ratingMax || "",
+            language: language || "",
+            keywords: keywords || "",
           },
           typeParam,
           nextPage,
@@ -832,12 +709,11 @@ export default function SearchClient({
             Genre
           </span>
           <Combobox
-            value={getGenreName(genre)}
+            value={getGenreName(genre || "")}
             onValueChange={(val) => {
               const name = (val as string) || "";
               const id = getGenreIdByName(name);
               setGenre(id);
-              performSearch({ genre: id });
             }}
             items={filteredGenres.map((g) => g.name)}
           >
@@ -871,12 +747,11 @@ export default function SearchClient({
             Streaming Service ({userCountryCode})
           </span>
           <Combobox
-            value={getProviderName(providerId)}
+            value={getProviderName(providerId || "")}
             onValueChange={(val) => {
               const name = (val as string) || "";
               const id = getProviderIdByName(name);
               setProviderId(id);
-              performSearch({ providerId: id });
             }}
             items={providers.map((p) => p.provider_name)}
           >
@@ -979,14 +854,14 @@ export default function SearchClient({
           </span>
           <Combobox
             value={
-              LANGUAGES.find((l) => l.code === language)?.name || "Any Language"
+              LANGUAGES.find((l) => l.code === (language || ""))?.name ||
+              "Any Language"
             }
             onValueChange={(val) => {
               const name = (val as string) || "";
               const lang = LANGUAGES.find((l) => l.name === name);
               const code = lang ? lang.code : "";
               setLanguage(code);
-              performSearch({ language: code });
             }}
             items={LANGUAGES.map((l) => l.name)}
           >
@@ -1272,7 +1147,7 @@ export default function SearchClient({
                       </SheetTrigger>
                       <SheetContent
                         side="right"
-                        className="no-scrollbar flex w-[300px] flex-col gap-6 overflow-y-auto rounded-l-3xl border-l border-zinc-800 bg-zinc-950/95 p-6 text-white backdrop-blur-xl"
+                        className="no-scrollbar flex w-75 flex-col gap-6 overflow-y-auto rounded-l-3xl border-l border-zinc-800 bg-zinc-950/95 p-6 text-white backdrop-blur-xl"
                       >
                         <SheetHeader className="mb-6 border-b border-zinc-800/80 p-0 pb-3">
                           <SheetTitle className="flex items-center gap-2 text-sm font-bold text-white">
@@ -1300,8 +1175,8 @@ export default function SearchClient({
 
             {/* Results area */}
             <ResultsSection
-              activeType={activeType}
-              query={query}
+              activeType={(activeType || "movie") as SearchType}
+              query={query || ""}
               hasQuery={searchMode === "discover" || hasQuery || hasFilters}
               isUsersLoading={isUsersLoading}
               isPending={isPending}

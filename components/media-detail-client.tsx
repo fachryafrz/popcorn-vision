@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { useQuery, useMutation, useAction } from "convex/react";
@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
 import { streamingProviderList } from "@/lib/streamingProviderList";
+import { MediaDetailSkeleton } from "@/components/skeletons";
 import {
   Star,
   Clock,
@@ -63,16 +64,7 @@ import { cn } from "@/lib/utils";
 
 interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
-  initialData: {
-    details: MediaDetails;
-    credits?: { cast?: CastItem[]; crew?: CrewItem[] };
-    videos?: VideoItem[];
-    watchProviders?: Record<string, { flatrate?: ProviderItem[] }>;
-    logoPath?: string | null;
-    textlessPosterPath?: string | null;
-    recommendations?: TMDBMedia[];
-    regionalData?: (RegionalRelease | RegionalContentRating)[];
-  };
+  id: string;
 }
 
 // Map full country name string from profile/settings to ISO 2-letter code for TMDB dynamically
@@ -117,12 +109,51 @@ const getRegionLocale = (region: string): string => {
 
 export default function MediaDetailClient({
   mediaType,
-  initialData,
+  id,
 }: MediaDetailClientProps) {
   const router = useRouter();
-  const details = initialData.details;
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
+
+  // Fetched media data state
+  const [details, setDetails] = useState<MediaDetails | null>(null);
+  const [credits, setCredits] = useState<{ cast?: CastItem[]; crew?: CrewItem[] }>({});
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [watchProviders, setWatchProviders] = useState<Record<string, { flatrate?: ProviderItem[] }>>({});
+  const [logoPath, setLogoPath] = useState<string | null>(null);
+  const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<TMDBMedia[]>([]);
+  const [regionalData, setRegionalData] = useState<(RegionalRelease | RegionalContentRating)[]>([]);
+  // Track current media so we can reset loading state during render when page details change
+  const [prevMediaId, setPrevMediaId] = useState(id);
+  const [prevMediaType, setPrevMediaType] = useState(mediaType);
+  const [isMediaLoading, setIsMediaLoading] = useState(true);
+
+  if (id !== prevMediaId || mediaType !== prevMediaType) {
+    setPrevMediaId(id);
+    setPrevMediaType(mediaType);
+    setIsMediaLoading(true);
+  }
+
+  useEffect(() => {
+    fetch(`/api/tmdb/media/${mediaType}/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then((data) => {
+        setDetails(data.details);
+        setCredits(data.credits ?? {});
+        setVideos(data.videos ?? []);
+        setWatchProviders(data.watchProviders ?? {});
+        setLogoPath(data.logoPath ?? null);
+        setTextlessPosterPath(data.textlessPosterPath ?? null);
+        setRecommendations(data.recommendations ?? []);
+        setRegionalData(data.regionalData ?? []);
+      })
+      .catch(() => router.push("/"))
+      .finally(() => setIsMediaLoading(false));
+  }, [mediaType, id, router]);
 
   // Global auth store & Scroll refs
   const openAuth = useAuthModalStore((state) => state.open);
@@ -149,15 +180,15 @@ export default function MediaDetailClient({
 
   const [seasonState, setSeasonState] = useQueryState("season");
   const season = seasonState ? parseInt(seasonState) || 1 : 1;
-  const setSeason = (s: number) => {
+  const setSeason = useCallback((s: number) => {
     setSeasonState(String(s));
-  };
+  }, [setSeasonState]);
 
   const [episodeState, setEpisodeState] = useQueryState("episode");
   const episode = episodeState ? parseInt(episodeState) || 1 : 1;
-  const setEpisode = (e: number) => {
+  const setEpisode = useCallback((e: number) => {
     setEpisodeState(String(e));
-  };
+  }, [setEpisodeState]);
   const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
   const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(
     null,
@@ -197,10 +228,7 @@ export default function MediaDetailClient({
           Promise.resolve().then(() => {
             setSelectedRegion(detectedRegion);
           });
-        } else if (
-          initialData.watchProviders &&
-          detectedRegion in initialData.watchProviders
-        ) {
+        } else if (detectedRegion in watchProviders) {
           Promise.resolve().then(() => {
             setSelectedRegion(detectedRegion);
           });
@@ -211,7 +239,7 @@ export default function MediaDetailClient({
         }
       }
     }
-  }, [initialData.watchProviders, convexProfile]);
+  }, [watchProviders, convexProfile]);
 
   // Parallax Scroll Effect
   useEffect(() => {
@@ -268,19 +296,21 @@ export default function MediaDetailClient({
         });
       }, 100);
 
-      getSeasonDetails(details.id, seasonNumber).then((data) => {
-        if (data) {
-          setActiveSeasonData(data as SeasonDetails);
-          // Re-scroll once actual episodes list loads and changes heights
-          setTimeout(() => {
-            seasonDetailsRef.current?.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            });
-          }, 150);
-        }
-        setSeasonDetailsLoading(false);
-      });
+      if (details) {
+        getSeasonDetails(details.id, seasonNumber).then((data) => {
+          if (data) {
+            setActiveSeasonData(data as SeasonDetails);
+            // Re-scroll once actual episodes list loads and changes heights
+            setTimeout(() => {
+              seasonDetailsRef.current?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+              });
+            }, 150);
+          }
+          setSeasonDetailsLoading(false);
+        });
+      }
     }
   };
 
@@ -288,8 +318,8 @@ export default function MediaDetailClient({
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const isWatchlisted = useQuery(
     api.watchlist.checkWatchlistItem,
-    isLoggedIn && initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    isLoggedIn && details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
@@ -299,8 +329,8 @@ export default function MediaDetailClient({
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const isFavorited = useQuery(
     api.favorites.checkFavoriteItem,
-    isLoggedIn && initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    isLoggedIn && details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const addToFavorites = useMutation(api.favorites.addToFavorites);
@@ -309,14 +339,14 @@ export default function MediaDetailClient({
   // Convex rating mutations/queries
   const userRating = useQuery(
     api.ratings.getUserRating,
-    isLoggedIn && initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    isLoggedIn && details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const communityStats = useQuery(
     api.ratings.getCommunityRatingStats,
-    initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const deleteRating = useMutation(api.ratings.deleteRating);
@@ -324,8 +354,8 @@ export default function MediaDetailClient({
   // Convex diary history queries/mutations
   const watchHistory = useQuery(
     api.diary.getMediaWatchHistory,
-    isLoggedIn && initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    isLoggedIn && details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
@@ -352,8 +382,8 @@ export default function MediaDetailClient({
   // Convex watch progress query & mutation
   const watchProgress = useQuery(
     api.continueWatching.getProgressForMedia,
-    isLoggedIn && initialData.details
-      ? { mediaId: String(initialData.details.id), mediaType }
+    isLoggedIn && details
+      ? { mediaId: String(details.id), mediaType }
       : "skip",
   );
   const upsertWatchProgress = useMutation(api.continueWatching.upsertProgress);
@@ -415,6 +445,25 @@ export default function MediaDetailClient({
     return undefined;
   }, [mediaType, activeSeasonData, episode]);
 
+  // Convex exchange rates query and action
+  const exchangeRatesData = useQuery(api.exchangeRates.getRates);
+  const fetchRates = useAction(api.exchangeRates.fetchAndStoreRates);
+
+  useEffect(() => {
+    if (exchangeRatesData === undefined) return;
+
+    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+    const isOutdated =
+      !exchangeRatesData ||
+      Date.now() - exchangeRatesData.updatedAt > ONE_WEEK_MS;
+
+    if (isOutdated) {
+      fetchRates().catch((err: unknown) => {
+        console.error("Failed to fetch and store exchange rates:", err);
+      });
+    }
+  }, [exchangeRatesData, fetchRates]);
+
   // Track and save watch progress
   useEffect(() => {
     if (isLoggedIn && activeTab === "watch" && details) {
@@ -440,24 +489,13 @@ export default function MediaDetailClient({
     upsertWatchProgress,
   ]);
 
-  // Convex exchange rates query and action
-  const exchangeRatesData = useQuery(api.exchangeRates.getRates);
-  const fetchRates = useAction(api.exchangeRates.fetchAndStoreRates);
+  // Show skeleton while media data is loading
+  if (isMediaLoading) {
+    return <MediaDetailSkeleton />;
+  }
 
-  useEffect(() => {
-    if (exchangeRatesData === undefined) return;
-
-    const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-    const isOutdated =
-      !exchangeRatesData ||
-      Date.now() - exchangeRatesData.updatedAt > ONE_WEEK_MS;
-
-    if (isOutdated) {
-      fetchRates().catch((err: unknown) => {
-        console.error("Failed to fetch and store exchange rates:", err);
-      });
-    }
-  }, [exchangeRatesData, fetchRates]);
+  // Guard against null details (shouldn't happen after loading, but satisfies TS)
+  if (!details) return null;
 
   const handleShareToChat = async (chatId: string, chatTitle: string) => {
     try {
@@ -481,22 +519,21 @@ export default function MediaDetailClient({
     }
   };
 
-  const cast = initialData.credits?.cast?.slice(0, 15) || [];
+  const cast = credits?.cast?.slice(0, 15) || [];
   const directors =
-    initialData.credits?.crew?.filter((c) => c.job === "Director") || [];
-  const creators = details.created_by || [];
-  const recommendations = initialData.recommendations || [];
+    credits?.crew?.filter((c) => c.job === "Director") || [];
+  const creators = details?.created_by || [];
   const providers =
-    initialData.watchProviders?.[selectedRegion]?.flatrate || [];
+    watchProviders?.[selectedRegion]?.flatrate || [];
 
   // YouTube trailer resolution
-  const trailerVideo = initialData.videos?.find(
+  const trailerVideo = videos?.find(
     (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube",
   );
   const trailerKey =
     trailerVideo?.key ||
-    (initialData.videos?.[0]?.site === "YouTube"
-      ? initialData.videos[0].key
+    (videos?.[0]?.site === "YouTube"
+      ? videos[0].key
       : null);
 
   // Streaming server sources
@@ -513,8 +550,8 @@ export default function MediaDetailClient({
 
   // Find regional release date and content certification
   const regionalReleaseInfo = (() => {
-    if (mediaType !== "movie" || !initialData.regionalData) return null;
-    const movieReleaseData = initialData.regionalData as RegionalRelease[];
+    if (mediaType !== "movie" || !regionalData) return null;
+    const movieReleaseData = regionalData as RegionalRelease[];
     const regionRelease = movieReleaseData.find(
       (r) => r.iso_3166_1 === selectedRegion,
     );
@@ -533,8 +570,8 @@ export default function MediaDetailClient({
     if (mediaType === "movie") {
       return regionalReleaseInfo?.certification || null;
     } else {
-      if (!initialData.regionalData) return null;
-      const tvRatingsData = initialData.regionalData as RegionalContentRating[];
+      if (!regionalData) return null;
+      const tvRatingsData = regionalData as RegionalContentRating[];
       const regionRating = tvRatingsData.find(
         (r) => r.iso_3166_1 === selectedRegion,
       );
@@ -698,8 +735,8 @@ export default function MediaDetailClient({
     ? `https://image.tmdb.org/t/p/w500${details.poster_path}`
     : "/logo/popcorn.png";
 
-  const mobileBackdropUrl = initialData.textlessPosterPath
-    ? `https://image.tmdb.org/t/p/w780${initialData.textlessPosterPath}`
+  const mobileBackdropUrl = textlessPosterPath
+    ? `https://image.tmdb.org/t/p/w780${textlessPosterPath}`
     : posterUrl;
 
   const duration = moment.duration(runtime, "minutes");
@@ -742,10 +779,10 @@ export default function MediaDetailClient({
           )}
 
           {/* Logo or Title */}
-          {initialData.logoPath && !logoError ? (
+          {logoPath && !logoError ? (
             <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-24 md:h-28">
               <img
-                src={`https://image.tmdb.org/t/p/w500${initialData.logoPath}`}
+                src={`https://image.tmdb.org/t/p/w500${logoPath}`}
                 alt={details?.title || details?.name}
                 className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                 onError={() => setLogoError(true)}
@@ -958,7 +995,7 @@ export default function MediaDetailClient({
                         )}
                       >
                         {c.logo_path && (
-                          <div className="flex aspect-[4/3] w-[100px] items-center justify-center rounded-lg bg-white/95 p-3 shadow-sm">
+                          <div className="flex aspect-4/3 w-25 items-center justify-center rounded-lg bg-white/95 p-3 shadow-sm">
                             <img
                               src={`https://image.tmdb.org/t/p/w92${c.logo_path}`}
                               alt={c.name}
@@ -1168,7 +1205,7 @@ export default function MediaDetailClient({
               Add to Custom List
             </DialogTitle>
           </DialogHeader>
-          <div className="max-h-[350px] space-y-4 overflow-y-auto py-4 pr-1">
+          <div className="max-h-87.5 space-y-4 overflow-y-auto py-4 pr-1">
             {customLists === undefined ? (
               <div className="flex justify-center py-6">
                 <Loader2 className="text-primary h-6 w-6 animate-spin" />

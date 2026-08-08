@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, Suspense, useEffect } from "react";
 import { TMDBMedia, cleanMediaData, TMDBRawItem } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
+import { PersonDetailSkeleton } from "@/components/skeletons";
 import {
   ArrowLeft,
   Film,
@@ -13,7 +14,6 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import Card from "@/components/card";
@@ -53,8 +53,7 @@ interface PersonCredits {
 }
 
 interface PersonDetailClientProps {
-  person: TMDBPerson;
-  credits: PersonCredits;
+  id: string;
 }
 
 type MediaFilter = "all" | "movie" | "tv";
@@ -62,8 +61,7 @@ type RoleFilter = "all" | "cast" | "crew";
 type SortOption = "popularity" | "release_date" | "vote_average";
 
 export default function PersonDetailClient({
-  person,
-  credits,
+  id,
 }: PersonDetailClientProps) {
   const router = useRouter();
   const {
@@ -71,7 +69,24 @@ export default function PersonDetailClient({
     isOpen: isAuthOpen,
     close: closeAuth,
   } = useAuthModalStore();
-  // No-op
+
+  const [person, setPerson] = useState<TMDBPerson | null>(null);
+  const [credits, setCredits] = useState<PersonCredits>({ cast: [], crew: [] });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`/api/tmdb/person/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Not found");
+        return res.json();
+      })
+      .then((data) => {
+        setPerson(data.person);
+        setCredits(data.credits ?? { cast: [], crew: [] });
+      })
+      .catch(() => router.push("/"))
+      .finally(() => setIsLoading(false));
+  }, [id, router]);
 
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
@@ -170,20 +185,23 @@ export default function PersonDetailClient({
     return result;
   }, [mergedCredits, mediaFilter, roleFilter, sortBy]);
 
-  const profileUrl = person.profile_path
-    ? `https://image.tmdb.org/t/p/h632${person.profile_path}`
-    : "/logo/popcorn.png";
-
   // Age calculation
   const age = useMemo(() => {
-    if (!person.birthday) return null;
+    if (!person?.birthday) return null;
     const birth = moment(person.birthday);
     if (person.deathday) {
       const death = moment(person.deathday);
       return `${death.diff(birth, "years")} (Deceased)`;
     }
     return moment().diff(birth, "years");
-  }, [person.birthday, person.deathday]);
+  }, [person]);
+
+  if (isLoading) return <PersonDetailSkeleton />;
+  if (!person) return null;
+
+  const profileUrl = person.profile_path
+    ? `https://image.tmdb.org/t/p/h632${person.profile_path}`
+    : "/logo/popcorn.png";
 
   return (
     <main className="bg-background text-foreground min-h-svh pt-24 pb-16 transition-colors duration-300">
@@ -202,7 +220,7 @@ export default function PersonDetailClient({
         <div className="grid grid-cols-1 gap-10 md:grid-cols-[280px_1fr] lg:gap-16">
           {/* Left Column: Photo & Details */}
           <div className="flex flex-col items-center text-center md:items-start md:text-left">
-            <div className="aspect-2/3 w-full max-w-[280px] overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900 shadow-2xl">
+            <div className="aspect-2/3 w-full max-w-70 overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900 shadow-2xl">
               <img
                 src={profileUrl}
                 alt={person.name}

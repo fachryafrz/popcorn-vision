@@ -1,15 +1,6 @@
 import SearchClient from "@/components/search-client";
 import { siteConfig } from "@/config/site";
-import { TMDBMedia } from "@/lib/tmdb";
-import {
-  searchMedia,
-  discoverMedia,
-  getTMDBGenres,
-  getTMDBProviders,
-} from "@/lib/tmdb-actions";
-import { fetchAuthQuery } from "@/lib/auth-server";
-import { api } from "@/convex/_generated/api";
-import isoCountries from "@/data/iso-3166.json";
+import { SearchType } from "@/components/search/types";
 
 interface SearchPageProps {
   searchParams: Promise<{
@@ -43,31 +34,9 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
-  const user = await fetchAuthQuery(api.users.getCurrentUser).catch(() => null);
-
-  let countryCode = "US";
-  if (user?.country) {
-    const countryKey = user.country.toLowerCase();
-    const countryObj = isoCountries.find(
-      (c) =>
-        c.name?.toLowerCase() === countryKey ||
-        c["alpha-2"]?.toLowerCase() === countryKey
-    );
-    if (countryObj && countryObj["alpha-2"]) {
-      countryCode = countryObj["alpha-2"].toUpperCase();
-    } else {
-      countryCode = user.country.toUpperCase();
-    }
-  }
-
-  const [genres, providers] = await Promise.all([
-    getTMDBGenres(),
-    getTMDBProviders(countryCode),
-  ]);
-
   const params = await searchParams;
   const query = params.q || "";
-  const type = (params.type as "movie" | "tv" | "users") || "movie";
+  const type = (params.type as SearchType) || "movie";
   const genre = params.genre || "";
   const startDate = params.startDate || "";
   const endDate = params.endDate || "";
@@ -82,35 +51,8 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const language = params.language || "";
   const keywords = params.keywords || "";
 
-  let results: TMDBMedia[] = [];
-  if (query && type !== "users") {
-    results = await searchMedia(query, type);
-  } else if (type !== "users") {
-    results = await discoverMedia(
-      {
-        genre,
-        startDate,
-        endDate,
-        providerId,
-        minRuntime,
-        maxRuntime,
-        actor,
-        crew,
-        company,
-        ratingMin,
-        ratingMax,
-        language,
-        keywords,
-      },
-      type,
-      1,
-      countryCode
-    );
-  }
-
   return (
     <SearchClient
-      initialResults={results}
       initialQuery={query}
       initialType={type}
       initialGenre={genre}
@@ -126,9 +68,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       initialRatingMax={ratingMax}
       initialLanguage={language}
       initialKeywords={keywords}
-      genres={genres}
-      providers={providers}
-      userCountryCode={countryCode}
     />
   );
 }
