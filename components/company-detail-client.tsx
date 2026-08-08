@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect } from "react";
+import { useState, useMemo, Suspense, useEffect, useCallback } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import { TMDBCompanyDetails } from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import AuthModal from "@/components/auth-modal";
 import {
   Select,
@@ -68,7 +69,23 @@ export default function CompanyDetailClient({
 
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
 
   // Combine and deduplicate movies & tv shows
   const mergedMedia = useMemo(() => {

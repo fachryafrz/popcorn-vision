@@ -33,6 +33,8 @@ import moment from "moment";
 import isoCountries from "@/data/iso-3166.json";
 
 interface MediaDetails {
+  title?: string;
+  name?: string;
   tagline?: string;
   runtime?: number;
   number_of_seasons?: number;
@@ -44,6 +46,11 @@ interface MediaDetails {
     name: string;
     profile_path: string | null;
   }[];
+  release_date?: string;
+  first_air_date?: string;
+  vote_average?: number;
+  backdrop_path?: string | null;
+  poster_path?: string | null;
 }
 
 interface CrewItem {
@@ -184,13 +191,21 @@ export default function QuickViewModal({
 
   const releaseYear = media.release_date
     ? new Date(media.release_date).getFullYear()
-    : "N/A";
+    : details?.release_date
+      ? new Date(details.release_date).getFullYear()
+      : details?.first_air_date
+        ? new Date(details.first_air_date).getFullYear()
+        : "N/A";
   const voteRating = media.vote_average
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
-    : "0.0";
+    : details?.vote_average
+      ? details.vote_average.toFixed(details.vote_average < 10 ? 1 : 0)
+      : "0.0";
   const backdropUrl = media.backdrop_path
     ? `https://image.tmdb.org/t/p/w780${media.backdrop_path}`
-    : "/logo/popcorn.png";
+    : details?.backdrop_path
+      ? `https://image.tmdb.org/t/p/w780${details.backdrop_path}`
+      : "/logo/popcorn.png";
 
   // YouTube trailer resolution
   const trailerVideo = videos?.find(
@@ -216,9 +231,9 @@ export default function QuickViewModal({
         await addToWatchlist({
           mediaId: mId,
           mediaType: mType,
-          title: media.title || media.name || "",
-          posterPath: media.poster_path || "",
-          rating: media.vote_average || 0,
+          title: media.title || media.name || details?.title || details?.name || "",
+          posterPath: media.poster_path || details?.poster_path || "",
+          rating: media.vote_average || details?.vote_average || 0,
           releaseYear: releaseYear.toString(),
         });
       }
@@ -245,9 +260,9 @@ export default function QuickViewModal({
         await addToFavorites({
           mediaId: mId,
           mediaType: mType,
-          title: media.title || media.name || "",
-          posterPath: media.poster_path || "",
-          rating: media.vote_average || 0,
+          title: media.title || media.name || details?.title || details?.name || "",
+          posterPath: media.poster_path || details?.poster_path || "",
+          rating: media.vote_average || details?.vote_average || 0,
           releaseYear: releaseYear.toString(),
         });
       }
@@ -264,7 +279,7 @@ export default function QuickViewModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="h-[85svh] w-[calc(100%-2rem)] max-w-7xl overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-0 text-white shadow-2xl backdrop-blur-xl sm:h-[80svh] sm:max-w-7xl md:h-[85svh]">
         <DialogTitle className="sr-only">
-          Quick View: {media.title || media.name}
+          Quick View: {media.title || media.name || details?.title || details?.name || "Media Details"}
         </DialogTitle>
         <DialogDescription className="sr-only">
           Official trailer and details overview
@@ -315,14 +330,14 @@ export default function QuickViewModal({
                   <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-20 md:h-24 lg:h-28">
                     <img
                       src={`https://image.tmdb.org/t/p/w500${logoPath}`}
-                      alt={media.title || media.name}
+                      alt={media.title || media.name || details?.title || details?.name || ""}
                       className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                       onError={() => setLogoError(true)}
                     />
                   </div>
                 ) : (
                   <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
-                    {media.title || media.name}
+                    {media.title || media.name || details?.title || details?.name}
                   </h2>
                 )}
                 {details?.tagline && (

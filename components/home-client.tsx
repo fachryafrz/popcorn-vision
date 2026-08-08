@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import {
   getTrending,
@@ -11,6 +11,7 @@ import Hero from "./hero";
 import Section from "./section";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -28,7 +29,23 @@ import Card from "./card";
 
 export default function HomeClient() {
   const openAuth = useAuthModalStore((state) => state.open);
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
 
   const [heroItems, setHeroItems] = useState<TMDBMedia[]>([]);
   const [trendingItems, setTrendingItems] = useState<TMDBMedia[]>([]);

@@ -23,6 +23,7 @@ import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import PersonQuickViewModal from "./person-quick-view-modal";
+import { useQuickViewMediaState, useQuickViewPersonState } from "@/hooks/use-query-modal-state";
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
@@ -189,10 +190,24 @@ export default function MediaDetailClient({
   const setEpisode = useCallback((e: number) => {
     setEpisodeState(String(e));
   }, [setEpisodeState]);
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
-  const [quickViewPersonId, setQuickViewPersonId] = useState<number | null>(
-    null,
-  );
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+  const [quickViewPersonId, setQuickViewPersonId] = useQuickViewPersonState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
 
   const [selectedRegion, setSelectedRegion] = useState("US");
 

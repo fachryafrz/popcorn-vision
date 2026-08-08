@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect } from "react";
+import { useState, use, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useQueryState } from "nuqs";
 import { api } from "@/convex/_generated/api";
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,23 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const { username } = use(params);
   const confirm = useConfirm();
   const openAuth = useAuthModalStore((state) => state.open);
-  const [quickViewMedia, setQuickViewMedia] = useState<TMDBMedia | null>(null);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
   const [activeTabState, setActiveTab] = useQueryState("tab", {
     defaultValue: "all",
   });
