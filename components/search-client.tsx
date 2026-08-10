@@ -17,6 +17,7 @@ import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
+import regionsData from "@/data/iso-3166.json";
 import {
   Search,
   Film,
@@ -124,6 +125,7 @@ export default function SearchClient({
   } = useAuthModalStore();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
+  const currentUser = useQuery(api.users.getCurrentUser);
 
   // Detect country from browser locale for provider filtering
   const [userCountryCode, setUserCountryCode] = useState(() => {
@@ -140,6 +142,19 @@ export default function SearchClient({
     }
     return detectedCountry;
   });
+
+  // Sync country code with logged-in user profile country name mapping
+  useEffect(() => {
+    const userCountry = currentUser?.country;
+    if (userCountry) {
+      const found = (regionsData as any[]).find(
+        (r) => r.name.toLowerCase() === userCountry.toLowerCase()
+      );
+      if (found && found["alpha-2"]) {
+        setUserCountryCode(found["alpha-2"].toUpperCase());
+      }
+    }
+  }, [currentUser]);
   const [genres, setGenres] = useState<
     { id: number; name: string; types?: ("movie" | "tv")[] }[]
   >([]);
