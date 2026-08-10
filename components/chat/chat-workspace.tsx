@@ -1,5 +1,6 @@
 import React from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Send,
   Search,
@@ -126,52 +127,72 @@ export default function ChatWorkspace({
           >
             <ChevronRight className="h-4 w-4 rotate-180" />
           </Button>
-          <div className="relative">
-            <Avatar className="h-9 w-9 shrink-0 border border-zinc-800">
-              {activeChat.type === "group" ? (
-                activeChat.image ? (
-                  <AvatarImage
-                    src={activeChat.image}
-                    alt={activeChat.name}
-                    className="object-cover"
-                  />
-                ) : null
-              ) : activeChat.friend?.image ? (
-                <AvatarImage
-                  src={activeChat.friend.image}
-                  alt={activeChat.friend.name}
-                  className="object-cover"
-                />
-              ) : null}
-              <AvatarFallback className="bg-zinc-900 text-xs font-bold text-zinc-300">
-                {activeChat.type === "group" ? (
-                  <Users className="h-4 w-4" />
+          {activeChat.type === "group" ? (
+            <>
+              <div className="relative">
+                <Avatar className="h-9 w-9 shrink-0 border border-zinc-800">
+                  {activeChat.image ? (
+                    <AvatarImage
+                      src={activeChat.image}
+                      alt={activeChat.name}
+                      className="object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-zinc-900 text-xs font-bold text-zinc-300">
+                    <Users className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="text-left">
+                <h2 className="text-xs leading-none font-black text-white">
+                  {activeChat.name}
+                </h2>
+                {activeChatTyping && activeChatTyping.length > 0 ? (
+                  <span className="text-primary mt-1 block animate-pulse text-[9px] font-bold italic">
+                    {`${activeChatTyping.join(", ")} is typing...`}
+                  </span>
                 ) : (
-                  activeChat.friend?.name.charAt(0).toUpperCase()
+                  <span className="mt-1 block text-[9px] font-bold tracking-wider text-zinc-500 uppercase">
+                    Group Chat
+                  </span>
                 )}
-              </AvatarFallback>
-            </Avatar>
-          </div>
-          <div className="text-left">
-            <h2 className="text-xs leading-none font-black text-white">
-              {activeChat.type === "group"
-                ? activeChat.name
-                : activeChat.friend?.name}
-            </h2>
-            {activeChatTyping && activeChatTyping.length > 0 ? (
-              <span className="text-primary mt-1 block animate-pulse text-[9px] font-bold italic">
-                {activeChat.type === "group"
-                  ? `${activeChatTyping.join(", ")} is typing...`
-                  : "typing..."}
-              </span>
-            ) : (
-              <span className="mt-1 block text-[9px] font-bold tracking-wider text-zinc-500 uppercase">
-                {activeChat.type === "group"
-                  ? "Group Chat"
-                  : `@${activeChat.friend?.username}`}
-              </span>
-            )}
-          </div>
+              </div>
+            </>
+          ) : (
+            <Link
+              href={`/@${activeChat.friend?.username}`}
+              className="flex items-center gap-3 hover:opacity-85 transition-opacity"
+            >
+              <div className="relative">
+                <Avatar className="h-9 w-9 shrink-0 border border-zinc-800">
+                  {activeChat.friend?.image ? (
+                    <AvatarImage
+                      src={activeChat.friend.image}
+                      alt={activeChat.friend.name}
+                      className="object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-zinc-900 text-xs font-bold text-zinc-300">
+                    {activeChat.friend?.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="text-left">
+                <h2 className="text-xs leading-none font-black text-white hover:underline">
+                  {activeChat.friend?.name}
+                </h2>
+                {activeChatTyping && activeChatTyping.length > 0 ? (
+                  <span className="text-primary mt-1 block animate-pulse text-[9px] font-bold italic">
+                    typing...
+                  </span>
+                ) : (
+                  <span className="mt-1 block text-[9px] font-bold tracking-wider text-zinc-500 uppercase">
+                    {`@${activeChat.friend?.username}`}
+                  </span>
+                )}
+              </div>
+            </Link>
+          )}
         </div>
 
         {/* Sidebar toggle buttons */}
@@ -262,26 +283,28 @@ export default function ChatWorkspace({
                     )}
                   >
                     {/* Message Avatar */}
-                    <div className={cn("w-8 shrink-0", isMe && "hidden")}>
-                      {showAvatar && !isMe && (
-                        <Avatar className="h-8 w-8 border border-zinc-800">
-                          {msg.senderImage && (
-                            <AvatarImage
-                              src={msg.senderImage}
-                              alt={msg.senderName}
-                              className="object-cover"
-                            />
-                          )}
-                          <AvatarFallback className="bg-zinc-900 text-[10px] font-bold text-zinc-300">
-                            {msg.senderName.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                    </div>
+                    {activeChat?.type === "group" && (
+                      <div className={cn("w-8 shrink-0", isMe && "hidden")}>
+                        {showAvatar && !isMe && (
+                          <Avatar className="h-8 w-8 border border-zinc-800">
+                            {msg.senderImage && (
+                              <AvatarImage
+                                src={msg.senderImage}
+                                alt={msg.senderName}
+                                className="object-cover"
+                              />
+                            )}
+                            <AvatarFallback className="bg-zinc-900 text-[10px] font-bold text-zinc-300">
+                              {msg.senderName.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                      </div>
+                    )}
 
                     {/* Message Balloon */}
                     <div className="flex max-w-full flex-col gap-1">
-                      {showAvatar && !isMe && (
+                      {showAvatar && !isMe && activeChat?.type === "group" && (
                         <span className="pl-1 text-left text-[9px] font-bold text-zinc-500">
                           {msg.senderName}
                         </span>

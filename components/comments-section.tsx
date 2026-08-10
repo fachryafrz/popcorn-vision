@@ -29,6 +29,8 @@ import { UserRoleBadge } from "@/components/user-role-badge";
 interface CommentsSectionProps {
   mediaId: string;
   mediaType: string;
+  mediaTitle?: string;
+  mediaPosterPath?: string;
 }
 
 // Sorting options
@@ -59,6 +61,8 @@ interface CommentType {
 export default function CommentsSection({
   mediaId,
   mediaType,
+  mediaTitle,
+  mediaPosterPath,
 }: CommentsSectionProps) {
   const [sorting, setSorting] = useState<SortOption>("best");
   const [commentContent, setCommentContent] = useState("");
@@ -94,6 +98,8 @@ export default function CommentsSection({
         mediaId,
         mediaType,
         content: commentContent,
+        mediaTitle,
+        mediaPosterPath,
       });
       setCommentContent("");
       toast.success("Comment posted successfully!");
@@ -203,6 +209,8 @@ export default function CommentsSection({
               currentUserId={currentUserId}
               mediaId={mediaId}
               mediaType={mediaType}
+              mediaTitle={mediaTitle}
+              mediaPosterPath={mediaPosterPath}
               onAuthRequired={() => authModal.open()}
             />
           ))}
@@ -221,6 +229,8 @@ interface CommentNodeProps {
   currentUserId?: string;
   mediaId: string;
   mediaType: string;
+  mediaTitle?: string;
+  mediaPosterPath?: string;
   onAuthRequired: () => void;
 }
 
@@ -230,6 +240,8 @@ function CommentNode({
   currentUserId,
   mediaId,
   mediaType,
+  mediaTitle,
+  mediaPosterPath,
   onAuthRequired,
 }: CommentNodeProps) {
   const confirm = useConfirm();
@@ -298,6 +310,8 @@ function CommentNode({
         mediaType,
         content: replyContent,
         parentId: comment._id as Id<"comments">,
+        mediaTitle,
+        mediaPosterPath,
       });
       setReplyContent("");
       setIsReplying(false);
@@ -606,6 +620,8 @@ function CommentNode({
               currentUserId={currentUserId}
               mediaId={mediaId}
               mediaType={mediaType}
+              mediaTitle={mediaTitle}
+              mediaPosterPath={mediaPosterPath}
               onAuthRequired={onAuthRequired}
             />
           ))}

@@ -1,11 +1,27 @@
 "use client";
 
 import React from "react";
-import { Users, Loader2, UserPlus, UserCheck, UserX } from "lucide-react";
+import {
+  Users,
+  Loader2,
+  UserPlus,
+  UserCheck,
+  UserX,
+  MessageSquare,
+  MoreVertical,
+  Calendar,
+} from "lucide-react";
+import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UserRoleBadge } from "@/components/user-role-badge";
 import { UserDoc } from "./types";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface ProfileHeaderProps {
   targetUser: UserDoc | null;
@@ -45,8 +61,8 @@ export function ProfileHeader({
     FriendIcon = UserCheck;
     friendVariant = "default";
   } else if (friendshipStatus === "friends") {
-    friendLabel = "Friends";
-    FriendIcon = UserCheck;
+    friendLabel = "Unfriend";
+    FriendIcon = UserX;
     friendVariant = "outline";
   }
 
@@ -54,7 +70,7 @@ export function ProfileHeader({
     <div className="relative z-10 mb-8 flex flex-col items-stretch overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-900/10 shadow-lg shadow-black/40 backdrop-blur-md transition-all duration-350">
       {/* Profile Details Content Overlay */}
       <div className="flex flex-col items-center justify-between gap-6 p-6 text-center sm:flex-row sm:items-end sm:p-8 sm:text-left">
-        <div className="flex w-full min-w-0 grow flex-col items-center gap-6 sm:flex-row sm:items-end">
+        <div className="flex w-full min-w-0 grow flex-col items-center gap-6 sm:flex-row sm:items-start">
           <Avatar className="border-background bg-background z-10 h-20 w-20 shrink-0 border-4 shadow-xl sm:h-28 sm:w-28">
             {targetUser?.image && (
               <AvatarImage
@@ -105,45 +121,67 @@ export function ProfileHeader({
                 <Users className="h-3.5 w-3.5" />
                 {friendCount} Friends
               </button>
+              {targetUser?._creationTime && (
+                <span className="flex items-center gap-1.5 text-zinc-500">
+                  <Calendar className="h-3.5 w-3.5" />
+                  Member Since {new Date(targetUser._creationTime).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
+                </span>
+              )}
             </div>
+
+            {/* Social Buttons */}
+            {!isOwner && (
+              <div className="mt-5 flex w-full flex-row items-center justify-center gap-2 sm:w-auto sm:justify-start">
+                <Button
+                  variant={friendVariant}
+                  disabled={friendLoading}
+                  onClick={handleFriendAction}
+                  className="h-10 flex-1 cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02] sm:flex-initial"
+                >
+                  {friendLoading ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <>
+                      <FriendIcon className="mr-1.5 h-4 w-4" />
+                      {friendLabel}
+                    </>
+                  )}
+                </Button>
+                {friendshipStatus === "friends" && targetUser && (
+                  <Link
+                    href={`/chat?userId=${targetUser.userId}`}
+                    className="flex-1 sm:flex-initial"
+                  >
+                    <Button className="h-10 w-full cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02]">
+                      <MessageSquare className="mr-1.5 h-4 w-4" />
+                      Chat
+                    </Button>
+                  </Link>
+                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl border border-zinc-800 text-zinc-400 transition-all duration-200 outline-none hover:scale-[1.02] hover:bg-zinc-800/50 hover:text-white">
+                    <MoreVertical className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      variant="destructive"
+                      disabled={blockLoading}
+                      onClick={handleBlockAction}
+                      className="cursor-pointer"
+                    >
+                      {blockLoading ? (
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <UserX className="mr-1.5 h-4 w-4" />
+                      )}
+                      Block User
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Social Buttons */}
-        {!isOwner && (
-          <div className="mt-4 flex w-full shrink-0 flex-row gap-2 sm:mt-0 sm:w-auto sm:flex-col">
-            <Button
-              variant={friendVariant}
-              disabled={friendLoading}
-              onClick={handleFriendAction}
-              className="h-10 flex-1 cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02] sm:flex-initial"
-            >
-              {friendLoading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <>
-                  <FriendIcon className="mr-1.5 h-4 w-4" />
-                  {friendLabel}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="destructive"
-              disabled={blockLoading}
-              onClick={handleBlockAction}
-              className="h-10 flex-1 cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02] sm:flex-initial"
-            >
-              {blockLoading ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <>
-                  <UserX className="mr-1.5 h-4 w-4" />
-                  Block User
-                </>
-              )}
-            </Button>
-          </div>
-        )}
       </div>
     </div>
   );

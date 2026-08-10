@@ -1067,6 +1067,8 @@ export default function MediaDetailClient({
         <CommentsSection
           mediaId={details.id.toString()}
           mediaType={mediaType}
+          mediaTitle={details.title || details.name}
+          mediaPosterPath={details.poster_path || undefined}
         />
 
         {/* Recommendations Carousel */}

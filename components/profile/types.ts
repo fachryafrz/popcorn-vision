@@ -17,6 +17,7 @@ export interface UserDoc {
   hideInsights?: boolean;
   role?: string;
   status?: string;
+  _creationTime?: number;
 }
 
 export interface DiaryItem {

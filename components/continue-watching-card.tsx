@@ -8,7 +8,7 @@ import moment from "moment";
 import { toast } from "sonner";
 import { useState } from "react";
 
-interface ContinueWatchingItem {
+export interface ContinueWatchingItem {
   _id: string;
   mediaId: string;
   mediaType: string;
