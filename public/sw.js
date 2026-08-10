@@ -44,8 +44,6 @@ self.addEventListener('push', function (event) {
 });
 
 self.addEventListener('notificationclick', function (event) {
-  event.notification.close();
-
   if (event.action === 'reply' && event.reply) {
     const chatId = event.notification.data?.chatId;
     const replyText = event.reply;
@@ -63,14 +61,18 @@ self.addEventListener('notificationclick', function (event) {
           if (!res.ok) {
             console.error('Failed to send reply from notification');
           }
+          event.notification.close();
         })
         .catch(function (err) {
           console.error('Error sending reply:', err);
+          event.notification.close();
         })
       );
     }
     return;
   }
+
+  event.notification.close();
 
   const urlToOpen = event.notification.data?.url || '/chat';
 
