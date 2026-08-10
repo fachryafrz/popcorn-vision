@@ -8,6 +8,7 @@ import { TooltipProvider } from "./ui/tooltip";
 import { PersonalizationProvider } from "./theme-provider";
 import { ConfirmProvider } from "./ui/confirm-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { NotificationProvider } from "./notification-provider";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -18,7 +19,10 @@ export function Providers({ children }: { children: ReactNode }) {
         <PersonalizationProvider>
           <ConfirmProvider>
             <TooltipProvider>
-              <NuqsAdapter>{children}</NuqsAdapter>
+              <NuqsAdapter>
+                {children}
+                <NotificationProvider />
+              </NuqsAdapter>
             </TooltipProvider>
           </ConfirmProvider>
         </PersonalizationProvider>

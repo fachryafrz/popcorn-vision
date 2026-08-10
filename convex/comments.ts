@@ -1,4 +1,5 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 import { Id } from "./_generated/dataModel";
@@ -181,6 +182,8 @@ export const addComment = mutation({
       createdAt: Date.now(),
     });
 
+    const commenterName = currentUser.name || currentUser.username || "Someone";
+
     // 1. Process Reply Notification
     if (args.parentId) {
       const parentComment = await ctx.db.get(args.parentId);
@@ -194,6 +197,15 @@ export const addComment = mutation({
           commentId,
           mediaId: args.mediaId,
           mediaType: args.mediaType,
+        });
+
+        // Schedule web push notification for comment reply
+        await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+          recipientUserId: parentComment.userId,
+          title: commenterName,
+          body: "replied to your comment.",
+          url: `/${args.mediaType}/${args.mediaId}`,
+          icon: currentUser.image || "/favicon/android-chrome-192x192.png",
         });
       }
     }
@@ -225,6 +237,15 @@ export const addComment = mutation({
           commentId,
           mediaId: args.mediaId,
           mediaType: args.mediaType,
+        });
+
+        // Schedule web push notification for mention
+        await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+          recipientUserId: targetUser.userId,
+          title: commenterName,
+          body: "mentioned you in a comment.",
+          url: `/${args.mediaType}/${args.mediaId}`,
+          icon: currentUser.image || "/favicon/android-chrome-192x192.png",
         });
       }
     }
