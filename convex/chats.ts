@@ -591,6 +591,8 @@ export const sendMessage = mutation({
             body: pushBody,
             url: `/chat?id=${args.chatId}`,
             icon: senderProfile?.image || "/favicon/android-chrome-192x192.png",
+            chatId: args.chatId,
+            notificationType: "chat_message",
           });
         }
       }

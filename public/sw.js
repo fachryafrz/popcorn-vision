@@ -5,15 +5,35 @@ self.addEventListener('push', function (event) {
   try {
     const data = event.data.json();
     const title = data.title || 'New Message';
+
+    const absoluteIcon = data.icon 
+      ? (data.icon.startsWith('http') ? data.icon : `${self.location.origin}${data.icon}`)
+      : `${self.location.origin}/favicon/android-chrome-192x192.png`;
+    
+    const absoluteBadge = `${self.location.origin}/favicon/favicon-32x32.png`;
+
     const options = {
       body: data.body || 'You received a new message.',
-      icon: data.icon || '/favicon/android-chrome-192x192.png',
-      badge: '/favicon/favicon-32x32.png',
+      icon: absoluteIcon,
+      badge: absoluteBadge,
       data: {
         url: data.url || '/chat',
+        chatId: data.chatId,
+        notificationType: data.notificationType,
       },
       vibrate: [100, 50, 100],
     };
+
+    if (data.notificationType === 'chat_message' && data.chatId) {
+      options.actions = [
+        {
+          action: 'reply',
+          type: 'text',
+          title: 'Reply',
+          placeholder: 'Type a message...',
+        }
+      ];
+    }
 
     event.waitUntil(
       self.registration.showNotification(title, options)
@@ -25,6 +45,32 @@ self.addEventListener('push', function (event) {
 
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
+
+  if (event.action === 'reply' && event.reply) {
+    const chatId = event.notification.data?.chatId;
+    const replyText = event.reply;
+
+    if (chatId) {
+      event.waitUntil(
+        fetch('/api/chat/reply', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ chatId, content: replyText }),
+        })
+        .then(function (res) {
+          if (!res.ok) {
+            console.error('Failed to send reply from notification');
+          }
+        })
+        .catch(function (err) {
+          console.error('Error sending reply:', err);
+        })
+      );
+    }
+    return;
+  }
 
   const urlToOpen = event.notification.data?.url || '/chat';
 
