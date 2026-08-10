@@ -14,6 +14,10 @@ import {
   Heart,
   Star,
   UserX,
+  MessageSquare,
+  Activity,
+  Calendar,
+  Film,
 } from "lucide-react";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
@@ -23,7 +27,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import LogWatchModal from "@/components/log-watch-modal";
-import ContinueWatchingCard from "@/components/continue-watching-card";
+import ContinueWatchingCard, { ContinueWatchingItem } from "@/components/continue-watching-card";
 import { Play } from "lucide-react";
 import { useConfirm } from "@/components/ui/confirm-provider";
 
@@ -39,11 +43,142 @@ import {
   GridMediaItem,
 } from "@/components/profile/media-grid-tab";
 import { InsightsTab } from "@/components/profile/insights-tab";
+import ActivityCard from "@/components/activity-card";
+import Link from "next/link";
+
+const tmdbCache = new Map<string, { title: string; posterPath: string }>();
+const pendingRequests = new Map<string, Promise<{ title: string; posterPath: string }>>();
+
+async function fetchTMDBDetails(mediaType: string, mediaId: string, fallbackTitle: string, fallbackPoster: string): Promise<{ title: string; posterPath: string }> {
+  const cacheKey = `${mediaType}-${mediaId}`;
+  if (tmdbCache.has(cacheKey)) {
+    return tmdbCache.get(cacheKey)!;
+  }
+  if (pendingRequests.has(cacheKey)) {
+    return pendingRequests.get(cacheKey)!;
+  }
+
+  const promise = (async () => {
+    try {
+      const res = await fetch(`/api/tmdb/media/${mediaType}/${mediaId}`);
+      if (res.ok) {
+        const data = await res.json();
+        const details = data.details || data;
+        const result = {
+          title: details.title || details.name || fallbackTitle,
+          posterPath: details.poster_path || fallbackPoster || "",
+        };
+        tmdbCache.set(cacheKey, result);
+        return result;
+      }
+    } catch (e) {
+      console.error("Failed to fetch TMDB details:", e);
+    } finally {
+      pendingRequests.delete(cacheKey);
+    }
+    return { title: fallbackTitle, posterPath: fallbackPoster || "" };
+  })();
+
+  pendingRequests.set(cacheKey, promise);
+  return promise;
+}
+
+interface ActivityDoc {
+  _id: string;
+  userId: string;
+  type: string;
+  mediaId: string;
+  mediaType: string;
+  title: string;
+  posterPath: string;
+  rating?: number;
+  review?: string;
+  season?: number;
+  createdAt: number;
+  user: {
+    name: string;
+    username: string;
+    image?: string;
+    role?: string;
+  } | null;
+  likesCount: number;
+  commentsCount: number;
+  isLikedByMe: boolean;
+}
 
 interface UserProfilePageProps {
   params: Promise<{
     username: string;
   }>;
+}
+
+function CommentItem({ item }: { item: any }) {
+  const [mediaTitle, setMediaTitle] = useState(item.mediaTitle);
+  const [mediaPosterPath, setMediaPosterPath] = useState(item.mediaPosterPath);
+
+  useEffect(() => {
+    if (item.mediaTitle === "Movie / Show" || !item.mediaPosterPath) {
+      fetchTMDBDetails(item.mediaType, item.mediaId, item.mediaTitle, item.mediaPosterPath).then((data) => {
+        setMediaTitle(data.title);
+        setMediaPosterPath(data.posterPath);
+      });
+    }
+  }, [item.mediaId, item.mediaType, item.mediaTitle, item.mediaPosterPath]);
+
+  return (
+    <div className="flex gap-4 p-5 rounded-2xl border border-zinc-900 bg-zinc-900/10 backdrop-blur-md">
+      <Link href={`/${item.mediaType}/${item.mediaId}`} className="relative h-24 w-16 shrink-0 overflow-hidden rounded-xl border border-zinc-800 shadow-md">
+        {mediaPosterPath ? (
+          <img
+            src={`https://image.tmdb.org/t/p/w200${mediaPosterPath}`}
+            alt={mediaTitle}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-zinc-900 text-zinc-500">
+            <MessageSquare className="h-5 w-5" />
+          </div>
+        )}
+      </Link>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 border-b border-zinc-900/60 pb-2">
+          <div>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block">
+              Comments on
+            </span>
+            <Link href={`/${item.mediaType}/${item.mediaId}`} className="hover:text-primary block text-sm font-black text-white truncate">
+              {mediaTitle}
+            </Link>
+          </div>
+          <span className="rounded-full bg-zinc-900/80 px-2.5 py-0.5 text-[9px] font-bold text-zinc-400 uppercase tracking-wider">
+            {item.comments.length} {item.comments.length > 1 ? "comments" : "comment"}
+          </span>
+        </div>
+        
+        {/* List of comments for this media */}
+        <div className="mt-3 space-y-3">
+          {item.comments.map((comment: any) => (
+            <div key={comment._id} className="relative bg-zinc-950/20 p-3 rounded-xl border border-zinc-900/40">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-xs leading-relaxed text-zinc-300 whitespace-pre-wrap flex-1">
+                  {comment.content}
+                </p>
+                {comment.likeCount > 0 && (
+                  <div className="flex items-center gap-1 text-[10px] font-black text-rose-500 shrink-0">
+                    <Heart className="h-3 w-3 fill-current" />
+                    <span>{comment.likeCount}</span>
+                  </div>
+                )}
+              </div>
+              <span className="mt-1.5 block text-[9px] font-bold text-zinc-500">
+                {new Date(comment.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function UserProfilePage({ params }: UserProfilePageProps) {
@@ -76,7 +211,9 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     | "favorites"
     | "ratings"
     | "diary"
-    | "continue-watching";
+    | "continue-watching"
+    | "comments"
+    | "activity";
   const [showFriendsDialog, setShowFriendsDialog] = useState(false);
   const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -283,6 +420,20 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       : "skip",
   ) as DiaryItem[] | undefined;
 
+  const userComments = useQuery(
+    api.comments.getUserComments,
+    targetUserId && !showLockScreen && activeTab === "comments"
+      ? { userId: targetUserId }
+      : "skip",
+  );
+
+  const userActivities = useQuery(
+    api.activities.getUserActivities,
+    targetUserId && !showLockScreen && activeTab === "activity"
+      ? { userId: targetUserId }
+      : "skip",
+  );
+
   const continueWatching = useQuery(
     api.continueWatching.getProgress,
     isOwner &&
@@ -291,6 +442,50 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       ? {}
       : "skip",
   );
+
+  const groupedComments = useMemo(() => {
+    if (!userComments) return [];
+
+    const groups: {
+      key: string;
+      mediaId: string;
+      mediaType: string;
+      mediaTitle: string;
+      mediaPosterPath: string;
+      comments: {
+        _id: string;
+        content: string;
+        createdAt: number;
+        likeCount: number;
+      }[];
+    }[] = [];
+
+    const groupMap = new Map<string, typeof groups[number]>();
+
+    for (const item of userComments) {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      if (!groupMap.has(key)) {
+        const g = {
+          key,
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          mediaTitle: item.mediaTitle,
+          mediaPosterPath: item.mediaPosterPath,
+          comments: [],
+        };
+        groupMap.set(key, g);
+        groups.push(g);
+      }
+      groupMap.get(key)!.comments.push({
+        _id: item._id,
+        content: item.content,
+        createdAt: item.createdAt,
+        likeCount: item.likeCount || 0,
+      });
+    }
+
+    return groups;
+  }, [userComments]);
 
   const handleBlockAction = async () => {
     if (!isLoggedIn) {
@@ -565,6 +760,16 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
       label: "Ratings",
       visible: showRatingsTab,
     },
+    {
+      id: "comments" as const,
+      label: "Comments",
+      visible: !showLockScreen,
+    },
+    {
+      id: "activity" as const,
+      label: "Activity",
+      visible: !showLockScreen,
+    },
   ].filter((t) => t.visible);
 
   return (
@@ -652,7 +857,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
             ) : (
               <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4">
                 {continueWatching.length > 0 ? (
-                  continueWatching.map((item) => (
+                  continueWatching.map((item: ContinueWatchingItem) => (
                     <ContinueWatchingCard key={item._id} item={item} />
                   ))
                 ) : (
@@ -661,6 +866,44 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
                     <p className="text-sm text-zinc-500">
                       Your Continue Watching list is empty.
                     </p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : activeTab === "comments" ? (
+            userComments === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="mx-auto max-w-3xl space-y-6">
+                {groupedComments.length > 0 ? (
+                  groupedComments.map((item: any) => (
+                    <CommentItem key={item.key} item={item} />
+                  ))
+                ) : (
+                  <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <MessageSquare className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">This user hasn't posted any comments yet.</p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : activeTab === "activity" ? (
+            userActivities === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="mx-auto max-w-3xl space-y-6">
+                {userActivities.length > 0 ? (
+                  userActivities.map((act: ActivityDoc) => (
+                    <ActivityCard key={act._id} activity={act as any} />
+                  ))
+                ) : (
+                  <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <Activity className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">No activity logged yet.</p>
                   </div>
                 )}
               </div>

@@ -10,6 +10,7 @@
 
 import type * as activities from "../activities.js";
 import type * as auth from "../auth.js";
+import type * as backfill from "../backfill.js";
 import type * as chats from "../chats.js";
 import type * as comments from "../comments.js";
 import type * as continueWatching from "../continueWatching.js";
@@ -35,6 +36,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
   auth: typeof auth;
+  backfill: typeof backfill;
   chats: typeof chats;
   comments: typeof comments;
   continueWatching: typeof continueWatching;

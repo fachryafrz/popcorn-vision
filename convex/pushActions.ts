@@ -13,6 +13,8 @@ export const sendPushNotification = internalAction({
     body: v.string(),
     url: v.optional(v.string()),
     icon: v.optional(v.string()),
+    chatId: v.optional(v.string()),
+    notificationType: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const publicKey = process.env.VAPID_PUBLIC_KEY;
@@ -41,6 +43,8 @@ export const sendPushNotification = internalAction({
       body: args.body,
       url: args.url || "/chat",
       icon: args.icon || "/favicon/android-chrome-192x192.png",
+      chatId: args.chatId,
+      notificationType: args.notificationType,
     });
 
     for (const subRecord of subscriptions) {

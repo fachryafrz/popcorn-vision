@@ -407,3 +407,54 @@ export async function deleteActivitiesByTypeAndMedia(
   }
 }
 
+export const getUserActivities = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const activities = await ctx.db
+      .query("activities")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const enriched = [];
+    const userProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", args.userId))
+      .first();
+
+    const currentUser = await getAuthedUser(ctx);
+
+    for (const activity of activities) {
+      const likes = await ctx.db
+        .query("activityLikes")
+        .withIndex("by_activity", (q) => q.eq("activityId", activity._id))
+        .collect();
+
+      const comments = await ctx.db
+        .query("activityComments")
+        .withIndex("by_activity", (q) => q.eq("activityId", activity._id))
+        .collect();
+
+      const isLikedByMe = currentUser
+        ? likes.some((l) => l.userId === currentUser.userId)
+        : false;
+
+      enriched.push({
+        ...activity,
+        user: userProfile ? {
+          name: userProfile.name,
+          username: userProfile.username,
+          image: userProfile.image,
+          role: userProfile.role,
+        } : null,
+        likesCount: likes.length,
+        commentsCount: comments.length,
+        isLikedByMe,
+      });
+    }
+
+    // Sort by newest first
+    enriched.sort((a, b) => b.createdAt - a.createdAt);
+    return enriched;
+  },
+});
+

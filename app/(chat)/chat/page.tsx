@@ -8,7 +8,7 @@ import {
   useCallback,
   Suspense,
 } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
@@ -36,6 +36,7 @@ import { siteConfig } from "@/config/site";
 
 function ChatPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const confirm = useConfirm();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -109,6 +110,31 @@ function ChatPageContent() {
       sessionStorage.removeItem("active_chat_id");
     }
   }, [selectedChatId]);
+
+  const userIdParam = searchParams.get("userId");
+
+  // Auto-start private chat if userId query param is provided
+  useEffect(() => {
+    if (userIdParam && isLoggedIn) {
+      const initChat = async () => {
+        try {
+          const newChatId = await createOrGetPrivateChat({
+            friendUserId: userIdParam,
+          });
+          setSelectedChatId(newChatId);
+          // Clean up the URL query param
+          const url = new URL(window.location.href);
+          url.searchParams.delete("userId");
+          router.replace(url.pathname + url.search);
+        } catch (err: unknown) {
+          console.error("Failed to start DM from query param:", err);
+          const errorObj = err as { message?: string };
+          toast.error(errorObj.message || "Failed to start chat session.");
+        }
+      };
+      initChat();
+    }
+  }, [userIdParam, isLoggedIn, createOrGetPrivateChat, router]);
 
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");

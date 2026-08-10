@@ -108,6 +108,8 @@ export default defineSchema({
     parentId: v.optional(v.id("comments")),
     createdAt: v.number(),
     updatedAt: v.optional(v.number()),
+    mediaTitle: v.optional(v.string()),
+    mediaPosterPath: v.optional(v.string()),
   })
     .index("by_media", ["mediaId", "mediaType"])
     .index("by_parent", ["parentId"])

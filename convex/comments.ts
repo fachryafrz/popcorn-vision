@@ -1,4 +1,4 @@
-import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx, action, internalMutation, internalQuery } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
@@ -164,6 +164,8 @@ export const addComment = mutation({
     mediaType: v.string(),
     content: v.string(),
     parentId: v.optional(v.id("comments")),
+    mediaTitle: v.optional(v.string()),
+    mediaPosterPath: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const currentUser = await ensureActiveUser(ctx);
@@ -180,6 +182,8 @@ export const addComment = mutation({
       content: trimmedContent,
       parentId: args.parentId,
       createdAt: Date.now(),
+      mediaTitle: args.mediaTitle,
+      mediaPosterPath: args.mediaPosterPath,
     });
 
     const commenterName = currentUser.name || currentUser.username || "Someone";
@@ -365,5 +369,76 @@ export const toggleLikeComment = mutation({
       });
       return { liked: true };
     }
+  },
+});
+
+// Internal helper to find media info (title and posterPath) from existing DB records
+async function findMediaInfo(ctx: QueryCtx, userId: string, mediaId: string, mediaType: string) {
+  // Try diary
+  const d = await ctx.db
+    .query("diary")
+    .withIndex("by_user_media", (q) => q.eq("userId", userId).eq("mediaId", mediaId).eq("mediaType", mediaType))
+    .first();
+  if (d) return { title: d.title, posterPath: d.posterPath };
+
+  // Try ratings
+  const r = await ctx.db
+    .query("ratings")
+    .withIndex("by_media", (q) => q.eq("mediaId", mediaId).eq("mediaType", mediaType))
+    .first();
+  if (r) return { title: r.title, posterPath: r.posterPath };
+
+  // Try favorites
+  const f = await ctx.db
+    .query("favorites")
+    .withIndex("by_user_media", (q) => q.eq("userId", userId).eq("mediaId", mediaId).eq("mediaType", mediaType))
+    .first();
+  if (f) return { title: f.title, posterPath: f.posterPath };
+
+  // Try watchlist
+  const w = await ctx.db
+    .query("watchlist")
+    .withIndex("by_user_media", (q) => q.eq("userId", userId).eq("mediaId", mediaId).eq("mediaType", mediaType))
+    .first();
+  if (w) return { title: w.title, posterPath: w.posterPath };
+
+  return { title: "Movie / Show", posterPath: "" };
+}
+
+export const getUserComments = query({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const commentsList = await ctx.db
+      .query("comments")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const commentsWithMeta = [];
+    for (const comment of commentsList) {
+      let mediaTitle = comment.mediaTitle;
+      let mediaPosterPath = comment.mediaPosterPath;
+
+      if (!mediaTitle || !mediaPosterPath) {
+        const mediaInfo = await findMediaInfo(ctx, comment.userId, comment.mediaId, comment.mediaType);
+        if (!mediaTitle) mediaTitle = mediaInfo.title;
+        if (!mediaPosterPath) mediaPosterPath = mediaInfo.posterPath;
+      }
+      
+      const likes = await ctx.db
+        .query("commentLikes")
+        .withIndex("by_comment", (q) => q.eq("commentId", comment._id))
+        .collect();
+
+      commentsWithMeta.push({
+        ...comment,
+        mediaTitle,
+        mediaPosterPath,
+        likeCount: likes.length,
+      });
+    }
+
+    // Sort by newest first
+    commentsWithMeta.sort((a, b) => b.createdAt - a.createdAt);
+    return commentsWithMeta;
   },
 });
