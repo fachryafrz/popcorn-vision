@@ -22,28 +22,39 @@ export default function NotificationPromptModal({
   } = usePushNotifications(isLoggedIn);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isPermissionReset, setIsPermissionReset] = useState<boolean>(false);
 
-  const isPermissionReset = permission === "default" && isSubscribed;
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const subscribedOnDevice =
+        localStorage.getItem("push_subscribed_on_device") === "true";
+      setIsPermissionReset(
+        permission === "default" && isSubscribed && subscribedOnDevice
+      );
+    }
+  }, [permission, isSubscribed]);
 
   useEffect(() => {
     if (!isLoggedIn || !isSupported) return;
 
-    // Check if prompt was dismissed for regular subscription prompt
+    // Check if prompt was dismissed
     const isDismissed =
       localStorage.getItem("dismissed_push_prompt") === "true";
 
+    if (isDismissed) return;
+
     // Show modal if permission is default and either:
-    // 1. User reset permissions (isPermissionReset) - ignore dismissed state since this is a synchronization issue
-    // 2. Regular prompt: user not subscribed and hasn't dismissed yet
+    // 1. User reset permissions on this device (isPermissionReset)
+    // 2. Regular prompt: user not subscribed
     if (permission === "default") {
-      if (isSubscribed || !isDismissed) {
+      if (isPermissionReset || !isSubscribed) {
         const timer = setTimeout(() => {
           setIsOpen(true);
         }, 2000);
         return () => clearTimeout(timer);
       }
     }
-  }, [isLoggedIn, isSupported, permission, isSubscribed]);
+  }, [isLoggedIn, isSupported, permission, isSubscribed, isPermissionReset]);
 
   const handleEnable = async () => {
     const success = await subscribe();
@@ -55,6 +66,7 @@ export default function NotificationPromptModal({
   const handleDisableBackend = async () => {
     const success = await unsubscribe();
     if (success) {
+      localStorage.setItem("dismissed_push_prompt", "true");
       setIsOpen(false);
     }
   };
