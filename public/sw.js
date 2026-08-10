@@ -49,6 +49,9 @@ self.addEventListener('notificationclick', function (event) {
     const replyText = event.reply;
 
     if (chatId) {
+      // Close the notification immediately to dismiss the UI and loading spinner
+      event.notification.close();
+
       event.waitUntil(
         fetch('/api/chat/reply', {
           method: 'POST',
@@ -61,13 +64,13 @@ self.addEventListener('notificationclick', function (event) {
           if (!res.ok) {
             console.error('Failed to send reply from notification');
           }
-          event.notification.close();
         })
         .catch(function (err) {
           console.error('Error sending reply:', err);
-          event.notification.close();
         })
       );
+    } else {
+      event.notification.close();
     }
     return;
   }
