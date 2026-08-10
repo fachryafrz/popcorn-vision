@@ -9,7 +9,6 @@ import {
   Suspense,
   useMemo,
 } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryState } from "nuqs";
 import { searchMedia, discoverMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
@@ -56,6 +55,12 @@ import {
 } from "@/components/ui/sheet";
 import { SearchType, SearchUserResult } from "./search/types";
 import { ResultsSection } from "./search/results-section";
+
+interface RegionItem {
+  name: string;
+  "alpha-2": string;
+  [key: string]: string | undefined;
+}
 
 interface SearchClientProps {
   initialQuery: string;
@@ -116,8 +121,6 @@ export default function SearchClient({
   initialLanguage = "",
   initialKeywords = "",
 }: SearchClientProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const {
     open: openAuth,
     isOpen: isAuthOpen,
@@ -127,8 +130,20 @@ export default function SearchClient({
   const isLoggedIn = !!session.data?.user;
   const currentUser = useQuery(api.users.getCurrentUser);
 
-  // Detect country from browser locale for provider filtering
-  const [userCountryCode, setUserCountryCode] = useState(() => {
+  // Detect country from browser locale or logged-in user profile country name mapping
+  const userCountryCode = useMemo(() => {
+    // 1. Sync country code with logged-in user profile country name mapping
+    const userCountry = currentUser?.country;
+    if (userCountry) {
+      const found = (regionsData as RegionItem[]).find(
+        (r) => r.name.toLowerCase() === userCountry.toLowerCase()
+      );
+      if (found && found["alpha-2"]) {
+        return found["alpha-2"].toUpperCase();
+      }
+    }
+
+    // 2. Fallback to browser locale
     let detectedCountry = "US";
     if (typeof window !== "undefined" && typeof navigator !== "undefined") {
       const locale =
@@ -141,19 +156,6 @@ export default function SearchClient({
       }
     }
     return detectedCountry;
-  });
-
-  // Sync country code with logged-in user profile country name mapping
-  useEffect(() => {
-    const userCountry = currentUser?.country;
-    if (userCountry) {
-      const found = (regionsData as any[]).find(
-        (r) => r.name.toLowerCase() === userCountry.toLowerCase()
-      );
-      if (found && found["alpha-2"]) {
-        setUserCountryCode(found["alpha-2"].toUpperCase());
-      }
-    }
   }, [currentUser]);
   const [genres, setGenres] = useState<
     { id: number; name: string; types?: ("movie" | "tv")[] }[]
@@ -200,7 +202,7 @@ export default function SearchClient({
   const [query, setQuery] = useQueryState("q", { defaultValue: "" });
   const [inputValue, setInputValue] = useState(initialQuery);
   const [activeType, setActiveType] = useQueryState("type", {
-    defaultValue: "movie",
+    defaultValue: initialType,
   });
   const [results, setResults] = useState<TMDBMedia[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -318,11 +320,9 @@ export default function SearchClient({
   };
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const runtimeDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const actorDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const crewDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const companyDebounceRef = useRef<NodeJS.Timeout | null>(null);
-  const ratingDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const keywordsDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -462,7 +462,6 @@ export default function SearchClient({
   const handleTypeChange = (type: SearchType) => {
     setActiveType(type);
 
-    let nextGenre = genre;
     if (searchMode === "discover" && genre && type !== "all") {
       const currentGenreObj = genres.find((g) => String(g.id) === genre);
       if (
@@ -470,7 +469,6 @@ export default function SearchClient({
         currentGenreObj.types &&
         !currentGenreObj.types.includes(type as "movie" | "tv")
       ) {
-        nextGenre = "";
         setGenre("");
       }
     }
