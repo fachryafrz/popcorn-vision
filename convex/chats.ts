@@ -1,4 +1,5 @@
 import { mutation, query, MutationCtx, QueryCtx } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
 
@@ -182,6 +183,13 @@ export const createGroupChat = mutation({
       lastReadAt: Date.now(),
     });
 
+    // Fetch creator details for push notifications
+    const creatorProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+      .first();
+    const creatorName = creatorProfile?.name || creatorProfile?.username || "Someone";
+
     // Create pending invitations for all invited friends
     for (const inviteeId of args.invitedUserIds) {
       await ctx.db.insert("notifications", {
@@ -192,6 +200,15 @@ export const createGroupChat = mutation({
         createdAt: Date.now(),
         mediaId: String(chatId),
         mediaType: "chat",
+      });
+
+      // Schedule web push notification
+      await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+        recipientUserId: inviteeId,
+        title: creatorName,
+        body: `invited you to join the group ${cleanGroupName}.`,
+        url: `/chat?id=${chatId}`,
+        icon: creatorProfile?.image || "/favicon/android-chrome-192x192.png",
       });
     }
 
@@ -263,6 +280,13 @@ export const inviteToGroupChat = mutation({
 
     if (!myMem) throw new Error("You must be a member to invite others");
 
+    // Fetch inviter details for push notifications
+    const inviterProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+      .first();
+    const inviterName = inviterProfile?.name || inviterProfile?.username || "Someone";
+
     for (const userId of args.userIds) {
       // 1. Verify friendship
       const isFriend = await verifyFriendshipAndBlocks(ctx, currentUserId, userId);
@@ -294,6 +318,15 @@ export const inviteToGroupChat = mutation({
             createdAt: Date.now(),
             mediaId: String(args.chatId),
             mediaType: "chat",
+          });
+
+          // Schedule web push notification
+          await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+            recipientUserId: userId,
+            title: inviterName,
+            body: `invited you to join the group ${chat.name || "Chat"}.`,
+            url: `/chat?id=${args.chatId}`,
+            icon: inviterProfile?.image || "/favicon/android-chrome-192x192.png",
           });
         }
       }
@@ -514,6 +547,18 @@ export const sendMessage = mutation({
       lastReadAt: Date.now(),
     });
 
+    // Fetch sender details for push notification payload
+    const senderProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+      .first();
+
+    const senderName = senderProfile?.name || senderProfile?.username || "Someone";
+    const pushTitle = chat.type === "group" ? (chat.name || "Group Chat") : senderName;
+    const pushBody = chat.type === "group"
+      ? `${senderName}: ${args.content || "Sent an attachment"}`
+      : (args.content || "Sent an attachment");
+
     // Create notifications for all other members in the conversation session
     const otherMembers = await ctx.db
       .query("chatMemberships")
@@ -537,6 +582,15 @@ export const sendMessage = mutation({
             mediaId: args.chatId,
             mediaType: "chat",
             messageId,
+          });
+
+          // Schedule web push notification
+          await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+            recipientUserId: mem.userId,
+            title: pushTitle,
+            body: pushBody,
+            url: `/chat?id=${args.chatId}`,
+            icon: senderProfile?.image || "/favicon/android-chrome-192x192.png",
           });
         }
       }

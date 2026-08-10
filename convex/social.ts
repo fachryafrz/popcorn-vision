@@ -1,4 +1,5 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { Id } from "./_generated/dataModel";
 import { authComponent } from "./auth";
@@ -259,6 +260,13 @@ export const sendFriendRequest = mutation({
       createdAt: Date.now(),
     });
 
+    // Fetch sender details for push notification
+    const senderProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+      .first();
+    const senderName = senderProfile?.name || senderProfile?.username || "Someone";
+
     // Create Notification
     await ctx.db.insert("notifications", {
       userId: args.targetUserId,
@@ -266,6 +274,15 @@ export const sendFriendRequest = mutation({
       type: "friend_request",
       read: false,
       createdAt: Date.now(),
+    });
+
+    // Schedule web push notification
+    await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+      recipientUserId: args.targetUserId,
+      title: senderName,
+      body: "sent you a friend request.",
+      url: `/user/${senderProfile?.username || ""}`,
+      icon: senderProfile?.image || "/favicon/android-chrome-192x192.png",
     });
   },
 });
@@ -315,6 +332,22 @@ export const acceptFriendRequest = mutation({
       type: "friend_accepted",
       read: false,
       createdAt: Date.now(),
+    });
+
+    // Fetch acceptor (current user) details for push notification
+    const acceptorProfile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+      .first();
+    const acceptorName = acceptorProfile?.name || acceptorProfile?.username || "Someone";
+
+    // Schedule web push notification
+    await ctx.scheduler.runAfter(0, internal.pushActions.sendPushNotification, {
+      recipientUserId: args.targetUserId,
+      title: acceptorName,
+      body: "accepted your friend request.",
+      url: `/user/${acceptorProfile?.username || ""}`,
+      icon: acceptorProfile?.image || "/favicon/android-chrome-192x192.png",
     });
   },
 });

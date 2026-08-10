@@ -1,6 +1,7 @@
 import React from "react";
-import { Shield, Loader2, UserX } from "lucide-react";
+import { Shield, Loader2, UserX, Bell } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -13,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { BlockedUser } from "./types";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
 
 interface PrivacySectionProps {
   profilePrivacy: string;
@@ -59,6 +61,17 @@ export default function PrivacySection({
   blockedUsersList,
   handleUnblock,
 }: PrivacySectionProps) {
+  const { isSupported, isSubscribed, isLoading: pushLoading, subscribe, unsubscribe } =
+    usePushNotifications(true);
+
+  const handlePushToggle = async (checked: boolean) => {
+    if (checked) {
+      await subscribe();
+    } else {
+      await unsubscribe();
+    }
+  };
+
   return (
     <form onSubmit={handleUpdatePrivacy} className="space-y-6">
       <div>
@@ -71,6 +84,32 @@ export default function PrivacySection({
       </div>
 
       <div className="space-y-6">
+        {/* Push Notification Toggle Card */}
+        <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Bell className="h-5 w-5" />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-sm font-bold text-white">
+                Web Push Notifications
+              </span>
+              <span className="text-xs text-zinc-400">
+                Receive notification alerts directly in your browser when new chat messages arrive.
+              </span>
+              {!isSupported && (
+                <span className="mt-1 text-[10px] text-amber-500">
+                  *Your browser does not support Web Push notifications.
+                </span>
+              )}
+            </div>
+          </div>
+          <Switch
+            disabled={!isSupported || pushLoading}
+            checked={isSubscribed}
+            onCheckedChange={handlePushToggle}
+          />
+        </div>
         {/* Profile Privacy Dropdown */}
         <div className="relative">
           <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400 uppercase">

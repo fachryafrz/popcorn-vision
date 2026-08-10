@@ -19,6 +19,8 @@ import type * as emails from "../emails.js";
 import type * as exchangeRates from "../exchangeRates.js";
 import type * as favorites from "../favorites.js";
 import type * as http from "../http.js";
+import type * as push from "../push.js";
+import type * as pushActions from "../pushActions.js";
 import type * as ratings from "../ratings.js";
 import type * as social from "../social.js";
 import type * as users from "../users.js";
@@ -42,6 +44,8 @@ declare const fullApi: ApiFromModules<{
   exchangeRates: typeof exchangeRates;
   favorites: typeof favorites;
   http: typeof http;
+  push: typeof push;
+  pushActions: typeof pushActions;
   ratings: typeof ratings;
   social: typeof social;
   users: typeof users;

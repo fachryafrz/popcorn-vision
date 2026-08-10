@@ -328,4 +328,19 @@ export default defineSchema({
     rates: v.record(v.string(), v.number()), // e.g. { IDR: 16200, JPY: 155, ... }
     updatedAt: v.number(), // timestamp of last update
   }).index("by_base", ["base"]),
+
+  pushSubscriptions: defineTable({
+    userId: v.string(),
+    subscription: v.object({
+      endpoint: v.string(),
+      keys: v.object({
+        p256dh: v.string(),
+        auth: v.string(),
+      }),
+    }),
+    userAgent: v.optional(v.string()),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_endpoint", ["subscription.endpoint"]),
 });
