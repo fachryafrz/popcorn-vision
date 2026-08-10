@@ -93,6 +93,10 @@ export function usePushNotifications(isLoggedIn: boolean) {
         userAgent: navigator.userAgent,
       });
 
+      if (typeof window !== "undefined") {
+        localStorage.setItem("push_subscribed_on_device", "true");
+      }
+
       toast.success("Push notifications enabled!");
       return true;
     } catch (err: unknown) {
@@ -117,6 +121,10 @@ export function usePushNotifications(isLoggedIn: boolean) {
         await deleteSubscription({ endpoint: subscription.endpoint });
       } else {
         await deleteSubscription({});
+      }
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("push_subscribed_on_device");
       }
 
       toast.success("Push notifications disabled");
