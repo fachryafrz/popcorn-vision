@@ -24,16 +24,17 @@ self.addEventListener('push', function (event) {
       vibrate: [100, 50, 100],
     };
 
-    if (data.notificationType === 'chat_message' && data.chatId) {
-      options.actions = [
-        {
-          action: 'reply',
-          type: 'text',
-          title: 'Reply',
-          placeholder: 'Type a message...',
-        }
-      ];
-    }
+    // Disable quick reply action temporarily (on hold)
+    // if (data.notificationType === 'chat_message' && data.chatId) {
+    //   options.actions = [
+    //     {
+    //       action: 'reply',
+    //       type: 'text',
+    //       title: 'Reply',
+    //       placeholder: 'Type a message...',
+    //     }
+    //   ];
+    // }
 
     event.waitUntil(
       self.registration.showNotification(title, options)
