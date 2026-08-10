@@ -1,5 +1,5 @@
 import React from "react";
-import { Shield, Loader2, UserX, Bell } from "lucide-react";
+import { Shield, Loader2, UserX, Bell, AlertTriangle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
@@ -61,8 +61,10 @@ export default function PrivacySection({
   blockedUsersList,
   handleUnblock,
 }: PrivacySectionProps) {
-  const { isSupported, isSubscribed, isLoading: pushLoading, subscribe, unsubscribe } =
+  const { isSupported, permission, isSubscribed, isLoading: pushLoading, subscribe, unsubscribe } =
     usePushNotifications(true);
+
+  const isPermissionReset = permission === "default" && isSubscribed;
 
   const handlePushToggle = async (checked: boolean) => {
     if (checked) {
@@ -85,30 +87,72 @@ export default function PrivacySection({
 
       <div className="space-y-6">
         {/* Push Notification Toggle Card */}
-        <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4 shadow-sm">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Bell className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-sm font-bold text-white">
-                Web Push Notifications
-              </span>
-              <span className="text-xs text-zinc-400">
-                Receive notification alerts directly in your browser when new chat messages arrive.
-              </span>
-              {!isSupported && (
-                <span className="mt-1 text-[10px] text-amber-500">
-                  *Your browser does not support Web Push notifications.
+        <div className="space-y-3">
+          <div className="flex items-center justify-between rounded-2xl border border-primary/20 bg-primary/5 p-4 shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 aspect-square flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <Bell className="h-5 w-5" />
+              </div>
+              <div className="flex flex-col text-left">
+                <span className="text-sm font-bold text-white">
+                  Web Push Notifications
                 </span>
-              )}
+                <span className="text-xs text-zinc-400">
+                  Receive notification alerts directly in your browser when new chat messages arrive.
+                </span>
+                {!isSupported && (
+                  <span className="mt-1 text-[10px] text-amber-500">
+                    *Your browser does not support Web Push notifications.
+                  </span>
+                )}
+              </div>
             </div>
+            <Switch
+              disabled={!isSupported || pushLoading}
+              checked={isSubscribed}
+              onCheckedChange={handlePushToggle}
+            />
           </div>
-          <Switch
-            disabled={!isSupported || pushLoading}
-            checked={isSubscribed}
-            onCheckedChange={handlePushToggle}
-          />
+
+          {isPermissionReset && (
+            <div className="flex flex-col gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 aspect-square flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
+                  <AlertTriangle className="h-5 w-5 animate-pulse" />
+                </div>
+                <div className="flex flex-col text-left">
+                  <span className="text-sm font-bold text-white">Sync Notifications</span>
+                  <span className="text-xs text-zinc-400">
+                    You reset browser notification permissions, but your account is still registered to receive them. Would you like to re-enable them or clear the registered data?
+                  </span>
+                </div>
+              </div>
+              <div className="flex w-full gap-3 mt-1 pl-12">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={async () => {
+                    await unsubscribe();
+                  }}
+                  disabled={pushLoading}
+                  className="border-zinc-800 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 h-9 flex-1 rounded-xl text-xs font-semibold text-zinc-300 transition-all"
+                >
+                  Disable in App
+                </Button>
+
+                <Button
+                  type="button"
+                  onClick={async () => {
+                    await subscribe();
+                  }}
+                  disabled={pushLoading}
+                  className="bg-amber-500 hover:bg-amber-400 text-black h-9 flex-1 rounded-xl text-xs font-bold transition-all"
+                >
+                  Re-enable
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
         {/* Profile Privacy Dropdown */}
         <div className="relative">
