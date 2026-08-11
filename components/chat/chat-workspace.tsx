@@ -164,7 +164,7 @@ export default function ChatWorkspace({
           ) : (
             <Link
               href={`/@${activeChat.friend?.username}`}
-              className="flex items-center gap-3 hover:opacity-85 transition-opacity"
+              className="flex items-center gap-3 transition-opacity hover:opacity-85"
             >
               <div className="relative">
                 <Avatar className="h-9 w-9 shrink-0 border border-zinc-800">
@@ -259,15 +259,24 @@ export default function ChatWorkspace({
             const isPrevSame =
               index > 0 &&
               filteredMessages[index - 1].senderId === msg.senderId &&
-              moment(filteredMessages[index - 1].createdAt).isSame(msg.createdAt, "day");
+              moment(filteredMessages[index - 1].createdAt).isSame(
+                msg.createdAt,
+                "day",
+              );
             const isNextSame =
               index < filteredMessages.length - 1 &&
               filteredMessages[index + 1].senderId === msg.senderId &&
-              moment(filteredMessages[index + 1].createdAt).isSame(msg.createdAt, "day");
+              moment(filteredMessages[index + 1].createdAt).isSame(
+                msg.createdAt,
+                "day",
+              );
             const showAvatar = !isPrevSame;
             const isNewDay =
               index === 0 ||
-              !moment(filteredMessages[index - 1].createdAt).isSame(msg.createdAt, "day");
+              !moment(filteredMessages[index - 1].createdAt).isSame(
+                msg.createdAt,
+                "day",
+              );
 
             return (
               <React.Fragment key={msg._id}>
@@ -290,303 +299,316 @@ export default function ChatWorkspace({
                     setActiveContextMenuMessageId(open ? msg._id : null);
                   }}
                 >
-                <ContextMenuTrigger
-                  className={cn(
-                    "block w-full rounded-2xl px-3 transition-all duration-300",
-                    isPrevSame ? "mt-0.5 py-0.5" : "mt-3 py-1",
-                    activeContextMenuMessageId === msg._id &&
-                      "scale-[1.01] bg-white/10 shadow-lg",
-                  )}
-                >
-                  <div
+                  <ContextMenuTrigger
                     className={cn(
-                      "group/msg relative flex max-w-[85%] gap-3 sm:max-w-[70%]",
-                      isMe ? "ml-auto flex-row-reverse" : "mr-auto",
+                      "block w-full rounded-2xl px-3 transition-all duration-300",
+                      isPrevSame ? "mt-0.5 py-0.5" : "mt-3 py-1",
+                      activeContextMenuMessageId === msg._id &&
+                        "scale-[1.01] bg-white/10 shadow-lg",
                     )}
                   >
-                    {/* Message Avatar */}
-                    {activeChat?.type === "group" && (
-                      <div className={cn("w-8 shrink-0", isMe && "hidden")}>
-                        {showAvatar && !isMe && (
-                          <Avatar className="h-8 w-8 border border-zinc-800">
-                            {msg.senderImage && (
-                              <AvatarImage
-                                src={msg.senderImage}
-                                alt={msg.senderName}
-                                className="object-cover"
-                              />
-                            )}
-                            <AvatarFallback className="bg-zinc-900 text-[10px] font-bold text-zinc-300">
-                              {msg.senderName.charAt(0).toUpperCase()}
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Message Balloon */}
-                    <div className="flex max-w-full flex-col gap-1">
-                      {showAvatar && !isMe && activeChat?.type === "group" && (
-                        <span className="pl-1 text-left text-[9px] font-bold text-zinc-500">
-                          {msg.senderName}
-                        </span>
+                    <div
+                      className={cn(
+                        "group/msg relative flex max-w-[85%] gap-3 sm:max-w-[70%]",
+                        isMe ? "ml-auto flex-row-reverse" : "mr-auto",
+                      )}
+                    >
+                      {/* Message Avatar */}
+                      {activeChat?.type === "group" && (
+                        <div className={cn("w-8 shrink-0", isMe && "hidden")}>
+                          {showAvatar && !isMe && (
+                            <Avatar className="h-8 w-8 border border-zinc-800">
+                              {msg.senderImage && (
+                                <AvatarImage
+                                  src={msg.senderImage}
+                                  alt={msg.senderName}
+                                  className="object-cover"
+                                />
+                              )}
+                              <AvatarFallback className="bg-zinc-900 text-[10px] font-bold text-zinc-300">
+                                {msg.senderName.charAt(0).toUpperCase()}
+                              </AvatarFallback>
+                            </Avatar>
+                          )}
+                        </div>
                       )}
 
+                      {/* Message Balloon */}
                       <div
                         className={cn(
-                          "flex max-w-full items-center gap-2",
-                          isMe ? "flex-row-reverse" : "flex-row",
+                          "flex max-w-full flex-col gap-1",
+                          isMe ? "items-end" : "items-start",
                         )}
                       >
+                        {showAvatar &&
+                          !isMe &&
+                          activeChat?.type === "group" && (
+                            <span className="pl-1 text-left text-[9px] font-bold text-zinc-500">
+                              {msg.senderName}
+                            </span>
+                          )}
+
                         <div
                           className={cn(
-                            "relative max-w-full shrink-0 p-3.5 text-left text-xs transition-all duration-300",
-                            isMe
-                              ? cn(
-                                  "bg-primary text-white",
-                                  !isPrevSame &&
-                                    !isNextSame &&
-                                    "rounded-2xl rounded-br-[4px]",
-                                  !isPrevSame &&
-                                    isNextSame &&
-                                    "rounded-2xl rounded-br-[4px]",
-                                  isPrevSame &&
-                                    isNextSame &&
-                                    "rounded-l-2xl rounded-r-[4px]",
-                                  isPrevSame &&
-                                    !isNextSame &&
-                                    "rounded-2xl rounded-tr-[4px] rounded-br-[4px]",
-                                )
-                              : cn(
-                                  "border-zinc-850/60 border bg-zinc-900 text-zinc-200",
-                                  !isPrevSame &&
-                                    !isNextSame &&
-                                    "rounded-2xl rounded-bl-[4px]",
-                                  !isPrevSame &&
-                                    isNextSame &&
-                                    "rounded-2xl rounded-bl-[4px]",
-                                  isPrevSame &&
-                                    isNextSame &&
-                                    "rounded-l-[4px] rounded-r-2xl",
-                                  isPrevSame &&
-                                    !isNextSame &&
-                                    "rounded-2xl rounded-tl-[4px] rounded-bl-[4px]",
-                                ),
+                            "flex max-w-full items-center gap-2",
+                            isMe ? "flex-row-reverse" : "flex-row",
                           )}
                         >
-                          {/* Main Text Content */}
-                          {editingMessageId === msg._id ? (
-                            <div className="flex max-w-full min-w-[180px] flex-col gap-2">
-                              <textarea
-                                value={editingText}
-                                onChange={(e) => setEditingText(e.target.value)}
-                                className="focus:border-primary/50 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-xs text-white outline-hidden"
-                                rows={2}
-                                autoFocus
-                              />
-                              <div className="flex justify-end gap-1.5">
+                          <div
+                            className={cn(
+                              "relative max-w-full shrink-0 p-3.5 text-left text-xs transition-all duration-300",
+                              isMe
+                                ? cn(
+                                    "bg-primary text-white",
+                                    !isPrevSame &&
+                                      !isNextSame &&
+                                      "rounded-2xl rounded-br-[4px]",
+                                    !isPrevSame &&
+                                      isNextSame &&
+                                      "rounded-2xl rounded-br-[4px]",
+                                    isPrevSame &&
+                                      isNextSame &&
+                                      "rounded-l-2xl rounded-r-[4px]",
+                                    isPrevSame &&
+                                      !isNextSame &&
+                                      "rounded-2xl rounded-tr-[4px] rounded-br-[4px]",
+                                  )
+                                : cn(
+                                    "border-zinc-850/60 border bg-zinc-900 text-zinc-200",
+                                    !isPrevSame &&
+                                      !isNextSame &&
+                                      "rounded-2xl rounded-bl-[4px]",
+                                    !isPrevSame &&
+                                      isNextSame &&
+                                      "rounded-2xl rounded-bl-[4px]",
+                                    isPrevSame &&
+                                      isNextSame &&
+                                      "rounded-l-[4px] rounded-r-2xl",
+                                    isPrevSame &&
+                                      !isNextSame &&
+                                      "rounded-2xl rounded-tl-[4px] rounded-bl-[4px]",
+                                  ),
+                            )}
+                          >
+                            {/* Main Text Content */}
+                            {editingMessageId === msg._id ? (
+                              <div className="flex max-w-full min-w-[180px] flex-col gap-2">
+                                <textarea
+                                  value={editingText}
+                                  onChange={(e) =>
+                                    setEditingText(e.target.value)
+                                  }
+                                  className="focus:border-primary/50 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 p-2 text-xs text-white outline-hidden"
+                                  rows={2}
+                                  autoFocus
+                                />
+                                <div className="flex justify-end gap-1.5">
+                                  <button
+                                    type="button"
+                                    onClick={() => setEditingMessageId(null)}
+                                    className="bg-zinc-850 cursor-pointer rounded-lg px-2 py-1 text-[10px] font-bold text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                  >
+                                    Cancel
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateMessage(msg._id)}
+                                    className="hover:bg-primary bg-primary cursor-pointer rounded-lg px-2 py-1 text-[10px] font-bold text-white transition-colors"
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <>
+                                {msg.content && (
+                                  <p className="leading-relaxed wrap-break-word whitespace-pre-wrap">
+                                    {msg.content}
+                                    {msg.editedAt && (
+                                      <span className="ml-1.5 text-[8px] font-bold text-zinc-500 lowercase italic">
+                                        (edited)
+                                      </span>
+                                    )}
+                                  </p>
+                                )}
+                              </>
+                            )}
+                          </div>
+
+                          {/* Timestamp Details */}
+                          <div className="flex shrink-0 items-center gap-1 self-end pb-1 text-[9px] text-zinc-500 select-none">
+                            <span>
+                              {moment(msg.createdAt).format("h:mm A")}
+                            </span>
+                            {isMe && (
+                              <span>
+                                {activeChatMembers &&
+                                activeChatMembers.every(
+                                  (m) =>
+                                    m.userId === currentUserId ||
+                                    (m.lastReadAt &&
+                                      m.lastReadAt >= msg.createdAt),
+                                ) ? (
+                                  <CheckCheck className="text-primary h-3 w-3 stroke-3" />
+                                ) : (
+                                  <Check className="text-zinc-650 h-3 w-3" />
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* GIF Image displays */}
+                        {msg.attachmentType === "gif" && msg.attachmentUrl && (
+                          <div className="relative mt-2 max-h-48 max-w-64 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-lg">
+                            <img
+                              src={msg.attachmentUrl}
+                              alt="Reaction GIF"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                        )}
+
+                        {/* Movie/Show Share cards */}
+                        {msg.attachmentType === "media" &&
+                          msg.sharedMediaId && (
+                            <div className="border-zinc-850 mt-3 flex max-w-64 min-w-[256px] flex-col items-stretch overflow-hidden rounded-2xl border bg-zinc-950 shadow-2xl">
+                              <div className="flex gap-3 p-2.5">
+                                <div className="border-zinc-850 aspect-2/3 w-16 shrink-0 overflow-hidden rounded-lg border bg-zinc-900">
+                                  {msg.sharedMediaPoster ? (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w185${msg.sharedMediaPoster}`}
+                                      alt={msg.sharedMediaTitle}
+                                      className="h-full w-full object-cover"
+                                    />
+                                  ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-zinc-600">
+                                      <Film className="h-6 w-6" />
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
+                                  <h4 className="truncate text-xs leading-tight font-black text-white">
+                                    {msg.sharedMediaTitle}
+                                  </h4>
+                                  <span className="mt-1 text-[9px] font-bold text-zinc-500 uppercase">
+                                    {msg.sharedMediaType === "tv"
+                                      ? "TV Series"
+                                      : "Movie"}
+                                    {msg.sharedMediaYear
+                                      ? ` • ${msg.sharedMediaYear}`
+                                      : ""}
+                                  </span>
+                                  {msg.sharedMediaRating !== undefined &&
+                                    msg.sharedMediaRating > 0 && (
+                                      <div className="mt-1 flex items-center gap-1 text-[9px] font-black text-yellow-400">
+                                        <Bookmark className="h-3 w-3 fill-current" />
+                                        <span>
+                                          {msg.sharedMediaRating.toFixed(
+                                            msg.sharedMediaRating < 10 ? 1 : 0,
+                                          )}
+                                          /10
+                                        </span>
+                                      </div>
+                                    )}
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 border-t border-zinc-900 bg-zinc-900/30 text-[9px] font-bold tracking-wider uppercase">
                                 <button
-                                  type="button"
-                                  onClick={() => setEditingMessageId(null)}
-                                  className="bg-zinc-850 cursor-pointer rounded-lg px-2 py-1 text-[10px] font-bold text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                  onClick={() =>
+                                    router.push(
+                                      `/${msg.sharedMediaType}/${msg.sharedMediaId}`,
+                                    )
+                                  }
+                                  className="cursor-pointer border-r border-zinc-900 py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
                                 >
-                                  Cancel
+                                  Details
                                 </button>
                                 <button
-                                  type="button"
-                                  onClick={() => handleUpdateMessage(msg._id)}
-                                  className="hover:bg-primary bg-primary cursor-pointer rounded-lg px-2 py-1 text-[10px] font-bold text-white transition-colors"
+                                  onClick={() => {
+                                    onQuickView({
+                                      id: Number(msg.sharedMediaId),
+                                      media_type: msg.sharedMediaType as
+                                        | "movie"
+                                        | "tv",
+                                      title: msg.sharedMediaTitle || "",
+                                      name: msg.sharedMediaTitle || "",
+                                      poster_path: msg.sharedMediaPoster || "",
+                                      vote_average: msg.sharedMediaRating || 0,
+                                      release_date: msg.sharedMediaYear || "",
+                                      backdrop_path: "",
+                                      genre_ids: [],
+                                      overview: "",
+                                      popularity: 0,
+                                    });
+                                  }}
+                                  className="cursor-pointer py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
                                 >
-                                  Save
+                                  View
                                 </button>
                               </div>
                             </div>
-                          ) : (
-                            <>
-                              {msg.content && (
-                                <p className="leading-relaxed wrap-break-word whitespace-pre-wrap">
-                                  {msg.content}
-                                  {msg.editedAt && (
-                                    <span className="ml-1.5 text-[8px] font-bold text-zinc-500 lowercase italic">
-                                      (edited)
-                                    </span>
-                                  )}
-                                </p>
-                              )}
-                            </>
                           )}
-                        </div>
 
-                        {/* Timestamp Details */}
-                        <div className="flex items-center gap-1 text-[9px] text-zinc-500 shrink-0 self-end select-none pb-1">
-                          <span>{moment(msg.createdAt).format("h:mm A")}</span>
-                          {isMe && (
-                            <span>
-                              {activeChatMembers &&
-                              activeChatMembers.every(
-                                (m) =>
-                                  m.userId === currentUserId ||
-                                  (m.lastReadAt && m.lastReadAt >= msg.createdAt),
-                              ) ? (
-                                <CheckCheck className="text-primary h-3 w-3 stroke-3" />
-                              ) : (
-                                <Check className="text-zinc-650 h-3 w-3" />
-                              )}
-                            </span>
-                          )}
-                        </div>
+                        {/* Spacer or trailing margin for media attachments */}
                       </div>
-
-                      {/* GIF Image displays */}
-                      {msg.attachmentType === "gif" && msg.attachmentUrl && (
-                        <div className="relative mt-2 max-h-48 max-w-64 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-lg">
-                          <img
-                            src={msg.attachmentUrl}
-                            alt="Reaction GIF"
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                      )}
-
-                      {/* Movie/Show Share cards */}
-                      {msg.attachmentType === "media" && msg.sharedMediaId && (
-                        <div className="border-zinc-850 mt-3 flex max-w-64 flex-col items-stretch overflow-hidden rounded-2xl border bg-zinc-950 shadow-2xl">
-                          <div className="flex gap-3 p-2.5">
-                            <div className="border-zinc-850 aspect-2/3 w-16 shrink-0 overflow-hidden rounded-lg border bg-zinc-900">
-                              {msg.sharedMediaPoster ? (
-                                <img
-                                  src={`https://image.tmdb.org/t/p/w185${msg.sharedMediaPoster}`}
-                                  alt={msg.sharedMediaTitle}
-                                  className="h-full w-full object-cover"
-                                />
-                              ) : (
-                                <div className="flex h-full w-full items-center justify-center text-zinc-600">
-                                  <Film className="h-6 w-6" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex min-w-0 flex-1 flex-col justify-center text-left">
-                              <h4 className="truncate text-xs leading-tight font-black text-white">
-                                {msg.sharedMediaTitle}
-                              </h4>
-                              <span className="mt-1 text-[9px] font-bold text-zinc-500 uppercase">
-                                {msg.sharedMediaType === "tv"
-                                  ? "TV Series"
-                                  : "Movie"}
-                                {msg.sharedMediaYear
-                                  ? ` • ${msg.sharedMediaYear}`
-                                  : ""}
-                              </span>
-                              {msg.sharedMediaRating !== undefined &&
-                                msg.sharedMediaRating > 0 && (
-                                  <div className="mt-1 flex items-center gap-1 text-[9px] font-black text-yellow-400">
-                                    <Bookmark className="h-3 w-3 fill-current" />
-                                    <span>
-                                      {msg.sharedMediaRating.toFixed(
-                                        msg.sharedMediaRating < 10 ? 1 : 0,
-                                      )}
-                                      /10
-                                    </span>
-                                  </div>
-                                )}
-                            </div>
-                          </div>
-                          <div className="grid grid-cols-2 border-t border-zinc-900 bg-zinc-900/30 text-[9px] font-bold tracking-wider uppercase">
-                            <button
-                              onClick={() =>
-                                router.push(
-                                  `/${msg.sharedMediaType}/${msg.sharedMediaId}`,
-                                )
-                              }
-                              className="cursor-pointer border-r border-zinc-900 py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
-                            >
-                              Details
-                            </button>
-                            <button
-                              onClick={() => {
-                                onQuickView({
-                                  id: Number(msg.sharedMediaId),
-                                  media_type: msg.sharedMediaType as
-                                    | "movie"
-                                    | "tv",
-                                  title: msg.sharedMediaTitle || "",
-                                  name: msg.sharedMediaTitle || "",
-                                  poster_path: msg.sharedMediaPoster || "",
-                                  vote_average: msg.sharedMediaRating || 0,
-                                  release_date: msg.sharedMediaYear || "",
-                                  backdrop_path: "",
-                                  genre_ids: [],
-                                  overview: "",
-                                  popularity: 0,
-                                });
-                              }}
-                              className="cursor-pointer py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
-                            >
-                              View
-                            </button>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Spacer or trailing margin for media attachments */}
                     </div>
-                  </div>
-                </ContextMenuTrigger>
+                  </ContextMenuTrigger>
 
-                <ContextMenuContent className="animate-in fade-in-50 zoom-in-95 z-50 min-w-40 rounded-2xl border border-zinc-800 bg-zinc-950 p-1.5 text-white shadow-2xl duration-200">
-                  {isMe &&
-                    !msg.sharedMediaId &&
-                    msg.attachmentType !== "gif" && (
+                  <ContextMenuContent className="animate-in fade-in-50 zoom-in-95 z-50 min-w-40 rounded-2xl border border-zinc-800 bg-zinc-950 p-1.5 text-white shadow-2xl duration-200">
+                    {isMe &&
+                      !msg.sharedMediaId &&
+                      msg.attachmentType !== "gif" && (
+                        <ContextMenuItem
+                          onClick={() => {
+                            setEditingMessageId(msg._id);
+                            setEditingText(msg.content);
+                          }}
+                          className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-zinc-300 hover:bg-zinc-900 hover:text-white"
+                        >
+                          <Pencil className="h-3.5 w-3.5 text-zinc-400" />
+                          Edit Message
+                        </ContextMenuItem>
+                      )}
+                    {isMe && (
                       <ContextMenuItem
-                        onClick={() => {
-                          setEditingMessageId(msg._id);
-                          setEditingText(msg.content);
+                        onClick={async () => {
+                          if (
+                            await confirm({
+                              title: "Delete Message",
+                              description:
+                                "Are you sure you want to delete this message?",
+                              confirmText: "Delete",
+                            })
+                          ) {
+                            handleDeleteMessage(msg._id);
+                          }
                         }}
-                        className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-zinc-300 hover:bg-zinc-900 hover:text-white"
+                        className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-red-400 hover:bg-red-950/20 hover:text-red-300"
                       >
-                        <Pencil className="h-3.5 w-3.5 text-zinc-400" />
-                        Edit Message
+                        <Trash2 className="h-3.5 w-3.5 text-red-400" />
+                        Delete Message
                       </ContextMenuItem>
                     )}
-                  {isMe && (
                     <ContextMenuItem
-                      onClick={async () => {
-                        if (
-                          await confirm({
-                            title: "Delete Message",
-                            description:
-                              "Are you sure you want to delete this message?",
-                            confirmText: "Delete",
-                          })
-                        ) {
-                          handleDeleteMessage(msg._id);
+                      onClick={() => {
+                        if (msg.content) {
+                          navigator.clipboard
+                            .writeText(msg.content)
+                            .then(() => {
+                              toast.success("Message copied to clipboard!");
+                            })
+                            .catch(() => {
+                              toast.error("Failed to copy message");
+                            });
                         }
                       }}
-                      className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-red-400 hover:bg-red-950/20 hover:text-red-300"
+                      className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-zinc-300 hover:bg-zinc-900 hover:text-white"
                     >
-                      <Trash2 className="h-3.5 w-3.5 text-red-400" />
-                      Delete Message
+                      <Copy className="h-3.5 w-3.5 text-zinc-400" />
+                      Copy Content
                     </ContextMenuItem>
-                  )}
-                  <ContextMenuItem
-                    onClick={() => {
-                      if (msg.content) {
-                        navigator.clipboard
-                          .writeText(msg.content)
-                          .then(() => {
-                            toast.success("Message copied to clipboard!");
-                          })
-                          .catch(() => {
-                            toast.error("Failed to copy message");
-                          });
-                      }
-                    }}
-                    className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-zinc-300 hover:bg-zinc-900 hover:text-white"
-                  >
-                    <Copy className="h-3.5 w-3.5 text-zinc-400" />
-                    Copy Content
-                  </ContextMenuItem>
-                </ContextMenuContent>
+                  </ContextMenuContent>
                 </ContextMenu>
               </React.Fragment>
             );
