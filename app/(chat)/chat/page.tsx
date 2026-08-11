@@ -42,6 +42,12 @@ function ChatPageContent() {
   const isLoggedIn = !!session.data?.user;
   const currentUserId = session.data?.user?.id;
 
+  const [isSending, setIsSending] = useState(false);
+  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>([]);
+  const [optimisticDeletions, setOptimisticDeletions] = useState<Set<Id<"messages">>>(new Set());
+  const [optimisticEdits, setOptimisticEdits] = useState<Record<Id<"messages">, string>>({});
+  const [optimisticMutes, setOptimisticMutes] = useState<Record<Id<"chats">, boolean>>({});
+
   // ----------------------------------------------------
   // CONVEX STATE QUERIES & MUTATIONS
   // ----------------------------------------------------
@@ -57,8 +63,14 @@ function ChatPageContent() {
   // Cast raw Convex query output to strong local ChatItem interface
   const chats = useMemo(() => {
     if (!rawChatsList) return undefined;
-    return rawChatsList as unknown as ChatItem[];
-  }, [rawChatsList]);
+    const items = rawChatsList as unknown as ChatItem[];
+    return items.map((c) => {
+      if (c.chatId in optimisticMutes) {
+        return { ...c, isMuted: optimisticMutes[c.chatId] };
+      }
+      return c;
+    });
+  }, [rawChatsList, optimisticMutes]);
 
   // Get active friends list to start new chat
   const profileData = useQuery(
@@ -138,8 +150,6 @@ function ChatPageContent() {
 
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSending, setIsSending] = useState(false);
-  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = sessionStorage.getItem("active_chat_id");
@@ -339,16 +349,27 @@ function ChatPageContent() {
       toast.error("Message content cannot be empty");
       return;
     }
+    
+    const originalText = editingText.trim();
+    
     try {
-      await editChatMessage({
-        messageId,
-        newContent: editingText.trim(),
-      });
+      setOptimisticEdits((prev) => ({ ...prev, [messageId]: originalText }));
       setEditingMessageId(null);
       setEditingText("");
+      
+      await editChatMessage({
+        messageId,
+        newContent: originalText,
+      });
       toast.success("Message updated!");
     } catch {
       toast.error("Failed to edit message");
+    } finally {
+      setOptimisticEdits((prev) => {
+        const next = { ...prev };
+        delete next[messageId];
+        return next;
+      });
     }
   };
 
@@ -443,12 +464,20 @@ function ChatPageContent() {
 
   // Toggle group/direct message muting status
   const handleToggleMute = async () => {
-    if (!selectedChatId) return;
+    if (!selectedChatId || !activeChat) return;
+    const targetMuteState = !activeChat.isMuted;
     try {
+      setOptimisticMutes((prev) => ({ ...prev, [selectedChatId]: targetMuteState }));
       const status = await toggleMuteChat({ chatId: selectedChatId });
       toast.success(status ? "Chat muted" : "Chat unmuted");
     } catch {
       toast.error("Failed to toggle mute state");
+    } finally {
+      setOptimisticMutes((prev) => {
+        const next = { ...prev };
+        delete next[selectedChatId];
+        return next;
+      });
     }
   };
 
@@ -497,11 +526,22 @@ function ChatPageContent() {
   // Delete message handler
   const handleDeleteMessage = async (messageId: Id<"messages">) => {
     try {
+      setOptimisticDeletions((prev) => {
+        const next = new Set(prev);
+        next.add(messageId);
+        return next;
+      });
       await deleteChatMessage({ messageId });
       toast.success("Message deleted");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
       toast.error(errorObj.message || "Failed to delete message");
+    } finally {
+      setOptimisticDeletions((prev) => {
+        const next = new Set(prev);
+        next.delete(messageId);
+        return next;
+      });
     }
   };
 
@@ -541,22 +581,29 @@ function ChatPageContent() {
       (m) => m.chatId === selectedChatId
     );
     
-    const combined = [...activeChatMessages, ...activeOptimistic];
+    const combined = [...activeChatMessages, ...activeOptimistic]
+      .filter((m) => !optimisticDeletions.has(m._id))
+      .map((m) => {
+        if (m._id in optimisticEdits) {
+          return { ...m, content: optimisticEdits[m._id] };
+        }
+        return m;
+      });
 
     if (!searchQuery.trim()) return combined;
     const q = searchQuery.toLowerCase();
     return combined.filter((m) =>
       m.content.toLowerCase().includes(q),
     );
-  }, [activeChatMessages, optimisticMessages, selectedChatId, searchQuery]);
+  }, [activeChatMessages, optimisticMessages, selectedChatId, searchQuery, optimisticDeletions, optimisticEdits]);
 
   // Extract shared media list
   const sharedMediaList = useMemo(() => {
     if (!activeChatMessages) return [];
-    return activeChatMessages.filter(
-      (m) => m.attachmentType === "media" && m.sharedMediaId,
-    );
-  }, [activeChatMessages]);
+    return activeChatMessages
+      .filter((m) => !optimisticDeletions.has(m._id))
+      .filter((m) => m.attachmentType === "media" && m.sharedMediaId);
+  }, [activeChatMessages, optimisticDeletions]);
 
   // Enforce logged-in status
   if (!isLoggedIn || !currentUserId) {
