@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { Play, Plus, Check, Star, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useUserLibrary } from "./user-library-provider";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -42,12 +43,9 @@ function HeroSlide({
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [logoError, setLogoError] = useState(false);
 
-  const isFavorited = useQuery(
-    api.favorites.checkFavoriteItem,
-    isLoggedIn && media
-      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip",
-  );
+  const { isWatchlisted: checkWatchlisted, isFavorited: checkFavorited } = useUserLibrary();
+
+  const isFavorited = checkFavorited(media.id, media.media_type || "movie");
 
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
@@ -85,12 +83,7 @@ function HeroSlide({
     }
   };
 
-  const isWatchlisted = useQuery(
-    api.watchlist.checkWatchlistItem,
-    isLoggedIn && media
-      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip",
-  );
+  const isWatchlisted = checkWatchlisted(media.id, media.media_type || "movie");
 
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
