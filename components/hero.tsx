@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { TMDBMedia, getGenreNames } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
-import { useQuery, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Play, Plus, Check, Star, Heart, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

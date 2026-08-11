@@ -351,7 +351,6 @@ export default function QuickViewModal({
               <div className="flex flex-wrap items-center gap-3">
                 <Button
                   onClick={() => {
-                    onClose();
                     const mType = media.media_type || "movie";
                     router.push(`/${mType}/${media.id}`);
                   }}
