@@ -26,6 +26,8 @@ import {
   Skeleton,
 } from "./skeletons";
 import Card from "./card";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 export default function HomeClient() {
   const openAuth = useAuthModalStore((state) => state.open);
@@ -39,13 +41,19 @@ export default function HomeClient() {
     } as TMDBMedia;
   }, [quickViewMediaRef]);
 
-  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
-    if (media) {
-      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
-    } else {
-      setQuickViewMediaRef(null);
-    }
-  }, [setQuickViewMediaRef]);
+  const setQuickViewMedia = useCallback(
+    (media: TMDBMedia | null) => {
+      if (media) {
+        setQuickViewMediaRef({
+          id: String(media.id),
+          media_type: media.media_type || "movie",
+        });
+      } else {
+        setQuickViewMediaRef(null);
+      }
+    },
+    [setQuickViewMediaRef],
+  );
 
   const [heroItems, setHeroItems] = useState<TMDBMedia[]>([]);
   const [trendingItems, setTrendingItems] = useState<TMDBMedia[]>([]);
@@ -68,6 +76,14 @@ export default function HomeClient() {
 
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
+
+  const userProfile = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
+
+  const username = userProfile?.username || session.data?.user?.username;
+
   const continueWatching = useQuery(
     api.continueWatching.getProgress,
     isLoggedIn ? {} : "skip",
@@ -87,7 +103,10 @@ export default function HomeClient() {
         <HeroSkeleton />
         <div className="bg-background relative z-20 flex flex-col gap-6 pb-20">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+            <div
+              key={i}
+              className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20"
+            >
               <Skeleton className="h-6 w-44 rounded-md" />
               <CarouselSkeleton />
             </div>
@@ -161,9 +180,13 @@ export default function HomeClient() {
               </div>
             ) : watchlist.length > 0 ? (
               <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
-                <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
-                  My Watchlist
-                </h2>
+                <Link
+                  href={username ? `/@${username}?tab=watchlist` : "#"}
+                  className="group flex w-fit items-center gap-1.5 text-xl font-bold tracking-tight text-white sm:text-2xl"
+                >
+                  <span>My Watchlist</span>
+                  <ChevronRight className="h-5 w-5 text-zinc-400 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white" />
+                </Link>
                 <div className="swiper-carousel-container relative w-full">
                   <Swiper
                     modules={[Mousewheel, FreeMode]}

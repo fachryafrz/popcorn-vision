@@ -9,6 +9,7 @@ import { authClient } from "@/lib/auth-client";
 import { Star, Plus, Check, Heart, Loader2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useUserLibrary } from "./user-library-provider";
 
 interface CardProps {
   media: TMDBMedia;
@@ -27,13 +28,9 @@ export default function Card({
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
 
-  // Read favorite status from Convex
-  const isFavorited = useQuery(
-    api.favorites.checkFavoriteItem,
-    isLoggedIn
-      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip",
-  );
+  const { isWatchlisted: checkWatchlisted, isFavorited: checkFavorited } = useUserLibrary();
+  
+  const isFavorited = checkFavorited(media.id, media.media_type || "movie");
 
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
@@ -71,13 +68,7 @@ export default function Card({
     }
   };
 
-  // Read watchlist status from Convex
-  const isWatchlisted = useQuery(
-    api.watchlist.checkWatchlistItem,
-    isLoggedIn
-      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip",
-  );
+  const isWatchlisted = checkWatchlisted(media.id, media.media_type || "movie");
 
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
