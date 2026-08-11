@@ -12,11 +12,12 @@ import {
   Users,
   Info,
   Film,
-  Bookmark,
+  Copy,
   ChevronRight,
   Grid,
   Pencil,
   Trash2,
+  Bookmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -255,19 +256,38 @@ export default function ChatWorkspace({
             const isMe = msg.senderId === currentUserId;
             const isPrevSame =
               index > 0 &&
-              filteredMessages[index - 1].senderId === msg.senderId;
+              filteredMessages[index - 1].senderId === msg.senderId &&
+              moment(filteredMessages[index - 1].createdAt).isSame(msg.createdAt, "day");
             const isNextSame =
               index < filteredMessages.length - 1 &&
-              filteredMessages[index + 1].senderId === msg.senderId;
+              filteredMessages[index + 1].senderId === msg.senderId &&
+              moment(filteredMessages[index + 1].createdAt).isSame(msg.createdAt, "day");
             const showAvatar = !isPrevSame;
+            const isNewDay =
+              index === 0 ||
+              !moment(filteredMessages[index - 1].createdAt).isSame(msg.createdAt, "day");
 
             return (
-              <ContextMenu
-                key={msg._id}
-                onOpenChange={(open) => {
-                  setActiveContextMenuMessageId(open ? msg._id : null);
-                }}
-              >
+              <React.Fragment key={msg._id}>
+                {isNewDay && (
+                  <div className="my-6 flex items-center justify-center">
+                    <div className="h-[1px] flex-grow bg-zinc-900" />
+                    <span className="mx-4 text-[10px] font-bold tracking-wider text-zinc-500 uppercase">
+                      {moment(msg.createdAt).calendar(null, {
+                        sameDay: "[Today]",
+                        lastDay: "[Yesterday]",
+                        lastWeek: "dddd",
+                        sameElse: "MMMM D, YYYY",
+                      })}
+                    </span>
+                    <div className="h-[1px] flex-grow bg-zinc-900" />
+                  </div>
+                )}
+                <ContextMenu
+                  onOpenChange={(open) => {
+                    setActiveContextMenuMessageId(open ? msg._id : null);
+                  }}
+                >
                 <ContextMenuTrigger
                   className={cn(
                     "block w-full rounded-2xl px-3 transition-all duration-300",
@@ -313,7 +333,7 @@ export default function ChatWorkspace({
                       <div
                         className={cn(
                           "flex max-w-full items-center gap-2",
-                          isMe && "justify-end",
+                          isMe ? "flex-row-reverse" : "flex-row",
                         )}
                       >
                         <div
@@ -392,6 +412,25 @@ export default function ChatWorkspace({
                                 </p>
                               )}
                             </>
+                          )}
+                        </div>
+
+                        {/* Timestamp Details */}
+                        <div className="flex items-center gap-1 text-[9px] text-zinc-500 shrink-0 self-end select-none pb-1">
+                          <span>{moment(msg.createdAt).format("h:mm A")}</span>
+                          {isMe && (
+                            <span>
+                              {activeChatMembers &&
+                              activeChatMembers.every(
+                                (m) =>
+                                  m.userId === currentUserId ||
+                                  (m.lastReadAt && m.lastReadAt >= msg.createdAt),
+                              ) ? (
+                                <CheckCheck className="text-primary h-3 w-3 stroke-3" />
+                              ) : (
+                                <Check className="text-zinc-650 h-3 w-3" />
+                              )}
+                            </span>
                           )}
                         </div>
                       </div>
@@ -487,29 +526,7 @@ export default function ChatWorkspace({
                         </div>
                       )}
 
-                      {/* Timestamp Details */}
-                      <div
-                        className={cn(
-                          "mt-1 flex items-center gap-1.5 text-[9px] text-zinc-500",
-                          isMe ? "justify-end pr-1" : "justify-start pl-1",
-                        )}
-                      >
-                        <span>{moment(msg.createdAt).format("h:mm A")}</span>
-                        {isMe && (
-                          <span>
-                            {activeChatMembers &&
-                            activeChatMembers.every(
-                              (m) =>
-                                m.userId === currentUserId ||
-                                (m.lastReadAt && m.lastReadAt >= msg.createdAt),
-                            ) ? (
-                              <CheckCheck className="text-primary h-3.5 w-3.5 stroke-3" />
-                            ) : (
-                              <Check className="text-zinc-650 h-3.5 w-3.5" />
-                            )}
-                          </span>
-                        )}
-                      </div>
+                      {/* Spacer or trailing margin for media attachments */}
                     </div>
                   </div>
                 </ContextMenuTrigger>
@@ -564,11 +581,12 @@ export default function ChatWorkspace({
                     }}
                     className="flex cursor-pointer items-center gap-2 rounded-xl px-3.5 py-2.5 text-xs text-zinc-300 hover:bg-zinc-900 hover:text-white"
                   >
-                    <Bookmark className="h-3.5 w-3.5 text-zinc-400" />
+                    <Copy className="h-3.5 w-3.5 text-zinc-400" />
                     Copy Content
                   </ContextMenuItem>
                 </ContextMenuContent>
-              </ContextMenu>
+                </ContextMenu>
+              </React.Fragment>
             );
           })
         )}

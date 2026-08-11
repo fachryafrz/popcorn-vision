@@ -251,6 +251,7 @@ function ChatPageContent() {
     ) {
       const timer = setTimeout(() => {
         setSelectedChatId(null);
+        setIsSidebarOpen(true);
         toast.error("This chat session is no longer available.");
       }, 0);
       return () => clearTimeout(timer);
@@ -403,6 +404,7 @@ function ChatPageContent() {
     try {
       await leaveGroupChat({ chatId: selectedChatId });
       setSelectedChatId(null);
+      setIsSidebarOpen(true);
       toast.success("Left group successfully!");
     } catch {
       toast.error("Failed to leave group");
@@ -493,6 +495,7 @@ function ChatPageContent() {
     try {
       await deleteChat({ chatId: selectedChatId });
       setSelectedChatId(null);
+      setIsSidebarOpen(true);
       toast.success("Chat deleted successfully");
     } catch (err: unknown) {
       const errorObj = err as { message?: string };
@@ -597,6 +600,7 @@ function ChatPageContent() {
           handleToggleMute={handleToggleMute}
           onBlockSuccess={() => {
             setSelectedChatId(null);
+            setIsSidebarOpen(true);
             setShowRightPanel(false);
           }}
         />
