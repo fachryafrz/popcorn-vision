@@ -577,23 +577,23 @@ export default function Navbar() {
                   <DropdownMenuItem
                     onClick={() => {
                       setDropdownMenuOpen(false);
-                      router.push("/chat");
-                    }}
-                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-                  >
-                    <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
-                    Chats
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setDropdownMenuOpen(false);
                       router.push("/feed");
                     }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
                   >
                     <Activity className="mr-2 h-4 w-4 text-zinc-400" />
                     Feed
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
+                      router.push("/chat");
+                    }}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
+                    Chats
                   </DropdownMenuItem>
                   {(userProfile?.role === "owner" ||
                     userProfile?.role === "admin") && (
@@ -1043,6 +1043,18 @@ export default function Navbar() {
                         <MessageSquare className="h-4 w-4" />
                         Chats
                       </Link>
+                      {(userProfile?.role === "owner" ||
+                        userProfile?.role === "admin") && (
+                        <Link
+                          href="/admin/users"
+                          prefetch={false}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-2 text-amber-400 hover:text-amber-300"
+                        >
+                          <ShieldCheck className="h-4 w-4 text-amber-400" />
+                          Admin Panel
+                        </Link>
+                      )}
                       <Link
                         href="/lists"
                         prefetch={false}
