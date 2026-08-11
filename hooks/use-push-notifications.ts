@@ -21,6 +21,7 @@ export function usePushNotifications(isLoggedIn: boolean) {
   const [isSupported, setIsSupported] = useState<boolean>(false);
   const [permission, setPermission] = useState<NotificationPermission>("default");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [currentDeviceEndpoint, setCurrentDeviceEndpoint] = useState<string | null>(null);
 
   const saveSubscription = useMutation(api.push.savePushSubscription);
   const deleteSubscription = useMutation(api.push.deletePushSubscription);
@@ -29,15 +30,38 @@ export function usePushNotifications(isLoggedIn: boolean) {
     isLoggedIn ? {} : "skip"
   );
 
-  const isSubscribed = Boolean(userSubscriptions && userSubscriptions.length > 0);
+  const isSubscribed = Boolean(
+    currentDeviceEndpoint &&
+    userSubscriptions?.some((sub) => sub.subscription.endpoint === currentDeviceEndpoint)
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined" && "serviceWorker" in navigator && "PushManager" in window) {
-      const handleMount = () => {
+      const handleMount = async () => {
         setIsSupported(true);
         setPermission(Notification.permission);
+
+        try {
+          const registration = await navigator.serviceWorker.ready;
+          const subscription = await registration.pushManager.getSubscription();
+          if (subscription) {
+            setCurrentDeviceEndpoint(subscription.endpoint);
+            localStorage.setItem("push_subscription_endpoint", subscription.endpoint);
+          } else {
+            const stored = localStorage.getItem("push_subscription_endpoint");
+            if (stored) {
+              setCurrentDeviceEndpoint(stored);
+            }
+          }
+        } catch (err) {
+          console.error("Error checking push subscription on mount:", err);
+          const stored = localStorage.getItem("push_subscription_endpoint");
+          if (stored) {
+            setCurrentDeviceEndpoint(stored);
+          }
+        }
       };
-      requestAnimationFrame(handleMount);
+      handleMount();
     }
   }, []);
 
@@ -93,6 +117,9 @@ export function usePushNotifications(isLoggedIn: boolean) {
         userAgent: navigator.userAgent,
       });
 
+      localStorage.setItem("push_subscription_endpoint", subJson.endpoint);
+      setCurrentDeviceEndpoint(subJson.endpoint);
+
       toast.success("Push notifications enabled!");
       return true;
     } catch (err: unknown) {
@@ -115,9 +142,14 @@ export function usePushNotifications(isLoggedIn: boolean) {
       if (subscription) {
         await subscription.unsubscribe();
         await deleteSubscription({ endpoint: subscription.endpoint });
+      } else if (currentDeviceEndpoint) {
+        await deleteSubscription({ endpoint: currentDeviceEndpoint });
       } else {
         await deleteSubscription({});
       }
+
+      localStorage.removeItem("push_subscription_endpoint");
+      setCurrentDeviceEndpoint(null);
 
       toast.success("Push notifications disabled");
       return true;
@@ -128,7 +160,7 @@ export function usePushNotifications(isLoggedIn: boolean) {
     } finally {
       setIsLoading(false);
     }
-  }, [isSupported, deleteSubscription]);
+  }, [isSupported, currentDeviceEndpoint, deleteSubscription]);
 
   return {
     isSupported,
