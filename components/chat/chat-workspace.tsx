@@ -64,6 +64,7 @@ interface ChatWorkspaceProps {
   setActiveContextMenuMessageId: (id: string | null) => void;
   handleDeleteMessage: (id: Id<"messages">) => void;
   onQuickView: (media: TMDBMedia) => void;
+  isSending: boolean;
 }
 
 export default function ChatWorkspace({
@@ -94,6 +95,7 @@ export default function ChatWorkspace({
   setActiveContextMenuMessageId,
   handleDeleteMessage,
   onQuickView,
+  isSending,
 }: ChatWorkspaceProps) {
   const router = useRouter();
   const confirm = useConfirm();
@@ -615,16 +617,6 @@ export default function ChatWorkspace({
         className="border-zinc-905 flex flex-col gap-3 border-t bg-zinc-950 p-4"
       >
         <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={() => setIsGIFPickerOpen(true)}
-            className="h-9 w-9 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900/20 text-zinc-400 hover:text-white"
-            title="Send reaction GIF"
-          >
-            <Grid className="h-4.5 w-4.5" />
-          </Button>
           <div className="relative grow">
             <Input
               type="text"
@@ -647,10 +639,14 @@ export default function ChatWorkspace({
           </div>
           <Button
             type="submit"
-            disabled={!messageText.trim()}
-            className="hover:bg-primary bg-primary flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl text-white transition-all active:scale-95"
+            disabled={!messageText.trim() || isSending}
+            className="hover:bg-primary bg-primary flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl text-white transition-all active:scale-95 disabled:opacity-50"
           >
-            <Send className="h-4 w-4" />
+            {isSending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
           </Button>
         </div>
       </form>

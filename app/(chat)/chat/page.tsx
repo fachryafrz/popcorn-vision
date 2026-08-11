@@ -138,6 +138,8 @@ function ChatPageContent() {
 
   const [messageText, setMessageText] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== "undefined") {
       const saved = sessionStorage.getItem("active_chat_id");
@@ -201,6 +203,7 @@ function ChatPageContent() {
   // DOM Refs
   const messageEndRef = useRef<HTMLDivElement | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastTypingTimeRef = useRef<number>(0);
 
   // Fetch details of active chat session
   const activeChat = useMemo(() => {
@@ -241,7 +244,7 @@ function ChatPageContent() {
   // Scroll to bottom on new messages
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "instant" });
-  }, [activeChatMessages?.length]);
+  }, [activeChatMessages?.length, optimisticMessages.length]);
 
   // Handle case where chat session is deleted or membership is revoked
   useEffect(() => {
@@ -261,36 +264,60 @@ function ChatPageContent() {
   // Handle typing triggers
   const handleTyping = () => {
     if (!selectedChatId) return;
-    setTypingStatus({ chatId: selectedChatId, isTyping: true }).catch(
-      console.error,
-    );
+
+    const now = Date.now();
+    if (now - lastTypingTimeRef.current > 2000) {
+      lastTypingTimeRef.current = now;
+      setTypingStatus({ chatId: selectedChatId, isTyping: true }).catch(
+        console.error,
+      );
+    }
 
     if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
     typingTimerRef.current = setTimeout(() => {
       setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(
         console.error,
       );
+      lastTypingTimeRef.current = 0;
     }, 3000);
   };
 
   // Send pure text direct message
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedChatId || !messageText.trim()) return;
+    if (isSending || !selectedChatId || !messageText.trim() || !currentUserId) return;
+
+    const textToSend = messageText.trim();
+    const tempId = `temp_${Date.now()}`;
+    const optimisticMsg: ChatMessage = {
+      _id: tempId as unknown as Id<"messages">,
+      _creationTime: Date.now(),
+      chatId: selectedChatId,
+      senderId: currentUserId,
+      senderName: currentUserProfile?.name || currentUserProfile?.username || "Me",
+      senderImage: currentUserProfile?.image || undefined,
+      content: textToSend,
+      createdAt: Date.now(),
+    };
 
     try {
-      const textToSend = messageText.trim();
       setMessageText("");
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       setTypingStatus({ chatId: selectedChatId, isTyping: false }).catch(
         console.error,
       );
 
+      setOptimisticMessages((prev) => [...prev, optimisticMsg]);
+      setIsSending(true);
+
       await sendMessage({
         chatId: selectedChatId,
         content: textToSend,
       });
     } catch (err: unknown) {
+      // Restore typed message back to the input field on failure so text is not lost
+      setMessageText(textToSend);
+
       const errorObj = err as { message?: string };
       if (
         errorObj.message?.includes("privacy settings") ||
@@ -300,6 +327,9 @@ function ChatPageContent() {
       } else {
         toast.error(errorObj.message || "Failed to send message");
       }
+    } finally {
+      setIsSending(false);
+      setOptimisticMessages((prev) => prev.filter((m) => m._id !== optimisticMsg._id));
     }
   };
 
@@ -506,12 +536,19 @@ function ChatPageContent() {
   // Filter messages dynamically by query
   const filteredMessages = useMemo(() => {
     if (!activeChatMessages) return [];
-    if (!searchQuery.trim()) return activeChatMessages;
+    
+    const activeOptimistic = optimisticMessages.filter(
+      (m) => m.chatId === selectedChatId
+    );
+    
+    const combined = [...activeChatMessages, ...activeOptimistic];
+
+    if (!searchQuery.trim()) return combined;
     const q = searchQuery.toLowerCase();
-    return activeChatMessages.filter((m) =>
+    return combined.filter((m) =>
       m.content.toLowerCase().includes(q),
     );
-  }, [activeChatMessages, searchQuery]);
+  }, [activeChatMessages, optimisticMessages, selectedChatId, searchQuery]);
 
   // Extract shared media list
   const sharedMediaList = useMemo(() => {
@@ -583,6 +620,7 @@ function ChatPageContent() {
         onQuickView={(media) => {
           setQuickViewMedia(media);
         }}
+        isSending={isSending}
       />
 
       {selectedChatId && activeChat && (
