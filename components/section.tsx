@@ -185,7 +185,7 @@ export default function Section({
 
         {titleType === "dropdown-streaming" && onStreamingChange && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="group flex cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
+            <DropdownMenuTrigger className="group flex max-w-fit cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
               <span className="flex items-center gap-1.5">
                 <span
                   className={cn(
@@ -236,7 +236,7 @@ export default function Section({
 
         {titleType === "dropdown-genre" && onGenreChange && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="hover:text-primary flex cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
+            <DropdownMenuTrigger className="hover:text-primary flex max-w-fit cursor-pointer items-center gap-2 text-xl font-bold tracking-tight text-white transition-colors outline-none sm:text-2xl">
               <span>{genreName}</span>
               <ChevronDown className="h-5 w-5 text-zinc-400" />
             </DropdownMenuTrigger>

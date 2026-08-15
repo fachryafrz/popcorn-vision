@@ -23,7 +23,10 @@ import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import PersonQuickViewModal from "./person-quick-view-modal";
-import { useQuickViewMediaState, useQuickViewPersonState } from "@/hooks/use-query-modal-state";
+import {
+  useQuickViewMediaState,
+  useQuickViewPersonState,
+} from "@/hooks/use-query-modal-state";
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
@@ -118,13 +121,22 @@ export default function MediaDetailClient({
 
   // Fetched media data state
   const [details, setDetails] = useState<MediaDetails | null>(null);
-  const [credits, setCredits] = useState<{ cast?: CastItem[]; crew?: CrewItem[] }>({});
+  const [credits, setCredits] = useState<{
+    cast?: CastItem[];
+    crew?: CrewItem[];
+  }>({});
   const [videos, setVideos] = useState<VideoItem[]>([]);
-  const [watchProviders, setWatchProviders] = useState<Record<string, { flatrate?: ProviderItem[] }>>({});
+  const [watchProviders, setWatchProviders] = useState<
+    Record<string, { flatrate?: ProviderItem[] }>
+  >({});
   const [logoPath, setLogoPath] = useState<string | null>(null);
-  const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(null);
+  const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(
+    null,
+  );
   const [recommendations, setRecommendations] = useState<TMDBMedia[]>([]);
-  const [regionalData, setRegionalData] = useState<(RegionalRelease | RegionalContentRating)[]>([]);
+  const [regionalData, setRegionalData] = useState<
+    (RegionalRelease | RegionalContentRating)[]
+  >([]);
   // Track current media so we can reset loading state during render when page details change
   const [prevMediaId, setPrevMediaId] = useState(id);
   const [prevMediaType, setPrevMediaType] = useState(mediaType);
@@ -181,15 +193,21 @@ export default function MediaDetailClient({
 
   const [seasonState, setSeasonState] = useQueryState("season");
   const season = seasonState ? parseInt(seasonState) || 1 : 1;
-  const setSeason = useCallback((s: number) => {
-    setSeasonState(String(s));
-  }, [setSeasonState]);
+  const setSeason = useCallback(
+    (s: number) => {
+      setSeasonState(String(s));
+    },
+    [setSeasonState],
+  );
 
   const [episodeState, setEpisodeState] = useQueryState("episode");
   const episode = episodeState ? parseInt(episodeState) || 1 : 1;
-  const setEpisode = useCallback((e: number) => {
-    setEpisodeState(String(e));
-  }, [setEpisodeState]);
+  const setEpisode = useCallback(
+    (e: number) => {
+      setEpisodeState(String(e));
+    },
+    [setEpisodeState],
+  );
   const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
   const [quickViewPersonId, setQuickViewPersonId] = useQuickViewPersonState();
 
@@ -201,13 +219,19 @@ export default function MediaDetailClient({
     } as TMDBMedia;
   }, [quickViewMediaRef]);
 
-  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
-    if (media) {
-      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
-    } else {
-      setQuickViewMediaRef(null);
-    }
-  }, [setQuickViewMediaRef]);
+  const setQuickViewMedia = useCallback(
+    (media: TMDBMedia | null) => {
+      if (media) {
+        setQuickViewMediaRef({
+          id: String(media.id),
+          media_type: media.media_type || "movie",
+        });
+      } else {
+        setQuickViewMediaRef(null);
+      }
+    },
+    [setQuickViewMediaRef],
+  );
 
   const [selectedRegion, setSelectedRegion] = useState("US");
 
@@ -333,9 +357,7 @@ export default function MediaDetailClient({
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const isWatchlisted = useQuery(
     api.watchlist.checkWatchlistItem,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
@@ -344,9 +366,7 @@ export default function MediaDetailClient({
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const isFavorited = useQuery(
     api.favorites.checkFavoriteItem,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const addToFavorites = useMutation(api.favorites.addToFavorites);
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
@@ -354,24 +374,18 @@ export default function MediaDetailClient({
   // Convex rating mutations/queries
   const userRating = useQuery(
     api.ratings.getUserRating,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const communityStats = useQuery(
     api.ratings.getCommunityRatingStats,
-    details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const deleteRating = useMutation(api.ratings.deleteRating);
 
   // Convex diary history queries/mutations
   const watchHistory = useQuery(
     api.diary.getMediaWatchHistory,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
   const [selectedRatingForLog, setSelectedRatingForLog] = useState<
@@ -397,9 +411,7 @@ export default function MediaDetailClient({
   // Convex watch progress query & mutation
   const watchProgress = useQuery(
     api.continueWatching.getProgressForMedia,
-    isLoggedIn && details
-      ? { mediaId: String(details.id), mediaType }
-      : "skip",
+    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
   );
   const upsertWatchProgress = useMutation(api.continueWatching.upsertProgress);
 
@@ -535,11 +547,9 @@ export default function MediaDetailClient({
   };
 
   const cast = credits?.cast?.slice(0, 15) || [];
-  const directors =
-    credits?.crew?.filter((c) => c.job === "Director") || [];
+  const directors = credits?.crew?.filter((c) => c.job === "Director") || [];
   const creators = details?.created_by || [];
-  const providers =
-    watchProviders?.[selectedRegion]?.flatrate || [];
+  const providers = watchProviders?.[selectedRegion]?.flatrate || [];
 
   // YouTube trailer resolution
   const trailerVideo = videos?.find(
@@ -547,9 +557,7 @@ export default function MediaDetailClient({
   );
   const trailerKey =
     trailerVideo?.key ||
-    (videos?.[0]?.site === "YouTube"
-      ? videos[0].key
-      : null);
+    (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
 
   // Streaming server sources
   const servers = streamingProviderList({
@@ -1006,7 +1014,6 @@ export default function MediaDetailClient({
                         }
                         className={cn(
                           "flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 transition duration-200 hover:bg-zinc-800/50 active:scale-95",
-                          c.logo_path ? "pr-4" : "px-4",
                         )}
                       >
                         {c.logo_path && (
@@ -1019,7 +1026,12 @@ export default function MediaDetailClient({
                             />
                           </div>
                         )}
-                        <span className="text-xs leading-tight font-medium text-zinc-300">
+                        <span
+                          className={cn(
+                            "text-xs leading-tight font-medium text-zinc-300",
+                            c.logo_path && "sr-only",
+                          )}
+                        >
                           {c.name}
                         </span>
                       </div>
