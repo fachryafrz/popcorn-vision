@@ -207,6 +207,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   });
   const activeTab = (activeTabState || "all") as
     | "all"
+    | "stats"
     | "watchlist"
     | "favorites"
     | "ratings"
@@ -414,7 +415,7 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
     api.diary.getUserDiary,
     targetUserId &&
       !showLockScreen &&
-      (showInsightsTab ||
+      ((showInsightsTab && activeTab === "stats") ||
         (showDiaryTab && (activeTab === "all" || activeTab === "diary")))
       ? { userId: targetUserId }
       : "skip",
@@ -736,6 +737,11 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
   const tabsList = [
     { id: "all" as const, label: "All", visible: true },
     {
+      id: "stats" as const,
+      label: "Stats",
+      visible: showInsightsTab,
+    },
+    {
       id: "continue-watching" as const,
       label: "Continue Watching",
       visible: isOwner,
@@ -794,19 +800,6 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         <LockScreen isFriendsOnly={isFriendsOnly} />
       ) : (
         <>
-          {/* Insights (Always visible if showInsightsTab is true) */}
-          {showInsightsTab && (
-            <div className="mb-12 border-b border-zinc-900 pb-12">
-              {diary === undefined ? (
-                <div className="flex items-center justify-center py-20">
-                  <Loader2 className="text-primary h-8 w-8 animate-spin" />
-                </div>
-              ) : (
-                <InsightsTab diary={diary} user={targetUser} />
-              )}
-            </div>
-          )}
-
           {/* Tabs */}
           <div className="mb-8 flex scrollbar-none gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
             {tabsList.map((tab) => (
@@ -826,7 +819,15 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
           </div>
 
           {/* Tab Contents */}
-          {activeTab === "diary" ? (
+          {activeTab === "stats" ? (
+            diary === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <InsightsTab diary={diary} user={targetUser} />
+            )
+          ) : activeTab === "diary" ? (
             <>
               <EditToolbar
                 isOwner={isOwner || false}
