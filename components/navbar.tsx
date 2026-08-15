@@ -588,6 +588,17 @@ export default function Navbar() {
                   <DropdownMenuItem
                     onClick={() => {
                       setDropdownMenuOpen(false);
+                      router.push("/search");
+                    }}
+                    className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+                  >
+                    <Search className="mr-2 h-4 w-4 text-zinc-400" />
+                    Search
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setDropdownMenuOpen(false);
                       router.push("/chat");
                     }}
                     className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
