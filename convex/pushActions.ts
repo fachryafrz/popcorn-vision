@@ -13,6 +13,7 @@ export const sendPushNotification = internalAction({
     body: v.string(),
     url: v.optional(v.string()),
     icon: v.optional(v.string()),
+    badge: v.optional(v.string()),
     chatId: v.optional(v.string()),
     notificationType: v.optional(v.string()),
   },
@@ -43,6 +44,7 @@ export const sendPushNotification = internalAction({
       body: args.body,
       url: args.url || "/chat",
       icon: args.icon || "/favicon/android-chrome-192x192.png",
+      badge: args.badge || "/favicon/favicon-32x32.png",
       chatId: args.chatId,
       notificationType: args.notificationType,
     });
