@@ -209,6 +209,7 @@ export const createGroupChat = mutation({
         body: `invited you to join the group ${cleanGroupName}.`,
         url: `/chat?id=${chatId}`,
         icon: creatorProfile?.image || "/favicon/android-chrome-192x192.png",
+        badge: "/favicon/favicon-32x32.png",
       });
     }
 
@@ -327,6 +328,7 @@ export const inviteToGroupChat = mutation({
             body: `invited you to join the group ${chat.name || "Chat"}.`,
             url: `/chat?id=${args.chatId}`,
             icon: inviterProfile?.image || "/favicon/android-chrome-192x192.png",
+            badge: "/favicon/favicon-32x32.png",
           });
         }
       }
@@ -591,6 +593,7 @@ export const sendMessage = mutation({
             body: pushBody,
             url: `/chat?id=${args.chatId}`,
             icon: senderProfile?.image || "/favicon/android-chrome-192x192.png",
+            badge: "/favicon/favicon-32x32.png",
             chatId: args.chatId,
             notificationType: "chat_message",
           });

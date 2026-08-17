@@ -6,11 +6,13 @@ self.addEventListener('push', function (event) {
     const data = event.data.json();
     const title = data.title || 'New Message';
 
-    const absoluteIcon = data.icon 
+    const absoluteIcon = data.icon
       ? (data.icon.startsWith('http') ? data.icon : `${self.location.origin}${data.icon}`)
       : `${self.location.origin}/favicon/android-chrome-192x192.png`;
-    
-    const absoluteBadge = `${self.location.origin}/favicon/favicon-32x32.png`;
+
+    const absoluteBadge = data.badge
+      ? (data.badge.startsWith('http') ? data.badge : `${self.location.origin}${data.badge}`)
+      : `${self.location.origin}/favicon/favicon-32x32.png`;
 
     const options = {
       body: data.body || 'You received a new message.',
