@@ -23,6 +23,8 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
+import { useSearchOverlayStore } from "@/hooks/use-search-overlay-store";
+import { useIsMac } from "@/hooks/use-is-mac";
 
 interface NavbarMobileDrawerProps {
   isLoggedIn: boolean;
@@ -48,17 +50,12 @@ export function NavbarMobileDrawer({
 }: NavbarMobileDrawerProps) {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileSearchValue, setMobileSearchValue] = useState("");
+  const { open: openSearchOverlay } = useSearchOverlayStore();
+  const isMac = useIsMac();
 
-  const handleMobileSearchSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const query = mobileSearchValue.trim();
+  const handleOpenSearch = () => {
     setMobileMenuOpen(false);
-    if (query) {
-      router.push(`/search?q=${encodeURIComponent(query)}`);
-    } else {
-      router.push("/search");
-    }
+    openSearchOverlay();
   };
 
   const handleNavigate = (path: string) => {
@@ -81,16 +78,21 @@ export function NavbarMobileDrawer({
         </SheetDescription>
 
         {!isSearchPage && (
-          <form onSubmit={handleMobileSearchSubmit} className="relative mt-6">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-zinc-500" />
-            <input
-              type="text"
-              value={mobileSearchValue}
-              onChange={(e) => setMobileSearchValue(e.target.value)}
-              placeholder="Search movies, shows…"
-              className="w-full rounded-xl border border-zinc-700 bg-zinc-900 py-2.5 pr-4 pl-9 text-sm text-white transition-all outline-none placeholder:text-zinc-500 focus:border-zinc-500"
-            />
-          </form>
+          <button
+            type="button"
+            onClick={handleOpenSearch}
+            className="mt-6 flex w-full cursor-pointer items-center justify-between rounded-xl border border-zinc-700/80 bg-zinc-900/80 px-3.5 py-2.5 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200"
+          >
+            <div className="flex items-center gap-2.5">
+              <Search className="h-4 w-4 text-zinc-400" />
+              <span>Search movies, shows…</span>
+            </div>
+            <kbd className="hidden rounded-md border border-zinc-700 bg-zinc-950 px-1.5 py-0.5 text-[10px] font-semibold text-zinc-400 md:block">
+              <span>{isMac ? "⌘" : "Ctrl"}</span>
+              <span>+</span>
+              <span>K</span>
+            </kbd>
+          </button>
         )}
 
         <nav className="mt-4 flex flex-col gap-4 text-base font-semibold text-zinc-300">

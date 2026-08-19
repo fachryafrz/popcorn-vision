@@ -15,6 +15,7 @@ import { NavbarSearch } from "./navbar/navbar-search";
 import { NavbarNotifications } from "./navbar/navbar-notifications";
 import { NavbarUserMenu } from "./navbar/navbar-user-menu";
 import { NavbarMobileDrawer } from "./navbar/navbar-mobile-drawer";
+import { SearchOverlay } from "./search-overlay";
 
 export default function Navbar() {
   const session = authClient.useSession();
@@ -130,10 +131,12 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Global AuthModal */}
+      {/* Global AuthModal & SearchOverlay */}
       <Suspense>
         <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
       </Suspense>
+      <SearchOverlay />
     </>
   );
 }
+
