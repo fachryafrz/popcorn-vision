@@ -21,9 +21,29 @@ export interface Creator {
 }
 
 export interface VideoItem {
+  id?: string;
+  name?: string;
   type: string;
   site: string;
   key: string;
+  official?: boolean;
+  published_at?: string;
+}
+
+export interface TMDBImageItem {
+  aspect_ratio: number;
+  file_path: string;
+  height: number;
+  iso_639_1: string | null;
+  vote_average: number;
+  vote_count: number;
+  width: number;
+}
+
+export interface MediaImagesData {
+  backdrops: TMDBImageItem[];
+  posters: TMDBImageItem[];
+  logos?: TMDBImageItem[];
 }
 
 export interface ProviderItem {

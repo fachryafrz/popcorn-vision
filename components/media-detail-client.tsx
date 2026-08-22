@@ -53,6 +53,7 @@ import {
   RegionalContentRating,
   SeasonDetails,
   CollectionPart,
+  MediaImagesData,
 } from "./media-detail/types";
 
 import MediaHero from "./media-detail/media-hero";
@@ -137,6 +138,11 @@ export default function MediaDetailClient({
   const [regionalData, setRegionalData] = useState<
     (RegionalRelease | RegionalContentRating)[]
   >([]);
+  const [images, setImages] = useState<MediaImagesData>({
+    backdrops: [],
+    posters: [],
+    logos: [],
+  });
   // Track current media so we can reset loading state during render when page details change
   const [prevMediaId, setPrevMediaId] = useState(id);
   const [prevMediaType, setPrevMediaType] = useState(mediaType);
@@ -163,6 +169,9 @@ export default function MediaDetailClient({
         setTextlessPosterPath(data.textlessPosterPath ?? null);
         setRecommendations(data.recommendations ?? []);
         setRegionalData(data.regionalData ?? []);
+        setImages(
+          data.images ?? { backdrops: [], posters: [], logos: [] },
+        );
       })
       .catch(() => router.push("/"))
       .finally(() => setIsMediaLoading(false));
@@ -967,6 +976,8 @@ export default function MediaDetailClient({
           mediaType={mediaType}
           details={details}
           trailerKey={trailerKey}
+          videos={videos}
+          images={images}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           selectedServer={selectedServer}
