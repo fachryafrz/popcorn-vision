@@ -6,6 +6,7 @@ import { ShieldAlert, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { siteConfig } from "@/config/site";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 export default function DisclaimerModal() {
   const [isMounted, setIsMounted] = useState(false);
@@ -15,7 +16,7 @@ export default function DisclaimerModal() {
     const timer = setTimeout(() => {
       setIsMounted(true);
       const accepted = localStorage.getItem(
-        "popcorn-vision-disclaimer-accepted",
+        STORAGE_KEYS.DISCLAIMER_ACCEPTED,
       );
       setHasAccepted(!!accepted);
     }, 0);
@@ -23,7 +24,7 @@ export default function DisclaimerModal() {
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem("popcorn-vision-disclaimer-accepted", "true");
+    localStorage.setItem(STORAGE_KEYS.DISCLAIMER_ACCEPTED, "true");
     setHasAccepted(true);
   };
 

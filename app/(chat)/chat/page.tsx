@@ -33,6 +33,7 @@ import QuickViewModal from "@/components/quick-view-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { siteConfig } from "@/config/site";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 function ChatPageContent() {
   const router = useRouter();
@@ -108,18 +109,28 @@ function ChatPageContent() {
   const [selectedChatId, setSelectedChatId] = useState<Id<"chats"> | null>(
     () => {
       if (typeof window !== "undefined") {
-        return sessionStorage.getItem("active_chat_id") as Id<"chats"> | null;
+        return (
+          sessionStorage.getItem(STORAGE_KEYS.ACTIVE_CHAT_ID) ||
+          sessionStorage.getItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID) ||
+          localStorage.getItem(STORAGE_KEYS.ACTIVE_CHAT_ID) ||
+          localStorage.getItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID)
+        ) as Id<"chats"> | null;
       }
       return null;
     },
   );
 
-  // Save selectedChatId to localStoe when it changes
+  // Save selectedChatId to storage when it changes
   useEffect(() => {
     if (selectedChatId) {
-      sessionStorage.setItem("active_chat_id", selectedChatId);
+      sessionStorage.setItem(STORAGE_KEYS.ACTIVE_CHAT_ID, selectedChatId);
+      sessionStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
+      localStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
     } else {
-      sessionStorage.removeItem("active_chat_id");
+      sessionStorage.removeItem(STORAGE_KEYS.ACTIVE_CHAT_ID);
+      sessionStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
+      localStorage.removeItem(STORAGE_KEYS.ACTIVE_CHAT_ID);
+      localStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
     }
   }, [selectedChatId]);
 
@@ -152,7 +163,10 @@ function ChatPageContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("active_chat_id");
+      const saved =
+        sessionStorage.getItem(STORAGE_KEYS.ACTIVE_CHAT_ID) ||
+        sessionStorage.getItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID) ||
+        localStorage.getItem(STORAGE_KEYS.ACTIVE_CHAT_ID);
       if (saved) {
         return window.innerWidth >= 640; // sm breakpoint is 640px
       }

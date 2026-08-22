@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/components/ui/confirm-provider";
 import { cn } from "@/lib/utils";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 interface NavbarNotificationsProps {
   isLoggedIn: boolean;
@@ -148,8 +149,12 @@ export function NavbarNotifications({
                     }
                     if (notif.type === "chat_message") {
                       if (notif.mediaId) {
+                        sessionStorage.setItem(
+                          STORAGE_KEYS.ACTIVE_CHAT_ID,
+                          notif.mediaId,
+                        );
                         localStorage.setItem(
-                          "active_chat_id",
+                          STORAGE_KEYS.ACTIVE_CHAT_ID,
                           notif.mediaId,
                         );
                       }
@@ -307,8 +312,12 @@ export function NavbarNotifications({
                             await acceptGroupInvite({
                               chatId: notif.mediaId as Id<"chats">,
                             });
+                            sessionStorage.setItem(
+                              STORAGE_KEYS.ACTIVE_CHAT_ID,
+                              notif.mediaId!,
+                            );
                             localStorage.setItem(
-                              "active_chat_id",
+                              STORAGE_KEYS.ACTIVE_CHAT_ID,
                               notif.mediaId!,
                             );
                             toast.success("Group invitation accepted!");

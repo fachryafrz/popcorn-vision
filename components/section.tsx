@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { TMDBMedia, PROVIDERS, GENRE_MAP } from "@/lib/tmdb";
+import { STORAGE_KEYS } from "@/lib/constants";
 import Carousel from "./carousel";
 import { CarouselSkeleton } from "./skeletons";
 import { ChevronDown } from "lucide-react";
@@ -49,7 +50,9 @@ export default function Section({
   // States for interactive controls
   const [trendingTab, setTrendingTab] = useState<"all" | "movie" | "tv">(() => {
     if (titleType === "text" && typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("trending_tab");
+      const saved =
+        sessionStorage.getItem(STORAGE_KEYS.TRENDING_TAB) ||
+        sessionStorage.getItem(STORAGE_KEYS.LEGACY_TRENDING_TAB);
       if (saved === "all" || saved === "movie" || saved === "tv") {
         return saved;
       }
@@ -59,7 +62,9 @@ export default function Section({
   const [streamingProv, setStreamingProv] = useState<keyof typeof PROVIDERS>(
     () => {
       if (titleType === "dropdown-streaming" && typeof window !== "undefined") {
-        const saved = sessionStorage.getItem("streaming_prov");
+        const saved =
+          sessionStorage.getItem(STORAGE_KEYS.STREAMING_PROV) ||
+          sessionStorage.getItem(STORAGE_KEYS.LEGACY_STREAMING_PROV);
         if (saved && saved in PROVIDERS) {
           return saved as keyof typeof PROVIDERS;
         }
@@ -69,7 +74,9 @@ export default function Section({
   );
   const [genreName, setGenreName] = useState<string>(() => {
     if (titleType === "dropdown-genre" && typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("genre_name");
+      const saved =
+        sessionStorage.getItem(STORAGE_KEYS.GENRE_NAME) ||
+        sessionStorage.getItem(STORAGE_KEYS.LEGACY_GENRE_NAME);
       if (saved) {
         return saved;
       }
@@ -116,7 +123,8 @@ export default function Section({
     if (!onTrendingChange) return;
     setTrendingTab(type);
     if (titleType === "text") {
-      sessionStorage.setItem("trending_tab", type);
+      sessionStorage.setItem(STORAGE_KEYS.TRENDING_TAB, type);
+      sessionStorage.removeItem(STORAGE_KEYS.LEGACY_TRENDING_TAB);
     }
     setLoading(true);
     const data = await onTrendingChange(type);
@@ -128,7 +136,8 @@ export default function Section({
     if (!onStreamingChange) return;
     setStreamingProv(prov);
     if (titleType === "dropdown-streaming") {
-      sessionStorage.setItem("streaming_prov", prov);
+      sessionStorage.setItem(STORAGE_KEYS.STREAMING_PROV, prov);
+      sessionStorage.removeItem(STORAGE_KEYS.LEGACY_STREAMING_PROV);
     }
     setLoading(true);
     const data = await onStreamingChange(prov);
@@ -140,7 +149,8 @@ export default function Section({
     if (!onGenreChange) return;
     setGenreName(name);
     if (titleType === "dropdown-genre") {
-      sessionStorage.setItem("genre_name", name);
+      sessionStorage.setItem(STORAGE_KEYS.GENRE_NAME, name);
+      sessionStorage.removeItem(STORAGE_KEYS.LEGACY_GENRE_NAME);
     }
     setLoading(true);
     const data = await onGenreChange(name);
