@@ -18,6 +18,7 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import { useRouter } from "next/navigation";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 interface HeroProps {
   items: TMDBMedia[];
@@ -293,7 +294,9 @@ export default function Hero({
 
   const [initialIndex] = useState(() => {
     if (typeof window !== "undefined") {
-      const saved = sessionStorage.getItem("hero_active_index");
+      const saved =
+        sessionStorage.getItem(STORAGE_KEYS.HERO_ACTIVE_INDEX) ||
+        sessionStorage.getItem(STORAGE_KEYS.LEGACY_HERO_ACTIVE_INDEX);
       if (saved !== null) {
         const parsed = parseInt(saved, 10);
         if (!isNaN(parsed) && parsed >= 0 && parsed < (items?.length || 0)) {
@@ -316,7 +319,11 @@ export default function Hero({
           }
         }}
         onSlideChange={(swiper) => {
-          sessionStorage.setItem("hero_active_index", String(swiper.realIndex));
+          sessionStorage.setItem(
+            STORAGE_KEYS.HERO_ACTIVE_INDEX,
+            String(swiper.realIndex),
+          );
+          sessionStorage.removeItem(STORAGE_KEYS.LEGACY_HERO_ACTIVE_INDEX);
         }}
         modules={[Autoplay, Pagination, EffectFade]}
         effect="fade"

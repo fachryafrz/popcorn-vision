@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Bell, ShieldCheck, BellRing, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 interface NotificationPromptModalProps {
   isLoggedIn: boolean;
@@ -27,7 +28,8 @@ export default function NotificationPromptModal({
 
     // Check if prompt was dismissed
     const isDismissed =
-      localStorage.getItem("dismissed_push_prompt") === "true";
+      localStorage.getItem(STORAGE_KEYS.DISMISSED_PUSH_PROMPT) === "true" ||
+      localStorage.getItem(STORAGE_KEYS.LEGACY_DISMISSED_PUSH_PROMPT) === "true";
 
     if (isDismissed) return;
 
@@ -48,7 +50,8 @@ export default function NotificationPromptModal({
   };
 
   const handleDismiss = () => {
-    localStorage.setItem("dismissed_push_prompt", "true");
+    localStorage.setItem(STORAGE_KEYS.DISMISSED_PUSH_PROMPT, "true");
+    localStorage.removeItem(STORAGE_KEYS.LEGACY_DISMISSED_PUSH_PROMPT);
     setIsOpen(false);
   };
 

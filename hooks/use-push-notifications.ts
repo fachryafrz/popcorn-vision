@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -15,6 +16,14 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
+}
+
+function getStoredEndpoint(): string | null {
+  if (typeof window === "undefined") return null;
+  return (
+    localStorage.getItem(STORAGE_KEYS.PUSH_ENDPOINT) ||
+    localStorage.getItem(STORAGE_KEYS.LEGACY_PUSH_ENDPOINT)
+  );
 }
 
 export function usePushNotifications(isLoggedIn: boolean) {
@@ -46,16 +55,16 @@ export function usePushNotifications(isLoggedIn: boolean) {
           const subscription = await registration.pushManager.getSubscription();
           if (subscription) {
             setCurrentDeviceEndpoint(subscription.endpoint);
-            localStorage.setItem("push_subscription_endpoint", subscription.endpoint);
+            localStorage.setItem(STORAGE_KEYS.PUSH_ENDPOINT, subscription.endpoint);
           } else {
-            const stored = localStorage.getItem("push_subscription_endpoint");
+            const stored = getStoredEndpoint();
             if (stored) {
               setCurrentDeviceEndpoint(stored);
             }
           }
         } catch (err) {
           console.error("Error checking push subscription on mount:", err);
-          const stored = localStorage.getItem("push_subscription_endpoint");
+          const stored = getStoredEndpoint();
           if (stored) {
             setCurrentDeviceEndpoint(stored);
           }
@@ -117,7 +126,8 @@ export function usePushNotifications(isLoggedIn: boolean) {
         userAgent: navigator.userAgent,
       });
 
-      localStorage.setItem("push_subscription_endpoint", subJson.endpoint);
+      localStorage.setItem(STORAGE_KEYS.PUSH_ENDPOINT, subJson.endpoint);
+      localStorage.removeItem(STORAGE_KEYS.LEGACY_PUSH_ENDPOINT);
       setCurrentDeviceEndpoint(subJson.endpoint);
 
       toast.success("Push notifications enabled!");
@@ -148,7 +158,8 @@ export function usePushNotifications(isLoggedIn: boolean) {
         await deleteSubscription({});
       }
 
-      localStorage.removeItem("push_subscription_endpoint");
+      localStorage.removeItem(STORAGE_KEYS.PUSH_ENDPOINT);
+      localStorage.removeItem(STORAGE_KEYS.LEGACY_PUSH_ENDPOINT);
       setCurrentDeviceEndpoint(null);
 
       toast.success("Push notifications disabled");
