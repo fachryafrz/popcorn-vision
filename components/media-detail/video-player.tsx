@@ -239,7 +239,7 @@ export default function VideoPlayer({
 
             {/* Sub-tab 1: Videos List */}
             {sidebarMediaTab === "videos" && (
-              <div className="space-y-2">
+              <div className="max-h-[50svh] space-y-2 space-x-2 overflow-y-auto">
                 {youtubeVideos.length === 0 ? (
                   <p className="py-8 text-center text-xs text-zinc-500 italic">
                     No videos available for this title.
@@ -257,7 +257,7 @@ export default function VideoPlayer({
                           setActiveMediaMode("video");
                         }}
                         className={cn(
-                          "group/vid flex w-full cursor-pointer items-center gap-3 rounded-2xl border p-2.5 text-left transition-all",
+                          "group/vid flex w-[calc(100%-0.5rem)] cursor-pointer items-center gap-3 rounded-2xl border p-2.5 text-left transition-all",
                           isSelected
                             ? "border-primary bg-primary/10 text-white"
                             : "border-zinc-800/80 bg-zinc-950/60 text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900",
@@ -307,9 +307,9 @@ export default function VideoPlayer({
 
             {/* Sub-tab 2: Backdrops Gallery */}
             {sidebarMediaTab === "backdrops" && (
-              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="max-h-[50svh] space-y-2 space-x-2 overflow-y-auto">
                 {backdrops.length === 0 ? (
-                  <p className="col-span-full py-8 text-center text-xs text-zinc-500 italic">
+                  <p className="py-8 text-center text-xs text-zinc-500 italic">
                     No backdrops available.
                   </p>
                 ) : (
@@ -325,7 +325,7 @@ export default function VideoPlayer({
                           setActiveMediaMode("image");
                         }}
                         className={cn(
-                          "group/img relative aspect-16/9 w-full cursor-pointer overflow-hidden rounded-2xl border transition-all",
+                          "group/img relative aspect-16/9 w-[calc(50%-0.5rem)] cursor-pointer overflow-hidden rounded-2xl border transition-all",
                           isSelected
                             ? "border-primary ring-primary/40 shadow-lg ring-2"
                             : "border-zinc-800/80 hover:border-zinc-700",
@@ -348,9 +348,9 @@ export default function VideoPlayer({
 
             {/* Sub-tab 3: Posters Gallery */}
             {sidebarMediaTab === "posters" && (
-              <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-2">
+              <div className="max-h-[50svh] space-y-2 space-x-2 overflow-y-auto">
                 {posters.length === 0 ? (
-                  <p className="col-span-full py-8 text-center text-xs text-zinc-500 italic">
+                  <p className="py-8 text-center text-xs text-zinc-500 italic">
                     No posters available.
                   </p>
                 ) : (
@@ -366,7 +366,7 @@ export default function VideoPlayer({
                           setActiveMediaMode("image");
                         }}
                         className={cn(
-                          "group/poster relative aspect-2/3 w-full cursor-pointer overflow-hidden rounded-2xl border transition-all",
+                          "group/poster relative aspect-2/3 w-[calc(50%-0.5rem)] cursor-pointer overflow-hidden rounded-2xl border transition-all",
                           isSelected
                             ? "border-primary ring-primary/40 shadow-lg ring-2"
                             : "border-zinc-800/80 hover:border-zinc-700",
@@ -498,7 +498,7 @@ export default function VideoPlayer({
                 Select Streaming Server
               </h4>
 
-              <div className="flex flex-col gap-2">
+              <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto lg:max-h-none lg:overflow-y-clip">
                 {servers.map((serv, index: number) => (
                   <Button
                     key={index}

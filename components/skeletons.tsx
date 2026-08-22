@@ -174,9 +174,9 @@ export function MediaDetailSkeleton() {
       </div>
 
       {/* Content Container shifted upwards to overlap backdrop */}
-      <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 md:-mt-44 md:flex-row md:gap-12 md:px-20">
+      <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 lg:-mt-44 lg:flex-row lg:gap-12 lg:px-20">
         {/* Large Poster Sidebar */}
-        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 md:block">
+        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 lg:block">
           <Skeleton className="aspect-2/3 w-full rounded-none" />
         </div>
 

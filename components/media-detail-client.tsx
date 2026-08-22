@@ -783,9 +783,9 @@ export default function MediaDetailClient({
       />
 
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
-      <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 md:-mt-44 md:flex-row md:gap-12 md:px-20">
+      <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 lg:-mt-44 lg:flex-row lg:gap-12 lg:px-20">
         {/* Large Poster Sidebar */}
-        <div className="border-zinc-850 hidden w-64 shrink-0 transform overflow-hidden rounded-2xl border bg-zinc-900/60 shadow-2xl shadow-black/85 backdrop-blur-md transition-all duration-300 hover:scale-102 md:block">
+        <div className="border-zinc-850 hidden w-64 shrink-0 transform overflow-hidden rounded-2xl border bg-zinc-900/60 shadow-2xl shadow-black/85 backdrop-blur-md transition-all duration-300 hover:scale-102 lg:block">
           <img
             src={posterUrl}
             alt={details?.title || details?.name}
