@@ -1,7 +1,7 @@
 "use server";
 
 import { axios } from "./axios";
-import { TMDBMedia, cleanMediaData, PROVIDERS, GENRE_MAP } from "./tmdb";
+import { TMDBMedia, cleanMediaData, PROVIDERS, GENRE_MAP, TMDBReviewsResponse } from "./tmdb";
 
 // Hero Items: Trending + Popular + New Releases (returns 10-15 best items)
 export async function getHeroItems(): Promise<TMDBMedia[]> {
@@ -205,6 +205,11 @@ export async function getMediaDetails(mediaType: "movie" | "tv", id: string) {
       textlessPosterPath,
       recommendations,
       regionalData: data[regionAppend]?.results || [],
+      images: {
+        backdrops: data.images?.backdrops || [],
+        posters: data.images?.posters || [],
+        logos: data.images?.logos || [],
+      },
     };
   } catch (error) {
     console.error(`Error fetching details for ${mediaType} ${id}:`, error);
@@ -928,6 +933,25 @@ export async function getCompanyTVShows(companyId: string, page: number = 1): Pr
   } catch (error) {
     console.error(`Error fetching TV shows for company ${companyId}:`, error);
     return [];
+  }
+}
+
+// Fetch reviews for a movie or TV series from TMDB
+export async function getMediaReviews(
+  mediaType: "movie" | "tv",
+  id: string,
+  page: number = 1
+): Promise<TMDBReviewsResponse | null> {
+  try {
+    const res = await axios.get(`/${mediaType}/${id}/reviews`, {
+      params: {
+        page,
+      },
+    });
+    return res.data as TMDBReviewsResponse;
+  } catch (error) {
+    console.error(`Error fetching reviews for ${mediaType} ${id}:`, error);
+    return null;
   }
 }
 

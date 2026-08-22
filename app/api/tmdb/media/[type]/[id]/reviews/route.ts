@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { getMediaDetails } from "@/lib/tmdb-actions";
+import { NextRequest, NextResponse } from "next/server";
+import { getMediaReviews } from "@/lib/tmdb-actions";
 import { guardApiRoute } from "@/lib/api-guard";
 
 export const revalidate = 3600;
@@ -8,7 +8,7 @@ interface RouteParams {
   params: Promise<{ type: string; id: string }>;
 }
 
-export async function GET(req: Request, { params }: RouteParams) {
+export async function GET(req: NextRequest, { params }: RouteParams) {
   const guard = guardApiRoute(req);
   if (guard) return guard;
 
@@ -18,7 +18,11 @@ export async function GET(req: Request, { params }: RouteParams) {
     return NextResponse.json({ error: "Invalid media type" }, { status: 400 });
   }
 
-  const data = await getMediaDetails(type, id);
+  const { searchParams } = new URL(req.url);
+  const pageParam = searchParams.get("page");
+  const page = pageParam ? parseInt(pageParam, 10) || 1 : 1;
+
+  const data = await getMediaReviews(type, id, page);
 
   if (!data) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });

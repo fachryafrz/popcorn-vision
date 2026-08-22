@@ -5,10 +5,13 @@ import {
   getStreamingOriginals,
   getByCategory,
 } from "@/lib/tmdb-actions";
+import { guardApiRoute } from "@/lib/api-guard";
 
 export const revalidate = 3600;
 
-export async function GET() {
+export async function GET(req: Request) {
+  const guard = guardApiRoute(req);
+  if (guard) return guard;
   try {
     const [hero, trending, streaming, category] = await Promise.all([
       getHeroItems(),

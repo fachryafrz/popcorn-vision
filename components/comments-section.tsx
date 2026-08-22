@@ -24,6 +24,9 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/components/ui/confirm-provider";
 import { UserRoleBadge } from "@/components/user-role-badge";
+import { TMDBReview, TMDBReviewsResponse } from "@/lib/tmdb";
+import TMDBReviewCard from "@/components/media-detail/tmdb-review-card";
+import { Loader2 } from "lucide-react";
 
 // Props for CommentsSection
 interface CommentsSectionProps {
@@ -68,6 +71,14 @@ export default function CommentsSection({
   const [commentContent, setCommentContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // TMDB Reviews State
+  const [tmdbReviews, setTmdbReviews] = useState<TMDBReview[]>([]);
+  const [tmdbPage, setTmdbPage] = useState(1);
+  const [tmdbTotalPages, setTmdbTotalPages] = useState(1);
+  const [tmdbTotalResults, setTmdbTotalResults] = useState(0);
+  const [isTmdbLoading, setIsTmdbLoading] = useState(true);
+  const [isLoadingMoreTmdb, setIsLoadingMoreTmdb] = useState(false);
+
   // Authentication session
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -82,6 +93,64 @@ export default function CommentsSection({
   }) as CommentType[] | undefined;
 
   const addCommentMutation = useMutation(api.comments.addComment);
+
+  // Fetch TMDB Reviews on mount or when mediaId/mediaType changes
+  useEffect(() => {
+    let isCancelled = false;
+    setIsTmdbLoading(true);
+    setTmdbPage(1);
+
+    fetch(`/api/tmdb/media/${mediaType}/${mediaId}/reviews?page=1`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch TMDB reviews");
+        return res.json();
+      })
+      .then((data: TMDBReviewsResponse) => {
+        if (!isCancelled) {
+          setTmdbReviews(data.results || []);
+          setTmdbTotalPages(data.total_pages || 1);
+          setTmdbTotalResults(data.total_results || 0);
+        }
+      })
+      .catch((err) => {
+        if (!isCancelled) {
+          console.error("Error fetching TMDB reviews:", err);
+          setTmdbReviews([]);
+        }
+      })
+      .finally(() => {
+        if (!isCancelled) {
+          setIsTmdbLoading(false);
+        }
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [mediaId, mediaType]);
+
+  const handleLoadMoreTmdb = async () => {
+    if (isLoadingMoreTmdb || tmdbPage >= tmdbTotalPages) return;
+    const nextPage = tmdbPage + 1;
+    setIsLoadingMoreTmdb(true);
+
+    try {
+      const res = await fetch(
+        `/api/tmdb/media/${mediaType}/${mediaId}/reviews?page=${nextPage}`
+      );
+      if (!res.ok) throw new Error("Failed to load more reviews");
+      const data: TMDBReviewsResponse = await res.json();
+      const newReviews = data.results || [];
+      setTmdbReviews((prev) => [...prev, ...newReviews]);
+      setTmdbPage(nextPage);
+      setTmdbTotalPages(data.total_pages || 1);
+    } catch (err) {
+      console.error("Error loading more TMDB reviews:", err);
+      toast.error("Failed to load more TMDB reviews");
+    } finally {
+      setIsLoadingMoreTmdb(false);
+    }
+  };
 
   const handlePostComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,19 +180,30 @@ export default function CommentsSection({
     }
   };
 
+  const totalCount =
+    (comments?.length ?? 0) +
+    (tmdbTotalResults > 0 ? tmdbTotalResults : tmdbReviews.length);
+
+  const isInitialLoading = comments === undefined && isTmdbLoading;
+  const hasNoItems =
+    comments !== undefined &&
+    !isTmdbLoading &&
+    comments.length === 0 &&
+    tmdbReviews.length === 0;
+
   return (
     <div className="mt-16 border-t border-zinc-800/80 pt-10">
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
             <MessageSquare className="text-primary h-6 w-6" />
-            Comments
+            Comments & Reviews
             <span className="text-sm font-normal text-zinc-500">
-              ({comments?.length ?? 0} discussions)
+              ({totalCount} {totalCount === 1 ? "entry" : "entries"})
             </span>
           </h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Join the conversation and share your thoughts
+            Join the conversation and explore reviews from the community and TMDB
           </p>
         </div>
 
@@ -177,8 +257,8 @@ export default function CommentsSection({
         )}
       </div>
 
-      {/* Render list of threaded comments */}
-      {comments === undefined ? (
+      {/* Render list of threaded comments & TMDB reviews */}
+      {isInitialLoading ? (
         <div className="space-y-6">
           {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="flex animate-pulse gap-4">
@@ -191,29 +271,58 @@ export default function CommentsSection({
             </div>
           ))}
         </div>
-      ) : comments.length === 0 ? (
+      ) : hasNoItems ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/30 py-16 text-center">
           <MessageSquare className="mb-3 h-10 w-10 text-zinc-700" />
-          <p className="text-sm font-medium text-zinc-400">No comments yet</p>
+          <p className="text-sm font-medium text-zinc-400">No comments or reviews yet</p>
           <p className="mt-1 text-xs text-zinc-600">
             Be the first to share your thoughts!
           </p>
         </div>
       ) : (
         <div className="space-y-6">
-          {comments.map((comment) => (
-            <CommentNode
-              key={comment._id}
-              comment={comment}
-              depth={0}
-              currentUserId={currentUserId}
-              mediaId={mediaId}
-              mediaType={mediaType}
-              mediaTitle={mediaTitle}
-              mediaPosterPath={mediaPosterPath}
-              onAuthRequired={() => authModal.open()}
-            />
+          {/* Community comments */}
+          {comments &&
+            comments.map((comment) => (
+              <CommentNode
+                key={comment._id}
+                comment={comment}
+                depth={0}
+                currentUserId={currentUserId}
+                mediaId={mediaId}
+                mediaType={mediaType}
+                mediaTitle={mediaTitle}
+                mediaPosterPath={mediaPosterPath}
+                onAuthRequired={() => authModal.open()}
+              />
+            ))}
+
+          {/* TMDB Reviews */}
+          {tmdbReviews.map((review) => (
+            <TMDBReviewCard key={review.id} review={review} />
           ))}
+
+          {/* Load More TMDB Reviews Button */}
+          {tmdbPage < tmdbTotalPages && (
+            <div className="flex justify-center pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLoadMoreTmdb}
+                disabled={isLoadingMoreTmdb}
+                className="cursor-pointer rounded-xl border-teal-500/30 bg-teal-950/20 text-xs font-semibold text-teal-300 hover:bg-teal-950/40 hover:text-white"
+              >
+                {isLoadingMoreTmdb ? (
+                  <>
+                    <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                    Loading more reviews…
+                  </>
+                ) : (
+                  `Load more TMDB reviews (${tmdbReviews.length} of ${tmdbTotalResults || tmdbReviews.length})`
+                )}
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </div>

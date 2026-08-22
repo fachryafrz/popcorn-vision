@@ -4,6 +4,7 @@ import {
   getCompanyMovies,
   getCompanyTVShows,
 } from "@/lib/tmdb-actions";
+import { guardApiRoute } from "@/lib/api-guard";
 
 export const revalidate = 3600;
 
@@ -11,7 +12,10 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-export async function GET(_req: Request, { params }: RouteParams) {
+export async function GET(req: Request, { params }: RouteParams) {
+  const guard = guardApiRoute(req);
+  if (guard) return guard;
+
   const { id } = await params;
 
   const [company, movies, tvShows] = await Promise.all([

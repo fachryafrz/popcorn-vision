@@ -118,3 +118,41 @@ export function cleanMediaData(items: TMDBRawItem[], defaultType?: "movie" | "tv
 
 // Fetching functions are migrated to lib/tmdb-actions.ts for Next.js Server Actions execution.
 
+export interface TMDBReviewAuthorDetails {
+  name: string;
+  username: string;
+  avatar_path: string | null;
+  rating: number | null;
+}
+
+export interface TMDBReview {
+  id: string;
+  author: string;
+  author_details: TMDBReviewAuthorDetails;
+  content: string;
+  created_at: string;
+  updated_at: string;
+  url: string;
+}
+
+export interface TMDBReviewsResponse {
+  id: number;
+  page: number;
+  results: TMDBReview[];
+  total_pages: number;
+  total_results: number;
+}
+
+export function getTMDBAvatarUrl(path: string | null): string | null {
+  if (!path) return null;
+  if (path.startsWith("/http://") || path.startsWith("/https://")) {
+    return path.slice(1);
+  }
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  if (path.startsWith("/")) {
+    return `https://image.tmdb.org/t/p/w185${path}`;
+  }
+  return `https://image.tmdb.org/t/p/w185/${path}`;
+}
