@@ -36,7 +36,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params.q || "";
-  const type = (params.type as SearchType) || "movie";
+  const type = (params.type as SearchType) || "all";
   const genre = params.genre || "";
   const startDate = params.startDate || "";
   const endDate = params.endDate || "";

@@ -4,10 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ChevronDown,
-  Activity,
-  Search,
-  MessageSquare,
-  List,
   ShieldCheck,
   Settings,
   LogOut,
@@ -96,42 +92,6 @@ export function NavbarUserMenu({
             <p className="truncate text-xs text-zinc-500">@{user.username}</p>
           </div>
         </Button>
-
-        <DropdownMenuSeparator className="my-1 bg-zinc-800" />
-
-        <DropdownMenuItem
-          onClick={() => navigateTo("/feed")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-        >
-          <Activity className="mr-2 h-4 w-4 text-zinc-400" />
-          Feed
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => navigateTo("/search")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-        >
-          <Search className="mr-2 h-4 w-4 text-zinc-400" />
-          Search
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => navigateTo("/chat")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-        >
-          <MessageSquare className="mr-2 h-4 w-4 text-zinc-400" />
-          Chats
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => navigateTo("/lists")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
-        >
-          <List className="mr-2 h-4 w-4 text-zinc-400" />
-          My Lists
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
         {(role === "owner" || role === "admin") && (
           <DropdownMenuItem
