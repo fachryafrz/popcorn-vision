@@ -24,7 +24,8 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/components/ui/confirm-provider";
 import { UserRoleBadge } from "@/components/user-role-badge";
-import { TMDBReview, TMDBReviewsResponse } from "@/lib/tmdb";
+import { TMDBReview } from "@/lib/tmdb";
+import { getMediaReviews } from "@/lib/tmdb-actions";
 import TMDBReviewCard from "@/components/media-detail/tmdb-review-card";
 import { Loader2 } from "lucide-react";
 
@@ -97,32 +98,46 @@ export default function CommentsSection({
   // Fetch TMDB Reviews on mount or when mediaId/mediaType changes
   useEffect(() => {
     let isCancelled = false;
-    setIsTmdbLoading(true);
-    setTmdbPage(1);
 
-    fetch(`/api/tmdb/media/${mediaType}/${mediaId}/reviews?page=1`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch TMDB reviews");
-        return res.json();
-      })
-      .then((data: TMDBReviewsResponse) => {
+    async function loadInitialReviews() {
+      if (!mediaId || (mediaType !== "movie" && mediaType !== "tv")) {
+        setIsTmdbLoading(false);
+        return;
+      }
+
+      setIsTmdbLoading(true);
+      setTmdbPage(1);
+
+      try {
+        const data = await getMediaReviews(
+          mediaType as "movie" | "tv",
+          mediaId,
+          1,
+        );
         if (!isCancelled) {
-          setTmdbReviews(data.results || []);
-          setTmdbTotalPages(data.total_pages || 1);
-          setTmdbTotalResults(data.total_results || 0);
+          if (data) {
+            setTmdbReviews(data.results || []);
+            setTmdbTotalPages(data.total_pages || 1);
+            setTmdbTotalResults(data.total_results || 0);
+          } else {
+            setTmdbReviews([]);
+            setTmdbTotalPages(1);
+            setTmdbTotalResults(0);
+          }
         }
-      })
-      .catch((err) => {
+      } catch (err: unknown) {
         if (!isCancelled) {
           console.error("Error fetching TMDB reviews:", err);
           setTmdbReviews([]);
         }
-      })
-      .finally(() => {
+      } finally {
         if (!isCancelled) {
           setIsTmdbLoading(false);
         }
-      });
+      }
+    }
+
+    loadInitialReviews();
 
     return () => {
       isCancelled = true;
@@ -131,20 +146,23 @@ export default function CommentsSection({
 
   const handleLoadMoreTmdb = async () => {
     if (isLoadingMoreTmdb || tmdbPage >= tmdbTotalPages) return;
+    if (!mediaId || (mediaType !== "movie" && mediaType !== "tv")) return;
     const nextPage = tmdbPage + 1;
     setIsLoadingMoreTmdb(true);
 
     try {
-      const res = await fetch(
-        `/api/tmdb/media/${mediaType}/${mediaId}/reviews?page=${nextPage}`
+      const data = await getMediaReviews(
+        mediaType as "movie" | "tv",
+        mediaId,
+        nextPage,
       );
-      if (!res.ok) throw new Error("Failed to load more reviews");
-      const data: TMDBReviewsResponse = await res.json();
-      const newReviews = data.results || [];
-      setTmdbReviews((prev) => [...prev, ...newReviews]);
-      setTmdbPage(nextPage);
-      setTmdbTotalPages(data.total_pages || 1);
-    } catch (err) {
+      if (data) {
+        const newReviews = data.results || [];
+        setTmdbReviews((prev) => [...prev, ...newReviews]);
+        setTmdbPage(nextPage);
+        setTmdbTotalPages(data.total_pages || 1);
+      }
+    } catch (err: unknown) {
       console.error("Error loading more TMDB reviews:", err);
       toast.error("Failed to load more TMDB reviews");
     } finally {
@@ -310,7 +328,7 @@ export default function CommentsSection({
                 size="sm"
                 onClick={handleLoadMoreTmdb}
                 disabled={isLoadingMoreTmdb}
-                className="cursor-pointer rounded-xl border-teal-500/30 bg-teal-950/20 text-xs font-semibold text-teal-300 hover:bg-teal-950/40 hover:text-white"
+                className="cursor-pointer rounded-xl border-zinc-800 bg-zinc-900/60 text-xs font-semibold text-zinc-300 hover:bg-zinc-800 hover:text-white"
               >
                 {isLoadingMoreTmdb ? (
                   <>

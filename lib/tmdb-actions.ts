@@ -943,6 +943,9 @@ export async function getMediaReviews(
   page: number = 1
 ): Promise<TMDBReviewsResponse | null> {
   try {
+    if (!id || (mediaType !== "movie" && mediaType !== "tv")) {
+      return null;
+    }
     const res = await axios.get(`/${mediaType}/${id}/reviews`, {
       params: {
         page,
@@ -954,4 +957,5 @@ export async function getMediaReviews(
     return null;
   }
 }
+
 

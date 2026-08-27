@@ -34,9 +34,9 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
 
   return (
     <div className="group flex flex-col gap-1 transition-all duration-300">
-      <div className="flex items-start gap-3 rounded-2xl border border-teal-500/15 bg-teal-950/10 p-3.5 transition-all duration-300 hover:border-teal-500/30 hover:bg-teal-950/20">
+      <div className="flex items-start gap-3 rounded-2xl border border-transparent bg-zinc-900/10 p-3 transition-all duration-300 hover:border-zinc-800/30 hover:bg-zinc-900/30">
         {/* Avatar */}
-        <Avatar className="h-9 w-9 border border-teal-500/30 ring-2 ring-transparent transition-all duration-300 group-hover:ring-teal-500/20">
+        <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/30">
           {avatarUrl ? (
             <AvatarImage
               src={avatarUrl}
@@ -44,7 +44,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
               className="object-cover"
             />
           ) : null}
-          <AvatarFallback className="bg-teal-950/60 text-xs font-bold text-teal-300 border border-teal-800/40">
+          <AvatarFallback className="bg-zinc-800 text-sm font-bold text-zinc-300">
             {displayName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
@@ -53,7 +53,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
         <div className="min-w-0 flex-1">
           {/* Header */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
               <span className="text-sm font-bold text-white">
                 {displayName}
               </span>
@@ -64,14 +64,14 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                 </span>
               )}
 
-              {/* Distinct TMDB Badge */}
-              <span className="inline-flex items-center gap-1 rounded-full border border-teal-500/30 bg-teal-500/10 px-2 py-0.5 text-[10px] font-extrabold tracking-wider text-teal-400 uppercase">
-                TMDB Review
+              {/* TMDB Badge */}
+              <span className="inline-flex items-center rounded-md border border-zinc-700/60 bg-zinc-800/60 px-1.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase">
+                TMDB
               </span>
 
               {/* Rating Star Badge */}
               {rating !== null && rating !== undefined && (
-                <span className="inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-400">
+                <span className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-bold text-amber-400">
                   <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                   {rating}/10
                 </span>
@@ -96,17 +96,16 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                 href={review.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-[11px] font-medium text-teal-400/80 transition-colors hover:bg-teal-500/10 hover:text-teal-300"
+                className="inline-flex items-center gap-1 rounded-lg p-1 text-zinc-500 transition-colors hover:bg-zinc-800/50 hover:text-white"
                 title="View original review on TMDB"
               >
-                <span className="hidden sm:inline">TMDB</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             )}
           </div>
 
           {/* Review Text */}
-          <div className="mt-2.5 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap text-zinc-300/90">
+          <div className="mt-2 text-sm leading-relaxed wrap-break-word whitespace-pre-wrap text-zinc-300">
             {displayedContent}
           </div>
 
@@ -115,7 +114,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className={cn(
-                "mt-2 inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-teal-400 transition-colors hover:text-teal-300"
+                "mt-2 inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-zinc-400 transition-colors hover:text-white"
               )}
             >
               {isExpanded ? (

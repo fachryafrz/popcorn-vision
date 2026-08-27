@@ -25,7 +25,13 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   const data = await getMediaReviews(type, id, page);
 
   if (!data) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({
+      id: Number(id) || 0,
+      page,
+      results: [],
+      total_pages: 0,
+      total_results: 0,
+    });
   }
 
   return NextResponse.json(data);
