@@ -5,7 +5,7 @@ import { TMDBMedia, getGenreNames } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Play, Plus, Check, Star, Heart, Loader2 } from "lucide-react";
+import { Play, Plus, Check, Star, Heart, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useUserLibrary } from "./user-library-provider";
@@ -221,20 +221,28 @@ function HeroSlide({
             {media.overview}
           </p>
 
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
             <Button
-              onClick={() => router.push(`/${media.media_type}/${media.id}`)}
+              onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}?playTab=watch`)}
               className="hover:bg-primary bg-primary flex cursor-pointer items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base"
             >
               <Play className="h-5 w-5 fill-current" />
-              View Details
+              Play
+            </Button>
+
+            <Button
+              onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-zinc-700 bg-black/40 px-5 py-6 text-sm font-semibold text-zinc-300 backdrop-blur-sm transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:text-base"
+            >
+              <Info className="h-5 w-5" />
+              <span className="hidden sm:inline">More Info</span>
             </Button>
 
             <Button
               onClick={handleWatchlistToggle}
               disabled={watchlistLoading}
               className={cn(
-                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-8 sm:py-6 sm:text-base",
+                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-6 sm:py-6 sm:text-base",
                 isWatchlisted
                   ? "border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500"
                   : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
@@ -258,7 +266,7 @@ function HeroSlide({
               onClick={handleFavoriteToggle}
               disabled={favoriteLoading}
               className={cn(
-                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-8 sm:py-6 sm:text-base",
+                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-6 sm:py-6 sm:text-base",
                 isFavorited
                   ? "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
                   : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
