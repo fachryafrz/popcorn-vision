@@ -83,8 +83,9 @@ interface SearchClientProps {
 const TYPE_FILTERS: {
   label: string;
   value: SearchType;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }[] = [
+  { label: "All", value: "all" },
   { label: "Movies", value: "movie", icon: <Film className="h-3.5 w-3.5" /> },
   { label: "TV Series", value: "tv", icon: <Tv className="h-3.5 w-3.5" /> },
   { label: "Users", value: "users", icon: <User className="h-3.5 w-3.5" /> },

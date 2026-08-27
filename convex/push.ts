@@ -87,7 +87,7 @@ export const deletePushSubscription = mutation({
 export const getUserSubscriptions = query({
   args: {},
   handler: async (ctx) => {
-    const user = await authComponent.getAuthUser(ctx);
+    const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) return [];
 
     const subscriptions = await ctx.db

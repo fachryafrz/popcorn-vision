@@ -8,7 +8,7 @@ export default function Footer() {
   const createdDate = "2023-02-17";
 
   return (
-    <footer className="flex flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20">
+    <footer className="flex mb-20 lg:mb-0 flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20">
       <div className="flex items-center gap-2">
         <img
           src="/logo/popcorn.png"

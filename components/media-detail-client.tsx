@@ -198,6 +198,19 @@ export default function MediaDetailClient({
     setActiveTabState(tab);
   };
 
+  // Automatically scroll down to the video player if opened with ?playTab=watch
+  useEffect(() => {
+    if (activeTabState === "watch" && !isMediaLoading) {
+      const timer = setTimeout(() => {
+        playerSectionRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [activeTabState, isMediaLoading]);
+
   const [selectedServer, setSelectedServer] = useState<number>(0);
 
   const [seasonState, setSeasonState] = useQueryState("season");
