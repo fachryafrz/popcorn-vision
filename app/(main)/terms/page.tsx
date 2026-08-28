@@ -10,10 +10,6 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-zinc-950 py-16 text-zinc-300 md:py-24">
-      {/* Background glow effects */}
-      <div className="bg-primary/5 absolute top-0 right-1/4 -z-10 h-[500px] w-[500px] rounded-full blur-3xl" />
-      <div className="absolute top-1/3 left-1/4 -z-10 h-[550px] w-[550px] rounded-full bg-zinc-900/40 blur-3xl" />
-
       <div className="mx-auto max-w-4xl px-6 md:px-8">
         {/* Header Section */}
         <div className="mb-12 border-b border-zinc-900 pb-8 text-center md:text-left">
