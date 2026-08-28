@@ -567,7 +567,6 @@ export default function QuickViewModal({
                         <Link
                           key={actor.id}
                           href={`/person/${actor.id}`}
-                          onClick={onClose}
                           className="group flex cursor-pointer flex-col items-center text-center"
                         >
                           <div
