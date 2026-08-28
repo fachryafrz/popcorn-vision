@@ -63,9 +63,9 @@ export function BottomNav() {
     return chats.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
   }, [rawChatsList]);
 
-  // Tab definitions: Home -> Feed -> Search (Center) -> Chats -> Profile
+  // Tab definitions: Home -> Lists -> Search (Center) -> Chats -> Profile
   const isHomeActive = pathname === "/";
-  const isFeedActive = pathname.startsWith("/feed");
+  const isListsActive = pathname.startsWith("/lists");
   const isSearchActive = pathname.startsWith("/search");
   const isChatActive = pathname.startsWith("/chat");
   const isProfileActive =
@@ -74,7 +74,7 @@ export function BottomNav() {
       (pathname === `/@${username}` ||
         pathname === `/user/${username}` ||
         pathname.startsWith("/settings") ||
-        pathname.startsWith("/lists")));
+        pathname.startsWith("/feed")));
 
   const handleNavigate = (path: string) => {
     setIsProfileDrawerOpen(false);
@@ -118,27 +118,27 @@ export function BottomNav() {
             </span>
           </Link>
 
-          {/* 2. Feed */}
+          {/* 2. Lists */}
           <Link
-            href="/feed"
+            href="/lists"
             prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
-              isFeedActive
+              isListsActive
                 ? "text-primary font-bold"
                 : "text-zinc-400 hover:text-zinc-200",
             )}
           >
             <div className="relative flex items-center justify-center">
-              <Activity
+              <List
                 className={cn(
                   "h-5 w-5 transition-transform duration-200 group-hover:scale-110",
-                  isFeedActive && "text-primary scale-105",
+                  isListsActive && "text-primary scale-105",
                 )}
               />
             </div>
             <span className="text-[11px] leading-tight tracking-tight">
-              Feed
+              Lists
             </span>
           </Link>
 
@@ -154,16 +154,12 @@ export function BottomNav() {
             )}
           >
             <div className="relative flex items-center justify-center">
-              <div
+              <Search
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full transition-all duration-200",
-                  isSearchActive
-                    ? "bg-primary text-white shadow-lg shadow-red-500/25"
-                    : "border border-zinc-800 bg-zinc-900 text-zinc-300 group-hover:border-zinc-700 group-hover:text-white",
+                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110",
+                  isSearchActive && "text-primary scale-105",
                 )}
-              >
-                <Search className="h-4.5 w-4.5 transition-transform duration-200 group-hover:scale-110" />
-              </div>
+              />
             </div>
             <span
               className={cn(
@@ -313,19 +309,19 @@ export function BottomNav() {
 
               {/* Navigation Menu Options */}
               <div className="flex flex-col gap-2 pt-1">
-                {/* My Lists */}
+                {/* Feed */}
                 <button
                   type="button"
-                  onClick={() => handleNavigate("/lists")}
+                  onClick={() => handleNavigate("/feed")}
                   className="flex w-full cursor-pointer items-center gap-3.5 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-left text-sm font-semibold text-zinc-200 transition-all hover:bg-zinc-900 hover:text-white active:scale-98"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800/80 text-zinc-300">
-                    <List className="h-4.5 w-4.5" />
+                    <Activity className="h-4.5 w-4.5" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-bold text-white">My Lists</p>
+                    <p className="text-sm font-bold text-white">Feed</p>
                     <p className="text-xs text-zinc-400">
-                      Custom & collaborative lists
+                      Friend & community activity
                     </p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-zinc-500" />
