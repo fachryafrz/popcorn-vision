@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useConfirm } from "@/components/ui/confirm-provider";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { cn } from "@/lib/utils";
 import { STORAGE_KEYS } from "@/lib/constants";
 
@@ -30,6 +31,7 @@ export function NavbarNotifications({
 }: NavbarNotificationsProps) {
   const router = useRouter();
   const confirm = useConfirm();
+  const openAuth = useAuthModalStore((state) => state.open);
 
   const notifications = useQuery(
     api.social.getNotifications,
@@ -44,7 +46,9 @@ export function NavbarNotifications({
   const markRead = useMutation(api.social.markNotificationRead);
   const clearAll = useMutation(api.social.clearAllNotifications);
 
-  const unreadCount = notifications?.filter((n) => !n.read).length || 0;
+  const unreadCount = isLoggedIn
+    ? notifications?.filter((n) => !n.read).length || 0
+    : 0;
 
   // Track current time in state so formatTime is pure during render
   const [now, setNow] = useState(() => Date.now());
@@ -75,8 +79,6 @@ export function NavbarNotifications({
       await clearAll();
     }
   };
-
-  if (!isLoggedIn) return null;
 
   const isMobile = variant === "mobile";
 
@@ -114,7 +116,7 @@ export function NavbarNotifications({
           <span className="text-[10px] font-black tracking-wider text-zinc-400 uppercase">
             Notifications
           </span>
-          {notifications && notifications.length > 0 && (
+          {isLoggedIn && notifications && notifications.length > 0 && (
             <button
               onClick={handleClearAll}
               className="flex cursor-pointer items-center gap-1 text-[10px] font-bold text-zinc-500 transition-colors hover:text-red-400"
@@ -128,7 +130,29 @@ export function NavbarNotifications({
         <DropdownMenuSeparator className="my-1 bg-zinc-800" />
 
         <div className="max-h-80 overflow-y-auto py-1">
-          {!notifications ? (
+          {!isLoggedIn ? (
+            <div className="flex flex-col items-center justify-center gap-3 px-4 py-8 text-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-zinc-400">
+                <Bell className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-white">
+                  Never miss an update
+                </p>
+                <p className="text-xs leading-relaxed text-zinc-400">
+                  Sign in to view your notifications, friend requests, and
+                  messages.
+                </p>
+              </div>
+              <Button
+                size="sm"
+                onClick={() => openAuth()}
+                className="bg-primary hover:bg-primary/90 w-full cursor-pointer rounded-full text-xs font-bold text-white shadow-md"
+              >
+                Sign In
+              </Button>
+            </div>
+          ) : !notifications ? (
             <div className="flex items-center justify-center py-6 text-xs text-zinc-500">
               <Loader2 className="text-primary mr-2 h-4 w-4 animate-spin" />
               Loading...

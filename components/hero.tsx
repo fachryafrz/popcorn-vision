@@ -242,7 +242,7 @@ function HeroSlide({
               onClick={handleWatchlistToggle}
               disabled={watchlistLoading}
               className={cn(
-                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-6 sm:py-6 sm:text-base",
+                "max-w-9 aspect-square! shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:px-6 sm:py-6 sm:text-base",
                 isWatchlisted
                   ? "border-emerald-500 bg-emerald-600 text-white hover:bg-emerald-500"
                   : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
@@ -256,9 +256,6 @@ function HeroSlide({
                 ) : (
                   <Plus className="h-5 w-5" />
                 )}
-                <span className="hidden sm:inline">
-                  {isWatchlisted ? "In Watchlist" : "Watchlist"}
-                </span>
               </span>
             </Button>
 
@@ -266,7 +263,7 @@ function HeroSlide({
               onClick={handleFavoriteToggle}
               disabled={favoriteLoading}
               className={cn(
-                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:max-w-none sm:px-6 sm:py-6 sm:text-base",
+                "max-w-9 shrink-0 cursor-pointer rounded-full border p-3.5 text-sm font-semibold transition-all hover:scale-105 active:scale-98 disabled:opacity-50 sm:px-6 sm:py-6 sm:text-base",
                 isFavorited
                   ? "border-rose-500 bg-rose-600 text-white hover:bg-rose-500"
                   : "border-zinc-700 bg-black/40 text-zinc-300 hover:bg-zinc-900 hover:text-white",
@@ -280,9 +277,6 @@ function HeroSlide({
                     className={cn("h-5 w-5", isFavorited && "fill-current")}
                   />
                 )}
-                <span className="hidden sm:inline">
-                  {isFavorited ? "Favorited" : "Favorite"}
-                </span>
               </span>
             </Button>
           </div>
