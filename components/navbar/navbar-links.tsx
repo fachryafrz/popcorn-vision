@@ -6,10 +6,19 @@ import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { cn } from "@/lib/utils";
 
 interface ChatItemSummary {
   unreadCount?: number;
+}
+
+interface NavLinkItem {
+  label: string;
+  href: string;
+  isActive: boolean;
+  badge?: number;
+  requireAuth?: boolean;
 }
 
 interface NavbarLinksProps {
@@ -20,6 +29,7 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
   const pathname = usePathname();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
+  const openAuth = useAuthModalStore((state) => state.open);
 
   // Query chats to calculate total unread messages count
   const rawChatsList = useQuery(
@@ -33,20 +43,17 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
     return chats.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
   }, [rawChatsList]);
 
-  const links = [
+  const links: NavLinkItem[] = [
     { label: "Home", href: "/", isActive: pathname === "/" },
     { label: "Feed", href: "/feed", isActive: pathname.startsWith("/feed") },
     { label: "Lists", href: "/lists", isActive: pathname.startsWith("/lists") },
-    ...(isLoggedIn
-      ? [
-          {
-            label: "Chats",
-            href: "/chat",
-            isActive: pathname.startsWith("/chat"),
-            badge: totalUnreadChats > 0 ? totalUnreadChats : undefined,
-          },
-        ]
-      : []),
+    {
+      label: "Chats",
+      href: "/chat",
+      isActive: pathname.startsWith("/chat"),
+      badge: isLoggedIn && totalUnreadChats > 0 ? totalUnreadChats : undefined,
+      requireAuth: true,
+    },
   ];
 
   return (
@@ -60,8 +67,14 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
       {links.map((link) => (
         <Link
           key={link.href}
-          href={link.href}
+          href={link.requireAuth && !isLoggedIn ? "#" : link.href}
           prefetch={false}
+          onClick={(e) => {
+            if (link.requireAuth && !isLoggedIn) {
+              e.preventDefault();
+              openAuth();
+            }
+          }}
           className={cn(
             "relative flex items-center gap-1.5 py-1 font-medium transition-colors duration-200",
             link.isActive
