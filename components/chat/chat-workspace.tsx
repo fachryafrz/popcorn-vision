@@ -20,6 +20,7 @@ import {
   Bookmark,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { STORAGE_KEYS } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -38,6 +39,7 @@ import { useConfirm } from "@/components/ui/confirm-provider";
 
 interface ChatWorkspaceProps {
   selectedChatId: Id<"chats"> | null;
+  setSelectedChatId?: (id: Id<"chats"> | null) => void;
   activeChat: ChatItem | null;
   currentUserId: string;
   activeChatMessages: ChatMessage[] | undefined;
@@ -69,6 +71,7 @@ interface ChatWorkspaceProps {
 
 export default function ChatWorkspace({
   selectedChatId,
+  setSelectedChatId,
   activeChat,
   currentUserId,
   activeChatMessages,
@@ -125,7 +128,16 @@ export default function ChatWorkspace({
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsSidebarOpen(true)}
+            onClick={() => {
+              if (typeof window !== "undefined") {
+                sessionStorage.removeItem(STORAGE_KEYS.ACTIVE_CHAT_ID);
+                sessionStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
+                localStorage.removeItem(STORAGE_KEYS.ACTIVE_CHAT_ID);
+                localStorage.removeItem(STORAGE_KEYS.LEGACY_ACTIVE_CHAT_ID);
+              }
+              setSelectedChatId?.(null);
+              setIsSidebarOpen(true);
+            }}
             className="h-8 w-8 cursor-pointer text-zinc-400 sm:hidden"
           >
             <ChevronRight className="h-4 w-4 rotate-180" />

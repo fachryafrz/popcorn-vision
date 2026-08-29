@@ -198,10 +198,6 @@ export default function CommentsSection({
     }
   };
 
-  const totalCount =
-    (comments?.length ?? 0) +
-    (tmdbTotalResults > 0 ? tmdbTotalResults : tmdbReviews.length);
-
   const isInitialLoading = comments === undefined && isTmdbLoading;
   const hasNoItems =
     comments !== undefined &&
@@ -215,13 +211,11 @@ export default function CommentsSection({
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
             <MessageSquare className="text-primary h-6 w-6" />
-            Comments & Reviews
-            <span className="text-sm font-normal text-zinc-500">
-              ({totalCount} {totalCount === 1 ? "entry" : "entries"})
-            </span>
+            Comments
           </h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Join the conversation and explore reviews from the community and TMDB
+            Join the conversation and explore reviews from the community and
+            TMDB
           </p>
         </div>
 
@@ -292,7 +286,9 @@ export default function CommentsSection({
       ) : hasNoItems ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/30 py-16 text-center">
           <MessageSquare className="mb-3 h-10 w-10 text-zinc-700" />
-          <p className="text-sm font-medium text-zinc-400">No comments or reviews yet</p>
+          <p className="text-sm font-medium text-zinc-400">
+            No comments or reviews yet
+          </p>
           <p className="mt-1 text-xs text-zinc-600">
             Be the first to share your thoughts!
           </p>
@@ -590,9 +586,7 @@ function CommentNode({
                   @{comment.author.username}
                 </span>
               )}
-              {!isDeletedUser && (
-                <UserRoleBadge role={comment.author.role} />
-              )}
+              {!isDeletedUser && <UserRoleBadge role={comment.author.role} />}
               <span className="text-xs font-semibold text-zinc-600">•</span>
               <span
                 className="text-[11px] text-zinc-500"

@@ -13,10 +13,11 @@ import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ui/confirm-provider";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
 
 // Import types and subcomponents
 import {
@@ -30,6 +31,7 @@ import ChatWorkspace from "@/components/chat/chat-workspace";
 import DetailsPanel from "@/components/chat/details-panel";
 import ChatModals from "@/components/chat/chat-modals";
 import QuickViewModal from "@/components/quick-view-modal";
+import AuthModal from "@/components/auth-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { siteConfig } from "@/config/site";
@@ -39,6 +41,11 @@ function ChatPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const confirm = useConfirm();
+  const {
+    isOpen: isAuthOpen,
+    open: openAuth,
+    close: closeAuth,
+  } = useAuthModalStore();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const currentUserId = session.data?.user?.id;
@@ -619,21 +626,42 @@ function ChatPageContent() {
       .filter((m) => m.attachmentType === "media" && m.sharedMediaId);
   }, [activeChatMessages, optimisticDeletions]);
 
+  // Handle session loading
+  if (session.isPending) {
+    return (
+      <div className="flex min-h-[60vh] grow items-center justify-center bg-zinc-950 text-white">
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
+      </div>
+    );
+  }
+
   // Enforce logged-in status
   if (!isLoggedIn || !currentUserId) {
     return (
       <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 p-6 text-center text-white">
-        <Loader2 className="text-primary mb-4 h-10 w-10 animate-spin" />
-        <h1 className="text-xl font-bold">Loading chats...</h1>
-        <p className="text-zinc-550 mt-1 text-xs">
-          Please log in to participate in direct and group chats.
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900 shadow-xl">
+          <Users className="text-primary h-8 w-8" />
+        </div>
+        <h1 className="text-xl font-bold">Login Required</h1>
+        <p className="text-zinc-400 mt-2 max-w-sm text-xs sm:text-sm">
+          Please log in to participate in direct messages and group chats.
         </p>
-        <Button
-          onClick={() => router.push("/")}
-          className="hover:bg-primary bg-primary mt-4 cursor-pointer rounded-xl px-6 text-white"
-        >
-          Go Home
-        </Button>
+        <div className="mt-6 flex items-center gap-3">
+          <Button
+            onClick={() => openAuth()}
+            className="hover:bg-primary/90 bg-primary cursor-pointer rounded-xl px-6 font-semibold text-white"
+          >
+            Sign In
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => router.push("/")}
+            className="cursor-pointer rounded-xl border-zinc-800 bg-zinc-900 text-zinc-300 hover:text-white"
+          >
+            Go Home
+          </Button>
+        </div>
+        <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
       </div>
     );
   }
@@ -653,6 +681,7 @@ function ChatPageContent() {
 
       <ChatWorkspace
         selectedChatId={selectedChatId}
+        setSelectedChatId={setSelectedChatId}
         activeChat={activeChat}
         currentUserId={currentUserId}
         activeChatMessages={activeChatMessages}
@@ -743,6 +772,7 @@ function ChatPageContent() {
           media={quickViewMedia}
         />
       )}
+      <AuthModal isOpen={isAuthOpen} onClose={closeAuth} />
     </div>
   );
 }

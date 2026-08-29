@@ -289,7 +289,7 @@ export default function DetailsPanel({
             No movies or TV shows shared yet.
           </p>
         ) : (
-          <div className="grid max-h-48 scrollbar-thin grid-cols-3 gap-2 overflow-y-auto p-0.5">
+          <div className="grid scrollbar-thin grid-cols-3 gap-2 overflow-y-auto p-0.5">
             {sharedMediaList.map((msg) => {
               const posterUrl = msg.sharedMediaPoster
                 ? `https://image.tmdb.org/t/p/w92${msg.sharedMediaPoster}`
