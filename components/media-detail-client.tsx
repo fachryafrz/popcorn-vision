@@ -65,6 +65,7 @@ import CollectionGrid from "./media-detail/collection-grid";
 import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
 import { Button } from "./ui/button";
+import ExpandableText from "./ui/expandable-text";
 import { cn } from "@/lib/utils";
 
 interface MediaDetailClientProps {
@@ -938,9 +939,20 @@ export default function MediaDetailClient({
             </div>
           )}
 
-          <p className="my-2 line-clamp-3 max-w-3xl text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base">
-            {details?.overview || "No overview available."}
-          </p>
+          {details?.overview ? (
+            <ExpandableText
+              text={details.overview}
+              clampLines={3}
+              threshold={180}
+              className="my-2 max-w-3xl"
+              textClassName="text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base"
+              buttonClassName="text-zinc-400 hover:text-zinc-200"
+            />
+          ) : (
+            <p className="my-2 max-w-3xl text-sm leading-relaxed text-zinc-400 italic md:text-base">
+              No overview available.
+            </p>
+          )}
 
           <ActionsSection
             trailerKey={trailerKey}
