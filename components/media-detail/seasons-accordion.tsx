@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
+import ExpandableText from "@/components/ui/expandable-text";
 
 interface SeasonsAccordionProps {
   details: MediaDetails;
@@ -161,9 +162,14 @@ export default function SeasonsAccordion({
                   {activeSeasonData.name}
                 </h4>
                 {activeSeasonData.overview && (
-                  <p className="mt-2 text-xs leading-relaxed text-zinc-400 italic">
-                    &ldquo;{activeSeasonData.overview}&rdquo;
-                  </p>
+                  <ExpandableText
+                    text={`“${activeSeasonData.overview}”`}
+                    clampLines={3}
+                    threshold={140}
+                    className="mt-2"
+                    textClassName="text-xs leading-relaxed text-zinc-400 italic"
+                    buttonClassName="text-zinc-500 hover:text-zinc-300 text-[11px]"
+                  />
                 )}
               </div>
 
@@ -364,10 +370,20 @@ export default function SeasonsAccordion({
                             <h6 className="mt-1 truncate text-xs font-extrabold text-white">
                               {ep.name}
                             </h6>
-                            <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-zinc-400">
-                              {ep.overview ||
-                                "No overview available for this episode."}
-                            </p>
+                            {ep.overview ? (
+                              <ExpandableText
+                                text={ep.overview}
+                                clampLines={3}
+                                threshold={130}
+                                className="mt-2"
+                                textClassName="text-xs leading-relaxed text-zinc-400"
+                                buttonClassName="text-zinc-500 hover:text-zinc-300 text-[11px]"
+                              />
+                            ) : (
+                              <p className="mt-2 text-xs leading-relaxed text-zinc-500 italic">
+                                No overview available for this episode.
+                              </p>
+                            )}
                           </div>
                           {ep.air_date && (
                             <span className="mt-3 text-[9px] font-semibold text-zinc-500">
