@@ -178,6 +178,11 @@ svg.recharts-surface,
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    -webkit-tap-highlight-color: transparent;
+  }
+  html,
+  body {
+    overscroll-behavior-y: none;
   }
   body {
     @apply bg-background text-foreground;
@@ -198,4 +203,20 @@ svg.recharts-surface,
       overscroll-behavior: contain;
     }
   }
+}
+
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+@utility min-h-screen-safe {
+  min-height: calc(100svh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+}
+
+@utility active-press {
+  @apply transition-transform active:scale-95 duration-100 ease-out;
 }
