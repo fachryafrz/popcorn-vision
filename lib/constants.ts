@@ -31,4 +31,9 @@ export const STORAGE_KEYS = {
   LEGACY_GENRE_NAME: "genre_name",
   HERO_ACTIVE_INDEX: "hero-active-index",
   LEGACY_HERO_ACTIVE_INDEX: "hero_active_index",
+  GUEST_CONTINUE_WATCHING: "popcorn-guest-continue-watching",
+  GUEST_WATCHLIST: "popcorn-guest-watchlist",
 } as const;
+
+export const GUEST_WATCH_UPDATED_EVENT = "popcorn-guest-watch-updated";
+export const GUEST_WATCHLIST_UPDATED_EVENT = "popcorn-guest-watchlist-updated";

@@ -8,6 +8,8 @@ import moment from "moment";
 import { toast } from "sonner";
 import { useState } from "react";
 
+import { removeGuestWatchProgress } from "@/lib/guest-watch";
+
 export interface ContinueWatchingItem {
   _id: string;
   mediaId: string;
@@ -23,11 +25,13 @@ export interface ContinueWatchingItem {
 
 interface ContinueWatchingCardProps {
   item: ContinueWatchingItem;
+  isGuest?: boolean;
   onRemoveSuccess?: () => void;
 }
 
 export default function ContinueWatchingCard({
   item,
+  isGuest = false,
   onRemoveSuccess,
 }: ContinueWatchingCardProps) {
   const router = useRouter();
@@ -38,10 +42,14 @@ export default function ContinueWatchingCard({
     e.stopPropagation();
     setIsDeleting(true);
     try {
-      await removeProgress({
-        mediaId: item.mediaId,
-        mediaType: item.mediaType,
-      });
+      if (isGuest) {
+        removeGuestWatchProgress(item.mediaId, item.mediaType);
+      } else {
+        await removeProgress({
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+        });
+      }
       toast.success(`Removed "${item.title}" from Continue Watching`);
       onRemoveSuccess?.();
     } catch (err) {

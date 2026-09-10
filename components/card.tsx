@@ -10,6 +10,11 @@ import { Star, Plus, Check, Heart, Loader2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useUserLibrary } from "./user-library-provider";
+import {
+  addToGuestWatchlist,
+  removeFromGuestWatchlist,
+} from "@/lib/guest-watchlist";
+import { toast } from "sonner";
 
 interface CardProps {
   media: TMDBMedia;
@@ -75,18 +80,34 @@ export default function Card({
 
   const handleWatchlistClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const mId = String(media.id);
+    const mType = (media.media_type === "tv" ? "tv" : "movie");
+
     if (!isLoggedIn) {
-      onAuthRequired();
+      if (isWatchlisted) {
+        removeFromGuestWatchlist(mId, mType);
+        toast.success(`Removed "${media.title || media.name}" from Watchlist`);
+      } else {
+        addToGuestWatchlist({
+          mediaId: mId,
+          mediaType: mType,
+          title: media.title || media.name || "",
+          posterPath: media.poster_path || "",
+          rating: media.vote_average,
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
+        });
+        toast.success(`Added "${media.title || media.name}" to Watchlist`);
+      }
       return;
     }
 
     setWatchlistLoading(true);
     try {
-      const mId = String(media.id);
-      const mType = media.media_type || "movie";
-
       if (isWatchlisted) {
         await removeFromWatchlist({ mediaId: mId, mediaType: mType });
+        toast.success(`Removed "${media.title || media.name}" from Watchlist`);
       } else {
         await addToWatchlist({
           mediaId: mId,
@@ -98,9 +119,11 @@ export default function Card({
             ? new Date(media.release_date).getFullYear().toString()
             : "N/A",
         });
+        toast.success(`Added "${media.title || media.name}" to Watchlist`);
       }
     } catch (error) {
       console.error("Watchlist modification failed:", error);
+      toast.error("Failed to update Watchlist");
     } finally {
       setWatchlistLoading(false);
     }
