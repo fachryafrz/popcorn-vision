@@ -16,6 +16,9 @@ export default function Footer() {
           className="h-7 w-7 object-contain"
         />
         <span className="font-semibold text-zinc-400">{siteConfig.name}</span>
+        <span className="rounded-md border border-zinc-800 bg-zinc-900/80 px-1.5 py-0.5 text-[11px] font-medium text-zinc-500">
+          v{siteConfig.version}
+        </span>
       </div>
       <p className="max-w-xs">
         Explore movies and TV shows, track your favorite titles, and watch
