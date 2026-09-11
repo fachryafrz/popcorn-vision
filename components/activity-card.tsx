@@ -22,14 +22,14 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { UserRoleBadge } from "@/components/user-role-badge";
 
-interface ActivityUser {
+export interface ActivityUser {
   name: string;
   username: string;
   image?: string;
   role?: string;
 }
 
-interface Activity {
+export interface Activity {
   _id: Id<"activities">;
   userId: string;
   type: string;

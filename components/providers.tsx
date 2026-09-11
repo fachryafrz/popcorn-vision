@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { Suspense, ReactNode } from "react";
 import { ConvexReactClient, ConvexProvider } from "convex/react";
 import { ConvexBetterAuthProvider, type AuthClient } from "@convex-dev/better-auth/react";
 import { authClient } from "@/lib/auth-client";
@@ -11,6 +11,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { NotificationProvider } from "./notification-provider";
 import { UserLibraryProvider } from "./user-library-provider";
 import { OfflineIndicator } from "./shared/offline-indicator";
+import { GlobalKeyboardShortcuts } from "./global-keyboard-shortcuts";
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -26,6 +27,9 @@ export function Providers({ children }: { children: ReactNode }) {
                   {children}
                   <NotificationProvider />
                   <OfflineIndicator />
+                  <Suspense fallback={null}>
+                    <GlobalKeyboardShortcuts />
+                  </Suspense>
                 </NuqsAdapter>
               </TooltipProvider>
             </ConfirmProvider>

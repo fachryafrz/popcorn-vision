@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use, useEffect, useMemo, useCallback } from "react";
+import { useState, use, useEffect, useMemo, useCallback, Suspense } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { useQueryState } from "nuqs";
 import { api } from "@/convex/_generated/api";
@@ -16,8 +16,6 @@ import {
   UserX,
   MessageSquare,
   Activity,
-  Calendar,
-  Film,
 } from "lucide-react";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "@/components/quick-view-modal";
@@ -43,7 +41,7 @@ import {
   GridMediaItem,
 } from "@/components/profile/media-grid-tab";
 import { InsightsTab } from "@/components/profile/insights-tab";
-import ActivityCard from "@/components/activity-card";
+import ActivityCard, { type Activity as ActivityItem } from "@/components/activity-card";
 import Link from "next/link";
 
 const tmdbCache = new Map<string, { title: string; posterPath: string }>();
@@ -106,13 +104,29 @@ interface ActivityDoc {
   isLikedByMe: boolean;
 }
 
+interface CommentEntry {
+  _id: string;
+  content: string;
+  createdAt: number;
+  likeCount: number;
+}
+
+interface CommentGroupItem {
+  key: string;
+  mediaId: string;
+  mediaType: string;
+  mediaTitle: string;
+  mediaPosterPath: string;
+  comments: CommentEntry[];
+}
+
 interface UserProfilePageProps {
   params: Promise<{
     username: string;
   }>;
 }
 
-function CommentItem({ item }: { item: any }) {
+function CommentItem({ item }: { item: CommentGroupItem }) {
   const [mediaTitle, setMediaTitle] = useState(item.mediaTitle);
   const [mediaPosterPath, setMediaPosterPath] = useState(item.mediaPosterPath);
 
@@ -157,7 +171,7 @@ function CommentItem({ item }: { item: any }) {
         
         {/* List of comments for this media */}
         <div className="mt-3 space-y-3">
-          {item.comments.map((comment: any) => (
+          {item.comments.map((comment: CommentEntry) => (
             <div key={comment._id} className="relative bg-zinc-950/20 p-3 rounded-xl border border-zinc-900/40">
               <div className="flex items-start justify-between gap-2">
                 <p className="text-xs leading-relaxed text-zinc-300 whitespace-pre-wrap flex-1">
@@ -181,7 +195,7 @@ function CommentItem({ item }: { item: any }) {
   );
 }
 
-export default function UserProfilePage({ params }: UserProfilePageProps) {
+function UserProfileContent({ params }: UserProfilePageProps) {
   const { username } = use(params);
   const confirm = useConfirm();
   const openAuth = useAuthModalStore((state) => state.open);
@@ -879,13 +893,13 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
             ) : (
               <div className="mx-auto max-w-3xl space-y-6">
                 {groupedComments.length > 0 ? (
-                  groupedComments.map((item: any) => (
+                  groupedComments.map((item: CommentGroupItem) => (
                     <CommentItem key={item.key} item={item} />
                   ))
                 ) : (
                   <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
                     <MessageSquare className="mb-4 h-12 w-12 text-zinc-800" />
-                    <p className="text-sm text-zinc-500">This user hasn't posted any comments yet.</p>
+                    <p className="text-sm text-zinc-500">This user hasn&apos;t posted any comments yet.</p>
                   </div>
                 )}
               </div>
@@ -898,8 +912,8 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
             ) : (
               <div className="mx-auto max-w-3xl space-y-6">
                 {userActivities.length > 0 ? (
-                  userActivities.map((act: ActivityDoc) => (
-                    <ActivityCard key={act._id} activity={act as any} />
+                  userActivities.map((act) => (
+                    <ActivityCard key={act._id} activity={act as unknown as ActivityItem} />
                   ))
                 ) : (
                   <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
@@ -997,5 +1011,22 @@ export default function UserProfilePage({ params }: UserProfilePageProps) {
         friends={profileData?.friends}
       />
     </div>
+  );
+}
+
+export default function UserProfilePage(props: UserProfilePageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[70vh] flex-col items-center justify-center gap-3">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-sm font-semibold text-zinc-400">
+            Loading profile...
+          </span>
+        </div>
+      }
+    >
+      <UserProfileContent {...props} />
+    </Suspense>
   );
 }

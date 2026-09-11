@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import SearchClient from "@/components/search-client";
 import { siteConfig } from "@/config/site";
 import { SearchType } from "@/components/search/types";
@@ -52,22 +53,24 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const keywords = params.keywords || "";
 
   return (
-    <SearchClient
-      initialQuery={query}
-      initialType={type}
-      initialGenre={genre}
-      initialStartDate={startDate}
-      initialEndDate={endDate}
-      initialProviderId={providerId}
-      initialMinRuntime={minRuntime}
-      initialMaxRuntime={maxRuntime}
-      initialActor={actor}
-      initialCrew={crew}
-      initialCompany={company}
-      initialRatingMin={ratingMin}
-      initialRatingMax={ratingMax}
-      initialLanguage={language}
-      initialKeywords={keywords}
-    />
+    <Suspense>
+      <SearchClient
+        initialQuery={query}
+        initialType={type}
+        initialGenre={genre}
+        initialStartDate={startDate}
+        initialEndDate={endDate}
+        initialProviderId={providerId}
+        initialMinRuntime={minRuntime}
+        initialMaxRuntime={maxRuntime}
+        initialActor={actor}
+        initialCrew={crew}
+        initialCompany={company}
+        initialRatingMin={ratingMin}
+        initialRatingMax={ratingMax}
+        initialLanguage={language}
+        initialKeywords={keywords}
+      />
+    </Suspense>
   );
 }

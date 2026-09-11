@@ -15,8 +15,12 @@ export default function MainLayout({
       <Suspense>
         <Navbar />
       </Suspense>
-      <DisclaimerModal />
-      <UsernamePromptModal />
+      <Suspense>
+        <DisclaimerModal />
+      </Suspense>
+      <Suspense>
+        <UsernamePromptModal />
+      </Suspense>
       <div className="grow pb-16 lg:pb-0">{children}</div>
       <Suspense>
         <BottomNav />
