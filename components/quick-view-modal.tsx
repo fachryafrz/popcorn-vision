@@ -28,6 +28,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useUserLibrary } from "./user-library-provider";
+import {
+  addToGuestWatchlist,
+  removeFromGuestWatchlist,
+} from "@/lib/guest-watchlist";
+import { toast } from "sonner";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import moment from "moment";
 import isoCountries from "@/data/iso-3166.json";
@@ -125,13 +131,10 @@ export default function QuickViewModal({
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
 
-  // Watchlist status
-  const isWatchlisted = useQuery(
-    api.watchlist.checkWatchlistItem,
-    isLoggedIn && media
-      ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
-      : "skip",
-  );
+  const { isWatchlisted: checkWatchlisted } = useUserLibrary();
+  const isWatchlisted = media
+    ? checkWatchlisted(media.id, media.media_type || "movie")
+    : false;
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
 
@@ -217,16 +220,32 @@ export default function QuickViewModal({
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const mId = String(media.id);
+    const mType = (media.media_type === "tv" ? "tv" : "movie");
+
     if (!isLoggedIn) {
-      openAuth();
+      if (isWatchlisted) {
+        removeFromGuestWatchlist(mId, mType);
+        toast.success(`Removed "${media.title || media.name || details?.title || details?.name}" from Watchlist`);
+      } else {
+        addToGuestWatchlist({
+          mediaId: mId,
+          mediaType: mType,
+          title: media.title || media.name || details?.title || details?.name || "",
+          posterPath: media.poster_path || details?.poster_path || "",
+          rating: media.vote_average || details?.vote_average || 0,
+          releaseYear: releaseYear.toString(),
+        });
+        toast.success(`Added "${media.title || media.name || details?.title || details?.name}" to Watchlist`);
+      }
       return;
     }
+
     setWatchlistLoading(true);
     try {
-      const mId = String(media.id);
-      const mType = media.media_type || "movie";
       if (isWatchlisted) {
         await removeFromWatchlist({ mediaId: mId, mediaType: mType });
+        toast.success(`Removed "${media.title || media.name || details?.title || details?.name}" from Watchlist`);
       } else {
         await addToWatchlist({
           mediaId: mId,
@@ -236,9 +255,11 @@ export default function QuickViewModal({
           rating: media.vote_average || details?.vote_average || 0,
           releaseYear: releaseYear.toString(),
         });
+        toast.success(`Added "${media.title || media.name || details?.title || details?.name}" to Watchlist`);
       }
     } catch (err) {
       console.error("Watchlist toggle failed:", err);
+      toast.error("Failed to update Watchlist");
     } finally {
       setWatchlistLoading(false);
     }

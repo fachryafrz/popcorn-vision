@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import {
   getTrending,
@@ -12,9 +12,11 @@ import Section from "./section";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
+import { useGuestContinueWatching } from "@/hooks/use-guest-continue-watching";
+import { useGuestWatchlist } from "@/hooks/use-guest-watchlist";
 import ContinueWatchingCard from "./continue-watching-card";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -93,6 +95,91 @@ export default function HomeClient() {
     isLoggedIn ? {} : "skip",
   );
 
+  const {
+    items: guestContinueWatching,
+    isLoaded: isGuestLoaded,
+    clearAll: clearGuestItems,
+  } = useGuestContinueWatching();
+
+  const {
+    items: guestWatchlist,
+    isLoaded: isGuestWatchlistLoaded,
+    clearAll: clearGuestWatchlistItems,
+  } = useGuestWatchlist();
+
+  const upsertWatchProgress = useMutation(api.continueWatching.upsertProgress);
+  const addToWatchlistMutation = useMutation(api.watchlist.addToWatchlist);
+  const isSyncingGuestRef = useRef(false);
+  const isSyncingGuestWatchlistRef = useRef(false);
+
+  // Auto-sync guest continue watching progress to Convex when user logs in
+  useEffect(() => {
+    if (
+      isLoggedIn &&
+      isGuestLoaded &&
+      guestContinueWatching.length > 0 &&
+      !isSyncingGuestRef.current
+    ) {
+      isSyncingGuestRef.current = true;
+      Promise.allSettled(
+        guestContinueWatching.map((item) =>
+          upsertWatchProgress({
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+            title: item.title,
+            posterPath: item.posterPath,
+            backdropPath: item.backdropPath,
+            episodeStillPath: item.episodeStillPath,
+            season: item.season,
+            episode: item.episode,
+          }),
+        ),
+      ).then(() => {
+        clearGuestItems();
+        isSyncingGuestRef.current = false;
+      });
+    }
+  }, [
+    isLoggedIn,
+    isGuestLoaded,
+    guestContinueWatching,
+    upsertWatchProgress,
+    clearGuestItems,
+  ]);
+
+  // Auto-sync guest watchlist items to Convex when user logs in
+  useEffect(() => {
+    if (
+      isLoggedIn &&
+      isGuestWatchlistLoaded &&
+      guestWatchlist.length > 0 &&
+      !isSyncingGuestWatchlistRef.current
+    ) {
+      isSyncingGuestWatchlistRef.current = true;
+      Promise.allSettled(
+        guestWatchlist.map((item) =>
+          addToWatchlistMutation({
+            mediaId: item.mediaId,
+            mediaType: item.mediaType,
+            title: item.title,
+            posterPath: item.posterPath,
+            rating: item.rating,
+            releaseYear: item.releaseYear || "N/A",
+          }),
+        ),
+      ).then(() => {
+        clearGuestWatchlistItems();
+        isSyncingGuestWatchlistRef.current = false;
+      });
+    }
+  }, [
+    isLoggedIn,
+    isGuestWatchlistLoaded,
+    guestWatchlist,
+    addToWatchlistMutation,
+    clearGuestWatchlistItems,
+  ]);
+
   const handleQuickView = (media: TMDBMedia) => {
     setQuickViewMedia(media);
   };
@@ -128,9 +215,9 @@ export default function HomeClient() {
 
         {/* Categories Section Carousels */}
         <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
-          {/* Continue Watching Section */}
-          {isLoggedIn &&
-            (continueWatching === undefined ? (
+          {/* Continue Watching Section (Logged-In or Guest) */}
+          {isLoggedIn ? (
+            continueWatching === undefined ? (
               <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
                 <div className="flex items-center gap-2">
                   <Skeleton className="h-6 w-44 rounded-md" />
@@ -167,11 +254,42 @@ export default function HomeClient() {
                   </Swiper>
                 </div>
               </div>
-            ) : null)}
+            ) : null
+          ) : isGuestLoaded && guestContinueWatching.length > 0 ? (
+            <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
+              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+                Continue Watching
+              </h2>
+              <div className="swiper-carousel-container relative w-full">
+                <Swiper
+                  modules={[Mousewheel, FreeMode]}
+                  freeMode={true}
+                  spaceBetween={16}
+                  slidesPerView={1.3}
+                  breakpoints={{
+                    640: { slidesPerView: 1.2, spaceBetween: 20 },
+                    768: { slidesPerView: 2.7, spaceBetween: 24 },
+                    1024: { slidesPerView: 3.7, spaceBetween: 24 },
+                    1280: { slidesPerView: 4, spaceBetween: 24 },
+                  }}
+                  mousewheel={{
+                    forceToAxis: true,
+                  }}
+                  className="w-full pb-4"
+                >
+                  {guestContinueWatching.map((item) => (
+                    <SwiperSlide key={item._id} className="py-1">
+                      <ContinueWatchingCard item={item} isGuest={true} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
+          ) : null}
 
-          {/* Watchlist Section */}
-          {isLoggedIn &&
-            (watchlist === undefined ? (
+          {/* Watchlist Section (Logged-In or Guest) */}
+          {isLoggedIn ? (
+            watchlist === undefined ? (
               <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
                 <div className="flex items-center gap-2">
                   <Skeleton className="h-6 w-36 rounded-md" />
@@ -231,7 +349,57 @@ export default function HomeClient() {
                   </Swiper>
                 </div>
               </div>
-            ) : null)}
+            ) : null
+          ) : isGuestWatchlistLoaded && guestWatchlist.length > 0 ? (
+            <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
+              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+                My Watchlist
+              </h2>
+              <div className="swiper-carousel-container relative w-full">
+                <Swiper
+                  modules={[Mousewheel, FreeMode]}
+                  freeMode={true}
+                  spaceBetween={16}
+                  slidesPerView={2}
+                  breakpoints={{
+                    640: { slidesPerView: 3, spaceBetween: 24 },
+                    768: { slidesPerView: 4, spaceBetween: 24 },
+                    1024: { slidesPerView: 5, spaceBetween: 24 },
+                    1280: { slidesPerView: 6, spaceBetween: 24 },
+                  }}
+                  mousewheel={{
+                    forceToAxis: true,
+                  }}
+                  className="w-full pb-4"
+                >
+                  {guestWatchlist.map((item) => {
+                    const mediaItem: TMDBMedia = {
+                      id: Number(item.mediaId),
+                      media_type: item.mediaType as "movie" | "tv",
+                      title: item.title,
+                      name: item.title,
+                      poster_path: item.posterPath,
+                      vote_average: item.rating || 0,
+                      release_date: item.releaseYear,
+                      backdrop_path: "",
+                      genre_ids: [],
+                      overview: "",
+                      popularity: 0,
+                    };
+                    return (
+                      <SwiperSlide key={item._id} className="py-1">
+                        <Card
+                          media={mediaItem}
+                          onQuickView={handleQuickView}
+                          onAuthRequired={openAuth}
+                        />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              </div>
+            </div>
+          ) : null}
 
           {/* Trending Now */}
           <div id="trending">

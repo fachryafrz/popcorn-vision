@@ -5,6 +5,8 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 
+import { useGuestWatchlist } from "@/hooks/use-guest-watchlist";
+
 interface UserLibraryContextType {
   isWatchlisted: (mediaId: string | number, mediaType: string) => boolean;
   isFavorited: (mediaId: string | number, mediaType: string) => boolean;
@@ -28,10 +30,15 @@ export function UserLibraryProvider({ children }: { children: ReactNode }) {
     isLoggedIn ? {} : "skip"
   );
 
+  const { items: guestWatchlist, isLoaded: isGuestWatchlistLoaded } = useGuestWatchlist();
+
   const watchlistedKeysSet = useMemo(() => {
-    if (!watchlist) return new Set<string>();
-    return new Set(watchlist.map((item) => `${item.mediaType}-${item.mediaId}`));
-  }, [watchlist]);
+    if (isLoggedIn) {
+      if (!watchlist) return new Set<string>();
+      return new Set(watchlist.map((item) => `${item.mediaType}-${item.mediaId}`));
+    }
+    return new Set(guestWatchlist.map((item) => `${item.mediaType}-${item.mediaId}`));
+  }, [isLoggedIn, watchlist, guestWatchlist]);
 
   const favoritedKeysSet = useMemo(() => {
     if (!favorites) return new Set<string>();
@@ -53,7 +60,7 @@ export function UserLibraryProvider({ children }: { children: ReactNode }) {
       value={{
         isWatchlisted,
         isFavorited,
-        watchlistLoading: isLoggedIn && watchlist === undefined,
+        watchlistLoading: isLoggedIn ? watchlist === undefined : !isGuestWatchlistLoaded,
         favoritesLoading: isLoggedIn && favorites === undefined,
       }}
     >

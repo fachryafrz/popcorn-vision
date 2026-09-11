@@ -30,6 +30,15 @@ import {
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
 import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
+import {
+  getGuestWatchProgressForMedia,
+  saveGuestWatchProgress,
+} from "@/lib/guest-watch";
+import {
+  addToGuestWatchlist,
+  removeFromGuestWatchlist,
+} from "@/lib/guest-watchlist";
+import { useUserLibrary } from "./user-library-provider";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -376,12 +385,12 @@ export default function MediaDetailClient({
     }
   };
 
-  // Convex watchlist mutations/queries
+  // Watchlist mutations & library check
   const [watchlistLoading, setWatchlistLoading] = useState(false);
-  const isWatchlisted = useQuery(
-    api.watchlist.checkWatchlistItem,
-    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
-  );
+  const { isWatchlisted: checkWatchlisted } = useUserLibrary();
+  const isWatchlisted = details
+    ? checkWatchlisted(details.id, mediaType)
+    : false;
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
 
@@ -440,9 +449,9 @@ export default function MediaDetailClient({
 
   const hasResumed = useRef(false);
 
-  // Auto-resume watch progress
+  // Auto-resume watch progress (Authenticated or Guest)
   useEffect(() => {
-    if (watchProgress && !hasResumed.current) {
+    if (isLoggedIn && watchProgress && !hasResumed.current) {
       hasResumed.current = true;
       const targetSeason = watchProgress.season;
       const targetEpisode = watchProgress.episode;
@@ -454,8 +463,26 @@ export default function MediaDetailClient({
           setEpisode(targetEpisode);
         }
       });
+    } else if (!isLoggedIn && details && !hasResumed.current) {
+      const guestProgress = getGuestWatchProgressForMedia(
+        String(details.id),
+        mediaType,
+      );
+      if (guestProgress) {
+        hasResumed.current = true;
+        const targetSeason = guestProgress.season;
+        const targetEpisode = guestProgress.episode;
+        Promise.resolve().then(() => {
+          if (targetSeason !== undefined) {
+            setSeason(targetSeason);
+          }
+          if (targetEpisode !== undefined) {
+            setEpisode(targetEpisode);
+          }
+        });
+      }
     }
-  }, [watchProgress, setSeason, setEpisode]);
+  }, [isLoggedIn, watchProgress, details, mediaType, setSeason, setEpisode]);
 
   // Scroll player section into view on mount if playTab query param is "watch"
   const hasScrolledOnMount = useRef(false);
@@ -514,19 +541,32 @@ export default function MediaDetailClient({
     }
   }, [exchangeRatesData, fetchRates]);
 
-  // Track and save watch progress
+  // Track and save watch progress (Convex for logged-in, localStorage for guest)
   useEffect(() => {
-    if (isLoggedIn && activeTab === "watch" && details) {
-      upsertWatchProgress({
-        mediaId: String(details.id),
-        mediaType,
-        title: details.title || details.name || "",
-        posterPath: details.poster_path || "",
-        backdropPath: details.backdrop_path || undefined,
-        episodeStillPath: currentEpisodeStill,
-        season: mediaType === "tv" ? season : undefined,
-        episode: mediaType === "tv" ? episode : undefined,
-      }).catch((err) => console.error("Failed to save watch progress:", err));
+    if (activeTab === "watch" && details) {
+      if (isLoggedIn) {
+        upsertWatchProgress({
+          mediaId: String(details.id),
+          mediaType,
+          title: details.title || details.name || "",
+          posterPath: details.poster_path || "",
+          backdropPath: details.backdrop_path || undefined,
+          episodeStillPath: currentEpisodeStill,
+          season: mediaType === "tv" ? season : undefined,
+          episode: mediaType === "tv" ? episode : undefined,
+        }).catch((err) => console.error("Failed to save watch progress:", err));
+      } else {
+        saveGuestWatchProgress({
+          mediaId: String(details.id),
+          mediaType: (mediaType === "tv" ? "tv" : "movie"),
+          title: details.title || details.name || "",
+          posterPath: details.poster_path || "",
+          backdropPath: details.backdrop_path || undefined,
+          episodeStillPath: currentEpisodeStill,
+          season: mediaType === "tv" ? season : undefined,
+          episode: mediaType === "tv" ? episode : undefined,
+        });
+      }
     }
   }, [
     activeTab,
@@ -705,15 +745,33 @@ export default function MediaDetailClient({
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!details) return;
+    const mId = String(details.id);
+    const mType = mediaType === "tv" ? "tv" : "movie";
+
     if (!isLoggedIn) {
-      openAuth();
+      if (isWatchlisted) {
+        removeFromGuestWatchlist(mId, mType);
+        toast.success(`Removed "${details.title || details.name}" from Watchlist`);
+      } else {
+        addToGuestWatchlist({
+          mediaId: mId,
+          mediaType: mType,
+          title: details.title || details.name || "",
+          posterPath: details.poster_path || "",
+          rating: details.vote_average || 0,
+          releaseYear: releaseYear.toString(),
+        });
+        toast.success(`Added "${details.title || details.name}" to Watchlist`);
+      }
       return;
     }
+
     setWatchlistLoading(true);
     try {
-      const mId = String(details.id);
       if (isWatchlisted) {
         await removeFromWatchlist({ mediaId: mId, mediaType });
+        toast.success(`Removed "${details.title || details.name}" from Watchlist`);
       } else {
         await addToWatchlist({
           mediaId: mId,
@@ -723,9 +781,11 @@ export default function MediaDetailClient({
           rating: details.vote_average || 0,
           releaseYear: releaseYear.toString(),
         });
+        toast.success(`Added "${details.title || details.name}" to Watchlist`);
       }
     } catch (err) {
       console.error("Watchlist toggle failed:", err);
+      toast.error("Failed to update Watchlist");
     } finally {
       setWatchlistLoading(false);
     }

@@ -9,6 +9,11 @@ import { Play, Plus, Check, Star, Heart, Loader2, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useUserLibrary } from "./user-library-provider";
+import {
+  addToGuestWatchlist,
+  removeFromGuestWatchlist,
+} from "@/lib/guest-watchlist";
+import { toast } from "sonner";
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -30,7 +35,7 @@ interface HeroSlideProps {
   media: TMDBMedia;
   onQuickView: (media: TMDBMedia) => void;
   onAuthRequired: () => void;
-  isLoggedIn: boolean;
+  isFirstSlide?: boolean;
 }
 
 // Subcomponent to optimize watchlist queries without re-rendering Swiper container
@@ -38,8 +43,11 @@ function HeroSlide({
   media,
   onQuickView,
   onAuthRequired,
-  isLoggedIn,
+  isFirstSlide = false,
 }: HeroSlideProps) {
+  const router = useRouter();
+  const session = authClient.useSession();
+  const isLoggedIn = !!session.data?.user;
   const [watchlistLoading, setWatchlistLoading] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -91,18 +99,34 @@ function HeroSlide({
 
   const handleWatchlistToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
+    const mId = String(media.id);
+    const mType = (media.media_type === "tv" ? "tv" : "movie");
+
     if (!isLoggedIn) {
-      onAuthRequired();
+      if (isWatchlisted) {
+        removeFromGuestWatchlist(mId, mType);
+        toast.success(`Removed "${media.title || media.name}" from Watchlist`);
+      } else {
+        addToGuestWatchlist({
+          mediaId: mId,
+          mediaType: mType,
+          title: media.title || media.name || "",
+          posterPath: media.poster_path || "",
+          rating: media.vote_average,
+          releaseYear: media.release_date
+            ? new Date(media.release_date).getFullYear().toString()
+            : "N/A",
+        });
+        toast.success(`Added "${media.title || media.name}" to Watchlist`);
+      }
       return;
     }
 
     setWatchlistLoading(true);
     try {
-      const mId = String(media.id);
-      const mType = media.media_type || "movie";
-
       if (isWatchlisted) {
         await removeFromWatchlist({ mediaId: mId, mediaType: mType });
+        toast.success(`Removed "${media.title || media.name}" from Watchlist`);
       } else {
         await addToWatchlist({
           mediaId: mId,
@@ -114,9 +138,11 @@ function HeroSlide({
             ? new Date(media.release_date).getFullYear().toString()
             : "N/A",
         });
+        toast.success(`Added "${media.title || media.name}" to Watchlist`);
       }
     } catch (err) {
       console.error("Watchlist toggle failed:", err);
+      toast.error("Failed to update Watchlist");
     } finally {
       setWatchlistLoading(false);
     }
@@ -139,8 +165,6 @@ function HeroSlide({
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
     : "0.0";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
-
-  const router = useRouter();
 
   return (
     <div className="relative flex h-full w-full items-end px-6 pb-16 sm:px-16 sm:pb-24 md:px-20">
@@ -343,7 +367,6 @@ export default function Hero({
               media={media}
               onQuickView={onQuickView}
               onAuthRequired={onAuthRequired}
-              isLoggedIn={isLoggedIn}
             />
           </SwiperSlide>
         ))}

@@ -34,6 +34,9 @@ export default function Footer() {
         &copy; {moment(createdDate).format("MMM YYYY")} -{" "}
         {moment().format("MMM YYYY")} {siteConfig.name}. All rights reserved.
       </p>
+      <span className="text-[11px] font-medium text-zinc-700">
+        v{siteConfig.version}
+      </span>
     </footer>
   );
 }
