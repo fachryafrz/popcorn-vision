@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
+  Command,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useKeyboardShortcutsStore } from "@/hooks/use-keyboard-shortcuts-store";
 
 interface NavbarUserMenuProps {
   user: {
@@ -36,6 +38,7 @@ export function NavbarUserMenu({
 }: NavbarUserMenuProps) {
   const router = useRouter();
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
+  const openShortcuts = useKeyboardShortcutsStore((state) => state.open);
 
   if (!user) return null;
 
@@ -109,6 +112,22 @@ export function NavbarUserMenu({
         >
           <Settings className="mr-2 h-4 w-4 text-zinc-400" />
           Settings
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={() => {
+            setDropdownMenuOpen(false);
+            openShortcuts();
+          }}
+          className="cursor-pointer justify-between rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+        >
+          <div className="flex items-center">
+            <Command className="mr-2 h-4 w-4 text-zinc-400" />
+            <span>Shortcuts</span>
+          </div>
+          <kbd className="rounded border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400">
+            ?
+          </kbd>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator className="my-1 bg-zinc-800" />

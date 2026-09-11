@@ -199,6 +199,14 @@ export function SearchOverlay() {
     if (e.key === "Escape") {
       e.preventDefault();
       handleClose();
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      const currentIndex = FILTER_TABS.findIndex((t) => t.value === activeTab);
+      const nextIndex = e.shiftKey
+        ? (currentIndex - 1 + FILTER_TABS.length) % FILTER_TABS.length
+        : (currentIndex + 1) % FILTER_TABS.length;
+      setActiveTab(FILTER_TABS[nextIndex].value);
+      setSelectedIndex(0);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prev) =>
@@ -555,6 +563,12 @@ export function SearchOverlay() {
         {/* Footer info & full search CTA */}
         <div className="flex items-center justify-between border-t border-zinc-800/80 bg-zinc-900/50 px-4 py-2.5 text-xs text-zinc-400">
           <div className="hidden items-center gap-3 md:flex">
+            <span className="flex items-center gap-1">
+              <kbd className="rounded border border-zinc-700/60 bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px]">
+                Tab
+              </kbd>
+              to switch tab
+            </span>
             <span className="flex items-center gap-1">
               <kbd className="rounded border border-zinc-700/60 bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px]">
                 ↑

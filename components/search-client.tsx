@@ -1089,7 +1089,7 @@ export default function SearchClient({
             {/* Sticky Search Header */}
             <div
               className={cn(
-                "sticky top-22 z-50 mb-6 backdrop-blur-md transition-all duration-500 lg:top-22 lg:w-fit",
+                "sticky top-22 z-20 mb-6 backdrop-blur-md transition-all duration-500 lg:top-22 lg:w-fit",
                 isScrolled
                   ? "mx-2 rounded-4xl border border-zinc-800/80 bg-zinc-900/95 p-4 shadow-xl"
                   : "bg-background/95 rounded-none border border-transparent px-0",

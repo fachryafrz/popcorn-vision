@@ -579,62 +579,6 @@ export default function MediaDetailClient({
     upsertWatchProgress,
   ]);
 
-  // Show skeleton while media data is loading
-  if (isMediaLoading) {
-    return <MediaDetailSkeleton />;
-  }
-
-  // Guard against null details (shouldn't happen after loading, but satisfies TS)
-  if (!details) return null;
-
-  const handleShareToChat = async (chatId: string, chatTitle: string) => {
-    try {
-      await sendChatMessage({
-        chatId: chatId as Id<"chats">,
-        content: `Recommended ${mediaType === "movie" ? "movie" : "TV show"}: ${details.title || details.name}`,
-        attachmentType: "media",
-        sharedMediaId: String(details.id),
-        sharedMediaType: mediaType,
-        sharedMediaTitle: details.title || details.name || "",
-        sharedMediaPoster: details.poster_path || "",
-        sharedMediaRating: details.vote_average || 0,
-        sharedMediaYear: releaseYear.toString(),
-      });
-      setIsShareDialogOpen(false);
-      toast.success(
-        `Shared "${details.title || details.name}" to ${chatTitle}!`,
-      );
-    } catch {
-      toast.error("Failed to share title");
-    }
-  };
-
-  const cast = credits?.cast?.slice(0, 15) || [];
-  const directors = credits?.crew?.filter((c) => c.job === "Director") || [];
-  const creators = details?.created_by || [];
-  const providers = watchProviders?.[selectedRegion]?.flatrate || [];
-
-  // YouTube trailer resolution
-  const trailerVideo = videos?.find(
-    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube",
-  );
-  const trailerKey =
-    trailerVideo?.key ||
-    (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
-
-  // Streaming server sources
-  const servers = streamingProviderList({
-    media_type: mediaType,
-    id: String(details?.id),
-    season,
-    episode,
-  });
-
-  const rating = details?.vote_average
-    ? details.vote_average.toFixed(details.vote_average < 10 ? 1 : 0)
-    : "0.0";
-
-  // Find regional release date and content certification
   const regionalReleaseInfo = (() => {
     if (mediaType !== "movie" || !regionalData) return null;
     const movieReleaseData = regionalData as RegionalRelease[];
@@ -678,7 +622,7 @@ export default function MediaDetailClient({
   })();
 
   const releaseDate = regionalReleaseDate;
-  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : "N/A";
+  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear().toString() : "N/A";
   const runtime = details?.runtime || details?.episode_run_time?.[0] || null;
 
   const isUnreleased = (() => {
@@ -743,8 +687,7 @@ export default function MediaDetailClient({
     }).format(convertedAmount);
   };
 
-  const handleWatchlistToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleWatchlistAction = useCallback(async () => {
     if (!details) return;
     const mId = String(details.id);
     const mType = mediaType === "tv" ? "tv" : "movie";
@@ -760,7 +703,7 @@ export default function MediaDetailClient({
           title: details.title || details.name || "",
           posterPath: details.poster_path || "",
           rating: details.vote_average || 0,
-          releaseYear: releaseYear.toString(),
+          releaseYear,
         });
         toast.success(`Added "${details.title || details.name}" to Watchlist`);
       }
@@ -779,7 +722,7 @@ export default function MediaDetailClient({
           title: details.title || details.name || "",
           posterPath: details.poster_path || "",
           rating: details.vote_average || 0,
-          releaseYear: releaseYear.toString(),
+          releaseYear,
         });
         toast.success(`Added "${details.title || details.name}" to Watchlist`);
       }
@@ -789,10 +732,18 @@ export default function MediaDetailClient({
     } finally {
       setWatchlistLoading(false);
     }
-  };
+  }, [
+    details,
+    mediaType,
+    isLoggedIn,
+    isWatchlisted,
+    releaseYear,
+    removeFromWatchlist,
+    addToWatchlist,
+  ]);
 
-  const handleFavoriteToggle = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const toggleFavoriteAction = useCallback(async () => {
+    if (!details) return;
     if (!isLoggedIn) {
       openAuth();
       return;
@@ -809,7 +760,7 @@ export default function MediaDetailClient({
           title: details.title || details.name || "",
           posterPath: details.poster_path || "",
           rating: details.vote_average || 0,
-          releaseYear: releaseYear.toString(),
+          releaseYear,
         });
       }
     } catch (err) {
@@ -817,7 +768,64 @@ export default function MediaDetailClient({
     } finally {
       setFavoriteLoading(false);
     }
+  }, [
+    details,
+    isLoggedIn,
+    openAuth,
+    isFavorited,
+    removeFromFavorites,
+    addToFavorites,
+    mediaType,
+    releaseYear,
+  ]);
+
+  const handleWatchlistToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await toggleWatchlistAction();
   };
+
+  const handleFavoriteToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await toggleFavoriteAction();
+  };
+
+  // Media Detail Page Keyboard Shortcuts: W (Watchlist), F (Favorite), L (Log Watch)
+  useEffect(() => {
+    const handleDetailKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        !target ||
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable ||
+        Boolean(target.closest('[role="dialog"], [role="menu"], [role="listbox"]'))
+      ) {
+        return;
+      }
+
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+      const key = e.key.toLowerCase();
+      if (key === "w") {
+        e.preventDefault();
+        toggleWatchlistAction();
+      } else if (key === "f") {
+        e.preventDefault();
+        toggleFavoriteAction();
+      } else if (key === "l") {
+        e.preventDefault();
+        if (!isLoggedIn) {
+          openAuth();
+        } else {
+          setIsLogModalOpen(true);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleDetailKeyDown);
+    return () => window.removeEventListener("keydown", handleDetailKeyDown);
+  }, [toggleWatchlistAction, toggleFavoriteAction, isLoggedIn, openAuth]);
 
   const scrollToPlayer = (tab: "trailer" | "watch") => {
     setActiveTab(tab);
@@ -832,6 +840,62 @@ export default function MediaDetailClient({
   const handleQuickView = (media: TMDBMedia) => {
     setQuickViewMedia(media);
   };
+
+  const handleShareToChat = async (chatId: string, chatTitle: string) => {
+    if (!details) return;
+    try {
+      await sendChatMessage({
+        chatId: chatId as Id<"chats">,
+        content: `Recommended ${mediaType === "movie" ? "movie" : "TV show"}: ${details.title || details.name}`,
+        attachmentType: "media",
+        sharedMediaId: String(details.id),
+        sharedMediaType: mediaType,
+        sharedMediaTitle: details.title || details.name || "",
+        sharedMediaPoster: details.poster_path || "",
+        sharedMediaRating: details.vote_average || 0,
+        sharedMediaYear: releaseYear,
+      });
+      setIsShareDialogOpen(false);
+      toast.success(
+        `Shared "${details.title || details.name}" to ${chatTitle}!`,
+      );
+    } catch {
+      toast.error("Failed to share title");
+    }
+  };
+
+  const cast = credits?.cast?.slice(0, 15) || [];
+  const directors = credits?.crew?.filter((c) => c.job === "Director") || [];
+  const creators = details?.created_by || [];
+  const providers = watchProviders?.[selectedRegion]?.flatrate || [];
+
+  // YouTube trailer resolution
+  const trailerVideo = videos?.find(
+    (v: VideoItem) => v.type === "Trailer" && v.site === "YouTube",
+  );
+  const trailerKey =
+    trailerVideo?.key ||
+    (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
+
+  // Streaming server sources
+  const servers = streamingProviderList({
+    media_type: mediaType,
+    id: String(details?.id),
+    season,
+    episode,
+  });
+
+  const rating = details?.vote_average
+    ? details.vote_average.toFixed(details.vote_average < 10 ? 1 : 0)
+    : "0.0";
+
+  // Show skeleton while media data is loading
+  if (isMediaLoading) {
+    return <MediaDetailSkeleton />;
+  }
+
+  // Guard against null details (shouldn't happen after loading, but satisfies TS)
+  if (!details) return null;
 
   const backdropUrl = details?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${details.backdrop_path}`
