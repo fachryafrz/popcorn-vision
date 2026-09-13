@@ -1,13 +1,14 @@
 {
   "name": "popcorn-vision",
-  "version": "2026.9.11",
+  "version": "2026.9.13",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "convex": "pnpm dlx convex dev"
+    "convex": "pnpm dlx convex dev",
+    "vercel-ignore": "node scripts/vercel-ignore.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

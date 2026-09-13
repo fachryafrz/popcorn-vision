@@ -239,6 +239,10 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - `config/`: Application configuration, navigation constants, site metadata.
 - Use consistent, descriptive, kebab-case or PascalCase file naming in line with project standards.
 
+### 5. Project Versioning (CalVer `YYYY.M.D`)
+- **Versioning Scheme:** Gunakan **Calendar Versioning (CalVer)** dengan format **`YYYY.M.D`** (Tahun.Bulan.Hari, contoh: `2026.9.12`).
+- **PENTING:** Jangan gunakan format SemVer atau `YYYY.M.PATCH` (misal: `2026.9.1`, `2026.9.2` jika maksudnya adalah patch). Segmen ketiga adalah tanggal/hari (`D`), bukan nomor patch increment. Setiap kali ada perubahan pada proyek, perbarui versi di `package.json` ke tanggal saat perubahan dilakukan (`YYYY.M.D`).
+
 ---
 
 ## ⚡ Next.js 16 & React 19 Conventions
