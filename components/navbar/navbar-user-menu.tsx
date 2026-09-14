@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   ChevronDown,
   ShieldCheck,
@@ -10,7 +10,6 @@ import {
   Command,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,16 +35,10 @@ export function NavbarUserMenu({
   role,
   onSignOut,
 }: NavbarUserMenuProps) {
-  const router = useRouter();
   const [dropdownMenuOpen, setDropdownMenuOpen] = useState(false);
   const openShortcuts = useKeyboardShortcutsStore((state) => state.open);
 
   if (!user) return null;
-
-  const navigateTo = (path: string) => {
-    setDropdownMenuOpen(false);
-    router.push(path);
-  };
 
   return (
     <DropdownMenu open={dropdownMenuOpen} onOpenChange={setDropdownMenuOpen}>
@@ -73,9 +66,9 @@ export function NavbarUserMenu({
         sideOffset={8}
         className="w-52 rounded-2xl border border-zinc-800 bg-zinc-950 p-1 shadow-2xl shadow-black/60"
       >
-        <Button
-          onClick={() => navigateTo(`/@${user.username}`)}
-          variant={"ghost"}
+        <Link
+          href={`/@${user.username}`}
+          onClick={() => setDropdownMenuOpen(false)}
           className="mb-1 flex h-fit w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left hover:bg-zinc-900"
         >
           <Avatar className="h-8 w-8 shrink-0 border border-zinc-700/50">
@@ -94,24 +87,34 @@ export function NavbarUserMenu({
             <p className="truncate text-sm font-bold text-white">{user.name}</p>
             <p className="truncate text-xs text-zinc-500">@{user.username}</p>
           </div>
-        </Button>
+        </Link>
 
         {(role === "owner" || role === "admin") && (
           <DropdownMenuItem
-            onClick={() => navigateTo("/admin/users")}
-            className="cursor-pointer rounded-xl px-3 py-2 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 focus:bg-amber-500/10 focus:text-amber-300"
+            className="cursor-pointer rounded-xl p-0 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 focus:bg-amber-500/10 focus:text-amber-300"
           >
-            <ShieldCheck className="mr-2 h-4 w-4 text-amber-400" />
-            Admin Panel
+            <Link
+              href="/admin/users"
+              onClick={() => setDropdownMenuOpen(false)}
+              className="flex w-full items-center px-3 py-2"
+            >
+              <ShieldCheck className="mr-2 h-4 w-4 text-amber-400" />
+              Admin Panel
+            </Link>
           </DropdownMenuItem>
         )}
 
         <DropdownMenuItem
-          onClick={() => navigateTo("/settings")}
-          className="cursor-pointer rounded-xl px-3 py-2 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+          className="cursor-pointer rounded-xl p-0 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
         >
-          <Settings className="mr-2 h-4 w-4 text-zinc-400" />
-          Settings
+          <Link
+            href="/settings"
+            onClick={() => setDropdownMenuOpen(false)}
+            className="flex w-full items-center px-3 py-2"
+          >
+            <Settings className="mr-2 h-4 w-4 text-zinc-400" />
+            Settings
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem

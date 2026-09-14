@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import UsernamePromptModal from "@/components/username-prompt-modal";
 import DisclaimerModal from "@/components/disclaimer-modal";
 import { BottomNav } from "@/components/navbar/bottom-nav";
+import ScrollToTop from "@/components/scroll-to-top";
 
 export default function MainLayout({
   children,
@@ -12,6 +13,9 @@ export default function MainLayout({
 }) {
   return (
     <>
+      <Suspense>
+        <ScrollToTop />
+      </Suspense>
       <Suspense>
         <Navbar />
       </Suspense>

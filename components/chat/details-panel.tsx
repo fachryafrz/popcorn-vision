@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { X, Users, LogOut, Trash2, Volume2, VolumeX, UserX, Loader2 } from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -295,11 +296,9 @@ export default function DetailsPanel({
                 ? `https://image.tmdb.org/t/p/w92${msg.sharedMediaPoster}`
                 : "/logo/popcorn.png";
               return (
-                <div
+                <Link
                   key={msg._id}
-                  onClick={() =>
-                    router.push(`/${msg.sharedMediaType}/${msg.sharedMediaId}`)
-                  }
+                  href={`/${msg.sharedMediaType}/${msg.sharedMediaId}`}
                   className="border-zinc-850 hover:border-zinc-650 aspect-2/3 cursor-pointer overflow-hidden rounded-lg border bg-zinc-900 shadow-inner transition-colors"
                   title={msg.sharedMediaTitle}
                 >
@@ -308,7 +307,7 @@ export default function DetailsPanel({
                     alt={msg.sharedMediaTitle}
                     className="h-full w-full object-cover"
                   />
-                </div>
+                </Link>
               );
             })}
           </div>

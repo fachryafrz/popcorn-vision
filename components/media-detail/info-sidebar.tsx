@@ -2,7 +2,7 @@
 
 import RegionSelect from "@/components/region-select";
 import moment from "moment";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { MediaDetails, ProviderItem } from "./types";
 
 interface InfoSidebarProps {
@@ -24,7 +24,6 @@ export default function InfoSidebar({
   formatCurrency,
   providers,
 }: InfoSidebarProps) {
-  const router = useRouter();
   return (
     <div className="border-zinc-850 sticky top-22 h-fit space-y-6 rounded-2xl border bg-zinc-900/10 p-6">
       <h3 className="border-zinc-805 border-b pb-2 text-base font-bold text-white">
@@ -120,9 +119,9 @@ export default function InfoSidebar({
           </span>
           <div className="flex flex-wrap gap-2">
             {providers.slice(0, 5).map((prov) => (
-              <div
+              <Link
                 key={prov.provider_id}
-                onClick={() => router.push(`/search?type=${mediaType}&providerId=${prov.provider_id}`)}
+                href={`/search?type=${mediaType}&providerId=${prov.provider_id}`}
                 className="h-9 w-9 overflow-hidden rounded-lg border border-zinc-800 cursor-pointer transition duration-200 active:scale-90 hover:border-zinc-500"
                 title={prov.provider_name}
               >
@@ -131,7 +130,7 @@ export default function InfoSidebar({
                   alt={prov.provider_name}
                   className="h-full w-full object-cover"
                 />
-              </div>
+              </Link>
             ))}
           </div>
         </div>

@@ -17,6 +17,7 @@ import {
 interface SectionProps {
   titleType: "text" | "dropdown-streaming" | "dropdown-genre";
   defaultFetch: () => Promise<TMDBMedia[]>;
+  initialItems?: TMDBMedia[];
   onQuickView: (media: TMDBMedia) => void;
   onAuthRequired: () => void;
   // Specific handlers
@@ -38,15 +39,13 @@ const PROVIDER_COLORS: Record<keyof typeof PROVIDERS, { textClass: string }> = {
 export default function Section({
   titleType,
   defaultFetch,
+  initialItems,
   onQuickView,
   onAuthRequired,
   onTrendingChange,
   onStreamingChange,
   onGenreChange,
 }: SectionProps) {
-  const [items, setItems] = useState<TMDBMedia[]>([]);
-  const [loading, setLoading] = useState(true);
-
   // States for interactive controls
   const [trendingTab, setTrendingTab] = useState<"all" | "movie" | "tv">(() => {
     if (titleType === "text" && typeof window !== "undefined") {
@@ -84,12 +83,27 @@ export default function Section({
     return "Action";
   });
 
-  // Fetch initial data
+  const [items, setItems] = useState<TMDBMedia[]>(() => initialItems ?? []);
+  const [loading, setLoading] = useState<boolean>(() => {
+    if (initialItems && initialItems.length > 0) {
+      if (titleType === "text" && trendingTab === "all") return false;
+      if (titleType === "dropdown-streaming" && streamingProv === "netflix")
+        return false;
+      if (titleType === "dropdown-genre" && genreName === "Action")
+        return false;
+    }
+    return !initialItems || initialItems.length === 0;
+  });
+
+  // Fetch initial data if restored non-default tab or missing initial items
   useEffect(() => {
+    let isMounted = true;
     if (titleType === "text" && trendingTab !== "all" && onTrendingChange) {
       onTrendingChange(trendingTab).then((data) => {
-        setItems(data);
-        setLoading(false);
+        if (isMounted) {
+          setItems(data);
+          setLoading(false);
+        }
       });
     } else if (
       titleType === "dropdown-streaming" &&
@@ -97,8 +111,10 @@ export default function Section({
       onStreamingChange
     ) {
       onStreamingChange(streamingProv).then((data) => {
-        setItems(data);
-        setLoading(false);
+        if (isMounted) {
+          setItems(data);
+          setLoading(false);
+        }
       });
     } else if (
       titleType === "dropdown-genre" &&
@@ -106,15 +122,22 @@ export default function Section({
       onGenreChange
     ) {
       onGenreChange(genreName).then((data) => {
-        setItems(data);
-        setLoading(false);
+        if (isMounted) {
+          setItems(data);
+          setLoading(false);
+        }
       });
-    } else {
+    } else if (!initialItems || initialItems.length === 0) {
       defaultFetch().then((data) => {
-        setItems(data);
-        setLoading(false);
+        if (isMounted) {
+          setItems(data);
+          setLoading(false);
+        }
       });
     }
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -275,7 +298,7 @@ export default function Section({
         <CarouselSkeleton />
       ) : (
         <Carousel
-          items={items}
+          items={items.length > 0 ? items : (initialItems ?? [])}
           onQuickView={onQuickView}
           onAuthRequired={onAuthRequired}
         />

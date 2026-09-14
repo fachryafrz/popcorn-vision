@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
@@ -107,7 +106,6 @@ export default function QuickViewModal({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
-  const router = useRouter();
 
   const currentUser = useQuery(api.users.getCurrentUser);
   const userCountryCode = currentUser?.country
@@ -371,18 +369,14 @@ export default function QuickViewModal({
 
               {/* Action Buttons: View Details, Watchlist & Favorite */}
               <div className="flex flex-wrap items-center gap-3">
-                <Button
-                  onClick={() => {
-                    const mType = media.media_type || "movie";
-                    router.push(`/${mType}/${media.id}`);
-                  }}
-                  className="bg-primary hover:bg-primary/90 h-9 cursor-pointer rounded-full px-4 py-4 text-xs font-semibold text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 active:scale-98"
+                <Link
+                  href={`/${media.media_type || "movie"}/${media.id}`}
+                  onClick={onClose}
+                  className="bg-primary hover:bg-primary/90 inline-flex items-center gap-1.5 h-9 cursor-pointer rounded-full px-4 py-4 text-xs font-semibold text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 active:scale-98"
                 >
-                  <span className="flex items-center gap-1.5">
-                    <Play className="h-3.5 w-3.5 fill-current" />
-                    View Details
-                  </span>
-                </Button>
+                  <Play className="h-3.5 w-3.5 fill-current" />
+                  View Details
+                </Link>
 
                 <Button
                   onClick={handleWatchlistToggle}
@@ -616,12 +610,10 @@ export default function QuickViewModal({
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {providers[userCountryCode].flatrate.map((prov) => (
-                      <div
+                      <Link
                         key={prov.provider_id}
-                        onClick={() => {
-                          onClose();
-                          router.push(`/search?type=${media?.media_type || "movie"}&providerId=${prov.provider_id}`);
-                        }}
+                        href={`/search?type=${media?.media_type || "movie"}&providerId=${prov.provider_id}`}
+                        onClick={onClose}
                         className="group border-zinc-850 relative flex h-9 w-9 overflow-hidden rounded-xl border bg-zinc-900 cursor-pointer transition duration-200 active:scale-90 hover:border-zinc-500"
                         title={prov.provider_name}
                       >
@@ -630,7 +622,7 @@ export default function QuickViewModal({
                           alt={prov.provider_name}
                           className="h-full w-full object-cover"
                         />
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>

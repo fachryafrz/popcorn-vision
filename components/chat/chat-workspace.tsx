@@ -526,16 +526,12 @@ export default function ChatWorkspace({
                                 </div>
                               </div>
                               <div className="grid grid-cols-2 border-t border-zinc-900 bg-zinc-900/30 text-[9px] font-bold tracking-wider uppercase">
-                                <button
-                                  onClick={() =>
-                                    router.push(
-                                      `/${msg.sharedMediaType}/${msg.sharedMediaId}`,
-                                    )
-                                  }
+                                <Link
+                                  href={`/${msg.sharedMediaType}/${msg.sharedMediaId}`}
                                   className="cursor-pointer border-r border-zinc-900 py-2.5 text-center text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-white"
                                 >
                                   Details
-                                </button>
+                                </Link>
                                 <button
                                   onClick={() => {
                                     onQuickView({

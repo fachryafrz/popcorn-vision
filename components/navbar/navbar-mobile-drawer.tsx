@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import Link from "next/link";
 import {
   Menu,
@@ -48,7 +47,6 @@ export function NavbarMobileDrawer({
   onOpenAuth,
   onSignOut,
 }: NavbarMobileDrawerProps) {
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { open: openSearchOverlay } = useSearchOverlayStore();
   const isMac = useIsMac();
@@ -56,11 +54,6 @@ export function NavbarMobileDrawer({
   const handleOpenSearch = () => {
     setMobileMenuOpen(false);
     openSearchOverlay();
-  };
-
-  const handleNavigate = (path: string) => {
-    setMobileMenuOpen(false);
-    router.push(path);
   };
 
   return (
@@ -98,7 +91,6 @@ export function NavbarMobileDrawer({
         <nav className="mt-4 flex flex-col gap-4 text-base font-semibold text-zinc-300">
           <Link
             href="/"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -107,7 +99,6 @@ export function NavbarMobileDrawer({
           </Link>
           <Link
             href="/feed"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -116,7 +107,6 @@ export function NavbarMobileDrawer({
           </Link>
           <Link
             href="/search"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -127,7 +117,6 @@ export function NavbarMobileDrawer({
             <>
               <Link
                 href="/chat"
-                prefetch={false}
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 hover:text-white"
               >
@@ -137,7 +126,6 @@ export function NavbarMobileDrawer({
 
               <Link
                 href="/lists"
-                prefetch={false}
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 hover:text-white"
               >
@@ -157,7 +145,6 @@ export function NavbarMobileDrawer({
                 {(role === "owner" || role === "admin") && (
                   <Link
                     href="/admin/users"
-                    prefetch={false}
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-amber-400 hover:bg-zinc-900 hover:text-amber-300"
                   >
@@ -176,10 +163,10 @@ export function NavbarMobileDrawer({
                 </Link>
               </div>
 
-              <Button
-                variant={"ghost"}
-                onClick={() => handleNavigate(`/@${user.username}`)}
-                className="flex h-fit items-center gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3 text-left"
+              <Link
+                href={`/@${user.username}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex h-fit items-center gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3 text-left transition-colors hover:bg-zinc-900"
               >
                 <Avatar className="h-9 w-9 shrink-0 border border-zinc-700/50">
                   {user.image && (
@@ -201,7 +188,7 @@ export function NavbarMobileDrawer({
                     @{user.username}
                   </p>
                 </div>
-              </Button>
+              </Link>
 
               <Button
                 onClick={() => {

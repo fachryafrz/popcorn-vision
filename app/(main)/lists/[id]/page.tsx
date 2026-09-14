@@ -273,12 +273,12 @@ export default function CustomListDetailPage({
           You do not have permission to view this custom list. The creator has
           restricted access to list members and collaborators only.
         </p>
-        <Button
-          onClick={() => router.push("/lists")}
-          className="mt-6 rounded-full bg-white font-bold text-black hover:bg-zinc-200"
+        <Link
+          href="/lists"
+          className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-white px-6 font-bold text-black hover:bg-zinc-200"
         >
           Back to Custom Lists
-        </Button>
+        </Link>
       </div>
     );
   }

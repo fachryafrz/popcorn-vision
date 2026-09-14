@@ -68,7 +68,6 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
         <Link
           key={link.href}
           href={link.requireAuth && !isLoggedIn ? "#" : link.href}
-          prefetch={false}
           onClick={(e) => {
             if (link.requireAuth && !isLoggedIn) {
               e.preventDefault();
