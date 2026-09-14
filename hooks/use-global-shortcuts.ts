@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { useAuthModalStore } from "@/lib/auth-modal-store";

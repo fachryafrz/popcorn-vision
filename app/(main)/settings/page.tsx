@@ -2,7 +2,8 @@
 
 import { useState, useRef, useMemo, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery, useMutation } from "convex/react";
+import { useMutation } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";

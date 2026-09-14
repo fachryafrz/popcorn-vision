@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";

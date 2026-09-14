@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { cn } from "@/lib/utils";

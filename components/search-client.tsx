@@ -13,7 +13,7 @@ import { useQueryState } from "nuqs";
 import { searchMedia, discoverMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import regionsData from "@/data/iso-3166.json";
