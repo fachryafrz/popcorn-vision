@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { usePaginatedQuery, useQuery } from "convex/react";
+import { usePaginatedQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import ActivityCard from "./activity-card";

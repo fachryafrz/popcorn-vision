@@ -16,7 +16,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";

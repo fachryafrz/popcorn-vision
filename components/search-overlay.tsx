@@ -9,7 +9,7 @@ import React, {
   useCallback,
 } from "react";
 import { useRouter } from "next/navigation";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { useSearchOverlayStore } from "@/hooks/use-search-overlay-store";
 import { useDebounce } from "@/hooks/use-debounce";

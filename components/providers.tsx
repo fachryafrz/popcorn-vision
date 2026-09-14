@@ -2,6 +2,7 @@
 
 import { Suspense, ReactNode } from "react";
 import { ConvexReactClient, ConvexProvider } from "convex/react";
+import { ConvexQueryCacheProvider } from "convex-helpers/react/cache";
 import { ConvexBetterAuthProvider, type AuthClient } from "@convex-dev/better-auth/react";
 import { authClient } from "@/lib/auth-client";
 import { TooltipProvider } from "./ui/tooltip";
@@ -19,22 +20,24 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ConvexProvider client={convex}>
       <ConvexBetterAuthProvider client={convex} authClient={authClient as unknown as AuthClient}>
-        <PersonalizationProvider>
-          <UserLibraryProvider>
-            <ConfirmProvider>
-              <TooltipProvider>
-                <NuqsAdapter>
-                  {children}
-                  <NotificationProvider />
-                  <OfflineIndicator />
-                  <Suspense fallback={null}>
-                    <GlobalKeyboardShortcuts />
-                  </Suspense>
-                </NuqsAdapter>
-              </TooltipProvider>
-            </ConfirmProvider>
-          </UserLibraryProvider>
-        </PersonalizationProvider>
+        <ConvexQueryCacheProvider>
+          <PersonalizationProvider>
+            <UserLibraryProvider>
+              <ConfirmProvider>
+                <TooltipProvider>
+                  <NuqsAdapter>
+                    {children}
+                    <NotificationProvider />
+                    <OfflineIndicator />
+                    <Suspense fallback={null}>
+                      <GlobalKeyboardShortcuts />
+                    </Suspense>
+                  </NuqsAdapter>
+                </TooltipProvider>
+              </ConfirmProvider>
+            </UserLibraryProvider>
+          </PersonalizationProvider>
+        </ConvexQueryCacheProvider>
       </ConvexBetterAuthProvider>
     </ConvexProvider>
   );

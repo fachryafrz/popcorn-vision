@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useQuery } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { UserManagementTable } from "@/components/admin/user-management-table";

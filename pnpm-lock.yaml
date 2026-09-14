@@ -33,8 +33,11 @@ importers:
         specifier: ^1.1.1
         version: 1.1.1(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       convex:
-        specifier: ^1.39.1
+        specifier: ^1.45.0
         version: 1.45.0(react@19.2.4)
+      convex-helpers:
+        specifier: ^0.1.124
+        version: 0.1.124(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@3.25.76)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -1862,8 +1865,8 @@ packages:
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
-  convex-helpers@0.1.123:
-    resolution: {integrity: sha512-E9W4tscZy6ZtNnwPDdL5UhMc7Rj9aUYlzjdYiKsfVIAwdarABWqvPB8+St3Q6IwS83r+QIGSO1lTidTamDdyPQ==}
+  convex-helpers@0.1.124:
+    resolution: {integrity: sha512-Gbu/jq6I3x5Y51cXP5c7+CI3t15vX5Xi2G0tOym3rxpBtYqrI+qWwxkqZgJYrHHccY42wZudB8h6kS3fak8Aeg==}
     hasBin: true
     peerDependencies:
       '@standard-schema/spec': ^1.0.0
@@ -4644,7 +4647,7 @@ snapshots:
       better-auth: 1.6.30(next@16.2.6(@babel/core@7.29.7(supports-color@7.2.0))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       common-tags: 1.8.2
       convex: 1.45.0(react@19.2.4)
-      convex-helpers: 0.1.123(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@4.4.3)
+      convex-helpers: 0.1.124(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@4.4.3)
       jose: 6.2.10
       react: 19.2.4
       remeda: 2.45.0
@@ -5901,7 +5904,17 @@ snapshots:
 
   convert-source-map@2.0.0: {}
 
-  convex-helpers@0.1.123(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@4.4.3):
+  convex-helpers@0.1.124(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@3.25.76):
+    dependencies:
+      convex: 1.45.0(react@19.2.4)
+    optionalDependencies:
+      '@standard-schema/spec': 1.1.0
+      hono: 4.13.5
+      react: 19.2.4
+      typescript: 5.9.3
+      zod: 3.25.76
+
+  convex-helpers@0.1.124(@standard-schema/spec@1.1.0)(convex@1.45.0(react@19.2.4))(hono@4.13.5)(react@19.2.4)(typescript@5.9.3)(zod@4.4.3):
     dependencies:
       convex: 1.45.0(react@19.2.4)
     optionalDependencies:

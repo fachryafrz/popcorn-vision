@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
-import { useQuery, useMutation, useAction } from "convex/react";
+import { useMutation, useAction } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
