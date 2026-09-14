@@ -34,5 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function TvDetailPage({ params }: PageProps) {
   const { id } = await params;
-  return <MediaDetailClient mediaType="tv" id={id} />;
+  const initialData = await getMediaDetails("tv", id);
+  return <MediaDetailClient mediaType="tv" id={id} initialData={initialData} />;
 }
+

@@ -32,6 +32,9 @@ import {
 
 interface CompanyDetailClientProps {
   id: string;
+  initialCompany?: TMDBCompanyDetails | null;
+  initialMovies?: TMDBMedia[];
+  initialTvShows?: TMDBMedia[];
 }
 
 type MediaFilter = "all" | "movie" | "tv";
@@ -39,6 +42,9 @@ type SortOption = "popularity" | "release_date" | "vote_average";
 
 export default function CompanyDetailClient({
   id,
+  initialCompany,
+  initialMovies,
+  initialTvShows,
 }: CompanyDetailClientProps) {
   const router = useRouter();
   const {
@@ -47,12 +53,22 @@ export default function CompanyDetailClient({
     close: closeAuth,
   } = useAuthModalStore();
 
-  const [company, setCompany] = useState<TMDBCompanyDetails | null>(null);
-  const [movies, setMovies] = useState<TMDBMedia[]>([]);
-  const [tvShows, setTvShows] = useState<TMDBMedia[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [company, setCompany] = useState<TMDBCompanyDetails | null>(
+    () => initialCompany ?? null,
+  );
+  const [movies, setMovies] = useState<TMDBMedia[]>(
+    () => initialMovies ?? [],
+  );
+  const [tvShows, setTvShows] = useState<TMDBMedia[]>(
+    () => initialTvShows ?? [],
+  );
+  const [isLoading, setIsLoading] = useState(() => !initialCompany);
 
   useEffect(() => {
+    if (initialCompany && String(initialCompany.id) === id) {
+      return;
+    }
+
     fetch(`/api/tmdb/company/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Not found");
@@ -65,7 +81,8 @@ export default function CompanyDetailClient({
       })
       .catch(() => router.push("/"))
       .finally(() => setIsLoading(false));
-  }, [id, router]);
+  }, [id, router, initialCompany]);
+
 
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("popularity");
