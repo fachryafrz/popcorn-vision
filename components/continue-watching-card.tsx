@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Play, Trash2 } from "lucide-react";
@@ -34,11 +34,11 @@ export default function ContinueWatchingCard({
   isGuest = false,
   onRemoveSuccess,
 }: ContinueWatchingCardProps) {
-  const router = useRouter();
   const removeProgress = useMutation(api.continueWatching.removeProgress);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleRemove = async (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     setIsDeleting(true);
     try {
@@ -80,19 +80,20 @@ export default function ContinueWatchingCard({
 
   const relativeTime = moment(item.updatedAt).fromNow();
 
+  const queryParams = new URLSearchParams();
+  queryParams.set("playTab", "watch");
+  if (item.season !== undefined) {
+    queryParams.set("season", String(item.season));
+  }
+  if (item.episode !== undefined) {
+    queryParams.set("episode", String(item.episode));
+  }
+  const href = `/${item.mediaType}/${item.mediaId}?${queryParams.toString()}`;
+
   return (
-    <div
-      onClick={() => {
-        const queryParams = new URLSearchParams();
-        queryParams.set("playTab", "watch");
-        if (item.season !== undefined) {
-          queryParams.set("season", String(item.season));
-        }
-        if (item.episode !== undefined) {
-          queryParams.set("episode", String(item.episode));
-        }
-        router.push(`/${item.mediaType}/${item.mediaId}?${queryParams.toString()}`, { scroll: false });
-      }}
+    <Link
+      href={href}
+      prefetch={true}
       className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1"
     >
       {/* Backdrop area (Landscape) */}
@@ -145,6 +146,7 @@ export default function ContinueWatchingCard({
           Watched {relativeTime}
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
+

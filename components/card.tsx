@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { TMDBMedia } from "@/lib/tmdb";
@@ -27,7 +27,6 @@ export default function Card({
   onQuickView,
   onAuthRequired,
 }: CardProps) {
-  const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
   const [watchlistLoading, setWatchlistLoading] = useState(false);
@@ -41,6 +40,7 @@ export default function Card({
   const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     if (!isLoggedIn) {
       onAuthRequired();
@@ -79,6 +79,7 @@ export default function Card({
   const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
 
   const handleWatchlistClick = async (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     const mId = String(media.id);
     const mType = (media.media_type === "tv" ? "tv" : "movie");
@@ -140,10 +141,12 @@ export default function Card({
     ? new Date(media.release_date).getFullYear()
     : "N/A";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
+  const href = `/${media.media_type || "movie"}/${media.id}`;
 
   return (
-    <div
-      onClick={() => router.push(`/${media.media_type || "movie"}/${media.id}`)}
+    <Link
+      href={href}
+      prefetch={true}
       className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden transition-all duration-300 md:hover:-translate-y-1"
     >
       {/* Poster area */}
@@ -193,6 +196,7 @@ export default function Card({
           {/* Quick View Button */}
           <Button
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               onQuickView(media);
             }}
@@ -239,6 +243,7 @@ export default function Card({
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
+

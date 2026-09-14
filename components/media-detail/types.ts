@@ -1,3 +1,5 @@
+import { TMDBMedia } from "@/lib/tmdb";
+
 export interface CastItem {
   id: number;
   profile_path: string | null;
@@ -135,3 +137,19 @@ export interface CollectionPart {
   release_date: string;
   overview: string;
 }
+
+export interface MediaDetailResponse {
+  details: MediaDetails;
+  credits: {
+    cast?: CastItem[];
+    crew?: CrewItem[];
+  };
+  videos: VideoItem[];
+  watchProviders: Record<string, { flatrate?: ProviderItem[] }>;
+  logoPath: string | null;
+  textlessPosterPath: string | null;
+  recommendations: TMDBMedia[];
+  regionalData: (RegionalRelease | RegionalContentRating)[];
+  images: MediaImagesData;
+}
+

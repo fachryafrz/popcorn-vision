@@ -398,3 +398,32 @@ export function SearchPageSkeleton() {
     </div>
   );
 }
+
+// Feed Page Skeleton
+export function FeedSkeleton() {
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Skeleton key={i} className="h-9 w-24 shrink-0 rounded-full" />
+        ))}
+      </div>
+      <div className="space-y-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="space-y-3 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 p-4">
+            <div className="flex items-center gap-3">
+              <Skeleton className="h-10 w-10 rounded-full" />
+              <div className="space-y-1.5 flex-1">
+                <Skeleton className="h-4 w-1/3 rounded" />
+                <Skeleton className="h-3 w-1/4 rounded" />
+              </div>
+            </div>
+            <Skeleton className="h-24 w-full rounded-xl" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+

@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface TMDBPerson {
+export interface TMDBPerson {
   id: number;
   name: string;
   biography: string;
@@ -42,19 +42,21 @@ interface TMDBPerson {
   popularity: number;
 }
 
-interface CreditItem extends TMDBRawItem {
+export interface CreditItem extends TMDBRawItem {
   character?: string;
   job?: string;
   department?: string;
 }
 
-interface PersonCredits {
+export interface PersonCredits {
   cast: CreditItem[];
   crew: CreditItem[];
 }
 
 interface PersonDetailClientProps {
   id: string;
+  initialPerson?: TMDBPerson | null;
+  initialCredits?: PersonCredits | null;
 }
 
 type MediaFilter = "all" | "movie" | "tv";
@@ -63,6 +65,8 @@ type SortOption = "popularity" | "release_date" | "vote_average";
 
 export default function PersonDetailClient({
   id,
+  initialPerson,
+  initialCredits,
 }: PersonDetailClientProps) {
   const router = useRouter();
   const {
@@ -71,11 +75,19 @@ export default function PersonDetailClient({
     close: closeAuth,
   } = useAuthModalStore();
 
-  const [person, setPerson] = useState<TMDBPerson | null>(null);
-  const [credits, setCredits] = useState<PersonCredits>({ cast: [], crew: [] });
-  const [isLoading, setIsLoading] = useState(true);
+  const [person, setPerson] = useState<TMDBPerson | null>(
+    () => initialPerson ?? null,
+  );
+  const [credits, setCredits] = useState<PersonCredits>(
+    () => initialCredits ?? { cast: [], crew: [] },
+  );
+  const [isLoading, setIsLoading] = useState(() => !initialPerson);
 
   useEffect(() => {
+    if (initialPerson && String(initialPerson.id) === id) {
+      return;
+    }
+
     fetch(`/api/tmdb/person/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Not found");
@@ -87,7 +99,8 @@ export default function PersonDetailClient({
       })
       .catch(() => router.push("/"))
       .finally(() => setIsLoading(false));
-  }, [id, router]);
+  }, [id, router, initialPerson]);
+
 
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getPersonDetails } from "@/lib/tmdb-actions";
+import { getPersonDetails, getPersonCredits } from "@/lib/tmdb-actions";
 import { siteConfig } from "@/config/site";
 import PersonDetailClient from "@/components/person-detail-client";
 
@@ -30,5 +30,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PersonDetailPage({ params }: PageProps) {
   const { id } = await params;
-  return <PersonDetailClient id={id} />;
+  const [initialPerson, initialCredits] = await Promise.all([
+    getPersonDetails(id),
+    getPersonCredits(id),
+  ]);
+  return (
+    <PersonDetailClient
+      id={id}
+      initialPerson={initialPerson}
+      initialCredits={initialCredits}
+    />
+  );
 }
+

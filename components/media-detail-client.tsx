@@ -64,6 +64,7 @@ import {
   SeasonDetails,
   CollectionPart,
   MediaImagesData,
+  MediaDetailResponse,
 } from "./media-detail/types";
 
 import MediaHero from "./media-detail/media-hero";
@@ -81,6 +82,7 @@ import { cn } from "@/lib/utils";
 interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
   id: string;
+  initialData?: MediaDetailResponse | null;
 }
 
 // Map full country name string from profile/settings to ISO 2-letter code for TMDB dynamically
@@ -126,52 +128,91 @@ const getRegionLocale = (region: string): string => {
 export default function MediaDetailClient({
   mediaType,
   id,
+  initialData,
 }: MediaDetailClientProps) {
   const router = useRouter();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
   // Fetched media data state
-  const [details, setDetails] = useState<MediaDetails | null>(null);
+  const [details, setDetails] = useState<MediaDetails | null>(
+    () => initialData?.details ?? null,
+  );
   const [credits, setCredits] = useState<{
     cast?: CastItem[];
     crew?: CrewItem[];
-  }>({});
-  const [videos, setVideos] = useState<VideoItem[]>([]);
+  }>(() => initialData?.credits ?? {});
+  const [videos, setVideos] = useState<VideoItem[]>(
+    () => initialData?.videos ?? [],
+  );
   const [watchProviders, setWatchProviders] = useState<
     Record<string, { flatrate?: ProviderItem[] }>
-  >({});
-  const [logoPath, setLogoPath] = useState<string | null>(null);
-  const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(
-    null,
+  >(() => initialData?.watchProviders ?? {});
+  const [logoPath, setLogoPath] = useState<string | null>(
+    () => initialData?.logoPath ?? null,
   );
-  const [recommendations, setRecommendations] = useState<TMDBMedia[]>([]);
+  const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(
+    () => initialData?.textlessPosterPath ?? null,
+  );
+  const [recommendations, setRecommendations] = useState<TMDBMedia[]>(
+    () => initialData?.recommendations ?? [],
+  );
   const [regionalData, setRegionalData] = useState<
     (RegionalRelease | RegionalContentRating)[]
-  >([]);
-  const [images, setImages] = useState<MediaImagesData>({
-    backdrops: [],
-    posters: [],
-    logos: [],
-  });
+  >(() => initialData?.regionalData ?? []);
+  const [images, setImages] = useState<MediaImagesData>(
+    () =>
+      initialData?.images ?? {
+        backdrops: [],
+        posters: [],
+        logos: [],
+      },
+  );
   // Track current media so we can reset loading state during render when page details change
   const [prevMediaId, setPrevMediaId] = useState(id);
   const [prevMediaType, setPrevMediaType] = useState(mediaType);
-  const [isMediaLoading, setIsMediaLoading] = useState(true);
+  const [isMediaLoading, setIsMediaLoading] = useState(() => !initialData);
 
   if (id !== prevMediaId || mediaType !== prevMediaType) {
     setPrevMediaId(id);
     setPrevMediaType(mediaType);
-    setIsMediaLoading(true);
+    if (
+      initialData &&
+      initialData.details &&
+      String(initialData.details.id) === id
+    ) {
+      setDetails(initialData.details);
+      setCredits(initialData.credits ?? {});
+      setVideos(initialData.videos ?? []);
+      setWatchProviders(initialData.watchProviders ?? {});
+      setLogoPath(initialData.logoPath ?? null);
+      setTextlessPosterPath(initialData.textlessPosterPath ?? null);
+      setRecommendations(initialData.recommendations ?? []);
+      setRegionalData(initialData.regionalData ?? []);
+      setImages(
+        initialData.images ?? { backdrops: [], posters: [], logos: [] },
+      );
+      setIsMediaLoading(false);
+    } else {
+      setIsMediaLoading(true);
+    }
   }
 
   useEffect(() => {
+    if (
+      initialData &&
+      initialData.details &&
+      String(initialData.details.id) === id
+    ) {
+      return;
+    }
+
     fetch(`/api/tmdb/media/${mediaType}/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Not found");
         return res.json();
       })
-      .then((data) => {
+      .then((data: MediaDetailResponse) => {
         setDetails(data.details);
         setCredits(data.credits ?? {});
         setVideos(data.videos ?? []);
@@ -186,7 +227,7 @@ export default function MediaDetailClient({
       })
       .catch(() => router.push("/"))
       .finally(() => setIsMediaLoading(false));
-  }, [mediaType, id, router]);
+  }, [mediaType, id, router, initialData]);
 
   // Global auth store & Scroll refs
   const openAuth = useAuthModalStore((state) => state.open);
