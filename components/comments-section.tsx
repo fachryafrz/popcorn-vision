@@ -21,7 +21,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/components/ui/confirm-provider";
 import { UserRoleBadge } from "@/components/user-role-badge";

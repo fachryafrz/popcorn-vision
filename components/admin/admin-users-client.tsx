@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { UserManagementTable } from "@/components/admin/user-management-table";
 import { ShieldAlert, ShieldCheck, Loader2 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { Button } from "@/components/ui/button";
 
 export function AdminUsersClient() {

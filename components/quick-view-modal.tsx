@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Link } from "@/components/ui/link";
 
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";

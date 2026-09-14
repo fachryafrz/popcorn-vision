@@ -2,7 +2,7 @@
 
 import { siteConfig } from "@/config/site";
 import moment from "moment";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 
 export default function Footer() {
   const createdDate = "2023-02-17";

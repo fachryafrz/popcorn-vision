@@ -11,7 +11,7 @@ import {
   MoreVertical,
   Calendar,
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UserRoleBadge } from "@/components/user-role-badge";

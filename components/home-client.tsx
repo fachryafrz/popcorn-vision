@@ -29,7 +29,7 @@ import {
   Skeleton,
 } from "./skeletons";
 import Card from "./card";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { ChevronRight } from "lucide-react";
 
 export default function HomeClient() {

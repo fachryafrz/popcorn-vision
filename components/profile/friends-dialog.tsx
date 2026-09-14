@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { ProfileFriend } from "./types";
 
 interface FriendsDialogProps {

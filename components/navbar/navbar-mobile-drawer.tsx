@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import {
   Menu,
   Search,
@@ -98,7 +98,6 @@ export function NavbarMobileDrawer({
         <nav className="mt-4 flex flex-col gap-4 text-base font-semibold text-zinc-300">
           <Link
             href="/"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -107,7 +106,6 @@ export function NavbarMobileDrawer({
           </Link>
           <Link
             href="/feed"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -116,7 +114,6 @@ export function NavbarMobileDrawer({
           </Link>
           <Link
             href="/search"
-            prefetch={false}
             onClick={() => setMobileMenuOpen(false)}
             className="flex items-center gap-2 hover:text-white"
           >
@@ -127,7 +124,6 @@ export function NavbarMobileDrawer({
             <>
               <Link
                 href="/chat"
-                prefetch={false}
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 hover:text-white"
               >
@@ -137,7 +133,6 @@ export function NavbarMobileDrawer({
 
               <Link
                 href="/lists"
-                prefetch={false}
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center gap-2 hover:text-white"
               >
@@ -157,7 +152,6 @@ export function NavbarMobileDrawer({
                 {(role === "owner" || role === "admin") && (
                   <Link
                     href="/admin/users"
-                    prefetch={false}
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-amber-400 hover:bg-zinc-900 hover:text-amber-300"
                   >

@@ -19,7 +19,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import moment from "moment";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { toast } from "sonner";
 import { UserRoleBadge } from "@/components/user-role-badge";
 

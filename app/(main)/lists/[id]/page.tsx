@@ -47,7 +47,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { useRouter } from "next/navigation";
 import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";

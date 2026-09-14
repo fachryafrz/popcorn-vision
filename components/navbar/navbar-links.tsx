@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "convex-helpers/react/cache";
@@ -68,7 +68,6 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
         <Link
           key={link.href}
           href={link.requireAuth && !isLoggedIn ? "#" : link.href}
-          prefetch={false}
           onClick={(e) => {
             if (link.requireAuth && !isLoggedIn) {
               e.preventDefault();

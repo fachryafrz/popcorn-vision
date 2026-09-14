@@ -16,7 +16,7 @@ import {
   Info,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import Card from "@/components/card";
 import QuickViewModal from "@/components/quick-view-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";

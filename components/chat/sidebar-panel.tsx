@@ -7,7 +7,7 @@ import moment from "moment";
 import { ChatItem } from "./types";
 import { Id } from "@/convex/_generated/dataModel";
 import { siteConfig } from "@/config/site";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 
 interface SidebarPanelProps {
   chats: ChatItem[] | undefined;
@@ -44,7 +44,6 @@ export default function SidebarPanel({
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
           <Link
             href="/"
-            prefetch={false}
             className="flex max-w-fit cursor-pointer items-center gap-2"
           >
             <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">

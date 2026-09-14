@@ -12,7 +12,7 @@ import {
   X,
   Check,
 } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { DiaryItem } from "./types";
 import { cn } from "@/lib/utils";
 

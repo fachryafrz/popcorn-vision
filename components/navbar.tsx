@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
@@ -72,7 +72,6 @@ export default function Navbar() {
           <div className="flex items-center gap-6 lg:gap-8">
             <Link
               href="/"
-              prefetch={false}
               className="ml-1 flex max-w-fit cursor-pointer items-center gap-2"
             >
               <img

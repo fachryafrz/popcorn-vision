@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Play, Trash2 } from "lucide-react";
@@ -93,7 +93,6 @@ export default function ContinueWatchingCard({
   return (
     <Link
       href={href}
-      prefetch={true}
       className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1"
     >
       {/* Backdrop area (Landscape) */}

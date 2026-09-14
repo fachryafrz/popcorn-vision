@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { useRouter, usePathname } from "next/navigation";
 import {
   Popcorn,
@@ -97,7 +97,6 @@ export function BottomNav() {
           {/* 1. Home */}
           <Link
             href="/"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isHomeActive
@@ -121,7 +120,6 @@ export function BottomNav() {
           {/* 2. Lists */}
           <Link
             href="/lists"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isListsActive
@@ -145,7 +143,6 @@ export function BottomNav() {
           {/* 3. Search (Center) */}
           <Link
             href="/search"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isSearchActive
@@ -174,7 +171,6 @@ export function BottomNav() {
           {/* 4. Chats */}
           <Link
             href={isLoggedIn ? "/chat" : "#"}
-            prefetch={false}
             onClick={(e) => {
               if (!isLoggedIn) {
                 e.preventDefault();

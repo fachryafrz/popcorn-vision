@@ -35,8 +35,8 @@ import {
   Users,
   Star,
 } from "lucide-react";
-import Link from "next/link";
 import { toast } from "sonner";
+import { Link } from "@/components/ui/link";
 import { useRouter } from "next/navigation";
 import {
   Select,

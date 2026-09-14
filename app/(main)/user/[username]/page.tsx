@@ -43,7 +43,7 @@ import {
 } from "@/components/profile/media-grid-tab";
 import { InsightsTab } from "@/components/profile/insights-tab";
 import ActivityCard, { type Activity as ActivityItem } from "@/components/activity-card";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 
 const tmdbCache = new Map<string, { title: string; posterPath: string }>();
 const pendingRequests = new Map<string, Promise<{ title: string; posterPath: string }>>();

@@ -2,7 +2,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import { Users } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 
 interface CrewSliderItem {
   id: number;

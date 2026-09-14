@@ -22,7 +22,7 @@ import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
-import Link from "next/link";
+import { Link } from "@/components/ui/link";
 import { STORAGE_KEYS } from "@/lib/constants";
 
 
@@ -249,7 +249,6 @@ function HeroSlide({
           <div className="mt-6 flex flex-wrap items-center gap-3 sm:gap-4">
             <Link
               href={`/${media.media_type || "movie"}/${media.id}?playTab=watch`}
-              prefetch={true}
               className="hover:bg-primary bg-primary inline-flex cursor-pointer items-center gap-2 rounded-full px-6 py-3.5 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:py-4 sm:text-base"
             >
               <Play className="h-5 w-5 fill-current" />
@@ -258,7 +257,6 @@ function HeroSlide({
 
             <Link
               href={`/${media.media_type || "movie"}/${media.id}`}
-              prefetch={true}
               className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-zinc-700 bg-black/40 px-5 py-3.5 text-sm font-semibold text-zinc-300 backdrop-blur-sm transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98 sm:px-6 sm:py-4 sm:text-base"
             >
               <Info className="h-5 w-5" />
