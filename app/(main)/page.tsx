@@ -1,5 +1,13 @@
 import HomeClient from "@/components/home-client";
 import { Suspense } from "react";
+import {
+  getHeroItems,
+  getTrending,
+  getStreamingOriginals,
+  getByCategory,
+} from "@/lib/tmdb-actions";
+
+export const revalidate = 3600;
 
 export const metadata = {
   title: "Popcorn Vision - Watch Movies & TV Shows Free",
@@ -7,10 +15,20 @@ export const metadata = {
     "Discover, track, and watch movies and TV shows for free on PopcornVision.",
 };
 
-export default function Page() {
+export default async function Page() {
+  const [hero, trending, streaming, category] = await Promise.all([
+    getHeroItems(),
+    getTrending("all"),
+    getStreamingOriginals("netflix"),
+    getByCategory("Action"),
+  ]);
+
+  const initialData = { hero, trending, streaming, category };
+
   return (
     <Suspense>
-      <HomeClient />
+      <HomeClient initialData={initialData} />
     </Suspense>
   );
 }
+

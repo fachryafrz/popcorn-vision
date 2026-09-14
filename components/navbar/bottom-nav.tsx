@@ -76,11 +76,6 @@ export function BottomNav() {
         pathname.startsWith("/settings") ||
         pathname.startsWith("/feed")));
 
-  const handleNavigate = (path: string) => {
-    setIsProfileDrawerOpen(false);
-    router.push(path);
-  };
-
   const handleSignOut = async () => {
     setIsProfileDrawerOpen(false);
     await authClient.signOut();
@@ -97,7 +92,6 @@ export function BottomNav() {
           {/* 1. Home */}
           <Link
             href="/"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isHomeActive
@@ -121,7 +115,6 @@ export function BottomNav() {
           {/* 2. Lists */}
           <Link
             href="/lists"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isListsActive
@@ -145,7 +138,6 @@ export function BottomNav() {
           {/* 3. Search (Center) */}
           <Link
             href="/search"
-            prefetch={false}
             className={cn(
               "group relative flex flex-1 flex-col items-center justify-center gap-1 py-1 text-xs font-medium transition-all duration-200",
               isSearchActive
@@ -174,7 +166,6 @@ export function BottomNav() {
           {/* 4. Chats */}
           <Link
             href={isLoggedIn ? "/chat" : "#"}
-            prefetch={false}
             onClick={(e) => {
               if (!isLoggedIn) {
                 e.preventDefault();
@@ -275,8 +266,9 @@ export function BottomNav() {
               </DrawerDescription>
 
               {/* Profile Overview Card */}
-              <div
-                onClick={() => handleNavigate(`/@${username}`)}
+              <Link
+                href={`/@${username}`}
+                onClick={() => setIsProfileDrawerOpen(false)}
                 className="flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-3.5 transition-all hover:bg-zinc-900 active:scale-98"
               >
                 <div className="flex min-w-0 items-center gap-3">
@@ -305,14 +297,14 @@ export function BottomNav() {
                   <span>View Profile</span>
                   <ChevronRight className="h-4 w-4" />
                 </div>
-              </div>
+              </Link>
 
               {/* Navigation Menu Options */}
               <div className="flex flex-col gap-2 pt-1">
                 {/* Feed */}
-                <button
-                  type="button"
-                  onClick={() => handleNavigate("/feed")}
+                <Link
+                  href="/feed"
+                  onClick={() => setIsProfileDrawerOpen(false)}
                   className="flex w-full cursor-pointer items-center gap-3.5 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-left text-sm font-semibold text-zinc-200 transition-all hover:bg-zinc-900 hover:text-white active:scale-98"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800/80 text-zinc-300">
@@ -325,12 +317,12 @@ export function BottomNav() {
                     </p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-zinc-500" />
-                </button>
+                </Link>
 
                 {/* Settings */}
-                <button
-                  type="button"
-                  onClick={() => handleNavigate("/settings")}
+                <Link
+                  href="/settings"
+                  onClick={() => setIsProfileDrawerOpen(false)}
                   className="flex w-full cursor-pointer items-center gap-3.5 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-left text-sm font-semibold text-zinc-200 transition-all hover:bg-zinc-900 hover:text-white active:scale-98"
                 >
                   <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800/80 text-zinc-300">
@@ -343,13 +335,13 @@ export function BottomNav() {
                     </p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-zinc-500" />
-                </button>
+                </Link>
 
                 {/* Admin Panel (if admin/owner) */}
                 {(userRole === "owner" || userRole === "admin") && (
-                  <button
-                    type="button"
-                    onClick={() => handleNavigate("/admin/users")}
+                  <Link
+                    href="/admin/users"
+                    onClick={() => setIsProfileDrawerOpen(false)}
                     className="flex w-full cursor-pointer items-center gap-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-left text-sm font-semibold text-amber-300 transition-all hover:bg-amber-500/20 active:scale-98"
                   >
                     <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/20 text-amber-400">
@@ -364,7 +356,7 @@ export function BottomNav() {
                       </p>
                     </div>
                     <ChevronRight className="h-4 w-4 text-amber-400/80" />
-                  </button>
+                  </Link>
                 )}
               </div>
 

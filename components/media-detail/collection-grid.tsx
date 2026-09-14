@@ -1,8 +1,9 @@
+import Link from "next/link";
 import { CollectionPart } from "./types";
 
 interface CollectionGridProps {
   collectionParts: CollectionPart[];
-  onPartClick: (id: number) => void;
+  onPartClick?: (id: number) => void;
 }
 
 export default function CollectionGrid({
@@ -25,9 +26,10 @@ export default function CollectionGrid({
             ? new Date(part.release_date).getFullYear()
             : "N/A";
           return (
-            <div
+            <Link
               key={part.id}
-              onClick={() => onPartClick(part.id)}
+              href={`/movie/${part.id}`}
+              onClick={() => onPartClick?.(part.id)}
               className="group border-zinc-850 flex cursor-pointer flex-col gap-2 rounded-2xl border bg-zinc-900/45 p-2 transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-800 hover:bg-zinc-900/80"
             >
               <div className="aspect-2/3 w-full overflow-hidden rounded-xl bg-zinc-950">
@@ -45,7 +47,7 @@ export default function CollectionGrid({
                   {year}
                 </span>
               </div>
-            </div>
+            </Link>
           );
         })}
       </div>

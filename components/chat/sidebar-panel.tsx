@@ -44,7 +44,6 @@ export default function SidebarPanel({
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
           <Link
             href="/"
-            prefetch={false}
             className="flex max-w-fit cursor-pointer items-center gap-2"
           >
             <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">
@@ -65,15 +64,13 @@ export default function SidebarPanel({
             </h1>
           </Link>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => router.push("/")}
-              className="h-8 w-8 cursor-pointer rounded-xl border-zinc-800 bg-zinc-900/30 text-zinc-300 hover:text-white"
+            <Link
+              href="/"
+              className="inline-flex h-8 w-8 items-center justify-center cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900/30 text-zinc-300 transition-colors hover:text-white"
               title="Back to Home"
             >
               <Home className="h-4 w-4" />
-            </Button>
+            </Link>
             <Button
               variant="outline"
               size="icon"

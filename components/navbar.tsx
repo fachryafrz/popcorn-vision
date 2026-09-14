@@ -72,7 +72,6 @@ export default function Navbar() {
           <div className="flex items-center gap-6 lg:gap-8">
             <Link
               href="/"
-              prefetch={false}
               className="ml-1 flex max-w-fit cursor-pointer items-center gap-2"
             >
               <img

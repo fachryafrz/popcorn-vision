@@ -88,7 +88,6 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
         <div className="mb-4 flex items-start gap-4">
           <Link
             href={`/@${user.username}`}
-            prefetch={false}
             className="cursor-pointer"
           >
             <Avatar className="h-14 w-14 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/50">
@@ -107,7 +106,6 @@ export function UserCard({ user, onAuthRequired, isLoggedIn }: UserCardProps) {
           <div className="min-w-0 flex-1">
             <Link
               href={`/@${user.username}`}
-              prefetch={false}
               className="block cursor-pointer transition-colors group-hover:text-white"
             >
               <h3 className="truncate text-base leading-snug font-bold text-white">

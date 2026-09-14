@@ -32,7 +32,20 @@ import Card from "./card";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
-export default function HomeClient() {
+export interface HomeInitialData {
+  hero: TMDBMedia[];
+  trending: TMDBMedia[];
+  streaming: TMDBMedia[];
+  category: TMDBMedia[];
+}
+
+let cachedHomeData: HomeInitialData | null = null;
+
+export default function HomeClient({
+  initialData,
+}: {
+  initialData?: HomeInitialData;
+} = {}) {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
 
@@ -58,24 +71,61 @@ export default function HomeClient() {
     [setQuickViewMediaRef],
   );
 
-  const [heroItems, setHeroItems] = useState<TMDBMedia[]>([]);
-  const [trendingItems, setTrendingItems] = useState<TMDBMedia[]>([]);
-  const [streamingItems, setStreamingItems] = useState<TMDBMedia[]>([]);
-  const [categoryItems, setCategoryItems] = useState<TMDBMedia[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [heroItems, setHeroItems] = useState<TMDBMedia[]>(
+    () => initialData?.hero ?? cachedHomeData?.hero ?? [],
+  );
+  const [trendingItems, setTrendingItems] = useState<TMDBMedia[]>(
+    () => initialData?.trending ?? cachedHomeData?.trending ?? [],
+  );
+  const [streamingItems, setStreamingItems] = useState<TMDBMedia[]>(
+    () => initialData?.streaming ?? cachedHomeData?.streaming ?? [],
+  );
+  const [categoryItems, setCategoryItems] = useState<TMDBMedia[]>(
+    () => initialData?.category ?? cachedHomeData?.category ?? [],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(
+    () => !(initialData || cachedHomeData),
+  );
 
   useEffect(() => {
+    if (initialData) {
+      cachedHomeData = initialData;
+      return;
+    }
+
+    if (cachedHomeData) {
+      return;
+    }
+
+    let isMounted = true;
     fetch("/api/tmdb/home")
       .then((res) => res.json())
       .then((data) => {
-        setHeroItems(data.hero ?? []);
-        setTrendingItems(data.trending ?? []);
-        setStreamingItems(data.streaming ?? []);
-        setCategoryItems(data.category ?? []);
+        if (!isMounted) return;
+        const homeData: HomeInitialData = {
+          hero: data.hero ?? [],
+          trending: data.trending ?? [],
+          streaming: data.streaming ?? [],
+          category: data.category ?? [],
+        };
+        cachedHomeData = homeData;
+        setHeroItems(homeData.hero);
+        setTrendingItems(homeData.trending);
+        setStreamingItems(homeData.streaming);
+        setCategoryItems(homeData.category);
+        setIsLoading(false);
       })
-      .catch(console.error)
-      .finally(() => setIsLoading(false));
-  }, []);
+      .catch((err) => {
+        if (isMounted) {
+          console.error(err);
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [initialData]);
 
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -406,6 +456,7 @@ export default function HomeClient() {
           <div id="trending">
             <Section
               titleType="text"
+              initialItems={trendingItems}
               defaultFetch={async () => trendingItems}
               onTrendingChange={async (type) => getTrending(type)}
               onQuickView={handleQuickView}
@@ -417,6 +468,7 @@ export default function HomeClient() {
           <div id="originals">
             <Section
               titleType="dropdown-streaming"
+              initialItems={streamingItems}
               defaultFetch={async () => streamingItems}
               onStreamingChange={async (key) => getStreamingOriginals(key)}
               onQuickView={handleQuickView}
@@ -428,6 +480,7 @@ export default function HomeClient() {
           <div id="category">
             <Section
               titleType="dropdown-genre"
+              initialItems={categoryItems}
               defaultFetch={async () => categoryItems}
               onGenreChange={async (name) => getByCategory(name)}
               onQuickView={handleQuickView}

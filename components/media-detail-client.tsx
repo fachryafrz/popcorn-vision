@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useMutation, useAction } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
@@ -1205,14 +1206,12 @@ export default function MediaDetailClient({
                   </h3>
                   <div className="flex flex-wrap gap-2.5">
                     {details.production_companies.map((c) => (
-                      <div
+                      <Link
                         key={c.id || c.name}
-                        onClick={() =>
+                        href={
                           c.id
-                            ? router.push(`/company/${c.id}`)
-                            : router.push(
-                                `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`,
-                              )
+                            ? `/company/${c.id}`
+                            : `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`
                         }
                         className={cn(
                           "flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 transition duration-200 hover:bg-zinc-800/50 active:scale-95",
@@ -1236,7 +1235,7 @@ export default function MediaDetailClient({
                         >
                           {c.name}
                         </span>
-                      </div>
+                      </Link>
                     ))}
                   </div>
                 </div>
