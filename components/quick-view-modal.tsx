@@ -19,6 +19,8 @@ import {
   Check,
   Heart,
   Play,
+  CalendarClock,
+  Tv,
 } from "lucide-react";
 import {
   Dialog,
@@ -37,27 +39,9 @@ import { toast } from "sonner";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import moment from "moment";
 import isoCountries from "@/data/iso-3166.json";
-
-interface MediaDetails {
-  title?: string;
-  name?: string;
-  tagline?: string;
-  runtime?: number;
-  number_of_seasons?: number;
-  vote_count?: number;
-  genres?: { id: number; name: string }[];
-  created_by?: {
-    id: number;
-    credit_id: string;
-    name: string;
-    profile_path: string | null;
-  }[];
-  release_date?: string;
-  first_air_date?: string;
-  vote_average?: number;
-  backdrop_path?: string | null;
-  poster_path?: string | null;
-}
+import { MediaDetails } from "@/components/media-detail/types";
+import CountdownDisplay from "@/components/ui/countdown-display";
+import { useCountdown } from "@/hooks/use-countdown";
 
 interface CrewItem {
   id: number;
@@ -96,6 +80,56 @@ interface QuickViewModalProps {
   isOpen: boolean;
   onClose: () => void;
   media: TMDBMedia | null;
+}
+
+function QuickViewCountdownAlert({
+  targetDate,
+  icon: Icon,
+  title,
+  subtitle,
+}: {
+  targetDate: string | number | Date;
+  icon: React.ComponentType<{ className?: string }>;
+  title: React.ReactNode;
+  subtitle?: React.ReactNode;
+}) {
+  const { isImminent, isEnded } = useCountdown(targetDate);
+
+  const colorStyles = isEnded
+    ? {
+        container: "border-emerald-500/30 bg-emerald-500/10",
+        icon: "text-emerald-400",
+        title: "text-emerald-300",
+      }
+    : isImminent
+      ? {
+          container: "border-amber-500/30 bg-amber-500/10",
+          icon: "text-amber-400",
+          title: "text-amber-300",
+        }
+      : {
+          container: "border-primary/30 bg-primary/10",
+          icon: "text-primary",
+          title: "text-primary",
+        };
+
+  return (
+    <div
+      className={cn(
+        "mt-2 flex w-full flex-wrap items-center justify-between gap-2 rounded-xl border p-2.5 text-xs transition-colors duration-300",
+        colorStyles.container,
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <Icon className={cn("h-4 w-4 shrink-0", colorStyles.icon)} />
+        <div className="text-left">
+          <span className={cn("font-bold", colorStyles.title)}>{title}</span>
+          {subtitle && <span className="text-zinc-400">{subtitle}</span>}
+        </div>
+      </div>
+      <CountdownDisplay targetDate={targetDate} variant="badge" />
+    </div>
+  );
 }
 
 export default function QuickViewModal({
@@ -189,6 +223,8 @@ export default function QuickViewModal({
     );
   }, [media]);
 
+  const [now] = useState(() => Date.now());
+
   if (!media) return null;
 
   const releaseYear = media.release_date
@@ -198,6 +234,13 @@ export default function QuickViewModal({
       : details?.first_air_date
         ? new Date(details.first_air_date).getFullYear()
         : "N/A";
+  const releaseDateStr =
+    media.release_date || details?.release_date || details?.first_air_date || "";
+  const isUpcoming = (() => {
+    if (!releaseDateStr) return false;
+    const time = new Date(releaseDateStr).getTime();
+    return !isNaN(time) && time > now;
+  })();
   const voteRating = media.vote_average
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
     : details?.vote_average
@@ -365,13 +408,34 @@ export default function QuickViewModal({
                     &ldquo;{details.tagline}&rdquo;
                   </p>
                 )}
+                {/* TV Series Next Episode Countdown Alert */}
+                {media.media_type === "tv" && details?.next_episode_to_air && (
+                  <QuickViewCountdownAlert
+                    targetDate={details.next_episode_to_air.air_date}
+                    icon={Tv}
+                    title={`Next: S${details.next_episode_to_air.season_number} E${details.next_episode_to_air.episode_number}`}
+                    subtitle={
+                      details.next_episode_to_air.name
+                        ? ` - "${details.next_episode_to_air.name}"`
+                        : undefined
+                    }
+                  />
+                )}
+
+                {/* Upcoming Premiere Countdown Alert */}
+                {isUpcoming && releaseDateStr && (!details || !details.next_episode_to_air) && (
+                  <QuickViewCountdownAlert
+                    targetDate={releaseDateStr}
+                    icon={CalendarClock}
+                    title={`Premiere: ${moment(releaseDateStr).format("MMM Do, YYYY")}`}
+                  />
+                )}
               </div>
 
               {/* Action Buttons: View Details, Watchlist & Favorite */}
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   href={`/${media.media_type || "movie"}/${media.id}`}
-                  onClick={onClose}
                   className="bg-primary hover:bg-primary/90 inline-flex items-center gap-1.5 h-9 cursor-pointer rounded-full px-4 py-4 text-xs font-semibold text-white shadow-lg shadow-red-950/40 transition-all hover:scale-105 active:scale-98"
                 >
                   <Play className="h-3.5 w-3.5 fill-current" />

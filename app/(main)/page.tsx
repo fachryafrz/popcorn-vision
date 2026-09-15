@@ -5,6 +5,7 @@ import {
   getTrending,
   getStreamingOriginals,
   getByCategory,
+  getUpcomingMedia,
 } from "@/lib/tmdb-actions";
 
 export const revalidate = 3600;
@@ -16,14 +17,15 @@ export const metadata = {
 };
 
 export default async function Page() {
-  const [hero, trending, streaming, category] = await Promise.all([
+  const [hero, trending, streaming, category, upcoming] = await Promise.all([
     getHeroItems(),
     getTrending("all"),
     getStreamingOriginals("netflix"),
     getByCategory("Action"),
+    getUpcomingMedia(),
   ]);
 
-  const initialData = { hero, trending, streaming, category };
+  const initialData = { hero, trending, streaming, category, upcoming };
 
   return (
     <Suspense>

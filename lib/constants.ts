@@ -25,6 +25,7 @@ export const STORAGE_KEYS = {
   LEGACY_ACTIVE_CHAT_ID: "active_chat_id",
   TRENDING_TAB: "trending-tab",
   LEGACY_TRENDING_TAB: "trending_tab",
+  UPCOMING_TAB: "upcoming-tab",
   STREAMING_PROV: "streaming-prov",
   LEGACY_STREAMING_PROV: "streaming_prov",
   GENRE_NAME: "genre-name",

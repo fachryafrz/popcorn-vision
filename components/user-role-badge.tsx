@@ -24,8 +24,7 @@ export function UserRoleBadge({
       <span
         className={cn(
           "inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide rounded-md",
-          "bg-gradient-to-r from-amber-500/20 via-yellow-500/20 to-amber-500/20",
-          "text-amber-400 border border-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.2)]",
+          "bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-[0_0_8px_rgba(245,158,11,0.2)]",
           "select-none",
           className
         )}

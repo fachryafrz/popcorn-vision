@@ -6,6 +6,9 @@ import {
   getTrending,
   getStreamingOriginals,
   getByCategory,
+  getUpcomingMedia,
+  getUpcomingMovies,
+  getUpcomingTVShows,
 } from "@/lib/tmdb-actions";
 import Hero from "./hero";
 import Section from "./section";
@@ -37,6 +40,7 @@ export interface HomeInitialData {
   trending: TMDBMedia[];
   streaming: TMDBMedia[];
   category: TMDBMedia[];
+  upcoming?: TMDBMedia[];
 }
 
 let cachedHomeData: HomeInitialData | null = null;
@@ -83,6 +87,9 @@ export default function HomeClient({
   const [categoryItems, setCategoryItems] = useState<TMDBMedia[]>(
     () => initialData?.category ?? cachedHomeData?.category ?? [],
   );
+  const [upcomingItems, setUpcomingItems] = useState<TMDBMedia[]>(
+    () => initialData?.upcoming ?? cachedHomeData?.upcoming ?? [],
+  );
   const [isLoading, setIsLoading] = useState<boolean>(
     () => !(initialData || cachedHomeData),
   );
@@ -107,12 +114,14 @@ export default function HomeClient({
           trending: data.trending ?? [],
           streaming: data.streaming ?? [],
           category: data.category ?? [],
+          upcoming: data.upcoming ?? [],
         };
         cachedHomeData = homeData;
         setHeroItems(homeData.hero);
         setTrendingItems(homeData.trending);
         setStreamingItems(homeData.streaming);
         setCategoryItems(homeData.category);
+        setUpcomingItems(homeData.upcoming ?? []);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -459,6 +468,22 @@ export default function HomeClient({
               initialItems={trendingItems}
               defaultFetch={async () => trendingItems}
               onTrendingChange={async (type) => getTrending(type)}
+              onQuickView={handleQuickView}
+              onAuthRequired={openAuth}
+            />
+          </div>
+
+          {/* Upcoming Releases & Premieres Countdown */}
+          <div id="upcoming">
+            <Section
+              titleType="upcoming"
+              initialItems={upcomingItems}
+              defaultFetch={async () => upcomingItems}
+              onUpcomingChange={async (type) => {
+                if (type === "movie") return getUpcomingMovies(1);
+                if (type === "tv") return getUpcomingTVShows(1);
+                return getUpcomingMedia();
+              }}
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
             />

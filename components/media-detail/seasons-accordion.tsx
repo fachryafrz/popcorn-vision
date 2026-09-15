@@ -12,6 +12,7 @@ import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
 import ExpandableText from "@/components/ui/expandable-text";
+import CountdownDisplay from "@/components/ui/countdown-display";
 
 interface SeasonsAccordionProps {
   details: MediaDetails;
@@ -387,10 +388,18 @@ export default function SeasonsAccordion({
                             )}
                           </div>
                           {ep.air_date && (
-                            <span className="mt-3 text-[9px] font-semibold text-zinc-500">
-                              Air Date:{" "}
-                              {moment(ep.air_date).format("MMM Do YYYY")}
-                            </span>
+                            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-zinc-800/50 pt-2">
+                              <span className="text-[10px] font-semibold text-zinc-400">
+                                Air Date: {moment(ep.air_date).format("MMM Do, YYYY")}
+                              </span>
+                              {isEpisodeUnreleased && (
+                                <CountdownDisplay
+                                  targetDate={ep.air_date}
+                                  variant="badge"
+                                  className="px-2 py-0.5 text-[10px]"
+                                />
+                              )}
+                            </div>
                           )}
                         </div>
                       </div>

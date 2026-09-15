@@ -5,7 +5,7 @@ import { TMDBMedia, PROVIDERS, GENRE_MAP } from "@/lib/tmdb";
 import { STORAGE_KEYS } from "@/lib/constants";
 import Carousel from "./carousel";
 import { CarouselSkeleton } from "./skeletons";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, CalendarClock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface SectionProps {
-  titleType: "text" | "dropdown-streaming" | "dropdown-genre";
+  titleType: "text" | "dropdown-streaming" | "dropdown-genre" | "upcoming";
   defaultFetch: () => Promise<TMDBMedia[]>;
   initialItems?: TMDBMedia[];
   onQuickView: (media: TMDBMedia) => void;
@@ -26,6 +26,7 @@ interface SectionProps {
     providerKey: keyof typeof PROVIDERS,
   ) => Promise<TMDBMedia[]>;
   onGenreChange?: (genreName: string) => Promise<TMDBMedia[]>;
+  onUpcomingChange?: (type: "all" | "movie" | "tv") => Promise<TMDBMedia[]>;
 }
 
 const PROVIDER_COLORS: Record<keyof typeof PROVIDERS, { textClass: string }> = {
@@ -45,6 +46,7 @@ export default function Section({
   onTrendingChange,
   onStreamingChange,
   onGenreChange,
+  onUpcomingChange,
 }: SectionProps) {
   // States for interactive controls
   const [trendingTab, setTrendingTab] = useState<"all" | "movie" | "tv">(() => {
@@ -83,6 +85,16 @@ export default function Section({
     return "Action";
   });
 
+  const [upcomingTab, setUpcomingTab] = useState<"all" | "movie" | "tv">(() => {
+    if (titleType === "upcoming" && typeof window !== "undefined") {
+      const saved = sessionStorage.getItem(STORAGE_KEYS.UPCOMING_TAB);
+      if (saved === "all" || saved === "movie" || saved === "tv") {
+        return saved;
+      }
+    }
+    return "all";
+  });
+
   const [items, setItems] = useState<TMDBMedia[]>(() => initialItems ?? []);
   const [loading, setLoading] = useState<boolean>(() => {
     if (initialItems && initialItems.length > 0) {
@@ -90,6 +102,8 @@ export default function Section({
       if (titleType === "dropdown-streaming" && streamingProv === "netflix")
         return false;
       if (titleType === "dropdown-genre" && genreName === "Action")
+        return false;
+      if (titleType === "upcoming" && upcomingTab === "all")
         return false;
     }
     return !initialItems || initialItems.length === 0;
@@ -100,6 +114,17 @@ export default function Section({
     let isMounted = true;
     if (titleType === "text" && trendingTab !== "all" && onTrendingChange) {
       onTrendingChange(trendingTab).then((data) => {
+        if (isMounted) {
+          setItems(data);
+          setLoading(false);
+        }
+      });
+    } else if (
+      titleType === "upcoming" &&
+      upcomingTab !== "all" &&
+      onUpcomingChange
+    ) {
+      onUpcomingChange(upcomingTab).then((data) => {
         if (isMounted) {
           setItems(data);
           setLoading(false);
@@ -151,6 +176,18 @@ export default function Section({
     }
     setLoading(true);
     const data = await onTrendingChange(type);
+    setItems(data);
+    setLoading(false);
+  };
+
+  const handleUpcomingChange = async (type: "all" | "movie" | "tv") => {
+    if (!onUpcomingChange) return;
+    setUpcomingTab(type);
+    if (titleType === "upcoming") {
+      sessionStorage.setItem(STORAGE_KEYS.UPCOMING_TAB, type);
+    }
+    setLoading(true);
+    const data = await onUpcomingChange(type);
     setItems(data);
     setLoading(false);
   };
@@ -213,6 +250,41 @@ export default function Section({
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {titleType === "upcoming" && (
+          <div className="flex grow flex-wrap items-center justify-between gap-4 sm:gap-6">
+            <div className="flex items-center gap-2">
+              <CalendarClock className="h-5 w-5 text-amber-400" />
+              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+                Upcoming Premieres & Releases
+              </h2>
+            </div>
+
+            {/* Segmented Controls / Tabs for Upcoming */}
+            {onUpcomingChange && (
+              <div className="flex rounded-full border border-zinc-800 bg-zinc-900 p-1">
+                {(["all", "movie", "tv"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => handleUpcomingChange(tab)}
+                    className={cn(
+                      "cursor-pointer rounded-full px-4 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all",
+                      upcomingTab === tab
+                        ? "border border-amber-500/40 bg-amber-500/20 text-amber-300 shadow-md"
+                        : "text-zinc-400 hover:text-white",
+                    )}
+                  >
+                    {tab === "all"
+                      ? "All"
+                      : tab === "movie"
+                        ? "Movies"
+                        : "TV Series"}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

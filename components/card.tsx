@@ -15,6 +15,7 @@ import {
   removeFromGuestWatchlist,
 } from "@/lib/guest-watchlist";
 import { toast } from "sonner";
+import CountdownDisplay from "@/components/ui/countdown-display";
 
 interface CardProps {
   media: TMDBMedia;
@@ -137,8 +138,15 @@ export default function Card({
   const rating = media.vote_average
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
     : "0.0";
-  const releaseYear = media.release_date
-    ? new Date(media.release_date).getFullYear()
+  const [now] = useState(() => Date.now());
+  const releaseDateStr = media.release_date || media.first_air_date || "";
+  const isUpcoming = (() => {
+    if (!releaseDateStr) return false;
+    const time = new Date(releaseDateStr).getTime();
+    return !isNaN(time) && time > now;
+  })();
+  const releaseYear = releaseDateStr
+    ? new Date(releaseDateStr).getFullYear()
     : "N/A";
   const mediaLabel = media.media_type === "tv" ? "TV Series" : "Movie";
   const href = `/${media.media_type || "movie"}/${media.id}`;
@@ -163,10 +171,17 @@ export default function Card({
         <div className="absolute inset-0 z-10 hidden bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
 
         {/* Content badges */}
-        <div className="absolute top-3 left-3 z-20 flex gap-2">
+        <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-1.5">
           <span className="rounded-full border border-zinc-700/30 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {mediaLabel}
           </span>
+          {isUpcoming && (
+            <CountdownDisplay
+              targetDate={releaseDateStr}
+              variant="badge"
+              className="px-2 py-0 text-[9px] font-black"
+            />
+          )}
         </div>
 
         {/* Floating action buttons on Hover */}
