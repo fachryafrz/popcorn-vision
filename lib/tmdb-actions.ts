@@ -958,4 +958,59 @@ export async function getMediaReviews(
   }
 }
 
+// Fetch upcoming movies
+export async function getUpcomingMovies(page: number = 1, region: string = "US"): Promise<TMDBMedia[]> {
+  try {
+    const res = await axios.get("/movie/upcoming", {
+      params: {
+        page,
+        region,
+      },
+    });
+    return cleanMediaData(res.data.results || [], "movie");
+  } catch (error) {
+    console.error("Error fetching upcoming movies:", error);
+    return [];
+  }
+}
 
+// Fetch upcoming / currently on-the-air TV shows
+export async function getUpcomingTVShows(page: number = 1): Promise<TMDBMedia[]> {
+  try {
+    const res = await axios.get("/tv/on_the_air", {
+      params: {
+        page,
+      },
+    });
+    return cleanMediaData(res.data.results || [], "tv");
+  } catch (error) {
+    console.error("Error fetching upcoming TV shows:", error);
+    return [];
+  }
+}
+
+// Combined upcoming media (movies + tv) sorted by upcoming release date or popularity
+export async function getUpcomingMedia(): Promise<TMDBMedia[]> {
+  try {
+    const [movies, tv] = await Promise.all([
+      getUpcomingMovies(1),
+      getUpcomingTVShows(1),
+    ]);
+
+    const combined = [...movies, ...tv];
+    const now = Date.now();
+
+    // Filter to items that have a release_date or first_air_date in the future if possible, or sort them
+    const upcomingFiltered = combined.filter((item) => {
+      const dateStr = item.release_date || item.first_air_date;
+      if (!dateStr) return true;
+      const targetTime = new Date(dateStr).getTime();
+      return isNaN(targetTime) || targetTime >= now - 24 * 60 * 60 * 1000;
+    });
+
+    return (upcomingFiltered.length > 0 ? upcomingFiltered : combined).slice(0, 20);
+  } catch (error) {
+    console.error("Error fetching upcoming media:", error);
+    return [];
+  }
+}

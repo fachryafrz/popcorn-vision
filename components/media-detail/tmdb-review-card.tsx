@@ -116,7 +116,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               components={{
-                a: ({ href, children, node, ...props }) => (
+                a: ({ href, children, ...props }) => (
                   <a
                     href={href}
                     target="_blank"
@@ -127,27 +127,27 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                     {children}
                   </a>
                 ),
-                p: ({ children, node, ...props }) => (
+                p: ({ children, ...props }) => (
                   <p className="my-1.5 first:mt-0 last:mb-0 leading-relaxed" {...props}>
                     {children}
                   </p>
                 ),
-                ul: ({ children, node, ...props }) => (
+                ul: ({ children, ...props }) => (
                   <ul className="my-2 list-disc space-y-1 pl-5" {...props}>
                     {children}
                   </ul>
                 ),
-                ol: ({ children, node, ...props }) => (
+                ol: ({ children, ...props }) => (
                   <ol className="my-2 list-decimal space-y-1 pl-5" {...props}>
                     {children}
                   </ol>
                 ),
-                li: ({ children, node, ...props }) => (
+                li: ({ children, ...props }) => (
                   <li className="leading-relaxed" {...props}>
                     {children}
                   </li>
                 ),
-                blockquote: ({ children, node, ...props }) => (
+                blockquote: ({ children, ...props }) => (
                   <blockquote
                     className="my-2 rounded-r border-l-2 border-amber-500/40 bg-zinc-900/40 py-1 pl-3 pr-2 italic text-zinc-400"
                     {...props}
@@ -155,7 +155,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                     {children}
                   </blockquote>
                 ),
-                code: ({ children, className, node, ...props }) => (
+                code: ({ children, className, ...props }) => (
                   <code
                     className={cn(
                       "rounded bg-zinc-800 px-1 py-0.5 font-mono text-xs text-amber-300",
@@ -166,17 +166,17 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                     {children}
                   </code>
                 ),
-                h1: ({ children, node, ...props }) => (
+                h1: ({ children, ...props }) => (
                   <h1 className="mt-3 mb-1.5 text-base font-bold text-white" {...props}>
                     {children}
                   </h1>
                 ),
-                h2: ({ children, node, ...props }) => (
+                h2: ({ children, ...props }) => (
                   <h2 className="mt-2.5 mb-1 text-sm font-bold text-white" {...props}>
                     {children}
                   </h2>
                 ),
-                h3: ({ children, node, ...props }) => (
+                h3: ({ children, ...props }) => (
                   <h3
                     className="mt-2 mb-1 text-xs font-bold tracking-wider text-zinc-200 uppercase"
                     {...props}
@@ -187,12 +187,12 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
                 hr: ({ ...props }) => (
                   <hr className="my-3 border-zinc-800" {...props} />
                 ),
-                strong: ({ children, node, ...props }) => (
+                strong: ({ children, ...props }) => (
                   <strong className="font-semibold text-white" {...props}>
                     {children}
                   </strong>
                 ),
-                em: ({ children, node, ...props }) => (
+                em: ({ children, ...props }) => (
                   <em className="italic text-zinc-300" {...props}>
                     {children}
                   </em>
@@ -201,11 +201,6 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
             >
               {review.content}
             </ReactMarkdown>
-
-            {/* Subtle Gradient Fade when collapsed */}
-            {isLongContent && !isExpanded && (
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
-            )}
           </div>
 
           {/* Read More / Less Toggle */}

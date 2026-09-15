@@ -70,6 +70,22 @@ export interface Season {
   air_date: string | null;
 }
 
+export interface TMDBEpisodeToAir {
+  id: number;
+  name: string;
+  overview: string;
+  vote_average: number;
+  vote_count: number;
+  air_date: string;
+  episode_number: number;
+  episode_type?: string;
+  production_code?: string;
+  runtime: number | null;
+  season_number: number;
+  show_id: number;
+  still_path: string | null;
+}
+
 export interface MediaDetails {
   id: number;
   title?: string;
@@ -95,6 +111,8 @@ export interface MediaDetails {
   number_of_episodes?: number;
   seasons?: Season[];
   created_by?: Creator[];
+  next_episode_to_air?: TMDBEpisodeToAir | null;
+  last_episode_to_air?: TMDBEpisodeToAir | null;
 }
 
 

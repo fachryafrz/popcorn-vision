@@ -76,6 +76,8 @@ import CastSlider from "./media-detail/cast-slider";
 import CollectionGrid from "./media-detail/collection-grid";
 import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
+import NextEpisodeCard from "./media-detail/next-episode-card";
+import UpcomingReleaseBanner from "./media-detail/upcoming-release-banner";
 import { Button } from "./ui/button";
 import ExpandableText from "./ui/expandable-text";
 import { cn } from "@/lib/utils";
@@ -656,15 +658,15 @@ export default function MediaDetailClient({
     }
   })();
 
-  const regionalReleaseDate = (() => {
+  const primaryReleaseDate = (() => {
     if (mediaType === "movie") {
-      return regionalReleaseInfo?.release_date || details?.release_date || "";
+      return details?.release_date || "";
     } else {
       return details?.first_air_date || "";
     }
   })();
 
-  const releaseDate = regionalReleaseDate;
+  const releaseDate = primaryReleaseDate;
   const releaseYear = releaseDate ? new Date(releaseDate).getFullYear().toString() : "N/A";
   const runtime = details?.runtime || details?.episode_run_time?.[0] || null;
 
@@ -1119,6 +1121,23 @@ export default function MediaDetailClient({
             <p className="my-2 max-w-3xl text-sm leading-relaxed text-zinc-400 italic md:text-base">
               No overview available.
             </p>
+          )}
+
+          {/* Upcoming Movie / TV Premiere Countdown Banner */}
+          {isUnreleased && releaseDate && (
+            <UpcomingReleaseBanner
+              releaseDate={releaseDate}
+              mediaType={mediaType}
+              className="my-3 w-full max-w-3xl"
+            />
+          )}
+
+          {/* TV Series Next Episode Countdown Card */}
+          {mediaType === "tv" && details?.next_episode_to_air && (
+            <NextEpisodeCard
+              episode={details.next_episode_to_air}
+              className="my-3 w-full max-w-3xl"
+            />
           )}
 
           <ActionsSection

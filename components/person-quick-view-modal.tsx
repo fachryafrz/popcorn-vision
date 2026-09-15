@@ -17,7 +17,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import moment from "moment";
 
 interface TMDBPerson {
@@ -108,16 +107,12 @@ export default function PersonQuickViewModal({
               </div>
 
               <div className="mt-6 w-full max-w-[200px]">
-                <Link href={`/person/${person.id}`} onClick={onClose} passHref legacyBehavior>
-                  <Button
-                    className="w-full cursor-pointer rounded-full border border-zinc-700 bg-black/40 text-xs font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98"
-                    variant="outline"
-                  >
-                    <span className="flex items-center justify-center gap-1.5">
-                      <Maximize2 className="h-3.5 w-3.5" />
-                      Maximize Profile
-                    </span>
-                  </Button>
+                <Link
+                  href={`/person/${person.id}`}
+                  className="inline-flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-full border border-zinc-700 bg-black/40 py-2.5 text-xs font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-900 hover:text-white active:scale-98"
+                >
+                  <Maximize2 className="h-3.5 w-3.5" />
+                  Maximize Profile
                 </Link>
               </div>
             </div>
