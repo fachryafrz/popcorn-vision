@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
+import { authClient } from "@/lib/auth-client";
 import {
   matchImportItemsAction,
   batchFetchMediaMetadata,
@@ -37,6 +38,9 @@ const getNowTimestamp = (): number => {
 };
 
 export default function ImportWizard() {
+  const session = authClient.useSession();
+  const isLoggedIn = !!session.data?.user;
+
   const [step, setStep] = useState<ImportStep>("upload");
   const [platform, setPlatform] = useState<PlatformSource>("unknown");
   const [targetTable, setTargetTable] = useState<TargetTable>("watchlist");
@@ -61,15 +65,21 @@ export default function ImportWizard() {
   });
 
   // Convex existing lists (for local duplicate pre-checking)
-  const currentUser = useQuery(api.users.getCurrentUser);
-  const existingWatchlist = useQuery(api.watchlist.getWatchlist) || [];
-  const existingFavorites = useQuery(api.favorites.getFavorites) || [];
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
+  const existingWatchlist =
+    useQuery(api.watchlist.getWatchlist, isLoggedIn ? {} : "skip") || [];
+  const existingFavorites =
+    useQuery(api.favorites.getFavorites, isLoggedIn ? {} : "skip") || [];
   const existingRatings =
     useQuery(
       api.ratings.getUserRatings,
-      currentUser ? { userId: currentUser.userId } : "skip",
+      isLoggedIn && currentUser ? { userId: currentUser.userId } : "skip",
     ) || [];
-  const existingDiary = useQuery(api.diary.getUserDiary, {}) || [];
+  const existingDiary =
+    useQuery(api.diary.getUserDiary, isLoggedIn ? {} : "skip") || [];
 
   // Convex mutations
   const addToWatchlist = useMutation(api.watchlist.addToWatchlist);

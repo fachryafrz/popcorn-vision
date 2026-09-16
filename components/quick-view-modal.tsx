@@ -141,7 +141,10 @@ export default function QuickViewModal({
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
 
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isOpen && isLoggedIn ? {} : "skip",
+  );
   const userCountryCode = currentUser?.country
     ? currentUser.country.length === 2
       ? currentUser.country.toUpperCase()
@@ -174,7 +177,7 @@ export default function QuickViewModal({
   // Favorites status
   const isFavorited = useQuery(
     api.favorites.checkFavoriteItem,
-    isLoggedIn && media
+    isOpen && isLoggedIn && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
       : "skip",
   );
@@ -184,13 +187,13 @@ export default function QuickViewModal({
   // Community rating stats query
   const communityStats = useQuery(
     api.ratings.getCommunityRatingStats,
-    media
+    isOpen && media
       ? { mediaId: String(media.id), mediaType: media.media_type || "movie" }
       : "skip",
   );
 
   useEffect(() => {
-    if (!media) return;
+    if (!isOpen || !media) return;
 
     // Reset state asynchronously to prevent React cascading renders warning
     Promise.resolve().then(() => {

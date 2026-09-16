@@ -72,14 +72,19 @@ export default function CustomListDetailPage({
     | { unauthorized: true }
     | undefined;
 
-  // Fetch current user's profile and friends for invites
+  // Modal States
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isMembersOpen, setIsMembersOpen] = useState(false);
+  const [selectedMediaRef, setSelectedMediaRef] = useQuickViewMediaState();
+
+  // Fetch current user's profile and friends for invites (lazy)
   const currentUserProfile = useQuery(
     api.users.getCurrentUser,
-    isLoggedIn ? {} : "skip",
+    isLoggedIn && isInviteOpen ? {} : "skip",
   );
   const userSocialProfile = useQuery(
     api.social.getUserSocialProfile,
-    isLoggedIn && currentUserProfile
+    isLoggedIn && isInviteOpen && currentUserProfile?.username
       ? { username: currentUserProfile.username }
       : "skip",
   );
@@ -106,11 +111,6 @@ export default function CustomListDetailPage({
     api.customLists.toggleItemWatched,
   );
   const toggleItemVoteMutation = useMutation(api.customLists.toggleItemVote);
-
-  // Modal States
-  const [isInviteOpen, setIsInviteOpen] = useState(false);
-  const [isMembersOpen, setIsMembersOpen] = useState(false);
-  const [selectedMediaRef, setSelectedMediaRef] = useQuickViewMediaState();
 
   const selectedMedia = useMemo<TMDBMedia | null>(() => {
     if (!selectedMediaRef) return null;

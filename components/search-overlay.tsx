@@ -68,8 +68,10 @@ export function SearchOverlay() {
     close();
   }, [close]);
 
-  // Fetch trending items for empty state
+  // Fetch trending items for empty state lazily when overlay is open
   useEffect(() => {
+    if (!isOpen || trendingItems.length > 0) return;
+
     let isMounted = true;
     getTrending("all").then((items) => {
       if (isMounted) {
@@ -79,7 +81,7 @@ export function SearchOverlay() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [isOpen, trendingItems.length]);
 
   // Keyboard shortcut listener (Cmd+K / Ctrl+K / Escape)
   useEffect(() => {
@@ -109,19 +111,22 @@ export function SearchOverlay() {
   // Convex Query for Users Search
   const userResults = useQuery(
     api.social.searchUsers,
-    (activeTab === "users" || activeTab === "all") && debouncedQuery.length > 0
+    isOpen &&
+      (activeTab === "users" || activeTab === "all") &&
+      debouncedQuery.length > 0
       ? { query: debouncedQuery }
       : "skip",
   ) as SearchUserResult[] | undefined;
 
   const isUserSearching =
+    isOpen &&
     (activeTab === "users" || activeTab === "all") &&
     debouncedQuery.length > 0 &&
     userResults === undefined;
 
   // Search Media fetcher
   useEffect(() => {
-    if (!debouncedQuery || activeTab === "users") {
+    if (!isOpen || !debouncedQuery || activeTab === "users") {
       return;
     }
 
@@ -138,7 +143,7 @@ export function SearchOverlay() {
     return () => {
       isCancelled = true;
     };
-  }, [debouncedQuery, activeTab]);
+  }, [isOpen, debouncedQuery, activeTab]);
 
   const isDebouncing = query.trim() !== debouncedQuery;
   const isSearching =

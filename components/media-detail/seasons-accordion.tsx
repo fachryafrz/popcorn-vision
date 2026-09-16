@@ -69,7 +69,10 @@ export default function SeasonsAccordion({
   const isLoggedIn = !!session.data?.user;
   const openAuth = useAuthModalStore((state) => state.open);
   const [now] = useState(() => Date.now());
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
   const logWatch = useMutation(api.diary.logWatch);
 
   const mainReleaseYear = details.first_air_date
