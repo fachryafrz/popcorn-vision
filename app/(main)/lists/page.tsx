@@ -78,19 +78,20 @@ export default function ListsPage() {
     "my",
   );
 
-  // Queries
+  // Queries conditioned on activeTab
   const myLists = useQuery(
     api.customLists.getUserLists,
-    isLoggedIn ? {} : "skip",
+    isLoggedIn && activeTab === "my" ? {} : "skip",
   ) as CustomList[] | undefined;
 
-  const publicLists = useQuery(api.customLists.getPublicLists, {}) as
-    | CustomList[]
-    | undefined;
+  const publicLists = useQuery(
+    api.customLists.getPublicLists,
+    activeTab === "public" ? {} : "skip",
+  ) as CustomList[] | undefined;
 
   const favoriteLists = useQuery(
     api.customLists.getFavoritedLists,
-    isLoggedIn ? {} : "skip",
+    isLoggedIn && activeTab === "favorites" ? {} : "skip",
   ) as CustomList[] | undefined;
 
   // Mutations

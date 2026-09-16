@@ -129,7 +129,10 @@ export default function SearchClient({
   } = useAuthModalStore();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
 
   // Detect country from browser locale or logged-in user profile country name mapping
   const userCountryCode = useMemo(() => {

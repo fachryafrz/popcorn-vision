@@ -93,7 +93,10 @@ export default function LogWatchModal({
 
   const logWatchMutation = useMutation(api.diary.logWatch);
   const editDiaryEntryMutation = useMutation(api.diary.editDiaryEntry);
-  const currentUser = useQuery(api.users.getCurrentUser);
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isOpen ? {} : "skip",
+  );
 
   // Set default watch date to today or initial values if editing (local YYYY-MM-DD)
   useEffect(() => {

@@ -456,15 +456,19 @@ export default function MediaDetailClient({
   } | null>(null);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isAddToCustomOpen, setIsAddToCustomOpen] = useState(false);
-
   const customLists = useQuery(
     api.customLists.getListsWithMediaStatus,
-    isLoggedIn && details ? { mediaId: String(details.id), mediaType } : "skip",
+    isLoggedIn && details && isAddToCustomOpen
+      ? { mediaId: String(details.id), mediaType }
+      : "skip",
   );
   const addCustomItem = useMutation(api.customLists.addItem);
   const removeCustomItem = useMutation(api.customLists.removeItem);
 
-  const chatsList = useQuery(api.chats.getChatsList, isLoggedIn ? {} : "skip");
+  const chatsList = useQuery(
+    api.chats.getChatsList,
+    isLoggedIn && isShareDialogOpen ? {} : "skip",
+  );
   const sendChatMessage = useMutation(api.chats.sendMessage);
 
   // Convex watch progress query & mutation

@@ -52,10 +52,18 @@ function ChatPageContent() {
   const currentUserId = session.data?.user?.id;
 
   const [isSending, setIsSending] = useState(false);
-  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>([]);
-  const [optimisticDeletions, setOptimisticDeletions] = useState<Set<Id<"messages">>>(new Set());
-  const [optimisticEdits, setOptimisticEdits] = useState<Record<Id<"messages">, string>>({});
-  const [optimisticMutes, setOptimisticMutes] = useState<Record<Id<"chats">, boolean>>({});
+  const [optimisticMessages, setOptimisticMessages] = useState<ChatMessage[]>(
+    [],
+  );
+  const [optimisticDeletions, setOptimisticDeletions] = useState<
+    Set<Id<"messages">>
+  >(new Set());
+  const [optimisticEdits, setOptimisticEdits] = useState<
+    Record<Id<"messages">, string>
+  >({});
+  const [optimisticMutes, setOptimisticMutes] = useState<
+    Record<Id<"chats">, boolean>
+  >({});
 
   // ----------------------------------------------------
   // CONVEX STATE QUERIES & MUTATIONS
@@ -80,22 +88,6 @@ function ChatPageContent() {
       return c;
     });
   }, [rawChatsList, optimisticMutes]);
-
-  // Get active friends list to start new chat
-  const profileData = useQuery(
-    api.social.getUserSocialProfile,
-    currentUserProfile?.username
-      ? { username: currentUserProfile.username }
-      : "skip",
-  );
-
-  // Strictly cast friends profiles
-  const friends = useMemo(() => {
-    if (!profileData || !("friends" in profileData) || !profileData.friends) {
-      return [];
-    }
-    return profileData.friends as Friend[];
-  }, [profileData]);
 
   // Mutations
   const createOrGetPrivateChat = useMutation(api.chats.createOrGetPrivateChat);
@@ -222,6 +214,24 @@ function ChatPageContent() {
   const [isGIFPickerOpen, setIsGIFPickerOpen] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [isPrivacyErrorOpen, setIsPrivacyErrorOpen] = useState(false);
+
+  // Lazy load active friends list only when creating or inviting to a chat
+  const isFriendModalOpen =
+    isNewChatOpen || isCreateGroupOpen || isInviteFriendsOpen;
+  const profileData = useQuery(
+    api.social.getUserSocialProfile,
+    currentUserProfile?.username && isFriendModalOpen
+      ? { username: currentUserProfile.username }
+      : "skip",
+  );
+
+  // Strictly cast friends profiles
+  const friends = useMemo(() => {
+    if (!profileData || !("friends" in profileData) || !profileData.friends) {
+      return [];
+    }
+    return profileData.friends as Friend[];
+  }, [profileData]);
 
   // Forms
   const [groupName, setGroupName] = useState("");

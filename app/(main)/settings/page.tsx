@@ -102,7 +102,10 @@ function SettingsForm({ convexProfile, user }: SettingsFormProps) {
 
   // Privacy mutations & queries
   const updatePrivacy = useMutation(api.social.updatePrivacySettings);
-  const rawBlockedUsersList = useQuery(api.social.getBlockedUsers);
+  const rawBlockedUsersList = useQuery(
+    api.social.getBlockedUsers,
+    isLoggedIn && activeSection === "privacy" ? {} : "skip",
+  );
 
   const blockedUsersList = useMemo(() => {
     if (!rawBlockedUsersList) return undefined;

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { authClient } from "@/lib/auth-client";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
@@ -73,23 +74,32 @@ interface ExportDiaryItem {
 }
 
 export default function DataExporter() {
+  const session = authClient.useSession();
+  const isLoggedIn = !!session.data?.user;
+
   const [exportingAll, setExportingAll] = useState(false);
 
   // Queries
-  const currentUser = useQuery(api.users.getCurrentUser);
-  const existingWatchlist = useQuery(api.watchlist.getWatchlist) as
-    | ExportWatchlistItem[]
-    | undefined;
-  const existingFavorites = useQuery(api.favorites.getFavorites) as
-    | ExportFavoriteItem[]
-    | undefined;
+  const currentUser = useQuery(
+    api.users.getCurrentUser,
+    isLoggedIn ? {} : "skip",
+  );
+  const existingWatchlist = useQuery(
+    api.watchlist.getWatchlist,
+    isLoggedIn ? {} : "skip",
+  ) as ExportWatchlistItem[] | undefined;
+  const existingFavorites = useQuery(
+    api.favorites.getFavorites,
+    isLoggedIn ? {} : "skip",
+  ) as ExportFavoriteItem[] | undefined;
   const existingRatings = useQuery(
     api.ratings.getUserRatings,
-    currentUser ? { userId: currentUser.userId } : "skip",
+    isLoggedIn && currentUser ? { userId: currentUser.userId } : "skip",
   ) as ExportRatingItem[] | undefined;
-  const existingDiary = useQuery(api.diary.getUserDiary, {}) as
-    | ExportDiaryItem[]
-    | undefined;
+  const existingDiary = useQuery(
+    api.diary.getUserDiary,
+    isLoggedIn ? {} : "skip",
+  ) as ExportDiaryItem[] | undefined;
 
   const isLoading =
     existingWatchlist === undefined ||
