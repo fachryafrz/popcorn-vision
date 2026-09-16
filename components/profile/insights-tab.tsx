@@ -9,25 +9,7 @@ import {
   searchPersonByName,
 } from "@/lib/tmdb-actions";
 import PersonQuickViewModal from "@/components/person-quick-view-modal";
-import { useQuickViewPersonState } from "@/hooks/use-query-modal-state";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
-  AreaChart,
-  Area,
-} from "recharts";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartConfig,
-} from "@/components/ui/chart";
+import { ChartConfig } from "@/components/ui/chart";
 import {
   Select,
   SelectContent,
@@ -36,28 +18,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Film,
-  Tv,
-  Clock,
-  Star,
-  Loader2,
-  TrendingUp,
-  User,
-  Video,
-  Tv2,
-  ChartPie,
-} from "lucide-react";
+import { Loader2, PieChart as ChartPie } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useQuickViewPersonState } from "@/hooks/use-query-modal-state";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+// Modular Insights Sub-components
+import { Period, COLORS } from "./insights/types";
+import StatCards from "./insights/stat-cards";
+import RatingDistributionChart from "./insights/rating-distribution-chart";
+import GenreChart from "./insights/genre-chart";
+import ActivityChart from "./insights/activity-chart";
+import TopPeople from "./insights/top-people";
 
 interface InsightsTabProps {
   diary: DiaryItem[] | undefined;
   user: UserDoc | null;
 }
-
-type Period = "week" | "month" | "all" | number;
 
 export function InsightsTab({ diary, user }: InsightsTabProps) {
   const router = useRouter();
@@ -504,331 +480,33 @@ export function InsightsTab({ diary, user }: InsightsTabProps) {
       ) : (
         <>
           {/* Key Metric Cards */}
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                  Movies
-                </span>
-                <Film className="text-primary h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.moviesCount}
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500">watched</p>
-            </div>
-
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                  TV Series
-                </span>
-                <Tv className="h-5 w-5 text-emerald-500" />
-              </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.tvSeriesCount}
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500">
-                {stats.tvSeasonsCount} {stats.tvSeasonsCount === 1 ? "season" : "seasons"} · {stats.tvEpisodesCount} {stats.tvEpisodesCount === 1 ? "episode" : "episodes"}
-              </p>
-            </div>
-
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                  Time
-                </span>
-                <Clock className="h-5 w-5 text-amber-500" />
-              </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.hoursWatched}{" "}
-                <span className="text-lg font-bold text-zinc-500">hrs</span>
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500">total watch time</p>
-            </div>
-
-            <div className="group relative overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950 p-6 transition-all hover:border-zinc-800 hover:bg-zinc-900/40">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                  Avg Rating
-                </span>
-                <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
-              </div>
-              <h3 className="mt-4 text-3xl font-extrabold tracking-tight">
-                {stats.averageRating}{" "}
-                <span className="text-lg font-bold text-zinc-500">/10</span>
-              </h3>
-              <p className="mt-1 text-xs text-zinc-500">across rated items</p>
-            </div>
-          </div>
+          <StatCards stats={stats} />
 
           {/* Visualizations Grid */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {/* Rating Distribution */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
-                <Star className="h-4 w-4 text-yellow-500" /> Rating Distribution
-              </h4>
-              <div className="h-[250px] w-full">
-                <ChartContainer
-                  config={ratingChartConfig}
-                  className="h-full w-full"
-                >
-                  <BarChart
-                    data={stats.ratingsDistribution}
-                    margin={{ left: -20, right: 10 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="rating" fontSize={11} tickLine={false} />
-                    <YAxis
-                      fontSize={11}
-                      tickLine={false}
-                      allowDecimals={false}
-                    />
-                    <ChartTooltip
-                      content={
-                        <ChartTooltipContent
-                          labelFormatter={(label) => `Rating: ${label}/10`}
-                        />
-                      }
-                    />
-                    <Bar
-                      dataKey="count"
-                      fill="var(--color-count)"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ChartContainer>
-              </div>
-            </div>
+            <RatingDistributionChart
+              data={stats.ratingsDistribution}
+              config={ratingChartConfig}
+            />
 
-            {/* Genre Breakdown */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
-                <Film className="text-primary h-4 w-4" /> Genre Breakdown
-              </h4>
-              <div className="flex flex-col items-center justify-between gap-4 sm:h-[250px] sm:flex-row">
-                {stats.topGenres.length > 0 ? (
-                  <>
-                    <div className="flex h-full w-full items-center justify-center sm:w-1/2">
-                      <ChartContainer
-                        config={genreChartConfig}
-                        className="aspect-square h-full max-h-[200px] w-full"
-                      >
-                        <PieChart>
-                          <ChartTooltip content={<ChartTooltipContent />} />
-                          <Pie
-                            data={stats.topGenres}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={55}
-                            outerRadius={80}
-                            dataKey="value"
-                          >
-                            {stats.topGenres.map((entry, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                              />
-                            ))}
-                          </Pie>
-                        </PieChart>
-                      </ChartContainer>
-                    </div>
-                    <div className="flex w-full flex-1 flex-col gap-2.5">
-                      {stats.topGenres.map((genre, index) => (
-                        <div
-                          key={genre.name}
-                          className="flex items-center justify-between text-xs"
-                        >
-                          <div className="flex items-center gap-2">
-                            <div
-                              className="h-2.5 w-2.5 rounded-full"
-                              style={{
-                                backgroundColor: COLORS[index % COLORS.length],
-                              }}
-                            />
-                            <span className="font-semibold text-zinc-300">
-                              {genre.name}
-                            </span>
-                          </div>
-                          <span className="font-bold text-zinc-500">
-                            {genre.value} items
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="flex flex-1 items-center justify-center text-xs text-zinc-600 italic">
-                    Not enough data
-                  </div>
-                )}
-              </div>
-            </div>
+            <GenreChart
+              topGenres={stats.topGenres}
+              config={genreChartConfig}
+            />
 
-            {/* Viewing Trends */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6 lg:col-span-2">
-              <h4 className="mb-6 flex items-center gap-2 text-sm font-bold tracking-wider text-zinc-400 uppercase">
-                <TrendingUp className="h-4 w-4 text-emerald-500" /> Viewing
-                Trends
-              </h4>
-              <div className="h-[250px] w-full">
-                {trendsData.length > 0 ? (
-                  <ChartContainer
-                    config={trendsChartConfig}
-                    className="h-full w-full"
-                  >
-                    <AreaChart
-                      data={trendsData}
-                      margin={{ left: -20, right: 10 }}
-                    >
-                      <defs>
-                        <linearGradient
-                          id="trendGradient"
-                          x1="0"
-                          y1="0"
-                          x2="0"
-                          y2="1"
-                        >
-                          <stop
-                            offset="5%"
-                            stopColor="var(--color-count)"
-                            stopOpacity={0.2}
-                          />
-                          <stop
-                            offset="95%"
-                            stopColor="var(--color-count)"
-                            stopOpacity={0}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                      <XAxis dataKey="date" fontSize={11} tickLine={false} />
-                      <YAxis
-                        fontSize={11}
-                        tickLine={false}
-                        allowDecimals={false}
-                      />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Area
-                        type="monotone"
-                        dataKey="count"
-                        stroke="var(--color-count)"
-                        strokeWidth={2}
-                        fillOpacity={1}
-                        fill="url(#trendGradient)"
-                      />
-                    </AreaChart>
-                  </ChartContainer>
-                ) : (
-                  <div className="flex h-full items-center justify-center text-xs text-zinc-600 italic">
-                    Not enough data
-                  </div>
-                )}
-              </div>
-            </div>
+            <ActivityChart
+              data={trendsData}
+              config={trendsChartConfig}
+            />
           </div>
 
           {/* Top Creators & Providers Grid */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            {/* Top Actors */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                <User className="text-primary h-4 w-4" /> Top Actors
-              </h4>
-              <div className="space-y-3">
-                {stats.topActors.length > 0 ? (
-                  stats.topActors.map((actor, idx) => (
-                    <div
-                      key={actor.name}
-                      onClick={() => handlePersonClick(actor.name)}
-                      className={cn(
-                        "group flex cursor-pointer items-center justify-between rounded-lg text-xs transition-all duration-200",
-                      )}
-                    >
-                      <span className="flex items-center gap-1.5 font-semibold text-zinc-300">
-                        <span>{idx + 1}.</span>
-                        <span className="group-hover:underline">
-                          {actor.name}
-                        </span>
-                      </span>
-                      <span className="font-bold text-zinc-500">
-                        {actor.count} films
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-zinc-650 text-xs italic">
-                    No actor metadata available.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Top Directors */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                <Video className="h-4 w-4 text-emerald-400" /> Top Directors / Creators
-              </h4>
-              <div className="space-y-3">
-                {stats.topDirectors.length > 0 ? (
-                  stats.topDirectors.map((director, idx) => (
-                    <div
-                      key={director.name}
-                      onClick={() => handlePersonClick(director.name)}
-                      className={cn(
-                        "group flex cursor-pointer items-center justify-between rounded-lg text-xs transition-all duration-200",
-                      )}
-                    >
-                      <span className="flex items-center gap-1.5 font-semibold text-zinc-300">
-                        <span>{idx + 1}.</span>
-                        <span className="group-hover:underline">
-                          {director.name}
-                        </span>
-                      </span>
-                      <span className="font-bold text-zinc-500">
-                        {director.count} titles
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-zinc-650 text-xs italic">
-                    No director metadata available.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Top Streaming Services */}
-            <div className="rounded-3xl border border-zinc-900 bg-zinc-950 p-6">
-              <h4 className="mb-4 flex items-center gap-2 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                <Tv2 className="h-4 w-4 text-amber-400" /> Top Streaming
-                Providers
-              </h4>
-              <div className="space-y-3">
-                {stats.topProviders.length > 0 ? (
-                  stats.topProviders.map((provider, idx) => (
-                    <div
-                      key={provider.name}
-                      className="flex items-center justify-between text-xs"
-                    >
-                      <span className="font-semibold text-zinc-300">
-                        {idx + 1}. {provider.name}
-                      </span>
-                      <span className="font-bold text-zinc-500">
-                        {provider.count} watches
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-zinc-650 text-xs italic">
-                    No streaming provider details found.
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
+          <TopPeople
+            topActors={stats.topActors}
+            topDirectors={stats.topDirectors}
+            topProviders={stats.topProviders}
+            onPersonClick={handlePersonClick}
+          />
         </>
       )}
       <PersonQuickViewModal
