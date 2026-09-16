@@ -11,26 +11,18 @@ import {
   MatchedImportItem,
   StatsMetadata,
 } from "@/lib/tmdb-actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
-  Upload,
-  ArrowRight,
-  CheckCircle,
-  AlertTriangle,
-  Loader2,
-  FileSpreadsheet,
-  Check,
-  Database,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { siteConfig } from "@/config/site";
-
-// Types
-type PlatformSource = "imdb" | "letterboxd" | "tmdb" | "popcorn" | "unknown";
-type ImportStep = "upload" | "resolving" | "preview" | "importing" | "summary";
+  PlatformSource,
+  ImportStep,
+  TargetTable,
+  SummaryStats,
+} from "./import-wizard/types";
+import UploadStep from "./import-wizard/upload-step";
+import ResolvingStep from "./import-wizard/resolving-step";
+import PreviewStep from "./import-wizard/preview-step";
+import ImportingStep from "./import-wizard/importing-step";
+import SummaryStep from "./import-wizard/summary-step";
 
 interface LocalDuplicatesState {
   watchlist: Set<string>;
@@ -47,9 +39,7 @@ const getNowTimestamp = (): number => {
 export default function ImportWizard() {
   const [step, setStep] = useState<ImportStep>("upload");
   const [platform, setPlatform] = useState<PlatformSource>("unknown");
-  const [targetTable, setTargetTable] = useState<
-    "watchlist" | "favorites" | "ratings" | "diary"
-  >("watchlist");
+  const [targetTable, setTargetTable] = useState<TargetTable>("watchlist");
 
   const [resolvedItems, setResolvedItems] = useState<MatchedImportItem[]>([]);
   const [selectedItemIds, setSelectedItemIds] = useState<Set<string>>(
@@ -61,7 +51,7 @@ export default function ImportWizard() {
   const [importProgress, setImportProgress] = useState(0);
 
   // Final summary stats
-  const [summaryStats, setSummaryStats] = useState({
+  const [summaryStats, setSummaryStats] = useState<SummaryStats>({
     watchlist: 0,
     favorites: 0,
     ratings: 0,
@@ -229,8 +219,7 @@ export default function ImportWizard() {
           : idxOf("diary_type");
 
     // Automatically infer import target based on columns and filename
-    let inferredTable: "watchlist" | "favorites" | "ratings" | "diary" =
-      "watchlist";
+    let inferredTable: TargetTable = "watchlist";
 
     if (filename) {
       const lowerFile = filename.toLowerCase();
@@ -568,9 +557,7 @@ export default function ImportWizard() {
     setSelectedItemIds(updated);
   };
 
-  const handleTargetTableChange = (
-    newTable: "watchlist" | "favorites" | "ratings" | "diary",
-  ) => {
+  const handleTargetTableChange = (newTable: TargetTable) => {
     setTargetTable(newTable);
 
     // Update all matched resolved items so they point to the new destination table
@@ -755,371 +742,38 @@ export default function ImportWizard() {
       </div>
 
       {/* STEP 1: Upload View */}
-      {step === "upload" && (
-        <div className="space-y-6">
-          <div className="group relative overflow-hidden rounded-3xl border border-dashed border-zinc-800 bg-zinc-950/20 p-8 text-center shadow-lg backdrop-blur-md transition-all duration-300 hover:border-zinc-700/80 hover:bg-zinc-950/30 md:p-12">
-            <div className="flex flex-col items-center justify-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 shadow-inner transition-transform duration-300 group-hover:scale-105">
-                <Upload className="text-primary h-7 w-7" />
-              </div>
-              <div>
-                <h3 className="mb-1 text-base font-bold text-zinc-200">
-                  Upload CSV Export File
-                </h3>
-                <p className="mx-auto mb-6 max-w-sm text-xs text-zinc-500">
-                  Supports CSV list exports generated directly from IMDb
-                  watchlist/ratings, Letterboxd movies, or TMDB items.
-                </p>
-              </div>
-
-              {/* Upload Input Button */}
-              <Label className="relative cursor-pointer">
-                <Input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleCSVUpload}
-                  className="hidden"
-                />
-                <div className="flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-xs font-bold text-black shadow-md transition-all duration-100 hover:scale-[1.02] hover:bg-zinc-200 active:scale-95">
-                  <FileSpreadsheet className="h-4 w-4" />
-                  Choose CSV File
-                </div>
-              </Label>
-            </div>
-          </div>
-
-          {/* Sources Guide Grid */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {[
-              {
-                title: "IMDb Lists",
-                text: "Supports exported list files containing 'Const' IMDb IDs.",
-                color: "border-yellow-600/20 bg-yellow-950/5 text-yellow-400",
-              },
-              {
-                title: "Letterboxd",
-                text: "Supports watchlist.csv and ratings.csv files (automatic 5-star scaling).",
-                color: "border-orange-600/20 bg-orange-950/5 text-orange-400",
-              },
-              {
-                title: "TMDB",
-                text: "Supports CSV lists containing TMDB ID fields.",
-                color: "border-blue-600/20 bg-blue-950/5 text-blue-400",
-              },
-            ].map((guide, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "flex flex-col items-center justify-center gap-1.5 rounded-2xl border p-4 text-center backdrop-blur-xs",
-                  guide.color,
-                )}
-              >
-                <h4 className="text-xs font-bold tracking-wide uppercase">
-                  {guide.title}
-                </h4>
-                <p className="max-w-xs text-[10px] text-zinc-500">
-                  {guide.text}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      {step === "upload" && <UploadStep onUpload={handleCSVUpload} />}
 
       {/* STEP 2: Resolution loading view */}
       {step === "resolving" && (
-        <div className="flex flex-col items-center justify-center gap-5 rounded-3xl border border-zinc-900 bg-zinc-950/20 py-20 text-center">
-          <Loader2 className="text-primary h-10 w-10 animate-spin" />
-          <div>
-            <h3 className="mb-1 text-base font-bold text-zinc-200">
-              Resolving Items on TMDB
-            </h3>
-            <p className="text-xs text-zinc-500">
-              Matching your titles and external IDs against TMDB catalog…
-            </p>
-          </div>
-          <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
-            <div
-              style={{ width: `${resolveProgress}%` }}
-              className="bg-primary h-full rounded-full transition-all duration-300"
-            />
-          </div>
-          <span className="text-xs font-bold text-zinc-400">
-            {resolveProgress}% completed
-          </span>
-        </div>
+        <ResolvingStep resolveProgress={resolveProgress} />
       )}
 
       {/* STEP 3: Preview list view */}
       {step === "preview" && (
-        <div className="space-y-6">
-          {/* Top Panel Actions info */}
-          <div className="border-zinc-850 flex flex-col flex-wrap items-start justify-between gap-4 rounded-2xl border bg-zinc-900/10 p-4 md:flex-row md:items-center">
-            <div className="space-y-3">
-              <p className="text-xs text-zinc-400">
-                Source Platform:{" "}
-                <span className="font-bold text-white uppercase">
-                  {platform}
-                </span>
-              </p>
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-medium text-zinc-400">
-                  Target Category:
-                </span>
-                <div className="border-zinc-850 flex items-center gap-1 rounded-xl border bg-zinc-950/60 p-1">
-                  {(
-                    [
-                      { id: "watchlist", label: "Watchlist" },
-                      { id: "favorites", label: "Favorites" },
-                      { id: "ratings", label: "Ratings" },
-                      { id: "diary", label: "Diary" },
-                    ] as const
-                  ).map((tab) => (
-                    <button
-                      key={tab.id}
-                      onClick={() => handleTargetTableChange(tab.id)}
-                      className={cn(
-                        "cursor-pointer rounded-lg px-3 py-1.5 text-[10px] font-black tracking-wider uppercase transition-all",
-                        targetTable === tab.id
-                          ? "bg-primary scale-[1.02] text-white shadow-md"
-                          : "hover:text-zinc-350 text-zinc-500",
-                      )}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleReset}
-                className="h-9 cursor-pointer rounded-xl border-zinc-800 text-xs font-semibold"
-              >
-                Cancel
-              </Button>
-              <Button
-                size="sm"
-                onClick={handleConfirmImport}
-                disabled={selectedItemIds.size === 0}
-                className="h-9 cursor-pointer rounded-xl bg-white text-xs font-bold text-black hover:bg-zinc-200"
-              >
-                Confirm Import ({selectedItemIds.size} items)
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </div>
-
-          {/* Matches & Duplicates Table */}
-          <div className="overflow-hidden rounded-3xl border border-zinc-900 bg-zinc-950/10 shadow-lg">
-            <div className="flex items-center justify-between border-b border-zinc-900/80 bg-zinc-900/10 p-4">
-              <span className="text-xs font-bold text-zinc-300">
-                Preview Import Items
-              </span>
-              <button
-                onClick={handleToggleAll}
-                className="text-primary hover:text-primary/50 cursor-pointer text-[10px] font-bold hover:underline"
-              >
-                {selectedItemIds.size > 0
-                  ? "Deselect All"
-                  : "Select All Available"}
-              </button>
-            </div>
-
-            <div className="max-h-[450px] divide-y divide-zinc-900/50 overflow-y-auto">
-              {resolvedItems.map((item, idx) => {
-                const isSelected = selectedItemIds.has(String(idx));
-                const duplicates = getDuplicatePairs();
-                const isDuplicate = checkItemIsDuplicate(item, duplicates);
-
-                return (
-                  <div
-                    key={idx}
-                    className={cn(
-                      "flex items-center justify-between gap-4 p-4 transition-all",
-                      !item.matched ? "bg-zinc-950/40 opacity-60" : "",
-                      isDuplicate ? "bg-red-950/5 opacity-80" : "",
-                    )}
-                  >
-                    <div className="flex min-w-0 flex-1 items-center gap-3">
-                      {/* Thumbnail poster fallback */}
-                      <div className="flex h-12 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-zinc-800/80 bg-zinc-900">
-                        {item.matched && item.posterPath ? (
-                          <img
-                            src={`https://image.tmdb.org/t/p/w92${item.posterPath}`}
-                            alt={item.title}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <Database className="h-4.5 w-4.5 text-zinc-700" />
-                        )}
-                      </div>
-
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-xs leading-tight font-bold text-white">
-                          {item.title}
-                        </p>
-                        <div className="mt-1.5 flex items-center gap-2 text-[10px] font-semibold text-zinc-500 uppercase">
-                          <span>{item.mediaType}</span>
-                          {item.releaseYear && (
-                            <>
-                              <span>•</span>
-                              <span>{item.releaseYear}</span>
-                            </>
-                          )}
-                          {item.rating && (
-                            <>
-                              <span>•</span>
-                              <span className="text-yellow-500">
-                                ★ {item.rating}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Checkbox Status indicators */}
-                    <div className="flex shrink-0 items-center gap-3">
-                      {isDuplicate ? (
-                        <span className="flex items-center gap-1 rounded-lg border border-red-900/30 bg-red-950/20 px-2 py-1 text-[9px] font-bold text-red-400/90 uppercase">
-                          <AlertTriangle className="h-3 w-3" />
-                          Duplicate
-                        </span>
-                      ) : !item.matched ? (
-                        <span className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1 text-[9px] font-bold text-zinc-500 uppercase">
-                          Unmatched
-                        </span>
-                      ) : (
-                        <button
-                          onClick={() => handleToggleSelection(String(idx))}
-                          className={cn(
-                            "flex h-5 w-5 cursor-pointer items-center justify-center rounded-lg border transition-all",
-                            isSelected
-                              ? "border-primary bg-primary text-white"
-                              : "border-zinc-800 text-transparent hover:border-zinc-700",
-                          )}
-                        >
-                          <Check className="h-3.5 w-3.5 stroke-3" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+        <PreviewStep
+          platform={platform}
+          targetTable={targetTable}
+          onTargetTableChange={handleTargetTableChange}
+          selectedItemIds={selectedItemIds}
+          onToggleSelection={handleToggleSelection}
+          onToggleAll={handleToggleAll}
+          onCancel={handleReset}
+          onConfirm={handleConfirmImport}
+          resolvedItems={resolvedItems}
+          duplicates={getDuplicatePairs()}
+          checkItemIsDuplicate={checkItemIsDuplicate}
+        />
       )}
 
       {/* STEP 4: Importing Execution view */}
       {step === "importing" && (
-        <div className="flex flex-col items-center justify-center gap-5 rounded-3xl border border-zinc-900 bg-zinc-950/20 py-20 text-center">
-          <Loader2 className="text-primary h-10 w-10 animate-spin" />
-          <div>
-            <h3 className="mb-1 text-base font-bold text-zinc-200">
-              Adding Entries
-            </h3>
-            <p className="text-xs text-zinc-500">Saving your data...</p>
-          </div>
-          <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
-            <div
-              style={{ width: `${importProgress}%` }}
-              className="bg-primary h-full rounded-full transition-all duration-300"
-            />
-          </div>
-          <span className="text-xs font-bold text-zinc-400">
-            {importProgress}% completed
-          </span>
-        </div>
+        <ImportingStep importProgress={importProgress} />
       )}
 
       {/* STEP 5: Final Summary view */}
       {step === "summary" && (
-        <div className="space-y-6">
-          <div className="space-y-6 rounded-3xl border border-zinc-900 bg-zinc-950/20 p-6 text-center shadow-xl md:p-8">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <CheckCircle className="h-12 w-12 text-emerald-500" />
-              <div>
-                <h3 className="mb-1 text-lg font-black text-zinc-200">
-                  Import Summary List
-                </h3>
-                <p className="text-xs text-zinc-500">
-                  Your data has been successfully processed and synced with
-                  {siteConfig.name} database.
-                </p>
-              </div>
-            </div>
-
-            {/* Results Grid counts */}
-            <div className="mx-auto grid w-full max-w-4xl grid-cols-2 gap-3 sm:grid-cols-3">
-              {[
-                {
-                  label: "Watchlist",
-                  value: summaryStats.watchlist,
-                  color: "text-primary",
-                },
-                {
-                  label: "Favorites",
-                  value: summaryStats.favorites,
-                  color: "text-purple-400",
-                },
-                {
-                  label: "Ratings",
-                  value: summaryStats.ratings,
-                  color: "text-yellow-400",
-                },
-                {
-                  label: "Diary",
-                  value: summaryStats.diary,
-                  color: "text-emerald-400",
-                },
-                {
-                  label: "Duplicates",
-                  value: summaryStats.duplicates,
-                  color: "text-zinc-500",
-                },
-                {
-                  label: "Unmatched",
-                  value: summaryStats.skipped,
-                  color: "text-red-400/70",
-                },
-              ].map((stat, i) => (
-                <div
-                  key={i}
-                  className="flex min-h-20 flex-col justify-between rounded-2xl border border-zinc-900 bg-zinc-900/40 p-3 sm:min-h-24 sm:p-4"
-                >
-                  <span className="block text-[10px] leading-tight font-black tracking-wide text-zinc-500 uppercase">
-                    {stat.label}
-                  </span>
-                  <span
-                    className={cn("mt-2 block text-2xl font-black", stat.color)}
-                  >
-                    {stat.value}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mx-auto flex w-full max-w-xs flex-col items-center justify-center gap-3 pt-6 sm:max-w-md sm:flex-row">
-              <Button
-                onClick={handleReset}
-                variant="outline"
-                className="h-11 w-full cursor-pointer rounded-xl border-zinc-800 text-xs font-semibold sm:w-1/2"
-              >
-                Import Another File
-              </Button>
-              <Button
-                onClick={handleReset}
-                className="h-11 w-full cursor-pointer rounded-xl bg-white text-xs font-bold text-black shadow-md hover:bg-zinc-200 sm:w-1/2"
-              >
-                Done
-              </Button>
-            </div>
-          </div>
-        </div>
+        <SummaryStep summaryStats={summaryStats} onReset={handleReset} />
       )}
     </div>
   );

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useQueryState } from "nuqs";
 import { useMutation, useAction } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
@@ -11,16 +10,7 @@ import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
 import { streamingProviderList } from "@/lib/streamingProviderList";
 import { MediaDetailSkeleton } from "@/components/skeletons";
-import {
-  Star,
-  Clock,
-  Loader2,
-  TrendingUp,
-  Users,
-  ChevronRight,
-  Plus,
-  Check,
-} from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import Carousel from "./carousel";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
@@ -42,13 +32,6 @@ import {
 } from "@/lib/guest-watchlist";
 import { useUserLibrary } from "./user-library-provider";
 import { toast } from "sonner";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Id } from "@/convex/_generated/dataModel";
 import moment from "moment";
 import isoCountries from "@/data/iso-3166.json";
@@ -78,9 +61,10 @@ import SeasonsAccordion from "./media-detail/seasons-accordion";
 import InfoSidebar from "./media-detail/info-sidebar";
 import NextEpisodeCard from "./media-detail/next-episode-card";
 import UpcomingReleaseBanner from "./media-detail/upcoming-release-banner";
-import { Button } from "./ui/button";
-import ExpandableText from "./ui/expandable-text";
-import { cn } from "@/lib/utils";
+import MediaHeaderInfo from "./media-detail/media-header-info";
+import ProductionCompanies from "./media-detail/production-companies";
+import ShareChatDialog from "./media-detail/share-chat-dialog";
+import AddToCustomListDialog from "./media-detail/add-to-custom-list-dialog";
 
 interface MediaDetailClientProps {
   mediaType: "movie" | "tv";
@@ -238,8 +222,6 @@ export default function MediaDetailClient({
   const backdropRef = useRef<HTMLDivElement>(null);
   const seasonDetailsRef = useRef<HTMLDivElement>(null);
 
-  // Logo render error state
-  const [logoError, setLogoError] = useState(false);
   const [now] = useState(() => Date.now());
 
   // Player tabs & selections
@@ -979,149 +961,20 @@ export default function MediaDetailClient({
 
         {/* Details Header Details */}
         <div className="flex flex-1 flex-col items-start gap-4 text-left">
-          {/* Genre Badges */}
-          {details?.genres && details.genres.length > 0 && (
-            <div className="mt-1 flex flex-wrap gap-2">
-              {details.genres.map((g) => (
-                <span
-                  key={g.id}
-                  className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm"
-                >
-                  {g.name}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Logo or Title */}
-          {logoPath && !logoError ? (
-            <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-24 md:h-28">
-              <img
-                src={`https://image.tmdb.org/t/p/w500${logoPath}`}
-                alt={details?.title || details?.name}
-                className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
-                onError={() => setLogoError(true)}
-                draggable={false}
-              />
-            </div>
-          ) : (
-            <h1 className="line-clamp-2 text-3xl leading-tight font-black tracking-tight text-white drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl">
-              {details?.title || details?.name}
-            </h1>
-          )}
-
-          {details?.tagline && (
-            <p className="-mt-1 text-sm text-zinc-400 italic sm:text-base">
-              &ldquo;{details.tagline}&rdquo;
-            </p>
-          )}
-
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="border-primary/30 bg-primary rounded-full border px-3 py-1 text-xs font-bold tracking-wider text-white uppercase">
-              {mediaType === "tv" ? "TV Series" : "Movie"}
-            </span>
-            {certification && (
-              <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-black text-zinc-300 uppercase">
-                Rated: {certification}
-              </span>
-            )}
-            {(() => {
-              const hasCommunity =
-                communityStats && communityStats.totalRatings > 0;
-              const displayRating = hasCommunity
-                ? communityStats.averageRating.toFixed(
-                    communityStats.averageRating < 10 ? 1 : 0,
-                  )
-                : rating;
-              const sourceLabel = hasCommunity ? "Community" : "TMDB";
-              return (
-                <>
-                  <div className="flex items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs font-semibold backdrop-blur-sm">
-                    <Star className="h-4 w-4 fill-current text-yellow-400" />
-                    <span>{displayRating}</span>
-                    <span className="ml-1 text-[9px] font-bold tracking-wider text-zinc-500 uppercase">
-                      ({sourceLabel})
-                    </span>
-                  </div>
-                  {hasCommunity && (
-                    <span className="border-zinc-850 rounded-full border bg-zinc-900/40 px-3 py-1 text-xs font-medium text-zinc-500">
-                      TMDB: {rating}
-                    </span>
-                  )}
-                </>
-              );
-            })()}
-            <span className="text-sm font-medium text-zinc-400">
-              {releaseYear}
-            </span>
-            {runtime && (
-              <div className="flex items-center gap-1 text-sm text-zinc-400">
-                <Clock className="h-4 w-4" />
-                <span>
-                  {duration.hours() > 0 ? `${duration.hours()}h ` : ""}
-                  {duration.minutes() > 0 ? `${duration.minutes()}m` : ""}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {mediaType === "movie" && directors.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
-              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
-                Directed By:
-              </span>
-              <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
-                {directors.map((d, index) => (
-                  <span key={d.id}>
-                    <span
-                      onClick={() => setQuickViewPersonId(d.id)}
-                      role="button"
-                      className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
-                    >
-                      {d.name}
-                    </span>
-                    {index < directors.length - 1 && ", "}
-                  </span>
-                ))}
-              </span>
-            </div>
-          )}
-          {mediaType === "tv" && creators.length > 0 && (
-            <div className="flex flex-wrap items-center gap-1.5 text-xs text-zinc-400 sm:text-sm">
-              <span className="text-[10px] font-semibold tracking-wider text-zinc-500 uppercase">
-                Created By:
-              </span>
-              <span className="flex flex-wrap items-center gap-1 font-bold text-zinc-200">
-                {creators.map((c, index) => (
-                  <span key={c.id}>
-                    <span
-                      onClick={() => setQuickViewPersonId(c.id)}
-                      role="button"
-                      className="hover:text-primary cursor-pointer underline decoration-dotted transition-colors"
-                    >
-                      {c.name}
-                    </span>
-                    {index < creators.length - 1 && ", "}
-                  </span>
-                ))}
-              </span>
-            </div>
-          )}
-
-          {details?.overview ? (
-            <ExpandableText
-              text={details.overview}
-              clampLines={3}
-              threshold={180}
-              className="my-2 max-w-3xl"
-              textClassName="text-sm leading-relaxed text-zinc-300 drop-shadow md:text-base"
-              buttonClassName="text-zinc-400 hover:text-zinc-200"
-            />
-          ) : (
-            <p className="my-2 max-w-3xl text-sm leading-relaxed text-zinc-400 italic md:text-base">
-              No overview available.
-            </p>
-          )}
+          <MediaHeaderInfo
+            details={details}
+            mediaType={mediaType}
+            logoPath={logoPath}
+            certification={certification}
+            communityStats={communityStats}
+            rating={rating}
+            releaseYear={releaseYear}
+            runtime={runtime}
+            duration={duration}
+            directors={directors}
+            creators={creators}
+            onPersonClick={(personId) => setQuickViewPersonId(personId)}
+          />
 
           {/* Upcoming Movie / TV Premiere Countdown Banner */}
           {isUnreleased && releaseDate && (
@@ -1217,48 +1070,10 @@ export default function MediaDetailClient({
               </p>
             </div>
 
-            {details?.production_companies &&
-              details.production_companies.length > 0 && (
-                <div className="space-y-3">
-                  <h3 className="text-xs font-bold tracking-wider text-zinc-400 uppercase">
-                    Production Companies
-                  </h3>
-                  <div className="flex flex-wrap gap-2.5">
-                    {details.production_companies.map((c) => (
-                      <Link
-                        key={c.id || c.name}
-                        href={
-                          c.id
-                            ? `/company/${c.id}`
-                            : `/search?type=${mediaType}&company=${encodeURIComponent(c.name)}`
-                        }
-                        className={cn(
-                          "flex cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2 transition duration-200 hover:bg-zinc-800/50 active:scale-95",
-                        )}
-                      >
-                        {c.logo_path && (
-                          <div className="flex aspect-4/3 w-25 items-center justify-center rounded-lg bg-white/95 p-3 shadow-sm">
-                            <img
-                              src={`https://image.tmdb.org/t/p/w92${c.logo_path}`}
-                              alt={c.name}
-                              className="max-h-full max-w-full object-contain"
-                              draggable={false}
-                            />
-                          </div>
-                        )}
-                        <span
-                          className={cn(
-                            "text-xs leading-tight font-medium text-zinc-300",
-                            c.logo_path && "sr-only",
-                          )}
-                        >
-                          {c.name}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+            <ProductionCompanies
+              productionCompanies={details?.production_companies}
+              mediaType={mediaType}
+            />
 
             <CollectionGrid
               collectionParts={collectionParts}
@@ -1369,162 +1184,47 @@ export default function MediaDetailClient({
       )}
 
       {/* Share to Chat Dialog */}
-      <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
-        <DialogContent className="max-w-md overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-md">
-          <DialogHeader>
-            <DialogTitle className="text-base font-black tracking-wider text-white uppercase">
-              Share with Friends
-            </DialogTitle>
-          </DialogHeader>
-          <div className="mt-4 space-y-4 text-left">
-            <h3 className="text-zinc-550 text-xs font-black tracking-wider uppercase">
-              Select Chat
-            </h3>
-            <div className="max-h-60 scrollbar-thin space-y-1.5 overflow-y-auto pr-1">
-              {!chatsList ? (
-                <div className="flex items-center justify-center py-6">
-                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
-                </div>
-              ) : chatsList.length === 0 ? (
-                <p className="py-4 text-center text-xs text-zinc-500 italic">
-                  No active chats found. Open the chat tab to start
-                  conversations with friends!
-                </p>
-              ) : (
-                chatsList.map((c) => {
-                  const isGroup = c.type === "group";
-                  const chatTitle = isGroup
-                    ? c.name
-                    : c.friend?.name || "Friend";
-                  return (
-                    <div
-                      key={c.chatId}
-                      onClick={() => handleShareToChat(c.chatId, chatTitle)}
-                      className="hover:border-zinc-850 flex cursor-pointer items-center justify-between rounded-2xl border border-transparent p-3 text-xs transition-all hover:bg-zinc-900/60"
-                    >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-9 w-9 border border-zinc-800">
-                          {isGroup ? (
-                            c.image ? (
-                              <AvatarImage
-                                src={c.image}
-                                alt={c.name}
-                                className="object-cover"
-                              />
-                            ) : null
-                          ) : c.friend?.image ? (
-                            <AvatarImage
-                              src={c.friend.image}
-                              alt={c.friend.name}
-                              className="object-cover"
-                            />
-                          ) : null}
-                          <AvatarFallback className="bg-zinc-900 text-xs font-bold text-zinc-300">
-                            {isGroup ? (
-                              <Users className="h-4 w-4 text-zinc-400" />
-                            ) : (
-                              chatTitle.charAt(0).toUpperCase()
-                            )}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <span className="block font-bold text-white">
-                            {chatTitle}
-                          </span>
-                          <span className="mt-0.5 block text-[10px] text-zinc-500">
-                            {isGroup ? "Group Chat" : `@${c.friend?.username}`}
-                          </span>
-                        </div>
-                      </div>
-                      <ChevronRight className="h-4 w-4 text-zinc-500" />
-                    </div>
-                  );
-                })
-              )}
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ShareChatDialog
+        isOpen={isShareDialogOpen}
+        onOpenChange={setIsShareDialogOpen}
+        chatsList={chatsList}
+        onShareToChat={handleShareToChat}
+      />
 
       {/* Add to Custom List Dialog */}
-      <Dialog open={isAddToCustomOpen} onOpenChange={setIsAddToCustomOpen}>
-        <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              Add to Custom List
-            </DialogTitle>
-          </DialogHeader>
-          <div className="max-h-87.5 space-y-4 overflow-y-auto py-4 pr-1">
-            {customLists === undefined ? (
-              <div className="flex justify-center py-6">
-                <Loader2 className="text-primary h-6 w-6 animate-spin" />
-              </div>
-            ) : customLists.length === 0 ? (
-              <div className="py-6 text-center">
-                <p className="mb-4 text-sm text-zinc-500">
-                  You have not created or joined any custom lists yet.
-                </p>
-                <Button
-                  onClick={() => {
-                    setIsAddToCustomOpen(false);
-                    router.push("/lists");
-                  }}
-                  className="rounded-xl bg-white px-4 py-2 text-xs font-bold text-black hover:bg-zinc-200"
-                >
-                  Create Custom List
-                </Button>
-              </div>
-            ) : (
-              customLists.map((list) => (
-                <div
-                  key={list._id}
-                  onClick={async () => {
-                    try {
-                      if (list.hasMedia) {
-                        await removeCustomItem({
-                          listId: list._id as Id<"customLists">,
-                          mediaId: String(details.id),
-                          mediaType,
-                        });
-                        toast.success(`Removed from ${list.name}!`);
-                      } else {
-                        await addCustomItem({
-                          listId: list._id as Id<"customLists">,
-                          mediaId: String(details.id),
-                          mediaType,
-                          title: details.title || details.name || "",
-                          posterPath: details.poster_path || "",
-                          releaseYear: releaseYear.toString(),
-                        });
-                        toast.success(`Added to ${list.name}!`);
-                      }
-                    } catch {
-                      toast.error("Failed to update custom list");
-                    }
-                  }}
-                  className="group flex cursor-pointer items-center justify-between gap-3 rounded-2xl border border-zinc-900 bg-zinc-900/20 p-3 transition-all hover:border-zinc-800 hover:bg-zinc-900/60"
-                >
-                  <div>
-                    <p className="group-hover:text-primary text-sm font-bold text-white transition-colors">
-                      {list.name}
-                    </p>
-                    {list.isCollaborative && (
-                      <span className="text-primary border-primary/30 bg-primary/10 mt-1 inline-block rounded border px-1.5 py-0.5 text-[9px] font-extrabold uppercase">
-                        Collaborative
-                      </span>
-                    )}
-                  </div>
-                  {list.hasMedia ? (
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  ) : (
-                    <Plus className="h-4 w-4 text-zinc-500 transition-colors group-hover:text-white" />
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AddToCustomListDialog
+        isOpen={isAddToCustomOpen}
+        onOpenChange={setIsAddToCustomOpen}
+        customLists={customLists}
+        onToggleList={async (list) => {
+          try {
+            if (list.hasMedia) {
+              await removeCustomItem({
+                listId: list._id as Id<"customLists">,
+                mediaId: String(details.id),
+                mediaType,
+              });
+              toast.success(`Removed from ${list.name}!`);
+            } else {
+              await addCustomItem({
+                listId: list._id as Id<"customLists">,
+                mediaId: String(details.id),
+                mediaType,
+                title: details.title || details.name || "",
+                posterPath: details.poster_path || "",
+                releaseYear: releaseYear.toString(),
+              });
+              toast.success(`Added to ${list.name}!`);
+            }
+          } catch {
+            toast.error("Failed to update custom list");
+          }
+        }}
+        onCreateListClick={() => {
+          setIsAddToCustomOpen(false);
+          router.push("/lists");
+        }}
+      />
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, RefObject } from "react";
+import { useState, useEffect, useMemo, RefObject } from "react";
 import {
   Film,
   Tv,
@@ -71,11 +71,15 @@ export default function VideoPlayer({
   servers,
   isUnreleased,
 }: VideoPlayerProps) {
-  const youtubeVideos = (videos || []).filter(
-    (v) => v.site?.toLowerCase() === "youtube" && v.key,
+  const youtubeVideos = useMemo(
+    () =>
+      (videos || []).filter(
+        (v) => v.site?.toLowerCase() === "youtube" && v.key,
+      ),
+    [videos],
   );
-  const backdrops = images?.backdrops || [];
-  const posters = images?.posters || [];
+  const backdrops = useMemo(() => images?.backdrops || [], [images?.backdrops]);
+  const posters = useMemo(() => images?.posters || [], [images?.posters]);
 
   // Active Media Preview State (Left Frame)
   const [activeMediaMode, setActiveMediaMode] = useState<"video" | "image">(
@@ -95,18 +99,20 @@ export default function VideoPlayer({
 
   // Sync default video key if trailerKey / videos change
   useEffect(() => {
-    if (trailerKey) {
-      setSelectedVideoKey(trailerKey);
-      setActiveMediaMode("video");
-    } else if (youtubeVideos.length > 0) {
-      setSelectedVideoKey(youtubeVideos[0].key);
-      setActiveMediaMode("video");
-    } else if (backdrops.length > 0) {
-      setSelectedImage(backdrops[0]);
-      setActiveMediaMode("image");
-      setSidebarMediaTab("backdrops");
-    }
-  }, [trailerKey, videos?.length, backdrops.length]);
+    Promise.resolve().then(() => {
+      if (trailerKey) {
+        setSelectedVideoKey(trailerKey);
+        setActiveMediaMode("video");
+      } else if (youtubeVideos.length > 0) {
+        setSelectedVideoKey(youtubeVideos[0].key);
+        setActiveMediaMode("video");
+      } else if (backdrops.length > 0) {
+        setSelectedImage(backdrops[0]);
+        setActiveMediaMode("image");
+        setSidebarMediaTab("backdrops");
+      }
+    });
+  }, [trailerKey, youtubeVideos, backdrops]);
 
   return (
     <div

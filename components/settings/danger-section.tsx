@@ -60,7 +60,7 @@ export default function DangerSection({
         <div className="space-y-4">
           <div>
             <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400">
-              Type <span className="text-white">"Close My Account"</span> to
+              Type <span className="text-white">&quot;Close My Account&quot;</span> to
               Confirm
             </Label>
             <Input
@@ -225,7 +225,7 @@ export default function DangerSection({
         <div className="space-y-4">
           <div>
             <Label className="mb-1 block text-left text-xs font-semibold tracking-wider text-zinc-400">
-              Type <span className="text-white">"Delete My Account"</span> to
+              Type <span className="text-white">&quot;Delete My Account&quot;</span> to
               Confirm
             </Label>
             <Input

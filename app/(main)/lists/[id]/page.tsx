@@ -1,119 +1,41 @@
 "use client";
 
-import React, { useState, use, useEffect, useMemo, useCallback } from "react";
+import React, { useState, use, useMemo, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { authClient } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Users,
-  Search,
   Loader2,
-  Calendar,
-  Trash2,
   ChevronLeft,
   UserPlus,
-  X,
   Film,
-  Heart,
-  Star,
-  Globe,
   Lock,
-  MessageSquare,
-  Edit2,
-  ThumbsUp,
-  CheckCircle2,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { searchMedia } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import QuickViewModal from "@/components/quick-view-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { useConfirm } from "@/components/ui/confirm-provider";
-import { siteConfig } from "@/config/site";
 
-interface ListCreator {
-  userId: string;
-  username: string;
-  name: string;
-  image?: string;
-}
-
-interface CustomList {
-  _id: Id<"customLists">;
-  name: string;
-  description?: string;
-  createdById: string;
-  createdAt: number;
-  privacy: string;
-  isCollaborative: boolean;
-  isWatchlist?: boolean;
-}
-
-interface CustomListItem {
-  _id: Id<"customListItems">;
-  listId: Id<"customLists">;
-  mediaId: string;
-  mediaType: string;
-  title: string;
-  posterPath: string;
-  releaseYear: string;
-  addedById: string;
-  addedAt: number;
-  addedByUser: {
-    userId: string;
-    username: string;
-    name: string;
-  } | null;
-  watched?: boolean;
-  watchedAt?: number;
-  watchedById?: string;
-  watchedByUser?: {
-    userId: string;
-    username: string;
-    name: string;
-  } | null;
-  voteCount: number;
-  userVote: number;
-}
-
-interface CustomListComment {
-  _id: Id<"customListComments">;
-  listId: Id<"customLists">;
-  userId: string;
-  content: string;
-  createdAt: number;
-  author: {
-    userId: string;
-    name: string;
-    username: string;
-    image?: string;
-  };
-}
+// Modular Custom Lists Sub-components
+import {
+  CustomList,
+  CustomListItem,
+  CustomListComment,
+  ListCreator,
+} from "@/components/custom-lists/types";
+import ListHeader from "@/components/custom-lists/list-header";
+import EditListDialog from "@/components/custom-lists/edit-list-dialog";
+import ManageCollaboratorsDialog from "@/components/custom-lists/manage-collaborators-dialog";
+import AddListItemSearch from "@/components/custom-lists/add-list-item-search";
+import ListItemCard from "@/components/custom-lists/list-item-card";
+import ListCommentsSection from "@/components/custom-lists/list-comments-section";
 
 interface CustomListDetailPageProps {
   params: Promise<{
@@ -185,13 +107,9 @@ export default function CustomListDetailPage({
   );
   const toggleItemVoteMutation = useMutation(api.customLists.toggleItemVote);
 
-  // States
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<TMDBMedia[]>([]);
-  const [searchLoading, setSearchLoading] = useState(false);
+  // Modal States
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isMembersOpen, setIsMembersOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedMediaRef, setSelectedMediaRef] = useQuickViewMediaState();
 
   const selectedMedia = useMemo<TMDBMedia | null>(() => {
@@ -202,27 +120,19 @@ export default function CustomListDetailPage({
     } as TMDBMedia;
   }, [selectedMediaRef]);
 
-  const setSelectedMedia = useCallback((media: TMDBMedia | null) => {
-    if (media) {
-      setSelectedMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
-    } else {
-      setSelectedMediaRef(null);
-    }
-  }, [setSelectedMediaRef]);
-
-  // Edit list states
-  const [editName, setEditName] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [editPrivacy, setEditPrivacy] = useState<"public" | "private">(
-    "public",
+  const setSelectedMedia = useCallback(
+    (media: TMDBMedia | null) => {
+      if (media) {
+        setSelectedMediaRef({
+          id: String(media.id),
+          media_type: media.media_type || "movie",
+        });
+      } else {
+        setSelectedMediaRef(null);
+      }
+    },
+    [setSelectedMediaRef],
   );
-  const [editCollab, setEditCollab] = useState(false);
-  const [editWatchlist, setEditWatchlist] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-
-  // Comment state
-  const [newComment, setNewComment] = useState("");
-  const [submittingComment, setSubmittingComment] = useState(false);
 
   // Watchlist filter/sort state
   const [statusFilter, setStatusFilter] = useState<
@@ -231,26 +141,6 @@ export default function CustomListDetailPage({
   const [sortBy, setSortBy] = useState<"recently_added" | "most_upvotes">(
     "most_upvotes",
   );
-
-  // Search effect with debounce
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      return;
-    }
-    const timer = setTimeout(async () => {
-      setSearchLoading(true);
-      try {
-        const results = await searchMedia(searchQuery);
-        setSearchResults(results.slice(0, 5));
-      } catch {
-        toast.error("Failed to search movies/TV shows");
-      } finally {
-        setSearchLoading(false);
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
 
   if (detail === undefined) {
     return (
@@ -308,9 +198,8 @@ export default function CustomListDetailPage({
           return b.voteCount - a.voteCount;
         }
         return b.addedAt - a.addedAt;
-      } else {
-        return b.addedAt - a.addedAt;
       }
+      return b.addedAt - a.addedAt;
     });
 
   const isOwner = creator?.userId === currentUser?.id;
@@ -333,8 +222,6 @@ export default function CustomListDetailPage({
           : "N/A",
       });
       toast.success(`Added ${media.title || media.name} to the list`);
-      setSearchQuery("");
-      setSearchResults([]);
     } catch {
       toast.error("Failed to add title to list");
     }
@@ -446,29 +333,25 @@ export default function CustomListDetailPage({
     }
   };
 
-  const handleUpdateList = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editName.trim()) {
-      toast.error("Name cannot be empty");
-      return;
-    }
-
-    setIsUpdating(true);
+  const handleUpdateList = async (data: {
+    name: string;
+    description: string;
+    privacy: "public" | "private";
+    isCollaborative: boolean;
+    isWatchlist: boolean;
+  }) => {
     try {
       await updateListMutation({
         listId,
-        name: editName.trim(),
-        description: editDesc.trim() || undefined,
-        privacy: editPrivacy,
-        isCollaborative: editCollab,
-        isWatchlist: editCollab ? editWatchlist : false,
+        name: data.name,
+        description: data.description || undefined,
+        privacy: data.privacy,
+        isCollaborative: data.isCollaborative,
+        isWatchlist: data.isCollaborative ? data.isWatchlist : false,
       });
       toast.success("List updated!");
-      setIsEditOpen(false);
     } catch {
       toast.error("Failed to update list");
-    } finally {
-      setIsUpdating(false);
     }
   };
 
@@ -491,19 +374,12 @@ export default function CustomListDetailPage({
     }
   };
 
-  const handleAddComment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-
-    setSubmittingComment(true);
+  const handleAddComment = async (content: string) => {
     try {
-      await addCommentMutation({ listId, content: newComment.trim() });
-      setNewComment("");
+      await addCommentMutation({ listId, content });
       toast.success("Comment posted!");
     } catch {
       toast.error("Failed to post comment");
-    } finally {
-      setSubmittingComment(false);
     }
   };
 
@@ -535,504 +411,58 @@ export default function CustomListDetailPage({
       </Link>
 
       {/* Hero Header Card */}
-      <div className="relative mb-8 overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/20 p-6 md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-                {list.name}
-              </h1>
-              <div className="flex gap-1.5">
-                {list.privacy === "public" ? (
-                  <span className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-[10px] font-extrabold text-zinc-400">
-                    <Globe className="h-3 w-3" /> Public
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900/60 px-2 py-0.5 text-[10px] font-extrabold text-zinc-400">
-                    <Lock className="h-3 w-3" /> Private
-                  </span>
-                )}
-                {list.isCollaborative && (
-                  <span className="text-primary border-primary/30 bg-primary/10 flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-extrabold">
-                    <Users className="h-3 w-3" /> Collaborative
-                  </span>
-                )}
-                {list.isWatchlist && (
-                  <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-950/20 px-2 py-0.5 text-[10px] font-extrabold text-emerald-400">
-                    Watchlist
-                  </span>
-                )}
-              </div>
-            </div>
-            {list.description && (
-              <p className="max-w-3xl text-sm leading-relaxed text-zinc-400">
-                {list.description}
-              </p>
-            )}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500">
-              <span className="flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5" />
-                Created {new Date(list.createdAt).toLocaleDateString()}
-              </span>
-              {creator && (
-                <span>
-                  by{" "}
-                  <Link
-                    href={`/@${creator.username}`}
-                    className="font-bold text-zinc-400 hover:text-white"
-                  >
-                    @{creator.username}
-                  </Link>
-                </span>
-              )}
-              {list.isCollaborative && (
-                <button
-                  onClick={() => setIsMembersOpen(true)}
-                  className="flex cursor-pointer items-center gap-1.5 font-semibold text-zinc-400 transition-colors hover:text-white"
-                >
-                  <Users className="h-3.5 w-3.5" />
-                  {collaborators.length}{" "}
-                  {collaborators.length === 1
-                    ? "collaborator"
-                    : "collaborators"}
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="flex shrink-0 flex-wrap items-center gap-3">
-            {/* Like list */}
-            <Button
-              variant="outline"
-              onClick={handleToggleLike}
-              className={`rounded-xl border-zinc-800 transition-all ${
-                isLiked
-                  ? "text-rose-450 border-rose-900/40 bg-rose-950/25 hover:bg-rose-950/40"
-                  : "text-zinc-300 hover:bg-zinc-900"
-              }`}
-            >
-              <Heart
-                className={`mr-2 h-4 w-4 ${isLiked ? "fill-rose-450" : ""}`}
-              />
-              {likeCount} {likeCount === 1 ? "Like" : "Likes"}
-            </Button>
-
-            {/* Favorite list */}
-            <Button
-              variant="outline"
-              onClick={handleToggleFavorite}
-              className={`rounded-xl border-zinc-800 transition-all ${
-                isFavorited
-                  ? "text-yellow-450 border-yellow-900/40 bg-yellow-950/25 hover:bg-yellow-950/40"
-                  : "text-zinc-300 hover:bg-zinc-900"
-              }`}
-            >
-              <Star
-                className={`mr-2 h-4 w-4 ${isFavorited ? "fill-yellow-455" : ""}`}
-              />
-              {isFavorited ? "Favorited" : "Favorite"}
-            </Button>
-
-            {/* Edit List Dialog (Owner only) */}
+      <ListHeader
+        list={list}
+        creator={creator}
+        collaborators={collaborators}
+        likeCount={likeCount}
+        isLiked={isLiked}
+        isFavorited={isFavorited}
+        onToggleLike={handleToggleLike}
+        onToggleFavorite={handleToggleFavorite}
+        onOpenMembers={() => setIsMembersOpen(true)}
+        actionSlot={
+          <>
             {isOwner && (
-              <Dialog
-                open={isEditOpen}
-                onOpenChange={(open) => {
-                  setIsEditOpen(open);
-                  if (open && detail?.list) {
-                    setEditName(detail.list.name);
-                    setEditDesc(detail.list.description || "");
-                    setEditPrivacy(detail.list.privacy as "public" | "private");
-                    setEditCollab(detail.list.isCollaborative);
-                    setEditWatchlist(detail.list.isWatchlist || false);
-                  }
-                }}
-              >
-                <DialogTrigger
-                  render={
-                    <Button
-                      variant="outline"
-                      className="cursor-pointer gap-2 rounded-xl border-zinc-800 text-zinc-300 hover:bg-zinc-900"
-                    >
-                      <Edit2 className="h-4 w-4" /> Edit List
-                    </Button>
-                  }
-                />
-                <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">
-                      Edit List Details
-                    </DialogTitle>
-                  </DialogHeader>
-                  <form onSubmit={handleUpdateList} className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="edit-name"
-                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
-                      >
-                        List Name
-                      </label>
-                      <Input
-                        id="edit-name"
-                        value={editName}
-                        onChange={(e) => setEditName(e.target.value)}
-                        className="rounded-xl border-zinc-800 bg-zinc-900 text-white"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="edit-desc"
-                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
-                      >
-                        Description (Optional)
-                      </label>
-                      <Textarea
-                        id="edit-desc"
-                        value={editDesc}
-                        onChange={(e) => setEditDesc(e.target.value)}
-                        className="min-h-24 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-white"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label
-                        htmlFor="edit-privacy"
-                        className="text-xs font-bold tracking-wider text-zinc-400 uppercase"
-                      >
-                        Privacy
-                      </label>
-                      <Select
-                        value={editPrivacy}
-                        onValueChange={(val) =>
-                          setEditPrivacy(val as "public" | "private")
-                        }
-                      >
-                        <SelectTrigger className="flex h-10 w-full items-center justify-between rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 text-sm text-white">
-                          <SelectValue placeholder="Select privacy" />
-                        </SelectTrigger>
-                        <SelectContent className="border-zinc-850 rounded-xl border bg-zinc-950 text-white">
-                          <SelectGroup>
-                            <SelectItem value="public">Public</SelectItem>
-                            <SelectItem value="private">Private</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex flex-col justify-end space-y-2 pb-1">
-                      <div className="flex items-center gap-2">
-                        <Checkbox
-                          id="edit-collab"
-                          checked={editCollab}
-                          onCheckedChange={(checked) => {
-                            setEditCollab(!!checked);
-                            if (!checked) setEditWatchlist(false);
-                          }}
-                          className="border-zinc-800 bg-zinc-900"
-                        />
-                        <label
-                          htmlFor="edit-collab"
-                          className="cursor-pointer text-xs font-bold text-zinc-300"
-                        >
-                          Collaborative List
-                        </label>
-                      </div>
-                      {editCollab && (
-                        <div className="mt-1.5 flex items-center gap-2 pl-6">
-                          <Checkbox
-                            id="edit-watchlist"
-                            checked={editWatchlist}
-                            onCheckedChange={(checked) =>
-                              setEditWatchlist(!!checked)
-                            }
-                            className="border-zinc-800 bg-zinc-900"
-                          />
-                          <label
-                            htmlFor="edit-watchlist"
-                            className="cursor-pointer text-xs font-bold text-zinc-300"
-                          >
-                            Watchlist Mode (Voting & Watched status)
-                          </label>
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center justify-between pt-4">
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={handleDeleteList}
-                        className="rounded-xl font-bold"
-                      >
-                        Delete List
-                      </Button>
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setIsEditOpen(false)}
-                          className="text-zinc-450 rounded-xl border-zinc-800 hover:bg-zinc-900 hover:text-white"
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          type="submit"
-                          disabled={isUpdating}
-                          className="rounded-xl bg-white font-bold text-black hover:bg-zinc-200"
-                        >
-                          {isUpdating ? "Saving..." : "Save Changes"}
-                        </Button>
-                      </div>
-                    </div>
-                  </form>
-                </DialogContent>
-              </Dialog>
+              <EditListDialog
+                list={list}
+                onUpdate={handleUpdateList}
+                onDelete={handleDeleteList}
+              />
             )}
-
-            {/* Invite Collaborator (Collaborative & Owner only) */}
             {list.isCollaborative && isOwner && (
-              <Dialog open={isInviteOpen} onOpenChange={setIsInviteOpen}>
-                <DialogTrigger
-                  render={
-                    <Button className="cursor-pointer gap-2 rounded-2xl bg-white px-5 py-2.5 font-bold text-black hover:bg-zinc-200">
-                      <UserPlus className="h-4 w-4" /> Add Collaborator
-                    </Button>
-                  }
-                />
-                <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
-                  <DialogHeader>
-                    <DialogTitle className="text-xl font-bold">
-                      Add Collaborators
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
-                    {friends.length === 0 ? (
-                      <p className="py-6 text-center text-sm text-zinc-500">
-                        Add friends on {siteConfig.name} first to invite them to
-                        collaborate!
-                      </p>
-                    ) : (
-                      friends
-                        .filter(
-                          (friend) =>
-                            !collaborators.some(
-                              (c) => c.userId === friend.userId,
-                            ),
-                        )
-                        .map((friend) => (
-                          <div
-                            key={friend.userId}
-                            className="flex items-center justify-between gap-3"
-                          >
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-9 w-9 border border-zinc-800">
-                                {friend.image && (
-                                  <AvatarImage
-                                    src={friend.image}
-                                    alt={friend.name}
-                                  />
-                                )}
-                                <AvatarFallback className="bg-primary text-xs font-bold text-white">
-                                  {friend.username?.charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="text-sm font-bold text-white">
-                                  {friend.name}
-                                </p>
-                                <p className="text-xs text-zinc-500">
-                                  @{friend.username}
-                                </p>
-                              </div>
-                            </div>
-
-                            <Button
-                              size="xs"
-                              onClick={() =>
-                                handleInvite(friend.userId, friend.name)
-                              }
-                              className="rounded-lg bg-white text-black hover:bg-zinc-200"
-                            >
-                              Add
-                            </Button>
-                          </div>
-                        ))
-                    )}
-                    {friends.length > 0 &&
-                      friends.filter(
-                        (friend) =>
-                          !collaborators.some(
-                            (c) => c.userId === friend.userId,
-                          ),
-                      ).length === 0 && (
-                        <p className="py-6 text-center text-sm text-zinc-500">
-                          All your friends are already collaborators!
-                        </p>
-                      )}
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                onClick={() => setIsInviteOpen(true)}
+                className="cursor-pointer gap-2 rounded-2xl bg-white px-5 py-2.5 font-bold text-black hover:bg-zinc-200"
+              >
+                <UserPlus className="h-4 w-4" /> Add Collaborator
+              </Button>
             )}
-          </div>
-        </div>
-      </div>
+          </>
+        }
+      />
 
-      {/* View Members / Collaborators Dialog */}
-      <Dialog open={isMembersOpen} onOpenChange={setIsMembersOpen}>
-        <DialogContent className="max-w-md rounded-3xl border border-zinc-800 bg-zinc-950 text-white">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-bold">
-              List Collaborators
-            </DialogTitle>
-          </DialogHeader>
-          <div className="max-h-[300px] space-y-4 overflow-y-auto py-4 pr-1">
-            {collaborators.map((collab) => {
-              const isCollabCreator = collab.userId === creator?.userId;
-              const canRemove =
-                (isOwner && !isCollabCreator) ||
-                collab.userId === currentUser?.id;
-              return (
-                <div
-                  key={collab.userId}
-                  className="flex items-center justify-between gap-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9 border border-zinc-800">
-                      {collab.image && (
-                        <AvatarImage src={collab.image} alt={collab.name} />
-                      )}
-                      <AvatarFallback className="bg-primary text-xs font-bold text-white">
-                        {collab.username?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="flex items-center gap-1 text-sm font-bold text-white">
-                        {collab.name}
-                        {isCollabCreator && (
-                          <span className="rounded-full border border-zinc-800 bg-zinc-900 px-1.5 py-0.5 text-[10px] font-extrabold text-zinc-400 uppercase">
-                            Owner
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-xs text-zinc-500">
-                        @{collab.username}
-                      </p>
-                    </div>
-                  </div>
-
-                  {canRemove && (
-                    <Button
-                      size="xs"
-                      variant="destructive"
-                      onClick={() =>
-                        handleRemoveMember(collab.userId, collab.name)
-                      }
-                      className="h-8 rounded-lg"
-                    >
-                      {collab.userId === currentUser?.id ? "Leave" : "Remove"}
-                    </Button>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Collaborators Dialogs */}
+      <ManageCollaboratorsDialog
+        isInviteOpen={isInviteOpen}
+        setIsInviteOpen={setIsInviteOpen}
+        isMembersOpen={isMembersOpen}
+        setIsMembersOpen={setIsMembersOpen}
+        friends={friends}
+        collaborators={collaborators}
+        creator={creator}
+        currentUserId={currentUser?.id}
+        isOwner={isOwner}
+        onInvite={handleInvite}
+        onRemoveMember={handleRemoveMember}
+      />
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main list items */}
         <div className="space-y-6 lg:col-span-2">
           {/* Add Item search (Owner and Collaborators only) */}
           {canModify && (
-            <div className="relative">
-              <div className="relative flex items-center">
-                <Search className="pointer-events-none absolute left-4 h-5 w-5 text-zinc-500" />
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    if (!e.target.value.trim()) {
-                      setSearchResults([]);
-                    }
-                  }}
-                  placeholder="Search movies or TV shows to add..."
-                  className="w-full rounded-2xl border-zinc-800 bg-zinc-900/40 py-6 pr-10 pl-12 text-base text-white transition-all placeholder:text-zinc-500 hover:bg-zinc-900/60 focus:bg-zinc-900"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSearchResults([]);
-                    }}
-                    className="absolute right-4 text-zinc-400 hover:text-white"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Search Results Dropdown */}
-              {searchResults.length > 0 && (
-                <div className="absolute right-0 left-0 z-35 mt-2 rounded-2xl border border-zinc-800 bg-zinc-950 p-2 shadow-2xl">
-                  {searchResults.map((media) => {
-                    const alreadyAdded = items.some(
-                      (item) => String(item.mediaId) === String(media.id),
-                    );
-                    return (
-                      <div
-                        key={media.id}
-                        className="flex items-center justify-between gap-4 rounded-xl p-2.5 transition-colors hover:bg-zinc-900"
-                      >
-                        <div className="flex min-w-0 items-center gap-3">
-                          {media.poster_path ? (
-                            <img
-                              src={`https://image.tmdb.org/t/p/w92${media.poster_path}`}
-                              alt={media.title || media.name}
-                              className="border-zinc-850 h-14 w-10 rounded-lg border bg-zinc-900 object-cover"
-                            />
-                          ) : (
-                            <div className="border-zinc-850 flex h-14 w-10 items-center justify-center rounded-lg border bg-zinc-900">
-                              <Film className="text-zinc-650 h-5 w-5" />
-                            </div>
-                          )}
-                          <div className="min-w-0">
-                            <p className="truncate text-sm font-bold text-white">
-                              {media.title || media.name}
-                            </p>
-                            <p className="mt-0.5 text-xs text-zinc-500">
-                              {media.release_date
-                                ? new Date(media.release_date).getFullYear()
-                                : "N/A"}{" "}
-                              •{" "}
-                              {media.media_type === "tv"
-                                ? "TV Series"
-                                : "Movie"}
-                            </p>
-                          </div>
-                        </div>
-
-                        <Button
-                          size="sm"
-                          disabled={alreadyAdded}
-                          onClick={() => handleAddItem(media)}
-                          className={`h-9 rounded-xl px-4 font-bold ${
-                            alreadyAdded
-                              ? "cursor-not-allowed bg-zinc-800 text-zinc-500"
-                              : "bg-white text-black hover:bg-zinc-200"
-                          }`}
-                        >
-                          {alreadyAdded ? "Added" : "Add"}
-                        </Button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              {searchLoading && (
-                <div className="absolute top-3.5 right-12 z-35">
-                  <Loader2 className="text-primary h-5 w-5 animate-spin" />
-                </div>
-              )}
-            </div>
+            <AddListItemSearch items={items} onAddItem={handleAddItem} />
           )}
 
           {/* Watchlist Filter & Sort Options */}
@@ -1106,138 +536,18 @@ export default function CustomListDetailPage({
                   No titles match the selected filter.
                 </p>
               ) : (
-                filteredAndSortedItems.map((item) => {
-                  const tmdbMedia = {
-                    id: Number(item.mediaId),
-                    title: item.mediaType === "movie" ? item.title : undefined,
-                    name: item.mediaType === "tv" ? item.title : undefined,
-                    media_type: item.mediaType as "movie" | "tv",
-                    poster_path: item.posterPath,
-                    release_date: `${item.releaseYear}-01-01`,
-                    popularity: 0,
-                  } as TMDBMedia;
-
-                  return (
-                    <div
-                      key={item._id}
-                      className="group relative flex items-center justify-between gap-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-4 transition-all hover:bg-zinc-900/30"
-                    >
-                      <div className="flex min-w-0 items-center gap-4">
-                        <div
-                          onClick={() => setSelectedMedia(tmdbMedia)}
-                          className="shrink-0 cursor-pointer hover:opacity-85"
-                        >
-                          {item.posterPath ? (
-                            <img
-                              src={`https://image.tmdb.org/t/p/w154${item.posterPath}`}
-                              alt={item.title}
-                              className="border-zinc-850 h-20 w-14 rounded-2xl border bg-zinc-900 object-cover"
-                            />
-                          ) : (
-                            <div className="border-zinc-850 flex h-20 w-14 items-center justify-center rounded-2xl border bg-zinc-900">
-                              <Film className="text-zinc-650 h-6 w-6" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h4
-                              onClick={() => setSelectedMedia(tmdbMedia)}
-                              className="group-hover:text-primary cursor-pointer truncate text-base font-extrabold text-white transition-colors"
-                            >
-                              {item.title}
-                            </h4>
-                            <span className="text-zinc-550 shrink-0 rounded-full border border-zinc-800 bg-zinc-900/40 px-2 py-0.5 text-[10px] font-extrabold tracking-wider uppercase">
-                              {item.mediaType}
-                            </span>
-                          </div>
-                          <p className="mt-1 text-xs text-zinc-500">
-                            {item.releaseYear} • Added by{" "}
-                            <span className="font-bold text-zinc-400">
-                              {item.addedByUser
-                                ? `@${item.addedByUser.username}`
-                                : "member"}
-                            </span>
-                          </p>
-                          {list.isWatchlist && item.watched && (
-                            <div className="mt-1.5 flex items-center gap-1 text-[10px] font-bold text-emerald-400">
-                              <CheckCircle2 className="h-3.5 w-3.5" />
-                              Watched by{" "}
-                              {item.watchedByUser
-                                ? `@${item.watchedByUser.username}`
-                                : "member"}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 items-center gap-2">
-                        {list.isWatchlist && (
-                          <>
-                            {/* Vote Button */}
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() =>
-                                handleToggleVote(item.mediaId, item.mediaType)
-                              }
-                              className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
-                                item.userVote === 1
-                                  ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
-                                  : "text-zinc-400 hover:bg-zinc-900"
-                              }`}
-                            >
-                              <ThumbsUp
-                                className={`h-3.5 w-3.5 ${item.userVote === 1 ? "fill-current" : ""}`}
-                              />
-                              <span>{item.voteCount}</span>
-                            </Button>
-
-                            {/* Watched Toggle (Collaborators/Owner only) */}
-                            {canModify && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() =>
-                                  handleToggleWatched(
-                                    item.mediaId,
-                                    item.mediaType,
-                                  )
-                                }
-                                className={`h-9 gap-1.5 rounded-xl border-zinc-800 px-3 text-xs font-bold transition-all ${
-                                  item.watched
-                                    ? "border-emerald-900/40 bg-emerald-950/20 text-emerald-400"
-                                    : "text-zinc-400 hover:bg-zinc-900"
-                                }`}
-                              >
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                <span>
-                                  {item.watched ? "Watched" : "Watch"}
-                                </span>
-                              </Button>
-                            )}
-                          </>
-                        )}
-
-                        {canModify && (
-                          <button
-                            onClick={() =>
-                              handleRemoveItem(
-                                item.mediaId,
-                                item.mediaType,
-                                item.title,
-                              )
-                            }
-                            className="text-zinc-450 shrink-0 cursor-pointer rounded-xl border border-zinc-800 bg-zinc-900 p-2.5 transition-all hover:scale-105 hover:border-red-900/40 hover:bg-red-950/20 hover:text-red-400 active:scale-95"
-                            title="Remove title"
-                          >
-                            <Trash2 className="h-4.5 w-4.5" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
+                filteredAndSortedItems.map((item) => (
+                  <ListItemCard
+                    key={item._id}
+                    item={item}
+                    isWatchlist={list.isWatchlist}
+                    canModify={canModify}
+                    onSelectMedia={setSelectedMedia}
+                    onToggleVote={handleToggleVote}
+                    onToggleWatched={handleToggleWatched}
+                    onRemoveItem={handleRemoveItem}
+                  />
+                ))
               )}
             </div>
           )}
@@ -1245,94 +555,14 @@ export default function CustomListDetailPage({
 
         {/* Sidebar Comments Section */}
         <div className="space-y-6">
-          <div className="space-y-4 rounded-3xl border border-zinc-800 bg-zinc-900/10 p-6">
-            <h3 className="flex items-center gap-2 border-b border-zinc-900 pb-3 text-lg font-bold">
-              <MessageSquare className="text-primary h-5 w-5" /> Comments
-            </h3>
-
-            {/* Comment Form */}
-            {isLoggedIn ? (
-              <form onSubmit={handleAddComment} className="space-y-2">
-                <Textarea
-                  value={newComment}
-                  onChange={(e) => setNewComment(e.target.value)}
-                  placeholder="Share your thoughts on this list..."
-                  className="min-h-16 resize-none rounded-xl border-zinc-800 bg-zinc-900 text-xs text-white placeholder:text-zinc-500"
-                  required
-                />
-                <div className="flex justify-end">
-                  <Button
-                    type="submit"
-                    disabled={submittingComment}
-                    className="h-8 rounded-xl bg-white px-3 py-1.5 text-xs font-bold text-black hover:bg-zinc-200"
-                  >
-                    {submittingComment ? "Posting..." : "Post Comment"}
-                  </Button>
-                </div>
-              </form>
-            ) : (
-              <p className="py-2 text-center text-xs text-zinc-500">
-                Sign in to post comments.
-              </p>
-            )}
-
-            {/* Comments List */}
-            {comments.length === 0 ? (
-              <p className="py-6 text-center text-xs text-zinc-500">
-                No comments yet. Start the conversation!
-              </p>
-            ) : (
-              <div className="max-h-[400px] space-y-4 overflow-y-auto pr-1">
-                {comments.map((comment) => {
-                  const isCommentAuthor = comment.userId === currentUser?.id;
-                  const canDelete = isOwner || isCommentAuthor;
-
-                  return (
-                    <div
-                      key={comment._id}
-                      className="flex gap-3 border-b border-zinc-900/50 pb-3 text-xs"
-                    >
-                      <Avatar className="h-7 w-7 shrink-0 border border-zinc-800">
-                        {comment.author.image && (
-                          <AvatarImage
-                            src={comment.author.image}
-                            alt={comment.author.name}
-                          />
-                        )}
-                        <AvatarFallback className="bg-zinc-850 text-[10px] font-bold text-zinc-400">
-                          {comment.author.username?.charAt(0).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <p className="font-bold text-zinc-300">
-                            {comment.author.name}{" "}
-                            <span className="font-normal text-zinc-500">
-                              @{comment.author.username}
-                            </span>
-                          </p>
-                          {canDelete && (
-                            <button
-                              onClick={() => handleDeleteComment(comment._id)}
-                              className="text-zinc-500 transition-colors hover:text-red-400"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
-                          )}
-                        </div>
-                        <p className="leading-normal whitespace-pre-wrap text-zinc-400">
-                          {comment.content}
-                        </p>
-                        <p className="text-[10px] text-zinc-500">
-                          {new Date(comment.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          <ListCommentsSection
+            comments={comments}
+            isLoggedIn={isLoggedIn}
+            currentUserId={currentUser?.id}
+            isOwner={isOwner}
+            onAddComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
+          />
         </div>
       </div>
 

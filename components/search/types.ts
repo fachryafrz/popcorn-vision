@@ -1,5 +1,3 @@
-import { TMDBMedia } from "@/lib/tmdb";
-
 export interface SearchUserResult {
   _id: string;
   userId: string;
