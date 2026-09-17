@@ -175,13 +175,6 @@ export default function Card({
           <span className="rounded-full border border-zinc-700/30 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {mediaLabel}
           </span>
-          {isUpcoming && (
-            <CountdownDisplay
-              targetDate={releaseDateStr}
-              variant="badge"
-              className="px-2 py-0 text-[9px] font-black"
-            />
-          )}
         </div>
 
         {/* Floating action buttons on Hover */}
@@ -257,6 +250,16 @@ export default function Card({
             <span className="font-semibold text-zinc-200">{rating}</span>
           </div>
         </div>
+
+        {isUpcoming && (
+          <div className="pt-0.5">
+            <CountdownDisplay
+              targetDate={releaseDateStr}
+              variant="pill"
+              className="w-full justify-center text-[10px] font-semibold py-0.5"
+            />
+          </div>
+        )}
       </div>
     </Link>
   );
