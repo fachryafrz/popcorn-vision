@@ -182,7 +182,7 @@ export default function CommentsSection({
         </div>
 
         {/* Sorting options */}
-        <div className="flex items-center gap-1 rounded-xl border border-zinc-800 bg-zinc-900/60 p-1">
+        <div className="flex w-fit items-center gap-1 rounded-xl border border-zinc-800 bg-zinc-900/60 p-1">
           {(
             [
               { id: "best", label: "Best" },
