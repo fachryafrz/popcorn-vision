@@ -6,6 +6,7 @@ import { Providers } from "@/components/providers";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -61,6 +62,19 @@ export default function RootLayout({
       )}
     >
       <body className="bg-background text-foreground flex min-h-full flex-col transition-colors duration-300">
+        <NextTopLoader
+          color="var(--primary)"
+          initialPosition={0.08}
+          crawlSpeed={200}
+          height={3}
+          crawl={true}
+          showSpinner={false}
+          easing="ease"
+          speed={200}
+          shadow="0 0 10px var(--primary),0 0 5px var(--primary)"
+          zIndex={1600}
+          showAtBottom={false}
+        />
         <Providers>
           {children}
           <Toaster />
