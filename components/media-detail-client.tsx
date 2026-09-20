@@ -954,7 +954,7 @@ export default function MediaDetailClient({
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
       <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 lg:-mt-44 lg:flex-row lg:gap-12 lg:px-20">
         {/* Large Poster Sidebar */}
-        <div className="border-zinc-850 hidden w-64 shrink-0 transform overflow-hidden rounded-2xl border bg-zinc-900/60 shadow-2xl shadow-black/85 backdrop-blur-md transition-all duration-300 hover:scale-102 lg:block">
+        <div className="border-zinc-850 hidden w-64 shrink-0 transform overflow-hidden rounded-2xl border bg-zinc-900/60 shadow-2xl shadow-black/85 backdrop-blur-md transition-all duration-300 hover:scale-102 xl:sticky xl:top-22 xl:block">
           <img
             src={posterUrl}
             alt={details?.title || details?.name}
@@ -973,10 +973,14 @@ export default function MediaDetailClient({
             communityStats={communityStats}
             rating={rating}
             releaseYear={releaseYear}
+            releaseDate={releaseDate}
             runtime={runtime}
             duration={duration}
             directors={directors}
             creators={creators}
+            providers={providers}
+            selectedRegion={selectedRegion}
+            setSelectedRegion={setSelectedRegion}
             onPersonClick={(personId) => setQuickViewPersonId(personId)}
           />
 
@@ -1067,13 +1071,6 @@ export default function MediaDetailClient({
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           {/* Main Info Column */}
           <div className="space-y-6 lg:col-span-2">
-            <div>
-              <h3 className="mb-2 text-lg font-bold text-white">Overview</h3>
-              <p className="text-sm leading-relaxed text-zinc-300 sm:text-base">
-                {details?.overview || "No overview details available."}
-              </p>
-            </div>
-
             <ProductionCompanies
               productionCompanies={details?.production_companies}
               mediaType={mediaType}
@@ -1106,11 +1103,8 @@ export default function MediaDetailClient({
           <InfoSidebar
             mediaType={mediaType}
             details={details}
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
             releaseDate={releaseDate}
             formatCurrency={formatCurrency}
-            providers={providers}
           />
         </div>
 

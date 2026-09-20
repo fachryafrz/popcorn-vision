@@ -34,6 +34,7 @@ interface RegionSelectProps {
   placeholder?: string;
   className?: string;
   mode?: "code" | "name"; // "code" uses alpha-2 (e.g., 'US'), "name" uses full name (e.g., 'United States')
+  variant?: "default" | "compact";
 }
 
 // Dynamic country flag emoji generation
@@ -56,6 +57,7 @@ export default function RegionSelect({
   placeholder = "Select your region",
   className,
   mode = "code",
+  variant = "default",
 }: RegionSelectProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -82,21 +84,25 @@ export default function RegionSelect({
   }, [search]);
 
   const displayLabel = selectedRegion
-    ? `${getFlagEmoji(selectedRegion["alpha-2"])} ${selectedRegion.name}`
+    ? variant === "compact"
+      ? `${getFlagEmoji(selectedRegion["alpha-2"])} ${selectedRegion["alpha-2"]}`
+      : `${getFlagEmoji(selectedRegion["alpha-2"])} ${selectedRegion.name}`
     : placeholder;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         className={cn(
-          "focus:border-primary/50 flex h-12 w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-left text-xs font-bold text-zinc-300 outline-hidden transition-all duration-200 select-none hover:text-white focus:bg-zinc-900",
+          variant === "compact"
+            ? "flex h-8.5 cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-800 bg-zinc-900/80 px-3 text-xs font-bold text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
+            : "focus:border-primary/50 flex h-12 w-full cursor-pointer items-center justify-between rounded-2xl border border-zinc-800 bg-zinc-900/30 px-4 text-left text-xs font-bold text-zinc-300 outline-hidden transition-all duration-200 select-none hover:text-white focus:bg-zinc-900",
           className,
         )}
       >
         <span className="truncate">{displayLabel}</span>
         <ChevronDown
           className={cn(
-            "h-4 w-4 shrink-0 text-zinc-500 transition-transform duration-200",
+            "h-3 w-3 shrink-0 text-zinc-400 transition-transform duration-200",
             open && "rotate-180",
           )}
         />

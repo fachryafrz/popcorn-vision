@@ -152,13 +152,17 @@ export default function Card({
   const href = `/${media.media_type || "movie"}/${media.id}`;
 
   return (
-    <Link
-      href={href}
-      prefetch={true}
-      className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden transition-all duration-300 md:hover:-translate-y-1"
-    >
+    <div className="group relative flex w-full shrink-0 flex-col gap-3 overflow-hidden transition-all duration-300 md:hover:-translate-y-1">
       {/* Poster area */}
       <div className="relative aspect-2/3 w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+        {/* Clickable overlay link */}
+        <Link
+          href={href}
+          prefetch={true}
+          className="absolute inset-0 z-10 cursor-pointer"
+          aria-label={`View ${media.title || media.name}`}
+        />
+
         {/* Poster image */}
         <img
           src={posterPath}
@@ -168,19 +172,20 @@ export default function Card({
         />
 
         {/* Backdrop overlay */}
-        <div className="absolute inset-0 z-10 hidden bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
+        <div className="pointer-events-none absolute inset-0 z-10 hidden bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
 
         {/* Content badges */}
-        <div className="absolute top-3 left-3 z-20 flex flex-wrap gap-1.5">
+        <div className="pointer-events-none absolute top-3 left-3 z-20 flex flex-wrap gap-1.5">
           <span className="rounded-full border border-zinc-700/30 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {mediaLabel}
           </span>
         </div>
 
-        {/* Floating action buttons on Hover */}
-        <div className="absolute inset-x-0 bottom-4 z-20 hidden translate-y-3 transform justify-center gap-2 px-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:flex">
+        {/* Floating action buttons on Hover - z-30 so they sit above the overlay Link */}
+        <div className="absolute inset-x-0 bottom-4 z-30 hidden translate-y-3 transform justify-center gap-2 px-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 md:flex">
           {/* Watchlist Button */}
           <Button
+            type="button"
             onClick={handleWatchlistClick}
             disabled={watchlistLoading}
             size="icon-sm"
@@ -203,6 +208,7 @@ export default function Card({
 
           {/* Quick View Button */}
           <Button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -217,6 +223,7 @@ export default function Card({
 
           {/* Favorite Toggle Button */}
           <Button
+            type="button"
             onClick={handleFavoriteClick}
             disabled={favoriteLoading}
             size="icon-sm"
@@ -238,10 +245,14 @@ export default function Card({
       </div>
 
       {/* Metadata section */}
-      <div className="flex flex-col gap-1 px-1">
-        <h3 className="group-hover:text-primary line-clamp-1 text-sm font-semibold text-white transition-colors">
+      <div className="relative flex flex-col gap-1 px-1">
+        <Link
+          href={href}
+          prefetch={true}
+          className="group-hover:text-primary line-clamp-1 text-sm font-semibold text-white transition-colors"
+        >
           {media.title || media.name}
-        </h3>
+        </Link>
 
         <div className="flex items-center justify-between text-xs text-zinc-400">
           <span>{releaseYear}</span>
@@ -261,7 +272,7 @@ export default function Card({
           </div>
         )}
       </div>
-    </Link>
+    </div>
   );
 }
 

@@ -45,10 +45,11 @@ export function AdminUsersClient() {
           You do not have permission to view the User Management console. Only
           platform Owners and Admins can access this area.
         </p>
-        <Link href="/">
-          <Button variant="default" className="rounded-xl font-bold">
-            Back to Home
-          </Button>
+        <Link
+          href="/"
+          className="bg-primary hover:bg-primary/90 inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-bold text-white transition-all hover:scale-105 active:scale-95"
+        >
+          Back to Home
         </Link>
       </div>
     );
