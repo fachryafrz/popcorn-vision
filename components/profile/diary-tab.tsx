@@ -146,6 +146,7 @@ export function DiaryTab({
             const entries = groups[dateKey];
             const dateObj = new Date(entries[0].watchedDate);
             const dateStr = dateObj.toLocaleDateString("en-US", {
+              weekday: "long",
               month: "short",
               day: "numeric",
               year: "numeric",

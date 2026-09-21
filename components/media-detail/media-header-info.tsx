@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Clock } from "lucide-react";
+import { Star, Clock, Calendar } from "lucide-react";
+import moment from "moment";
 import type { Duration } from "moment";
-import { MediaDetails, CrewItem, Creator } from "./types";
+import { MediaDetails, CrewItem, Creator, ProviderItem } from "./types";
 import ExpandableText from "../ui/expandable-text";
+import HeaderStreamingProviders from "./header-streaming-providers";
 
 interface MediaHeaderInfoProps {
   details: MediaDetails;
@@ -14,10 +16,14 @@ interface MediaHeaderInfoProps {
   communityStats?: { totalRatings: number; averageRating: number } | null;
   rating: string;
   releaseYear: string | number;
+  releaseDate?: string;
   runtime: number | null;
   duration: Duration;
   directors: CrewItem[];
   creators: Creator[];
+  providers: ProviderItem[];
+  selectedRegion: string;
+  setSelectedRegion: (region: string) => void;
   onPersonClick: (id: number) => void;
 }
 
@@ -29,10 +35,14 @@ export default function MediaHeaderInfo({
   communityStats,
   rating,
   releaseYear,
+  releaseDate,
   runtime,
   duration,
   directors,
   creators,
+  providers,
+  selectedRegion,
+  setSelectedRegion,
   onPersonClick,
 }: MediaHeaderInfoProps) {
   const [logoError, setLogoError] = useState(false);
@@ -113,9 +123,21 @@ export default function MediaHeaderInfo({
             </>
           );
         })()}
-        <span className="text-sm font-medium text-zinc-400">
-          {releaseYear}
-        </span>
+        <div
+          className="flex items-center gap-1.5 text-sm font-medium text-zinc-300"
+          title={
+            releaseDate
+              ? `Release Date: ${moment(releaseDate).format("MMMM Do, YYYY (dddd)")}`
+              : undefined
+          }
+        >
+          <Calendar className="h-4 w-4 text-zinc-400" />
+          <span>
+            {releaseDate
+              ? moment(releaseDate).format("MMM D, YYYY")
+              : releaseYear}
+          </span>
+        </div>
         {runtime && (
           <div className="flex items-center gap-1 text-sm text-zinc-400">
             <Clock className="h-4 w-4" />
@@ -184,6 +206,14 @@ export default function MediaHeaderInfo({
           No overview available.
         </p>
       )}
+
+      {/* Streaming Providers & Quick Region Switcher */}
+      <HeaderStreamingProviders
+        mediaType={mediaType}
+        providers={providers}
+        selectedRegion={selectedRegion}
+        setSelectedRegion={setSelectedRegion}
+      />
     </div>
   );
 }

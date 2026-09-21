@@ -91,13 +91,16 @@ export default function ContinueWatchingCard({
   const href = `/${item.mediaType}/${item.mediaId}?${queryParams.toString()}`;
 
   return (
-    <Link
-      href={href}
-      prefetch={true}
-      className="group relative flex w-full shrink-0 cursor-pointer flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1"
-    >
+    <div className="group relative flex w-full shrink-0 flex-col gap-3 overflow-hidden rounded-2xl transition-all duration-300 md:hover:-translate-y-1">
       {/* Backdrop area (Landscape) */}
       <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+        <Link
+          href={href}
+          prefetch={true}
+          className="absolute inset-0 z-10 cursor-pointer"
+          aria-label={`Continue watching ${item.title}`}
+        />
+
         <img
           src={imagePath}
           alt={item.title}
@@ -106,24 +109,25 @@ export default function ContinueWatchingCard({
         />
 
         {/* Hover overlay with a Play button */}
-        <div className="absolute inset-0 z-10 hidden items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
-          <div className="shadow-primary/35 bg-primary flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-transform duration-300 hover:scale-110">
+        <div className="pointer-events-none absolute inset-0 z-10 hidden items-center justify-center bg-black/60 opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:flex">
+          <div className="shadow-primary/35 bg-primary flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-transform duration-300 group-hover:scale-110">
             <Play className="ml-0.5 h-5 w-5 fill-current" />
           </div>
         </div>
 
         {/* Top Badges */}
-        <div className="absolute top-3 left-3 z-20 flex gap-2">
+        <div className="pointer-events-none absolute top-3 left-3 z-20 flex gap-2">
           <span className="rounded-full border border-zinc-700/30 bg-black/70 px-2.5 py-0.5 text-[9px] font-extrabold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {item.mediaType === "tv" ? "TV Series" : "Movie"}
           </span>
         </div>
 
-        {/* Delete button (trash icon) */}
+        {/* Delete button (trash icon) - z-30 outside <a> so it doesn't trigger NextTopLoader */}
         <button
+          type="button"
           onClick={handleRemove}
           disabled={isDeleting}
-          className="absolute top-3 right-3 z-20 flex h-7 w-7 items-center justify-center rounded-full border border-zinc-800/50 bg-black/60 text-zinc-400 backdrop-blur-md transition-colors hover:border-red-800/50 hover:bg-red-950/80 hover:text-red-400"
+          className="absolute top-3 right-3 z-30 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-zinc-800/50 bg-black/60 text-zinc-400 backdrop-blur-md transition-colors hover:border-red-800/50 hover:bg-red-950/80 hover:text-red-400 disabled:pointer-events-none disabled:opacity-50"
           title="Remove from Continue Watching"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -131,10 +135,14 @@ export default function ContinueWatchingCard({
       </div>
 
       {/* Info / Metadata */}
-      <div className="flex flex-col gap-1 px-1">
-        <h3 className="group-hover:text-primary line-clamp-1 text-sm font-semibold text-white transition-colors">
+      <div className="relative flex flex-col gap-1 px-1">
+        <Link
+          href={href}
+          prefetch={true}
+          className="group-hover:text-primary line-clamp-1 text-sm font-semibold text-white transition-colors"
+        >
           {item.title}
-        </h3>
+        </Link>
 
         {item.mediaType === "tv" && (
           <p className="text-primary text-xs font-bold">
@@ -146,7 +154,7 @@ export default function ContinueWatchingCard({
           Watched {relativeTime}
         </p>
       </div>
-    </Link>
+    </div>
   );
 }
 
