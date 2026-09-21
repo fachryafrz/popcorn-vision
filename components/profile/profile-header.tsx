@@ -150,12 +150,10 @@ export function ProfileHeader({
                 {friendshipStatus === "friends" && targetUser && (
                   <Link
                     href={`/chat?userId=${targetUser.userId}`}
-                    className="flex-1 sm:flex-initial"
+                    className="bg-primary hover:bg-primary/90 inline-flex h-10 flex-1 cursor-pointer items-center justify-center rounded-xl px-5 text-xs font-bold text-white transition-all duration-200 hover:scale-[1.02] sm:flex-initial"
                   >
-                    <Button className="h-10 w-full cursor-pointer rounded-xl px-5 text-xs font-bold transition-all duration-200 hover:scale-[1.02]">
-                      <MessageSquare className="mr-1.5 h-4 w-4" />
-                      Chat
-                    </Button>
+                    <MessageSquare className="mr-1.5 h-4 w-4" />
+                    Chat
                   </Link>
                 )}
                 <DropdownMenu>

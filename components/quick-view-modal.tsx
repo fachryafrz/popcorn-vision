@@ -673,7 +673,7 @@ export default function QuickViewModal({
               {providers[userCountryCode]?.flatrate && (
                 <div className="pt-2">
                   <h4 className="mb-2.5 text-xs font-bold tracking-wider text-zinc-500 uppercase">
-                    Streaming on ({userCountryCode})
+                    Available on ({userCountryCode})
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {providers[userCountryCode].flatrate.map((prov) => (
