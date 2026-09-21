@@ -5,6 +5,7 @@ export interface TMDBMedia {
   name?: string;
   original_title?: string;
   original_name?: string;
+  original_language?: string;
   poster_path: string | null;
   backdrop_path: string | null;
   media_type?: "movie" | "tv";
@@ -98,6 +99,7 @@ export interface TMDBRawItem {
 }
 
 export function cleanMediaData(items: TMDBRawItem[], defaultType?: "movie" | "tv"): TMDBMedia[] {
+  const seen = new Set<string>();
   return items
     .filter((item) => item && (item.poster_path || item.backdrop_path))
     .map((item) => ({
@@ -113,7 +115,14 @@ export function cleanMediaData(items: TMDBRawItem[], defaultType?: "movie" | "tv
       genre_ids: item.genre_ids || [],
       overview: item.overview || "",
       popularity: item.popularity || 0,
-    }));
+      original_language: typeof item.original_language === "string" ? item.original_language : undefined,
+    }))
+    .filter((item) => {
+      const key = `${item.media_type || defaultType || "media"}-${item.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 }
 
 // Fetching functions are migrated to lib/tmdb-actions.ts for Next.js Server Actions execution.

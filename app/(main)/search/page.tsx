@@ -20,6 +20,7 @@ interface SearchPageProps {
     ratingMax?: string;
     language?: string;
     keywords?: string;
+    mode?: string;
   }>;
 }
 
@@ -28,8 +29,8 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
   const query = params.q || "";
   return {
     title: query
-      ? `Search: "${query}" — ${siteConfig.name}`
-      : `Search — ${siteConfig.name}`,
+      ? `Search: "${query}" | ${siteConfig.name}`
+      : `Search | ${siteConfig.name}`,
     description: `Search results for "${query}" on ${siteConfig.name}.`,
   };
 }
@@ -37,7 +38,9 @@ export async function generateMetadata({ searchParams }: SearchPageProps) {
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const params = await searchParams;
   const query = params.q || "";
-  const type = (params.type as SearchType) || "all";
+  const mode = params.mode || "";
+  const type =
+    (params.type as SearchType) || (mode === "discover" ? "movie" : "all");
   const genre = params.genre || "";
   const startDate = params.startDate || "";
   const endDate = params.endDate || "";
@@ -57,6 +60,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       <SearchClient
         initialQuery={query}
         initialType={type}
+        initialMode={mode}
         initialGenre={genre}
         initialStartDate={startDate}
         initialEndDate={endDate}

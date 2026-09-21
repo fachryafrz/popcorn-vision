@@ -65,6 +65,7 @@ interface RegionItem {
 interface SearchClientProps {
   initialQuery: string;
   initialType: SearchType;
+  initialMode?: string;
   initialGenre?: string;
   initialStartDate?: string;
   initialEndDate?: string;
@@ -108,6 +109,7 @@ const LANGUAGES = [
 export default function SearchClient({
   initialQuery,
   initialType,
+  initialMode = "",
   initialGenre = "",
   initialStartDate = "",
   initialEndDate = "",
@@ -180,7 +182,8 @@ export default function SearchClient({
 
   const [searchModeState, setSearchModeState] = useQueryState("mode", {
     defaultValue:
-      initialGenre ||
+      initialMode ||
+      (initialGenre ||
       initialStartDate ||
       initialEndDate ||
       initialProviderId ||
@@ -194,7 +197,7 @@ export default function SearchClient({
       initialLanguage ||
       initialKeywords
         ? "discover"
-        : "search",
+        : "search"),
   });
   const searchMode = (
     searchModeState === "discover" ? "discover" : "search"
@@ -203,10 +206,18 @@ export default function SearchClient({
     setSearchModeState(mode);
   };
 
-  const [query, setQuery] = useQueryState("q", { defaultValue: "" });
-  const [inputValue, setInputValue] = useState(initialQuery);
+  const [query, setQuery] = useQueryState("q", { defaultValue: initialQuery || "" });
+  const [inputValue, setInputValue] = useState(query || initialQuery || "");
+  const [prevQuery, setPrevQuery] = useState(query || initialQuery || "");
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setInputValue(query || "");
+  }
   const [activeType, setActiveType] = useQueryState("type", {
-    defaultValue: initialType,
+    defaultValue:
+      searchMode === "discover" && (initialType === "all" || initialType === "users")
+        ? "movie"
+        : initialType,
   });
   const [results, setResults] = useState<TMDBMedia[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -229,34 +240,34 @@ export default function SearchClient({
   }, [setQuickViewMediaRef]);
 
   // Advanced Filters State using nuqs useQueryState
-  const [genre, setGenre] = useQueryState("genre", { defaultValue: "" });
+  const [genre, setGenre] = useQueryState("genre", { defaultValue: initialGenre || "" });
   const [startDate, setStartDate] = useQueryState("startDate", {
-    defaultValue: "",
+    defaultValue: initialStartDate || "",
   });
-  const [endDate, setEndDate] = useQueryState("endDate", { defaultValue: "" });
+  const [endDate, setEndDate] = useQueryState("endDate", { defaultValue: initialEndDate || "" });
   const [providerId, setProviderId] = useQueryState("providerId", {
-    defaultValue: "",
+    defaultValue: initialProviderId || "",
   });
   const [minRuntime, setMinRuntime] = useQueryState("minRuntime", {
-    defaultValue: "",
+    defaultValue: initialMinRuntime || "",
   });
   const [maxRuntime, setMaxRuntime] = useQueryState("maxRuntime", {
-    defaultValue: "",
+    defaultValue: initialMaxRuntime || "",
   });
-  const [actor, setActor] = useQueryState("actor", { defaultValue: "" });
-  const [crew, setCrew] = useQueryState("crew", { defaultValue: "" });
-  const [company, setCompany] = useQueryState("company", { defaultValue: "" });
+  const [actor, setActor] = useQueryState("actor", { defaultValue: initialActor || "" });
+  const [crew, setCrew] = useQueryState("crew", { defaultValue: initialCrew || "" });
+  const [company, setCompany] = useQueryState("company", { defaultValue: initialCompany || "" });
   const [ratingMin, setRatingMin] = useQueryState("ratingMin", {
-    defaultValue: "",
+    defaultValue: initialRatingMin || "",
   });
   const [ratingMax, setRatingMax] = useQueryState("ratingMax", {
-    defaultValue: "",
+    defaultValue: initialRatingMax || "",
   });
   const [language, setLanguage] = useQueryState("language", {
-    defaultValue: "",
+    defaultValue: initialLanguage || "",
   });
   const [keywords, setKeywords] = useQueryState("keywords", {
-    defaultValue: "",
+    defaultValue: initialKeywords || "",
   });
 
   // Infinite Scroll State
@@ -273,10 +284,33 @@ export default function SearchClient({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const [actorInput, setActorInput] = useState(initialActor);
-  const [crewInput, setCrewInput] = useState(initialCrew);
-  const [companyInput, setCompanyInput] = useState(initialCompany);
-  const [keywordsInput, setKeywordsInput] = useState(initialKeywords);
+  const [actorInput, setActorInput] = useState(actor || initialActor || "");
+  const [prevActor, setPrevActor] = useState(actor || initialActor || "");
+  if (actor !== prevActor) {
+    setPrevActor(actor);
+    setActorInput(actor || "");
+  }
+
+  const [crewInput, setCrewInput] = useState(crew || initialCrew || "");
+  const [prevCrew, setPrevCrew] = useState(crew || initialCrew || "");
+  if (crew !== prevCrew) {
+    setPrevCrew(crew);
+    setCrewInput(crew || "");
+  }
+
+  const [companyInput, setCompanyInput] = useState(company || initialCompany || "");
+  const [prevCompany, setPrevCompany] = useState(company || initialCompany || "");
+  if (company !== prevCompany) {
+    setPrevCompany(company);
+    setCompanyInput(company || "");
+  }
+
+  const [keywordsInput, setKeywordsInput] = useState(keywords || initialKeywords || "");
+  const [prevKeywords, setPrevKeywords] = useState(keywords || initialKeywords || "");
+  if (keywords !== prevKeywords) {
+    setPrevKeywords(keywords);
+    setKeywordsInput(keywords || "");
+  }
 
   const handleActorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -505,7 +539,7 @@ export default function SearchClient({
       setInputValue("");
       setQuery("");
 
-      if (activeType === "users") {
+      if (activeType === "users" || activeType === "all") {
         setActiveType("movie");
       }
     }
@@ -532,7 +566,7 @@ export default function SearchClient({
 
   const visibleTypeFilters =
     searchMode === "discover"
-      ? TYPE_FILTERS.filter((f) => f.value !== "users")
+      ? TYPE_FILTERS.filter((f) => f.value !== "users" && f.value !== "all")
       : TYPE_FILTERS;
 
   // Client-side filtering when text query is active (best effort)
@@ -668,20 +702,31 @@ export default function SearchClient({
         );
       }
 
-      if (nextResults.length === 0) {
+      if (nextResults.length < 20) {
         setHasMore(false);
-      } else {
+      }
+
+      if (nextResults.length > 0) {
+        let hasNewItems = false;
         setResults((prev) => {
-          const existingIds = new Set(prev.map((item) => item.id));
-          const filteredNext = nextResults.filter(
-            (item) => !existingIds.has(item.id),
+          const existingKeys = new Set(
+            prev.map((item) => `${item.media_type || ""}-${item.id}`)
           );
-          if (filteredNext.length === 0) {
-            setHasMore(false);
+          const filteredNext = nextResults.filter(
+            (item) => !existingKeys.has(`${item.media_type || ""}-${item.id}`)
+          );
+          if (filteredNext.length > 0) {
+            hasNewItems = true;
+            return [...prev, ...filteredNext];
           }
-          return [...prev, ...filteredNext];
+          return prev;
         });
-        setPage(nextPage);
+
+        if (hasNewItems) {
+          setPage(nextPage);
+        } else {
+          setHasMore(false);
+        }
       }
     } catch (e) {
       console.error("Error loading more search items:", e);

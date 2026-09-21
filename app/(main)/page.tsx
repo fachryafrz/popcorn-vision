@@ -8,12 +8,13 @@ import {
   getUpcomingMedia,
 } from "@/lib/tmdb-actions";
 
+import { siteConfig } from "@/config/site";
+
 export const revalidate = 3600;
 
 export const metadata = {
-  title: "Popcorn Vision - Watch Movies & TV Shows Free",
-  description:
-    "Discover, track, and watch movies and TV shows for free on PopcornVision.",
+  title: `${siteConfig.name} | Movie & TV Show Discovery`,
+  description: siteConfig.description,
 };
 
 export default async function Page() {

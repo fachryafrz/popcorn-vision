@@ -175,7 +175,7 @@ export default function Card({
         <div className="pointer-events-none absolute inset-0 z-10 hidden bg-linear-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block" />
 
         {/* Content badges */}
-        <div className="pointer-events-none absolute top-3 left-3 z-20 flex flex-wrap gap-1.5">
+        <div className="pointer-events-none absolute top-3 left-3 z-10 flex flex-wrap gap-1.5">
           <span className="rounded-full border border-zinc-700/30 bg-black/60 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-zinc-300 uppercase backdrop-blur-md">
             {mediaLabel}
           </span>

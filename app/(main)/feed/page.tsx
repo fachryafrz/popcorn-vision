@@ -3,7 +3,7 @@ import { siteConfig } from "@/config/site";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: `Activity Feed - ${siteConfig.name}`,
+  title: `Activity Feed | ${siteConfig.name}`,
   description: "See what movies and shows your friends are watching, rating, and reviewing.",
 };
 
