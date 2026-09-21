@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     ? ` (${new Date(movie.release_date).getFullYear()})`
     : "";
   return {
-    title: `${movie.title}${releaseYear} - Watch Free on ${siteConfig.name}`,
+    title: `${movie.title}${releaseYear} | ${siteConfig.name}`,
     description:
       movie.overview ||
-      `Watch ${movie.title} online in high definition on ${siteConfig.name}.`,
+      `Explore ${movie.title} on ${siteConfig.name}.`,
     openGraph: {
       title: movie.title,
       description: movie.overview,
