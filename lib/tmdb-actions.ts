@@ -1,7 +1,7 @@
 "use server";
 
 import { axios } from "./axios";
-import { TMDBMedia, cleanMediaData, PROVIDERS, GENRE_MAP, TMDBReviewsResponse } from "./tmdb";
+import { TMDBMedia, TMDBRawItem, cleanMediaData, PROVIDERS, GENRE_MAP, TMDBReviewsResponse } from "./tmdb";
 
 // Hero Items: Trending + Popular + New Releases (returns 10-15 best items)
 export async function getHeroItems(): Promise<TMDBMedia[]> {
@@ -714,11 +714,20 @@ export async function discoverMedia(
 
     if (filters.minRuntime) {
       movieParams["with_runtime.gte"] = filters.minRuntime;
+      tvParams["with_runtime.gte"] = filters.minRuntime;
     }
 
     if (filters.maxRuntime) {
       movieParams["with_runtime.lte"] = filters.maxRuntime;
+      tvParams["with_runtime.lte"] = filters.maxRuntime;
     }
+
+    let actorNotFound = false;
+    let crewNotFound = false;
+    let companyNotFound = false;
+    let keywordsNotFound = false;
+    let personIdForActor: number | null = null;
+    let personIdForCrew: number | null = null;
 
     const lookups: Promise<void>[] = [];
     if (filters.actor) {
@@ -726,7 +735,10 @@ export async function discoverMedia(
         searchPersonByName(filters.actor).then((id) => {
           if (id) {
             movieParams.with_cast = id;
-            tvParams.with_cast = id;
+            tvParams.with_people = id;
+            personIdForActor = id;
+          } else {
+            actorNotFound = true;
           }
         })
       );
@@ -736,7 +748,10 @@ export async function discoverMedia(
         searchPersonByName(filters.crew).then((id) => {
           if (id) {
             movieParams.with_crew = id;
-            tvParams.with_crew = id;
+            tvParams.with_people = id;
+            personIdForCrew = id;
+          } else {
+            crewNotFound = true;
           }
         })
       );
@@ -747,6 +762,8 @@ export async function discoverMedia(
           if (id) {
             movieParams.with_companies = id;
             tvParams.with_companies = id;
+          } else {
+            companyNotFound = true;
           }
         })
       );
@@ -757,6 +774,8 @@ export async function discoverMedia(
           if (id) {
             movieParams.with_keywords = id;
             tvParams.with_keywords = id;
+          } else {
+            keywordsNotFound = true;
           }
         })
       );
@@ -766,9 +785,15 @@ export async function discoverMedia(
       await Promise.all(lookups);
     }
 
+    if (actorNotFound || crewNotFound || companyNotFound || keywordsNotFound) {
+      return [];
+    }
+
     if (filters.ratingMin) {
       movieParams["vote_average.gte"] = filters.ratingMin;
       tvParams["vote_average.gte"] = filters.ratingMin;
+      movieParams["vote_count.gte"] = 5;
+      tvParams["vote_count.gte"] = 5;
     }
 
     if (filters.ratingMax) {
@@ -781,24 +806,79 @@ export async function discoverMedia(
       tvParams.with_original_language = filters.language;
     }
 
+    const fetchTVMedia = async (): Promise<TMDBMedia[]> => {
+      const personId = personIdForActor || personIdForCrew;
+      if (personId) {
+        try {
+          const res = await axios.get(`/person/${personId}/tv_credits`);
+          const rawItems = (
+            filters.actor ? res.data?.cast || [] : res.data?.crew || []
+          ) as TMDBRawItem[];
+
+          let filtered = cleanMediaData(rawItems, "tv");
+
+          if (filters.genre) {
+            const genreId = parseInt(filters.genre);
+            filtered = filtered.filter((item) => item.genre_ids?.includes(genreId));
+          }
+          if (filters.startDate) {
+            filtered = filtered.filter(
+              (item) => item.first_air_date && item.first_air_date >= (filters.startDate as string)
+            );
+          }
+          if (filters.endDate) {
+            filtered = filtered.filter(
+              (item) => item.first_air_date && item.first_air_date <= (filters.endDate as string)
+            );
+          }
+          if (filters.ratingMin) {
+            const min = parseFloat(filters.ratingMin);
+            filtered = filtered.filter((item) => (item.vote_average || 0) >= min);
+          }
+          if (filters.ratingMax) {
+            const max = parseFloat(filters.ratingMax);
+            filtered = filtered.filter((item) => (item.vote_average || 0) <= max);
+          }
+          if (filters.language) {
+            filtered = filtered.filter(
+              (item) => item.original_language === filters.language
+            );
+          }
+
+          filtered.sort((a, b) => b.popularity - a.popularity);
+
+          const startIndex = (page - 1) * 20;
+          return filtered.slice(startIndex, startIndex + 20);
+        } catch (error) {
+          console.error(`Error fetching TV credits for person ${personId}:`, error);
+          return [];
+        }
+      }
+
+      const res = await axios.get("/discover/tv", { params: tvParams });
+      return cleanMediaData(res.data.results || [], "tv");
+    };
+
     if (type === "movie") {
       const res = await axios.get("/discover/movie", { params: movieParams });
       return cleanMediaData(res.data.results || [], "movie");
     }
 
     if (type === "tv") {
-      const res = await axios.get("/discover/tv", { params: tvParams });
-      return cleanMediaData(res.data.results || [], "tv");
+      return await fetchTVMedia();
     }
 
-    // all: query both and merge
-    const [movieRes, tvRes] = await Promise.all([
+    // all: query both safely with allSettled and merge
+    const [movieRes, tvItems] = await Promise.allSettled([
       axios.get("/discover/movie", { params: movieParams }),
-      axios.get("/discover/tv", { params: tvParams }),
+      fetchTVMedia(),
     ]);
 
-    const movies = cleanMediaData(movieRes.data.results || [], "movie");
-    const tv = cleanMediaData(tvRes.data.results || [], "tv");
+    const movies =
+      movieRes.status === "fulfilled"
+        ? cleanMediaData(movieRes.value.data.results || [], "movie")
+        : [];
+    const tv = tvItems.status === "fulfilled" ? tvItems.value : [];
 
     return [...movies, ...tv].sort((a, b) => b.popularity - a.popularity);
   } catch (error) {

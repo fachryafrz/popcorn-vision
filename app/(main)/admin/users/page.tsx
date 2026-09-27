@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
-  title: `User Management — ${siteConfig.name}`,
+  title: `User Management | ${siteConfig.name}`,
   description: "User management console and access control.",
 };
 
