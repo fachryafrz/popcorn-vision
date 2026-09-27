@@ -29,8 +29,9 @@ import type { NextConfig } from "next";
 const withSerwist = withSerwistInit({
   swSrc: "app/sw.ts", // or "src/app/sw.ts"
   swDest: "public/sw.js",
-  disable: process.env.NODE_ENV === "development" && process.env.ENABLE_PWA !== "true",
-  reloadOnOnline: true,
+  disable:
+    process.env.NODE_ENV === "development" && process.env.ENABLE_PWA !== "true",
+  reloadOnOnline: false,
 });
 
 const nextConfig: NextConfig = {
@@ -67,7 +68,7 @@ const serwist = new Serwist({
   precacheEntries: self.__SW_MANIFEST,
   skipWaiting: true,
   clientsClaim: true,
-  navigationPreload: true,
+  navigationPreload: false, // Hindari true untuk mencegah double request/flicker render App Router
   runtimeCaching: defaultCache,
 });
 
@@ -96,7 +97,7 @@ self.addEventListener("push", (event: ExtendableEvent) => {
       icon: "/images/v1/logo/web-app-manifest-192x192.png",
       badge: "/images/v1/logo/web-app-manifest-192x192.png",
       data: { url: data.url },
-    })
+    }),
   );
 });
 
@@ -104,19 +105,22 @@ self.addEventListener("push", (event: ExtendableEvent) => {
 self.addEventListener("notificationclick", (event: ExtendableEvent) => {
   const notificationEvent = event as NotificationEvent;
   notificationEvent.notification.close();
-  const targetUrl = (notificationEvent.notification.data as { url?: string })?.url || "/";
+  const targetUrl =
+    (notificationEvent.notification.data as { url?: string })?.url || "/";
 
   notificationEvent.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      for (const client of clients) {
-        const win = client as WindowClient;
-        if (win.url && "focus" in win) {
-          if ("navigate" in win) win.navigate(targetUrl);
-          return win.focus();
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          const win = client as WindowClient;
+          if (win.url && "focus" in win) {
+            if ("navigate" in win) win.navigate(targetUrl);
+            return win.focus();
+          }
         }
-      }
-      if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
-    })
+        if (self.clients.openWindow) return self.clients.openWindow(targetUrl);
+      }),
   );
 });
 ```
@@ -200,13 +204,36 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/images/v1/logo/Logo Nutria.svg", type: "image/svg+xml" },
-      { url: "/images/v1/logo/web-app-manifest-192x192.png", sizes: "192x192", type: "image/png" },
-      { url: "/images/v1/logo/web-app-manifest-512x512.png", sizes: "512x512", type: "image/png" },
+      {
+        url: "/images/v1/logo/web-app-manifest-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/images/v1/logo/web-app-manifest-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
     shortcut: "/favicon.ico",
     apple: [
-      { url: "/images/v1/logo/apple-icon.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/images/v1/logo/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
   },
 };
 ```
+
+---
+
+## 6. Best Practices: Anti-Flicker & Zero Restart Launch
+
+Untuk mencegah masalah kedipan putih (*white flash*) atau restart/reload mendadak saat membuka PWA di Android/iOS:
+
+1. **Matikan `reloadOnOnline`**: Set `reloadOnOnline: false` di `withSerwistInit` (`next.config.ts`). Jika aktif, deteksi event online saat awal buka akan memaksa *hard reload* pada WebView.
+2. **Matikan `navigationPreload`**: Hindari `navigationPreload: true` di `sw.ts` agar tidak memicu konflik permintaan ganda (*double request*) saat memuat App Shell dari cache.
+3. **Sematkan Tema Statis di SSR (`layout.tsx`)**: Tambahkan `className="dark"` secara statis pada tag `<html>` jika aplikasi bertema gelap default, untuk menghindari jeda render CSS sebelum *client hydration*.
+
