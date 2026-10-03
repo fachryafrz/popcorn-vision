@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
+  GitFork,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -104,6 +105,14 @@ export function NavbarMobileDrawer({
           >
             <Activity className="h-4 w-4" />
             Feed
+          </Link>
+          <Link
+            href="/timeline"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2 hover:text-white"
+          >
+            <GitFork className="h-4 w-4" />
+            Timeline
           </Link>
           <Link
             href="/search"

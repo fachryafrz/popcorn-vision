@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   LogOut,
   ChevronRight,
+  GitFork,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useQuery } from "convex-helpers/react/cache";
@@ -314,6 +315,24 @@ export function BottomNav() {
                     <p className="text-sm font-bold text-white">Feed</p>
                     <p className="text-xs text-zinc-400">
                       Friend & community activity
+                    </p>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-zinc-500" />
+                </Link>
+
+                {/* Timeline */}
+                <Link
+                  href="/timeline"
+                  onClick={() => setIsProfileDrawerOpen(false)}
+                  className="flex w-full cursor-pointer items-center gap-3.5 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-left text-sm font-semibold text-zinc-200 transition-all hover:bg-zinc-900 hover:text-white active:scale-98"
+                >
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-zinc-800/80 text-zinc-300">
+                    <GitFork className="h-4.5 w-4.5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-white">Franchise Timeline</p>
+                    <p className="text-xs text-zinc-400">
+                      Interactive MCU & Star Wars universe maps
                     </p>
                   </div>
                   <ChevronRight className="h-4 w-4 text-zinc-500" />

@@ -46,6 +46,7 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
   const links: NavLinkItem[] = [
     { label: "Home", href: "/", isActive: pathname === "/" },
     { label: "Feed", href: "/feed", isActive: pathname.startsWith("/feed") },
+    { label: "Timeline", href: "/timeline", isActive: pathname.startsWith("/timeline") },
     { label: "Lists", href: "/lists", isActive: pathname.startsWith("/lists") },
     {
       label: "Chats",

@@ -345,4 +345,75 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_endpoint", ["subscription.endpoint"]),
+
+  timelines: defineTable({
+    slug: v.string(),
+    name: v.string(),
+    shortName: v.string(),
+    description: v.string(),
+    accentColor: v.string(),
+    isOfficial: v.boolean(),
+    creatorId: v.optional(v.string()),
+    creatorName: v.optional(v.string()),
+    creatorUsername: v.optional(v.string()),
+    privacy: v.string(), // "public" | "private"
+    defaultFilterId: v.string(),
+    filters: v.array(
+      v.object({
+        id: v.string(),
+        label: v.string(),
+        description: v.optional(v.string()),
+      }),
+    ),
+    nodes: v.array(
+      v.object({
+        id: v.string(),
+        type: v.optional(v.string()),
+        position: v.object({ x: v.number(), y: v.number() }),
+        data: v.object({
+          id: v.string(),
+          tmdbId: v.number(),
+          mediaType: v.string(),
+          title: v.string(),
+          releaseYear: v.string(),
+          chronologicalYear: v.optional(v.string()),
+          posterPath: v.string(),
+          rating: v.optional(v.number()),
+          isAnchor: v.optional(v.boolean()),
+          branchName: v.optional(v.string()),
+          universeId: v.optional(v.string()),
+          isDoomsdayCanon: v.optional(v.boolean()),
+          phase: v.optional(v.string()),
+          canonType: v.string(),
+          description: v.optional(v.string()),
+        }),
+      }),
+    ),
+    edges: v.array(
+      v.object({
+        id: v.string(),
+        source: v.string(),
+        target: v.string(),
+        sourceHandle: v.optional(v.string()),
+        targetHandle: v.optional(v.string()),
+        label: v.optional(v.string()),
+        description: v.optional(v.string()),
+        animated: v.optional(v.boolean()),
+        strokeColor: v.optional(v.string()),
+        isDashed: v.optional(v.boolean()),
+        branchVariant: v.optional(v.string()),
+      }),
+    ),
+    category: v.optional(v.string()), // "film_tv" | "scifi" | "horror" | "anime"
+    upvotesCount: v.optional(v.number()),
+    upvotedUserIds: v.optional(v.array(v.string())),
+    previewPosters: v.optional(v.array(v.string())),
+    createdAt: v.number(),
+    updatedAt: v.number(),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_creator", ["creatorId"])
+    .index("by_privacy", ["privacy"])
+    .index("by_official", ["isOfficial"])
+    .index("by_category", ["category"]),
 });
