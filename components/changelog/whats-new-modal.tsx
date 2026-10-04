@@ -56,11 +56,18 @@ export default function WhatsNewModal() {
           </h4>
           <ul className="divide-y divide-zinc-900 text-sm">
             {latest.changes.slice(0, 3).map((change, idx) => (
-              <li key={idx} className="flex items-start gap-2.5 py-2 first:pt-0 last:pb-0">
-                <ChangelogBadge type={change.type} className="mt-0.5 shrink-0" />
-                <span className="text-xs text-zinc-300 leading-relaxed">
-                  {change.description}
-                </span>
+              <li key={idx} className="flex flex-col gap-1 py-2 first:pt-0 last:pb-0">
+                <div className="flex items-center gap-2">
+                  <ChangelogBadge type={change.type} className="shrink-0" />
+                  <span className="text-xs font-semibold text-zinc-200">
+                    {change.title}
+                  </span>
+                </div>
+                {change.description && (
+                  <span className="text-xs text-zinc-400 leading-relaxed pl-1">
+                    {change.description}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
