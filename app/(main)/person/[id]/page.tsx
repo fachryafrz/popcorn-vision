@@ -1,45 +1,11 @@
-import { Metadata } from "next";
-import { getPersonDetails, getPersonCredits } from "@/lib/tmdb-actions";
-import { siteConfig } from "@/config/site";
+import { use } from "react";
 import PersonDetailClient from "@/components/person-detail-client";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const person = await getPersonDetails(id);
-  if (!person) {
-    return { title: `Person Not Found | ${siteConfig.name}` };
-  }
-  return {
-    title: `${person.name} - Filmography & Biography | ${siteConfig.name}`,
-    description:
-      person.biography ||
-      `Explore movies and TV shows of ${person.name} on ${siteConfig.name}.`,
-    openGraph: {
-      title: person.name,
-      description: person.biography,
-      images: person.profile_path
-        ? [`https://image.tmdb.org/t/p/h632${person.profile_path}`]
-        : [],
-    },
-  };
+export default function PersonDetailPage({ params }: PageProps) {
+  const { id } = use(params);
+  return <PersonDetailClient id={id} />;
 }
-
-export default async function PersonDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const [initialPerson, initialCredits] = await Promise.all([
-    getPersonDetails(id),
-    getPersonCredits(id),
-  ]);
-  return (
-    <PersonDetailClient
-      id={id}
-      initialPerson={initialPerson}
-      initialCredits={initialCredits}
-    />
-  );
-}
-

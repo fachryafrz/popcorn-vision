@@ -20,10 +20,63 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.0",
+    title: "Global Shared Cloud Cache & Lightning-Fast Discovery",
+    releaseDate: "2026-10-04",
+    isLatest: true,
+    summary:
+      "Experience near-instant cross-device media discovery. Movies, TV shows, and cast filmographies fetched anywhere in the community now load in milliseconds for everyone worldwide.",
+    changes: [
+      {
+        type: "perf",
+        description:
+          "Global Cloud Cache: First-time visits and private browsing sessions now load movie details and cast pages in milliseconds directly from our global database.",
+      },
+      {
+        type: "perf",
+        description:
+          "Fresh & Adaptive Content: Automated smart background refresh ensures trending charts, upcoming releases, and ratings always stay current.",
+      },
+      {
+        type: "ui",
+        description:
+          "Zero-Latency Browsing: Drastically reduced initial loading times across all media categories, seasons, and actor filmographies.",
+      },
+    ],
+  },
+  {
+    version: "2.11.1",
+    title: "Instant Media Loading & Seamless Navigation",
+    releaseDate: "2026-10-04",
+    summary:
+      "Enjoy faster, smoother browsing with instant media previews and zero loading delays when exploring movies, TV shows, and cast profiles you've already visited.",
+    changes: [
+      {
+        type: "perf",
+        description:
+          "Instant Page Revisits: Previously viewed movies, series, and people now open immediately without waiting for loading animations.",
+      },
+      {
+        type: "perf",
+        description:
+          "High-Speed Artwork Delivery: High-resolution posters and backdrops now stream directly from global delivery networks for crisper visuals.",
+      },
+      {
+        type: "ui",
+        description:
+          "Eliminated page loading flickers when navigating back and forth between the discovery feed and media details.",
+      },
+      {
+        type: "refactor",
+        description:
+          "Streamlined real-time data synchronization for a noticeably snappier and battery-friendly browsing experience.",
+      },
+    ],
+  },
+  {
     version: "2.10.0",
     title: "In-App Release Notes & What's New System",
     releaseDate: "2026-10-04",
-    isLatest: true,
     summary:
       "A centralized release tracking hub and interactive What's New dialog documenting the evolution of Popcorn Vision since 2023.",
     changes: [

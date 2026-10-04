@@ -45,6 +45,8 @@ import { InsightsTab } from "@/components/profile/insights-tab";
 import ActivityCard, { type Activity as ActivityItem } from "@/components/activity-card";
 import Link from "next/link";
 
+import { getMediaDetails } from "@/lib/tmdb-actions";
+
 const tmdbCache = new Map<string, { title: string; posterPath: string }>();
 const pendingRequests = new Map<string, Promise<{ title: string; posterPath: string }>>();
 
@@ -59,10 +61,9 @@ async function fetchTMDBDetails(mediaType: string, mediaId: string, fallbackTitl
 
   const promise = (async () => {
     try {
-      const res = await fetch(`/api/tmdb/media/${mediaType}/${mediaId}`);
-      if (res.ok) {
-        const data = await res.json();
-        const details = data.details || data;
+      const data = await getMediaDetails((mediaType === "tv" ? "tv" : "movie"), mediaId);
+      if (data && data.details) {
+        const details = data.details;
         const result = {
           title: details.title || details.name || fallbackTitle,
           posterPath: details.poster_path || fallbackPoster || "",
