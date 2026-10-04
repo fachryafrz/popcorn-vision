@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.0] - 2026-10-04
+
+### Added
+- Interactive Franchise Chronological Timelines feature with pan & zoom universe maps (`/timelines`).
+- Comprehensive Star Wars galactic chronology (`/timelines/star-wars` and direct shortcut `/star-wars`) with BBY/ABY in-universe timeline markers.
+- Canon vs Legends toggle switch to seamlessly expand coverage with classic Expanded Universe media.
+- Integrated watch progress tracker with live percentage bars, checklist drawer, and Convex diary sync.
+- Timelines navigation entry points in desktop navbar and mobile navigation drawer.
+
+---
+
 ## [2.12.0] - 2026-10-04
 
 ### Added

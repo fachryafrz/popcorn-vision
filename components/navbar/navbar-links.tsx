@@ -48,6 +48,11 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
     { label: "Feed", href: "/feed", isActive: pathname.startsWith("/feed") },
     { label: "Lists", href: "/lists", isActive: pathname.startsWith("/lists") },
     {
+      label: "Timelines",
+      href: "/timelines",
+      isActive: pathname.startsWith("/timelines") || pathname.startsWith("/star-wars"),
+    },
+    {
       label: "Chats",
       href: "/chat",
       isActive: pathname.startsWith("/chat"),

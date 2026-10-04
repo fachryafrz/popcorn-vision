@@ -20,10 +20,44 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.0",
+    title: "Franchise Chronological Timelines & Star Wars Galaxy Map",
+    releaseDate: "2026-10-04",
+    isLatest: true,
+    summary:
+      "Explore epic film and TV sagas in canonical in-universe chronological order. Experience the all-new Star Wars timeline with galactic eras, Canon vs Legends toggle, and live watch progress tracking.",
+    changes: [
+      {
+        type: "feat",
+        description:
+          "Star Wars Galactic Timeline: Chronological universe map spanning the High Republic, Fall of the Jedi, Reign of the Empire, Age of Rebellion, The New Republic, and the Sequel Era.",
+      },
+      {
+        type: "feat",
+        description:
+          "Canon & Legends Switcher: Seamlessly toggle between 100% official canon and Expanded Universe classics (Clone Wars 2003, Ewok adventures, Droids, Holiday Special).",
+      },
+      {
+        type: "feat",
+        description:
+          "Live Watch Progress & Checklist: Mark titles watched directly on the canvas with real-time percentage counters and complete diary sync.",
+      },
+      {
+        type: "ui",
+        description:
+          "Pan & Zoom Universe Canvas: Smooth interactive drag, zoom scaling, quick preview modals, and desktop/mobile navigation.",
+      },
+      {
+        type: "feat",
+        description:
+          "Timelines Hub: Dedicated hub (/timelines) and direct shortcuts (/star-wars) to explore franchise universe orders.",
+      },
+    ],
+  },
+  {
     version: "2.12.0",
     title: "Global Shared Cloud Cache & Lightning-Fast Discovery",
     releaseDate: "2026-10-04",
-    isLatest: true,
     summary:
       "Experience near-instant cross-device media discovery. Movies, TV shows, and cast filmographies fetched anywhere in the community now load in milliseconds for everyone worldwide.",
     changes: [

@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   History,
+  Layers,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -135,6 +136,14 @@ export function NavbarMobileDrawer({
               </Link>
             </>
           )}
+          <Link
+            href="/timelines"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2 hover:text-white"
+          >
+            <Layers className="h-4 w-4 text-amber-400" />
+            Timelines
+          </Link>
           <Link
             href="/changelog"
             onClick={() => setMobileMenuOpen(false)}
