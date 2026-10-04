@@ -8,6 +8,7 @@ import {
   Settings,
   LogOut,
   Command,
+  History,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -114,6 +115,19 @@ export function NavbarUserMenu({
           >
             <Settings className="mr-2 h-4 w-4 text-zinc-400" />
             Settings
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          className="cursor-pointer rounded-xl p-0 text-zinc-300 hover:bg-zinc-800 hover:text-white focus:bg-zinc-800 focus:text-white"
+        >
+          <Link
+            href="/changelog"
+            onClick={() => setDropdownMenuOpen(false)}
+            className="flex w-full items-center px-3 py-2"
+          >
+            <History className="mr-2 h-4 w-4 text-zinc-400" />
+            Release Notes
           </Link>
         </DropdownMenuItem>
 

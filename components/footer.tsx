@@ -21,12 +21,25 @@ export default function Footer() {
         Explore movies and TV shows, track your favorite titles, and watch
         trailers.
       </p>
-      <div className="mt-2 flex items-center gap-3 text-xs font-semibold text-zinc-600">
-        <Link href="/privacy" className="hover:text-zinc-400 transition-colors">
+      <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-zinc-600">
+        <Link
+          href="/changelog"
+          className="hover:text-zinc-400 transition-colors"
+        >
+          Changelog
+        </Link>
+        <span className="h-1 w-1 rounded-full bg-zinc-800" />
+        <Link
+          href="/privacy"
+          className="hover:text-zinc-400 transition-colors"
+        >
           Privacy Policy
         </Link>
         <span className="h-1 w-1 rounded-full bg-zinc-800" />
-        <Link href="/terms" className="hover:text-zinc-400 transition-colors">
+        <Link
+          href="/terms"
+          className="hover:text-zinc-400 transition-colors"
+        >
           Terms & Conditions
         </Link>
       </div>
@@ -34,9 +47,13 @@ export default function Footer() {
         &copy; {moment(createdDate).format("MMM YYYY")} -{" "}
         {moment().format("MMM YYYY")} {siteConfig.name}. All rights reserved.
       </p>
-      <span className="text-[11px] font-medium text-zinc-700">
+      <Link
+        href="/changelog"
+        className="text-[11px] font-medium text-zinc-600 hover:text-zinc-400 transition-colors"
+        aria-label={`View release notes for version ${siteConfig.version}`}
+      >
         v{siteConfig.version}
-      </span>
+      </Link>
     </footer>
   );
 }

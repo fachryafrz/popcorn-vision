@@ -13,6 +13,7 @@ export const QUERY_PARAMS = {
   QUICK_VIEW: "quick-view",
   PERSON: "person",
   AUTH: "auth",
+  CHANGELOG: "changelog",
 } as const;
 
 export const STORAGE_KEYS = {

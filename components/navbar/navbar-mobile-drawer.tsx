@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Settings,
   LogOut,
+  History,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -134,6 +135,14 @@ export function NavbarMobileDrawer({
               </Link>
             </>
           )}
+          <Link
+            href="/changelog"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2 hover:text-white"
+          >
+            <History className="h-4 w-4 text-zinc-400" />
+            Release Notes
+          </Link>
         </nav>
 
         <hr className="border-zinc-800" />
