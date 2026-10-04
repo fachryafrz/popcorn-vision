@@ -67,21 +67,30 @@ export function ChangelogMilestoneCard({
       {/* Changes list */}
       <div className="mt-6 space-y-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-          Detailed Changes
+          Detailed Changes ({milestone.changes.length})
         </h3>
-        <ul className="divide-y divide-zinc-900">
+        <div className="space-y-2.5">
           {milestone.changes.map((change, index) => (
-            <li
+            <div
               key={index}
-              className="flex items-start gap-3 py-2.5 first:pt-1 last:pb-0"
+              className="flex flex-col gap-2 p-3.5 rounded-2xl bg-zinc-900/50 border border-zinc-800/40 transition-colors hover:bg-zinc-900/80"
             >
-              <ChangelogBadge type={change.type} className="mt-0.5 shrink-0" />
-              <span className="text-sm leading-relaxed text-zinc-300">
-                {change.description}
-              </span>
-            </li>
+              <div className="shrink-0">
+                <ChangelogBadge type={change.type} />
+              </div>
+              <div className="min-w-0 flex-1 space-y-1">
+                <p className="text-sm font-semibold text-zinc-200 leading-snug">
+                  {change.title}
+                </p>
+                {change.description && (
+                  <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+                    {change.description}
+                  </p>
+                )}
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </article>
   );
