@@ -54,6 +54,7 @@ const timelineNodeValidator = v.object({
     posterPath: v.string(),
     rating: v.optional(v.number()),
     isAnchor: v.optional(v.boolean()),
+    isUnreleased: v.optional(v.boolean()),
     branchName: v.optional(v.string()),
     universeId: v.optional(v.string()),
     isDoomsdayCanon: v.optional(v.boolean()),

@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { useQuery } from "convex-helpers/react/cache";
-import { useMutation } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { TimelineCategory, TimelineSummaryItem } from "@/types/timeline";
 import { TimelinesHubHeader, TimelineSort } from "./timelines-hub-header";
@@ -19,7 +18,7 @@ export function TimelinesHubClient() {
   // Query timelines from Convex
   const timelines = useQuery(api.timelines.listTimelines, {
     category: selectedCategory === "all" ? undefined : selectedCategory,
-    searchQuery: searchQuery.trim() || undefined,
+    searchQuery: searchQuery.trim() ? searchQuery.trim() : undefined,
   });
 
   // Auto seed official timelines on mount

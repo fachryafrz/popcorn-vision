@@ -4,14 +4,13 @@ import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { TimelineUniverse, TimelineMediaItem, TimelineNodeData, TimelineEdgeData } from "@/types/timeline";
 import { TimelineHeader } from "./timeline-header";
 import { TimelineFooter } from "./timeline-footer";
-import { TimelineCustomCanvas, TimelineCanvasRef } from "./timeline-custom-canvas";
+import { TimelinePanZoomCanvas, TimelineCanvasRef } from "./timeline-pan-zoom-canvas";
 import { AddMediaNodeModal } from "./add-media-node-modal";
 import QuickViewModal from "@/components/quick-view-modal";
 import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
 import { TMDBMedia } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
-import { useQuery } from "convex-helpers/react/cache";
-import { useMutation } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
@@ -30,7 +29,13 @@ export function TimelineClient({ universe: initialUniverse }: TimelineClientProp
     slugOrId: initialUniverse.id,
   });
 
+  // Use hardcoded local config directly for official universes (no database re-seed needed)
+  const isOfficial = ["mcu", "star-wars", "monsterverse", "dcu", "dune"].includes(initialUniverse.id);
+
   const activeUniverse: TimelineUniverse = useMemo(() => {
+    if (isOfficial) {
+      return initialUniverse;
+    }
     if (dbUniverse) {
       return {
         ...dbUniverse,
@@ -39,7 +44,7 @@ export function TimelineClient({ universe: initialUniverse }: TimelineClientProp
       };
     }
     return initialUniverse;
-  }, [dbUniverse, initialUniverse]);
+  }, [isOfficial, initialUniverse, dbUniverse]);
 
   // Mutations
   const seedMutation = useMutation(api.timelines.seedOfficialTimelines);
@@ -339,14 +344,16 @@ export function TimelineClient({ universe: initialUniverse }: TimelineClientProp
         onDeleteTimeline={() => setDeleteConfirmOpen(true)}
       />
 
-      {/* High-Performance 60-120fps Custom Pan-Zoom Canvas */}
-      <TimelineCustomCanvas
+      {/* 1:1 Matrix Pan-Zoom & Curves Canvas (react-zoom-pan-pinch) */}
+      <TimelinePanZoomCanvas
         ref={canvasRef}
+        universeId={activeUniverse.id}
         nodes={visibleNodes}
         edges={visibleEdges}
         seenKeys={seenKeys}
         onToggleSeen={handleToggleSeen}
         onOpenQuickView={handleOpenQuickView}
+        isEditMode={isEditMode}
       />
 
       {/* Bottom Progress & Stats Footer */}

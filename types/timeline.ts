@@ -17,6 +17,7 @@ export interface TimelineMediaItem {
   phase?: string;
   canonType: TimelineCanonType;
   description?: string;
+  isUnreleased?: boolean;
 }
 
 export interface TimelineFilterOption {

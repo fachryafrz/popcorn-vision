@@ -14,6 +14,7 @@ export interface TimelineCanvasRef {
 }
 
 interface TimelineCustomCanvasProps {
+  universeId?: string;
   nodes: TimelineNodeData[];
   edges: TimelineEdgeData[];
   seenKeys: Set<string>;
@@ -23,20 +24,20 @@ interface TimelineCustomCanvasProps {
 
 export const TimelineCustomCanvas = forwardRef<TimelineCanvasRef, TimelineCustomCanvasProps>(
   function TimelineCustomCanvas(
-    { nodes, edges, seenKeys, onToggleSeen, onOpenQuickView },
+    { universeId, nodes, edges, seenKeys, onToggleSeen, onOpenQuickView },
     ref,
   ) {
     // Calculate total bounds of all nodes
     const bounds = useMemo(() => {
-      if (nodes.length === 0) return { minX: 0, minY: 0, maxX: 1000, maxY: 1000 };
+      if (nodes.length === 0) return { minX: 0, minY: 0, maxX: 1000, maxY: 620 };
       let minX = Infinity;
       let minY = Infinity;
       let maxX = -Infinity;
       let maxY = -Infinity;
 
       for (const node of nodes) {
-        const w = node.data.isAnchor ? 176 : 112;
-        const h = node.data.isAnchor ? 264 : 168;
+        const w = node.data.isAnchor ? 98 : 34;
+        const h = node.data.isAnchor ? 108 : 39;
         if (node.position.x < minX) minX = node.position.x;
         if (node.position.y < minY) minY = node.position.y;
         if (node.position.x + w > maxX) maxX = node.position.x + w;
@@ -59,8 +60,8 @@ export const TimelineCustomCanvas = forwardRef<TimelineCanvasRef, TimelineCustom
       onPointerUp,
     } = useCanvasPanZoom({
       initialX: 60,
-      initialY: 180,
-      initialScale: 0.65,
+      initialY: 100,
+      initialScale: 0.95,
       minScale: 0.1,
       maxScale: 3.5,
     });
@@ -93,14 +94,19 @@ export const TimelineCustomCanvas = forwardRef<TimelineCanvasRef, TimelineCustom
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        className="relative flex-1 w-full h-full bg-[#08080a] overflow-hidden cursor-grab active:cursor-grabbing select-none touch-none"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle at 1px 1px, #27272a 1px, transparent 0)",
-          backgroundSize: "28px 28px",
-        }}
+        className="relative flex-1 w-full h-full bg-black overflow-hidden cursor-grab active:cursor-grabbing select-none touch-none"
       >
-        {/* GPU Hardware-Accelerated World Layer */}
+        {/* Left & Right Edge Gradient Fade Masks (Queuebrick Style) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-20 w-8 bg-gradient-to-r from-zinc-950 to-transparent sm:w-16"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-20 w-8 bg-gradient-to-l from-zinc-950 to-transparent sm:w-16"
+        />
+
+        {/* GPU Hardware-Accelerated World Layer (Fixed 620px Band Height) */}
         <div
           style={{
             transform: `translate3d(${transform.x}px, ${transform.y}px, 0px) scale(${transform.scale})`,
@@ -109,11 +115,17 @@ export const TimelineCustomCanvas = forwardRef<TimelineCanvasRef, TimelineCustom
             position: "absolute",
             left: 0,
             top: 0,
+            width: "3200px",
+            height: "620px",
           }}
-          className="w-full h-full pointer-events-none"
+          className="pointer-events-none"
         >
-          {/* SVG Edge Curves */}
-          <TimelineCanvasEdges edges={edges} nodesMap={nodesMap} />
+          {/* SVG Edge Curves & Track Labels */}
+          <TimelineCanvasEdges
+            universeId={universeId}
+            edges={edges}
+            nodesMap={nodesMap}
+          />
 
           {/* Node Cards */}
           <div className="pointer-events-auto">

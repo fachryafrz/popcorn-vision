@@ -3,8 +3,7 @@
 import { memo } from "react";
 import { Handle, Position, NodeProps, Node } from "@xyflow/react";
 import { TimelineMediaItem } from "@/types/timeline";
-import { Check, Star, Info, Sparkles } from "lucide-react";
-import { TimelinePosterImage } from "./timeline-poster-image";
+import { Eye, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type TimelineNodeType = Node<
@@ -16,164 +15,176 @@ export type TimelineNodeType = Node<
   "mediaNode"
 >;
 
-function TimelineMediaNodeComponent({ data, selected }: NodeProps<TimelineNodeType>) {
+function TimelineMediaNodeComponent({ data, id }: NodeProps<TimelineNodeType>) {
   const {
     title,
     releaseYear,
     chronologicalYear,
     posterPath,
-    rating,
     isAnchor,
-    canonType,
+    isUnreleased,
     isSeen,
     onToggleSeen,
     onOpenQuickView,
   } = data;
 
-  const isTva = canonType === "tva";
-  const isMultiverse = canonType === "multiverse";
+  // Harmonious Proportions:
+  // - Regular: width 60px container, poster 52px x 78px, rounded-md
+  // - Anchor: width 90px container, poster 76px x 114px, rounded-lg
+  const containerWidth = isAnchor ? 90 : 60;
+  const cardWidth = isAnchor ? 76 : 52;
+  const cardHeight = isAnchor ? 114 : 78;
+
+  // TMDB Poster URL resolution
+  const posterUrl = posterPath
+    ? posterPath.startsWith("http")
+      ? posterPath
+      : `https://image.tmdb.org/t/p/w500${posterPath}`
+    : "/placeholder-poster.png";
+
+  // Check branch indicators for specific landmark anchors
+  const isBranchFork =
+    id === "mcu-avengers-1" ||
+    id === "mcu-loki" ||
+    id === "sw-ep3";
+
+  const isBranchJoin =
+    id === "mcu-avengers-doomsday" ||
+    id === "sw-rogue-one";
 
   return (
     <div
-      className={cn(
-        "group relative flex flex-col items-center select-none transition-all duration-300",
-        isAnchor ? "w-36 md:w-44" : "w-24 md:w-28",
-      )}
+      style={{ width: `${containerWidth}px` }}
+      className="group/node relative flex flex-col items-center select-none"
     >
-      {/* Target & Source Handles for React Flow Edge connections */}
+      {/* Invisible Handles for React Flow Edge Connections */}
       <Handle
         type="target"
         position={Position.Left}
-        className="!bg-zinc-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
       <Handle
         type="source"
         position={Position.Right}
-        className="!bg-zinc-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
       <Handle
         type="source"
         position={Position.Top}
         id="top"
-        className="!bg-yellow-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        className="!bg-purple-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
       <Handle
         type="target"
         position={Position.Top}
         id="target-top"
-        className="!bg-yellow-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
       <Handle
         type="target"
         position={Position.Bottom}
         id="target-bottom"
-        className="!bg-purple-500 !w-2 !h-2 !border-0 opacity-0 group-hover:opacity-100 transition-opacity"
+        className="!w-0 !h-0 !border-0 !bg-transparent opacity-0 pointer-events-none"
       />
 
-      {/* Special Branch Glow Effect */}
-      {isTva && (
-        <div className="absolute -inset-1 rounded-2xl bg-amber-500/20 blur-md pointer-events-none" />
-      )}
-      {isMultiverse && (
-        <div className="absolute -inset-1 rounded-2xl bg-purple-500/20 blur-md pointer-events-none" />
-      )}
-      {isAnchor && !isTva && !isMultiverse && (
-        <div className="absolute -inset-1 rounded-2xl bg-red-500/20 blur-md pointer-events-none" />
+      {/* Branch Fork Icon Indicator (Queuebrick SVG indicator above anchor) */}
+      {isAnchor && isBranchFork && (
+        <span className="absolute -top-[26px] left-1/2 -translate-x-1/2 cursor-default text-zinc-400 transition-colors hover:text-purple-400">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true" className="size-3.5">
+            <path
+              d="M1 7 H6 M6 7 C9.5 7 9.5 3.5 13 3.5 M6 7 C9.5 7 9.5 10.5 13 10.5"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
       )}
 
-      {/* Media Card Container */}
-      <div
+      {/* Branch Join Icon Indicator */}
+      {isAnchor && isBranchJoin && (
+        <span className="absolute -top-[26px] left-1/2 -translate-x-1/2 cursor-default text-zinc-400 transition-colors hover:text-purple-400">
+          <svg viewBox="0 0 14 14" fill="none" aria-hidden="true" className="size-3.5">
+            <path
+              d="M1 3.5 C4.5 3.5 4.5 7 8 7 M1 10.5 C4.5 10.5 4.5 7 8 7 M8 7 H13"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
+      )}
+
+      {/* Poster Button */}
+      <button
+        type="button"
+        disabled={isUnreleased}
+        aria-pressed={isSeen}
+        aria-label={`Mark seen: ${title}`}
         onClick={() => onOpenQuickView?.(data)}
         className={cn(
-          "relative w-full cursor-pointer overflow-hidden rounded-xl bg-zinc-900 border transition-all duration-300 shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
+          "relative mx-auto block overflow-hidden bg-zinc-900 transition-transform shadow-md",
           isAnchor
-            ? "aspect-2/3 border-zinc-700 shadow-2xl hover:border-red-500 hover:shadow-red-500/20 hover:scale-105"
-            : "aspect-2/3 border-zinc-800/90 hover:border-zinc-500 hover:scale-105",
-          selected && "ring-2 ring-primary ring-offset-2 ring-offset-zinc-950",
-          isTva && "border-amber-500/60 shadow-amber-500/20",
-          isMultiverse && "border-purple-500/60 shadow-purple-500/20",
+            ? "rounded-lg group-hover/node:scale-105 border border-zinc-800"
+            : "rounded-[5px] group-hover/node:scale-110",
+          isUnreleased && "cursor-default",
+          !isUnreleased && "cursor-pointer",
         )}
+        style={{ width: `${cardWidth}px`, height: `${cardHeight}px` }}
       >
-        {/* Poster Image with fallback */}
-        <TimelinePosterImage
-          src={posterPath}
-          alt={title}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt=""
+          draggable={false}
+          loading="lazy"
+          decoding="async"
+          src={posterUrl}
           className={cn(
-            "h-full w-full object-cover transition-transform duration-500 group-hover:scale-105",
-            isSeen && "contrast-105",
+            "object-cover transition duration-300 w-full h-full pointer-events-none",
+            isUnreleased && "opacity-40",
+            isSeen && "opacity-30 grayscale-40",
           )}
         />
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 opacity-60 group-hover:opacity-80 transition-opacity" />
+        {/* Hover Eye Icon for Anchor Cards (Queuebrick Style) */}
+        {isAnchor && !isUnreleased && (
+          <span className="absolute inset-0 hidden place-items-center bg-black/45 opacity-0 transition-opacity duration-150 group-hover/node:opacity-100 group-has-[:focus-visible]/node:opacity-100 sm:grid pointer-events-none">
+            <Eye className="size-5 text-white" />
+          </span>
+        )}
 
-        {/* Top Badges: Rating & Anchor Sparkle */}
-        <div className="absolute top-1.5 inset-x-1.5 flex items-center justify-between pointer-events-none">
-          {rating !== undefined && rating > 0 ? (
-            <div className="flex items-center gap-0.5 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-bold text-amber-400 backdrop-blur-md border border-zinc-800/60">
-              <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-              <span>{rating.toFixed(1)}</span>
-            </div>
-          ) : (
-            <div />
-          )}
+        {/* Seen checkmark indicator on corner if watched */}
+        {isSeen && (
+          <span className="absolute bottom-1 right-1 flex items-center justify-center rounded-full bg-emerald-500 text-black shadow-md h-3.5 w-3.5">
+            <Check className="h-2 w-2 stroke-[3]" />
+          </span>
+        )}
+      </button>
 
-          {isAnchor && (
-            <div className="flex items-center gap-1 rounded-md bg-red-950/90 border border-red-500/50 px-1.5 py-0.5 text-[9px] font-black uppercase text-red-200 backdrop-blur-md">
-              <Sparkles className="h-2.5 w-2.5 text-red-400" />
-              <span className="hidden sm:inline">Anchor</span>
-            </div>
-          )}
-        </div>
-
-        {/* Seen Action Button (Floating Check) */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleSeen?.(data);
-          }}
-          aria-label={isSeen ? `Mark ${title} as unseen` : `Mark ${title} as seen`}
-          className={cn(
-            "absolute bottom-1.5 right-1.5 flex h-7 w-7 items-center justify-center rounded-full border transition-all duration-200 cursor-pointer backdrop-blur-md shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary",
-            isSeen
-              ? "bg-emerald-500 border-emerald-400 text-white hover:bg-emerald-600"
-              : "bg-black/70 border-zinc-500 text-zinc-300 hover:text-white hover:border-zinc-300 hover:bg-black/90",
-          )}
-        >
-          <Check className={cn("h-4 w-4", isSeen ? "stroke-[3]" : "stroke-2")} />
-        </button>
-
-        {/* Quick View trigger icon on hover */}
-        <div className="absolute bottom-1.5 left-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 border border-zinc-600 text-zinc-200 hover:text-white">
-            <Info className="h-3.5 w-3.5" />
-          </div>
-        </div>
-      </div>
-
-      {/* Meta Text below card */}
-      <div className="mt-2 text-center w-full px-1">
-        <h4
-          className={cn(
-            "line-clamp-2 font-bold leading-tight transition-colors group-hover:text-primary",
-            isAnchor ? "text-xs md:text-sm text-zinc-100" : "text-[11px] md:text-xs text-zinc-200",
-          )}
-          title={title}
+      {/* Title & Chronological Year */}
+      <div
+        className={cn(
+          "mt-2 text-center pointer-events-none w-full",
+          isAnchor ? "px-1 max-w-[90px]" : "max-w-[60px] px-0.5",
+        )}
+      >
+        <span
+          className="block truncate font-semibold text-zinc-100 hover:underline leading-tight"
+          style={{ fontSize: isAnchor ? "9.5px" : "8.5px" }}
         >
           {title}
-        </h4>
-        <div className="mt-0.5 flex items-center justify-center gap-1 text-[11px] text-zinc-400 font-semibold">
-          <span>{chronologicalYear ?? releaseYear}</span>
-          {chronologicalYear && chronologicalYear !== releaseYear && (
-            <span className="text-zinc-400">({releaseYear})</span>
-          )}
+        </span>
+        <div
+          className="mt-0.5 truncate text-zinc-400 leading-tight"
+          style={{ fontSize: isAnchor ? "8px" : "7.5px" }}
+        >
+          {chronologicalYear ?? releaseYear}
         </div>
       </div>
     </div>

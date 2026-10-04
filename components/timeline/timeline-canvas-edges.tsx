@@ -5,6 +5,7 @@ import { TimelineEdgeData, TimelineNodeData } from "@/types/timeline";
 import { cn } from "@/lib/utils";
 
 interface TimelineCanvasEdgesProps {
+  universeId?: string;
   edges: TimelineEdgeData[];
   nodesMap: Map<string, TimelineNodeData>;
 }
@@ -27,10 +28,10 @@ function calculateBezier(
   sourceHandle?: string,
   targetHandle?: string,
 ) {
-  const ws = source.data.isAnchor ? 176 : 56;
-  const wt = target.data.isAnchor ? 176 : 56;
-  const hs = source.data.isAnchor ? 264 : 84;
-  const ht = target.data.isAnchor ? 264 : 84;
+  const ws = source.data.isAnchor ? 72 : 26;
+  const wt = target.data.isAnchor ? 72 : 26;
+  const hs = source.data.isAnchor ? 108 : 39;
+  const ht = target.data.isAnchor ? 108 : 39;
 
   // Source center anchor
   let sx = source.position.x + ws;
@@ -92,10 +93,16 @@ function calculateBezier(
   return { path, midX, midY };
 }
 
-function TimelineCanvasEdgesComponent({ edges, nodesMap }: TimelineCanvasEdgesProps) {
+function TimelineCanvasEdgesComponent({ universeId, edges, nodesMap }: TimelineCanvasEdgesProps) {
   const [hoveredEdgeId, setHoveredEdgeId] = useState<string | null>(null);
 
+  const isMcu = universeId === "mcu";
+  const isStarWars = universeId === "star-wars";
+
   const calculatedEdges = useMemo<CalculatedEdge[]>(() => {
+    // If MCU or Star Wars, we render continuous background tracks
+    if (isMcu || isStarWars) return [];
+
     const list: CalculatedEdge[] = [];
 
     for (const edge of edges) {
@@ -124,141 +131,203 @@ function TimelineCanvasEdgesComponent({ edges, nodesMap }: TimelineCanvasEdgesPr
     }
 
     return list;
-  }, [edges, nodesMap]);
+  }, [edges, nodesMap, isMcu, isStarWars]);
 
   return (
     <>
-      {/* Unified SVG Layer for All Curves */}
-      <svg
-        className="absolute inset-0 overflow-visible pointer-events-none"
-        style={{ width: "100%", height: "100%" }}
-      >
-        {calculatedEdges.map((edge) => {
-          const isHovered = hoveredEdgeId === edge.id;
-          const isTva = edge.branchVariant === "tva";
-          const isMultiverse = edge.branchVariant === "multiverse";
+      {/* Continuous SVG Tracks for MCU (Height 900px, Spine Y=450, TVA Y=180, Multiverse Y=720) */}
+      {isMcu && (
+        <>
+          <svg
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            width="9600"
+            height="900"
+            fill="none"
+          >
+            {/* Main Sacred Spine at Y=450 */}
+            <path d="M 40 450 H 8600" stroke="#3f3f46" strokeWidth="2.5" />
+            <path
+              d="M 8600 450 H 9400"
+              stroke="#3f3f46"
+              strokeWidth="2.5"
+              strokeDasharray="6 9"
+              opacity="0.8"
+            />
+            {/* Today vertical tick */}
+            <path d="M 8650 438 V 462" stroke="#71717a" strokeWidth="2" />
 
-          let stroke = edge.strokeColor ?? "#3f3f46";
-          let strokeWidth = isHovered ? 3 : 1.5;
-
-          if (isTva) {
-            stroke = isHovered ? "#FBBF24" : edge.strokeColor ?? "#EAB308";
-            strokeWidth = isHovered ? 3.5 : 2;
-          } else if (isMultiverse) {
-            stroke = isHovered ? "#C084FC" : edge.strokeColor ?? "#A855F7";
-            strokeWidth = isHovered ? 3 : 1.5;
-          }
-
-          return (
-            <g key={edge.id} className="transition-all duration-150">
-              {/* Invisible Wider Hit Area for Easy Hovering */}
+            {/* TVA Branch (Y=180, amber stroke, sweeping curve from Avengers 1) */}
+            <g>
               <path
-                d={edge.path}
-                fill="none"
-                stroke="transparent"
-                strokeWidth={24}
-                className="pointer-events-auto cursor-pointer"
-                onMouseEnter={() => setHoveredEdgeId(edge.id)}
-                onMouseLeave={() => setHoveredEdgeId(null)}
+                d="M 1200 450 C 1600 450, 1800 180, 2150 180"
+                stroke="#EAB308"
+                strokeWidth="2"
+                opacity="0.85"
               />
-
-              {/* Glowing Stroke on Hover */}
-              {isHovered && (
-                <path
-                  d={edge.path}
-                  fill="none"
-                  stroke={isTva ? "#EAB308" : isMultiverse ? "#A855F7" : "#71717a"}
-                  strokeWidth={6}
-                  strokeOpacity={0.4}
-                  className="pointer-events-none"
-                />
-              )}
-
-              {/* Main Curve Line */}
               <path
-                d={edge.path}
-                fill="none"
-                stroke={stroke}
-                strokeWidth={strokeWidth}
-                strokeDasharray={edge.isDashed ? "5,5" : undefined}
-                className="pointer-events-none transition-all duration-150"
+                d="M 2150 180 H 4200"
+                stroke="#EAB308"
+                strokeWidth="2"
+                opacity="0.9"
               />
             </g>
-          );
-        })}
-      </svg>
 
-      {/* Interactive Edge Label Badges & Tooltips Layer */}
-      {calculatedEdges.map((edge) => {
-        if (!edge.label) return null;
-        const isHovered = hoveredEdgeId === edge.id;
-        const isTva = edge.branchVariant === "tva";
-        const isMultiverse = edge.branchVariant === "multiverse";
+            {/* Multiverse Branch (Y=720, sweeping curve from Loki) */}
+            <g>
+              <path
+                d="M 2350 180 C 2420 180, 2450 720, 2550 720"
+                stroke="#71717a"
+                strokeWidth="2"
+                opacity="0.85"
+              />
+              <path
+                d="M 2550 720 H 3800"
+                stroke="#71717a"
+                strokeWidth="2"
+                strokeDasharray="4 6"
+                opacity="0.85"
+              />
+            </g>
+          </svg>
 
-        return (
-          <div
-            key={`label-${edge.id}`}
-            style={{
-              position: "absolute",
-              left: `${edge.midX}px`,
-              top: `${edge.midY}px`,
-              transform: "translate(-50%, -50%)",
-            }}
-            className="nodrag pointer-events-auto relative group z-20"
-            onMouseEnter={() => setHoveredEdgeId(edge.id)}
-            onMouseLeave={() => setHoveredEdgeId(null)}
+          {/* Track Text Labels */}
+          <span
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-black px-2 text-[11px] font-bold uppercase tracking-wider text-amber-400 z-10 border border-amber-500/30 rounded-full"
+            style={{ left: "2350px", top: "180px" }}
           >
-            {/* Pill Badge */}
-            <div
-              className={cn(
-                "flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-wider shadow-lg border transition-all duration-200 cursor-pointer select-none",
-                isTva
-                  ? "bg-black/90 border-amber-500/70 text-amber-400 hover:scale-105"
-                  : isMultiverse
-                    ? "bg-black/90 border-purple-500/70 text-purple-400 hover:scale-105"
-                    : "bg-black/90 border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:scale-105",
-                isHovered && "ring-2 ring-primary scale-105 shadow-xl",
-              )}
-            >
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
-              <span>{edge.label}</span>
-            </div>
+            TVA · OUTSIDE TIME
+          </span>
+          <span
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-black px-2 text-[11px] font-bold uppercase tracking-wider text-zinc-300 z-10 border border-zinc-700/50 rounded-full"
+            style={{ left: "2750px", top: "720px" }}
+          >
+            THE MULTIVERSE
+          </span>
+          <span
+            className="pointer-events-none absolute -translate-x-1/2 bg-black px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400 z-10 border border-zinc-800 rounded"
+            style={{ left: "8650px", top: "418px" }}
+          >
+            TODAY
+          </span>
+        </>
+      )}
 
-            {/* Hover Tooltip Card (Queuebrick Style) */}
-            {edge.description && isHovered && (
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-72 sm:w-80 rounded-xl bg-zinc-950 border border-zinc-800 p-3.5 shadow-2xl text-left pointer-events-none z-30 animate-in fade-in-0 duration-150">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span
-                    className={cn(
-                      "h-2 w-2 rounded-full",
-                      isTva
-                        ? "bg-amber-400"
-                        : isMultiverse
-                          ? "bg-purple-400"
-                          : "bg-sky-400",
-                    )}
+      {/* Continuous SVG Tracks for Star Wars */}
+      {isStarWars && (
+        <>
+          <svg
+            aria-hidden="true"
+            className="absolute inset-0 pointer-events-none"
+            width="4400"
+            height="900"
+            fill="none"
+          >
+            {/* Main Spine at Y=450 */}
+            <path d="M 40 450 H 4200" stroke="#3f3f46" strokeWidth="2.5" />
+
+            {/* Top Track (Star Wars Tales at Y=180) */}
+            <g>
+              <path
+                d="M 700 450 C 1000 450, 1100 180, 1350 180"
+                stroke="#3B82F6"
+                strokeWidth="2"
+                opacity="0.85"
+              />
+              <path
+                d="M 1350 180 H 2200"
+                stroke="#3B82F6"
+                strokeWidth="2"
+                opacity="0.9"
+              />
+            </g>
+
+            {/* Bottom Track (The New Republic / Rebellion at Y=720) */}
+            <g>
+              <path
+                d="M 2200 450 C 2400 450, 2450 720, 2550 720"
+                stroke="#71717a"
+                strokeWidth="2"
+                opacity="0.85"
+              />
+              <path
+                d="M 2550 720 H 3600"
+                stroke="#71717a"
+                strokeWidth="2"
+                opacity="0.9"
+              />
+            </g>
+          </svg>
+
+          {/* Star Wars Track Labels */}
+          <span
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-black px-2 text-[11px] font-bold uppercase tracking-wider text-sky-400 z-10 border border-sky-500/30 rounded-full"
+            style={{ left: "1550px", top: "180px" }}
+          >
+            ··· STAR WARS TALES ···
+          </span>
+          <span
+            className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-black px-2 text-[11px] font-bold uppercase tracking-wider text-zinc-300 z-10 border border-zinc-700/50 rounded-full"
+            style={{ left: "2800px", top: "720px" }}
+          >
+            THE NEW REPUBLIC
+          </span>
+        </>
+      )}
+
+      {/* Dynamic Bezier Edge Layer for custom / community timelines */}
+      {!isMcu && !isStarWars && (
+        <>
+          <svg
+            className="absolute inset-0 overflow-visible pointer-events-none"
+            style={{ width: "100%", height: "100%" }}
+          >
+            {calculatedEdges.map((edge) => {
+              const isHovered = hoveredEdgeId === edge.id;
+              const stroke = edge.strokeColor ?? "#3f3f46";
+              const strokeWidth = isHovered ? 3 : 1.5;
+
+              return (
+                <g key={edge.id} className="transition-all duration-150">
+                  <path
+                    d={edge.path}
+                    fill="none"
+                    stroke="transparent"
+                    strokeWidth={24}
+                    className="pointer-events-auto cursor-pointer"
+                    onMouseEnter={() => setHoveredEdgeId(edge.id)}
+                    onMouseLeave={() => setHoveredEdgeId(null)}
                   />
-                  <p
-                    className={cn(
-                      "text-[11px] font-black uppercase tracking-wider",
-                      isTva
-                        ? "text-amber-400"
-                        : isMultiverse
-                          ? "text-purple-400"
-                          : "text-sky-400",
-                    )}
-                  >
-                    {edge.label}
-                  </p>
-                </div>
-                <p className="text-xs text-zinc-300 font-normal leading-relaxed">
-                  {edge.description}
-                </p>
-              </div>
-            )}
-          </div>
-        );
-      })}
+                  <path
+                    d={edge.path}
+                    fill="none"
+                    stroke={stroke}
+                    strokeWidth={strokeWidth}
+                    strokeDasharray={edge.isDashed ? "5,5" : undefined}
+                    className="pointer-events-none transition-all duration-150"
+                  />
+                </g>
+              );
+            })}
+          </svg>
+
+          {calculatedEdges.map((edge) => {
+            if (!edge.label) return null;
+            return (
+              <span
+                key={`label-${edge.id}`}
+                className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap bg-black px-1.5 text-[10px] font-medium uppercase tracking-wider text-zinc-400 z-10"
+                style={{
+                  left: `${edge.midX}px`,
+                  top: `${edge.midY}px`,
+                }}
+              >
+                {edge.label}
+              </span>
+            );
+          })}
+        </>
+      )}
     </>
   );
 }
