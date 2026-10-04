@@ -1,8 +1,16 @@
 "use client";
 
-import { useState, useMemo, Suspense, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
-import { TMDBCompanyDetails } from "@/lib/tmdb-actions";
+import {
+  TMDBCompanyDetails,
+  getCompanyDetails,
+  getCompanyMovies,
+  getCompanyTVShows,
+  getCachedCompanyDetails,
+  getCachedCompanyMovies,
+  getCachedCompanyTVShows,
+} from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { CompanyDetailSkeleton } from "@/components/skeletons";
 import {
@@ -53,31 +61,42 @@ export default function CompanyDetailClient({
     close: closeAuth,
   } = useAuthModalStore();
 
+  const cachedCompany = useMemo(() => getCachedCompanyDetails(id), [id]);
+  const cachedMovies = useMemo(() => getCachedCompanyMovies(id, 1), [id]);
+  const cachedTv = useMemo(() => getCachedCompanyTVShows(id, 1), [id]);
+
   const [company, setCompany] = useState<TMDBCompanyDetails | null>(
-    () => initialCompany ?? null,
+    () => initialCompany ?? cachedCompany ?? null,
   );
   const [movies, setMovies] = useState<TMDBMedia[]>(
-    () => initialMovies ?? [],
+    () => initialMovies ?? cachedMovies ?? [],
   );
   const [tvShows, setTvShows] = useState<TMDBMedia[]>(
-    () => initialTvShows ?? [],
+    () => initialTvShows ?? cachedTv ?? [],
   );
-  const [isLoading, setIsLoading] = useState(() => !initialCompany);
+  const [isLoading, setIsLoading] = useState(
+    () => !(initialCompany || cachedCompany),
+  );
 
   useEffect(() => {
+    if (getCachedCompanyDetails(id)) {
+      return;
+    }
+
     if (initialCompany && String(initialCompany.id) === id) {
       return;
     }
 
-    fetch(`/api/tmdb/company/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then((data) => {
-        setCompany(data.company);
-        setMovies(data.movies ?? []);
-        setTvShows(data.tvShows ?? []);
+    Promise.all([
+      getCompanyDetails(id),
+      getCompanyMovies(id),
+      getCompanyTVShows(id),
+    ])
+      .then(([companyData, moviesData, tvShowsData]) => {
+        if (!companyData) throw new Error("Not found");
+        setCompany(companyData);
+        setMovies(moviesData ?? []);
+        setTvShows(tvShowsData ?? []);
       })
       .catch(() => router.push("/"))
       .finally(() => setIsLoading(false));

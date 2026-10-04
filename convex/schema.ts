@@ -345,4 +345,13 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_endpoint", ["subscription.endpoint"]),
+
+  tmdbCache: defineTable({
+    key: v.string(),
+    data: v.string(),
+    cachedAt: v.number(),
+    expiresAt: v.number(),
+  })
+    .index("by_key", ["key"])
+    .index("by_expiresAt", ["expiresAt"]),
 });

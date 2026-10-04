@@ -14,6 +14,7 @@ import type * as backfill from "../backfill.js";
 import type * as chats from "../chats.js";
 import type * as comments from "../comments.js";
 import type * as continueWatching from "../continueWatching.js";
+import type * as crons from "../crons.js";
 import type * as customLists from "../customLists.js";
 import type * as diary from "../diary.js";
 import type * as emails from "../emails.js";
@@ -24,6 +25,8 @@ import type * as push from "../push.js";
 import type * as pushActions from "../pushActions.js";
 import type * as ratings from "../ratings.js";
 import type * as social from "../social.js";
+import type * as tmdb from "../tmdb.js";
+import type * as tmdbCache from "../tmdbCache.js";
 import type * as users from "../users.js";
 import type * as watchlist from "../watchlist.js";
 
@@ -40,6 +43,7 @@ declare const fullApi: ApiFromModules<{
   chats: typeof chats;
   comments: typeof comments;
   continueWatching: typeof continueWatching;
+  crons: typeof crons;
   customLists: typeof customLists;
   diary: typeof diary;
   emails: typeof emails;
@@ -50,6 +54,8 @@ declare const fullApi: ApiFromModules<{
   pushActions: typeof pushActions;
   ratings: typeof ratings;
   social: typeof social;
+  tmdb: typeof tmdb;
+  tmdbCache: typeof tmdbCache;
   users: typeof users;
   watchlist: typeof watchlist;
 }>;

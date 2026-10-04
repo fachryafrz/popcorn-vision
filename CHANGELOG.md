@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.0] - 2026-10-04
+
+### Added
+- Global database-backed shared cache table (`tmdbCache`) in Convex for cross-user and cross-device media discovery.
+- Resource-specific TTL cache policies (7-day detail cache, 24-hour discovery & trending cache, 3-day reviews cache).
+- Stale-While-Revalidate and cache stampede protection on high-concurrency requests.
+
+---
+
+## [2.11.1] - 2026-10-04
+
+### Added
+- Instant page revisit caching across movies, TV series, actors, and production companies with zero loading delays.
+- Direct high-resolution image streaming from global media CDNs for faster visual rendering.
+
+### Changed
+- Streamlined media discovery and search pipeline for snappier transitions and zero-overhead background sync.
+- Eliminated page loading flickers during repeated navigation between feed and media details.
+
+---
+
 ## [2.10.0] - 2026-10-04
 
 ### Added

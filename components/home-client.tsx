@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { TMDBMedia } from "@/lib/tmdb";
 import {
+  getHeroItems,
   getTrending,
   getStreamingOriginals,
   getByCategory,
@@ -105,16 +106,21 @@ export default function HomeClient({
     }
 
     let isMounted = true;
-    fetch("/api/tmdb/home")
-      .then((res) => res.json())
-      .then((data) => {
+    Promise.all([
+      getHeroItems(),
+      getTrending("all"),
+      getStreamingOriginals("netflix"),
+      getByCategory("Action"),
+      getUpcomingMedia(),
+    ])
+      .then(([hero, trending, streaming, category, upcoming]) => {
         if (!isMounted) return;
         const homeData: HomeInitialData = {
-          hero: data.hero ?? [],
-          trending: data.trending ?? [],
-          streaming: data.streaming ?? [],
-          category: data.category ?? [],
-          upcoming: data.upcoming ?? [],
+          hero,
+          trending,
+          streaming,
+          category,
+          upcoming,
         };
         cachedHomeData = homeData;
         setHeroItems(homeData.hero);
@@ -126,7 +132,7 @@ export default function HomeClient({
       })
       .catch((err) => {
         if (isMounted) {
-          console.error(err);
+          console.error("Error loading home data:", err);
           setIsLoading(false);
         }
       });

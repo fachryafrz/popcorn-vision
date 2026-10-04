@@ -49,18 +49,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       url.searchParams.delete("error");
       router.replace(url.pathname + url.search, { scroll: false });
 
-      if (
-        decodedError.includes("account_not_linked") ||
-        decodedError.includes("account-not-linked")
-      ) {
-        setError(
-          "This Google account is not linked to your email-based account. Please sign in using your email/username and password first, then go to Settings > Security to link your Google account.",
-        );
-        openAuth();
-      } else {
-        setError(`Authentication failed: ${errorParam}`);
-        openAuth();
-      }
+      queueMicrotask(() => {
+        if (
+          decodedError.includes("account_not_linked") ||
+          decodedError.includes("account-not-linked")
+        ) {
+          setError(
+            "This Google account is not linked to your email-based account. Please sign in using your email/username and password first, then go to Settings > Security to link your Google account.",
+          );
+          openAuth();
+        } else {
+          setError(`Authentication failed: ${errorParam}`);
+          openAuth();
+        }
+      });
     }
   }, [searchParams, openAuth, router]);
 

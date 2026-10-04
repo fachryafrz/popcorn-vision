@@ -10,7 +10,7 @@ import {
   useMemo,
 } from "react";
 import { useQueryState } from "nuqs";
-import { searchMedia, discoverMedia } from "@/lib/tmdb-actions";
+import { searchMedia, discoverMedia, getTMDBGenres, getTMDBProviders } from "@/lib/tmdb-actions";
 import { TMDBMedia } from "@/lib/tmdb";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { useQuery } from "convex-helpers/react/cache";
@@ -171,11 +171,13 @@ export default function SearchClient({
   >([]);
 
   useEffect(() => {
-    fetch(`/api/tmdb/search/meta?countryCode=${userCountryCode}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setGenres(data.genres ?? []);
-        setProviders(data.providers ?? []);
+    Promise.all([
+      getTMDBGenres(),
+      getTMDBProviders(userCountryCode),
+    ])
+      .then(([genresData, providersData]) => {
+        setGenres(genresData ?? []);
+        setProviders(providersData ?? []);
       })
       .catch(console.error);
   }, [userCountryCode]);

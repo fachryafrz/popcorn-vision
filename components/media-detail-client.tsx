@@ -21,7 +21,7 @@ import {
 } from "@/hooks/use-query-modal-state";
 import CommentsSection from "@/components/comments-section";
 import LogWatchModal from "./log-watch-modal";
-import { getCollectionDetails, getSeasonDetails } from "@/lib/tmdb-actions";
+import { getCollectionDetails, getSeasonDetails, getMediaDetails, getCachedMediaDetails } from "@/lib/tmdb-actions";
 import {
   getGuestWatchProgressForMedia,
   saveGuestWatchProgress,
@@ -121,35 +121,38 @@ export default function MediaDetailClient({
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
 
-  // Fetched media data state
+  // Fetched media data state with Instant Cache check
+  const cachedData = useMemo(() => getCachedMediaDetails(mediaType, id), [mediaType, id]);
+
   const [details, setDetails] = useState<MediaDetails | null>(
-    () => initialData?.details ?? null,
+    () => initialData?.details ?? cachedData?.details ?? null,
   );
   const [credits, setCredits] = useState<{
     cast?: CastItem[];
     crew?: CrewItem[];
-  }>(() => initialData?.credits ?? {});
+  }>(() => initialData?.credits ?? cachedData?.credits ?? {});
   const [videos, setVideos] = useState<VideoItem[]>(
-    () => initialData?.videos ?? [],
+    () => initialData?.videos ?? cachedData?.videos ?? [],
   );
   const [watchProviders, setWatchProviders] = useState<
     Record<string, { flatrate?: ProviderItem[] }>
-  >(() => initialData?.watchProviders ?? {});
+  >(() => initialData?.watchProviders ?? cachedData?.watchProviders ?? {});
   const [logoPath, setLogoPath] = useState<string | null>(
-    () => initialData?.logoPath ?? null,
+    () => initialData?.logoPath ?? cachedData?.logoPath ?? null,
   );
   const [textlessPosterPath, setTextlessPosterPath] = useState<string | null>(
-    () => initialData?.textlessPosterPath ?? null,
+    () => initialData?.textlessPosterPath ?? cachedData?.textlessPosterPath ?? null,
   );
   const [recommendations, setRecommendations] = useState<TMDBMedia[]>(
-    () => initialData?.recommendations ?? [],
+    () => initialData?.recommendations ?? cachedData?.recommendations ?? [],
   );
   const [regionalData, setRegionalData] = useState<
     (RegionalRelease | RegionalContentRating)[]
-  >(() => initialData?.regionalData ?? []);
+  >(() => initialData?.regionalData ?? cachedData?.regionalData ?? []);
   const [images, setImages] = useState<MediaImagesData>(
     () =>
-      initialData?.images ?? {
+      initialData?.images ??
+      cachedData?.images ?? {
         backdrops: [],
         posters: [],
         logos: [],
@@ -158,26 +161,32 @@ export default function MediaDetailClient({
   // Track current media so we can reset loading state during render when page details change
   const [prevMediaId, setPrevMediaId] = useState(id);
   const [prevMediaType, setPrevMediaType] = useState(mediaType);
-  const [isMediaLoading, setIsMediaLoading] = useState(() => !initialData);
+  const [isMediaLoading, setIsMediaLoading] = useState(
+    () => !(initialData?.details || cachedData?.details),
+  );
 
   if (id !== prevMediaId || mediaType !== prevMediaType) {
     setPrevMediaId(id);
     setPrevMediaType(mediaType);
-    if (
+    const freshCache = getCachedMediaDetails(mediaType, id);
+    const activeData =
       initialData &&
       initialData.details &&
       String(initialData.details.id) === id
-    ) {
-      setDetails(initialData.details);
-      setCredits(initialData.credits ?? {});
-      setVideos(initialData.videos ?? []);
-      setWatchProviders(initialData.watchProviders ?? {});
-      setLogoPath(initialData.logoPath ?? null);
-      setTextlessPosterPath(initialData.textlessPosterPath ?? null);
-      setRecommendations(initialData.recommendations ?? []);
-      setRegionalData(initialData.regionalData ?? []);
+        ? initialData
+        : freshCache;
+
+    if (activeData && activeData.details) {
+      setDetails(activeData.details);
+      setCredits(activeData.credits ?? {});
+      setVideos(activeData.videos ?? []);
+      setWatchProviders(activeData.watchProviders ?? {});
+      setLogoPath(activeData.logoPath ?? null);
+      setTextlessPosterPath(activeData.textlessPosterPath ?? null);
+      setRecommendations(activeData.recommendations ?? []);
+      setRegionalData(activeData.regionalData ?? []);
       setImages(
-        initialData.images ?? { backdrops: [], posters: [], logos: [] },
+        activeData.images ?? { backdrops: [], posters: [], logos: [] },
       );
       setIsMediaLoading(false);
     } else {
@@ -186,6 +195,10 @@ export default function MediaDetailClient({
   }
 
   useEffect(() => {
+    if (getCachedMediaDetails(mediaType, id)) {
+      return;
+    }
+
     if (
       initialData &&
       initialData.details &&
@@ -194,12 +207,9 @@ export default function MediaDetailClient({
       return;
     }
 
-    fetch(`/api/tmdb/media/${mediaType}/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then((data: MediaDetailResponse) => {
+    getMediaDetails(mediaType, id)
+      .then((data: MediaDetailResponse | null) => {
+        if (!data || !data.details) throw new Error("Not found");
         setDetails(data.details);
         setCredits(data.credits ?? {});
         setVideos(data.videos ?? []);

@@ -1,40 +1,11 @@
-import { Metadata } from "next";
-import { getMediaDetails } from "@/lib/tmdb-actions";
-import { siteConfig } from "@/config/site";
+import { use } from "react";
 import MediaDetailClient from "@/components/media-detail-client";
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { id } = await params;
-  const data = await getMediaDetails("tv", id);
-  if (!data || !data.details) {
-    return { title: `TV Show Not Found | ${siteConfig.name}` };
-  }
-  const show = data.details;
-  const releaseYear = show.first_air_date
-    ? ` (${new Date(show.first_air_date).getFullYear()})`
-    : "";
-  return {
-    title: `${show.name}${releaseYear} | ${siteConfig.name}`,
-    description:
-      show.overview ||
-      `Explore ${show.name} on ${siteConfig.name}.`,
-    openGraph: {
-      title: show.name,
-      description: show.overview,
-      images: show.backdrop_path
-        ? [`https://image.tmdb.org/t/p/w780${show.backdrop_path}`]
-        : [],
-    },
-  };
+export default function TvDetailPage({ params }: PageProps) {
+  const { id } = use(params);
+  return <MediaDetailClient mediaType="tv" id={id} />;
 }
-
-export default async function TvDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const initialData = await getMediaDetails("tv", id);
-  return <MediaDetailClient mediaType="tv" id={id} initialData={initialData} />;
-}
-

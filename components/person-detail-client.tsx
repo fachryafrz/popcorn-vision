@@ -2,6 +2,12 @@
 
 import { useState, useMemo, Suspense, useEffect, useCallback } from "react";
 import { TMDBMedia, cleanMediaData, TMDBRawItem } from "@/lib/tmdb";
+import {
+  getPersonDetails,
+  getPersonCredits,
+  getCachedPersonDetails,
+  getCachedPersonCredits,
+} from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import { PersonDetailSkeleton } from "@/components/skeletons";
 import {
@@ -75,27 +81,33 @@ export default function PersonDetailClient({
     close: closeAuth,
   } = useAuthModalStore();
 
+  const cachedPerson = useMemo(() => getCachedPersonDetails(id), [id]);
+  const cachedCredits = useMemo(() => getCachedPersonCredits(id), [id]);
+
   const [person, setPerson] = useState<TMDBPerson | null>(
-    () => initialPerson ?? null,
+    () => initialPerson ?? cachedPerson ?? null,
   );
   const [credits, setCredits] = useState<PersonCredits>(
-    () => initialCredits ?? { cast: [], crew: [] },
+    () => initialCredits ?? cachedCredits ?? { cast: [], crew: [] },
   );
-  const [isLoading, setIsLoading] = useState(() => !initialPerson);
+  const [isLoading, setIsLoading] = useState(
+    () => !(initialPerson || cachedPerson),
+  );
 
   useEffect(() => {
+    if (getCachedPersonDetails(id)) {
+      return;
+    }
+
     if (initialPerson && String(initialPerson.id) === id) {
       return;
     }
 
-    fetch(`/api/tmdb/person/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Not found");
-        return res.json();
-      })
-      .then((data) => {
-        setPerson(data.person);
-        setCredits(data.credits ?? { cast: [], crew: [] });
+    Promise.all([getPersonDetails(id), getPersonCredits(id)])
+      .then(([personData, creditsData]) => {
+        if (!personData) throw new Error("Not found");
+        setPerson(personData);
+        setCredits(creditsData ?? { cast: [], crew: [] });
       })
       .catch(() => router.push("/"))
       .finally(() => setIsLoading(false));

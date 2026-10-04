@@ -84,39 +84,16 @@ self.addEventListener("push", (event: ExtendableEvent) => {
   }
 });
 
-// Notification Click and Quick Reply Handler
+// Notification Click Handler
 self.addEventListener("notificationclick", (event: ExtendableEvent) => {
   const notificationEvent = event as NotificationEvent & { reply?: string };
   const notificationData = notificationEvent.notification.data as
     | { url?: string; chatId?: string; notificationType?: string }
     | undefined;
 
-  if (notificationEvent.action === "reply" && notificationEvent.reply) {
-    const chatId = notificationData?.chatId;
-    const replyText = notificationEvent.reply;
-
-    if (chatId) {
-      notificationEvent.notification.close();
-      notificationEvent.waitUntil(
-        fetch("/api/chat/reply", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ chatId, content: replyText }),
-        }).catch((err: unknown) => {
-          console.error("Error sending reply:", err);
-        })
-      );
-    } else {
-      notificationEvent.notification.close();
-    }
-    return;
-  }
-
   notificationEvent.notification.close();
 
-  const urlToOpen = notificationData?.url || "/chat";
+  const urlToOpen = notificationData?.url || (notificationData?.chatId ? `/chat?id=${notificationData.chatId}` : "/chat");
 
   notificationEvent.waitUntil(
     self.clients
