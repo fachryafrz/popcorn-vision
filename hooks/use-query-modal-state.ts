@@ -37,3 +37,10 @@ export function useAuthQueryState() {
     parseAsBoolean.withDefault(false).withOptions({ history: "push" })
   );
 }
+
+export function useChangelogModalState() {
+  return useQueryState(
+    QUERY_PARAMS.CHANGELOG,
+    parseAsBoolean.withDefault(false).withOptions({ history: "push" })
+  );
+}
