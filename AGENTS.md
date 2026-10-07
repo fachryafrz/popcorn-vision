@@ -244,7 +244,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - **MAJOR:** Perubahan besar / breaking changes.
   - **MINOR:** Penambahan fitur baru yang backwards-compatible.
   - **PATCH:** Perbaikan bug atau patch yang backwards-compatible.
-- Setiap kali ada perubahan pada proyek, perbarui versi di `package.json` sesuai dengan tingkat perubahan yang dilakukan.
+- **Update Hanya Saat Release/Publish:** Versi pada `package.json` HANYA diperbarui ketika hendak melakukan release/publish proyek. Jangan perbarui versi pada setiap perubahan rutin atau commit harian.
 
 ---
 
