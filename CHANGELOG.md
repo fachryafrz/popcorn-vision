@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.2] - 2026-10-10
+
+### Changed
+- **Home Screen Mobile & Slow Network Performance**: Switched desktop hero backdrop from uncompressed `original` to `w1280` (~95% file size reduction) and mobile backdrop to `w780`/`w342`.
+- **Responsive Hero Picture with Art-Direction**: Replaced dual background image divs with semantic `<picture>` to prevent simultaneous multi-slide downloading on initial load.
+- **LCP & Carousel Resource Prioritization**: Prioritized initial hero slide with `fetchPriority="high"` and `loading="eager"`, while deferring offscreen carousel slides with `loading="lazy"`, `fetchPriority="low"`, and `decoding="async"`.
+- **Card & Still Media Optimization**: Added responsive `sizes` and `decoding="async"` across media cards and continue watching stills (`w300`).
+- **Server-Side Initial Data Prefetching**: Prefetched initial hero, trending, and category feeds on the server to eliminate initial client-side network waterfall delay.
+
+### Added
+- **Centralized TMDB Image Utility (`lib/tmdb-image.ts`)**: Type-safe helper functions for TMDB image URLs without hardcoded string fallbacks.
+
+---
+
 ## [2.12.1] - 2026-10-04
 
 ### Changed

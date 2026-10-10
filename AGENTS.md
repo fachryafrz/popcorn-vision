@@ -239,12 +239,27 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - `config/`: Application configuration, navigation constants, site metadata.
 - Use consistent, descriptive, kebab-case or PascalCase file naming in line with project standards.
 
-### 5. Project Versioning (SemVer `MAJOR.MINOR.PATCH`)
-- **Versioning Scheme:** Gunakan **Semantic Versioning (SemVer)** dengan format **`MAJOR.MINOR.PATCH`** (contoh: `2.5.2`).
-  - **MAJOR:** Perubahan besar / breaking changes.
-  - **MINOR:** Penambahan fitur baru yang backwards-compatible.
-  - **PATCH:** Perbaikan bug atau patch yang backwards-compatible.
-- Setiap kali ada perubahan pada proyek, perbarui versi di `package.json` sesuai dengan tingkat perubahan yang dilakukan.
+### 5. Git Branching & Project Versioning (SemVer `MAJOR.MINOR.PATCH`)
+- **Branch Strategy:**
+  - `master`: Main production branch (always stable).
+  - `develop`: Primary integration/development branch.
+  - Do not create permanent branches for versions (e.g. `version/1.2.0`). Use Git Tags (`vMAJOR.MINOR.PATCH`) for release snapshots.
+- **Branch Naming (Kebab-case):**
+  - `feature/<feature-name>` & `fix/<bug-name>` (branch from & merge to `develop`).
+  - `hotfix/<issue-name>` (branch from `master`, merge to `master` with `--no-ff`, and sync back to `develop`).
+  - `release/<version>` (optional, only when separate stabilization/QA is required).
+- **Merge Strategy:**
+  - `feature/*` / `fix/*` → `develop`: Squash & Merge / Rebase.
+  - `develop` → `master`: Merge Commit (`--no-ff`).
+- **Versioning Scheme:** Use **Semantic Versioning (SemVer)** with the format **`MAJOR.MINOR.PATCH`** (e.g. `2.5.2`).
+  - **MAJOR:** Major changes / breaking changes.
+  - **MINOR:** New backward-compatible features.
+  - **PATCH:** Backward-compatible bug fixes or minor corrections.
+- **Release-Only Version Updates:** Only update project version in `develop` when preparing for a release/publish, then merge into `master` (no release tags needed for web).
+- **Release Flow (Web):**
+  - Normal: `feature/*` → `develop` (bump version) → `master`
+  - Hotfix: `hotfix/*` → `master` (bump patch) → `develop` (sync back)
+- **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages, release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
 
 ---
 
