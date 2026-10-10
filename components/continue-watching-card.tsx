@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 
 import { removeGuestWatchProgress } from "@/lib/guest-watch";
+import { getStillThumbnailUrl } from "@/lib/tmdb-image";
 
 export interface ContinueWatchingItem {
   _id: string;
@@ -63,16 +64,16 @@ export default function ContinueWatchingCard({
   let rawImage = "/logo/popcorn.png";
 
   if (item.mediaType === "tv") {
-    // TV Series: Prioritize episode still image, then backdrop, then poster
+    // TV Series: Prioritize episode still image (w300), then backdrop, then poster
     const still = item.episodeStillPath || item.backdropPath || item.posterPath;
     if (still) {
-      rawImage = `${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${still}`;
+      rawImage = getStillThumbnailUrl(still);
     }
   } else {
     // Movie: Prioritize backdrop image, then poster
     const backdrop = item.backdropPath || item.posterPath;
     if (backdrop) {
-      rawImage = `${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${backdrop}`;
+      rawImage = getStillThumbnailUrl(backdrop);
     }
   }
 
@@ -106,6 +107,7 @@ export default function ContinueWatchingCard({
           alt={item.title}
           className="h-full w-full object-cover transition-transform duration-500 md:group-hover:scale-105"
           loading="lazy"
+          decoding="async"
         />
 
         {/* Hover overlay with a Play button */}

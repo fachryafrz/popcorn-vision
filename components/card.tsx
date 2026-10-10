@@ -16,6 +16,7 @@ import {
 } from "@/lib/guest-watchlist";
 import { toast } from "sonner";
 import CountdownDisplay from "@/components/ui/countdown-display";
+import { getPosterThumbnailUrl } from "@/lib/tmdb-image";
 
 interface CardProps {
   media: TMDBMedia;
@@ -131,9 +132,7 @@ export default function Card({
     }
   };
 
-  const posterPath = media.poster_path
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_300 || "https://image.tmdb.org/t/p/w300"}${media.poster_path}`
-    : "/logo/popcorn.png";
+  const posterPath = getPosterThumbnailUrl(media.poster_path);
 
   const rating = media.vote_average
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
@@ -169,6 +168,8 @@ export default function Card({
           alt={media.title || media.name}
           className="h-full w-full object-cover transition-transform duration-500 md:group-hover:scale-105"
           loading="lazy"
+          decoding="async"
+          sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 16vw"
         />
 
         {/* Backdrop overlay */}

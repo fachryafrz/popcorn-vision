@@ -255,11 +255,11 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - **MAJOR:** Major changes / breaking changes.
   - **MINOR:** New backward-compatible features.
   - **PATCH:** Backward-compatible bug fixes or minor corrections.
-- **Release-Only Version Updates:** Only update project version in `develop` when preparing for a release/publish, then merge into `master` and create Tag `vX.Y.Z`.
-- **Release Flow:**
-  - Normal: `feature/*` → `develop` (bump version) → `master` → Tag `vX.Y.Z`
-  - Hotfix: `hotfix/*` → `master` (bump patch) → Tag `vX.Y.Z` → `develop` (sync back)
-- **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages, release version bumps, `--no-ff` merge, and `vX.Y.Z` tags) while presenting all plans and changes for user review and approval.
+- **Release-Only Version Updates:** Only update project version in `develop` when preparing for a release/publish, then merge into `master` (no release tags needed for web).
+- **Release Flow (Web):**
+  - Normal: `feature/*` → `develop` (bump version) → `master`
+  - Hotfix: `hotfix/*` → `master` (bump patch) → `develop` (sync back)
+- **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages, release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
 
 ---
 

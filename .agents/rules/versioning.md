@@ -8,7 +8,7 @@ trigger: always_on
 
 - **`master`:** Main production branch. Always contains stable, production-ready code.
 - **`develop`:** Primary integration branch for new features and active development.
-- **Do not create permanent branches for individual versions** (e.g., `version/1.2.0` or `v1.2.0`). Use **Git Tags** to mark released versions.
+- **Do not create permanent branches for individual versions** (e.g., `version/1.2.0` or `v1.2.0`). For web projects, releases are marked by merge commits (`--no-ff`) into `master` rather than individual version branches or tags.
 
 ## 2. Branch Naming Conventions (Kebab-case)
 
@@ -31,25 +31,28 @@ All supporting branches are short-lived and use lowercase kebab-case naming:
 
 ## 5. Release Flow & Tagging
 
-### A. Normal Release
+> **Note for Web Applications:** Web applications/projects **do not require Git Release Tags** (`vX.Y.Z`). Git release tags are omitted for web. The web release workflow focuses strictly on version bumps in `package.json`, updating `CHANGELOG.md`, and merging `--no-ff` into `master`.
+
+### A. Normal Release (Web)
 1. Complete feature development and merge into `develop`.
 2. Update the version in `package.json` and update `CHANGELOG.md` directly on `develop`.
 3. Merge `develop` into `master` using `--no-ff`.
-4. Create a Git Tag on `master` with the format `vMAJOR.MINOR.PATCH` (e.g., `v2.5.2`).
-5. `develop` continues as the development branch for the next version.
+4. (No Git release tag needed for web).
+5. `develop` continues as the integration branch for the next version.
 
 ```
-feature/* ──> develop ──(bump version)──> master ──> Tag vX.Y.Z
+feature/* ──> develop ──(bump version)──> master
 ```
 
-### B. Hotfix Release
+### B. Hotfix Release (Web)
 1. Create `hotfix/<issue-name>` from `master`.
 2. Apply the fix and bump the PATCH version in `package.json` and `CHANGELOG.md`.
-3. Merge `hotfix/*` into `master` and create Tag `vX.Y.Z`.
-4. Merge or cherry-pick the hotfix commit back into `develop`.
+3. Merge `hotfix/*` into `master` using `--no-ff`.
+4. (No Git release tag needed for web).
+5. Merge or cherry-pick the hotfix commit back into `develop`.
 
 ```
-hotfix/* ──> master ──> Tag vX.Y.Z ──> develop (sync back)
+hotfix/* ──> master (bump patch) ──> develop (sync back)
 ```
 
 ## 6. AI Automation & Review Workflow
@@ -59,6 +62,6 @@ hotfix/* ──> master ──> Tag vX.Y.Z ──> develop (sync back)
   - Proposing and configuring appropriate git branches (`feature/*`, `fix/*`, `hotfix/*`).
   - Writing modular, scalable code adhering to technical standards (Zero `any`, DRY, typed schemas).
   - Crafting clear, conventional commit messages.
-  - Automating version bumps (`package.json`, `CHANGELOG.md`) upon release, alongside merge (`--no-ff`) and Git tagging commands.
+  - Automating version bumps (`package.json`, `CHANGELOG.md`) upon release, alongside merging (`--no-ff`) into `master` (without creating release tags for web).
 - **Transparency & Human Review:** All plans, code diffs, version updates, and git actions must be presented clearly for user review and approval before proceeding to next stages.
 
