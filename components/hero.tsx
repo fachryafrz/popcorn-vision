@@ -26,6 +26,13 @@ import Link from "next/link";
 import { STORAGE_KEYS } from "@/lib/constants";
 
 
+import {
+  getHeroDesktopBackdropUrl,
+  getHeroMobileBackdropUrl,
+  getPosterThumbnailUrl,
+  getLogoUrl,
+} from "@/lib/tmdb-image";
+
 interface HeroProps {
   items: TMDBMedia[];
   onQuickView: (media: TMDBMedia) => void;
@@ -149,15 +156,14 @@ function HeroSlide({
     }
   };
 
-  const backdropUrl = media.backdrop_path
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_ORIGINAL || "https://image.tmdb.org/t/p/original"}${media.backdrop_path}`
-    : "/logo/popcorn.png";
-  const posterUrl = media.poster_path
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_342 || "https://image.tmdb.org/t/p/w342"}${media.poster_path}`
-    : "/logo/popcorn.png";
-  const mobileBackdropUrl = media.textless_poster_path
-    ? `${process.env.NEXT_PUBLIC_API_IMAGE_780 || "https://image.tmdb.org/t/p/w780"}${media.textless_poster_path}`
-    : posterUrl;
+  const backdropUrl = getHeroDesktopBackdropUrl(media.backdrop_path);
+  const mobileBackdropUrl = getHeroMobileBackdropUrl(
+    media.textless_poster_path,
+    media.poster_path,
+  );
+  const posterUrl = getPosterThumbnailUrl(media.poster_path);
+  const logoUrl = getLogoUrl(media.logo_path);
+
   const releaseYear = media.release_date
     ? new Date(media.release_date).getFullYear()
     : "N/A";
@@ -169,20 +175,22 @@ function HeroSlide({
 
   return (
     <div className="relative flex h-full w-full items-end px-6 pb-16 sm:px-16 sm:pb-24 md:px-20">
-      {/* Backdrop Image (Desktop) */}
-      <div
-        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat transition-transform duration-700 sm:block"
-        style={{
-          backgroundImage: `url(${backdropUrl})`,
-        }}
-      />
-      {/* Poster Image as Backdrop (Mobile) */}
-      <div
-        className="absolute inset-0 block bg-cover bg-center bg-no-repeat transition-transform duration-700 sm:hidden"
-        style={{
-          backgroundImage: `url(${mobileBackdropUrl})`,
-        }}
-      />
+      {/* Responsive Backdrop using semantic picture with art-direction */}
+      <picture className="pointer-events-none absolute inset-0 select-none">
+        <source
+          media="(max-width: 639px)"
+          srcSet={mobileBackdropUrl}
+        />
+        <img
+          src={backdropUrl}
+          alt={media.title || media.name || "Hero backdrop"}
+          fetchPriority={isFirstSlide ? "high" : "low"}
+          loading={isFirstSlide ? "eager" : "lazy"}
+          decoding="async"
+          className="h-full w-full object-cover object-center transition-transform duration-700"
+        />
+      </picture>
+
       {/* Black-out Overlay Gradient */}
       <div className="absolute inset-0 z-10 bg-linear-to-t from-zinc-950 via-zinc-950/45 to-black/10" />
       <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
@@ -196,6 +204,8 @@ function HeroSlide({
           <img
             src={posterUrl}
             alt={media.title || media.name}
+            loading={isFirstSlide ? "eager" : "lazy"}
+            decoding="async"
             className="h-full w-full object-cover"
           />
         </div>
@@ -217,8 +227,10 @@ function HeroSlide({
           {media.logo_path && !logoError ? (
             <div className="relative mb-2 flex h-16 max-w-[85%] items-center sm:h-20 md:h-24 lg:h-28">
               <img
-                src={`${process.env.NEXT_PUBLIC_API_IMAGE_500 || "https://image.tmdb.org/t/p/w500"}${media.logo_path}`}
+                src={logoUrl}
                 alt={media.title || media.name}
+                loading={isFirstSlide ? "eager" : "lazy"}
+                decoding="async"
                 className="h-full w-auto object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] filter"
                 onError={() => setLogoError(true)}
               />
@@ -319,9 +331,6 @@ export default function Hero({
   onQuickView,
   onAuthRequired,
 }: HeroProps) {
-  const session = authClient.useSession();
-  const isLoggedIn = !!session.data?.user;
-
   const [initialIndex] = useState(() => {
     if (typeof window !== "undefined") {
       const saved =
@@ -362,13 +371,14 @@ export default function Hero({
         loop
         className="swiper-hero h-full w-full"
       >
-        {items.map((media) => (
+        {items.map((media, index) => (
           <SwiperSlide
             key={`${media.media_type}-${media.id}`}
             className="h-full w-full"
           >
             <HeroSlide
               media={media}
+              isFirstSlide={index === initialIndex}
               onQuickView={onQuickView}
               onAuthRequired={onAuthRequired}
             />
