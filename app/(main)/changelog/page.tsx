@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import moment from "moment";
 import { History } from "lucide-react";
 import { siteConfig } from "@/config/site";
 import { CHANGELOG_MILESTONES } from "@/data/changelog";
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
 };
 
 export default function ChangelogPage() {
+  const latestMilestone = CHANGELOG_MILESTONES[0];
+  const lastUpdatedFormatted = latestMilestone
+    ? moment(latestMilestone.releaseDate).format("MMMM D, YYYY")
+    : null;
+
   return (
     <main className="min-h-screen bg-zinc-950 py-16 text-zinc-300 md:py-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 md:px-8">
@@ -22,18 +28,11 @@ export default function ChangelogPage() {
           <h1 className="bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent sm:text-4xl">
             Release Notes
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
-            Last Updated: October 4, 2026
-          </p>
-        </div>
-
-        {/* Intro Section */}
-        <div className="mb-10 space-y-4">
-          <p className="text-base text-zinc-400">
-            Follow the journey of <strong>{siteConfig.name}</strong> from its initial
-            conception in February 2023 through the Version 2 real-time platform overhaul and
-            recent Progressive Web App capabilities.
-          </p>
+          {lastUpdatedFormatted && (
+            <p className="mt-2 text-sm text-zinc-500">
+              Last Updated: {lastUpdatedFormatted}
+            </p>
+          )}
         </div>
 
         {/* Connected Timeline Section */}
