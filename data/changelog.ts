@@ -21,10 +21,49 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.2",
+    title: "Home Screen Mobile & Slow Network Performance Optimization",
+    releaseDate: "2026-10-10",
+    isLatest: true,
+    summary:
+      "High-impact performance optimizations for mobile devices and slower network conditions, featuring responsive art-directed hero backdrops, prioritized media streaming, and zero-waterfall server prefetching.",
+    changes: [
+      {
+        type: "perf",
+        title: "Mobile Hero & Network Optimization",
+        description:
+          "Switched desktop hero backdrop to lightweight w1280 (~95% smaller file size) and mobile backdrop to adaptive w780/w342.",
+      },
+      {
+        type: "perf",
+        title: "Responsive Art-Directed Hero",
+        description:
+          "Implemented semantic picture elements to prevent downloading redundant desktop images on mobile screens.",
+      },
+      {
+        type: "perf",
+        title: "LCP & Feed Prioritization",
+        description:
+          "Prioritized high-importance initial hero slides and deferred offscreen carousels for faster visual load times.",
+      },
+      {
+        type: "perf",
+        title: "Server Prefetching",
+        description:
+          "Prefetched initial hero, trending, and category feeds on the server to eliminate initial client-side network delay.",
+      },
+      {
+        type: "refactor",
+        title: "Centralized Media Image Utilities",
+        description:
+          "Type-safe responsive image helper functions ensuring crisp visuals without layout shift.",
+      },
+    ],
+  },
+  {
     version: "2.12.1",
     title: "Changelog Responsive Layout & Performance Improvements",
     releaseDate: "2026-10-04",
-    isLatest: true,
     summary:
       "Enhanced responsive formatting for changelog milestone cards across all mobile and desktop viewports, and improved overall app speed and responsiveness.",
     changes: [

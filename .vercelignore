@@ -1,0 +1,36 @@
+# AI agents and workspace configurations
+.agents/
+AGENTS.md
+
+# Documentation & meta files (not needed for Next.js build)
+README.md
+README_DEFAULT.md
+CODE_OF_CONDUCT.md
+CHANGELOG.md
+LICENSE
+
+# GitHub repository files
+.github/
+
+# Environment files (managed securely in Vercel project settings)
+.env*.local
+.env.example
+
+# Editor & IDE configurations
+.vscode/
+.idea/
+
+# Build caches & TypeScript build info
+*.tsbuildinfo
+.turbo/
+
+# Tests & coverage
+coverage/
+__tests__/
+*.test.*
+*.spec.*
+
+# System and log files
+*.log
+.DS_Store
+Thumbs.db
