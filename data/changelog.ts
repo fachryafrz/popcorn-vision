@@ -21,10 +21,37 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.3",
+    title: "Lighter Media Streaming & Reliability Optimization",
+    releaseDate: "2026-10-12",
+    isLatest: true,
+    summary:
+      "Streamlined background media data delivery for a lighter, more dependable browsing experience with instant screen transitions and zero slowdowns.",
+    changes: [
+      {
+        type: "perf",
+        title: "Streamlined Media Loading",
+        description:
+          "Optimized data delivery for movies, TV series, and search results to ensure faster and leaner page loads.",
+      },
+      {
+        type: "fix",
+        title: "Cloud Service Stability",
+        description:
+          "Eliminated heavy background data buildup to keep services running smoothly and reliably around the clock.",
+      },
+      {
+        type: "perf",
+        title: "Instant Page Revisits",
+        description:
+          "Retained instant 0-millisecond revisitation for recently viewed titles and actor filmographies without re-fetching delays.",
+      },
+    ],
+  },
+  {
     version: "2.12.2",
     title: "Home Screen Mobile & Slow Network Performance Optimization",
     releaseDate: "2026-10-10",
-    isLatest: true,
     summary:
       "High-impact performance optimizations for mobile devices and slower network conditions, featuring responsive art-directed hero backdrops, prioritized media streaming, and zero-waterfall server prefetching.",
     changes: [

@@ -11,4 +11,6 @@ trigger: always_on
 
 2. **User-Friendly & Benefit-Oriented Language**:
    - Focus on user benefits and visible experience enhancements (e.g., use *"Instant Page Revisits"* instead of *"Implemented in-memory Map cache"*).
+   - **Strict Anti-Jargon Guardrail**: NEVER mention internal database tables, storage quotas, raw API payloads, cron jobs, or backend infrastructure in changelogs.
+   - **Audience Test**: Ask yourself: *"Would a non-technical movie enthusiast understand and appreciate this note?"* If it sounds like a DevOps or DBA ticket, rewrite it to focus on speed, stability, or smoother browsing.
    - Categorize entries cleanly using accurate types: `"feat"`, `"fix"`, `"perf"`, `"refactor"`, or `"ui"`.
