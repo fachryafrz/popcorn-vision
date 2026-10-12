@@ -1,5 +1,4 @@
 import { action, type ActionCtx } from "./_generated/server";
-import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
 const TMDB_BASE_URL = "https://api.themoviedb.org/3";
@@ -42,35 +41,12 @@ async function tmdbFetch<T>(endpoint: string, params: Record<string, string | nu
 }
 
 async function getCachedOrFetch<T>(
-  ctx: ActionCtx,
-  key: string,
-  ttlMs: number,
+  _ctx: ActionCtx,
+  _key: string,
+  _ttlMs: number,
   fetcher: () => Promise<T>
 ): Promise<T> {
-  try {
-    const cached = await ctx.runQuery(internal.tmdbCache.get, { key });
-    if (cached && cached.expiresAt > Date.now()) {
-      return JSON.parse(cached.data) as T;
-    }
-  } catch (err) {
-    console.warn(`Cache read error for key ${key}:`, err);
-  }
-
-  const freshData = await fetcher();
-
-  if (freshData !== null && freshData !== undefined) {
-    try {
-      await ctx.runMutation(internal.tmdbCache.set, {
-        key,
-        data: JSON.stringify(freshData),
-        ttlMs,
-      });
-    } catch (err) {
-      console.warn(`Cache write error for key ${key}:`, err);
-    }
-  }
-
-  return freshData;
+  return await fetcher();
 }
 
 export interface TMDBMedia {

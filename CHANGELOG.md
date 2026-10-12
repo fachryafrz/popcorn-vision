@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.3] - 2026-10-12
+
+### Changed
+- **Streamlined Media Loading**: Streamlined background media delivery for movies, TV series, and search results to ensure faster and leaner page loads.
+- **Cloud Service Stability**: Eliminated heavy background data buildup in cloud services, keeping the platform fast and reliable around the clock.
+- **Instant Page Revisits**: Retained instant 0-millisecond revisitation and request deduplication for seamless navigation across titles and actor filmographies.
+
+---
+
 ## [2.12.2] - 2026-10-10
 
 ### Changed
