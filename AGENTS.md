@@ -171,9 +171,10 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 
 1. **NEVER use the `any` type:** Always define explicit TypeScript types, interfaces, or use runtime narrowing.
 2. **NEVER call TMDB directly from client components:** Always utilize Next.js Server Actions in `lib/tmdb-actions.ts` to protect API credentials and leverage server-side caching.
-3. **NEVER bypass privacy settings in social queries:** Ensure activity feeds, watchlists, and profile details respect user privacy flags (`hideWatchlist`, `hideFavorites`, `hideRatings`, `hideDiary`).
-4. **NEVER hardcode image CDN URLs:** Always reference TMDB image base paths or environment variables (`NEXT_PUBLIC_API_IMAGE_*`).
-5. **NEVER mutate user collections without updating user references:** Ensure entries in `watchlist`, `favorites`, `ratings`, and `diary` are strictly bound to valid `userId`s and `mediaId`s.
+3. **NEVER use Convex Database tables to cache raw 3rd-party API responses:** Convex Database has strict storage quotas on free/standard plans. Caching large external JSON payloads (e.g. TMDB movie details, credits, search results) inside Convex documents rapidly exhausts database storage. Use direct fetches in Convex Actions or client-side in-memory caching instead.
+4. **NEVER bypass privacy settings in social queries:** Ensure activity feeds, watchlists, and profile details respect user privacy flags (`hideWatchlist`, `hideFavorites`, `hideRatings`, `hideDiary`).
+5. **NEVER hardcode image CDN URLs:** Always reference TMDB image base paths or environment variables (`NEXT_PUBLIC_API_IMAGE_*`).
+6. **NEVER mutate user collections without updating user references:** Ensure entries in `watchlist`, `favorites`, `ratings`, and `diary` are strictly bound to valid `userId`s and `mediaId`s.
 
 ---
 
