@@ -283,9 +283,11 @@ export const deleteCurrentUserAccountData = mutation({
     }
 
     // Delete notifications sent
-    const sentNotifications = await ctx.db.query("notifications").collect();
-    const relevantSentNotifs = sentNotifications.filter((n) => n.senderId === userId);
-    for (const n of relevantSentNotifs) {
+    const sentNotifications = await ctx.db
+      .query("notifications")
+      .withIndex("by_sender", (q) => q.eq("senderId", userId))
+      .collect();
+    for (const n of sentNotifications) {
       await ctx.db.delete(n._id);
     }
   },
@@ -479,16 +481,24 @@ export const getAdminUsersList = query({
       throw new Error("Unauthorized: Admin or Owner access required");
     }
 
-    let users = await ctx.db.query("users").collect();
-
-    if (args.search) {
-      const q = args.search.toLowerCase().trim();
-      users = users.filter(
-        (u) =>
-          u.name.toLowerCase().includes(q) ||
-          u.username.toLowerCase().includes(q) ||
-          u.email.toLowerCase().includes(q)
-      );
+    let users;
+    if (args.search && args.search.trim()) {
+      const q = args.search.trim();
+      const byName = await ctx.db
+        .query("users")
+        .withSearchIndex("search_name", (s) => s.search("name", q))
+        .take(50);
+      const byUsername = await ctx.db
+        .query("users")
+        .withSearchIndex("search_username", (s) => s.search("username", q))
+        .take(50);
+      const userMap = new Map<string, typeof byName[0]>();
+      for (const u of [...byName, ...byUsername]) {
+        userMap.set(u.userId, u);
+      }
+      users = Array.from(userMap.values());
+    } else {
+      users = await ctx.db.query("users").order("desc").take(100);
     }
 
     if (args.roleFilter && args.roleFilter !== "all") {

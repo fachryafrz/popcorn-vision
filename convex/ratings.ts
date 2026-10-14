@@ -57,12 +57,41 @@ export const rateMedia = mutation({
       )
       .first();
 
+    const stats = await ctx.db
+      .query("mediaStats")
+      .withIndex("by_media", (q) =>
+        q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType),
+      )
+      .first();
+
     if (existing) {
+      const oldRating = existing.rating;
+      const diff = args.rating - oldRating;
       await ctx.db.patch(existing._id, {
         rating: args.rating,
         addedAt: Date.now(),
       });
+
+      if (stats) {
+        await ctx.db.patch(stats._id, {
+          ratingSum: stats.ratingSum + diff,
+        });
+      }
       return existing._id;
+    }
+
+    if (stats) {
+      await ctx.db.patch(stats._id, {
+        ratingSum: stats.ratingSum + args.rating,
+        totalRatings: stats.totalRatings + 1,
+      });
+    } else {
+      await ctx.db.insert("mediaStats", {
+        mediaId: args.mediaId,
+        mediaType: args.mediaType,
+        ratingSum: args.rating,
+        totalRatings: 1,
+      });
     }
 
     return await ctx.db.insert("ratings", {
@@ -101,6 +130,22 @@ export const deleteRating = mutation({
     if (existing) {
       await ctx.db.delete(existing._id);
       
+      const stats = await ctx.db
+        .query("mediaStats")
+        .withIndex("by_media", (q) =>
+          q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType),
+        )
+        .first();
+
+      if (stats) {
+        const newTotal = Math.max(0, stats.totalRatings - 1);
+        const newSum = Math.max(0, stats.ratingSum - existing.rating);
+        await ctx.db.patch(stats._id, {
+          ratingSum: newSum,
+          totalRatings: newTotal,
+        });
+      }
+
       // Clean up rate activity
       await deleteActivitiesByTypeAndMedia(ctx, userId, "rate", args.mediaId, args.mediaType);
       
@@ -146,13 +191,41 @@ export const getUserRatings = query({
   },
 });
 
-// Get community rating stats
+// Get community rating stats (O(1) lookup from mediaStats)
 export const getCommunityRatingStats = query({
   args: {
     mediaId: v.string(),
     mediaType: v.string(),
   },
   handler: async (ctx, args) => {
+    // 1. Fast path: check pre-computed aggregate mediaStats (1 document read!)
+    const stats = await ctx.db
+      .query("mediaStats")
+      .withIndex("by_media", (q) =>
+        q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType),
+      )
+      .first();
+
+    if (stats && stats.totalRatings > 0) {
+      const avg = Number(
+        (stats.ratingSum / stats.totalRatings).toFixed(
+          stats.ratingSum / stats.totalRatings < 10 ? 1 : 0
+        )
+      );
+      return {
+        averageRating: avg,
+        totalRatings: stats.totalRatings,
+      };
+    }
+
+    if (stats && stats.totalRatings === 0) {
+      return {
+        averageRating: 0,
+        totalRatings: 0,
+      };
+    }
+
+    // 2. Fallback: calculate if not yet seeded
     const ratings = await ctx.db
       .query("ratings")
       .withIndex("by_media", (q) =>
@@ -196,12 +269,10 @@ export const deleteAllRatings = mutation({
     }
 
     // Clean up rating activities
-    const activities = await ctx.db
+    const rateActivities = await ctx.db
       .query("activities")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user_type", (q) => q.eq("userId", userId).eq("type", "rate"))
       .collect();
-
-    const rateActivities = activities.filter((a) => a.type === "rate");
     for (const act of rateActivities) {
       await ctx.db.delete(act._id);
 

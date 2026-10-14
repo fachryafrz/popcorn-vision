@@ -1,5 +1,6 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { v } from "convex/values";
+import { Doc } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 
 // Helper to get current authenticated user profile
@@ -45,6 +46,8 @@ export const createList = mutation({
       privacy: args.privacy,
       isCollaborative: args.isCollaborative,
       isWatchlist: args.isWatchlist || false,
+      itemCount: 0,
+      likeCount: 0,
     });
 
     // Add creator as a collaborator if collaborative
@@ -221,6 +224,11 @@ export const addItem = mutation({
       addedAt: Date.now(),
     });
 
+    const currentCount = list.itemCount !== undefined ? list.itemCount : 0;
+    await ctx.db.patch(args.listId, {
+      itemCount: currentCount + 1,
+    });
+
     return itemId;
   },
 });
@@ -264,6 +272,10 @@ export const removeItem = mutation({
     if (!item) return false;
 
     await ctx.db.delete(item._id);
+    const currentCount = list.itemCount !== undefined ? list.itemCount : 1;
+    await ctx.db.patch(args.listId, {
+      itemCount: Math.max(0, currentCount - 1),
+    });
     return true;
   },
 });
@@ -289,16 +301,13 @@ export const inviteCollaborator = mutation({
       .first();
     if (existing) throw new Error("User is already a collaborator");
 
-    // Check if invitation is already pending
-    const notifications = await ctx.db
+    // Check if invitation is already pending using index
+    const existingInvite = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .collect();
-    const existingInvite = notifications.find(
-      (n) =>
-        n.type === "list_invite" &&
-        n.mediaId === String(args.listId)
-    );
+      .withIndex("by_user_type_media", (q) =>
+        q.eq("userId", args.userId).eq("type", "list_invite").eq("mediaId", String(args.listId))
+      )
+      .first();
     if (existingInvite) throw new Error("Invitation already pending");
 
     // Insert Notification
@@ -342,16 +351,13 @@ export const acceptListInvite = mutation({
       joinedAt: Date.now(),
     });
 
-    // Delete notification
-    const notifications = await ctx.db
+    // Delete notification using index
+    const inviteNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const inviteNotif = notifications.find(
-      (n) =>
-        n.type === "list_invite" &&
-        n.mediaId === String(args.listId)
-    );
+      .withIndex("by_user_type_media", (q) =>
+        q.eq("userId", currentUserId).eq("type", "list_invite").eq("mediaId", String(args.listId))
+      )
+      .first();
     if (inviteNotif) {
       await ctx.db.delete(inviteNotif._id);
     }
@@ -369,16 +375,13 @@ export const declineListInvite = mutation({
     const user = await authComponent.getAuthUser(ctx);
     const currentUserId = user._id;
 
-    // Delete notification
-    const notifications = await ctx.db
+    // Delete notification using index
+    const inviteNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const inviteNotif = notifications.find(
-      (n) =>
-        n.type === "list_invite" &&
-        n.mediaId === String(args.listId)
-    );
+      .withIndex("by_user_type_media", (q) =>
+        q.eq("userId", currentUserId).eq("type", "list_invite").eq("mediaId", String(args.listId))
+      )
+      .first();
     if (inviteNotif) {
       await ctx.db.delete(inviteNotif._id);
     }
@@ -435,14 +438,25 @@ export const toggleLikeList = mutation({
       .withIndex("by_user_list", (q) => q.eq("userId", userId).eq("listId", args.listId))
       .first();
 
+    const list = await ctx.db.get(args.listId);
+    if (!list) throw new Error("List not found");
+
     if (existing) {
       await ctx.db.delete(existing._id);
+      const currentLikes = list.likeCount !== undefined ? list.likeCount : 1;
+      await ctx.db.patch(args.listId, {
+        likeCount: Math.max(0, currentLikes - 1),
+      });
       return false;
     } else {
       await ctx.db.insert("customListLikes", {
         listId: args.listId,
         userId,
         createdAt: Date.now(),
+      });
+      const currentLikes = list.likeCount !== undefined ? list.likeCount : 0;
+      await ctx.db.patch(args.listId, {
+        likeCount: currentLikes + 1,
       });
       return true;
     }
@@ -555,28 +569,41 @@ export const getUserLists = query({
     }
 
     const combined = [...owned, ...collabLists];
+    const userCache = new Map<string, Doc<"users"> | null>();
 
     const results = [];
     for (const list of combined) {
-      const creator = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
-        .first();
+      let creator = userCache.get(list.createdById);
+      if (creator === undefined) {
+        creator = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
+          .first();
+        userCache.set(list.createdById, creator);
+      }
 
-      const items = await ctx.db
-        .query("customListItems")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let itemCount = list.itemCount;
+      if (itemCount === undefined) {
+        const items = await ctx.db
+          .query("customListItems")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        itemCount = items.length;
+      }
 
-      const likes = await ctx.db
-        .query("customListLikes")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let likeCount = list.likeCount;
+      if (likeCount === undefined) {
+        const likes = await ctx.db
+          .query("customListLikes")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        likeCount = likes.length;
+      }
 
       results.push({
         ...list,
-        itemCount: items.length,
-        likeCount: likes.length,
+        itemCount,
+        likeCount,
         creator: creator
           ? {
               userId: creator.userId,
@@ -605,30 +632,43 @@ export const getFavoritedLists = query({
       .withIndex("by_user", (q) => q.eq("userId", userId))
       .collect();
 
+    const userCache = new Map<string, Doc<"users"> | null>();
     const results = [];
     for (const fav of favorites) {
       const list = await ctx.db.get(fav.listId);
       if (!list) continue;
 
-      const creator = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
-        .first();
+      let creator = userCache.get(list.createdById);
+      if (creator === undefined) {
+        creator = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
+          .first();
+        userCache.set(list.createdById, creator);
+      }
 
-      const items = await ctx.db
-        .query("customListItems")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let itemCount = list.itemCount;
+      if (itemCount === undefined) {
+        const items = await ctx.db
+          .query("customListItems")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        itemCount = items.length;
+      }
 
-      const likes = await ctx.db
-        .query("customListLikes")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let likeCount = list.likeCount;
+      if (likeCount === undefined) {
+        const likes = await ctx.db
+          .query("customListLikes")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        likeCount = likes.length;
+      }
 
       results.push({
         ...list,
-        itemCount: items.length,
-        likeCount: likes.length,
+        itemCount,
+        likeCount,
         creator: creator
           ? {
               userId: creator.userId,
@@ -653,27 +693,40 @@ export const getPublicLists = query({
       .withIndex("by_privacy", (q) => q.eq("privacy", "public"))
       .collect();
 
+    const userCache = new Map<string, Doc<"users"> | null>();
     const results = [];
     for (const list of lists) {
-      const creator = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
-        .first();
+      let creator = userCache.get(list.createdById);
+      if (creator === undefined) {
+        creator = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", list.createdById))
+          .first();
+        userCache.set(list.createdById, creator);
+      }
 
-      const items = await ctx.db
-        .query("customListItems")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let itemCount = list.itemCount;
+      if (itemCount === undefined) {
+        const items = await ctx.db
+          .query("customListItems")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        itemCount = items.length;
+      }
 
-      const likes = await ctx.db
-        .query("customListLikes")
-        .withIndex("by_list", (q) => q.eq("listId", list._id))
-        .collect();
+      let likeCount = list.likeCount;
+      if (likeCount === undefined) {
+        const likes = await ctx.db
+          .query("customListLikes")
+          .withIndex("by_list", (q) => q.eq("listId", list._id))
+          .collect();
+        likeCount = likes.length;
+      }
 
       results.push({
         ...list,
-        itemCount: items.length,
-        likeCount: likes.length,
+        itemCount,
+        likeCount,
         creator: creator
           ? {
               userId: creator.userId,
@@ -748,19 +801,27 @@ export const getListDetail = query({
       .withIndex("by_list", (q) => q.eq("listId", args.listId))
       .collect();
 
+    // Profile cache to prevent redundant reads for item creators, watchers, collaborators, and comment authors
+    const profileCache = new Map<string, Doc<"users"> | null>();
+    const getProfile = async (uid: string) => {
+      let p = profileCache.get(uid);
+      if (p === undefined) {
+        p = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", uid))
+          .first();
+        profileCache.set(uid, p);
+      }
+      return p;
+    };
+
     const items = [];
     for (const item of itemsList) {
-      const addedBy = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", item.addedById))
-        .first();
+      const addedBy = await getProfile(item.addedById);
 
       let watchedByUser = null;
       if (item.watched && item.watchedById) {
-        const watchedByProfile = await ctx.db
-          .query("users")
-          .withIndex("by_userId", (q) => q.eq("userId", item.watchedById!))
-          .first();
+        const watchedByProfile = await getProfile(item.watchedById!);
         if (watchedByProfile) {
           watchedByUser = {
             userId: watchedByProfile.userId,
@@ -832,10 +893,7 @@ export const getListDetail = query({
         .collect();
 
       for (const col of collabsList) {
-        const u = await ctx.db
-          .query("users")
-          .withIndex("by_userId", (q) => q.eq("userId", col.userId))
-          .first();
+        const u = await getProfile(col.userId);
         if (u) {
           collaborators.push({
             userId: u.userId,
@@ -855,10 +913,7 @@ export const getListDetail = query({
 
     const comments = [];
     for (const comm of commentsList) {
-      const u = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", comm.userId))
-        .first();
+      const u = await getProfile(comm.userId);
       comments.push({
         ...comm,
         author: u

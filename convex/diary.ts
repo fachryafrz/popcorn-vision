@@ -437,13 +437,11 @@ export const getUserDiary = query({
       targetUserId = currentUser.userId;
     }
 
-    const diaryEntries = await ctx.db
+    return await ctx.db
       .query("diary")
-      .withIndex("by_user", (q) => q.eq("userId", targetUserId!))
+      .withIndex("by_user_watched", (q) => q.eq("userId", targetUserId!))
+      .order("desc")
       .collect();
-
-    // Sort by watchedDate descending (newest watches first)
-    return diaryEntries.sort((a, b) => b.watchedDate - a.watchedDate);
   },
 });
 
@@ -505,15 +503,17 @@ export const deleteAllDiary = mutation({
       await ctx.db.delete(entry._id);
     }
 
-    // Clean up review activities
-    const activities = await ctx.db
+    // Clean up review and season completion activities using indexed queries
+    const reviewActivities = await ctx.db
       .query("activities")
-      .withIndex("by_user", (q) => q.eq("userId", currentUser.userId))
+      .withIndex("by_user_type", (q) => q.eq("userId", currentUser.userId).eq("type", "review"))
+      .collect();
+    const completedSeasonActivities = await ctx.db
+      .query("activities")
+      .withIndex("by_user_type", (q) => q.eq("userId", currentUser.userId).eq("type", "completed_season"))
       .collect();
 
-    const activitiesToDelete = activities.filter(
-      (a) => a.type === "review" || a.type === "completed_season"
-    );
+    const activitiesToDelete = [...reviewActivities, ...completedSeasonActivities];
     for (const act of activitiesToDelete) {
       await ctx.db.delete(act._id);
       

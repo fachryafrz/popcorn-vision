@@ -149,12 +149,10 @@ export const deleteAllFavorites = mutation({
     }
 
     // Clean up favorite activities
-    const activities = await ctx.db
+    const favoriteActivities = await ctx.db
       .query("activities")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user_type", (q) => q.eq("userId", userId).eq("type", "favorite"))
       .collect();
-
-    const favoriteActivities = activities.filter((a) => a.type === "favorite");
     for (const act of favoriteActivities) {
       await ctx.db.delete(act._id);
 

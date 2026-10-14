@@ -1,7 +1,7 @@
 import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-import { Id } from "./_generated/dataModel";
+import { Id, Doc } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 
 // Helper to get helper data for user social status
@@ -73,15 +73,32 @@ export const searchUsers = query({
     const user = await authComponent.safeGetAuthUser(ctx);
     const currentUserId = user?._id || null;
 
-    // Fetch all profiles (capped for search)
-    const allUsers = await ctx.db.query("users").collect();
-    
-    const matchedUsers = allUsers.filter(u => 
-      u.status !== "deleted" &&
-      u.status !== "closed" &&
-      (u.name.toLowerCase().includes(q) || 
-       u.username.toLowerCase().includes(q))
-    ).slice(0, 20);
+    const cleanQuery = q.replace(/^@/, "");
+    if (!cleanQuery) return [];
+
+    // Use search indexes with limits instead of full table scan
+    const byUsername = await ctx.db
+      .query("users")
+      .withSearchIndex("search_username", (s) =>
+        s.search("username", cleanQuery)
+      )
+      .take(15);
+
+    const byName = await ctx.db
+      .query("users")
+      .withSearchIndex("search_name", (s) =>
+        s.search("name", cleanQuery)
+      )
+      .take(15);
+
+    // Deduplicate matched users
+    const userMap = new Map<string, Doc<"users">>();
+    for (const u of [...byUsername, ...byName]) {
+      if (u.status !== "deleted" && u.status !== "closed") {
+        userMap.set(u.userId, u);
+      }
+    }
+    const matchedUsers = Array.from(userMap.values()).slice(0, 15);
 
     const results = [];
     for (const targetUser of matchedUsers) {
@@ -177,14 +194,17 @@ export const getUserSocialProfile = query({
       .collect();
     const activeFriends = [...f1, ...f2].filter((f) => f.status === "friends");
 
-    // Friends list details (lookup profiles)
+    // Friends list details (capped to 15 for preview and batched in parallel)
+    const previewFriends = activeFriends.slice(0, 15);
+    const friendProfilesDocs = await Promise.all(
+      previewFriends.map((f) => {
+        const friendId = f.userId1 === targetUser.userId ? f.userId2 : f.userId1;
+        return ctx.db.query("users").withIndex("by_userId", (q) => q.eq("userId", friendId)).first();
+      })
+    );
+
     const friendsProfiles = [];
-    for (const friendship of activeFriends) {
-      const friendId = friendship.userId1 === targetUser.userId ? friendship.userId2 : friendship.userId1;
-      const fProfile = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", friendId))
-        .first();
+    for (const fProfile of friendProfilesDocs) {
       if (fProfile) {
         friendsProfiles.push({
           userId: fProfile.userId,
@@ -316,12 +336,13 @@ export const acceptFriendRequest = mutation({
       status: "friends",
     });
 
-    // Remove pending friend request notification
-    const notification = await ctx.db
+    // Remove pending friend request notification using index
+    const targetNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const targetNotif = notification.find((n) => n.senderId === args.targetUserId && n.type === "friend_request");
+      .withIndex("by_user_sender_type", (q) =>
+        q.eq("userId", currentUserId).eq("senderId", args.targetUserId).eq("type", "friend_request")
+      )
+      .first();
     if (targetNotif) {
       await ctx.db.delete(targetNotif._id);
     }
@@ -374,12 +395,13 @@ export const rejectFriendRequest = mutation({
 
     await ctx.db.delete(friendship._id);
 
-    // Delete notification
-    const notification = await ctx.db
+    // Delete notification using index
+    const targetNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const targetNotif = notification.find((n) => n.senderId === args.targetUserId && n.type === "friend_request");
+      .withIndex("by_user_sender_type", (q) =>
+        q.eq("userId", currentUserId).eq("senderId", args.targetUserId).eq("type", "friend_request")
+      )
+      .first();
     if (targetNotif) {
       await ctx.db.delete(targetNotif._id);
     }
@@ -410,12 +432,13 @@ export const cancelFriendRequest = mutation({
 
     await ctx.db.delete(friendship._id);
 
-    // Delete target user's notification
-    const notifications = await ctx.db
+    // Delete target user's notification using index
+    const targetNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", args.targetUserId))
-      .collect();
-    const targetNotif = notifications.find((n) => n.senderId === currentUserId && n.type === "friend_request");
+      .withIndex("by_user_sender_type", (q) =>
+        q.eq("userId", args.targetUserId).eq("senderId", currentUserId).eq("type", "friend_request")
+      )
+      .first();
     if (targetNotif) {
       await ctx.db.delete(targetNotif._id);
     }
@@ -607,32 +630,52 @@ export const getNotifications = query({
     if (!user) return [];
     const currentUserId = user._id;
 
+    // Use composite index with descending order and limit to 30 most recent notifications
     const list = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
+      .withIndex("by_user_created", (q) => q.eq("userId", currentUserId))
+      .order("desc")
+      .take(30);
 
-    // Sort by newest
-    list.sort((a, b) => b.createdAt - a.createdAt);
+    // Batch and cache senders to eliminate duplicate queries
+    const senderIds = Array.from(new Set(list.map((n) => n.senderId)));
+    const senderDocs = await Promise.all(
+      senderIds.map((sid) =>
+        ctx.db.query("users").withIndex("by_userId", (q) => q.eq("userId", sid)).first()
+      )
+    );
+    const senderMap = new Map<string, Doc<"users"> | null>();
+    senderIds.forEach((sid, idx) => {
+      senderMap.set(sid, senderDocs[idx]);
+    });
+
+    // In-memory cache for repeated list and chat lookups
+    const customListMap = new Map<string, Doc<"customLists"> | null>();
+    const chatMap = new Map<string, Doc<"chats"> | null>();
 
     const enriched = [];
     for (const notif of list) {
-      const sender = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", notif.senderId))
-        .first();
+      const sender = senderMap.get(notif.senderId);
       
       let targetName: string | undefined = undefined;
       if (notif.type === "list_invite" && notif.mediaId) {
         try {
-          const customList = await ctx.db.get(notif.mediaId as Id<"customLists">);
+          let customList = customListMap.get(notif.mediaId);
+          if (customList === undefined) {
+            customList = await ctx.db.get(notif.mediaId as Id<"customLists">);
+            customListMap.set(notif.mediaId, customList);
+          }
           if (customList) {
             targetName = customList.name;
           }
         } catch {}
       } else if (notif.type === "group_invite" && notif.mediaId) {
         try {
-          const chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+          let chat = chatMap.get(notif.mediaId);
+          if (chat === undefined) {
+            chat = await ctx.db.get(notif.mediaId as Id<"chats">);
+            chatMap.set(notif.mediaId, chat);
+          }
           if (chat) {
             targetName = chat.name;
           }
