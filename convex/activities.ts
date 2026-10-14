@@ -161,13 +161,22 @@ export const getFeed = query({
       filteredPage = filteredPage.filter((a) => allowedUserIds!.includes(a.userId));
     }
 
+    // Deduplicate and batch query users for feed items to eliminate duplicate reads
+    const uniqueUserIds = Array.from(new Set(filteredPage.map((a) => a.userId)));
+    const userDocs = await Promise.all(
+      uniqueUserIds.map((uid) =>
+        ctx.db.query("users").withIndex("by_userId", (q) => q.eq("userId", uid)).first()
+      )
+    );
+    const userMap = new Map<string, typeof userDocs[0]>();
+    uniqueUserIds.forEach((uid, idx) => {
+      userMap.set(uid, userDocs[idx]);
+    });
+
     // Enrich the items with User profile, likes count, comment count, and user's own like status
     const enrichedPage = [];
     for (const activity of filteredPage) {
-      const activityUser = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", activity.userId))
-        .first();
+      const activityUser = userMap.get(activity.userId);
 
       if (!activityUser) continue;
 
@@ -377,12 +386,12 @@ export async function deleteActivitiesByTypeAndMedia(
 ) {
   const existing = await ctx.db
     .query("activities")
-    .withIndex("by_user", (q) => q.eq("userId", userId))
+    .withIndex("by_user_media", (q) =>
+      q.eq("userId", userId).eq("mediaId", mediaId).eq("mediaType", mediaType)
+    )
     .collect();
 
-  const targets = existing.filter(
-    (a) => a.type === type && a.mediaId === mediaId && a.mediaType === mediaType
-  );
+  const targets = existing.filter((a) => a.type === type);
 
   for (const act of targets) {
     await ctx.db.delete(act._id);

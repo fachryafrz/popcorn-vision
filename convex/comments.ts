@@ -1,4 +1,4 @@
-import { mutation, query, QueryCtx, MutationCtx, action, internalMutation, internalQuery } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 import { authComponent } from "./auth";
@@ -59,14 +59,21 @@ export const getComments = query({
       .withIndex("by_media", (q) => q.eq("mediaId", args.mediaId).eq("mediaType", args.mediaType))
       .collect();
 
-    // Resolve user profiles for comment authors in a batch-like way
-    // (since Convex optimizes repeated database gets for identical IDs)
+    // Deduplicate and batch query author user profiles to eliminate duplicate reads
+    const authorIds = Array.from(new Set(rawComments.map((c) => c.userId)));
+    const authorDocs = await Promise.all(
+      authorIds.map((uid) =>
+        ctx.db.query("users").withIndex("by_userId", (q) => q.eq("userId", uid)).first()
+      )
+    );
+    const authorMap = new Map<string, typeof authorDocs[0]>();
+    authorIds.forEach((uid, idx) => {
+      authorMap.set(uid, authorDocs[idx]);
+    });
+
     const commentsWithMeta: EnrichedComment[] = [];
     for (const comment of rawComments) {
-      const author = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", comment.userId))
-        .first();
+      const author = authorMap.get(comment.userId);
 
       const likes = await ctx.db
         .query("commentLikes")
@@ -311,10 +318,11 @@ async function deleteCommentAndReplies(ctx: MutationCtx, commentId: Id<"comments
     await ctx.db.delete(like._id);
   }
 
-  // Delete notifications pointing to this comment
-  // (we query using direct database filters or clean-up loops)
-  const notifications = await ctx.db.query("notifications").collect();
-  const relevantNotifs = notifications.filter((n) => n.commentId === commentId);
+  // Delete notifications pointing to this comment using indexed query
+  const relevantNotifs = await ctx.db
+    .query("notifications")
+    .withIndex("by_comment", (q) => q.eq("commentId", commentId))
+    .collect();
   for (const n of relevantNotifs) {
     await ctx.db.delete(n._id);
   }

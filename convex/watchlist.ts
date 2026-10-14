@@ -149,12 +149,10 @@ export const deleteAllWatchlist = mutation({
     }
 
     // Clean up watchlist activities
-    const activities = await ctx.db
+    const watchlistActivities = await ctx.db
       .query("activities")
-      .withIndex("by_user", (q) => q.eq("userId", userId))
+      .withIndex("by_user_type", (q) => q.eq("userId", userId).eq("type", "watchlist"))
       .collect();
-
-    const watchlistActivities = activities.filter((a) => a.type === "watchlist");
     for (const act of watchlistActivities) {
       await ctx.db.delete(act._id);
 

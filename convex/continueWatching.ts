@@ -85,12 +85,11 @@ export const getProgress = query({
     const user = await authComponent.safeGetAuthUser(ctx);
     if (!user) return [];
 
-    const items = await ctx.db
+    return await ctx.db
       .query("continueWatching")
-      .withIndex("by_user", (q) => q.eq("userId", user._id))
-      .collect();
-
-    return items.sort((a, b) => b.updatedAt - a.updatedAt);
+      .withIndex("by_user_updated", (q) => q.eq("userId", user._id))
+      .order("desc")
+      .take(20);
   },
 });
 

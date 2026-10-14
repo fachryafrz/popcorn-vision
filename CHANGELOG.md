@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.4] - 2026-10-14
+
+### Changed
+- **Lag-Free Real-Time Chat & Typing**: Streamlined live typing indicators and chat updates so messaging conversations feel buttery smooth without causing any background interface stutter or delays.
+- **Lightning-Fast Custom Lists & Watch Diary**: Accelerated loading times when browsing curated community lists, personal watch diaries, and watchlist collections.
+- **Instant Community Ratings & Activity Feeds**: Refined rating calculations and social feed updates to load instantaneously when exploring movies and TV series.
+
+### Fixed
+- **Faster User Search & Account Interactions**: Enhanced search speed when finding friends or fellow movie enthusiasts and improved responsiveness across notification alerts.
+
+---
+
 ## [2.12.3] - 2026-10-12
 
 ### Changed
