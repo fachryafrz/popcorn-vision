@@ -1,6 +1,7 @@
 import { mutation, query, MutationCtx, QueryCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
+import { Doc } from "./_generated/dataModel";
 import { authComponent } from "./auth";
 
 // Helper: Authenticate current user
@@ -360,14 +361,13 @@ export const acceptGroupInvite = mutation({
       });
     }
 
-    // Delete the notification
-    const notifications = await ctx.db
+    // Delete the notification using index
+    const inviteNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const inviteNotif = notifications.find(
-      (n) => n.type === "group_invite" && n.mediaId === String(args.chatId)
-    );
+      .withIndex("by_user_type_media", (q) =>
+        q.eq("userId", currentUserId).eq("type", "group_invite").eq("mediaId", String(args.chatId))
+      )
+      .first();
     if (inviteNotif) {
       await ctx.db.delete(inviteNotif._id);
     }
@@ -382,14 +382,13 @@ export const declineGroupInvite = mutation({
   handler: async (ctx, args) => {
     const currentUserId = await getAuthedUser(ctx);
 
-    // Delete the notification
-    const notifications = await ctx.db
+    // Delete the notification using index
+    const inviteNotif = await ctx.db
       .query("notifications")
-      .withIndex("by_user", (q) => q.eq("userId", currentUserId))
-      .collect();
-    const inviteNotif = notifications.find(
-      (n) => n.type === "group_invite" && n.mediaId === String(args.chatId)
-    );
+      .withIndex("by_user_type_media", (q) =>
+        q.eq("userId", currentUserId).eq("type", "group_invite").eq("mediaId", String(args.chatId))
+      )
+      .first();
     if (inviteNotif) {
       await ctx.db.delete(inviteNotif._id);
     }
@@ -658,7 +657,7 @@ export const toggleMuteChat = mutation({
   },
 });
 
-// Manage typing state
+// Manage typing state via dedicated chatTyping table (prevents membership invalidation storms)
 export const setTypingStatus = mutation({
   args: {
     chatId: v.id("chats"),
@@ -667,16 +666,31 @@ export const setTypingStatus = mutation({
   handler: async (ctx, args) => {
     const currentUserId = await getAuthedUser(ctx);
 
-    const membership = await ctx.db
-      .query("chatMemberships")
+    const existing = await ctx.db
+      .query("chatTyping")
       .withIndex("by_chat_user", (q) => q.eq("chatId", args.chatId).eq("userId", currentUserId))
       .first();
 
-    if (!membership) throw new Error("Membership not found");
-
-    await ctx.db.patch(membership._id, {
-      typingUntil: args.isTyping ? Date.now() + 3500 : undefined,
-    });
+    if (args.isTyping) {
+      if (existing) {
+        await ctx.db.patch(existing._id, {
+          expiresAt: Date.now() + 3500,
+        });
+      } else {
+        const user = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", currentUserId))
+          .first();
+        await ctx.db.insert("chatTyping", {
+          chatId: args.chatId,
+          userId: currentUserId,
+          userName: user?.name || "Someone",
+          expiresAt: Date.now() + 3500,
+        });
+      }
+    } else if (existing) {
+      await ctx.db.delete(existing._id);
+    }
   },
 });
 
@@ -725,6 +739,8 @@ export const getChatsList = query({
       .withIndex("by_user", (q) => q.eq("userId", currentUserId!))
       .collect();
 
+    const userProfileCache = new Map<string, Doc<"users"> | null>();
+
     const results = [];
     for (const mem of memberships) {
       if (mem.deletedAt !== undefined) continue;
@@ -738,19 +754,19 @@ export const getChatsList = query({
         .order("desc")
         .first();
 
-      // Count unread messages (messages created after user's lastReadAt)
+      // Count unread messages bounded by .take(50) instead of unbounded .collect()
       let unreadCount = 0;
       if (mem.lastReadAt) {
         const newerMessages = await ctx.db
           .query("messages")
           .withIndex("by_chat_created", (q) => q.eq("chatId", chat._id).gt("createdAt", mem.lastReadAt!))
-          .collect();
+          .take(50);
         unreadCount = newerMessages.length;
       } else {
         const allMsgs = await ctx.db
           .query("messages")
           .withIndex("by_chat", (q) => q.eq("chatId", chat._id))
-          .collect();
+          .take(50);
         unreadCount = allMsgs.length;
       }
 
@@ -764,10 +780,14 @@ export const getChatsList = query({
         const partnerMem = otherMembers.find((m) => m.userId !== currentUserId);
         if (!partnerMem) continue;
 
-        const partnerProfile = await ctx.db
-          .query("users")
-          .withIndex("by_userId", (q) => q.eq("userId", partnerMem.userId))
-          .first();
+        let partnerProfile = userProfileCache.get(partnerMem.userId);
+        if (partnerProfile === undefined) {
+          partnerProfile = await ctx.db
+            .query("users")
+            .withIndex("by_userId", (q) => q.eq("userId", partnerMem.userId))
+            .first();
+          userProfileCache.set(partnerMem.userId, partnerProfile);
+        }
 
         if (partnerProfile) {
           // Check blocks
@@ -781,15 +801,14 @@ export const getChatsList = query({
             .first();
           if (block1 || block2) continue;
 
-          const isTyping = partnerMem.typingUntil ? partnerMem.typingUntil > Date.now() : false;
           results.push({
             chatId: chat._id,
             type: "private" as const,
             updatedAt: chat.updatedAt,
             isMuted: !!mem.isMuted,
             unreadCount,
-            isTyping,
-            typingName: isTyping ? partnerProfile.name : undefined,
+            isTyping: false,
+            typingName: undefined,
             lastMessage: messages
               ? {
                   senderId: messages.senderId,
@@ -806,25 +825,6 @@ export const getChatsList = query({
           });
         }
       } else if (chat.type === "group") {
-        // Handle Group Details
-        const otherMembers = await ctx.db
-          .query("chatMemberships")
-          .withIndex("by_chat", (q) => q.eq("chatId", chat._id))
-          .collect();
-
-        const typingMember = otherMembers.find(
-          (m) => m.userId !== currentUserId && m.typingUntil && m.typingUntil > Date.now()
-        );
-
-        let typingName: string | undefined = undefined;
-        if (typingMember) {
-          const u = await ctx.db
-            .query("users")
-            .withIndex("by_userId", (q) => q.eq("userId", typingMember.userId))
-            .first();
-          typingName = u?.name;
-        }
-
         results.push({
           chatId: chat._id,
           type: "group" as const,
@@ -836,8 +836,8 @@ export const getChatsList = query({
           updatedAt: chat.updatedAt,
           isMuted: !!mem.isMuted,
           unreadCount,
-          isTyping: !!typingMember,
-          typingName,
+          isTyping: false,
+          typingName: undefined,
           lastMessage: messages
               ? {
                   senderId: messages.senderId,
@@ -879,13 +879,18 @@ export const getChatMessages = query({
       .order("asc")
       .collect();
 
-    // Map sender info for displaying name and avatar with messages
+    // Map sender info with in-memory caching to eliminate duplicate user queries per message
+    const senderCache = new Map<string, Doc<"users"> | null>();
     const mapped = [];
     for (const msg of messages) {
-      const sender = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", msg.senderId))
-        .first();
+      let sender = senderCache.get(msg.senderId);
+      if (sender === undefined) {
+        sender = await ctx.db
+          .query("users")
+          .withIndex("by_userId", (q) => q.eq("userId", msg.senderId))
+          .first();
+        senderCache.set(msg.senderId, sender);
+      }
 
       mapped.push({
         _id: msg._id,
@@ -937,12 +942,16 @@ export const getChatMembers = query({
       .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
       .collect();
 
+    const users = await Promise.all(
+      memberships.map((m) =>
+        ctx.db.query("users").withIndex("by_userId", (q) => q.eq("userId", m.userId)).first()
+      )
+    );
+
     const members = [];
-    for (const mem of memberships) {
-      const user = await ctx.db
-        .query("users")
-        .withIndex("by_userId", (q) => q.eq("userId", mem.userId))
-        .first();
+    for (let i = 0; i < memberships.length; i++) {
+      const mem = memberships[i];
+      const user = users[i];
 
       if (user) {
         members.push({
@@ -971,25 +980,15 @@ export const getTypingUsers = query({
       return [];
     }
 
-    const typingMemberships = await ctx.db
-      .query("chatMemberships")
+    const typingRecords = await ctx.db
+      .query("chatTyping")
       .withIndex("by_chat", (q) => q.eq("chatId", args.chatId))
       .collect();
 
-    const typingUsers = [];
-    for (const mem of typingMemberships) {
-      if (mem.userId !== currentUserId && mem.typingUntil && mem.typingUntil > Date.now()) {
-        const u = await ctx.db
-          .query("users")
-          .withIndex("by_userId", (q) => q.eq("userId", mem.userId))
-          .first();
-        if (u) {
-          typingUsers.push(u.name);
-        }
-      }
-    }
-
-    return typingUsers;
+    const now = Date.now();
+    return typingRecords
+      .filter((t) => t.userId !== currentUserId && t.expiresAt > now)
+      .map((t) => t.userName);
   },
 });
 

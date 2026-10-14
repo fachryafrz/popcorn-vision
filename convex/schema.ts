@@ -25,7 +25,15 @@ export default defineSchema({
     role: v.optional(v.string()), // "owner" | "admin" | "user"
   })
     .index("by_username", ["username"])
-    .index("by_userId", ["userId"]),
+    .index("by_userId", ["userId"])
+    .searchIndex("search_name", {
+      searchField: "name",
+      filterFields: ["status"],
+    })
+    .searchIndex("search_username", {
+      searchField: "username",
+      filterFields: ["status"],
+    }),
 
   watchlist: defineTable({
     userId: v.string(), // Better Auth user ID
@@ -98,7 +106,12 @@ export default defineSchema({
     messageId: v.optional(v.id("messages")),
   })
     .index("by_user", ["userId"])
-    .index("by_user_unread", ["userId", "read"]),
+    .index("by_user_created", ["userId", "createdAt"])
+    .index("by_user_unread", ["userId", "read"])
+    .index("by_sender", ["senderId"])
+    .index("by_comment", ["commentId"])
+    .index("by_user_sender_type", ["userId", "senderId", "type"])
+    .index("by_user_type_media", ["userId", "type", "mediaId"]),
 
   comments: defineTable({
     mediaId: v.string(),
@@ -230,6 +243,8 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_user", ["userId"])
+    .index("by_user_type", ["userId", "type"])
+    .index("by_user_media", ["userId", "mediaId", "mediaType"])
     .index("by_createdAt", ["createdAt"])
     .index("by_type_createdAt", ["type", "createdAt"]),
 
@@ -258,6 +273,8 @@ export default defineSchema({
     privacy: v.string(), // "public" | "private"
     isCollaborative: v.boolean(),
     isWatchlist: v.optional(v.boolean()),
+    itemCount: v.optional(v.number()),
+    likeCount: v.optional(v.number()),
   })
     .index("by_creator", ["createdById"])
     .index("by_privacy", ["privacy"]),
@@ -345,4 +362,21 @@ export default defineSchema({
   })
     .index("by_user", ["userId"])
     .index("by_endpoint", ["subscription.endpoint"]),
+
+  chatTyping: defineTable({
+    chatId: v.id("chats"),
+    userId: v.string(),
+    userName: v.string(),
+    expiresAt: v.number(),
+  })
+    .index("by_chat", ["chatId"])
+    .index("by_chat_user", ["chatId", "userId"]),
+
+  mediaStats: defineTable({
+    mediaId: v.string(),
+    mediaType: v.string(),
+    ratingSum: v.number(),
+    totalRatings: v.number(),
+  }).index("by_media", ["mediaId", "mediaType"]),
 });
+

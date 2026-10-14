@@ -21,10 +21,43 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.4",
+    title: "Real-Time Chat & Browsing Performance Boost",
+    releaseDate: "2026-10-14",
+    isLatest: true,
+    summary:
+      "Deep performance enhancements across live messaging, community lists, ratings, and social feeds for a smoother, ultra-fast browsing and chatting experience.",
+    changes: [
+      {
+        type: "perf",
+        title: "Lag-Free Real-Time Chat & Typing",
+        description:
+          "Streamlined live typing indicators and chat updates so messaging conversations feel buttery smooth without causing background interface stutter or delays.",
+      },
+      {
+        type: "perf",
+        title: "Lightning-Fast Custom Lists & Watch Diary",
+        description:
+          "Accelerated loading times when browsing curated community lists, personal watch diaries, and watchlist collections.",
+      },
+      {
+        type: "perf",
+        title: "Instant Community Ratings & Activity Feeds",
+        description:
+          "Refined rating calculations and social feed updates to load instantaneously when exploring movies and TV series.",
+      },
+      {
+        type: "fix",
+        title: "Faster User Search & Account Interactions",
+        description:
+          "Enhanced search speed when finding friends or fellow movie enthusiasts and improved responsiveness across notification alerts.",
+      },
+    ],
+  },
+  {
     version: "2.12.3",
     title: "Lighter Media Streaming & Reliability Optimization",
     releaseDate: "2026-10-12",
-    isLatest: true,
     summary:
       "Streamlined background media data delivery for a lighter, more dependable browsing experience with instant screen transitions and zero slowdowns.",
     changes: [

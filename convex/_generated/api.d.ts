@@ -26,7 +26,6 @@ import type * as pushActions from "../pushActions.js";
 import type * as ratings from "../ratings.js";
 import type * as social from "../social.js";
 import type * as tmdb from "../tmdb.js";
-import type * as tmdbCache from "../tmdbCache.js";
 import type * as users from "../users.js";
 import type * as watchlist from "../watchlist.js";
 
@@ -55,7 +54,6 @@ declare const fullApi: ApiFromModules<{
   ratings: typeof ratings;
   social: typeof social;
   tmdb: typeof tmdb;
-  tmdbCache: typeof tmdbCache;
   users: typeof users;
   watchlist: typeof watchlist;
 }>;
