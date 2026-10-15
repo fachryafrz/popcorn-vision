@@ -43,7 +43,12 @@ export default function Footer() {
           Terms & Conditions
         </Link>
       </div>
-      <p className="mt-2 text-xs text-zinc-600">
+      <div className="mt-1 flex flex-col items-center gap-1 text-[11px] text-zinc-600 max-w-xs">
+        <p>
+          This product uses the TMDB API but is not endorsed or certified by TMDB.
+        </p>
+      </div>
+      <p className="mt-1 text-xs text-zinc-600">
         &copy; {moment(createdDate).format("MMM YYYY")} -{" "}
         {moment().format("MMM YYYY")} {siteConfig.name}. All rights reserved.
       </p>

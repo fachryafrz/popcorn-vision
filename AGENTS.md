@@ -80,13 +80,14 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 
 ## 🛠️ Core Libraries, Utilities & Helpers (`lib/`)
 
-- **TMDB Server Actions (`lib/tmdb-actions.ts`):** Centralized Next.js Server Actions for all external TMDB API calls:
+- **TMDB Client Actions & Cache Engine (`lib/tmdb-actions.ts`, `lib/tmdb-cache.ts`):** Centralized client-side TMDB actions with zero server compute and 2-tier caching (L1 In-Memory Map + L2 IndexedDB) with Stale-While-Revalidate (SWR):
   - Discovery & Feeds: `getHeroItems()`, `getTrending(type)`, `getStreamingOriginals(providerKey)`, `getByCategory(genreName)`, `discoverMedia(filters)`.
   - Details: `getMediaDetails(mediaType, id)`, `getCollectionDetails(id)`, `getSeasonDetails(tvId, seasonNumber)`.
   - Search & Metadata: `searchMedia(query, type, page)`, `searchPersonByName(name)`, `searchCompanyByName(name)`, `searchKeywordByName(name)`.
   - Person & Company: `getPersonDetails(id)`, `getPersonCredits(id)`, `getCompanyDetails(id)`, `getCompanyMovies(id)`, `getCompanyTVShows(id)`.
   - Batching & Imports: `matchImportItemsAction(items)` (for Letterboxd/IMDb CSV imports), `batchFetchMediaMetadata(items)`.
   - Providers & Genres: `getTMDBGenres()`, `getTMDBProviders(watchRegion)`.
+- **Edge Reverse Proxy (`cloudflare/worker.js`):** Lightweight Cloudflare Worker reverse proxy that injects the TMDB API key at Cloudflare's global edge network, concealing credentials from client DevTools with 0 serverless compute cost.
 - **TMDB Types & Enums (`lib/tmdb.ts`):** Types (`TMDBMedia`, `TMDBRawItem`), genre map constants (`ALL_GENRES`, `GENRE_MAP`), streaming providers dictionary (`PROVIDERS`), and data cleaning helper `cleanMediaData(items, defaultType)`.
 - **Authentication (`lib/auth-client.ts`, `lib/auth-server.ts`):** Better Auth client (`createAuthClient`, sign in/up, session hooks) and server session retriever.
 - **State Stores (`lib/auth-modal-store.ts`):** Zustand modal store managing open/close state and active tab for authentication dialog (`useAuthModalStore`).
@@ -170,8 +171,8 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 ## ⚠️ Things to Avoid
 
 1. **NEVER use the `any` type:** Always define explicit TypeScript types, interfaces, or use runtime narrowing.
-2. **NEVER call TMDB directly from client components:** Always utilize Next.js Server Actions in `lib/tmdb-actions.ts` to protect API credentials and leverage server-side caching.
-3. **NEVER use Convex Database tables to cache raw 3rd-party API responses:** Convex Database has strict storage quotas on free/standard plans. Caching large external JSON payloads (e.g. TMDB movie details, credits, search results) inside Convex documents rapidly exhausts database storage. Use direct fetches in Convex Actions or client-side in-memory caching instead.
+2. **NEVER call TMDB directly without caching or edge protection:** Always utilize `lib/tmdb-actions.ts` with the two-tier L1/L2 SWR cache engine (`lib/tmdb-cache.ts`) and route requests through the Cloudflare Worker edge proxy (`cloudflare/worker.js`) in production.
+3. **NEVER use Convex Database tables to cache raw 3rd-party API responses:** Convex Database has strict storage quotas on free/standard plans. Caching large external JSON payloads (e.g. TMDB movie details, credits, search results) inside Convex documents rapidly exhausts database storage. Use client-side IndexedDB caching or edge reverse proxy caching instead.
 4. **NEVER bypass privacy settings in social queries:** Ensure activity feeds, watchlists, and profile details respect user privacy flags (`hideWatchlist`, `hideFavorites`, `hideRatings`, `hideDiary`).
 5. **NEVER hardcode image CDN URLs:** Always reference TMDB image base paths or environment variables (`NEXT_PUBLIC_API_IMAGE_*`).
 6. **NEVER mutate user collections without updating user references:** Ensure entries in `watchlist`, `favorites`, `ratings`, and `diary` are strictly bound to valid `userId`s and `mediaId`s.
@@ -188,7 +189,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 - **UI Components:** `components/<component-name>.tsx` or `components/<feature>/` (kebab-case file names, e.g. `activity-card.tsx`, `log-watch-modal.tsx`).
 - **UI Primitives:** `components/ui/`
 - **Custom React Hooks:** `hooks/use-<hook-name>.ts`.
-- **Utility & Helper Functions:** `lib/<utility-name>.ts` and Server Actions `lib/tmdb-actions.ts`.
+- **Utility & Helper Functions:** `lib/<utility-name>.ts` and client actions `lib/tmdb-actions.ts`.
 - **Convex Backend Services:** `convex/<domain>.ts` (e.g. `watchlist.ts`, `diary.ts`, `chats.ts`, `social.ts`).
 
 ---
@@ -204,9 +205,9 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - `GOOGLE_CLIENT_ID`: Google OAuth Client ID for social login.
   - `GOOGLE_CLIENT_SECRET`: Google OAuth Client Secret.
   - `RESEND_API_KEY`: Resend API key for authentication emails and verification links.
-- **TMDB API (The Movie Database):**
-  - `API_URL`: TMDB API base URL (`https://api.themoviedb.org/3`).
-  - `API_KEY` / `TMDB_API_KEY`: TMDB v3 API Key for server actions.
+- **TMDB API & Edge Proxy:**
+  - `NEXT_PUBLIC_API_URL`: TMDB proxy endpoint (`https://povi-tmdb-proxy.<subdomain>.workers.dev` or `https://api.themoviedb.org/3`).
+  - `NEXT_PUBLIC_API_KEY`: TMDB v3 API Key (optional when using Cloudflare proxy).
   - `NEXT_PUBLIC_API_IMAGE_ORIGINAL`, `NEXT_PUBLIC_API_IMAGE_780`, `NEXT_PUBLIC_API_IMAGE_500`, `NEXT_PUBLIC_API_IMAGE_342`, `NEXT_PUBLIC_API_IMAGE_300`: TMDB image CDN path configurations.
 - **Web Push Notifications (Web Push API):**
   - `NEXT_PUBLIC_VAPID_PUBLIC_KEY`: Client-side VAPID public key for browser push subscription.
