@@ -175,6 +175,10 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 4. **NEVER bypass privacy settings in social queries:** Ensure activity feeds, watchlists, and profile details respect user privacy flags (`hideWatchlist`, `hideFavorites`, `hideRatings`, `hideDiary`).
 5. **NEVER hardcode image CDN URLs:** Always reference TMDB image base paths or environment variables (`NEXT_PUBLIC_API_IMAGE_*`).
 6. **NEVER mutate user collections without updating user references:** Ensure entries in `watchlist`, `favorites`, `ratings`, and `diary` are strictly bound to valid `userId`s and `mediaId`s.
+7. **NEVER install or use service worker libraries:** Do not use `@serwist/next`, `serwist`, `next-pwa`, `workbox`, etc. PWA installability is handled natively by Next.js `manifest.ts`. Web Push notifications must strictly use a vanilla zero-dependency `public/sw.js` without any external build plugins or library wrappers.
+8. **NEVER use unconstrained in-memory filtering over `.collect()`:** Always use compound indexes with range bounds (`.gte()`, `.lte()`).
+9. **NEVER execute N+1 database queries in loops:** Batch lookups using the DataLoader pattern with `Set` and `Map`.
+10. **NEVER execute `ctx.db.patch()` on identical data:** Always verify changes before patching to prevent spurious write I/O.
 
 ---
 
@@ -260,7 +264,17 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 - **Release Flow (Web):**
   - Normal: `feature/*` → `develop` (bump version) → `master`
   - Hotfix: `hotfix/*` → `master` (bump patch) → `develop` (sync back)
-- **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages, release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
+- **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages [outputting strictly codeblocks when requested], release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
+
+### 6. No Hardcoded Fallback Anti-Pattern (`||`)
+- **DO NOT hardcode values using `||` for fallbacks** (e.g. `val || "default"`).
+- Always ensure the required data is present at the data source or explicitly validate it.
+- Use optional chaining (`?.`) and nullish coalescing (`??`) only when `null` or `undefined` is an expected, valid domain state, never to mask missing or unhandled data.
+
+### 7. Component Splitting & Aesthetics
+- Always check for existing components in the codebase before creating new ones.
+- If a component or file grows too large or handles multiple concerns, **split it into focused sub-components**.
+- **DO NOT overuse sparkle icons (`Sparkles`) for everything.** Use contextually accurate and meaningful icons.
 
 ---
 
