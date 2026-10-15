@@ -52,6 +52,7 @@ export function usePushNotifications(isLoggedIn: boolean) {
         setPermission(Notification.permission);
 
         try {
+          await navigator.serviceWorker.register('/sw.js');
           const registration = await navigator.serviceWorker.ready;
           const subscription = await registration.pushManager.getSubscription();
           if (subscription) {
@@ -147,6 +148,7 @@ export function usePushNotifications(isLoggedIn: boolean) {
 
     try {
       setIsLoading(true);
+      await navigator.serviceWorker.register('/sw.js');
       const registration = await navigator.serviceWorker.ready;
       const subscription = await registration.pushManager.getSubscription();
 

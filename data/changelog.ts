@@ -21,10 +21,38 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.5",
+    title: "More Responsive Alerts & Quicker Browsing",
+    releaseDate: "2026-10-15",
+    isLatest: true,
+    summary:
+      "Improved notification delivery so you stay instantly up to date with new messages and activity, paired with background speed polishes for smoother navigation.",
+    changes: [
+      {
+        type: "feat",
+        title: "Dependable Chat & Activity Alerts",
+        description:
+          "Notifications for new messages, replies, and friend activities now arrive more reliably in your browser with lower battery and background resource usage.",
+      },
+      {
+        type: "perf",
+        title: "Snappier Screen Loading",
+        description:
+          "Fine-tuned app delivery for faster startup and smoother transitions when exploring movies, TV series, and curated watchlists.",
+      },
+      {
+        type: "ui",
+        title: "Smoother Page Navigation",
+        description:
+          "Navigating between community feeds, chat windows, and user profiles feels lighter and more responsive.",
+      },
+    ],
+  },
+  {
     version: "2.12.4",
     title: "Real-Time Chat & Browsing Performance Boost",
     releaseDate: "2026-10-14",
-    isLatest: true,
+
     summary:
       "Deep performance enhancements across live messaging, community lists, ratings, and social feeds for a smoother, ultra-fast browsing and chatting experience.",
     changes: [
