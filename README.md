@@ -48,13 +48,14 @@ popcorn-vision/
 │   ├── (main)/         # Discovery feeds, media details, lists, diary, profiles
 │   ├── api/            # API route handlers & Web Push subscription endpoints
 │   └── layout.tsx      # Root application layout, theme providers, and modals
+├── cloudflare/         # Cloudflare Worker TMDB reverse proxy with edge caching
 ├── components/
 │   ├── chat/           # Chat window, conversation feed, media card attachments
 │   ├── ui/             # Reusable UI primitives (Base UI, Radix, shadcn/ui)
 │   └── *.tsx           # Feature components (hero, cards, modals, activity feeds)
 ├── convex/             # Reactive Convex backend (schema, mutations, queries, push)
 ├── hooks/              # Custom React hooks (modals, search overlays, web push)
-├── lib/                # TMDB server actions, Better Auth client, date formatters
+├── lib/                # TMDB client actions, two-tier cache engine, Better Auth client
 └── public/             # Static icons, banners, and service workers
 ```
 
@@ -67,7 +68,8 @@ popcorn-vision/
 - **Carousels & Sliders:** [Embla Carousel](https://www.embla-carousel.com), [Swiper](https://swiperjs.com)
 - **Backend & Database:** [Convex](https://convex.dev) real-time reactive database and background actions
 - **Authentication:** [Better Auth](https://better-auth.com) with Convex adapter (`@convex-dev/better-auth`)
-- **Third-Party APIs:** [The Movie Database (TMDB) API](https://www.themoviedb.org/documentation/api) via Next.js Server Actions
+- **Third-Party APIs & Edge Proxy:** [The Movie Database (TMDB) API](https://www.themoviedb.org/documentation/api) via zero-cost [Cloudflare Worker](cloudflare/README.md) edge reverse proxy
+- **Client Caching:** Two-tier L1 (In-Memory Map) + L2 (IndexedDB) with Stale-While-Revalidate (SWR)
 - **State & URL Management:** [Zustand](https://zustand-demo.pmnd.rs), [nuqs](https://nuqs.47ng.com)
 - **Notifications:** Web Push API & Service Workers
 
@@ -100,6 +102,7 @@ Create a `.env.local` file in the root directory:
 CONVEX_DEPLOYMENT=...
 NEXT_PUBLIC_CONVEX_URL=https://...convex.cloud
 NEXT_PUBLIC_CONVEX_SITE_URL=https://...convex.site
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
 
 # Application & Authentication
 SITE_URL=http://localhost:3000
@@ -109,21 +112,31 @@ GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
 RESEND_API_KEY=...
 
-# The Movie Database (TMDB) API
-API_URL=https://api.themoviedb.org/3
-API_KEY=your_tmdb_api_key
-TMDB_API_KEY=your_tmdb_api_key
-NEXT_PUBLIC_API_IMAGE_ORIGINAL=https://image.tmdb.org/t/p/original
-NEXT_PUBLIC_API_IMAGE_780=https://image.tmdb.org/t/p/w780
-NEXT_PUBLIC_API_IMAGE_500=https://image.tmdb.org/t/p/w500
-NEXT_PUBLIC_API_IMAGE_342=https://image.tmdb.org/t/p/w342
-NEXT_PUBLIC_API_IMAGE_300=https://image.tmdb.org/t/p/w300
+# The Movie Database (TMDB) API & Edge Proxy
+NEXT_PUBLIC_API_URL="https://povi-tmdb-proxy.<your-subdomain>.workers.dev" # or https://api.themoviedb.org/3
+NEXT_PUBLIC_API_KEY="" # Optional when using Cloudflare proxy
+
+# Google Analytics
+GA_MEASUREMENT_ID=
 
 # Web Push (VAPID)
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
 VAPID_PUBLIC_KEY=...
 VAPID_PRIVATE_KEY=...
 VAPID_SUBJECT=mailto:admin@example.com
+
+# TMDB Images
+NEXT_PUBLIC_API_IMAGE_45="https://image.tmdb.org/t/p/w45"
+NEXT_PUBLIC_API_IMAGE_92="https://image.tmdb.org/t/p/w92"
+NEXT_PUBLIC_API_IMAGE_154="https://image.tmdb.org/t/p/w154"
+NEXT_PUBLIC_API_IMAGE_185="https://image.tmdb.org/t/p/w185"
+NEXT_PUBLIC_API_IMAGE_300="https://image.tmdb.org/t/p/w300"
+NEXT_PUBLIC_API_IMAGE_342="https://image.tmdb.org/t/p/w342"
+NEXT_PUBLIC_API_IMAGE_500="https://image.tmdb.org/t/p/w500"
+NEXT_PUBLIC_API_IMAGE_632="https://image.tmdb.org/t/p/w632"
+NEXT_PUBLIC_API_IMAGE_780="https://image.tmdb.org/t/p/w780"
+NEXT_PUBLIC_API_IMAGE_1280="https://image.tmdb.org/t/p/w1280"
+NEXT_PUBLIC_API_IMAGE_ORIGINAL="https://image.tmdb.org/t/p/original"
 ```
 
 ### 3. Start Development Servers
@@ -157,7 +170,7 @@ The web application will be accessible at [http://localhost:3000](http://localho
 ## 📐 Engineering Guidelines
 
 - **Strict TypeScript (Zero `any`):** Explicit interfaces, models, and type definitions across all TMDB payloads, Convex schemas, and UI components.
-- **Server Actions for TMDB Security:** All TMDB API calls are encapsulated in Server Actions (`lib/tmdb-actions.ts`) to safeguard credentials and leverage server caching.
+- **Client Edge & Local Caching:** TMDB API calls are proxied through a zero-cost Cloudflare Worker or fetched client-side with a two-tier L1 (In-Memory Map) + L2 (IndexedDB) Stale-While-Revalidate (SWR) cache, ensuring zero server compute and 0ms instant page loads.
 - **DRY & Modular Architecture:** Reusable components, hooks, and presentation helpers centralized under `components/` and `lib/`.
 - **Semantic Versioning (SemVer):** Project adheres to standard SemVer `MAJOR.MINOR.PATCH` versioning.
 
