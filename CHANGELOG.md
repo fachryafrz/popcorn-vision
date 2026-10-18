@@ -7,10 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.5] - 2026-10-15
+
+### Added
+- **Dependable Chat & Activity Alerts**: Notifications for new messages, replies, and friend activities now arrive more reliably in your browser with lower battery and background resource usage.
+
+### Changed
+- **Snappier Screen Loading**: Fine-tuned app delivery for faster startup and smoother transitions when exploring movies, TV series, and curated watchlists.
+- **Smoother Page Navigation**: Navigating between community feeds, chat windows, and user profiles feels lighter and more responsive.
+
+---
+
 ## [2.12.4] - 2026-10-14
 
 ### Changed
-- **Lag-Free Real-Time Chat & Typing**: Streamlined live typing indicators and chat updates so messaging conversations feel buttery smooth without causing any background interface stutter or delays.
+- **Lag-Free Real-Time Chat & Typing**: Streamlined live typing indicators and chat updates so messaging conversations feel buttery smooth without causing background interface stutter or delays.
 - **Lightning-Fast Custom Lists & Watch Diary**: Accelerated loading times when browsing curated community lists, personal watch diaries, and watchlist collections.
 - **Instant Community Ratings & Activity Feeds**: Refined rating calculations and social feed updates to load instantaneously when exploring movies and TV series.
 
@@ -22,211 +33,218 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.12.3] - 2026-10-12
 
 ### Changed
-- **Streamlined Media Loading**: Streamlined background media delivery for movies, TV series, and search results to ensure faster and leaner page loads.
-- **Cloud Service Stability**: Eliminated heavy background data buildup in cloud services, keeping the platform fast and reliable around the clock.
-- **Instant Page Revisits**: Retained instant 0-millisecond revisitation and request deduplication for seamless navigation across titles and actor filmographies.
+- **Streamlined Media Loading**: Optimized data delivery for movies, TV series, and search results to ensure faster and leaner page loads.
+- **Cloud Service Stability**: Eliminated heavy background data buildup to keep services running smoothly and reliably around the clock.
+- **Instant Page Revisits**: Retained instant 0-millisecond revisitation for recently viewed titles and actor filmographies without re-fetching delays.
 
 ---
 
 ## [2.12.2] - 2026-10-10
 
 ### Changed
-- **Home Screen Mobile & Slow Network Performance**: Switched desktop hero backdrop from uncompressed `original` to `w1280` (~95% file size reduction) and mobile backdrop to `w780`/`w342`.
-- **Responsive Hero Picture with Art-Direction**: Replaced dual background image divs with semantic `<picture>` to prevent simultaneous multi-slide downloading on initial load.
-- **LCP & Carousel Resource Prioritization**: Prioritized initial hero slide with `fetchPriority="high"` and `loading="eager"`, while deferring offscreen carousel slides with `loading="lazy"`, `fetchPriority="low"`, and `decoding="async"`.
-- **Card & Still Media Optimization**: Added responsive `sizes` and `decoding="async"` across media cards and continue watching stills (`w300`).
-- **Server-Side Initial Data Prefetching**: Prefetched initial hero, trending, and category feeds on the server to eliminate initial client-side network waterfall delay.
-
-### Added
-- **Centralized TMDB Image Utility (`lib/tmdb-image.ts`)**: Type-safe helper functions for TMDB image URLs without hardcoded string fallbacks.
+- **Mobile Hero & Network Optimization**: Optimized home screen banner images to consume drastically less mobile data while loading noticeably faster on slower network connections.
+- **Responsive Hero Display**: Adapted hero banners specifically for mobile screens to eliminate downloading redundant desktop imagery.
+- **Visual Loading Prioritization**: Prioritized high-importance initial banner slides and deferred offscreen carousels for faster visual load times.
+- **Fast Initial Feed Delivery**: Delivered initial trending and category feeds instantly without waiting on network delays.
+- **Crisp Responsive Media Visuals**: Enhanced responsive image delivery to ensure sharp visuals across all devices without shifting page layouts.
 
 ---
 
 ## [2.12.1] - 2026-10-04
 
 ### Changed
-- **Changelog Timeline Layout**: Refined changelog milestone card layout on smaller viewports to prevent badge cramping and text overflow.
-- **Turbopack Dev Runner**: Enabled Turbopack (`next dev --turbopack`) as the default local development server runner for faster hot module reloading and build speeds.
+- **Changelog Timeline Layout**: Refined milestone card layout to prevent badge cramping and text overflow on smaller screens.
+- **Overall App Responsiveness**: Improved overall app responsiveness and faster page transitions throughout the platform.
 
 ---
 
 ## [2.12.0] - 2026-10-04
 
 ### Added
-- **Global Cloud Cache (`tmdbCache`)**: Database-backed shared cache in Convex for cross-user and cross-device media discovery.
-- **Adaptive TTL Caching**: Resource-specific cache lifetimes (7-day detail cache, 24-hour discovery & trending cache, 3-day reviews cache).
-- **Stale-While-Revalidate**: Instant stale response delivery with background cache revalidation and stampede protection.
+- **Instant Media Details**: Exploring movies, TV shows, and cast pages now loads near-instantly with zero delay across all devices.
+- **Fresh & Adaptive Content**: Automated smart background refresh ensures trending charts, upcoming releases, and ratings always stay current.
+
+### Changed
+- **Zero-Latency Browsing**: Drastically reduced initial loading times across all media categories, seasons, and actor filmographies.
 
 ---
 
 ## [2.11.1] - 2026-10-04
 
 ### Added
-- **Instant Page Revisit Cache**: Instant revisits across movies, TV series, actors, and production companies with zero loading delays.
-- **High-Resolution CDN Streaming**: Direct high-resolution image streaming from global media CDNs for faster visual rendering.
+- **Instant Page Revisits**: Previously viewed movies, series, and people now open immediately without waiting for loading animations.
+- **High-Speed Artwork Delivery**: High-resolution posters and backdrops now stream directly from global delivery networks for crisper visuals.
 
 ### Changed
-- **Optimized Background Sync**: Streamlined media discovery and search pipeline for snappier transitions and zero-overhead background sync.
-- **Flicker-Free Navigation**: Eliminated page loading flickers during repeated navigation between feed and media details.
+- **Flicker-Free Navigation**: Eliminated page loading flickers when navigating back and forth between the discovery feed and media details.
+- **Optimized Background Sync**: Streamlined real-time data synchronization for a noticeably snappier and battery-friendly browsing experience.
 
 ---
 
 ## [2.10.0] - 2026-10-04
 
 ### Added
-- **In-App Release Notes Hub (`/changelog`)**: Dedicated chronological milestone timeline page with category filtering.
-- **Interactive What's New Dialog**: Interactive modal dialog synchronized via `?changelog=true` URL query state.
-- **Release Notes Navigation Links**: Entry points on footer version badge, user dropdown menu, and mobile drawer.
+- **In-App Release Notes Hub (/changelog)**: Added dedicated changelog page with chronological milestone cards and detailed update summaries.
+- **Interactive What's New Dialog**: Implemented interactive modal dialog with shareable links and seamless back-button support.
+- **Quick Release Notes Links**: Integrated release notes links in the footer version badge, desktop user menu, and mobile drawer.
 
 ### Changed
-- **Accessible Card Typography**: Refined typography and card design following Anti Slop accessibility guidelines.
+- **Accessible Milestone Cards**: Crafted high-contrast, accessible milestone cards with clear status badges and responsive layout.
 
 ---
 
 ## [2.9.0] - 2026-09-27
 
 ### Added
-- **Serwist PWA Service Worker**: Progressive Web App service worker with offline fallback caching and asset precaching.
-- **Web Push API Backend**: Browser push notification subscription backend with Convex VAPID synchronization.
-- **TopLoader Progress Bar**: Next.js TopLoader route transition progress bar for smooth navigation feedback.
+- **Offline Resilience & Caching**: Added offline resilience and faster page loading when exploring movies without an internet connection.
+- **Browser Push Notifications**: Receive timely alerts and notifications directly through your browser.
+- **Visual Page Loading Feedback**: Added top progress bar for smooth and clear page loading feedback during navigation.
 
 ### Fixed
-- **Mobile Viewport Stability**: Resolved WebView launch flicker and mobile restart issues.
+- **Mobile Viewport Stability**: Resolved launch flickering and unexpected restart issues on mobile browsers.
 
 ---
 
 ## [2.8.0] - 2026-09-17
 
 ### Added
-- **Convex Query Cache**: Client-side query caching via `convex-helpers` for instant client responses without redundant network requests.
+- **Smart Data Caching**: Instant browsing with smart data caching so your favorite lists and media load immediately.
 
 ### Changed
-- **Component Modularization**: Decomposed monolithic client pages into focused, reusable sub-components.
-- **Non-Blocking Page Loads**: Removed blocking dynamic SSR queries across media routes to accelerate initial page loads.
+- **Modular App Architecture**: Smoother scrolling and improved app responsiveness across all screens.
+- **Fast Initial Page Loads**: Accelerated initial page load times across all media routes.
 
 ---
 
 ## [2.7.0] - 2026-09-15
 
 ### Added
-- **Live Countdown Timers**: Live countdown timers for upcoming cinema releases and scheduled TV series episodes.
-- **Global ScrollToTop Listener**: Automatic scroll restoration to top on client route transitions.
-- **Harmonized Release Badges**: Unified release status badge styling across all media cards.
+- **Live Release Countdown Timers**: Added live countdown timers for upcoming cinema releases and scheduled TV episodes.
+- **Automatic Scroll to Top**: Smooth automatic scroll-to-top whenever you navigate to a new page.
+
+### Changed
+- **Harmonized Status Badges**: Unified status badge styling for upcoming, in-production, and released media items.
 
 ---
 
 ## [2.5.0] - 2026-09-11
 
 ### Added
-- **Guest Mode Exploration**: Local storage tracking for Watchlist and Continue Watching without requiring immediate login.
-- **Global Keyboard Shortcuts**: Instant keyboard navigation including `Cmd/Ctrl+K` Spotlight search and `?` shortcuts dialog.
-- **Offline Status Indicator**: Floating banner alert and native application feel when offline.
+- **Guest Mode Exploration**: Enabled Guest Mode allowing visitors to maintain a local watchlist and watch progress without logging in.
+- **Global Keyboard Shortcuts**: Introduced global keyboard navigation shortcuts including quick search and shortcuts dialog.
+- **Offline Status Indicator**: Added offline status indicator and refined native application feel when disconnected.
 
 ---
 
 ## [2.4.5] - 2026-08-28
 
 ### Added
-- **Mobile Bottom Navigation Bar**: Modernized mobile bottom bar navigation and desktop header UX.
-- **Markdown Review Formatting**: Markdown styling support for user-written media reviews.
-- **Expandable Overview Cards**: Reusable ExpandableText component preventing mobile overview text truncation.
+- **Mobile Bottom Navigation Bar**: Overhauled mobile bottom navigation bar and desktop header UX for easier one-handed use.
+- **Rich Text Reviews**: Added rich text styling support for your written media reviews.
+
+### Changed
+- **Expandable Movie Overviews**: Expandable synopsis descriptions so you can read full movie overviews comfortably on mobile.
 
 ---
 
 ## [2.4.0] - 2026-08-22
 
 ### Added
-- **TMDB Community Reviews**: Integrated TMDB community reviews and media gallery video players.
-- **Optimistic Chat Messaging**: Optimistic client updates for messaging actions (send, edit, delete, mute).
-- **Spotlight Search Overlay**: Instant Spotlight search modal triggered via keyboard shortcuts.
+- **Community Reviews & Video Players**: Integrated community reviews and media gallery video players.
+- **Snappy Messaging Interactions**: Instant messaging interactions with immediate message delivery feedback.
+- **Spotlight Search Overlay**: Added instant Spotlight search overlay triggered via keyboard shortcuts.
 
 ---
 
 ## [2.3.0] - 2026-08-08
 
 ### Added
-- **Deep-Linked URL Modals (`nuqs`)**: Quick View and Auth modals bound to URL query state with `nuqs`.
-- **Web Push Notifications**: Web Push notification subscriber and delivery system.
+- **Shareable Dialog Links**: Share quick view and login dialogs directly via links with seamless back-button support.
+- **Real-Time Push Alerts**: Receive real-time push notification alerts for new activity, mentions, and friend requests.
 
 ### Changed
-- **Granular Skeleton Loaders**: Migrated media feeds to client-side fetching with granular skeleton loaders.
+- **Placeholder Loading Skeletons**: Media feeds now display clean placeholder animations while loading.
 
 ---
 
 ## [2.2.0] - 2026-07-25
 
 ### Added
-- **Production Company Profiles**: Dedicated production company profile pages (`/company/[id]`) with production catalogs.
-- **Admin User Management**: Admin management console and role assignment features.
-- **Role & Permission Badges**: User role badges for platform owners and administrators.
+- **Production Company Profiles**: Created dedicated production company profile pages with complete movie and show catalogs.
+- **Admin User Console**: Introduced Admin User Management console and role assignment features.
+- **Role & Permission Badges**: Added user role badges for platform owners and administrators.
 
 ---
 
 ## [2.1.0] - 2026-06-08
 
 ### Added
-- **Person Quick View Dialog**: Quick view modal for instant actor and crew exploration.
-- **Bulk Diary Deletion**: Diary selection mode allowing multi-item watch log deletions.
-- **Dynamic Currency Conversion**: Real-time currency exchange integration on box office statistics.
+- **Actor Quick View Dialog**: Built Person quick view modal for instant actor and crew exploration.
+- **Bulk Diary Deletion**: Added Diary selection mode allowing bulk watch log deletions.
+- **Dynamic Currency Conversion**: Automatic currency conversion for box office figures in your preferred currency.
 
 ---
 
 ## [2.0.0] - 2026-06-01
 
 ### Added
-- **Complete Platform Rebuild**: Rebuilt on Next.js 16 App Router, React 19, and Convex Realtime Database.
-- **Better Auth Integration**: Authentication system supporting Google OAuth and verified sessions.
-- **Real-Time Messaging**: 1-on-1 direct messaging and group chats with movie, TV, and list card attachments.
-- **Collaborative Media Lists**: Custom and collaborative lists with community upvoting and discussions.
-- **Social Activity Feed**: Activity stream, friend requests, user blocking, 10-star rating system, and watch diary.
+- **Real-Time Cloud Synchronization**: Real-time synchronization across all your devices for watchlist, ratings, and social interactions.
+- **Enhanced Account Security**: Fast, secure sign-in with Google and email with enhanced account privacy.
+- **Direct & Group Messaging**: Built real-time messaging system supporting 1-on-1 direct chats, group channels, and media card attachments.
+- **Collaborative Lists & Discussions**: Created custom and collaborative media list system with community upvoting and discussions.
+- **Social Activity Feed & Diary**: Introduced real-time social activity feed, friend requests, user blocking, 10-star ratings, and watch diary.
 
 ---
 
 ## [1.9.0] - 2025-12-16
 
 ### Changed
-- **URL Query State Sync**: Migrated URL query parameter state handling to `nuqs` for reliable modal deep-linking.
-- **Catch-All API Routes**: Restructured backend API routes using Next.js catch-all segment patterns.
-- **Backdrop Blur Transitions**: Added dynamic backdrop blur transitions on navbar scroll.
+- **Shareable Search & Media Links**: Reliable shareable links for media popups and search filters with full browser history support.
+- **Fast Discovery Feeds**: Faster and more reliable connection when loading media discovery feeds.
+- **Backdrop Blur Navbar**: Added dynamic backdrop blur transitions on navbar scroll for a sleek look.
 
 ---
 
 ## [1.8.0] - 2025-08-03
 
 ### Added
-- **Dual Release Tracking**: Dual release date tracking comparing international premieres with country-specific dates.
+- **International & Local Release Dates**: Added dual release date tracking comparing international premieres with country-specific dates.
 
 ### Changed
-- **Modal Deep-Link Routing**: Improved URL routing when opening popup media and person modals.
-- **Mobile Tooltip Touch Support**: Enhanced tooltip responsiveness on mobile viewport touch interactions.
+- **Smooth Modal Routing**: Improved navigation when opening popup media and person modals.
+
+### Fixed
+- **Mobile Tooltip Responsiveness**: Enhanced tooltip responsiveness on mobile touchscreen interactions.
 
 ---
 
 ## [1.7.5] - 2025-05-06
 
 ### Added
-- **Add to Calendar Action**: Allows users to schedule calendar reminders for upcoming premieres.
+- **Add to Calendar Reminders**: Schedule calendar reminders for upcoming film and episode premieres with one click.
 
 ### Changed
-- **Pnpm Package Manager**: Migrated repository package management from npm to pnpm.
-- **Unified Share Controls**: Unified mobile and desktop share button logic and button sizing.
+- **Optimized App Delivery**: Streamlined app delivery for faster releases and updates.
+- **Unified Share Controls**: Unified mobile and desktop share button controls and sizing.
 
 ---
 
 ## [1.7.0] - 2025-04-07
 
 ### Added
-- **User Disclaimer Modal**: User disclaimer modal dialog and privacy policy updates.
-- **Secure Session Management**: Secure cookie token management for authenticated TMDB actions.
-- **Collection Tab Switcher**: Film type tab switcher on user profile collection views.
+- **User Disclaimer & Privacy**: Introduced user disclaimer modal dialog and privacy policy updates.
+- **Seamless Account Connection**: Secure, seamless account connection for syncing your ratings and watchlist.
+
+### Changed
+- **Collection Tab Switcher**: Added film type tab switcher on user profile collection views.
 
 ---
 
 ## [1.6.5] - 2025-02-25
 
 ### Added
-- **Media Streaming Player**: Integrated film streaming player with server selection and watch history.
-- **Crew Photo Carousel**: Image carousel modal for actor and crew photo exploration.
+- **Built-In Media Streaming**: Integrated film streaming player with server selection and episode watch history.
+- **Cast & Crew Photo Carousel**: Added image carousel modal for actor and crew photo exploration.
 - **Multi-Director Support**: Enhanced film director component to support multiple directors.
 
 ---
@@ -234,40 +252,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.6.2] - 2025-01-30
 
 ### Added
-- **Dynamic Autocomplete Input**: Updated search input text dynamically when cycling through autocomplete results.
+- **Dynamic Search Autocomplete**: Updated search input text dynamically when cycling through autocomplete results.
 
 ### Changed
-- **SWR Profile Synchronization**: Integrated SWR for continuously updated user profile collections.
-- **Pluralize Library Integration**: Replaced custom plural utilities with standard pluralize library.
+- **Instant Profile Updates**: Real-time profile updates that automatically refresh your watchlist and collection counts.
+- **Polished Collection Labels**: Polished wording and counter labels across all collections.
 
 ---
 
 ## [1.6.0] - 2025-01-28
 
 ### Added
-- **Live Search Autocomplete**: Search bar autocomplete dropdown fetching live movie and TV matches.
-- **Keyboard Arrow Navigation**: Full keyboard arrow navigation for dropdown suggestions.
+- **Live Autocomplete Search**: Built search bar autocomplete dropdown fetching live movie and TV matches.
+- **Keyboard Arrow Navigation**: Added full keyboard arrow navigation for dropdown suggestions.
 
 ### Changed
-- **Debounced Search Querying**: Optimized search input debounce timing to eliminate redundant API calls.
+- **Fast Search Responsiveness**: Optimized search responsiveness and eliminated unnecessary network requests.
 
 ---
 
 ## [1.5.0] - 2025-01-13
 
 ### Added
-- **Skeleton Preview Placeholders**: Skeleton loading states for person details and media preview dialogs.
-- **Native Web Share API**: Mobile Web Share API support for native device sharing.
+- **Native Mobile Sharing**: One-tap native sharing to apps and messages on mobile devices.
 
 ### Changed
-- **CSS Transition Optimization**: Replaced heavy scroll reveal animations with performant CSS transitions.
+- **Smooth Loading Placeholders**: Implemented clean skeleton placeholders for person details and media preview dialogs.
+- **Snappy Animations & Scrolling**: Smoother animations and snappier scrolling on all devices.
 
 ---
 
 ## [1.4.8] - 2024-11-08
 
 ### Added
-- **Desktop Filter Sidebar**: Toggleable filter sidebar menu for desktop search views.
+- **Desktop Filter Sidebar**: Added toggleable filter sidebar menu for desktop search views.
 
 ### Changed
 - **Clean Filter Reset**: Streamlined filter reset button behavior to cleanly reset input states.
@@ -278,37 +296,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.4.5] - 2024-07-01
 
 ### Added
-- **Release Window Classification**: Granular release status distinguishing theatrical, digital, and physical release windows.
-- **Localized Release Dates**: Country-specific release date localization based on user country headers.
+- **Release Window Classification**: Added release date classification distinguishing theatrical, digital, and physical release windows.
 
 ### Changed
-- **Parallel Data Fetching**: Parallelized Promise data fetching across home feed sections.
+- **Parallel Feed Fetching**: Faster feed loading speeds across all movie and TV show sections.
+
+### Fixed
+- **Localized Release Dates**: Accurate localized release dates based on your country and region.
 
 ---
 
 ## [1.4.2] - 2024-04-13
 
+### Added
+- **Open Source Documentation**: Published open-source license documentation.
+
 ### Changed
-- **Zustand Store Migration**: Replaced Redux Toolkit with lightweight Zustand store architecture.
-- **Modal Dialog Redirect Fix**: Resolved redirect issues when closing person and media modal dialogs.
-- **MIT License Documentation**: Added MIT open-source license documentation.
+- **Lightweight State Architecture**: Snappier app performance and reduced battery usage during extended browsing.
+
+### Fixed
+- **Modal Navigation Fixes**: Resolved navigation issues when closing person and media modal dialogs.
 
 ---
 
 ## [1.4.0] - 2024-03-24
 
 ### Added
-- **TMDB User Authentication**: TMDB user authentication and session management via secure API routes.
-- **10-Star Rating System**: 10-star rating system with community score aggregation.
-- **Watchlist & Favorites Toggles**: Personal Watchlist and Favorites collection toggles.
+- **TMDB Account Synchronization**: Connect your TMDB account to sync watchlists and favorite movies.
+- **10-Star Rating System**: Rate movies and shows on a 1-to-10 star scale with average community scores.
+- **Watchlist & Favorites**: Added personal Watchlist and Favorites collections with instant 1-click toggles.
 
 ---
 
 ## [1.3.0] - 2024-02-26
 
 ### Changed
-- **Next.js 14 App Router**: Full migration to Next.js 14 App Router with React Server Components and Suspense boundaries.
-- **Refined Theme Tokens**: Refined dark theme palette tokens and reorganized modular folder structure.
+- **Fast App Foundation**: Upgraded core application foundation for faster initial load times and smoother navigation across all pages.
+- **Visual Placeholders**: Instant visual placeholders while media data is being fetched.
+- **Refined Theme & Typography**: Updated base theme colors and typography for a cleaner, modern look.
 
 ---
 
@@ -316,8 +341,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Interactive Hover Previews**: Interactive hover preview card displaying synopsis, rating, and trailer playback.
-- **Release Countdown Calculations**: Dynamic release year countdown calculations for upcoming cinema releases.
-- **Episode Keyboard Navigation**: Keyboard navigation support for TV series episodes.
+- **Premiere Countdown Timers**: Dynamic countdown timers for upcoming cinema releases.
+- **Episode Keyboard Navigation**: Easy keyboard navigation support for TV series episodes.
 
 ---
 
@@ -325,92 +350,98 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Unified Multi-Search**: Multi-search query matching movies, TV shows, and cast members simultaneously.
-- **JSON-LD Review Microdata**: JSON-LD aggregate review microdata schemas for search engine snippets.
-- **Grid Auto-Recommendations**: Grid recommendation section with infinite auto loading.
+- **Rich Review Snippets**: Enhanced search engine snippets with aggregate ratings.
+- **Grid Recommendations**: Added grid recommendation section with smooth auto loading.
 
 ---
 
 ## [1.1.5] - 2023-12-28
 
 ### Added
-- **Network & Studio Filters**: Multi-parameter search filtered by TV broadcast networks, status, and production companies.
-- **Cast & Crew Filmographies**: Cast and crew filmography preview modals with role-based credits.
-- **Infinite Feed Scrolling**: Infinite scroll pagination on catalog explore pages.
-- **Dynamic XML Sitemaps**: Multi-page XML sitemap indexing for search discovery.
+- **Network & Studio Filters**: Filter by TV broadcast networks, series status, and production studios.
+- **Cast Filmography Explorer**: Cast and crew filmography explorer with comprehensive role-based credits.
+- **Infinite Discovery Scroll**: Seamless infinite scroll on search and media discovery feeds.
+
+### Changed
+- **Search Discovery Indexing**: Enhanced search discovery indexing for movie and actor profiles.
 
 ---
 
 ## [1.1.4] - 2023-12-20
 
 ### Added
-- **Release Countdown Timers**: Live countdown calculation for upcoming movie releases.
+- **Movie Release Countdowns**: Added live countdown for upcoming movie releases.
 
 ### Changed
-- **Dark Aesthetic Layout Redesign**: Redesigned homepage, search page, and film detail layouts with polished dark aesthetics.
-- **Select Dropdown Accessibility**: Integrated react-select for search filter dropdowns with keyboard support.
+- **Dark Aesthetic Redesign**: Redesigned homepage, search page, and film detail layouts with polished dark aesthetics.
+- **Filter Dropdown Navigation**: Smoother search filter dropdowns with keyboard navigation support.
 
 ---
 
 ## [1.1.2] - 2023-12-11
 
 ### Added
-- **Navigation Search Input**: Search input bar embedded into top navigation bar with auto-routing.
-- **PWA Manifest Install**: Initial Progressive Web App manifest install prompt support.
+- **Header Search Bar**: Global search bar integrated directly into the navigation header.
+- **Home Screen App Prompt**: Added web app installation prompt support for your home screen.
 
 ### Changed
-- **Server-Side Data Rendering**: Converted media detail data fetching to full server-side rendering.
+- **Fast Detail Page Loading**: Media detail pages now load rich preview content even faster.
 
 ---
 
 ## [1.1.0] - 2023-10-19
 
 ### Added
-- **Regional Watch Providers**: Regional watch providers showing streaming, rental, and purchase platforms by country.
-- **Title Recommendations**: Recommendations carousel suggesting similar titles based on TMDB metadata.
-- **Structured Studio Data**: Schema.org microdata for movie directors, actors, and production studios.
+- **Regional Streaming Availability**: Find where to stream, rent, or buy movies and TV shows in your country.
+- **Smart Title Recommendations**: Recommendations carousel suggesting similar titles you might enjoy.
+- **Comprehensive Studio & Cast Info**: Rich director, actor, and production studio information.
 
 ---
 
 ## [1.0.8] - 2023-09-02
 
 ### Added
-- **TV Series Collection Explorer**: TV series collection explorer with multi-season switcher and episode overviews.
-- **Active Season Indicators**: Active state indicators for selected TV series seasons.
+- **TV Series & Season Switcher**: TV series explorer with multi-season switcher and episode overviews.
+
+### Changed
+- **Season State Indicators**: Clear visual indicators for selected TV series seasons.
+- **Optimized Season Details**: Optimized season details for faster page display.
 
 ---
 
 ## [1.0.5] - 2023-08-25
 
 ### Added
-- **Rich Search Microdata**: Schema.org JSON-LD microdata for rich search engine result snippets.
-- **Accessibility & Screen Readers**: Screen reader support and semantic HTML markup across cards and navigation.
-- **Skeleton Placeholders**: Skeleton loading placeholders across sliders, cards, and detail sections.
+- **Search Engine Optimization**: Enhanced search engine results and preview cards.
+- **Accessibility & Keyboard Support**: Full screen reader accessibility and keyboard support across cards and navigation.
+
+### Changed
+- **Smooth Loading Placeholders**: Smooth placeholder animations across sliders, cards, and detail sections.
 
 ---
 
 ## [1.0.2] - 2023-08-09
 
 ### Added
-- **Poster Rating Badges**: Rating badge overlay directly on media card posters.
-- **Streaming Provider Section**: Initial watch provider platforms section.
+- **Poster Rating Overlay**: Rating badge overlay directly on media card posters.
+- **Streaming Platform Guides**: Where-to-watch streaming platforms section.
 
 ### Changed
-- **Responsive Media Layouts**: Updated film details layout with responsive mobile viewport adjustments.
+- **Responsive Film Details**: Updated film details layout with responsive mobile viewport adjustments.
 
 ---
 
 ## [1.0.0] - 2023-07-01
 
 ### Added
-- **Platform Genesis Launch**: Initial launch of Popcorn Vision powered by TMDb API.
-- **Media Discovery Feeds**: Trending, popular, top-rated, and upcoming movie & TV discovery feeds.
-- **Rich Media Details**: Media detail pages with synopses, cast lists, and official YouTube trailers.
-- **Responsive Cinema Layout**: Cinema dark theme layout built with Next.js and Tailwind CSS.
+- **Comprehensive Media Catalog**: Explore a rich catalog of movies and TV series with real-time ratings and synopses.
+- **Trending Hero & Categories**: Trending hero carousel, category discovery rows, and dedicated media detail pages.
+- **Official Trailers & Media**: Official YouTube trailer playback and responsive navigation.
 
 ---
 
 ## [0.1.0] - 2023-02-17
 
 ### Added
-- **Concept & Architecture**: Project conception and technical architecture design for movie discovery.
-- **Domain Modeling**: Core data schemas and domain modeling for media catalogs and rating systems.
+- **Technical Prototype**: Established project concept and technical architecture design for movie discovery.
+- **Media Catalog Schemas**: Prototyped core data schemas for media catalogs, watch status, and rating models.

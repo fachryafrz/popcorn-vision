@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function TermsPage() {
   return (
     <main className="min-h-screen bg-zinc-950 py-16 text-zinc-300 md:py-24">
-      <div className="mx-auto max-w-4xl px-6 md:px-8">
+      <div className="mx-auto max-w-4xl p-4 pb-0 sm:p-6 md:p-8">
         {/* Header Section */}
         <div className="mb-12 border-b border-zinc-900 pb-8 text-center md:text-left">
           <div className="text-primary mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900 md:mx-0">
