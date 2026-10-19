@@ -167,12 +167,18 @@ The web application will be accessible at [http://localhost:3000](http://localho
 
 ---
 
-## 📐 Engineering Guidelines
+## 📐 Engineering Guidelines & Documentation
 
-- **Strict TypeScript (Zero `any`):** Explicit interfaces, models, and type definitions across all TMDB payloads, Convex schemas, and UI components.
-- **Client Edge & Local Caching:** TMDB API calls are proxied through a zero-cost Cloudflare Worker or fetched client-side with a two-tier L1 (In-Memory Map) + L2 (IndexedDB) Stale-While-Revalidate (SWR) cache, ensuring zero server compute and 0ms instant page loads.
-- **DRY & Modular Architecture:** Reusable components, hooks, and presentation helpers centralized under `components/` and `lib/`.
-- **Semantic Versioning (SemVer):** Project adheres to standard SemVer `MAJOR.MINOR.PATCH` versioning.
+For comprehensive system documentation, architecture specifications, and guidelines, refer to the following documents:
+
+- **[AGENTS.md](AGENTS.md)**: AI agent instructions, operating principles, and boundary rules.
+- **[docs/PRD.md](docs/PRD.md)**: Product requirements, personas, and feature specifications.
+- **[docs/BLUEPRINT.md](docs/BLUEPRINT.md)**: Application route map, user flows, and modal deep-linking.
+- **[docs/DESIGN.md](docs/DESIGN.md)**: Design system, 8 preset themes, typography, and responsive patterns.
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**: High-level tiered architecture, 2-tier cache engine, and storage boundaries.
+- **[docs/CONVENTIONS.md](docs/CONVENTIONS.md)**: Coding standards, strict TypeScript guidelines, and Convex patterns.
+- **[docs/TASKS.md](docs/TASKS.md)**: Known technical debt, inconsistencies, and prioritized follow-ups.
+- **[docs/TESTING.md](docs/TESTING.md)**: Test status, verification commands, and testing roadmap.
 
 ---
 
