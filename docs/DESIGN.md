@@ -2,7 +2,7 @@
 
 **Status:** Living Documentation (Derived from Codebase Audit v2.12.5)  
 **Last Updated:** October 2026  
-**Repository:** [popcorn-vision](file:///f:/Projects/popcorn-vision)
+**Repository:** [popcorn-vision](../)
 
 ---
 
@@ -11,14 +11,14 @@
 Popcorn Vision features a dark-first, cinematic aesthetic tailored for media exploration. The UI emphasizes:
 - **Cinematic Contrast:** Rich deep backgrounds with high-contrast text and luminous accent highlights.
 - **Glassmorphic & Subtle Borders:** Borders use transparent white alphas (`oklch(1 0 0 / 10%)`) rather than hard gray borders.
-- **Fluid Animation & Tactility:** Integrated with `tw-animate-css` and custom tactile touch utilities (`active-press`), accompanied by mobile haptic vibration feedback via [hooks/use-haptic.ts](file:///f:/Projects/popcorn-vision/hooks/use-haptic.ts).
+- **Fluid Animation & Tactility:** Integrated with `tw-animate-css` and custom tactile touch utilities (`active-press`), accompanied by mobile haptic vibration feedback via [hooks/use-haptic.ts](../hooks/use-haptic.ts).
 - **Mobile-First & Safe-Area Aware:** Strict support for native mobile viewports with safe area padding classes (`pb-safe`, `pt-safe`, `min-h-screen-safe`).
 
 ---
 
 ## 2. Color Palette & Theming Architecture
 
-The color system is built on Tailwind CSS v4 and modern CSS variables using OKLCH color spaces ([app/globals.css](file:///f:/Projects/popcorn-vision/app/globals.css)).
+The color system is built on Tailwind CSS v4 and modern CSS variables using OKLCH color spaces ([app/globals.css](../app/globals.css)).
 
 ### 2.1 Core Neutral Tokens
 - **Background:** `oklch(0.141 0.005 285.823)` (Deep cinematic charcoal/black)
@@ -29,7 +29,7 @@ The color system is built on Tailwind CSS v4 and modern CSS variables using OKLC
 - **Muted Foreground:** `oklch(0.705 0.015 286.067)` (Subtle secondary silver text)
 
 ### 2.2 Preset Themes (`data-theme`)
-The application supports 8 curated preset themes configurable in Settings or via [components/theme-provider.tsx](file:///f:/Projects/popcorn-vision/components/theme-provider.tsx):
+The application supports 8 curated preset themes configurable in Settings or via [components/theme-provider.tsx](../components/theme-provider.tsx):
 
 | Theme Key | Name / Inspiration | Primary Token (OKLCH) | Ring Accent |
 | :--- | :--- | :--- | :--- |
@@ -47,7 +47,7 @@ The application supports 8 curated preset themes configurable in Settings or via
 ## 3. Typography & Spacing Scale
 
 ### 3.1 Font Families
-- **Sans-Serif (Body & Headings):** Geist Sans and Inter loaded through `next/font/google` in [app/layout.tsx](file:///f:/Projects/popcorn-vision/app/layout.tsx).
+- **Sans-Serif (Body & Headings):** Geist Sans and Inter loaded through `next/font/google` in [app/layout.tsx](../app/layout.tsx).
 - **Monospace (Code & Badges):** Geist Mono.
 
 ### 3.2 Border Radii Scale
@@ -65,7 +65,7 @@ The application supports 8 curated preset themes configurable in Settings or via
 ## 4. UI Components & Layout Patterns
 
 ### 4.1 Primitive Components
-The component library sits under [components/ui/](file:///f:/Projects/popcorn-vision/components/ui/) based on shadcn/ui and `@base-ui/react`:
+The component library sits under [components/ui/](../components/ui/) based on shadcn/ui and `@base-ui/react`:
 - **Buttons & Badges:** `Button`, `ButtonGroup`, `Badge`, `Toggle`, `ToggleGroup`.
 - **Modals & Overlays:** `Dialog`, `Drawer` (Vaul-based bottom sheet for mobile), `Sheet`, `Popover`, `Tooltip`, `AlertDialog`.
 - **Form Controls:** `Input`, `Textarea`, `Select`, `NativeSelect`, `InputOTP`, `Checkbox`, `Switch`, `Slider`, `Calendar`.
@@ -73,10 +73,10 @@ The component library sits under [components/ui/](file:///f:/Projects/popcorn-vi
 - **Navigation & Menus:** `DropdownMenu`, `ContextMenu`, `Menubar`, `NavigationMenu`, `Pagination`, `Tabs`.
 
 ### 4.2 Composite Feature Components
-- **Media Card ([components/card.tsx](file:///f:/Projects/popcorn-vision/components/card.tsx)):** Universal poster card supporting hover actions (quick view, watchlist toggle, favorite toggle, rating overlay), aspect ratio lock, and image error fallbacks.
-- **Hero Carousel ([components/hero.tsx](file:///f:/Projects/popcorn-vision/components/hero.tsx)):** Dynamic backdrop banner with smooth crossfade, backdrop logo overlay, and direct trailer preview trigger.
-- **Section Shelf ([components/section.tsx](file:///f:/Projects/popcorn-vision/components/section.tsx)):** Horizontal carousel shelf utilizing Embla Carousel or Swiper.
-- **Responsive Navigation:** Desktop top navigation bar ([components/navbar.tsx](file:///f:/Projects/popcorn-vision/components/navbar.tsx)) and mobile floating bottom navigation bar ([components/navbar/bottom-nav.tsx](file:///f:/Projects/popcorn-vision/components/navbar/bottom-nav.tsx)).
+- **Media Card ([components/card.tsx](../components/card.tsx)):** Universal poster card supporting hover actions (quick view, watchlist toggle, favorite toggle, rating overlay), aspect ratio lock, and image error fallbacks.
+- **Hero Carousel ([components/hero.tsx](../components/hero.tsx)):** Dynamic backdrop banner with smooth crossfade, backdrop logo overlay, and direct trailer preview trigger.
+- **Section Shelf ([components/section.tsx](../components/section.tsx)):** Horizontal carousel shelf utilizing Embla Carousel or Swiper.
+- **Responsive Navigation:** Desktop top navigation bar ([components/navbar.tsx](../components/navbar.tsx)) and mobile floating bottom navigation bar ([components/navbar/bottom-nav.tsx](../components/navbar/bottom-nav.tsx)).
 
 ---
 

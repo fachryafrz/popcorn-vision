@@ -2,7 +2,7 @@
 
 **Status:** Living Documentation (Derived from Codebase Audit v2.12.5)  
 **Last Updated:** October 2026  
-**Repository:** [popcorn-vision](file:///f:/Projects/popcorn-vision)
+**Repository:** [popcorn-vision](../)
 
 ---
 
@@ -27,26 +27,26 @@
 
 The following critical system flows should be prioritized when establishing automated testing:
 
-1. **Two-Tier Client Cache Engine ([lib/tmdb-cache.ts](file:///f:/Projects/popcorn-vision/lib/tmdb-cache.ts)):**
+1. **Two-Tier Client Cache Engine ([lib/tmdb-cache.ts](../lib/tmdb-cache.ts)):**
    - Memory cache (L1) hit/miss scenarios.
    - IndexedDB (L2) persistence, version upgrade handler, and fallback to memory when IndexedDB fails.
    - Stale-While-Revalidate (SWR) cache TTL expiration logic.
    - Concurrent request deduplication (`inFlightRequests`).
 
-2. **TMDB Data Cleansing & Mapping ([lib/tmdb.ts](file:///f:/Projects/popcorn-vision/lib/tmdb.ts), [lib/tmdb-actions.ts](file:///f:/Projects/popcorn-vision/lib/tmdb-actions.ts)):**
+2. **TMDB Data Cleansing & Mapping ([lib/tmdb.ts](../lib/tmdb.ts), [lib/tmdb-actions.ts](../lib/tmdb-actions.ts)):**
    - Handling missing poster paths, empty backdrops, null genres, and raw TMDB API variance.
    - Discovery filter query construction.
 
-3. **CSV Import Parser & Batch Matcher ([components/import-wizard.tsx](file:///f:/Projects/popcorn-vision/components/import-wizard.tsx)):**
+3. **CSV Import Parser & Batch Matcher ([components/import-wizard.tsx](../components/import-wizard.tsx)):**
    - Parsing Letterboxd `watched.csv` and `ratings.csv`.
    - Matching title, release year, and IMDb ID against TMDB search.
 
 4. **Convex Backend Mutations & Permissions:**
-   - Watchlist, Favorites, and Rating calculation formulas ([convex/ratings.ts](file:///f:/Projects/popcorn-vision/convex/ratings.ts)).
+   - Watchlist, Favorites, and Rating calculation formulas ([convex/ratings.ts](../convex/ratings.ts)).
    - Collaborative Custom List authorization rules (collaborators vs. viewers).
-   - Bi-directional friendship transitions and block enforcement ([convex/social.ts](file:///f:/Projects/popcorn-vision/convex/social.ts)).
+   - Bi-directional friendship transitions and block enforcement ([convex/social.ts](../convex/social.ts)).
 
-5. **Modal Deep-Linking Synchronization ([hooks/use-query-modal-state.ts](file:///f:/Projects/popcorn-vision/hooks/use-query-modal-state.ts)):**
+5. **Modal Deep-Linking Synchronization ([hooks/use-query-modal-state.ts](../hooks/use-query-modal-state.ts)):**
    - URL search parameter updates for `?quick-view=...`, `?person=...`, and `?auth=...`.
    - History push vs replace state behavior.
 
@@ -57,8 +57,8 @@ The following critical system flows should be prioritized when establishing auto
 ### Phase 1: Unit & Integration Testing (Vitest + React Testing Library)
 - **Install:** `pnpm add -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/dom`
 - **Focus:**
-  - Pure utility functions: [lib/formatDate.js](file:///f:/Projects/popcorn-vision/lib/formatDate.js), [lib/formatRuntime.js](file:///f:/Projects/popcorn-vision/lib/formatRuntime.js), [lib/formatRating.js](file:///f:/Projects/popcorn-vision/lib/formatRating.js), [lib/sortFilms.js](file:///f:/Projects/popcorn-vision/lib/sortFilms.js).
-  - Cache engine: [lib/tmdb-cache.ts](file:///f:/Projects/popcorn-vision/lib/tmdb-cache.ts) (mocking `indexedDB` via `fake-indexeddb`).
+  - Pure utility functions: [lib/formatDate.js](../lib/formatDate.js), [lib/formatRuntime.js](../lib/formatRuntime.js), [lib/formatRating.js](../lib/formatRating.js), [lib/sortFilms.js](../lib/sortFilms.js).
+  - Cache engine: [lib/tmdb-cache.ts](../lib/tmdb-cache.ts) (mocking `indexedDB` via `fake-indexeddb`).
   - Convex backend tests using `convex-test`.
 
 ### Phase 2: End-to-End Testing (Playwright)

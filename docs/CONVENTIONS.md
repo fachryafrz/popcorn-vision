@@ -2,7 +2,7 @@
 
 **Status:** Living Documentation (Derived from Codebase Audit v2.12.5)  
 **Last Updated:** October 2026  
-**Repository:** [popcorn-vision](file:///f:/Projects/popcorn-vision)
+**Repository:** [popcorn-vision](../)
 
 ---
 
@@ -33,7 +33,7 @@
 2. **Component Decomposition:**
    - Large or multifaceted components must be split into dedicated sub-components (e.g., `media-detail/` split into `seasons-accordion.tsx`, `cast-section.tsx`, `recommendations-section.tsx`).
 3. **No Redundant Re-invention:**
-   - Always inspect [components/ui/](file:///f:/Projects/popcorn-vision/components/ui) before introducing custom dialogs, dropdowns, buttons, or input primitives.
+   - Always inspect [components/ui/](../components/ui) before introducing custom dialogs, dropdowns, buttons, or input primitives.
 
 ---
 

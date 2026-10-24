@@ -42,17 +42,17 @@ Before starting work on any task, read the corresponding documentation:
 
 | Task Type | Relevant Documentation | Description |
 | :--- | :--- | :--- |
-| **Product & Requirements** | [docs/PRD.md](file:///f:/Projects/popcorn-vision/docs/PRD.md) | Inferred product purpose, verified user personas, and feature specifications |
-| **Routes & User Flows** | [docs/BLUEPRINT.md](file:///f:/Projects/popcorn-vision/docs/BLUEPRINT.md) | Page routes, layout hierarchy, user flows, and modal deep-linking |
-| **Design, Colors & UI** | [docs/DESIGN.md](file:///f:/Projects/popcorn-vision/docs/DESIGN.md) | Visual design tokens, 8 preset themes, spacing, and mobile safe-area rules |
-| **System Architecture** | [docs/ARCHITECTURE.md](file:///f:/Projects/popcorn-vision/docs/ARCHITECTURE.md) | Tiered architecture, 2-tier TMDB cache engine, and Convex storage boundaries |
-| **Coding & Conventions** | [docs/CONVENTIONS.md](file:///f:/Projects/popcorn-vision/docs/CONVENTIONS.md) | Strict TypeScript rules, naming standards, and Convex DataLoader pattern |
-| **Technical Debt & Tasks** | [docs/TASKS.md](file:///f:/Projects/popcorn-vision/docs/TASKS.md) | Prioritized backlog, known inconsistencies, and open remediation tasks |
-| **Testing & Quality** | [docs/TESTING.md](file:///f:/Projects/popcorn-vision/docs/TESTING.md) | Verification scripts, untested critical paths, and testing roadmap |
-| **Convex Database IO** | [.agents/rules/convex-database-io.md](file:///f:/Projects/popcorn-vision/.agents/rules/convex-database-io.md) | Strict query efficiency, indexing, and anti-pattern rules |
-| **Service Worker Rules** | [.agents/rules/service-worker.md](file:///f:/Projects/popcorn-vision/.agents/rules/service-worker.md) | Zero SW libraries rule and native Web Push guidelines |
-| **Git & Versioning** | [.agents/rules/versioning.md](file:///f:/Projects/popcorn-vision/.agents/rules/versioning.md) | SemVer branching strategy, commit codeblocks, and PR merge rules |
-| **User Changelog** | [.agents/rules/changelog.md](file:///f:/Projects/popcorn-vision/.agents/rules/changelog.md) | Jargon-free user-friendly release notes requirements |
+| **Product & Requirements** | [docs/PRD.md](./docs/PRD.md) | Inferred product purpose, verified user personas, and feature specifications |
+| **Routes & User Flows** | [docs/BLUEPRINT.md](./docs/BLUEPRINT.md) | Page routes, layout hierarchy, user flows, and modal deep-linking |
+| **Design, Colors & UI** | [docs/DESIGN.md](./docs/DESIGN.md) | Visual design tokens, 8 preset themes, spacing, and mobile safe-area rules |
+| **System Architecture** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Tiered architecture, 2-tier TMDB cache engine, and Convex storage boundaries |
+| **Coding & Conventions** | [docs/CONVENTIONS.md](./docs/CONVENTIONS.md) | Strict TypeScript rules, naming standards, and Convex DataLoader pattern |
+| **Technical Debt & Tasks** | [docs/TASKS.md](./docs/TASKS.md) | Prioritized backlog, known inconsistencies, and open remediation tasks |
+| **Testing & Quality** | [docs/TESTING.md](./docs/TESTING.md) | Verification scripts, untested critical paths, and testing roadmap |
+| **Convex Database IO** | [.agents/rules/convex-database-io.md](./.agents/rules/convex-database-io.md) | Strict query efficiency, indexing, and anti-pattern rules |
+| **Service Worker Rules** | [.agents/rules/service-worker.md](./.agents/rules/service-worker.md) | Zero SW libraries rule and native Web Push guidelines |
+| **Git & Versioning** | [.agents/rules/versioning.md](./.agents/rules/versioning.md) | SemVer branching strategy, commit codeblocks, and PR merge rules |
+| **User Changelog** | [.agents/rules/changelog.md](./.agents/rules/changelog.md) | Jargon-free user-friendly release notes requirements |
 
 ---
 
@@ -60,8 +60,8 @@ Before starting work on any task, read the corresponding documentation:
 
 1. **Mandatory Codebase Inspection Before Implementation:**
    - Always inspect existing files, utilities, and components before writing code.
-   - Search [components/ui/](file:///f:/Projects/popcorn-vision/components/ui) and [components/](file:///f:/Projects/popcorn-vision/components) before creating any new component.
-   - Search [lib/](file:///f:/Projects/popcorn-vision/lib) and [hooks/](file:///f:/Projects/popcorn-vision/hooks) before implementing helpers or state hooks.
+   - Search [components/ui/](./components/ui) and [components/](./components) before creating any new component.
+   - Search [lib/](./lib) and [hooks/](./hooks) before implementing helpers or state hooks.
 
 2. **Strict Prohibition on Unrelated Refactoring:**
    - Modify **only** files directly relevant to the assigned task.

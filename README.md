@@ -11,6 +11,7 @@
 [![Better Auth](https://img.shields.io/badge/Better_Auth-Authentication-black?style=flat-square)](https://better-auth.com/)
 [![TMDB](https://img.shields.io/badge/TMDB-API-01d277?style=flat-square&logo=themoviedatabase)](https://www.themoviedb.org/)
 [![Web Push](https://img.shields.io/badge/Web_Push-Notifications-orange?style=flat-square)](https://developer.mozilla.org/en-US/docs/Web/API/Push_API)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald?style=flat-square)](LICENSE)
 
 </div>
 
