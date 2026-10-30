@@ -959,6 +959,9 @@ export default function MediaDetailClient({
         backdropRef={backdropRef}
         backdropUrl={backdropUrl}
         mobileBackdropUrl={mobileBackdropUrl}
+        title={details.title ?? details.name ?? "media"}
+        canPlay={!isUnreleased && servers.length > 0}
+        onPlay={() => scrollToPlayer("watch")}
       />
 
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
@@ -1072,15 +1075,15 @@ export default function MediaDetailClient({
           isUnreleased={isUnreleased}
         />
 
-        <CastSlider
-          cast={cast}
-          onPersonClick={(id) => setQuickViewPersonId(id)}
-        />
-
         {/* Metadata Details Grid */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           {/* Main Info Column */}
           <div className="space-y-6 lg:col-span-2">
+            <CastSlider
+              cast={cast}
+              onPersonClick={(id) => setQuickViewPersonId(id)}
+            />
+
             <ProductionCompanies
               productionCompanies={details?.production_companies}
               mediaType={mediaType}
