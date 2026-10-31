@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.12.6] - 2026-10-31
+
+### Added
+- **Collapsible Release Notes Timeline**: Milestone cards on the release notes page can now be expanded or collapsed to easily browse through updates.
+
+### Changed
+- **Streamlined Media Details & Hero Player**: Watch trailers and play videos directly from the backdrop cover, with a cleaner layout placing cast navigation and details right where you need them.
+- **Snappier Media Browsing & Smoother Loading**: Exploring movies, TV series, and actor filmographies is faster and lighter, paired with updated placeholder screens that smoothly match the layout.
+
+---
+
 ## [2.12.5] - 2026-10-15
 
 ### Added

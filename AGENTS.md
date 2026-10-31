@@ -25,14 +25,60 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 
 ### Tech Stack
 - **Framework:** Next.js 16 (App Router) & React 19
-- **Package Manager:** `pnpm` (always use `pnpm` as `pnpm-lock.yaml` is present)
+- **Package Manager:** `pnpm` (always use `pnpm` as `pnpm-lock.yaml` is present; use `pnpm.cmd` on Windows)
 - **Backend & Database:** [Convex](https://convex.dev) (`convex/`)
 - **Authentication:** [Better Auth](https://better-auth.com) with Convex integration (`@convex-dev/better-auth`)
 - **Styling:** Tailwind CSS v4, `tw-animate-css`
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com/), Base UI (`@base-ui/react`), Lucide React icons
 - **Carousels / Sliders:** Embla Carousel (`embla-carousel-react`), Swiper
 - **State Management & URL State:** Zustand, `nuqs`
-- **Third-party APIs:** TMDB API (The Movie Database)
+- **Third-party APIs:** TMDB API (The Movie Database) via Cloudflare Worker edge proxy
+
+---
+
+## 📚 Documentation Index & Task Routing
+
+Before starting work on any task, read the corresponding documentation:
+
+| Task Type | Relevant Documentation | Description |
+| :--- | :--- | :--- |
+| **Product & Requirements** | [docs/PRD.md](./docs/PRD.md) | Inferred product purpose, verified user personas, and feature specifications |
+| **Routes & User Flows** | [docs/BLUEPRINT.md](./docs/BLUEPRINT.md) | Page routes, layout hierarchy, user flows, and modal deep-linking |
+| **Design, Colors & UI** | [docs/DESIGN.md](./docs/DESIGN.md) | Visual design tokens, 8 preset themes, spacing, and mobile safe-area rules |
+| **System Architecture** | [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) | Tiered architecture, 2-tier TMDB cache engine, and Convex storage boundaries |
+| **Coding & Conventions** | [docs/CONVENTIONS.md](./docs/CONVENTIONS.md) | Strict TypeScript rules, naming standards, and Convex DataLoader pattern |
+| **Technical Debt & Tasks** | [docs/TASKS.md](./docs/TASKS.md) | Prioritized backlog, known inconsistencies, and open remediation tasks |
+| **Testing & Quality** | [docs/TESTING.md](./docs/TESTING.md) | Verification scripts, untested critical paths, and testing roadmap |
+| **Convex Database IO** | [.agents/rules/convex-database-io.md](./.agents/rules/convex-database-io.md) | Strict query efficiency, indexing, and anti-pattern rules |
+| **Service Worker Rules** | [.agents/rules/service-worker.md](./.agents/rules/service-worker.md) | Zero SW libraries rule and native Web Push guidelines |
+| **Git & Versioning** | [.agents/rules/versioning.md](./.agents/rules/versioning.md) | SemVer branching strategy, commit codeblocks, and PR merge rules |
+| **User Changelog** | [.agents/rules/changelog.md](./.agents/rules/changelog.md) | Jargon-free user-friendly release notes requirements |
+
+---
+
+## 🛡️ AI Agent Operating Principles & Guardrails
+
+1. **Mandatory Codebase Inspection Before Implementation:**
+   - Always inspect existing files, utilities, and components before writing code.
+   - Search [components/ui/](./components/ui) and [components/](./components) before creating any new component.
+   - Search [lib/](./lib) and [hooks/](./hooks) before implementing helpers or state hooks.
+
+2. **Strict Prohibition on Unrelated Refactoring:**
+   - Modify **only** files directly relevant to the assigned task.
+   - Do not reformat untouched files, rewrite working logic, or alter working conventions outside the task scope.
+
+3. **Strict Prohibition on Unrequested Dependency Changes:**
+   - Do not install, remove, or update packages in `package.json` unless explicitly requested by the user.
+   - Never install third-party service worker libraries (`@serwist/next`, `workbox`, `next-pwa`, etc.).
+
+4. **Mandatory Post-Implementation Verification:**
+   - Run `pnpm.cmd exec tsc --noEmit` to verify 0 TypeScript compilation errors.
+   - Run `pnpm.cmd lint` to ensure no lint regressions are introduced.
+
+5. **Planning & Action-Oriented Output:**
+   - Always produce a clear, step-by-step implementation plan before executing multi-file tasks.
+   - Adhere strictly to concise, fluff-free communication (Gemini 3.7 style).
+   - When asked for git commit messages, provide **strictly the commit message itself inside a codeblock**.
 
 ---
 
@@ -45,7 +91,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
    - **Advanced Search & Discovery:** Multi-parameter search filtered by genres, release years, sort criteria, and keywords.
 
 2. **Watchlist, Favorites & Personal Ratings**
-   - **Personal Collections:** One-click addition to personal Watchlist and Favorites.
+   - **Personal Collections:** One-click addition to personal Watchlist and Favorites (Convex for authenticated, `localStorage` for guests).
    - **10-Star Rating System:** Rate media from 1 to 10 with community average and individual score tracking.
    - **Continue Watching Tracker:** Monitor in-progress TV series with season and episode-level status tracking.
 
@@ -87,7 +133,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - Person & Company: `getPersonDetails(id)`, `getPersonCredits(id)`, `getCompanyDetails(id)`, `getCompanyMovies(id)`, `getCompanyTVShows(id)`.
   - Batching & Imports: `matchImportItemsAction(items)` (for Letterboxd/IMDb CSV imports), `batchFetchMediaMetadata(items)`.
   - Providers & Genres: `getTMDBGenres()`, `getTMDBProviders(watchRegion)`.
-- **Edge Reverse Proxy (`cloudflare/worker.js`):** Lightweight Cloudflare Worker reverse proxy that injects the TMDB API key at Cloudflare's global edge network, concealing credentials from client DevTools with 0 serverless compute cost.
+- **Edge Reverse Proxy (`cloudflare/README.md`):** Lightweight Cloudflare Worker reverse proxy that injects the TMDB API key at Cloudflare's global edge network, concealing credentials from client DevTools with 0 serverless compute cost.
 - **TMDB Types & Enums (`lib/tmdb.ts`):** Types (`TMDBMedia`, `TMDBRawItem`), genre map constants (`ALL_GENRES`, `GENRE_MAP`), streaming providers dictionary (`PROVIDERS`), and data cleaning helper `cleanMediaData(items, defaultType)`.
 - **Authentication (`lib/auth-client.ts`, `lib/auth-server.ts`):** Better Auth client (`createAuthClient`, sign in/up, session hooks) and server session retriever.
 - **State Stores (`lib/auth-modal-store.ts`):** Zustand modal store managing open/close state and active tab for authentication dialog (`useAuthModalStore`).
@@ -128,27 +174,6 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 
 ---
 
-## 🧩 Key UI Components & Systems (`components/`)
-
-- **Modals & Overlays:**
-  - `components/quick-view-modal.tsx` & `components/person-quick-view-modal.tsx`: Instant preview dialogs for media items and actors.
-  - `components/log-watch-modal.tsx`: Interactive diary logging modal with rating, date, review, and season/episode picker.
-  - `components/auth-modal.tsx`: Unified login / registration / password reset modal.
-  - `components/search-overlay.tsx`: Global search modal (`Cmd+K`).
-  - `components/import-wizard.tsx`: Multi-step Letterboxd and IMDb CSV data import wizard with automated TMDB matching.
-  - `components/avatar-crop-modal.tsx`: Profile picture cropping before upload.
-- **Feeds & Media Display:**
-  - `components/hero.tsx`: Featured dynamic backdrop hero banner with trailer modal triggers.
-  - `components/card.tsx`: Universal media card with hover actions (watchlist, favorite, quick-view, rating).
-  - `components/carousel.tsx`: Embla-powered smooth carousel for horizontal media lists.
-  - `components/activity-feed.tsx` & `components/activity-card.tsx`: Social activity stream with live interactions.
-  - `components/continue-watching-card.tsx`: Quick-resume playback card with episode progress indicators.
-  - `components/comments-section.tsx`: Nested threaded comment section for media pages.
-- **Chat System (`components/chat/`):**
-  - Full-featured chat workspace with conversation lists, chat window, message composer, shared media card attachments, and member management.
-
----
-
 ## 🏢 Business Rules
 
 1. **User Isolation & Privacy Enforcement:** Every user interaction and private query must authenticate through Better Auth (`authComponent.safeGetAuthUser(ctx)`). User profile visibility (`public`, `friends`, `private`) governs access to watchlists, favorites, diary logs, and social activities.
@@ -171,7 +196,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 ## ⚠️ Things to Avoid
 
 1. **NEVER use the `any` type:** Always define explicit TypeScript types, interfaces, or use runtime narrowing.
-2. **NEVER call TMDB directly without caching or edge protection:** Always utilize `lib/tmdb-actions.ts` with the two-tier L1/L2 SWR cache engine (`lib/tmdb-cache.ts`) and route requests through the Cloudflare Worker edge proxy (`cloudflare/worker.js`) in production.
+2. **NEVER call TMDB directly without caching or edge protection:** Always utilize `lib/tmdb-actions.ts` with the two-tier L1/L2 SWR cache engine (`lib/tmdb-cache.ts`) and route requests through the Cloudflare Worker edge proxy in production.
 3. **NEVER use Convex Database tables to cache raw 3rd-party API responses:** Convex Database has strict storage quotas on free/standard plans. Caching large external JSON payloads (e.g. TMDB movie details, credits, search results) inside Convex documents rapidly exhausts database storage. Use client-side IndexedDB caching or edge reverse proxy caching instead.
 4. **NEVER bypass privacy settings in social queries:** Ensure activity feeds, watchlists, and profile details respect user privacy flags (`hideWatchlist`, `hideFavorites`, `hideRatings`, `hideDiary`).
 5. **NEVER hardcode image CDN URLs:** Always reference TMDB image base paths or environment variables (`NEXT_PUBLIC_API_IMAGE_*`).
@@ -216,7 +241,6 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
   - `VAPID_SUBJECT`: Contact email or subject URI for VAPID payload.
 - **Analytics:**
   - `GA_MEASUREMENT_ID`: Google Analytics measurement ID.
-
 ---
 
 ## 📋 Core Engineering Rules & Standards
@@ -298,7 +322,7 @@ Popcorn Vision is a modern, responsive web application for movie and TV show dis
 ---
 
 ## 🛠️ Development & CLI Commands
-Always use `pnpm` for package operations:
+Always use `pnpm` (`pnpm.cmd` on Windows) for package operations:
 
 ```bash
 # Start Next.js development server
@@ -310,6 +334,9 @@ pnpm convex
 
 # Build for production
 pnpm build
+
+# Run TypeScript type check
+pnpm exec tsc --noEmit
 
 # Run linter
 pnpm lint

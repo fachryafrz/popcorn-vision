@@ -176,56 +176,142 @@ export function MediaDetailSkeleton() {
       {/* Content Container shifted upwards to overlap backdrop */}
       <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 lg:-mt-44 lg:flex-row lg:gap-12 lg:px-20">
         {/* Large Poster Sidebar */}
-        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 lg:block">
+        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 xl:block">
           <Skeleton className="aspect-2/3 w-full rounded-none" />
         </div>
 
         {/* Details Header Details */}
         <div className="flex w-full flex-1 flex-col items-start gap-4 text-left">
           {/* Genre Badges */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Skeleton className="h-6 w-16 rounded-xl" />
             <Skeleton className="h-6 w-20 rounded-xl" />
             <Skeleton className="h-6 w-16 rounded-xl" />
           </div>
 
           {/* Title or Logo Placeholder */}
-          <Skeleton className="h-12 w-3/4 rounded-lg sm:h-16 md:h-20" />
+          <Skeleton className="h-10 w-3/4 rounded-lg sm:h-14 md:h-16" />
 
           {/* Tagline */}
           <Skeleton className="h-5 w-1/2 rounded" />
 
-          {/* Meta rows (Rating, Year, Duration) */}
+          {/* Meta rows (Rating, Year, Duration, Certification) */}
           <div className="flex w-full flex-wrap items-center gap-3">
             <Skeleton className="h-6 w-20 rounded-full" />
-            <Skeleton className="h-6 w-14 rounded-full" />
-            <Skeleton className="h-6 w-12 rounded-full" />
+            <Skeleton className="h-6 w-24 rounded-full" />
+            <Skeleton className="h-6 w-28 rounded-full" />
             <Skeleton className="h-6 w-16 rounded-full" />
           </div>
 
-          {/* Action buttons / quick stats */}
-          <div className="mt-2 flex w-full flex-wrap gap-4">
-            <Skeleton className="h-12 w-36 rounded-full" />
-            <Skeleton className="h-12 w-36 rounded-full" />
+          {/* Directors / Creators row */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-20 rounded" />
+            <Skeleton className="h-4 w-32 rounded" />
+          </div>
+
+          {/* Overview text lines */}
+          <div className="my-2 w-full max-w-3xl space-y-2">
+            <Skeleton className="h-4 w-full rounded" />
+            <Skeleton className="h-4 w-5/6 rounded" />
+            <Skeleton className="h-4 w-2/3 rounded" />
+          </div>
+
+          {/* Streaming providers row */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Skeleton className="h-5 w-24 rounded" />
+            <div className="flex gap-1.5">
+              <Skeleton className="size-8 rounded-lg" />
+              <Skeleton className="size-8 rounded-lg" />
+              <Skeleton className="size-8 rounded-lg" />
+            </div>
+          </div>
+
+          {/* Action buttons (Watchlist, Add to List, Favorite, Log Watch, Share) */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-28 rounded-full" />
+          </div>
+
+          {/* Rating Section (10 stars) */}
+          <div className="mt-4 flex max-w-sm flex-col gap-2">
+            <Skeleton className="h-3 w-24 rounded" />
+            <div className="flex gap-1">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <Skeleton key={i} className="size-6 rounded" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Below-fold content */}
-      <div className="mx-auto mt-10 max-w-7xl space-y-10 px-6 py-10 sm:px-12 md:px-20">
-        {/* Cast row */}
-        <div className="space-y-4">
-          <Skeleton className="h-7 w-32 rounded" />
-          <div className="flex gap-4 overflow-hidden">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex shrink-0 flex-col items-center gap-2"
-              >
-                <Skeleton className="h-20 w-20 rounded-full" />
-                <Skeleton className="h-3.5 w-16 rounded" />
+      {/* Main Details Body */}
+      <div className="mx-auto max-w-7xl space-y-16 px-6 py-12 sm:px-12">
+        {/* Video Player Card */}
+        <div className="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/20 shadow-2xl backdrop-blur-md">
+          {/* Header Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 bg-zinc-900/60 p-5">
+            <div className="flex gap-4">
+              <Skeleton className="h-6 w-28 rounded" />
+              <Skeleton className="h-6 w-24 rounded" />
+            </div>
+            <Skeleton className="h-8 w-32 rounded-lg" />
+          </div>
+          {/* Player screen */}
+          <Skeleton className="aspect-video w-full rounded-none" />
+        </div>
+
+        {/* Metadata Details Grid */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+          {/* Main Info Column (Cast, Companies, Collections, Seasons) */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Cast row with header navigation buttons */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <Skeleton className="h-7 w-48 rounded" />
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-8 rounded-full sm:size-9" />
+                  <Skeleton className="size-8 rounded-full sm:size-9" />
+                </div>
               </div>
-            ))}
+              <div className="flex gap-4 overflow-hidden">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex shrink-0 flex-col items-center gap-2"
+                  >
+                    <Skeleton className="size-20 rounded-full sm:size-24" />
+                    <Skeleton className="h-4 w-16 rounded" />
+                    <Skeleton className="h-3 w-12 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Production Companies skeleton */}
+            <div className="space-y-3 pt-4">
+              <Skeleton className="h-6 w-44 rounded" />
+              <div className="flex flex-wrap gap-3">
+                <Skeleton className="h-10 w-28 rounded-xl" />
+                <Skeleton className="h-10 w-32 rounded-xl" />
+                <Skeleton className="h-10 w-24 rounded-xl" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats Sidebar */}
+          <div className="border-zinc-850 h-fit space-y-6 rounded-2xl border bg-zinc-900/10 p-6 lg:col-span-1">
+            <Skeleton className="h-5 w-24 rounded" />
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-1">
+                  <Skeleton className="h-3 w-16 rounded" />
+                  <Skeleton className="h-4 w-20 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -425,5 +511,3 @@ export function FeedSkeleton() {
     </div>
   );
 }
-
-
