@@ -21,10 +21,37 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.12.6",
+    title: "Streamlined Media Details & Interactive Release Notes",
+    releaseDate: "2026-10-31",
+    isLatest: true,
+    summary:
+      "A cleaner and more intuitive media details experience with direct hero trailer playback, streamlined cast navigation, and an interactive collapsible release notes timeline.",
+    changes: [
+      {
+        type: "ui",
+        title: "Streamlined Media Details & Hero Player",
+        description:
+          "Watch trailers and play videos directly from the backdrop cover, with a cleaner layout placing cast navigation and details right where you need them.",
+      },
+      {
+        type: "feat",
+        title: "Collapsible Release Notes Timeline",
+        description:
+          "Milestone cards on the release notes page can now be expanded or collapsed to easily browse through updates.",
+      },
+      {
+        type: "perf",
+        title: "Snappier Media Browsing & Smoother Loading",
+        description:
+          "Exploring movies, TV series, and actor filmographies is faster and lighter, paired with updated placeholder screens that smoothly match the layout.",
+      },
+    ],
+  },
+  {
     version: "2.12.5",
     title: "More Responsive Alerts & Quicker Browsing",
     releaseDate: "2026-10-15",
-    isLatest: true,
     summary:
       "Improved notification delivery so you stay instantly up to date with new messages and activity, paired with background speed polishes for smoother navigation.",
     changes: [
