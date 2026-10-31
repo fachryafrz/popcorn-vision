@@ -8,7 +8,7 @@ import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
-import { streamingProviderList } from "@/lib/streamingProviderList";
+import { useStreamingServers } from "@/hooks/use-streaming-servers";
 import { MediaDetailSkeleton } from "@/components/skeletons";
 import { TrendingUp } from "lucide-react";
 import Carousel from "./carousel";
@@ -919,7 +919,7 @@ export default function MediaDetailClient({
     (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
 
   // Streaming server sources
-  const servers = streamingProviderList({
+  const servers = useStreamingServers({
     media_type: mediaType,
     id: String(details?.id),
     season,

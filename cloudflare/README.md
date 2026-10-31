@@ -2,11 +2,13 @@
 
 This Cloudflare Worker serves as a lightweight, zero-cost edge reverse proxy that injects the TMDB API key on Cloudflare's global edge network.
 
-## Benefits
+## Benefits & Security
+
 - **Hidden API Key:** The TMDB API key is never exposed in client browser DevTools or bundle JavaScript.
+- **Strict Origin & Referer Protection:** Blocks unauthorized third-party apps, unauthorized websites, and browser hotlinking by restricting access to your authorized domains.
+- **Edge Caching via Cache API:** Caches TMDB responses at Cloudflare's global edge CDN (<10ms latency) to conserve TMDB quota.
 - **Zero Server Compute:** Does not consume any Vercel Serverless Function compute or Convex function calls.
 - **Free Tier:** 100,000 requests per day (3,000,000 requests/month) for free without credit card.
-- **Edge Caching:** Caches TMDB responses at Cloudflare's global edge network for reduced latency and TMDB quota protection.
 
 ## Setup Instructions (2 Minutes)
 
@@ -14,9 +16,10 @@ This Cloudflare Worker serves as a lightweight, zero-cost edge reverse proxy tha
 2. Click **Create application** &rarr; **Create Worker**.
 3. Name it `povi-tmdb-proxy` and click **Deploy**.
 4. Click **Edit code**, paste the contents of [`cloudflare/worker.js`](./worker.js), and click **Deploy**.
-5. Go to **Settings** &rarr; **Variables & Secrets**:
+5. Go to **Settings** &rarr; **Variables and Secrets**:
    - Add a secret named `TMDB_API_KEY` with your TMDB API Key.
-   - Click **Save and Deploy**.
+   - Add an environment variable named `ALLOWED_ORIGINS` containing your production domain(s) separated by commas (e.g. `https://popcorn-vision.vercel.app`). Note: `localhost:3000` and `*.vercel.app` preview URLs are supported by default.
+   - Click **Deploy**.
 6. In your Popcorn Vision environment (`.env.local` or Vercel dashboard):
    ```env
    NEXT_PUBLIC_API_URL="https://povi-tmdb-proxy.<your-subdomain>.workers.dev"
