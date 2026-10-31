@@ -46,7 +46,7 @@ export default function CrewSlider({ title, items }: CrewSliderProps) {
           {items.map((item) => {
             const pic = item.profile_path
               ? `https://image.tmdb.org/t/p/w185${item.profile_path}`
-              : "/logo/popcorn.png";
+              : "/logo/v2/popcorn_transparent.png";
             return (
               <SwiperSlide key={item.id} className="py-1">
                 <Link

@@ -294,7 +294,7 @@ export default function DetailsPanel({
             {sharedMediaList.map((msg) => {
               const posterUrl = msg.sharedMediaPoster
                 ? `https://image.tmdb.org/t/p/w92${msg.sharedMediaPoster}`
-                : "/logo/popcorn.png";
+                : "/logo/v2/popcorn_transparent.png";
               return (
                 <Link
                   key={msg._id}

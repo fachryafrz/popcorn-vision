@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="flex mb-20 lg:mb-0 flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20">
       <div className="flex items-center gap-2">
         <img
-          src="/logo/popcorn.png"
+          src="/logo/v2/popcorn_transparent.png"
           alt={siteConfig.name}
           className="h-7 w-7 object-contain"
         />
@@ -42,11 +42,6 @@ export default function Footer() {
         >
           Terms & Conditions
         </Link>
-      </div>
-      <div className="mt-1 flex flex-col items-center gap-1 text-[11px] text-zinc-600 max-w-xs">
-        <p>
-          This product uses the TMDB API but is not endorsed or certified by TMDB.
-        </p>
       </div>
       <p className="mt-1 text-xs text-zinc-600">
         &copy; {moment(createdDate).format("MMM YYYY")} -{" "}

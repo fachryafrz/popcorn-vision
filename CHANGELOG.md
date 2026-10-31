@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.0] - 2026-10-31
+
+### Added
+- **Polished App Icon for Installed Devices**: When installed on your mobile home screen or computer desktop, Popcorn Vision now features a dedicated tactile app icon with smooth rounded corners that fits beautifully on your screen.
+
+### Changed
+- **Playful 3D Mascot & Rebranding**: Refreshed the beloved popcorn mascot with cinema 3D glasses into a vibrant, tactile 3D style across headers, footers, and dialog windows.
+- **Seamless In-App Visuals**: The mascot now blends naturally with transparent backgrounds across cards, actor placeholders, and profile dialogs for a cleaner look in both dark and light modes.
+
+---
 ## [2.12.6] - 2026-10-31
 
 ### Added

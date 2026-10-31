@@ -16,7 +16,7 @@ export interface EmailTemplateOptions {
 export function getEmailWrapperHtml(options: EmailTemplateOptions): string {
   // Use SITE_URL env variable or fallback to siteConfig URL
   const siteUrl = process.env.SITE_URL || siteConfig.url || "http://localhost:3000";
-  const logoUrl = `${siteUrl}/logo/popcorn.png`;
+  const logoUrl = `${siteUrl}/logo/v2/popcorn_transparent.png`;
 
   return `<!DOCTYPE html>
 <html lang="en">

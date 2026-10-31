@@ -217,7 +217,7 @@ export default function ActivityCard({
     : "?";
   const posterUrl = activity.posterPath
     ? `https://image.tmdb.org/t/p/w185${activity.posterPath}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_transparent.png";
 
   return (
     <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/30 p-5 shadow-lg shadow-black/10 backdrop-blur-md transition-all duration-300 hover:border-zinc-800 hover:bg-zinc-900/50">

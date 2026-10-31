@@ -940,11 +940,11 @@ export default function MediaDetailClient({
 
   const backdropUrl = details?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${details.backdrop_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_transparent.png";
 
   const posterUrl = details?.poster_path
     ? `https://image.tmdb.org/t/p/w500${details.poster_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_transparent.png";
 
   const mobileBackdropUrl = textlessPosterPath
     ? `https://image.tmdb.org/t/p/w780${textlessPosterPath}`

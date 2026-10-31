@@ -21,7 +21,7 @@ export default function CollectionGrid({
         {collectionParts.map((part) => {
           const posterUrl = part.poster_path
             ? `https://image.tmdb.org/t/p/w185${part.poster_path}`
-            : "/logo/popcorn.png";
+            : "/logo/v2/popcorn_transparent.png";
           const year = part.release_date
             ? new Date(part.release_date).getFullYear()
             : "N/A";

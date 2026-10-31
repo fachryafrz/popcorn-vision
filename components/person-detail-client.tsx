@@ -243,7 +243,7 @@ export default function PersonDetailClient({
 
   const profileUrl = person.profile_path
     ? `https://image.tmdb.org/t/p/h632${person.profile_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_transparent.png";
 
   return (
     <main className="bg-background text-foreground min-h-svh pt-24 pb-16 transition-colors duration-300">

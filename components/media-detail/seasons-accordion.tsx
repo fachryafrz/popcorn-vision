@@ -89,7 +89,7 @@ export default function SeasonsAccordion({
         {details.seasons.map((s) => {
           const posterUrl = s.poster_path
             ? `https://image.tmdb.org/t/p/w185${s.poster_path}`
-            : "/logo/popcorn.png";
+            : "/logo/v2/popcorn_transparent.png";
           const year = s.air_date ? new Date(s.air_date).getFullYear() : "N/A";
           const isSeasonCompleted = (() => {
             if (!watchHistory || !watchHistory.history || !s.episode_count) return false;
@@ -187,7 +187,7 @@ export default function SeasonsAccordion({
                   {activeSeasonData.episodes?.map((ep) => {
                     const stillUrl = ep.still_path
                       ? `https://image.tmdb.org/t/p/w300${ep.still_path}`
-                      : "/logo/popcorn.png";
+                      : "/logo/v2/popcorn_transparent.png";
                     const duration = moment.duration(ep.runtime, "minutes");
 
                     const isEpisodeCompleted = !!(

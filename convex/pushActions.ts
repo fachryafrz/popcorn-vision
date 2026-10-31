@@ -43,8 +43,8 @@ export const sendPushNotification = internalAction({
       title: args.title,
       body: args.body,
       url: args.url || "/chat",
-      icon: args.icon || "/favicon/android-chrome-192x192.png",
-      badge: args.badge || "/favicon/favicon-32x32.png",
+      icon: args.icon || "/favicon/v2/android-chrome-192x192.png",
+      badge: args.badge || "/favicon/v2/favicon-32x32.png",
       chatId: args.chatId,
       notificationType: args.notificationType,
     });

@@ -66,7 +66,7 @@ export default function PersonQuickViewModal({
 
   const profileUrl = person?.profile_path
     ? `https://image.tmdb.org/t/p/h632${person.profile_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_transparent.png";
 
   const age = person?.birthday
     ? (() => {

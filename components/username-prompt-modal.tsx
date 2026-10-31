@@ -115,7 +115,7 @@ export default function UsernamePromptModal() {
         <div className="mb-6 text-center">
           <div className="relative mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
             <Image
-              src="/logo/popcorn.png"
+              src="/logo/v2/popcorn_transparent.png"
               alt="Logo"
               fill
               className="object-contain p-1.5"
