@@ -251,7 +251,7 @@ export function UserManagementTable({
           <div className="flex flex-col items-center justify-center gap-2 py-16 text-zinc-500">
             <Loader2 className="text-primary h-6 w-6 animate-spin" />
             <span className="text-xs font-semibold">
-              Loading users database...
+              Loading users...
             </span>
           </div>
         ) : users.length === 0 ? (

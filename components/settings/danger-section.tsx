@@ -217,8 +217,8 @@ export default function DangerSection({
             cleared and your username will be randomized to free it up for other
             film enthusiasts. Your comment authors will appear as{" "}
             <strong className="text-white">[deleted]</strong>. Your ratings,
-            watchlist, and diary records will be safely preserved in the
-            database for continuity but fully anonymized.
+            watchlist, and diary records will be safely preserved for
+            community statistics but fully anonymized.
           </p>
         </div>
 

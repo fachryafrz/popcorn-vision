@@ -92,7 +92,7 @@ function ServerFormInner({
     }
 
     if (!trimmedMovieUrl && !trimmedTvUrl) {
-      toast.error("Please provide at least one URL template (Movie or TV)");
+      toast.error("Please provide at least one URL (Movie or TV)");
       return;
     }
 
@@ -126,22 +126,22 @@ function ServerFormInner({
       <div className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-3.5 text-xs text-sky-200">
         <div className="flex items-center gap-2 font-semibold">
           <Info className="h-4 w-4 shrink-0 text-sky-400" />
-          <span>Available Dynamic Placeholders</span>
+          <span>Supported URL Tags</span>
         </div>
         <p className="mt-1 text-zinc-300">
           Use{" "}
           <code className="rounded bg-sky-950/80 px-1.5 py-0.5 font-mono text-sky-300">
             {"{id}"}
           </code>{" "}
-          for TMDB Media ID,{" "}
+          for title ID,{" "}
           <code className="rounded bg-sky-950/80 px-1.5 py-0.5 font-mono text-sky-300">
             {"{season}"}
           </code>{" "}
-          for TV season, and{" "}
+          for season number, and{" "}
           <code className="rounded bg-sky-950/80 px-1.5 py-0.5 font-mono text-sky-300">
             {"{episode}"}
           </code>{" "}
-          for TV episode.
+          for episode number.
         </p>
       </div>
 
@@ -175,11 +175,11 @@ function ServerFormInner({
         </div>
       </div>
 
-      {/* Movie URL Template */}
+      {/* Movie URL */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="movie-url" className="text-xs font-semibold text-zinc-300">
-            Movie Embed URL Template
+            Movie Stream URL
           </Label>
           <span className="font-mono text-[11px] text-zinc-500">{"{id}"}</span>
         </div>
@@ -192,11 +192,11 @@ function ServerFormInner({
         />
       </div>
 
-      {/* TV URL Template */}
+      {/* TV URL */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="tv-url" className="text-xs font-semibold text-zinc-300">
-            TV Embed URL Template
+            TV Series Stream URL
           </Label>
           <span className="font-mono text-[11px] text-zinc-500">
             {"{id}"}, {"{season}"}, {"{episode}"}
@@ -214,7 +214,7 @@ function ServerFormInner({
       {/* Flags & Toggles */}
       <div className="space-y-2">
         <Label className="text-xs font-semibold text-zinc-300">
-          Server Settings & Badges
+          Server Badges & Availability
         </Label>
         <div className="grid grid-cols-1 gap-2.5">
           {/* Active Status */}
@@ -295,7 +295,7 @@ function ServerFormInner({
               <div className="flex min-w-0 flex-col">
                 <span className="text-xs font-bold text-white">Fast Server</span>
                 <span className="truncate text-[11px] text-zinc-400">
-                  Low latency badge
+                  Fast streaming badge
                 </span>
               </div>
             </div>

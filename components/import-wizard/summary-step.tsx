@@ -59,8 +59,8 @@ export default function SummaryStep({
               Import Summary List
             </h3>
             <p className="text-xs text-zinc-500">
-              Your data has been successfully processed and synced with{" "}
-              {siteConfig.name} database.
+              Your data has been successfully imported and added to your{" "}
+              {siteConfig.name} account.
             </p>
           </div>
         </div>
