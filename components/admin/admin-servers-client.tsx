@@ -42,8 +42,8 @@ export function AdminServersClient() {
           Access Denied
         </h1>
         <p className="mb-6 text-sm text-zinc-400">
-          You do not have permission to view the Streaming Servers console. Only
-          platform Owners and Admins can access this area.
+          You do not have permission to access Streaming Servers. Only platform
+          Owners and Admins can access this area.
         </p>
         <Link
           href="/"
@@ -65,10 +65,10 @@ export function AdminServersClient() {
           </div>
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-white">
-              Streaming Servers Console
+              Streaming Servers
             </h1>
             <p className="text-xs text-zinc-400">
-              Manage video embed providers, toggle servers on/off, reorder priority, and update URL templates in real time without redeploying.
+              Manage video playback sources, server availability, and display order for movies and TV shows.
             </p>
           </div>
         </div>

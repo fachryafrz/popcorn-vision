@@ -156,7 +156,7 @@ export function ServerManagementTable() {
 
   const handleCopyUrl = (url: string) => {
     navigator.clipboard.writeText(url);
-    toast.success("URL template copied to clipboard");
+    toast.success("URL copied to clipboard");
   };
 
   return (
@@ -240,9 +240,9 @@ export function ServerManagementTable() {
             <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 text-zinc-400 mb-3">
               <Server className="h-8 w-8" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-1">No Streaming Servers Configured</h3>
+            <h3 className="text-lg font-bold text-white mb-1">No Streaming Servers Added</h3>
             <p className="max-w-md text-xs text-zinc-400 mb-6">
-              You haven&apos;t configured any custom streaming servers yet. The player is currently using the local default fallback list.
+              No streaming servers have been added yet. The player will use default playback sources.
             </p>
             <div className="flex items-center gap-3">
               <Button
@@ -253,7 +253,7 @@ export function ServerManagementTable() {
                 className="bg-primary hover:bg-primary/90 rounded-xl font-bold text-white shadow-lg"
               >
                 <Plus className="mr-2 h-4 w-4" />
-                Add Server Manually
+                Add Server
               </Button>
             </div>
           </div>
@@ -269,7 +269,7 @@ export function ServerManagementTable() {
                   <th className="py-3.5 pl-4 pr-2 w-16 text-center">Order</th>
                   <th className="py-3.5 px-4 min-w-45">Server Name</th>
                   <th className="py-3.5 px-4">Badges</th>
-                  <th className="py-3.5 px-4 min-w-65">Embed Templates</th>
+                  <th className="py-3.5 px-4 min-w-65">Video URLs</th>
                   <th className="py-3.5 px-4 text-center">Active</th>
                   <th className="py-3.5 pl-2 pr-4 text-right">Actions</th>
                 </tr>
@@ -371,7 +371,7 @@ export function ServerManagementTable() {
                             <button
                               type="button"
                               onClick={() => handleTestLink(server.movieUrl, false)}
-                              title="Test Movie Embed"
+                              title="Preview Movie Link"
                               className="text-primary hover:text-primary/80"
                             >
                               <ExternalLink className="h-3 w-3" />
@@ -398,7 +398,7 @@ export function ServerManagementTable() {
                             <button
                               type="button"
                               onClick={() => handleTestLink(server.tvUrl, true)}
-                              title="Test TV Embed"
+                              title="Preview TV Link"
                               className="text-primary hover:text-primary/80"
                             >
                               <ExternalLink className="h-3 w-3" />
@@ -439,7 +439,7 @@ export function ServerManagementTable() {
                             className="cursor-pointer gap-2 text-xs"
                           >
                             <ExternalLink className="h-3.5 w-3.5 text-emerald-400" />
-                            <span>Test Live Player</span>
+                            <span>Preview Player</span>
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator className="bg-zinc-800" />

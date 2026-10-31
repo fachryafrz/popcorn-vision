@@ -531,9 +531,9 @@ export default function QuickViewModal({
                       {hasCommunity && (
                         <div
                           className="border-zinc-850 rounded-full border bg-zinc-900/40 px-2.5 py-0.5 text-xs font-medium text-zinc-500"
-                          title="TMDB reference rating"
+                          title="TMDB global rating"
                         >
-                          TMDB Ref: {voteRating}
+                          TMDB: {voteRating}
                         </div>
                       )}
                     </>

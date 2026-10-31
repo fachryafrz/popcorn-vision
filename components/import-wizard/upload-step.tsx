@@ -13,7 +13,7 @@ interface UploadStepProps {
 const SOURCES_GUIDE = [
   {
     title: "IMDb Lists",
-    text: "Supports exported list files containing 'Const' IMDb IDs.",
+    text: "Supports standard exported list files from IMDb.",
     color: "border-yellow-600/20 bg-yellow-950/5 text-yellow-400",
   },
   {
@@ -23,7 +23,7 @@ const SOURCES_GUIDE = [
   },
   {
     title: "TMDB",
-    text: "Supports CSV lists containing TMDB ID fields.",
+    text: "Supports CSV lists exported from TMDB.",
     color: "border-blue-600/20 bg-blue-950/5 text-blue-400",
   },
 ];

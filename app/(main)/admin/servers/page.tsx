@@ -6,7 +6,7 @@ import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
   title: `Streaming Servers | ${siteConfig.name}`,
-  description: "Configure and manage video embed providers and streaming servers.",
+  description: "Manage video playback sources and streaming servers.",
 };
 
 export default function AdminServersPage() {
