@@ -13,7 +13,7 @@ const IMAGE_CONFIG = {
 
 export type TMDBImageSize = keyof typeof IMAGE_CONFIG;
 
-export const DEFAULT_PLACEHOLDER_IMAGE = "/logo/popcorn.png";
+export const DEFAULT_PLACEHOLDER_IMAGE = "/logo/v2/popcorn_transparent.png";
 
 export function getTMDBImageUrl(
   path: string | null | undefined,

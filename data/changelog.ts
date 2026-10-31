@@ -21,10 +21,37 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.0",
+    title: "Modern 3D Rebranding & Reimagined App Icon",
+    releaseDate: "2026-10-31",
+    isLatest: true,
+    summary:
+      "A vibrant 3D brand refresh for Popcorn Vision, featuring a sleek squircle app icon for installed devices and clean, transparent character visuals across the app.",
+    changes: [
+      {
+        type: "feat",
+        title: "Polished App Icon for Installed Devices",
+        description:
+          "When installed on your phone or desktop, Popcorn Vision now features a dedicated tactile app icon with smooth rounded corners that fits beautifully on your home screen.",
+      },
+      {
+        type: "ui",
+        title: "Playful 3D Mascot & Rebranding",
+        description:
+          "Enjoy a fresh, charming 3D look for our popcorn mascot with cinema 3D glasses across headers, footers, dialogs, and community features.",
+      },
+      {
+        type: "ui",
+        title: "Seamless In-App Visuals",
+        description:
+          "The mascot now blends naturally with transparent backgrounds across cards, actor placeholders, and profile dialogs for a cleaner look in both dark and light themes.",
+      },
+    ],
+  },
+  {
     version: "2.12.6",
     title: "Streamlined Media Details & Interactive Release Notes",
     releaseDate: "2026-10-31",
-    isLatest: true,
     summary:
       "A cleaner and more intuitive media details experience with direct hero trailer playback, streamlined cast navigation, and an interactive collapsible release notes timeline.",
     changes: [

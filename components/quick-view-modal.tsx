@@ -253,7 +253,7 @@ export default function QuickViewModal({
     ? `https://image.tmdb.org/t/p/w780${media.backdrop_path}`
     : details?.backdrop_path
       ? `https://image.tmdb.org/t/p/w780${details.backdrop_path}`
-      : "/logo/popcorn.png";
+      : "/logo/v2/popcorn_transparent.png";
 
   // YouTube trailer resolution
   const trailerVideo = videos?.find(
@@ -645,7 +645,7 @@ export default function QuickViewModal({
                     {cast.map((actor) => {
                       const actorPic = actor.profile_path
                         ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                        : "/logo/popcorn.png";
+                        : "/logo/v2/popcorn_transparent.png";
                       return (
                         <Link
                           key={actor.id}

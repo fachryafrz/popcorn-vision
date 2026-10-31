@@ -75,7 +75,7 @@ export default function Navbar() {
               className="ml-1 flex max-w-fit cursor-pointer items-center gap-2"
             >
               <img
-                src="/logo/popcorn.png"
+                src="/logo/v2/popcorn_transparent.png"
                 alt={siteConfig.name}
                 className={cn(
                   "object-contain transition-all duration-500",

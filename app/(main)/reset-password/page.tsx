@@ -105,7 +105,7 @@ function ResetPasswordForm() {
       <div className="mb-8 text-center">
         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
           <img
-            src="/logo/popcorn.png"
+            src="/logo/v2/popcorn_transparent.png"
             alt="Logo"
             className="h-9 w-9 object-contain"
           />

@@ -76,7 +76,7 @@ export default function CastSlider({ cast, onPersonClick }: CastSliderProps) {
           {cast.map((actor) => {
             const actorPic = actor.profile_path
               ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-              : "/logo/popcorn.png";
+              : "/logo/v2/popcorn_transparent.png";
 
             return (
               <SwiperSlide key={actor.id} className="py-1">

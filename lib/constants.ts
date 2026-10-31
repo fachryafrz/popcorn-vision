@@ -1,9 +1,9 @@
 export const TMDB_SESSION_ID = "tmdb.session_id";
 export const TMDB_AUTH_TOKEN = "tmdb.auth_token";
-export const POPCORN = "/logo/popcorn.png";
-export const POPCORN_APPLE = "/favicon/apple-touch-icon.png";
-export const SAD_POPCORN = "/logo/sad_popcorn.png";
-export const SAD_POPCORN_ENGINEER = "/logo/sad_popcorn_engineer.png";
+export const POPCORN = "/logo/v2/popcorn_transparent.png";
+export const POPCORN_APPLE = "/favicon/v2/apple-touch-icon.png";
+export const SAD_POPCORN = "/logo/v1/sad_popcorn.png";
+export const SAD_POPCORN_ENGINEER = "/logo/v1/sad_popcorn_engineer.png";
 export const USER_LOCATION = "user-location";
 export const AND_SEPARATION = "AND";
 export const OR_SEPARATION = "OR";

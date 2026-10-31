@@ -48,7 +48,7 @@ export default function SidebarPanel({
           >
             <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">
               <img
-                src="/logo/popcorn.png"
+                src="/logo/v2/popcorn_transparent.png"
                 alt={siteConfig.name}
                 className={cn(
                   "h-10 w-10 object-contain transition-all duration-500",
