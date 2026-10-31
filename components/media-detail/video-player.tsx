@@ -411,7 +411,7 @@ export default function VideoPlayer({
           ) : (
             <div className="aspect-video w-full bg-black lg:aspect-auto lg:h-[60svh] lg:w-2/3">
               <iframe
-                src={servers[selectedServer]?.source}
+                src={servers[selectedServer]?.source || servers[0]?.source}
                 title="Streaming Player"
                 className="h-full w-full border-none"
                 allowFullScreen
@@ -505,7 +505,12 @@ export default function VideoPlayer({
               </h4>
 
               <div className="flex max-h-[50svh] flex-col gap-2 overflow-y-auto lg:max-h-none lg:overflow-y-clip">
-                {servers.map((serv, index: number) => (
+                {servers.length === 0 ? (
+                  <div className="rounded-xl border border-dashed border-zinc-800 p-4 text-center text-xs text-zinc-500">
+                    No servers available
+                  </div>
+                ) : (
+                  servers.map((serv, index: number) => (
                   <Button
                     key={index}
                     onClick={() => setSelectedServer(index)}
@@ -542,7 +547,8 @@ export default function VideoPlayer({
                       </span>
                     )}
                   </Button>
-                ))}
+                ))
+              )}
               </div>
             </div>
           </div>
