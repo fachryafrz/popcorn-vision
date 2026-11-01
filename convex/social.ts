@@ -303,7 +303,7 @@ export const sendFriendRequest = mutation({
       body: "sent you a friend request.",
       url: `/user/${senderProfile?.username || ""}`,
       icon: senderProfile?.image || "/favicon/v2/android-chrome-192x192.png",
-      badge: "/favicon/v2/favicon-32x32.png",
+      badge: "/favicon/v2/badge-96x96.png",
     });
   },
 });
@@ -370,7 +370,7 @@ export const acceptFriendRequest = mutation({
       body: "accepted your friend request.",
       url: `/user/${acceptorProfile?.username || ""}`,
       icon: acceptorProfile?.image || "/favicon/v2/android-chrome-192x192.png",
-      badge: "/favicon/v2/favicon-32x32.png",
+      badge: "/favicon/v2/badge-96x96.png",
     });
   },
 });

@@ -61,7 +61,7 @@ export default function ContinueWatchingCard({
     }
   };
 
-  let rawImage = "/logo/v2/popcorn_transparent.png";
+  let rawImage = "/logo/v2/popcorn_cropped_transparent.png";
 
   if (item.mediaType === "tv") {
     // TV Series: Prioritize episode still image (w300), then backdrop, then poster
