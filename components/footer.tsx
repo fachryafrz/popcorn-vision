@@ -8,10 +8,10 @@ export default function Footer() {
   const createdDate = "2023-02-17";
 
   return (
-    <footer className="flex mb-20 lg:mb-0 flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20">
-      <div className="flex items-center gap-2">
+    <footer className="mb-20 flex flex-col items-center gap-4 border-t border-zinc-900 bg-zinc-950 px-6 py-12 text-center text-sm text-zinc-500 sm:px-16 md:px-20 lg:mb-0">
+      <div className="flex flex-col items-center gap-2">
         <img
-          src="/logo/v2/popcorn_transparent.png"
+          src="/logo/v2/popcorn_cropped_transparent.png"
           alt={siteConfig.name}
           className="h-7 w-7 object-contain"
         />
@@ -24,22 +24,16 @@ export default function Footer() {
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-zinc-600">
         <Link
           href="/changelog"
-          className="hover:text-zinc-400 transition-colors"
+          className="transition-colors hover:text-zinc-400"
         >
           Changelog
         </Link>
         <span className="h-1 w-1 rounded-full bg-zinc-800" />
-        <Link
-          href="/privacy"
-          className="hover:text-zinc-400 transition-colors"
-        >
+        <Link href="/privacy" className="transition-colors hover:text-zinc-400">
           Privacy Policy
         </Link>
         <span className="h-1 w-1 rounded-full bg-zinc-800" />
-        <Link
-          href="/terms"
-          className="hover:text-zinc-400 transition-colors"
-        >
+        <Link href="/terms" className="transition-colors hover:text-zinc-400">
           Terms & Conditions
         </Link>
       </div>
@@ -49,7 +43,7 @@ export default function Footer() {
       </p>
       <Link
         href="/changelog"
-        className="text-[11px] font-medium text-zinc-600 hover:text-zinc-400 transition-colors"
+        className="text-[11px] font-medium text-zinc-600 transition-colors hover:text-zinc-400"
         aria-label={`View release notes for version ${siteConfig.version}`}
       >
         v{siteConfig.version}

@@ -30,13 +30,13 @@ self.addEventListener("push", (event) => {
       ? data.icon.startsWith("http")
         ? data.icon
         : `${self.location.origin}${data.icon}`
-      : `${self.location.origin}/favicon/v2/android-chrome-192x192.png`;
+      : `${self.location.origin}/logo/v2/popcorn_cropped_transparent.png`;
 
     const absoluteBadge = data.badge
       ? data.badge.startsWith("http")
         ? data.badge
         : `${self.location.origin}${data.badge}`
-      : `${self.location.origin}/favicon/v2/favicon-32x32.png`;
+      : `${self.location.origin}/favicon/v2/badge-96x96.png`;
 
     const options = {
       body: data.body || "You received a new notification.",

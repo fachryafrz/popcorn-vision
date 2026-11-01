@@ -217,7 +217,7 @@ export const addComment = mutation({
           body: "replied to your comment.",
           url: `/${args.mediaType}/${args.mediaId}`,
           icon: currentUser.image || "/favicon/v2/android-chrome-192x192.png",
-          badge: "/favicon/v2/favicon-32x32.png",
+          badge: "/favicon/v2/badge-96x96.png",
         });
       }
     }
@@ -258,7 +258,7 @@ export const addComment = mutation({
           body: "mentioned you in a comment.",
           url: `/${args.mediaType}/${args.mediaId}`,
           icon: currentUser.image || "/favicon/v2/android-chrome-192x192.png",
-          badge: "/favicon/v2/favicon-32x32.png",
+          badge: "/favicon/v2/badge-96x96.png",
         });
       }
     }
