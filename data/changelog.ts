@@ -22,23 +22,29 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // ==========================================
   {
     version: "2.13.0",
-    title: "Modern 3D Rebranding & Reimagined App Icon",
-    releaseDate: "2026-10-31",
+    title: "Modern Flat Rebranding",
+    releaseDate: "2026-11-01",
     isLatest: true,
     summary:
-      "A vibrant 3D brand refresh for Popcorn Vision, featuring a sleek squircle app icon for installed devices and clean, transparent character visuals across the app.",
+      "A sleek modern flat brand refresh for Popcorn Vision, featuring a sharp new app icon for installed devices, seamless transparent visuals, and a crisp icon.",
     changes: [
       {
         type: "feat",
         title: "Polished App Icon for Installed Devices",
         description:
-          "When installed on your phone or desktop, Popcorn Vision now features a dedicated tactile app icon with smooth rounded corners that fits beautifully on your home screen.",
+          "When installed on your phone or desktop, Popcorn Vision now features a dedicated app icon with smooth rounded corners that fits beautifully on your home screen.",
       },
       {
         type: "ui",
-        title: "Playful 3D Mascot & Rebranding",
+        title: "Charming Modern Flat Mascot",
         description:
-          "Enjoy a fresh, charming 3D look for our popcorn mascot with cinema 3D glasses across headers, footers, dialogs, and community features.",
+          "Enjoy a clean, high-contrast modern flat look for our popcorn mascot with cinema 3D glasses across headers, footers, dialogs, and community features.",
+      },
+      {
+        type: "fix",
+        title: "Crisp Status Bar & Notification Alerts",
+        description:
+          "Notification alerts now display a clean, contoured mascot icon in your mobile status bar, preventing unwanted solid square boxes on your phone.",
       },
       {
         type: "ui",
