@@ -21,19 +21,34 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
-    version: "2.13.1",
-    title: "Simplified Legal Pages, New About Page & Non-Intrusive Notices",
-    releaseDate: "2026-11-07",
+    version: "2.13.2",
+    title: "Streamlined Navigation & Direct Discovery",
+    releaseDate: "2026-11-08",
     isLatest: true,
     summary:
-      "Introduces a dedicated About page, redesigns Privacy Policy and Terms of Service into a clean top-to-bottom reading experience, makes the welcome notice non-intrusive, and cleans up external tracking scripts.",
+      "Streamlines site navigation by keeping the focus directly on movie and TV show discovery, while retaining clear access to privacy policies and the welcome notice.",
     changes: [
       {
-        type: "feat",
-        title: "Brand-New About Page",
+        type: "ui",
+        title: "Streamlined Footer Navigation",
         description:
-          "Added a dedicated About page explaining the purpose of Popcorn Vision, our core features, and our commitments to privacy and transparent media tracking.",
+          "Cleaned up the footer layout to keep links focused directly on release updates and legal policies.",
       },
+      {
+        type: "refactor",
+        title: "Simplified Discovery Focus",
+        description:
+          "Kept our interface straightforward and centered on discovering entertainment, removing redundant static pages.",
+      },
+    ],
+  },
+  {
+    version: "2.13.1",
+    title: "Simplified Legal Pages & Non-Intrusive Notices",
+    releaseDate: "2026-11-07",
+    summary:
+      "Redesigns Privacy Policy and Terms of Service into a clean top-to-bottom reading experience, makes the welcome notice non-intrusive, and cleans up external tracking scripts.",
+    changes: [
       {
         type: "ui",
         title: "Refreshed Privacy & Terms of Service",

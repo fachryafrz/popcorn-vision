@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [2.13.1] - 2026-11-07
+## [2.13.2] - 2026-11-08
 
-### Added
-- **Brand-New About Page**: Added a dedicated About page explaining the purpose of Popcorn Vision, our core features, and our commitments to privacy and transparent media tracking.
+### Changed
+- **Streamlined Footer Navigation**: Cleaned up the footer layout to keep links focused directly on release updates and legal policies.
+
+### Removed
+- **Simplified Discovery Focus**: Kept our interface straightforward and centered on discovering entertainment, removing redundant static pages.
+
+---
+
+## [2.13.1] - 2026-11-07
 
 ### Changed
 - **Refreshed Privacy & Terms of Service**: Redesigned our legal and policy documents with a clean, easy-to-read single-column format that presents data safety, user rights, and community terms with zero clutter.
