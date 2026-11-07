@@ -21,10 +21,49 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.1",
+    title: "Simplified Legal Pages, New About Page & Non-Intrusive Notices",
+    releaseDate: "2026-11-07",
+    isLatest: true,
+    summary:
+      "Introduces a dedicated About page, redesigns Privacy Policy and Terms of Service into a clean top-to-bottom reading experience, makes the welcome notice non-intrusive, and cleans up external tracking scripts.",
+    changes: [
+      {
+        type: "feat",
+        title: "Brand-New About Page",
+        description:
+          "Added a dedicated About page explaining the purpose of Popcorn Vision, our core features, and our commitments to privacy and transparent media tracking.",
+      },
+      {
+        type: "ui",
+        title: "Refreshed Privacy & Terms of Service",
+        description:
+          "Redesigned our legal and policy documents with a clean, easy-to-read single-column format that presents data safety, user rights, and community terms with zero clutter.",
+      },
+      {
+        type: "ui",
+        title: "Non-Intrusive Welcome Notice",
+        description:
+          "Replaced the blocking full-screen welcome modal with an elegant, dismissible banner at the bottom of the screen so you can start browsing movies immediately.",
+      },
+      {
+        type: "ui",
+        title: "Clean & Familiar Header Branding",
+        description:
+          "Streamlined the header logo to the familiar 'POVI' name while maintaining full accessibility and screen reader support.",
+      },
+      {
+        type: "refactor",
+        title: "Lighter & Cleaner Browsing",
+        description:
+          "Removed unused third-party tracking scripts to give you a faster, more private, and lightweight browsing experience.",
+      },
+    ],
+  },
+  {
     version: "2.13.0",
     title: "Modern Flat Rebranding",
     releaseDate: "2026-11-01",
-    isLatest: true,
     summary:
       "A sleek modern flat brand refresh for Popcorn Vision, featuring a sharp new app icon for installed devices, seamless transparent visuals, and a crisp icon.",
     changes: [

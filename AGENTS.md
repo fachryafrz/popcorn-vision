@@ -239,8 +239,6 @@ Before starting work on any task, read the corresponding documentation:
   - `VAPID_PUBLIC_KEY`: Server-side VAPID public key.
   - `VAPID_PRIVATE_KEY`: Server-side VAPID private key.
   - `VAPID_SUBJECT`: Contact email or subject URI for VAPID payload.
-- **Analytics:**
-  - `GA_MEASUREMENT_ID`: Google Analytics measurement ID.
 ---
 
 ## 📋 Core Engineering Rules & Standards

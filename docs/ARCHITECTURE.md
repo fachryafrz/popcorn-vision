@@ -41,7 +41,7 @@ Popcorn Vision is built on a split-tier architecture designed for **zero server 
 │   The Movie Database (TMDB)   │  │   - Resend API (Transactional Email)  │
 │   - Catalog, Cast, Crew       │  │   - Google OAuth (Social Login)       │
 │   - Posters, Backdrops, Logos │  │   - open.er-api.com (Currency Rates)  │
-│   - Video Trailers            │  │   - Google Analytics (GA4)            │
+│   - Video Trailers            │  │                                       │
 └───────────────────────────────┘  └───────────────────────────────────────┘
 ```
 

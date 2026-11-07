@@ -117,9 +117,6 @@ RESEND_API_KEY=...
 NEXT_PUBLIC_API_URL="https://povi-tmdb-proxy.<your-subdomain>.workers.dev" # or https://api.themoviedb.org/3
 NEXT_PUBLIC_API_KEY="" # Optional when using Cloudflare proxy
 
-# Google Analytics
-GA_MEASUREMENT_ID=
-
 # Web Push (VAPID)
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=...
 VAPID_PUBLIC_KEY=...

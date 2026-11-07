@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
 import { siteConfig } from "@/config/site";
 import { Toaster } from "@/components/ui/sonner";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
@@ -51,13 +50,14 @@ export const metadata: Metadata = {
     telephone: false,
   },
   robots: {
-    index: false,
-    follow: false,
-    nocache: true,
+    index: true,
+    follow: true,
     googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 };
@@ -67,8 +67,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaMeasurementId = process.env.GA_MEASUREMENT_ID;
-
   return (
     <html
       lang="en"
@@ -100,7 +98,6 @@ export default function RootLayout({
           <Toaster />
         </Providers>
       </body>
-      {gaMeasurementId && <GoogleAnalytics gaId={gaMeasurementId} />}
     </html>
   );
 }

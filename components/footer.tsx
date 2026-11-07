@@ -23,6 +23,13 @@ export default function Footer() {
       </p>
       <div className="mt-2 flex flex-wrap items-center justify-center gap-3 text-xs font-semibold text-zinc-600">
         <Link
+          href="/about"
+          className="transition-colors hover:text-zinc-400"
+        >
+          About
+        </Link>
+        <span className="h-1 w-1 rounded-full bg-zinc-800" />
+        <Link
           href="/changelog"
           className="transition-colors hover:text-zinc-400"
         >
