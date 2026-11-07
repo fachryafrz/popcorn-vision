@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.1] - 2026-11-07
+
+### Added
+- **Brand-New About Page**: Added a dedicated About page explaining the purpose of Popcorn Vision, our core features, and our commitments to privacy and transparent media tracking.
+
+### Changed
+- **Refreshed Privacy & Terms of Service**: Redesigned our legal and policy documents with a clean, easy-to-read single-column format that presents data safety, user rights, and community terms with zero clutter.
+- **Non-Intrusive Welcome Notice**: Replaced the blocking full-screen welcome modal with an elegant, dismissible banner at the bottom of the screen so you can start browsing movies immediately.
+- **Clean & Familiar Header Branding**: Streamlined the header logo to the familiar "POVI" name while maintaining full accessibility and screen reader support.
+
+### Removed
+- **Lighter & Cleaner Browsing**: Removed unused third-party tracking scripts to give you a faster, more private, and lightweight browsing experience.
+
+---
+
 ## [2.13.0] - 2026-11-01
 
 ### Added

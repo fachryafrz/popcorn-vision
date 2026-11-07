@@ -44,6 +44,7 @@ export default function SidebarPanel({
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
           <Link
             href="/"
+            aria-label="POVI - Popcorn Vision"
             className="flex max-w-fit cursor-pointer items-center gap-2"
           >
             <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">
@@ -60,6 +61,7 @@ export default function SidebarPanel({
                 )}
               >
                 POVI
+                <span className="sr-only"> - Popcorn Vision</span>
               </span>
             </h1>
           </Link>

@@ -72,6 +72,7 @@ export default function Navbar() {
           <div className="flex items-center gap-6 lg:gap-8">
             <Link
               href="/"
+              aria-label="POVI - Popcorn Vision"
               className="ml-1 flex max-w-fit cursor-pointer items-center gap-2"
             >
               <img
@@ -84,6 +85,7 @@ export default function Navbar() {
               />
               <span className="bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-lg font-black tracking-wider text-transparent uppercase transition-all duration-500">
                 POVI
+                <span className="sr-only"> - Popcorn Vision</span>
               </span>
             </Link>
 

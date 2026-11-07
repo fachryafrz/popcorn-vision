@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { ShieldAlert, Info } from "lucide-react";
+import Link from "next/link";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { siteConfig } from "@/config/site";
 import { STORAGE_KEYS } from "@/lib/constants";
 
@@ -28,80 +28,81 @@ export default function DisclaimerModal() {
     setHasAccepted(true);
   };
 
-  const isOpen = isMounted && !hasAccepted;
+  if (!isMounted || hasAccepted) {
+    return null;
+  }
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent
-        showCloseButton={false}
-        className="max-w-lg rounded-3xl border border-zinc-800 bg-zinc-950 p-8 text-white shadow-2xl shadow-black/95 backdrop-blur-xl [&>button]:hidden"
-      >
-        <div className="mb-6 text-center">
-          <div className="relative mx-auto mb-4 flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-md">
-            <Image
-              src="/logo/v2/popcorn_cropped_transparent.png"
-              alt="Logo"
-              fill
-              className="object-contain p-2"
-            />
-          </div>
-          <DialogTitle className="bg-linear-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
-            User Disclaimer
-          </DialogTitle>
-          <div className="mt-1 flex items-center justify-center gap-1.5 text-xs font-semibold tracking-widest text-yellow-500 uppercase">
-            <ShieldAlert className="h-3.5 w-3.5" />
-            Important Notice
-          </div>
-        </div>
-
-        <div className="space-y-4 text-sm leading-relaxed text-zinc-300">
-          <p>
-            Welcome to <strong>{siteConfig.name}</strong>. Before you explore
-            further, please take a moment to read our disclaimer:
-          </p>
-
-          <div className="space-y-3 rounded-2xl border border-zinc-900 bg-zinc-900/30 p-4">
-            <div className="flex gap-3">
-              <Info className="mt-0.5 h-5 w-5 shrink-0 text-zinc-400" />
-              <div className="space-y-2 text-xs">
-                <p>
-                  <strong>Movie Tracking & Information:</strong>{" "}
-                  {siteConfig.name} is a social platform designed for movie/show
-                  tracking, logs (diary), and reviews. We{" "}
-                  <strong>do not host or stream</strong> any copyrighted media
-                  or illegal video content.
-                </p>
-                <p>
-                  <strong>Data Source & TMDB:</strong> All movie metadata,
-                  posters, descriptions, and cast lists are powered by the{" "}
-                  <strong>TMDb API</strong>. This platform is not officially
-                  endorsed or certified by TMDb.
-                </p>
-                <p>
-                  <strong>Copyright:</strong> Promotional materials (such as
-                  posters, images, and trailers) displayed on the site are
-                  copyrighted by their respective owners or production studios.
-                </p>
-              </div>
+    <aside
+      aria-label="Platform Disclaimer"
+      className="fixed bottom-20 left-4 right-4 z-50 sm:bottom-6 sm:left-auto sm:right-6 sm:max-w-md animate-in fade-in slide-in-from-bottom-5 duration-300"
+    >
+      <div className="rounded-2xl border border-zinc-800/90 bg-zinc-950/95 p-4.5 text-white shadow-2xl shadow-black/80 backdrop-blur-xl">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
+              <Image
+                src="/logo/v2/popcorn_cropped_transparent.png"
+                alt={siteConfig.name}
+                fill
+                className="object-contain p-1"
+              />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-white tracking-tight">
+                Welcome to Popcorn Vision (POVI)
+              </h2>
+              <p className="text-[11px] text-zinc-400">
+                Discovery & Tracking Platform Notice
+              </p>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleAccept}
+            className="text-zinc-500 hover:text-white transition-colors p-1 rounded-lg hover:bg-zinc-800/60"
+            aria-label="Dismiss notice"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
-          <p className="text-xs text-zinc-400">
-            By clicking the button below, you acknowledge and agree that this
-            platform is solely for informational, tracking, and community
-            purposes.
+        <div className="mt-3 space-y-2 text-xs leading-relaxed text-zinc-300">
+          <p>
+            Popcorn Vision (POVI) is a community movie and TV show tracking platform
+            for building watchlists, logging diaries, and reviews. We{" "}
+            <strong className="text-zinc-100">do not host or store video files</strong> on our servers;
+            playback is provided via third-party embedded players. All media metadata is provided via the TMDb API.
+          </p>
+          <p className="text-[11px] text-zinc-400">
+            Learn more in our{" "}
+            <Link
+              href="/privacy"
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link
+              href="/terms"
+              className="text-primary underline underline-offset-2 hover:text-primary/80"
+            >
+              Terms of Service
+            </Link>
+            .
           </p>
         </div>
 
-        <div className="mt-6 flex flex-col gap-2">
+        <div className="mt-3.5 flex items-center justify-end gap-2">
           <Button
+            size="sm"
             onClick={handleAccept}
-            className="to-primary hover:to-primary hover:from-primary from-primary w-full cursor-pointer rounded-2xl bg-linear-to-r py-6 text-sm font-bold text-white shadow-lg transition-all duration-200 active:scale-[0.98]"
+            className="bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-semibold px-4 py-1.5 shadow-md"
           >
-            I Agree & Continue
+            I Understand & Continue
           </Button>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </aside>
   );
 }
