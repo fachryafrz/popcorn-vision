@@ -12,7 +12,7 @@ import {
   getCachedCompanyTVShows,
 } from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
-import { CompanyDetailSkeleton } from "@/components/skeletons";
+import { CompanyDetailSkeleton, CardSkeleton } from "@/components/skeletons";
 import {
   ArrowLeft,
   Film,
@@ -77,30 +77,67 @@ export default function CompanyDetailClient({
   const [isLoading, setIsLoading] = useState(
     () => !(initialCompany || cachedCompany),
   );
+  const [isCatalogLoading, setIsCatalogLoading] = useState(
+    () => !(initialMovies || cachedMovies) || !(initialTvShows || cachedTv),
+  );
 
   useEffect(() => {
-    if (getCachedCompanyDetails(id)) {
-      return;
-    }
+    let cancelled = false;
 
-    if (initialCompany && String(initialCompany.id) === id) {
+    const hasInitialCompany = Boolean(
+      initialCompany && String(initialCompany.id) === id,
+    );
+    const resolvedCompany = hasInitialCompany
+      ? (initialCompany ?? null)
+      : getCachedCompanyDetails(id);
+
+    const hasInitialMovies = Boolean(
+      initialMovies && (!initialCompany || String(initialCompany.id) === id),
+    );
+    const resolvedMovies = hasInitialMovies
+      ? (initialMovies ?? null)
+      : getCachedCompanyMovies(id, 1);
+
+    const hasInitialTv = Boolean(
+      initialTvShows && (!initialCompany || String(initialCompany.id) === id),
+    );
+    const resolvedTv = hasInitialTv
+      ? (initialTvShows ?? null)
+      : getCachedCompanyTVShows(id, 1);
+
+    const needsCompany = !resolvedCompany;
+    const needsMovies = !resolvedMovies;
+    const needsTv = !resolvedTv;
+
+    if (!needsCompany && !needsMovies && !needsTv) {
       return;
     }
 
     Promise.all([
-      getCompanyDetails(id),
-      getCompanyMovies(id),
-      getCompanyTVShows(id),
+      needsCompany ? getCompanyDetails(id) : Promise.resolve(resolvedCompany),
+      needsMovies ? getCompanyMovies(id) : Promise.resolve(resolvedMovies),
+      needsTv ? getCompanyTVShows(id) : Promise.resolve(resolvedTv),
     ])
       .then(([companyData, moviesData, tvShowsData]) => {
+        if (cancelled) return;
         if (!companyData) throw new Error("Not found");
         setCompany(companyData);
         setMovies(moviesData ?? []);
         setTvShows(tvShowsData ?? []);
       })
-      .catch(() => router.push("/"))
-      .finally(() => setIsLoading(false));
-  }, [id, router, initialCompany]);
+      .catch(() => {
+        if (!cancelled) router.push("/");
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setIsLoading(false);
+        setIsCatalogLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, router, initialCompany, initialMovies, initialTvShows]);
 
 
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
@@ -366,7 +403,13 @@ export default function CompanyDetailClient({
         </div>
 
         {/* Media Catalog Grid */}
-        {sortedMedia.length > 0 ? (
+        {isCatalogLoading ? (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </div>
+        ) : sortedMedia.length > 0 ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
             {sortedMedia.map((item) => (
               <Card

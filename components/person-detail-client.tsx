@@ -9,7 +9,8 @@ import {
   getCachedPersonCredits,
 } from "@/lib/tmdb-actions";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
-import { PersonDetailSkeleton } from "@/components/skeletons";
+import { PersonDetailSkeleton, CardSkeleton } from "@/components/skeletons";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   ArrowLeft,
   Film,
@@ -93,25 +94,57 @@ export default function PersonDetailClient({
   const [isLoading, setIsLoading] = useState(
     () => !(initialPerson || cachedPerson),
   );
+  const [isCreditsLoading, setIsCreditsLoading] = useState(
+    () => !(initialCredits || cachedCredits),
+  );
 
   useEffect(() => {
-    if (getCachedPersonDetails(id)) {
+    let cancelled = false;
+
+    const hasInitialPerson = Boolean(
+      initialPerson && String(initialPerson.id) === id,
+    );
+    const resolvedPerson = hasInitialPerson
+      ? (initialPerson ?? null)
+      : getCachedPersonDetails(id);
+
+    const hasInitialCredits = Boolean(
+      initialCredits && (!initialPerson || String(initialPerson.id) === id),
+    );
+    const resolvedCredits = hasInitialCredits
+      ? (initialCredits ?? null)
+      : getCachedPersonCredits(id);
+
+    const needsPerson = !resolvedPerson;
+    const needsCredits = !resolvedCredits;
+
+    if (!needsPerson && !needsCredits) {
       return;
     }
 
-    if (initialPerson && String(initialPerson.id) === id) {
-      return;
-    }
-
-    Promise.all([getPersonDetails(id), getPersonCredits(id)])
+    Promise.all([
+      needsPerson ? getPersonDetails(id) : Promise.resolve(resolvedPerson),
+      needsCredits ? getPersonCredits(id) : Promise.resolve(resolvedCredits),
+    ])
       .then(([personData, creditsData]) => {
+        if (cancelled) return;
         if (!personData) throw new Error("Not found");
         setPerson(personData);
         setCredits(creditsData ?? { cast: [], crew: [] });
       })
-      .catch(() => router.push("/"))
-      .finally(() => setIsLoading(false));
-  }, [id, router, initialPerson]);
+      .catch(() => {
+        if (!cancelled) router.push("/");
+      })
+      .finally(() => {
+        if (cancelled) return;
+        setIsLoading(false);
+        setIsCreditsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, router, initialPerson, initialCredits]);
 
 
   const [isBioExpanded, setIsBioExpanded] = useState(false);
@@ -501,7 +534,16 @@ export default function PersonDetailClient({
               </div>
 
               {/* Grid of movies/tv shows */}
-              {filteredAndSortedCredits.length > 0 ? (
+              {isCreditsLoading ? (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+                  {Array.from({ length: 10 }).map((_, i) => (
+                    <div key={i} className="flex flex-col gap-2">
+                      <CardSkeleton />
+                      <Skeleton className="mx-auto h-3 w-16 rounded" />
+                    </div>
+                  ))}
+                </div>
+              ) : filteredAndSortedCredits.length > 0 ? (
                 <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                   {filteredAndSortedCredits.map((item) => (
                     <div
