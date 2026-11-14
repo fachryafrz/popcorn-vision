@@ -4,6 +4,9 @@ import {
   cleanMediaData,
   PROVIDERS,
   GENRE_MAP,
+  POPULAR_COLLECTION_IDS,
+  TMDBCollectionDetails,
+  TMDBTrendingPerson,
   TMDBReviewsResponse,
 } from "./tmdb";
 import {
@@ -17,7 +20,13 @@ import {
 import type { MediaDetailResponse, SeasonDetails } from "@/components/media-detail/types";
 import type { TMDBPerson, PersonCredits } from "@/components/person-detail-client";
 
-export type { TMDBMedia, TMDBRawItem, TMDBReviewsResponse };
+export type {
+  TMDBMedia,
+  TMDBRawItem,
+  TMDBCollectionDetails,
+  TMDBTrendingPerson,
+  TMDBReviewsResponse,
+};
 
 export interface TMDBLogo {
   file_path: string;
@@ -509,14 +518,110 @@ export async function getMediaDetails(
 }
 
 // Collection Details
-export async function getCollectionDetails(collectionId: number): Promise<Record<string, unknown> | null> {
+export async function getCollectionDetails(collectionId: number): Promise<TMDBCollectionDetails | null> {
   const cacheKey = `collection-${collectionId}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_LONG, async () => {
     try {
-      return await tmdbFetch<Record<string, unknown>>(`/collection/${collectionId}`);
+      return await tmdbFetch<TMDBCollectionDetails>(`/collection/${collectionId}`);
     } catch (error) {
       console.error(`Error fetching collection ${collectionId}:`, error);
       return null;
+    }
+  });
+}
+
+// Popular Curated Collections
+export async function getPopularCollections(): Promise<TMDBCollectionDetails[]> {
+  return await fetchWithCacheDedupe("popular-collections", CACHE_TTL_LONG, async () => {
+    try {
+      const results = await Promise.all(
+        POPULAR_COLLECTION_IDS.map((id) => getCollectionDetails(id))
+      );
+      return results.filter(
+        (c): c is TMDBCollectionDetails =>
+          c !== null && Boolean(c.backdrop_path || c.poster_path)
+      );
+    } catch (error) {
+      console.error("Error fetching popular collections:", error);
+      return [];
+    }
+  });
+}
+
+// Lightweight Media Recommendations (with /similar fallback)
+export async function getMediaRecommendations(
+  mediaType: "movie" | "tv",
+  id: number | string,
+): Promise<TMDBMedia[]> {
+  const cacheKey = `recommendations-${mediaType}-${id}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const recsRes = await tmdbFetch<{ results?: TMDBRawItem[] }>(
+        `/${mediaType}/${id}/recommendations`,
+      );
+      let results = recsRes.results ?? [];
+      if (results.length === 0) {
+        const similarRes = await tmdbFetch<{ results?: TMDBRawItem[] }>(
+          `/${mediaType}/${id}/similar`,
+        );
+        results = similarRes.results ?? [];
+      }
+      return cleanMediaData(results, mediaType);
+    } catch (error) {
+      console.error(`Error fetching recommendations for ${mediaType} ${id}:`, error);
+      return [];
+    }
+  });
+}
+
+// Trending People (Actors & Directors)
+export async function getTrendingPeople(): Promise<TMDBTrendingPerson[]> {
+  return await fetchWithCacheDedupe("trending-people-week", CACHE_TTL_MEDIUM, async () => {
+    try {
+      const data = await tmdbFetch<{ results?: TMDBTrendingPerson[] }>("/trending/person/week");
+      return (data.results ?? []).filter((p) => Boolean(p.profile_path));
+    } catch (error) {
+      console.error("Error fetching trending people:", error);
+      return [];
+    }
+  });
+}
+
+// Korean Movies & Series
+export async function getKoreanMedia(
+  type: "all" | "movie" | "tv" = "all",
+): Promise<TMDBMedia[]> {
+  const cacheKey = `korean-media-${type}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const baseParams = {
+        with_original_language: "ko",
+        sort_by: "popularity.desc",
+        "vote_count.gte": 20,
+      };
+
+      if (type === "movie") {
+        const res = await tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/movie", baseParams);
+        return cleanMediaData(res.results ?? [], "movie");
+      }
+
+      if (type === "tv") {
+        const res = await tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/tv", baseParams);
+        return cleanMediaData(res.results ?? [], "tv");
+      }
+
+      const [movieRes, tvRes] = await Promise.all([
+        tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/movie", baseParams),
+        tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/tv", baseParams),
+      ]);
+      const movies = cleanMediaData(movieRes.results ?? [], "movie");
+      const tvShows = cleanMediaData(tvRes.results ?? [], "tv");
+      return [...movies, ...tvShows]
+        .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+        .slice(0, 20);
+    } catch (error) {
+      console.error(`Error fetching Korean ${type} media:`, error);
+      return [];
     }
   });
 }

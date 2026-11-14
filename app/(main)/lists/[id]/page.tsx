@@ -401,13 +401,13 @@ export default function CustomListDetailPage({
   };
 
   return (
-    <div className="mx-auto min-h-[85vh] w-full max-w-7xl px-6 py-24 text-white sm:px-12 md:px-16 lg:px-20">
+    <div className="min-h-[85vh] w-full px-6 py-24 text-white sm:px-12 md:px-16 lg:px-20">
       {/* Back Link */}
       <Link
         href="/lists"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-white"
+        className="mb-6 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-semibold text-zinc-200 backdrop-blur-md transition-colors hover:bg-black/75 hover:text-white"
       >
-        <ChevronLeft className="h-4 w-4" /> Back to Lists
+        <ChevronLeft className="h-3.5 w-3.5" /> Back to Lists
       </Link>
 
       {/* Hero Header Card */}

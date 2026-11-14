@@ -13,9 +13,21 @@ import {
 } from "@/lib/tmdb-actions";
 import Hero from "./hero";
 import Section from "./section";
+import StreamingProvidersBar from "./streaming-providers-bar";
+import CollectionsSection from "./collections-section";
+import BecauseYouWatchedSection, {
+  RecommendationSeed,
+} from "./because-you-watched-section";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
-import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
+import PersonQuickViewModal from "./person-quick-view-modal";
+import {
+  useQuickViewMediaState,
+  useQuickViewPersonState,
+} from "@/hooks/use-query-modal-state";
+import PopularPeopleSection from "./popular-people-section";
+import KoreanSection from "./korean-section";
+import LazySection from "./lazy-section";
 import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
@@ -53,6 +65,7 @@ export default function HomeClient({
 } = {}) {
   const openAuth = useAuthModalStore((state) => state.open);
   const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+  const [quickViewPersonId, setQuickViewPersonId] = useQuickViewPersonState();
 
   const quickViewMedia = useMemo<TMDBMedia | null>(() => {
     if (!quickViewMediaRef) return null;
@@ -246,6 +259,60 @@ export default function HomeClient({
     clearGuestWatchlistItems,
   ]);
 
+  const recommendationSeed = useMemo<RecommendationSeed | null>(() => {
+    if (isLoggedIn) {
+      const cw = continueWatching?.[0];
+      if (cw) {
+        return {
+          mediaId: cw.mediaId,
+          mediaType: cw.mediaType === "tv" ? "tv" : "movie",
+          title: cw.title,
+          source: "watched",
+        };
+      }
+      const wl = watchlist?.[0];
+      if (wl) {
+        return {
+          mediaId: wl.mediaId,
+          mediaType: wl.mediaType === "tv" ? "tv" : "movie",
+          title: wl.title,
+          source: "watchlist",
+        };
+      }
+      return null;
+    }
+
+    if (isGuestLoaded && guestContinueWatching.length > 0) {
+      const cw = guestContinueWatching[0];
+      return {
+        mediaId: cw.mediaId,
+        mediaType: cw.mediaType === "tv" ? "tv" : "movie",
+        title: cw.title,
+        source: "watched",
+      };
+    }
+
+    if (isGuestWatchlistLoaded && guestWatchlist.length > 0) {
+      const wl = guestWatchlist[0];
+      return {
+        mediaId: wl.mediaId,
+        mediaType: wl.mediaType === "tv" ? "tv" : "movie",
+        title: wl.title,
+        source: "watchlist",
+      };
+    }
+
+    return null;
+  }, [
+    isLoggedIn,
+    continueWatching,
+    watchlist,
+    isGuestLoaded,
+    guestContinueWatching,
+    isGuestWatchlistLoaded,
+    guestWatchlist,
+  ]);
+
   const handleQuickView = (media: TMDBMedia) => {
     setQuickViewMedia(media);
   };
@@ -254,14 +321,14 @@ export default function HomeClient({
     return (
       <div className="bg-background text-foreground flex min-h-svh flex-col overflow-x-hidden font-sans">
         <HeroSkeleton />
-        <div className="bg-background relative z-20 flex flex-col gap-6 pb-20">
+        <div className="bg-background relative z-20 flex flex-col gap-6 pb-4 lg:pb-20">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20"
+              className="flex w-full flex-col gap-6 py-6"
             >
-              <Skeleton className="h-6 w-44 rounded-md" />
-              <CarouselSkeleton />
+              <Skeleton className="mx-6 h-6 w-44 rounded-md sm:mx-16 md:mx-20" />
+              <CarouselSkeleton fullBleed />
             </div>
           ))}
         </div>
@@ -280,19 +347,22 @@ export default function HomeClient({
         />
 
         {/* Categories Section Carousels */}
-        <div className="bg-background relative z-20 flex flex-col gap-6 pb-20 transition-colors duration-300">
+        <div className="bg-background relative z-20 flex flex-col gap-6 pb-4 transition-colors duration-300 lg:pb-20">
+          {/* Streaming Services Pills Slider */}
+          <StreamingProvidersBar />
+
           {/* Continue Watching Section (Logged-In or Guest) */}
           {isLoggedIn ? (
             continueWatching === undefined ? (
-              <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
-                <div className="flex items-center gap-2">
+              <div className="flex w-full flex-col gap-6 py-6">
+                <div className="flex items-center gap-2 px-6 sm:px-16 md:px-20">
                   <Skeleton className="h-6 w-44 rounded-md" />
                 </div>
-                <ContinueWatchingCarouselSkeleton />
+                <ContinueWatchingCarouselSkeleton fullBleed />
               </div>
             ) : continueWatching.length > 0 ? (
-              <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
-                <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+              <div className="animate-in fade-in flex w-full flex-col gap-6 py-6 duration-300">
+                <h2 className="flex items-center gap-2 px-6 text-xl font-bold tracking-tight text-white sm:px-16 sm:text-2xl md:px-20">
                   Continue Watching
                 </h2>
                 <div className="swiper-carousel-container relative w-full">
@@ -310,7 +380,7 @@ export default function HomeClient({
                     mousewheel={{
                       forceToAxis: true,
                     }}
-                    className="w-full pb-4"
+                    className="w-full px-6! pb-4 sm:px-16! md:px-20!"
                   >
                     {continueWatching.map((item) => (
                       <SwiperSlide key={item._id} className="py-1">
@@ -322,8 +392,8 @@ export default function HomeClient({
               </div>
             ) : null
           ) : isGuestLoaded && guestContinueWatching.length > 0 ? (
-            <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
-              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+            <div className="animate-in fade-in flex w-full flex-col gap-6 py-6 duration-300">
+              <h2 className="flex items-center gap-2 px-6 text-xl font-bold tracking-tight text-white sm:px-16 sm:text-2xl md:px-20">
                 Continue Watching
               </h2>
               <div className="swiper-carousel-container relative w-full">
@@ -341,7 +411,7 @@ export default function HomeClient({
                   mousewheel={{
                     forceToAxis: true,
                   }}
-                  className="w-full pb-4"
+                  className="w-full px-6! pb-4 sm:px-16! md:px-20!"
                 >
                   {guestContinueWatching.map((item) => (
                     <SwiperSlide key={item._id} className="py-1">
@@ -356,17 +426,17 @@ export default function HomeClient({
           {/* Watchlist Section (Logged-In or Guest) */}
           {isLoggedIn ? (
             watchlist === undefined ? (
-              <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
-                <div className="flex items-center gap-2">
+              <div className="flex w-full flex-col gap-6 py-6">
+                <div className="flex items-center gap-2 px-6 sm:px-16 md:px-20">
                   <Skeleton className="h-6 w-36 rounded-md" />
                 </div>
-                <CarouselSkeleton />
+                <CarouselSkeleton fullBleed />
               </div>
             ) : watchlist.length > 0 ? (
-              <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
+              <div className="animate-in fade-in flex w-full flex-col gap-6 py-6 duration-300">
                 <Link
                   href={username ? `/@${username}?tab=watchlist` : "#"}
-                  className="group flex w-fit items-center gap-1.5 text-xl font-bold tracking-tight text-white sm:text-2xl"
+                  className="group flex w-fit items-center gap-1.5 px-6 text-xl font-bold tracking-tight text-white sm:px-16 sm:text-2xl md:px-20"
                 >
                   <span>My Watchlist</span>
                   <ChevronRight className="h-5 w-5 text-zinc-400 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white" />
@@ -386,7 +456,7 @@ export default function HomeClient({
                     mousewheel={{
                       forceToAxis: true,
                     }}
-                    className="w-full pb-4"
+                    className="w-full px-6! pb-4 sm:px-16! md:px-20!"
                   >
                     {watchlist.map((item) => {
                       const mediaItem: TMDBMedia = {
@@ -417,8 +487,8 @@ export default function HomeClient({
               </div>
             ) : null
           ) : isGuestWatchlistLoaded && guestWatchlist.length > 0 ? (
-            <div className="animate-in fade-in flex w-full flex-col gap-6 px-6 py-6 duration-300 sm:px-16 md:px-20">
-              <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white sm:text-2xl">
+            <div className="animate-in fade-in flex w-full flex-col gap-6 py-6 duration-300">
+              <h2 className="flex items-center gap-2 px-6 text-xl font-bold tracking-tight text-white sm:px-16 sm:text-2xl md:px-20">
                 My Watchlist
               </h2>
               <div className="swiper-carousel-container relative w-full">
@@ -436,7 +506,7 @@ export default function HomeClient({
                   mousewheel={{
                     forceToAxis: true,
                   }}
-                  className="w-full pb-4"
+                  className="w-full px-6! pb-4 sm:px-16! md:px-20!"
                 >
                   {guestWatchlist.map((item) => {
                     const mediaItem: TMDBMedia = {
@@ -479,8 +549,20 @@ export default function HomeClient({
             />
           </div>
 
+          {/* Personal Recommendations ("Because you watched ...") */}
+          <BecauseYouWatchedSection
+            seed={recommendationSeed}
+            onQuickView={handleQuickView}
+            onAuthRequired={openAuth}
+          />
+
+          {/* Popular Collections */}
+          <LazySection id="collections">
+            <CollectionsSection />
+          </LazySection>
+
           {/* Upcoming Releases & Premieres Countdown */}
-          <div id="upcoming">
+          <LazySection id="upcoming">
             <Section
               titleType="upcoming"
               initialItems={upcomingItems}
@@ -493,10 +575,25 @@ export default function HomeClient({
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
             />
-          </div>
+          </LazySection>
+
+          {/* Korean */}
+          <LazySection id="korean">
+            <KoreanSection
+              onQuickView={handleQuickView}
+              onAuthRequired={openAuth}
+            />
+          </LazySection>
+
+          {/* Trending People */}
+          <LazySection id="people">
+            <PopularPeopleSection
+              onPersonClick={(personId) => setQuickViewPersonId(personId)}
+            />
+          </LazySection>
 
           {/* Streaming Services Originals */}
-          <div id="originals">
+          <LazySection id="originals">
             <Section
               titleType="dropdown-streaming"
               initialItems={streamingItems}
@@ -505,10 +602,10 @@ export default function HomeClient({
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
             />
-          </div>
+          </LazySection>
 
           {/* Browse by Category */}
-          <div id="category">
+          <LazySection id="category">
             <Section
               titleType="dropdown-genre"
               initialItems={categoryItems}
@@ -517,7 +614,7 @@ export default function HomeClient({
               onQuickView={handleQuickView}
               onAuthRequired={openAuth}
             />
-          </div>
+          </LazySection>
         </div>
       </main>
 
@@ -529,6 +626,13 @@ export default function HomeClient({
           onClose={() => setQuickViewMedia(null)}
         />
       )}
+
+      {/* Person Quick View Modal */}
+      <PersonQuickViewModal
+        isOpen={!!quickViewPersonId}
+        onClose={() => setQuickViewPersonId(null)}
+        personId={quickViewPersonId}
+      />
     </div>
   );
 }

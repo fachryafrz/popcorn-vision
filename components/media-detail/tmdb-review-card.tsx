@@ -36,7 +36,7 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
 
   return (
     <div className="group flex flex-col gap-1 transition-all duration-300">
-      <div className="flex items-start gap-3 rounded-2xl border border-transparent bg-zinc-900/10 p-3 transition-all duration-300 hover:border-zinc-800/30 hover:bg-zinc-900/30">
+      <div className="flex items-start gap-3.5 rounded-2xl border border-zinc-800/40 bg-zinc-900/20 p-4 transition-all duration-300 hover:border-zinc-800/80 hover:bg-zinc-900/35">
         {/* Avatar */}
         <Avatar className="h-9 w-9 border border-zinc-800 ring-2 ring-transparent transition-all duration-300 group-hover:ring-zinc-700/30">
           {avatarUrl ? (
@@ -109,8 +109,10 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
           {/* Review Text rendered via ReactMarkdown */}
           <div
             className={cn(
-              "relative mt-2 text-sm leading-relaxed wrap-break-word text-zinc-300 transition-all",
-              isLongContent && !isExpanded && "max-h-36 overflow-hidden"
+              "relative mt-2.5 text-sm leading-relaxed wrap-break-word text-zinc-300 transition-all",
+              isLongContent &&
+                !isExpanded &&
+                "max-h-40 overflow-hidden [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]",
             )}
           >
             <ReactMarkdown
@@ -206,10 +208,9 @@ export default function TMDBReviewCard({ review }: TMDBReviewCardProps) {
           {/* Read More / Less Toggle */}
           {isLongContent && (
             <button
+              type="button"
               onClick={() => setIsExpanded(!isExpanded)}
-              className={cn(
-                "mt-2 inline-flex cursor-pointer items-center gap-1 text-xs font-semibold text-zinc-400 transition-colors hover:text-white"
-              )}
+              className="mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs font-semibold text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
             >
               {isExpanded ? (
                 <>

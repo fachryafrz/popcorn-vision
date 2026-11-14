@@ -11,7 +11,7 @@ import { TMDBMedia } from "@/lib/tmdb";
 import { useStreamingServers } from "@/hooks/use-streaming-servers";
 import { MediaDetailSkeleton } from "@/components/skeletons";
 import { TrendingUp } from "lucide-react";
-import Carousel from "./carousel";
+import Card from "./card";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import PersonQuickViewModal from "./person-quick-view-modal";
@@ -1129,18 +1129,23 @@ export default function MediaDetailClient({
           mediaPosterPath={details.poster_path || undefined}
         />
 
-        {/* Recommendations Carousel */}
+        {/* Recommendations Grid */}
         {recommendations.length > 0 && (
           <div className="space-y-6">
             <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
               <TrendingUp className="text-primary h-5 w-5" />
               More Like This
             </h2>
-            <Carousel
-              items={recommendations}
-              onQuickView={handleQuickView}
-              onAuthRequired={openAuth}
-            />
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {recommendations.map((item) => (
+                <Card
+                  key={`${item.media_type}-${item.id}`}
+                  media={item}
+                  onQuickView={handleQuickView}
+                  onAuthRequired={openAuth}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

@@ -1079,7 +1079,7 @@ export default function SearchClient({
   return (
     <main className="bg-background text-foreground min-h-svh pt-28 pb-16 transition-colors duration-300">
       {/* Page header */}
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 md:px-16">
+      <div className="px-6 sm:px-10 md:px-16">
         <div className="mb-10 text-left">
           <h1 className="mb-2 bg-linear-to-r from-white via-zinc-300 to-zinc-500 bg-clip-text text-3xl font-black tracking-tight text-transparent sm:text-4xl">
             Search

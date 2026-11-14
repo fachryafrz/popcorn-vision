@@ -152,6 +152,60 @@ export interface TMDBReviewsResponse {
   total_results: number;
 }
 
+export const POPULAR_COLLECTION_IDS: number[] = [
+  86311,  // The Avengers Collection
+  10,     // Star Wars Collection
+  1241,   // Harry Potter Collection
+  119,    // The Lord of the Rings Collection
+  404609, // John Wick Collection
+  263,    // The Dark Knight Collection
+  531241, // Spider-Man (Avengers) Collection
+  328,    // Jurassic Park Collection
+  9485,   // The Fast and the Furious Collection
+  10194,  // Toy Story Collection
+  87359,  // Mission: Impossible Collection
+  726871, // Dune Collection
+  87096,  // Avatar Collection
+  295,    // Pirates of the Caribbean Collection
+  645,    // James Bond Collection
+  86066,  // Despicable Me Collection
+];
+
+export interface TMDBCollectionPart {
+  id: number;
+  title: string;
+  original_title?: string;
+  overview?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date?: string;
+  vote_average?: number;
+  vote_count?: number;
+  genre_ids?: number[];
+  media_type?: "movie";
+}
+
+export interface TMDBCollectionDetails {
+  id: number;
+  name: string;
+  overview?: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  parts: TMDBCollectionPart[];
+}
+
+export interface TMDBTrendingPerson {
+  id: number;
+  name: string;
+  profile_path: string | null;
+  known_for_department?: string;
+  known_for?: Array<{
+    id: number;
+    title?: string;
+    name?: string;
+  }>;
+}
+
 export function getTMDBAvatarUrl(path: string | null): string | null {
   if (!path) return null;
   if (path.startsWith("/http://") || path.startsWith("/https://")) {

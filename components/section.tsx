@@ -219,9 +219,9 @@ export default function Section({
   };
 
   return (
-    <div className="flex w-full flex-col gap-6 px-6 py-6 sm:px-16 md:px-20">
+    <div className="flex w-full flex-col gap-6 py-6">
       {/* Header controls section */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+      <div className="flex flex-col justify-between gap-4 px-6 sm:flex-row sm:items-center sm:px-16 md:px-20">
         {/* Title / Interactive Dropdown */}
         {titleType === "text" && onTrendingChange && (
           <div className="flex grow flex-wrap items-center justify-between gap-4 sm:gap-6">
@@ -367,12 +367,13 @@ export default function Section({
 
       {/* Render carousel content or skeleton */}
       {loading ? (
-        <CarouselSkeleton />
+        <CarouselSkeleton fullBleed />
       ) : (
         <Carousel
           items={items.length > 0 ? items : (initialItems ?? [])}
           onQuickView={onQuickView}
           onAuthRequired={onAuthRequired}
+          fullBleed
         />
       )}
     </div>

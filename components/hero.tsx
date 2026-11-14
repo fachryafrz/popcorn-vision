@@ -199,7 +199,7 @@ function HeroSlide({
       <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
 
       {/* Slide Content */}
-      <div className="relative z-20 flex w-full max-w-5xl flex-col items-end gap-8 md:flex-row md:gap-10">
+      <div className="relative z-20 flex w-full flex-col items-end gap-8 md:flex-row md:gap-10">
         <div
           onClick={() => onQuickView(media)}
           className="hidden h-76 w-52 shrink-0 transform cursor-pointer overflow-hidden rounded-2xl border border-zinc-700/30 shadow-2xl shadow-black/85 transition-all duration-300 hover:scale-102 lg:block"
