@@ -111,6 +111,7 @@ export interface TMDBProvider {
   provider_id: number;
   provider_name: string;
   logo_path: string;
+  display_priority?: number;
 }
 
 export interface TMDBCompanyDetails {
@@ -1339,28 +1340,36 @@ export async function getTMDBProviders(watchRegion: string = "US"): Promise<TMDB
   const cacheKey = `providers-${watchRegion}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_LONG, async () => {
     try {
+      interface TMDBRawProvider extends TMDBProvider {
+        display_priorities?: Record<string, number>;
+      }
+
       const [movieProvidersRes, tvProvidersRes] = await Promise.all([
-        tmdbFetch<{ results: TMDBProvider[] }>("/watch/providers/movie", { watch_region: watchRegion }),
-        tmdbFetch<{ results: TMDBProvider[] }>("/watch/providers/tv", { watch_region: watchRegion }),
+        tmdbFetch<{ results: TMDBRawProvider[] }>("/watch/providers/movie", { watch_region: watchRegion }),
+        tmdbFetch<{ results: TMDBRawProvider[] }>("/watch/providers/tv", { watch_region: watchRegion }),
       ]);
       const movieProviders = movieProvidersRes.results ?? [];
       const tvProviders = tvProvidersRes.results ?? [];
 
       const allProvidersMap = new Map<number, TMDBProvider>();
-      movieProviders.forEach((p) => {
+      const upsertProvider = (p: TMDBRawProvider) => {
+        const regionPriority = p.display_priorities?.[watchRegion] ?? p.display_priority;
+        const existing = allProvidersMap.get(p.provider_id);
+        const bestPriority =
+          existing?.display_priority !== undefined && regionPriority !== undefined
+            ? Math.min(existing.display_priority, regionPriority)
+            : (regionPriority ?? existing?.display_priority);
+
         allProvidersMap.set(p.provider_id, {
           provider_id: p.provider_id,
           provider_name: p.provider_name,
           logo_path: p.logo_path,
+          ...(bestPriority !== undefined ? { display_priority: bestPriority } : {}),
         });
-      });
-      tvProviders.forEach((p) => {
-        allProvidersMap.set(p.provider_id, {
-          provider_id: p.provider_id,
-          provider_name: p.provider_name,
-          logo_path: p.logo_path,
-        });
-      });
+      };
+
+      movieProviders.forEach(upsertProvider);
+      tvProviders.forEach(upsertProvider);
 
       return Array.from(allProvidersMap.values()).sort((a, b) => a.provider_name.localeCompare(b.provider_name));
     } catch (error) {
