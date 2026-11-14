@@ -1,0 +1,1031 @@
+"use client";
+
+import { useState, useEffect, useMemo, useCallback, Suspense } from "react";
+import { useMutation } from "convex/react";
+import { useQuery } from "convex-helpers/react/cache";
+import { useQueryState } from "nuqs";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { authClient } from "@/lib/auth-client";
+import {
+  User as UserIcon,
+  Loader2,
+  Grid,
+  Bookmark,
+  Heart,
+  Star,
+  UserX,
+  MessageSquare,
+  Activity,
+} from "lucide-react";
+import { useAuthModalStore } from "@/lib/auth-modal-store";
+import QuickViewModal from "@/components/quick-view-modal";
+import { useQuickViewMediaState } from "@/hooks/use-query-modal-state";
+import { TMDBMedia } from "@/lib/tmdb";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import LogWatchModal from "@/components/log-watch-modal";
+import ContinueWatchingCard, { ContinueWatchingItem } from "@/components/continue-watching-card";
+import { Play } from "lucide-react";
+import { useConfirm } from "@/components/ui/confirm-provider";
+
+// Modular Subcomponents
+import { UserDoc, DiaryItem } from "@/components/profile/types";
+import { ProfileHeader } from "@/components/profile/profile-header";
+import { LockScreen } from "@/components/profile/lock-screen";
+import { FriendsDialog } from "@/components/profile/friends-dialog";
+import { EditToolbar } from "@/components/profile/edit-toolbar";
+import { DiaryTab } from "@/components/profile/diary-tab";
+import {
+  MediaGridTab,
+  GridMediaItem,
+} from "@/components/profile/media-grid-tab";
+import { InsightsTab } from "@/components/profile/insights-tab";
+import ActivityCard, { type Activity as ActivityItem } from "@/components/activity-card";
+import Link from "next/link";
+
+import { getMediaDetails } from "@/lib/tmdb-actions";
+
+const tmdbCache = new Map<string, { title: string; posterPath: string }>();
+const pendingRequests = new Map<string, Promise<{ title: string; posterPath: string }>>();
+
+async function fetchTMDBDetails(mediaType: string, mediaId: string, fallbackTitle: string, fallbackPoster: string): Promise<{ title: string; posterPath: string }> {
+  const cacheKey = `${mediaType}-${mediaId}`;
+  if (tmdbCache.has(cacheKey)) {
+    return tmdbCache.get(cacheKey)!;
+  }
+  if (pendingRequests.has(cacheKey)) {
+    return pendingRequests.get(cacheKey)!;
+  }
+
+  const promise = (async () => {
+    try {
+      const data = await getMediaDetails((mediaType === "tv" ? "tv" : "movie"), mediaId);
+      if (data && data.details) {
+        const details = data.details;
+        const result = {
+          title: details.title || details.name || fallbackTitle,
+          posterPath: details.poster_path || fallbackPoster || "",
+        };
+        tmdbCache.set(cacheKey, result);
+        return result;
+      }
+    } catch (e) {
+      console.error("Failed to fetch TMDB details:", e);
+    } finally {
+      pendingRequests.delete(cacheKey);
+    }
+    return { title: fallbackTitle, posterPath: fallbackPoster || "" };
+  })();
+
+  pendingRequests.set(cacheKey, promise);
+  return promise;
+}
+
+interface ActivityDoc {
+  _id: string;
+  userId: string;
+  type: string;
+  mediaId: string;
+  mediaType: string;
+  title: string;
+  posterPath: string;
+  rating?: number;
+  review?: string;
+  season?: number;
+  createdAt: number;
+  user: {
+    name: string;
+    username: string;
+    image?: string;
+    role?: string;
+  } | null;
+  likesCount: number;
+  commentsCount: number;
+  isLikedByMe: boolean;
+}
+
+interface CommentEntry {
+  _id: string;
+  content: string;
+  createdAt: number;
+  likeCount: number;
+}
+
+interface CommentGroupItem {
+  key: string;
+  mediaId: string;
+  mediaType: string;
+  mediaTitle: string;
+  mediaPosterPath: string;
+  comments: CommentEntry[];
+}
+
+interface UserProfileClientProps {
+  username: string;
+}
+
+function CommentItem({ item }: { item: CommentGroupItem }) {
+  const [mediaTitle, setMediaTitle] = useState(item.mediaTitle);
+  const [mediaPosterPath, setMediaPosterPath] = useState(item.mediaPosterPath);
+
+  useEffect(() => {
+    if (item.mediaTitle === "Movie / Show" || !item.mediaPosterPath) {
+      fetchTMDBDetails(item.mediaType, item.mediaId, item.mediaTitle, item.mediaPosterPath).then((data) => {
+        setMediaTitle(data.title);
+        setMediaPosterPath(data.posterPath);
+      });
+    }
+  }, [item.mediaId, item.mediaType, item.mediaTitle, item.mediaPosterPath]);
+
+  return (
+    <div className="flex gap-4 p-5 rounded-2xl border border-zinc-900 bg-zinc-900/10 backdrop-blur-md">
+      <Link href={`/${item.mediaType}/${item.mediaId}`} className="relative h-24 w-16 shrink-0 overflow-hidden rounded-xl border border-zinc-800 shadow-md">
+        {mediaPosterPath ? (
+          <img
+            src={`https://image.tmdb.org/t/p/w200${mediaPosterPath}`}
+            alt={mediaTitle}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-zinc-900 text-zinc-500">
+            <MessageSquare className="h-5 w-5" />
+          </div>
+        )}
+      </Link>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-start justify-between gap-2 border-b border-zinc-900/60 pb-2">
+          <div>
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest block">
+              Comments on
+            </span>
+            <Link href={`/${item.mediaType}/${item.mediaId}`} className="hover:text-primary block text-sm font-black text-white truncate">
+              {mediaTitle}
+            </Link>
+          </div>
+          <span className="rounded-full bg-zinc-900/80 px-2.5 py-0.5 text-[9px] font-bold text-zinc-400 uppercase tracking-wider">
+            {item.comments.length} {item.comments.length > 1 ? "comments" : "comment"}
+          </span>
+        </div>
+        
+        {/* List of comments for this media */}
+        <div className="mt-3 space-y-3">
+          {item.comments.map((comment: CommentEntry) => (
+            <div key={comment._id} className="relative bg-zinc-950/20 p-3 rounded-xl border border-zinc-900/40">
+              <div className="flex items-start justify-between gap-2">
+                <p className="text-xs leading-relaxed text-zinc-300 whitespace-pre-wrap flex-1">
+                  {comment.content}
+                </p>
+                {comment.likeCount > 0 && (
+                  <div className="flex items-center gap-1 text-[10px] font-black text-rose-500 shrink-0">
+                    <Heart className="h-3 w-3 fill-current" />
+                    <span>{comment.likeCount}</span>
+                  </div>
+                )}
+              </div>
+              <span className="mt-1.5 block text-[9px] font-bold text-zinc-500">
+                {new Date(comment.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UserProfileContent({ username }: UserProfileClientProps) {
+  const confirm = useConfirm();
+  const openAuth = useAuthModalStore((state) => state.open);
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
+  const [activeTabState, setActiveTab] = useQueryState("tab", {
+    defaultValue: "all",
+  });
+  const activeTab = (activeTabState || "all") as
+    | "all"
+    | "stats"
+    | "watchlist"
+    | "favorites"
+    | "ratings"
+    | "diary"
+    | "continue-watching"
+    | "comments"
+    | "activity";
+  const [showFriendsDialog, setShowFriendsDialog] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<DiaryItem | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const deleteDiaryEntry = useMutation(api.diary.deleteDiaryEntry);
+
+  const handleDeleteDiary = async (diaryId: string) => {
+    if (
+      !(await confirm({
+        title: "Delete Diary Entry",
+        description: "Are you sure you want to delete this watch log entry?",
+        confirmText: "Delete",
+      }))
+    )
+      return;
+    setDeletingId(diaryId);
+    try {
+      await deleteDiaryEntry({ diaryId: diaryId as Id<"diary"> });
+      toast.success("Watch entry deleted from your diary.");
+    } catch (err: unknown) {
+      const errorObj = err as { message?: string };
+      toast.error(errorObj.message || "Failed to delete watch entry.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  // Mutations for deletion
+  const removeFromWatchlist = useMutation(api.watchlist.removeFromWatchlist);
+  const removeFromFavorites = useMutation(api.favorites.removeFromFavorites);
+  const deleteRating = useMutation(api.ratings.deleteRating);
+
+  // Clear edit mode on tab change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsEditMode(false);
+      setSelectedItems(new Set());
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [activeTab]);
+
+  const handleToggleSelectItem = (idOrMediaType: string, mediaId?: string) => {
+    const key = mediaId ? `${idOrMediaType}-${mediaId}` : idOrMediaType;
+    const updated = new Set(selectedItems);
+    if (updated.has(key)) {
+      updated.delete(key);
+    } else {
+      updated.add(key);
+    }
+    setSelectedItems(updated);
+  };
+
+  const handleSelectAll = (
+    items: ({ mediaId: string; mediaType: string } | DiaryItem)[],
+  ) => {
+    const updated = new Set<string>();
+    if (selectedItems.size < items.length) {
+      if (activeTab === "diary") {
+        (items as DiaryItem[]).forEach((item) => updated.add(item._id));
+      } else {
+        (items as { mediaId: string; mediaType: string }[]).forEach((item) =>
+          updated.add(`${item.mediaType}-${item.mediaId}`),
+        );
+      }
+    }
+    setSelectedItems(updated);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedItems.size === 0) return;
+    if (
+      !(await confirm({
+        title: "Delete Items",
+        description: `Are you sure you want to delete the ${selectedItems.size} selected items?`,
+        confirmText: "Delete",
+      }))
+    )
+      return;
+
+    setIsBulkDeleting(true);
+
+    try {
+      if (activeTab === "diary") {
+        const diaryIdsToDelete = Array.from(selectedItems) as Id<"diary">[];
+        for (const diaryId of diaryIdsToDelete) {
+          await deleteDiaryEntry({ diaryId });
+        }
+        toast.success(
+          `Successfully removed ${diaryIdsToDelete.length} diary entries!`,
+        );
+      } else {
+        const itemsToDelete = Array.from(selectedItems).map((key) => {
+          const [mediaType, mediaId] = key.split("-");
+          return { mediaType, mediaId };
+        });
+        for (const item of itemsToDelete) {
+          if (activeTab === "watchlist") {
+            await removeFromWatchlist({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          } else if (activeTab === "favorites") {
+            await removeFromFavorites({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          } else if (activeTab === "ratings") {
+            await deleteRating({
+              mediaId: item.mediaId,
+              mediaType: item.mediaType,
+            });
+          }
+        }
+        toast.success(`Successfully removed ${itemsToDelete.length} items!`);
+      }
+      setSelectedItems(new Set());
+      setIsEditMode(false);
+    } catch {
+      toast.error("Failed to delete some selected items.");
+    } finally {
+      setIsBulkDeleting(false);
+    }
+  };
+
+  const session = authClient.useSession();
+  const isLoggedIn = !!session.data?.user;
+  const currentUser = session.data?.user;
+  const isOwner = currentUser && currentUser.username === username;
+
+  // Query social profile detailed context
+  const profileData = useQuery(api.social.getUserSocialProfile, { username });
+  const targetUser =
+    profileData && !profileData.isBlocked
+      ? (profileData.user as UserDoc)
+      : null;
+  const targetUserId = targetUser?.userId;
+
+  // Unblock mutation in case user is blocked
+  const unblockMutation = useMutation(api.social.unblockUser);
+  const blockMutation = useMutation(api.social.blockUser);
+
+  // Friendship mutations
+  const sendFriendRequest = useMutation(api.social.sendFriendRequest);
+  const cancelFriendRequest = useMutation(api.social.cancelFriendRequest);
+  const acceptFriendRequest = useMutation(api.social.acceptFriendRequest);
+  const removeFriend = useMutation(api.social.removeFriend);
+
+  const [friendLoading, setFriendLoading] = useState(false);
+  const [blockLoading, setBlockLoading] = useState(false);
+
+  // Privacy lock derivation
+  const isPrivate = targetUser?.profilePrivacy === "private";
+  const isFriendsOnly = targetUser?.profilePrivacy === "friends";
+  const isFriend = profileData?.friendshipStatus === "friends";
+  const showLockScreen =
+    !isOwner && (isPrivate || (isFriendsOnly && !isFriend));
+
+  // Individual visibility flags
+  const showWatchlistTab = isOwner || !targetUser?.hideWatchlist;
+  const showFavoritesTab = isOwner || !targetUser?.hideFavorites;
+  const showRatingsTab = isOwner || !targetUser?.hideRatings;
+  const showDiaryTab = isOwner || !targetUser?.hideDiary;
+  const showInsightsTab = isOwner || !targetUser?.hideInsights;
+
+  // Query target user lists if profile exists, content is visible, and the relevant tab is active
+  const watchlist = useQuery(
+    api.watchlist.getPublicWatchlist,
+    targetUserId &&
+      showWatchlistTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "watchlist")
+      ? { userId: targetUserId }
+      : "skip",
+  ) as GridMediaItem[] | undefined;
+  const favorites = useQuery(
+    api.favorites.getPublicFavorites,
+    targetUserId &&
+      showFavoritesTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "favorites")
+      ? { userId: targetUserId }
+      : "skip",
+  ) as GridMediaItem[] | undefined;
+  const ratings = useQuery(
+    api.ratings.getUserRatings,
+    targetUserId &&
+      showRatingsTab &&
+      !showLockScreen &&
+      (activeTab === "all" || activeTab === "ratings")
+      ? { userId: targetUserId }
+      : "skip",
+  ) as GridMediaItem[] | undefined;
+  const diary = useQuery(
+    api.diary.getUserDiary,
+    targetUserId &&
+      !showLockScreen &&
+      ((showInsightsTab && activeTab === "stats") ||
+        (showDiaryTab && (activeTab === "all" || activeTab === "diary")))
+      ? { userId: targetUserId }
+      : "skip",
+  ) as DiaryItem[] | undefined;
+
+  const userComments = useQuery(
+    api.comments.getUserComments,
+    targetUserId && !showLockScreen && activeTab === "comments"
+      ? { userId: targetUserId }
+      : "skip",
+  );
+
+  const userActivities = useQuery(
+    api.activities.getUserActivities,
+    targetUserId && !showLockScreen && activeTab === "activity"
+      ? { userId: targetUserId }
+      : "skip",
+  );
+
+  const continueWatching = useQuery(
+    api.continueWatching.getProgress,
+    isOwner &&
+      isLoggedIn &&
+      (activeTab === "all" || activeTab === "continue-watching")
+      ? {}
+      : "skip",
+  );
+
+  const groupedComments = useMemo(() => {
+    if (!userComments) return [];
+
+    const groups: {
+      key: string;
+      mediaId: string;
+      mediaType: string;
+      mediaTitle: string;
+      mediaPosterPath: string;
+      comments: {
+        _id: string;
+        content: string;
+        createdAt: number;
+        likeCount: number;
+      }[];
+    }[] = [];
+
+    const groupMap = new Map<string, typeof groups[number]>();
+
+    for (const item of userComments) {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      if (!groupMap.has(key)) {
+        const g = {
+          key,
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          mediaTitle: item.mediaTitle,
+          mediaPosterPath: item.mediaPosterPath,
+          comments: [],
+        };
+        groupMap.set(key, g);
+        groups.push(g);
+      }
+      groupMap.get(key)!.comments.push({
+        _id: item._id,
+        content: item.content,
+        createdAt: item.createdAt,
+        likeCount: item.likeCount || 0,
+      });
+    }
+
+    return groups;
+  }, [userComments]);
+
+  const handleBlockAction = async () => {
+    if (!isLoggedIn) {
+      openAuth();
+      return;
+    }
+    if (!targetUserId || !targetUser) return;
+    if (
+      !(await confirm({
+        title: "Block User",
+        description: `Are you sure you want to block ${targetUser.name}? You will no longer be able to message each other, and they will be removed from your friends.`,
+        confirmText: "Block",
+      }))
+    )
+      return;
+    setBlockLoading(true);
+    try {
+      await blockMutation({ targetUserId });
+      toast.success("User blocked successfully.");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to block user.");
+    } finally {
+      setBlockLoading(false);
+    }
+  };
+
+  const handleFriendAction = async () => {
+    if (!isLoggedIn) {
+      openAuth();
+      return;
+    }
+    if (!targetUserId || !profileData || !targetUser) return;
+    setFriendLoading(true);
+    try {
+      if (profileData.friendshipStatus === "none") {
+        await sendFriendRequest({ targetUserId });
+        toast.success("Friend request sent!");
+      } else if (profileData.friendshipStatus === "request_sent") {
+        await cancelFriendRequest({ targetUserId });
+        toast.success("Friend request cancelled.");
+      } else if (profileData.friendshipStatus === "request_received") {
+        await acceptFriendRequest({ targetUserId });
+        toast.success("Friend request accepted!");
+      } else if (profileData.friendshipStatus === "friends") {
+        if (
+          await confirm({
+            title: "Remove Friend",
+            description: `Are you sure you want to remove ${targetUser.name} from friends?`,
+            confirmText: "Remove",
+          })
+        ) {
+          await removeFriend({ targetUserId });
+          toast.success("Friend removed.");
+        }
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Friend action failed.");
+    } finally {
+      setFriendLoading(false);
+    }
+  };
+
+  // Combine all items uniquely
+  const allItemsMap = new Map<string, GridMediaItem>();
+
+  if (watchlist) {
+    watchlist.forEach((item) => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      allItemsMap.set(key, {
+        mediaId: item.mediaId,
+        mediaType: item.mediaType,
+        title: item.title,
+        posterPath: item.posterPath,
+        releaseYear: item.releaseYear,
+        rating: item.rating,
+        addedAt: item.addedAt,
+        isWatchlist: true,
+      });
+    });
+  }
+
+  if (favorites) {
+    favorites.forEach((item) => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      const existing = allItemsMap.get(key);
+      if (existing) {
+        existing.isFavorite = true;
+        if (
+          item.addedAt &&
+          existing.addedAt &&
+          item.addedAt > existing.addedAt
+        ) {
+          existing.addedAt = item.addedAt;
+        }
+      } else {
+        allItemsMap.set(key, {
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          title: item.title,
+          posterPath: item.posterPath,
+          releaseYear: item.releaseYear,
+          addedAt: item.addedAt,
+          isFavorite: true,
+        });
+      }
+    });
+  }
+
+  if (ratings) {
+    ratings.forEach((item) => {
+      const key = `${item.mediaType}-${item.mediaId}`;
+      const existing = allItemsMap.get(key);
+      if (existing) {
+        existing.rating = item.rating;
+        if (
+          item.addedAt &&
+          existing.addedAt &&
+          item.addedAt > existing.addedAt
+        ) {
+          existing.addedAt = item.addedAt;
+        }
+      } else {
+        allItemsMap.set(key, {
+          mediaId: item.mediaId,
+          mediaType: item.mediaType,
+          title: item.title,
+          posterPath: item.posterPath,
+          releaseYear: item.releaseYear,
+          addedAt: item.addedAt,
+          rating: item.rating,
+        });
+      }
+    });
+  }
+
+  const allItems = Array.from(allItemsMap.values()).sort((a, b) => {
+    const aTime = a.addedAt || 0;
+    const bTime = b.addedAt || 0;
+    return bTime - aTime;
+  });
+
+  // Loading states
+  const loadingProfile = profileData === undefined;
+
+  const isTabLoading =
+    (activeTab === "all" &&
+      (watchlist === undefined ||
+        favorites === undefined ||
+        ratings === undefined)) ||
+    (activeTab === "watchlist" && watchlist === undefined) ||
+    (activeTab === "favorites" && favorites === undefined) ||
+    (activeTab === "ratings" && ratings === undefined);
+
+  if (loadingProfile) {
+    return (
+      <div className="flex min-h-[50vh] grow items-center justify-center bg-zinc-950 text-white">
+        <Loader2 className="text-primary h-10 w-10 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserIcon className="mb-4 h-16 w-16 text-zinc-700" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          User Not Found
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          The user{" "}
+          <span className="text-primary font-semibold">@{username}</span> does
+          not exist or has not created a profile yet.
+        </p>
+      </div>
+    );
+  }
+
+  // Handle Deactivated State
+  if ("isDeactivated" in profileData && profileData.isDeactivated) {
+    return (
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserX className="text-zinc-650 mb-4 h-16 w-16 animate-pulse" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          Account Deactivated
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          The user{" "}
+          <span className="text-primary font-semibold">@{username}</span> has
+          temporarily deactivated their account.
+        </p>
+      </div>
+    );
+  }
+
+  // Handle Blocked State
+  if (profileData.isBlocked) {
+    return (
+      <div className="flex min-h-[60vh] grow flex-col items-center justify-center bg-zinc-950 px-6 text-center text-white">
+        <UserX className="mb-4 h-16 w-16 text-red-500/80" />
+        <h1 className="mb-2 text-2xl font-bold tracking-tight text-white">
+          Profile Unavailable
+        </h1>
+        <p className="mb-6 max-w-md text-sm text-zinc-400">
+          {profileData.blockedByMe
+            ? "You have blocked this user. Unblock them to view their profile."
+            : "This profile is not available to you."}
+        </p>
+        {profileData.blockedByMe && targetUserId && (
+          <Button
+            type="button"
+            onClick={async () => {
+              try {
+                await unblockMutation({ targetUserId });
+              } catch (e) {
+                console.error(e);
+              }
+            }}
+            className="cursor-pointer rounded-2xl bg-white px-6 py-2.5 text-sm font-bold text-black hover:bg-zinc-200"
+          >
+            Unblock User
+          </Button>
+        )}
+      </div>
+    );
+  }
+
+  const getFallbackIcon = () => {
+    if (activeTab === "watchlist")
+      return <Bookmark className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "favorites")
+      return <Heart className="h-12 w-12 text-zinc-800" />;
+    if (activeTab === "ratings")
+      return <Star className="h-12 w-12 text-zinc-800" />;
+    return <Grid className="h-12 w-12 text-zinc-800" />;
+  };
+
+  const getEmptyMessage = () => {
+    if (activeTab === "watchlist")
+      return "This user's watchlist is currently empty.";
+    if (activeTab === "favorites")
+      return "This user's favorites list is currently empty.";
+    if (activeTab === "ratings")
+      return "This user hasn't rated any movies or TV shows yet.";
+    return "This user hasn't added any titles to their lists or submitted any ratings yet.";
+  };
+
+  // Define tab navigation dynamically based on visitor visibility settings
+  const tabsList = [
+    { id: "all" as const, label: "All", visible: true },
+    {
+      id: "stats" as const,
+      label: "Stats",
+      visible: showInsightsTab,
+    },
+    {
+      id: "continue-watching" as const,
+      label: "Continue Watching",
+      visible: isOwner,
+    },
+    {
+      id: "diary" as const,
+      label: "Diary",
+      visible: showDiaryTab,
+    },
+    {
+      id: "watchlist" as const,
+      label: "Watchlist",
+      visible: showWatchlistTab,
+    },
+    {
+      id: "favorites" as const,
+      label: "Favorites",
+      visible: showFavoritesTab,
+    },
+    {
+      id: "ratings" as const,
+      label: "Ratings",
+      visible: showRatingsTab,
+    },
+    {
+      id: "comments" as const,
+      label: "Comments",
+      visible: !showLockScreen,
+    },
+    {
+      id: "activity" as const,
+      label: "Activity",
+      visible: !showLockScreen,
+    },
+  ].filter((t) => t.visible);
+
+  return (
+    <div
+      className="bg-background text-foreground relative min-h-[85vh] w-full grow rounded-3xl px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20"
+      data-theme={targetUser?.theme || "dark"}
+    >
+      {/* Header Profile Info card */}
+      <ProfileHeader
+        targetUser={targetUser}
+        friendCount={profileData.friendCount ?? 0}
+        friendshipStatus={profileData.friendshipStatus ?? "none"}
+        isOwner={isOwner || false}
+        friendLoading={friendLoading}
+        handleFriendAction={handleFriendAction}
+        setShowFriendsDialog={setShowFriendsDialog}
+        handleBlockAction={handleBlockAction}
+        blockLoading={blockLoading}
+      />
+
+      {showLockScreen ? (
+        <LockScreen isFriendsOnly={isFriendsOnly} />
+      ) : (
+        <>
+          {/* Tabs */}
+          <div className="mb-8 flex scrollbar-none gap-6 overflow-x-auto border-b border-zinc-900 text-sm">
+            {tabsList.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  "cursor-pointer border-b-2 pb-4 text-xs font-bold tracking-wider uppercase transition-all",
+                  activeTab === tab.id
+                    ? "text-primary border-primary font-extrabold"
+                    : "border-transparent text-zinc-500 hover:text-zinc-300",
+                )}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Tab Contents */}
+          {activeTab === "stats" ? (
+            diary === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <InsightsTab diary={diary} user={targetUser} />
+            )
+          ) : activeTab === "diary" ? (
+            <>
+              <EditToolbar
+                isOwner={isOwner || false}
+                items={diary}
+                isEditMode={isEditMode}
+                setIsEditMode={setIsEditMode}
+                selectedItems={selectedItems}
+                handleSelectAll={handleSelectAll}
+                handleBulkDelete={handleBulkDelete}
+                isBulkDeleting={isBulkDeleting}
+              />
+              <DiaryTab
+                diary={diary}
+                isOwner={isOwner || false}
+                deletingId={deletingId}
+                handleDeleteDiary={handleDeleteDiary}
+                setEditingEntry={setEditingEntry}
+                isEditMode={isEditMode}
+                selectedItems={selectedItems}
+                handleToggleSelectItem={handleToggleSelectItem}
+              />
+            </>
+          ) : activeTab === "continue-watching" ? (
+            continueWatching === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4">
+                {continueWatching.length > 0 ? (
+                  continueWatching.map((item: ContinueWatchingItem) => (
+                    <ContinueWatchingCard key={item._id} item={item} />
+                  ))
+                ) : (
+                  <div className="col-span-full flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <Play className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">
+                      Your Continue Watching list is empty.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : activeTab === "comments" ? (
+            userComments === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="mx-auto max-w-3xl space-y-6">
+                {groupedComments.length > 0 ? (
+                  groupedComments.map((item: CommentGroupItem) => (
+                    <CommentItem key={item.key} item={item} />
+                  ))
+                ) : (
+                  <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <MessageSquare className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">This user hasn&apos;t posted any comments yet.</p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : activeTab === "activity" ? (
+            userActivities === undefined ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="text-primary h-8 w-8 animate-spin" />
+              </div>
+            ) : (
+              <div className="mx-auto max-w-3xl space-y-6">
+                {userActivities.length > 0 ? (
+                  userActivities.map((act) => (
+                    <ActivityCard key={act._id} activity={act as unknown as ActivityItem} />
+                  ))
+                ) : (
+                  <div className="flex min-h-[30vh] flex-col items-center justify-center text-center">
+                    <Activity className="mb-4 h-12 w-12 text-zinc-800" />
+                    <p className="text-sm text-zinc-500">No activity logged yet.</p>
+                  </div>
+                )}
+              </div>
+            )
+          ) : isTabLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="text-primary h-8 w-8 animate-spin" />
+            </div>
+          ) : (
+            <>
+              {activeTab !== "all" && (
+                <EditToolbar
+                  isOwner={isOwner || false}
+                  items={
+                    activeTab === "watchlist"
+                      ? watchlist
+                      : activeTab === "favorites"
+                        ? favorites
+                        : ratings
+                  }
+                  isEditMode={isEditMode}
+                  setIsEditMode={setIsEditMode}
+                  selectedItems={selectedItems}
+                  handleSelectAll={handleSelectAll}
+                  handleBulkDelete={handleBulkDelete}
+                  isBulkDeleting={isBulkDeleting}
+                />
+              )}
+              <MediaGridTab
+                activeTab={activeTab}
+                items={
+                  activeTab === "all"
+                    ? allItems
+                    : activeTab === "watchlist"
+                      ? watchlist
+                      : activeTab === "favorites"
+                        ? favorites
+                        : ratings
+                }
+                isEditMode={isEditMode}
+                selectedItems={selectedItems}
+                handleToggleSelectItem={handleToggleSelectItem}
+                setQuickViewMedia={setQuickViewMedia}
+                openAuth={openAuth}
+                fallbackIcon={getFallbackIcon()}
+                emptyMessage={getEmptyMessage()}
+              />
+            </>
+          )}
+        </>
+      )}
+
+      {/* Quick View Modal */}
+      {quickViewMedia && (
+        <QuickViewModal
+          media={quickViewMedia}
+          isOpen={!!quickViewMedia}
+          onClose={() => setQuickViewMedia(null)}
+        />
+      )}
+
+      {/* Edit Watch Log Modal */}
+      {editingEntry && (
+        <LogWatchModal
+          isOpen={!!editingEntry}
+          onClose={() => setEditingEntry(null)}
+          mediaId={editingEntry.mediaId}
+          mediaType={editingEntry.mediaType}
+          title={editingEntry.title}
+          posterPath={editingEntry.posterPath}
+          releaseYear={editingEntry.releaseYear}
+          diaryId={editingEntry._id}
+          initialWatchedDate={editingEntry.watchedDate}
+          initialRewatch={editingEntry.rewatch}
+          initialRating={editingEntry.rating}
+          initialReview={editingEntry.review}
+          season={editingEntry.season}
+          episode={editingEntry.episode}
+          numberOfSeasons={editingEntry.numberOfSeasons}
+          numberOfEpisodes={editingEntry.numberOfEpisodes}
+          initialDiaryType={editingEntry.diaryType}
+        />
+      )}
+
+      {/* Friends List Dialog */}
+      <FriendsDialog
+        isOpen={showFriendsDialog}
+        onOpenChange={setShowFriendsDialog}
+        friendCount={profileData?.friendCount ?? 0}
+        friends={profileData?.friends}
+      />
+    </div>
+  );
+}
+
+export default function UserProfileClient(props: UserProfileClientProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex h-[70vh] flex-col items-center justify-center gap-3">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-sm font-semibold text-zinc-400">
+            Loading profile...
+          </span>
+        </div>
+      }
+    >
+      <UserProfileContent {...props} />
+    </Suspense>
+  );
+}
