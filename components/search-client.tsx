@@ -364,7 +364,11 @@ export default function SearchClient({
   const crewDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const companyDebounceRef = useRef<NodeJS.Timeout | null>(null);
   const keywordsDebounceRef = useRef<NodeJS.Timeout | null>(null);
-  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sentinelElRef = useRef<HTMLDivElement | null>(null);
+  const resultsRef = useRef<TMDBMedia[]>(results);
+  useEffect(() => {
+    resultsRef.current = results;
+  }, [results]);
 
   // Convex Query for Users
   const userResults = useQuery(
@@ -442,7 +446,7 @@ export default function SearchClient({
         );
       }
       setResults(data);
-      if (data.length < 20) {
+      if (data.length === 0) {
         setHasMore(false);
       }
     });
@@ -704,27 +708,26 @@ export default function SearchClient({
         );
       }
 
-      if (nextResults.length < 20) {
+      if (nextResults.length === 0) {
         setHasMore(false);
-      }
+      } else {
+        const existingKeys = new Set(
+          resultsRef.current.map((item) => `${item.media_type || ""}-${item.id}`)
+        );
+        const filteredNext = nextResults.filter(
+          (item) => !existingKeys.has(`${item.media_type || ""}-${item.id}`)
+        );
 
-      if (nextResults.length > 0) {
-        let hasNewItems = false;
-        setResults((prev) => {
-          const existingKeys = new Set(
-            prev.map((item) => `${item.media_type || ""}-${item.id}`)
-          );
-          const filteredNext = nextResults.filter(
-            (item) => !existingKeys.has(`${item.media_type || ""}-${item.id}`)
-          );
-          if (filteredNext.length > 0) {
-            hasNewItems = true;
-            return [...prev, ...filteredNext];
-          }
-          return prev;
-        });
-
-        if (hasNewItems) {
+        if (filteredNext.length > 0) {
+          setResults((prev) => {
+            const prevKeys = new Set(
+              prev.map((item) => `${item.media_type || ""}-${item.id}`)
+            );
+            const uniqueNext = filteredNext.filter(
+              (item) => !prevKeys.has(`${item.media_type || ""}-${item.id}`)
+            );
+            return uniqueNext.length > 0 ? [...prev, ...uniqueNext] : prev;
+          });
           setPage(nextPage);
         } else {
           setHasMore(false);
@@ -759,22 +762,23 @@ export default function SearchClient({
     userCountryCode,
   ]);
 
-  // Observer sentinel element ref callback
-  const sentinelRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (isPending || isLoadingMore || !hasMore) return;
-      if (observerRef.current) observerRef.current.disconnect();
+  // Attach IntersectionObserver to sentinel element reliably across mounts & back navigation
+  useEffect(() => {
+    const node = sentinelElRef.current;
+    if (!node || isPending || isLoadingMore || !hasMore) return;
 
-      observerRef.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
           loadMore();
         }
-      });
+      },
+      { rootMargin: "200px" },
+    );
 
-      if (node) observerRef.current.observe(node);
-    },
-    [isPending, isLoadingMore, hasMore, loadMore],
-  );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isPending, isLoadingMore, hasMore, loadMore, results.length]);
 
   // DRY reusable filters content
   const renderFiltersContent = () => {
@@ -1262,6 +1266,7 @@ export default function SearchClient({
               hasQuery={searchMode === "discover" || hasQuery || hasFilters}
               isUsersLoading={isUsersLoading}
               isPending={isPending}
+              isLoadingMore={isLoadingMore}
               userResults={userResults}
               results={filteredResults}
               isLoggedIn={isLoggedIn}
@@ -1275,12 +1280,18 @@ export default function SearchClient({
               (searchMode === "discover" || hasQuery || hasFilters) &&
               activeType !== "users" && (
                 <div
-                  ref={sentinelRef}
+                  ref={sentinelElRef}
                   className="mt-8 flex justify-center py-6 text-xs font-bold text-zinc-500"
                 >
-                  {isLoadingMore
-                    ? "Loading more titles..."
-                    : "Scroll down to load more"}
+                  {!isLoadingMore && (
+                    <button
+                      type="button"
+                      onClick={() => void loadMore()}
+                      className="cursor-pointer rounded-full border border-zinc-800 bg-zinc-900/70 px-4 py-2 text-xs font-semibold text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+                    >
+                      Load more titles
+                    </button>
+                  )}
                 </div>
               )}
           </div>

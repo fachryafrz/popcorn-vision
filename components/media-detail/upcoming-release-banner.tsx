@@ -3,7 +3,7 @@
 import CountdownDisplay from "@/components/ui/countdown-display";
 import { useCountdown } from "@/hooks/use-countdown";
 import { Calendar, CalendarClock } from "lucide-react";
-import moment from "moment";
+import { formatLocalAirDateTime, parseCountdownTargetTime } from "@/lib/countdown";
 import { cn } from "@/lib/utils";
 
 interface UpcomingReleaseBannerProps {
@@ -21,12 +21,12 @@ export default function UpcomingReleaseBanner({
 
   if (!releaseDate) return null;
 
-  const targetTime = new Date(releaseDate).getTime();
-  if (isNaN(targetTime)) {
+  const targetTime = parseCountdownTargetTime(releaseDate);
+  if (targetTime === null) {
     return null;
   }
 
-  const formattedDate = moment(releaseDate).format("dddd, MMMM Do, YYYY");
+  const { dateText: formattedDate } = formatLocalAirDateTime(releaseDate, null, "long");
   const isMovie = mediaType === "movie";
 
   const colorStyles = isEnded

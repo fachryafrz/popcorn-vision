@@ -13,6 +13,7 @@ import { api } from "@/convex/_generated/api";
 import { batchFetchMediaMetadata } from "@/lib/tmdb-actions";
 import ExpandableText from "@/components/ui/expandable-text";
 import CountdownDisplay from "@/components/ui/countdown-display";
+import { formatLocalAirDateTime, parseCountdownTargetTime } from "@/lib/countdown";
 
 interface SeasonsAccordionProps {
   details: MediaDetails;
@@ -200,8 +201,11 @@ export default function SeasonsAccordion({
                       )
                     );
 
+                    const targetAirTime = parseCountdownTargetTime(
+                      ep.airstamp ?? ep.air_date,
+                    );
                     const isEpisodeUnreleased =
-                      !ep.air_date || new Date(ep.air_date).getTime() > now;
+                      targetAirTime === null || targetAirTime > now;
 
                     return (
                       <div
@@ -393,11 +397,18 @@ export default function SeasonsAccordion({
                           {ep.air_date && (
                             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-zinc-800/50 pt-2">
                               <span className="text-[10px] font-semibold text-zinc-400">
-                                Air Date: {moment(ep.air_date).format("MMM Do, YYYY")}
+                                {(() => {
+                                  const { dateText, timeText } = formatLocalAirDateTime(
+                                    ep.air_date,
+                                    ep.airstamp,
+                                    "short",
+                                  );
+                                  return `Air Date: ${dateText}${timeText ? ` • ${timeText}` : ""}`;
+                                })()}
                               </span>
                               {isEpisodeUnreleased && (
                                 <CountdownDisplay
-                                  targetDate={ep.air_date}
+                                  targetDate={ep.airstamp ?? ep.air_date}
                                   variant="badge"
                                   className="px-2 py-0.5 text-[10px]"
                                 />

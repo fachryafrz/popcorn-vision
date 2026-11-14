@@ -347,6 +347,70 @@ export async function getByCategory(genreName: string): Promise<TMDBMedia[]> {
   });
 }
 
+interface TVMazeEpisode {
+  season?: number;
+  number?: number;
+  airstamp?: string | null;
+}
+
+async function fetchTVMazeShowId(
+  externalIds?: { imdb_id?: string | null; tvdb_id?: number | null },
+  showName?: string
+): Promise<number | null> {
+  const candidates: string[] = [];
+  if (externalIds?.tvdb_id) {
+    candidates.push(`https://api.tvmaze.com/lookup/shows?thetvdb=${externalIds.tvdb_id}`);
+  }
+  if (externalIds?.imdb_id) {
+    candidates.push(`https://api.tvmaze.com/lookup/shows?imdb=${encodeURIComponent(externalIds.imdb_id)}`);
+  }
+  if (showName) {
+    candidates.push(`https://api.tvmaze.com/singlesearch/shows?q=${encodeURIComponent(showName)}`);
+  }
+
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      if (!res.ok) continue;
+      const data = (await res.json()) as { id?: number };
+      if (typeof data.id === "number") return data.id;
+    } catch {
+      // Ignore individual lookup failures and try next candidate
+    }
+  }
+  return null;
+}
+
+async function fetchTVMazeEpisodeMap(
+  tvId: string | number,
+  externalIds?: { imdb_id?: string | null; tvdb_id?: number | null },
+  showName?: string
+): Promise<Record<string, string>> {
+  const cacheKey = `tvmaze-episodes-${tvId}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const tvmazeId = await fetchTVMazeShowId(externalIds, showName);
+      if (!tvmazeId) return {};
+
+      const res = await fetch(`https://api.tvmaze.com/shows/${tvmazeId}/episodes`, {
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!res.ok) return {};
+
+      const episodes = (await res.json()) as TVMazeEpisode[];
+      const map: Record<string, string> = {};
+      for (const ep of episodes) {
+        if (typeof ep.season === "number" && typeof ep.number === "number" && ep.airstamp) {
+          map[`${ep.season}-${ep.number}`] = ep.airstamp;
+        }
+      }
+      return map;
+    } catch {
+      return {};
+    }
+  });
+}
+
 // Media Details for Quick View / Detail Page
 export async function getMediaDetails(
   mediaType: "movie" | "tv",
@@ -355,7 +419,7 @@ export async function getMediaDetails(
   const cacheKey = `media-details-${mediaType}-${id}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
     try {
-      const regionAppend = mediaType === "movie" ? "release_dates" : "content_ratings";
+      const regionAppend = mediaType === "movie" ? "release_dates" : "content_ratings,external_ids";
 
       const data = await tmdbFetch<Record<string, unknown>>(`/${mediaType}/${id}`, {
         append_to_response: `credits,videos,watch/providers,recommendations,images,${regionAppend}`,
@@ -390,12 +454,40 @@ export async function getMediaDetails(
       const providersObj = (data["watch/providers"] as {
         results?: MediaDetailResponse["watchProviders"];
       }) ?? { results: {} };
-      const regionalObj = (data[regionAppend] as {
+      const regionalKey = mediaType === "movie" ? "release_dates" : "content_ratings";
+      const regionalObj = (data[regionalKey] as {
         results?: MediaDetailResponse["regionalData"];
       }) ?? { results: [] };
 
+      const details = data as unknown as MediaDetailResponse["details"];
+
+      if (
+        mediaType === "tv" &&
+        (details.next_episode_to_air ||
+          details.status === "Returning Series" ||
+          details.status === "In Production")
+      ) {
+        const externalIds = data.external_ids as
+          | { imdb_id?: string | null; tvdb_id?: number | null }
+          | undefined;
+        const airstampMap = await fetchTVMazeEpisodeMap(
+          id,
+          externalIds,
+          details.name || details.title
+        );
+        if (details.next_episode_to_air) {
+          const epKey = `${details.next_episode_to_air.season_number}-${details.next_episode_to_air.episode_number}`;
+          if (airstampMap[epKey]) {
+            details.next_episode_to_air = {
+              ...details.next_episode_to_air,
+              airstamp: airstampMap[epKey],
+            };
+          }
+        }
+      }
+
       return {
-        details: data as unknown as MediaDetailResponse["details"],
+        details,
         credits: creditsObj,
         videos: videosObj.results ?? [],
         watchProviders: providersObj.results ?? {},
@@ -434,7 +526,23 @@ export async function getSeasonDetails(tvId: number, seasonNumber: number): Prom
   const cacheKey = `season-${tvId}-${seasonNumber}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_LONG, async () => {
     try {
-      return await tmdbFetch<SeasonDetails>(`/tv/${tvId}/season/${seasonNumber}`);
+      const seasonData = await tmdbFetch<SeasonDetails>(`/tv/${tvId}/season/${seasonNumber}`);
+      if (seasonData?.episodes?.length) {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const hasUpcomingOrRecent = seasonData.episodes.some(
+          (ep) => !ep.air_date || ep.air_date >= todayStr
+        );
+        if (hasUpcomingOrRecent) {
+          const airstampMap = await fetchTVMazeEpisodeMap(tvId);
+          if (Object.keys(airstampMap).length > 0) {
+            seasonData.episodes = seasonData.episodes.map((ep) => {
+              const airstamp = airstampMap[`${seasonNumber}-${ep.episode_number}`];
+              return airstamp ? { ...ep, airstamp } : ep;
+            });
+          }
+        }
+      }
+      return seasonData;
     } catch (error) {
       console.error(`Error fetching season ${seasonNumber} for tv ${tvId}:`, error);
       return null;
