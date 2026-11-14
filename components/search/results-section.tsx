@@ -14,6 +14,7 @@ interface ResultsSectionProps {
   hasQuery: boolean;
   isUsersLoading: boolean;
   isPending: boolean;
+  isLoadingMore?: boolean;
   userResults: SearchUserResult[] | undefined;
   results: TMDBMedia[];
   isLoggedIn: boolean;
@@ -28,6 +29,7 @@ export function ResultsSection({
   hasQuery,
   isUsersLoading,
   isPending,
+  isLoadingMore = false,
   userResults,
   results,
   isLoggedIn,
@@ -242,6 +244,10 @@ export function ResultsSection({
                     onAuthRequired={openAuth}
                   />
                 ))}
+                {isLoadingMore &&
+                  Array.from({ length: 6 }).map((_, i) => (
+                    <SkeletonCard key={`load-more-skeleton-${i}`} />
+                  ))}
               </div>
             </>
           ) : (

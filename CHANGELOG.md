@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.3] - 2026-11-14
+
+### Added
+- **Streaming Services Quick Bar**: Browse movies and series directly by your favorite streaming platform right from the home page.
+- **Popular Collections & Dedicated Collection Pages**: Explore curated movie franchises and view every title in a collection in chronological order.
+- **Personalized Recommendations**: Get tailored suggestions based on what you recently watched or added to your watchlist.
+- **Trending People & Korean Spotlight**: Discover popular actors, directors, and trending Korean movies and series right from the home screen.
+
+### Changed
+- **Edge-to-Edge Widescreen Layout**: Expanded browsing pages and horizontal carousels to make full use of your screen width while keeping reading sections comfortable.
+- **Smoother Navigation Bar**: Refined the scrolling pill transition, active menu pills, and compact search button when scrolling.
+- **Cleaner Detail Pages**: Improved production studio cards, added a smooth fade on long reviews, and switched "More Like This" recommendations to a clean grid.
+
+### Performance
+- **Faster Home Screen Loading**: Lower home sections now load as you scroll toward them for quicker initial startup and smoother scrolling.
+
+---
+
 ## [2.13.2] - 2026-11-08
 
 ### Changed

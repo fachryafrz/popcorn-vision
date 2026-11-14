@@ -29,7 +29,7 @@ export function HeroSkeleton() {
       <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
 
       {/* Hero content */}
-      <div className="relative z-20 flex w-full max-w-5xl flex-col items-end gap-8 md:flex-row md:gap-10">
+      <div className="relative z-20 flex w-full flex-col items-end gap-8 md:flex-row md:gap-10">
         {/* Poster Skeleton (hidden on mobile, visible on desktop) */}
         <div className="hidden h-76 w-52 shrink-0 rounded-2xl border border-zinc-700/30 shadow-2xl shadow-black/85 lg:block">
           <Skeleton className="h-full w-full rounded-2xl" />
@@ -94,7 +94,7 @@ export function CardSkeleton() {
 }
 
 // Carousel Skeleton Row
-export function CarouselSkeleton() {
+export function CarouselSkeleton({ fullBleed = false }: { fullBleed?: boolean }) {
   return (
     <div className="swiper-carousel-container relative w-full">
       <Swiper
@@ -106,10 +106,12 @@ export function CarouselSkeleton() {
           1024: { slidesPerView: 5, spaceBetween: 24 },
           1280: { slidesPerView: 6, spaceBetween: 24 },
         }}
-        className="w-full pb-4"
+        className={
+          fullBleed ? "w-full px-6! pb-4 sm:px-16! md:px-20!" : "w-full pb-4"
+        }
         allowTouchMove={false}
       >
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: fullBleed ? 8 : 6 }).map((_, i) => (
           <SwiperSlide key={i} className="py-1">
             <CardSkeleton />
           </SwiperSlide>
@@ -138,7 +140,11 @@ export function ContinueWatchingCardSkeleton() {
 }
 
 // Continue Watching Carousel Skeleton Row
-export function ContinueWatchingCarouselSkeleton() {
+export function ContinueWatchingCarouselSkeleton({
+  fullBleed = false,
+}: {
+  fullBleed?: boolean;
+}) {
   return (
     <div className="swiper-carousel-container relative w-full">
       <Swiper
@@ -150,7 +156,9 @@ export function ContinueWatchingCarouselSkeleton() {
           1024: { slidesPerView: 3.7, spaceBetween: 24 },
           1280: { slidesPerView: 4, spaceBetween: 24 },
         }}
-        className="w-full pb-4"
+        className={
+          fullBleed ? "w-full px-6! pb-4 sm:px-16! md:px-20!" : "w-full pb-4"
+        }
         allowTouchMove={false}
       >
         {Array.from({ length: 6 }).map((_, i) => (
@@ -294,9 +302,9 @@ export function MediaDetailSkeleton() {
             <div className="space-y-3 pt-4">
               <Skeleton className="h-6 w-44 rounded" />
               <div className="flex flex-wrap gap-3">
-                <Skeleton className="h-10 w-28 rounded-xl" />
-                <Skeleton className="h-10 w-32 rounded-xl" />
-                <Skeleton className="h-10 w-24 rounded-xl" />
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
               </div>
             </div>
           </div>
@@ -323,7 +331,7 @@ export function MediaDetailSkeleton() {
 export function PersonDetailSkeleton() {
   return (
     <div className="bg-background text-foreground min-h-svh pt-24 pb-16">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 md:px-16">
+      <div className="px-6 sm:px-12 lg:px-20">
         {/* Back Link Placeholder */}
         <div className="mb-8 flex items-center gap-2">
           <Skeleton className="h-4 w-12 rounded" />
@@ -404,8 +412,8 @@ export function PersonDetailSkeleton() {
 // Company Detail Page Skeleton
 export function CompanyDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-black pt-20 text-white">
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-24 text-white">
+      <div className="relative z-10 px-6 py-4 sm:px-12 lg:px-20">
         {/* Back Link */}
         <div className="mb-8 flex items-center gap-2">
           <Skeleton className="h-4 w-12 rounded" />
@@ -464,7 +472,7 @@ export function CompanyDetailSkeleton() {
 // Search Page Skeleton
 export function SearchPageSkeleton() {
   return (
-    <div className="min-h-screen bg-zinc-950 px-6 pt-24 pb-12 sm:px-16">
+    <div className="min-h-screen bg-zinc-950 px-6 pt-28 pb-16 sm:px-10 md:px-16">
       {/* Search bar */}
       <Skeleton className="mb-8 h-12 w-full max-w-2xl rounded-full" />
 
@@ -488,7 +496,7 @@ export function SearchPageSkeleton() {
 // Feed Page Skeleton
 export function FeedSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-9 w-24 shrink-0 rounded-full" />
@@ -508,6 +516,34 @@ export function FeedSkeleton() {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+// Popular Collections Carousel Skeleton
+export function CollectionsCarouselSkeleton() {
+  return (
+    <div className="swiper-carousel-container relative w-full">
+      <Swiper
+        spaceBetween={16}
+        slidesPerView={1.25}
+        breakpoints={{
+          640: { slidesPerView: 2.2, spaceBetween: 20 },
+          768: { slidesPerView: 2.7, spaceBetween: 24 },
+          1024: { slidesPerView: 3.5, spaceBetween: 24 },
+          1280: { slidesPerView: 4, spaceBetween: 24 },
+        }}
+        className="w-full px-6! pb-4 sm:px-16! md:px-20!"
+        allowTouchMove={false}
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SwiperSlide key={i} className="py-1">
+            <div className="aspect-video w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+              <Skeleton className="h-full w-full rounded-none" />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 }

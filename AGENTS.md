@@ -287,6 +287,10 @@ Before starting work on any task, read the corresponding documentation:
 - **Release Flow (Web):**
   - Normal: `feature/*` → `develop` (bump version) → `master`
   - Hotfix: `hotfix/*` → `master` (bump patch) → `develop` (sync back)
+- **Version & Changelog Files:** When updating version (e.g. patch bump) and release notes, always update all three files together:
+  - `package.json` (`"version"`)
+  - `CHANGELOG.md` (Keep a Changelog format, user-friendly non-technical language)
+  - `data/changelog.ts` (in-app changelog milestones; set `isLatest: true` on the new version and remove it from the previous latest)
 - **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages [outputting strictly codeblocks when requested], release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
 
 ### 6. No Hardcoded Fallback Anti-Pattern (`||`)
@@ -308,6 +312,7 @@ Before starting work on any task, read the corresponding documentation:
   - Implement granular skeleton loading states per section (e.g., Hero Skeleton, Card Carousel Skeleton) rather than blocking global loaders.
   - Optimize images using `next/image` with appropriate dimensions and aspect ratios.
 - **SEO & Metadata:** Include semantic HTML structure (`h1`, `h2`, `main`, `nav`, `section`) and dynamic `generateMetadata` for movie, TV show, and profile pages.
+- **No Synchronous `setState` in `useEffect` (`react-hooks/set-state-in-effect`):** Never call `setState` synchronously inside a `useEffect` body (e.g., `setIsLoading(true)` or resetting state before an async fetch). Trigger loading state in event handlers or derive loading/reset state from props/keys (`key`-based state or comparing a tracked request key against the current key), and only call `setState` inside async callbacks (`.then()`, `.catch()`, observer/event callbacks).
 
 ---
 

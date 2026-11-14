@@ -21,10 +21,49 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.3",
+    title: "Widescreen Discovery, Collections & Personalized Home",
+    releaseDate: "2026-11-14",
+    isLatest: true,
+    summary:
+      "Brings an edge-to-edge widescreen browsing experience, new home discovery rows for streaming platforms, popular collections, trending people, Korean titles, and personalized recommendations.",
+    changes: [
+      {
+        type: "feat",
+        title: "Streaming Services Quick Bar",
+        description:
+          "Jump straight into titles from your favorite streaming platforms right from the top of the home page.",
+      },
+      {
+        type: "feat",
+        title: "Popular Collections & Dedicated Pages",
+        description:
+          "Browse iconic movie franchises on the home screen and open dedicated collection pages with titles ordered chronologically.",
+      },
+      {
+        type: "feat",
+        title: "Personalized Recommendations, Trending People & Korean Spotlight",
+        description:
+          "Added tailored 'Because you watched' suggestions, a trending actors and directors row, and a K-Drama & Korean Cinema section.",
+      },
+      {
+        type: "ui",
+        title: "Edge-to-Edge Layout & Refined Navigation",
+        description:
+          "Expanded browsing pages to full screen width, smoothed the scrolling navigation pill and compact search button, and polished detail page cards and long reviews.",
+      },
+      {
+        type: "perf",
+        title: "Faster Home Screen Startup",
+        description:
+          "Lower home page sections now load as you scroll down, keeping initial page loads snappy and responsive.",
+      },
+    ],
+  },
+  {
     version: "2.13.2",
     title: "Streamlined Navigation & Direct Discovery",
     releaseDate: "2026-11-08",
-    isLatest: true,
     summary:
       "Streamlines site navigation by keeping the focus directly on movie and TV show discovery, while retaining clear access to privacy policies and the welcome notice.",
     changes: [

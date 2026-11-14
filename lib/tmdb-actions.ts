@@ -4,6 +4,9 @@ import {
   cleanMediaData,
   PROVIDERS,
   GENRE_MAP,
+  POPULAR_COLLECTION_IDS,
+  TMDBCollectionDetails,
+  TMDBTrendingPerson,
   TMDBReviewsResponse,
 } from "./tmdb";
 import {
@@ -17,7 +20,13 @@ import {
 import type { MediaDetailResponse, SeasonDetails } from "@/components/media-detail/types";
 import type { TMDBPerson, PersonCredits } from "@/components/person-detail-client";
 
-export type { TMDBMedia, TMDBRawItem, TMDBReviewsResponse };
+export type {
+  TMDBMedia,
+  TMDBRawItem,
+  TMDBCollectionDetails,
+  TMDBTrendingPerson,
+  TMDBReviewsResponse,
+};
 
 export interface TMDBLogo {
   file_path: string;
@@ -347,6 +356,70 @@ export async function getByCategory(genreName: string): Promise<TMDBMedia[]> {
   });
 }
 
+interface TVMazeEpisode {
+  season?: number;
+  number?: number;
+  airstamp?: string | null;
+}
+
+async function fetchTVMazeShowId(
+  externalIds?: { imdb_id?: string | null; tvdb_id?: number | null },
+  showName?: string
+): Promise<number | null> {
+  const candidates: string[] = [];
+  if (externalIds?.tvdb_id) {
+    candidates.push(`https://api.tvmaze.com/lookup/shows?thetvdb=${externalIds.tvdb_id}`);
+  }
+  if (externalIds?.imdb_id) {
+    candidates.push(`https://api.tvmaze.com/lookup/shows?imdb=${encodeURIComponent(externalIds.imdb_id)}`);
+  }
+  if (showName) {
+    candidates.push(`https://api.tvmaze.com/singlesearch/shows?q=${encodeURIComponent(showName)}`);
+  }
+
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(3500) });
+      if (!res.ok) continue;
+      const data = (await res.json()) as { id?: number };
+      if (typeof data.id === "number") return data.id;
+    } catch {
+      // Ignore individual lookup failures and try next candidate
+    }
+  }
+  return null;
+}
+
+async function fetchTVMazeEpisodeMap(
+  tvId: string | number,
+  externalIds?: { imdb_id?: string | null; tvdb_id?: number | null },
+  showName?: string
+): Promise<Record<string, string>> {
+  const cacheKey = `tvmaze-episodes-${tvId}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const tvmazeId = await fetchTVMazeShowId(externalIds, showName);
+      if (!tvmazeId) return {};
+
+      const res = await fetch(`https://api.tvmaze.com/shows/${tvmazeId}/episodes`, {
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!res.ok) return {};
+
+      const episodes = (await res.json()) as TVMazeEpisode[];
+      const map: Record<string, string> = {};
+      for (const ep of episodes) {
+        if (typeof ep.season === "number" && typeof ep.number === "number" && ep.airstamp) {
+          map[`${ep.season}-${ep.number}`] = ep.airstamp;
+        }
+      }
+      return map;
+    } catch {
+      return {};
+    }
+  });
+}
+
 // Media Details for Quick View / Detail Page
 export async function getMediaDetails(
   mediaType: "movie" | "tv",
@@ -355,7 +428,7 @@ export async function getMediaDetails(
   const cacheKey = `media-details-${mediaType}-${id}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
     try {
-      const regionAppend = mediaType === "movie" ? "release_dates" : "content_ratings";
+      const regionAppend = mediaType === "movie" ? "release_dates" : "content_ratings,external_ids";
 
       const data = await tmdbFetch<Record<string, unknown>>(`/${mediaType}/${id}`, {
         append_to_response: `credits,videos,watch/providers,recommendations,images,${regionAppend}`,
@@ -390,12 +463,40 @@ export async function getMediaDetails(
       const providersObj = (data["watch/providers"] as {
         results?: MediaDetailResponse["watchProviders"];
       }) ?? { results: {} };
-      const regionalObj = (data[regionAppend] as {
+      const regionalKey = mediaType === "movie" ? "release_dates" : "content_ratings";
+      const regionalObj = (data[regionalKey] as {
         results?: MediaDetailResponse["regionalData"];
       }) ?? { results: [] };
 
+      const details = data as unknown as MediaDetailResponse["details"];
+
+      if (
+        mediaType === "tv" &&
+        (details.next_episode_to_air ||
+          details.status === "Returning Series" ||
+          details.status === "In Production")
+      ) {
+        const externalIds = data.external_ids as
+          | { imdb_id?: string | null; tvdb_id?: number | null }
+          | undefined;
+        const airstampMap = await fetchTVMazeEpisodeMap(
+          id,
+          externalIds,
+          details.name || details.title
+        );
+        if (details.next_episode_to_air) {
+          const epKey = `${details.next_episode_to_air.season_number}-${details.next_episode_to_air.episode_number}`;
+          if (airstampMap[epKey]) {
+            details.next_episode_to_air = {
+              ...details.next_episode_to_air,
+              airstamp: airstampMap[epKey],
+            };
+          }
+        }
+      }
+
       return {
-        details: data as unknown as MediaDetailResponse["details"],
+        details,
         credits: creditsObj,
         videos: videosObj.results ?? [],
         watchProviders: providersObj.results ?? {},
@@ -417,14 +518,110 @@ export async function getMediaDetails(
 }
 
 // Collection Details
-export async function getCollectionDetails(collectionId: number): Promise<Record<string, unknown> | null> {
+export async function getCollectionDetails(collectionId: number): Promise<TMDBCollectionDetails | null> {
   const cacheKey = `collection-${collectionId}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_LONG, async () => {
     try {
-      return await tmdbFetch<Record<string, unknown>>(`/collection/${collectionId}`);
+      return await tmdbFetch<TMDBCollectionDetails>(`/collection/${collectionId}`);
     } catch (error) {
       console.error(`Error fetching collection ${collectionId}:`, error);
       return null;
+    }
+  });
+}
+
+// Popular Curated Collections
+export async function getPopularCollections(): Promise<TMDBCollectionDetails[]> {
+  return await fetchWithCacheDedupe("popular-collections", CACHE_TTL_LONG, async () => {
+    try {
+      const results = await Promise.all(
+        POPULAR_COLLECTION_IDS.map((id) => getCollectionDetails(id))
+      );
+      return results.filter(
+        (c): c is TMDBCollectionDetails =>
+          c !== null && Boolean(c.backdrop_path || c.poster_path)
+      );
+    } catch (error) {
+      console.error("Error fetching popular collections:", error);
+      return [];
+    }
+  });
+}
+
+// Lightweight Media Recommendations (with /similar fallback)
+export async function getMediaRecommendations(
+  mediaType: "movie" | "tv",
+  id: number | string,
+): Promise<TMDBMedia[]> {
+  const cacheKey = `recommendations-${mediaType}-${id}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const recsRes = await tmdbFetch<{ results?: TMDBRawItem[] }>(
+        `/${mediaType}/${id}/recommendations`,
+      );
+      let results = recsRes.results ?? [];
+      if (results.length === 0) {
+        const similarRes = await tmdbFetch<{ results?: TMDBRawItem[] }>(
+          `/${mediaType}/${id}/similar`,
+        );
+        results = similarRes.results ?? [];
+      }
+      return cleanMediaData(results, mediaType);
+    } catch (error) {
+      console.error(`Error fetching recommendations for ${mediaType} ${id}:`, error);
+      return [];
+    }
+  });
+}
+
+// Trending People (Actors & Directors)
+export async function getTrendingPeople(): Promise<TMDBTrendingPerson[]> {
+  return await fetchWithCacheDedupe("trending-people-week", CACHE_TTL_MEDIUM, async () => {
+    try {
+      const data = await tmdbFetch<{ results?: TMDBTrendingPerson[] }>("/trending/person/week");
+      return (data.results ?? []).filter((p) => Boolean(p.profile_path));
+    } catch (error) {
+      console.error("Error fetching trending people:", error);
+      return [];
+    }
+  });
+}
+
+// Korean Movies & Series
+export async function getKoreanMedia(
+  type: "all" | "movie" | "tv" = "all",
+): Promise<TMDBMedia[]> {
+  const cacheKey = `korean-media-${type}`;
+  return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_MEDIUM, async () => {
+    try {
+      const baseParams = {
+        with_original_language: "ko",
+        sort_by: "popularity.desc",
+        "vote_count.gte": 20,
+      };
+
+      if (type === "movie") {
+        const res = await tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/movie", baseParams);
+        return cleanMediaData(res.results ?? [], "movie");
+      }
+
+      if (type === "tv") {
+        const res = await tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/tv", baseParams);
+        return cleanMediaData(res.results ?? [], "tv");
+      }
+
+      const [movieRes, tvRes] = await Promise.all([
+        tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/movie", baseParams),
+        tmdbFetch<{ results?: TMDBRawItem[] }>("/discover/tv", baseParams),
+      ]);
+      const movies = cleanMediaData(movieRes.results ?? [], "movie");
+      const tvShows = cleanMediaData(tvRes.results ?? [], "tv");
+      return [...movies, ...tvShows]
+        .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+        .slice(0, 20);
+    } catch (error) {
+      console.error(`Error fetching Korean ${type} media:`, error);
+      return [];
     }
   });
 }
@@ -434,7 +631,23 @@ export async function getSeasonDetails(tvId: number, seasonNumber: number): Prom
   const cacheKey = `season-${tvId}-${seasonNumber}`;
   return await fetchWithCacheDedupe(cacheKey, CACHE_TTL_LONG, async () => {
     try {
-      return await tmdbFetch<SeasonDetails>(`/tv/${tvId}/season/${seasonNumber}`);
+      const seasonData = await tmdbFetch<SeasonDetails>(`/tv/${tvId}/season/${seasonNumber}`);
+      if (seasonData?.episodes?.length) {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        const hasUpcomingOrRecent = seasonData.episodes.some(
+          (ep) => !ep.air_date || ep.air_date >= todayStr
+        );
+        if (hasUpcomingOrRecent) {
+          const airstampMap = await fetchTVMazeEpisodeMap(tvId);
+          if (Object.keys(airstampMap).length > 0) {
+            seasonData.episodes = seasonData.episodes.map((ep) => {
+              const airstamp = airstampMap[`${seasonNumber}-${ep.episode_number}`];
+              return airstamp ? { ...ep, airstamp } : ep;
+            });
+          }
+        }
+      }
+      return seasonData;
     } catch (error) {
       console.error(`Error fetching season ${seasonNumber} for tv ${tvId}:`, error);
       return null;

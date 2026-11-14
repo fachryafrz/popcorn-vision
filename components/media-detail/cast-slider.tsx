@@ -45,7 +45,7 @@ export default function CastSlider({ cast, onPersonClick }: CastSliderProps) {
         </div>
       </div>
 
-      <div className="swiper-cast-container relative w-full">
+      <div className="swiper-cast-container relative -mx-6 sm:mx-0">
         <Swiper
           modules={[FreeMode, Mousewheel, Navigation]}
           freeMode
@@ -71,7 +71,7 @@ export default function CastSlider({ cast, onPersonClick }: CastSliderProps) {
             1024: { slidesPerView: 5, spaceBetween: 20 },
             1280: { slidesPerView: 6, spaceBetween: 20 },
           }}
-          className="cast-swiper w-full"
+          className="cast-swiper w-full px-6! sm:px-0!"
         >
           {cast.map((actor) => {
             const actorPic = actor.profile_path

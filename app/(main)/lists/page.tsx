@@ -234,7 +234,7 @@ export default function ListsPage() {
   };
 
   return (
-    <div className="mx-auto min-h-[85vh] w-full max-w-6xl px-6 py-24 text-white sm:px-12 md:px-16">
+    <div className="min-h-[85vh] w-full px-6 py-24 text-white sm:px-12 md:px-16">
       <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">

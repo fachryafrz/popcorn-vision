@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { TMDBMedia, getGenreNames } from "@/lib/tmdb";
+import { TMDBMedia, ALL_GENRES } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
@@ -167,7 +167,10 @@ function HeroSlide({
   const releaseYear = media.release_date
     ? new Date(media.release_date).getFullYear()
     : "N/A";
-  const genres = getGenreNames(media.genre_ids).slice(0, 3);
+  const genres = (media.genre_ids || [])
+    .map((id) => ({ id, name: ALL_GENRES[id] }))
+    .filter((g): g is { id: number; name: string } => Boolean(g.name))
+    .slice(0, 3);
   const rating = media.vote_average
     ? media.vote_average.toFixed(media.vote_average < 10 ? 1 : 0)
     : "0.0";
@@ -196,7 +199,7 @@ function HeroSlide({
       <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
 
       {/* Slide Content */}
-      <div className="relative z-20 flex w-full max-w-5xl flex-col items-end gap-8 md:flex-row md:gap-10">
+      <div className="relative z-20 flex w-full flex-col items-end gap-8 md:flex-row md:gap-10">
         <div
           onClick={() => onQuickView(media)}
           className="hidden h-76 w-52 shrink-0 transform cursor-pointer overflow-hidden rounded-2xl border border-zinc-700/30 shadow-2xl shadow-black/85 transition-all duration-300 hover:scale-102 lg:block"
@@ -214,12 +217,13 @@ function HeroSlide({
           {genres.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm"
+                <Link
+                  key={genre.id}
+                  href={`/search?mode=discover&type=${media.media_type || "movie"}&genre=${genre.id}`}
+                  className="hover:border-primary/50 hover:bg-primary/15 rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm transition-colors hover:text-white"
                 >
-                  {genre}
-                </span>
+                  {genre.name}
+                </Link>
               ))}
             </div>
           )}
