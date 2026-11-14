@@ -52,7 +52,7 @@ export default function SidebarPanel({
                 src="/logo/v2/popcorn_cropped_transparent.png"
                 alt={siteConfig.name}
                 className={cn(
-                  "h-10 w-10 object-contain transition-all duration-500",
+                  "h-7 w-7 object-contain transition-all duration-500",
                 )}
               />
               <span

@@ -94,7 +94,7 @@ export default function Navbar() {
 
           {/* Search Bar (Desktop) */}
           {!isSearchPage && (
-            <div className="hidden flex-1 justify-end px-4 lg:flex">
+            <div className="hidden flex-1 justify-end pl-4 pr-2 lg:flex">
               <Suspense fallback={null}>
                 <NavbarSearch scrolled={scrolled} />
               </Suspense>

@@ -57,7 +57,7 @@ export function AdminUsersClient() {
   }
 
   return (
-    <div className="w-full space-y-8 px-4 py-8 pt-24">
+    <div className="container mx-auto max-w-7xl space-y-8 px-4 py-8 pt-24">
       {/* Top Banner */}
       <div className="flex flex-col gap-2 border-b border-zinc-800/80 pb-6">
         <div className="flex items-center gap-2">

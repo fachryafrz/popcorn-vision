@@ -740,7 +740,7 @@ function SettingsPageContent() {
   }
 
   return (
-    <div className="bg-background text-foreground min-h-[85vh] w-full grow px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20">
+    <div className="bg-background text-foreground mx-auto min-h-[85vh] w-full max-w-5xl grow px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20">
       <div className="mb-8 border-b border-zinc-900 pb-6">
         <h1 className="text-left text-2xl font-black tracking-tight text-white sm:text-3xl">
           Settings
