@@ -183,15 +183,15 @@ export default function CompanyDetailClient({
   if (!company) return null;
 
   return (
-    <div className="min-h-screen bg-black pt-20 text-white">
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-24 text-white">
+      <div className="relative z-10 px-6 py-4 sm:px-12 lg:px-20">
         {/* Back Link */}
         <button
           type="button"
           onClick={() => router.back()}
-          className="mb-8 flex w-fit cursor-pointer items-center gap-2 text-sm font-semibold text-zinc-400 transition-colors hover:text-white"
+          className="mb-8 inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/15 bg-black/50 px-4 py-2 text-xs font-semibold text-zinc-200 backdrop-blur-md transition-colors hover:bg-black/75 hover:text-white"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-3.5 w-3.5" />
           Back
         </button>
 

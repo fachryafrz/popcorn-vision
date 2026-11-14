@@ -796,7 +796,7 @@ function UserProfileContent({ params }: UserProfilePageProps) {
 
   return (
     <div
-      className="bg-background text-foreground relative mx-auto min-h-[85vh] w-full max-w-7xl grow rounded-3xl px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20"
+      className="bg-background text-foreground relative min-h-[85vh] w-full grow rounded-3xl px-6 py-24 transition-colors duration-300 sm:px-12 md:px-16 lg:px-20"
       data-theme={targetUser?.theme || "dark"}
     >
       {/* Header Profile Info card */}

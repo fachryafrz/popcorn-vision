@@ -7,6 +7,70 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.3] - 2026-11-14
+
+### Added
+- **Streaming Services Quick Bar**: Browse movies and series directly by your favorite streaming platform right from the home page.
+- **Popular Collections & Dedicated Collection Pages**: Explore curated movie franchises and view every title in a collection in chronological order.
+- **Personalized Recommendations**: Get tailored suggestions based on what you recently watched or added to your watchlist.
+- **Trending People & Korean Spotlight**: Discover popular actors, directors, and trending Korean movies and series right from the home screen.
+
+### Changed
+- **Edge-to-Edge Widescreen Layout**: Expanded browsing pages and horizontal carousels to make full use of your screen width while keeping reading sections comfortable.
+- **Smoother Navigation Bar**: Refined the scrolling pill transition, active menu pills, and compact search button when scrolling.
+- **Cleaner Detail Pages**: Improved production studio cards, added a smooth fade on long reviews, and switched "More Like This" recommendations to a clean grid.
+
+### Performance
+- **Faster Home Screen Loading**: Lower home sections now load as you scroll toward them for quicker initial startup and smoother scrolling.
+
+---
+
+## [2.13.2] - 2026-11-08
+
+### Changed
+- **Streamlined Footer Navigation**: Cleaned up the footer layout to keep links focused directly on release updates and legal policies.
+
+### Removed
+- **Simplified Discovery Focus**: Kept our interface straightforward and centered on discovering entertainment, removing redundant static pages.
+
+---
+
+## [2.13.1] - 2026-11-07
+
+### Changed
+- **Refreshed Privacy & Terms of Service**: Redesigned our legal and policy documents with a clean, easy-to-read single-column format that presents data safety, user rights, and community terms with zero clutter.
+- **Non-Intrusive Welcome Notice**: Replaced the blocking full-screen welcome modal with an elegant, dismissible banner at the bottom of the screen so you can start browsing movies immediately.
+- **Clean & Familiar Header Branding**: Streamlined the header logo to the familiar "POVI" name while maintaining full accessibility and screen reader support.
+
+### Removed
+- **Lighter & Cleaner Browsing**: Removed unused third-party tracking scripts to give you a faster, more private, and lightweight browsing experience.
+
+---
+
+## [2.13.0] - 2026-11-01
+
+### Added
+- **Polished App Icon for Installed Devices**: When installed on your mobile home screen or computer desktop, Popcorn Vision now features a dedicated app icon with smooth rounded corners that fits beautifully on your screen.
+
+### Changed
+- **Charming Modern Flat Mascot**: Refreshed the beloved popcorn mascot with cinema 3D glasses into a clean, high-contrast modern flat style across headers, footers, and dialog windows.
+- **Seamless In-App Visuals**: The mascot now blends naturally with transparent backgrounds across cards, actor placeholders, and profile dialogs for a cleaner look in both dark and light modes.
+
+### Fixed
+- **Crisp Status Bar & Notification Alerts**: Push notifications now display a clean, contoured mascot icon in your mobile status bar, preventing unwanted solid square boxes on your phone.
+
+---
+## [2.12.6] - 2026-10-31
+
+### Added
+- **Collapsible Release Notes Timeline**: Milestone cards on the release notes page can now be expanded or collapsed to easily browse through updates.
+
+### Changed
+- **Streamlined Media Details & Hero Player**: Watch trailers and play videos directly from the backdrop cover, with a cleaner layout placing cast navigation and details right where you need them.
+- **Snappier Media Browsing & Smoother Loading**: Exploring movies, TV series, and actor filmographies is faster and lighter, paired with updated placeholder screens that smoothly match the layout.
+
+---
+
 ## [2.12.5] - 2026-10-15
 
 ### Added

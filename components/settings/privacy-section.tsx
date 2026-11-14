@@ -95,14 +95,14 @@ export default function PrivacySection({
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-sm font-bold text-white">
-                  Web Push Notifications
+                  Browser Notifications
                 </span>
                 <span className="text-xs text-zinc-400">
                   Receive notification alerts directly in your browser when new chat messages arrive.
                 </span>
                 {!isSupported && (
                   <span className="mt-1 text-[10px] text-amber-500">
-                    *Your browser does not support Web Push notifications.
+                    *Your browser does not support notifications.
                   </span>
                 )}
               </div>

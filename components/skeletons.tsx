@@ -29,7 +29,7 @@ export function HeroSkeleton() {
       <div className="absolute inset-0 z-10 hidden bg-linear-to-r from-zinc-950/80 via-transparent to-transparent md:block" />
 
       {/* Hero content */}
-      <div className="relative z-20 flex w-full max-w-5xl flex-col items-end gap-8 md:flex-row md:gap-10">
+      <div className="relative z-20 flex w-full flex-col items-end gap-8 md:flex-row md:gap-10">
         {/* Poster Skeleton (hidden on mobile, visible on desktop) */}
         <div className="hidden h-76 w-52 shrink-0 rounded-2xl border border-zinc-700/30 shadow-2xl shadow-black/85 lg:block">
           <Skeleton className="h-full w-full rounded-2xl" />
@@ -94,7 +94,7 @@ export function CardSkeleton() {
 }
 
 // Carousel Skeleton Row
-export function CarouselSkeleton() {
+export function CarouselSkeleton({ fullBleed = false }: { fullBleed?: boolean }) {
   return (
     <div className="swiper-carousel-container relative w-full">
       <Swiper
@@ -106,10 +106,12 @@ export function CarouselSkeleton() {
           1024: { slidesPerView: 5, spaceBetween: 24 },
           1280: { slidesPerView: 6, spaceBetween: 24 },
         }}
-        className="w-full pb-4"
+        className={
+          fullBleed ? "w-full px-6! pb-4 sm:px-16! md:px-20!" : "w-full pb-4"
+        }
         allowTouchMove={false}
       >
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: fullBleed ? 8 : 6 }).map((_, i) => (
           <SwiperSlide key={i} className="py-1">
             <CardSkeleton />
           </SwiperSlide>
@@ -138,7 +140,11 @@ export function ContinueWatchingCardSkeleton() {
 }
 
 // Continue Watching Carousel Skeleton Row
-export function ContinueWatchingCarouselSkeleton() {
+export function ContinueWatchingCarouselSkeleton({
+  fullBleed = false,
+}: {
+  fullBleed?: boolean;
+}) {
   return (
     <div className="swiper-carousel-container relative w-full">
       <Swiper
@@ -150,7 +156,9 @@ export function ContinueWatchingCarouselSkeleton() {
           1024: { slidesPerView: 3.7, spaceBetween: 24 },
           1280: { slidesPerView: 4, spaceBetween: 24 },
         }}
-        className="w-full pb-4"
+        className={
+          fullBleed ? "w-full px-6! pb-4 sm:px-16! md:px-20!" : "w-full pb-4"
+        }
         allowTouchMove={false}
       >
         {Array.from({ length: 6 }).map((_, i) => (
@@ -176,56 +184,142 @@ export function MediaDetailSkeleton() {
       {/* Content Container shifted upwards to overlap backdrop */}
       <div className="relative z-20 mx-auto -mt-24 flex max-w-7xl flex-col items-start gap-8 px-6 sm:-mt-36 sm:px-12 lg:-mt-44 lg:flex-row lg:gap-12 lg:px-20">
         {/* Large Poster Sidebar */}
-        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 lg:block">
+        <div className="hidden w-64 shrink-0 overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900 xl:block">
           <Skeleton className="aspect-2/3 w-full rounded-none" />
         </div>
 
         {/* Details Header Details */}
         <div className="flex w-full flex-1 flex-col items-start gap-4 text-left">
           {/* Genre Badges */}
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Skeleton className="h-6 w-16 rounded-xl" />
             <Skeleton className="h-6 w-20 rounded-xl" />
             <Skeleton className="h-6 w-16 rounded-xl" />
           </div>
 
           {/* Title or Logo Placeholder */}
-          <Skeleton className="h-12 w-3/4 rounded-lg sm:h-16 md:h-20" />
+          <Skeleton className="h-10 w-3/4 rounded-lg sm:h-14 md:h-16" />
 
           {/* Tagline */}
           <Skeleton className="h-5 w-1/2 rounded" />
 
-          {/* Meta rows (Rating, Year, Duration) */}
+          {/* Meta rows (Rating, Year, Duration, Certification) */}
           <div className="flex w-full flex-wrap items-center gap-3">
             <Skeleton className="h-6 w-20 rounded-full" />
-            <Skeleton className="h-6 w-14 rounded-full" />
-            <Skeleton className="h-6 w-12 rounded-full" />
+            <Skeleton className="h-6 w-24 rounded-full" />
+            <Skeleton className="h-6 w-28 rounded-full" />
             <Skeleton className="h-6 w-16 rounded-full" />
           </div>
 
-          {/* Action buttons / quick stats */}
-          <div className="mt-2 flex w-full flex-wrap gap-4">
-            <Skeleton className="h-12 w-36 rounded-full" />
-            <Skeleton className="h-12 w-36 rounded-full" />
+          {/* Directors / Creators row */}
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-20 rounded" />
+            <Skeleton className="h-4 w-32 rounded" />
+          </div>
+
+          {/* Overview text lines */}
+          <div className="my-2 w-full max-w-3xl space-y-2">
+            <Skeleton className="h-4 w-full rounded" />
+            <Skeleton className="h-4 w-5/6 rounded" />
+            <Skeleton className="h-4 w-2/3 rounded" />
+          </div>
+
+          {/* Streaming providers row */}
+          <div className="flex flex-wrap items-center gap-2">
+            <Skeleton className="h-5 w-24 rounded" />
+            <div className="flex gap-1.5">
+              <Skeleton className="size-8 rounded-lg" />
+              <Skeleton className="size-8 rounded-lg" />
+              <Skeleton className="size-8 rounded-lg" />
+            </div>
+          </div>
+
+          {/* Action buttons (Watchlist, Add to List, Favorite, Log Watch, Share) */}
+          <div className="flex flex-wrap items-center gap-3">
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-32 rounded-full" />
+            <Skeleton className="h-12 w-28 rounded-full" />
+          </div>
+
+          {/* Rating Section (10 stars) */}
+          <div className="mt-4 flex max-w-sm flex-col gap-2">
+            <Skeleton className="h-3 w-24 rounded" />
+            <div className="flex gap-1">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <Skeleton key={i} className="size-6 rounded" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Below-fold content */}
-      <div className="mx-auto mt-10 max-w-7xl space-y-10 px-6 py-10 sm:px-12 md:px-20">
-        {/* Cast row */}
-        <div className="space-y-4">
-          <Skeleton className="h-7 w-32 rounded" />
-          <div className="flex gap-4 overflow-hidden">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex shrink-0 flex-col items-center gap-2"
-              >
-                <Skeleton className="h-20 w-20 rounded-full" />
-                <Skeleton className="h-3.5 w-16 rounded" />
+      {/* Main Details Body */}
+      <div className="mx-auto max-w-7xl space-y-16 px-6 py-12 sm:px-12">
+        {/* Video Player Card */}
+        <div className="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/20 shadow-2xl backdrop-blur-md">
+          {/* Header Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 bg-zinc-900/60 p-5">
+            <div className="flex gap-4">
+              <Skeleton className="h-6 w-28 rounded" />
+              <Skeleton className="h-6 w-24 rounded" />
+            </div>
+            <Skeleton className="h-8 w-32 rounded-lg" />
+          </div>
+          {/* Player screen */}
+          <Skeleton className="aspect-video w-full rounded-none" />
+        </div>
+
+        {/* Metadata Details Grid */}
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+          {/* Main Info Column (Cast, Companies, Collections, Seasons) */}
+          <div className="space-y-6 lg:col-span-2">
+            {/* Cast row with header navigation buttons */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <Skeleton className="h-7 w-48 rounded" />
+                <div className="flex items-center gap-2">
+                  <Skeleton className="size-8 rounded-full sm:size-9" />
+                  <Skeleton className="size-8 rounded-full sm:size-9" />
+                </div>
               </div>
-            ))}
+              <div className="flex gap-4 overflow-hidden">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex shrink-0 flex-col items-center gap-2"
+                  >
+                    <Skeleton className="size-20 rounded-full sm:size-24" />
+                    <Skeleton className="h-4 w-16 rounded" />
+                    <Skeleton className="h-3 w-12 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Production Companies skeleton */}
+            <div className="space-y-3 pt-4">
+              <Skeleton className="h-6 w-44 rounded" />
+              <div className="flex flex-wrap gap-3">
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
+                <Skeleton className="aspect-4/3 w-28 rounded-2xl sm:w-32" />
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Stats Sidebar */}
+          <div className="border-zinc-850 h-fit space-y-6 rounded-2xl border bg-zinc-900/10 p-6 lg:col-span-1">
+            <Skeleton className="h-5 w-24 rounded" />
+            <div className="grid grid-cols-2 gap-4">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="space-y-1">
+                  <Skeleton className="h-3 w-16 rounded" />
+                  <Skeleton className="h-4 w-20 rounded" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -237,7 +331,7 @@ export function MediaDetailSkeleton() {
 export function PersonDetailSkeleton() {
   return (
     <div className="bg-background text-foreground min-h-svh pt-24 pb-16">
-      <div className="mx-auto max-w-7xl px-6 sm:px-10 md:px-16">
+      <div className="px-6 sm:px-12 lg:px-20">
         {/* Back Link Placeholder */}
         <div className="mb-8 flex items-center gap-2">
           <Skeleton className="h-4 w-12 rounded" />
@@ -318,8 +412,8 @@ export function PersonDetailSkeleton() {
 // Company Detail Page Skeleton
 export function CompanyDetailSkeleton() {
   return (
-    <div className="min-h-screen bg-black pt-20 text-white">
-      <div className="relative z-10 mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black pt-24 text-white">
+      <div className="relative z-10 px-6 py-4 sm:px-12 lg:px-20">
         {/* Back Link */}
         <div className="mb-8 flex items-center gap-2">
           <Skeleton className="h-4 w-12 rounded" />
@@ -378,7 +472,7 @@ export function CompanyDetailSkeleton() {
 // Search Page Skeleton
 export function SearchPageSkeleton() {
   return (
-    <div className="min-h-screen bg-zinc-950 px-6 pt-24 pb-12 sm:px-16">
+    <div className="min-h-screen bg-zinc-950 px-6 pt-28 pb-16 sm:px-10 md:px-16">
       {/* Search bar */}
       <Skeleton className="mb-8 h-12 w-full max-w-2xl rounded-full" />
 
@@ -402,7 +496,7 @@ export function SearchPageSkeleton() {
 // Feed Page Skeleton
 export function FeedSkeleton() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-9 w-24 shrink-0 rounded-full" />
@@ -426,4 +520,30 @@ export function FeedSkeleton() {
   );
 }
 
-
+// Popular Collections Carousel Skeleton
+export function CollectionsCarouselSkeleton() {
+  return (
+    <div className="swiper-carousel-container relative w-full">
+      <Swiper
+        spaceBetween={16}
+        slidesPerView={1.25}
+        breakpoints={{
+          640: { slidesPerView: 2.2, spaceBetween: 20 },
+          768: { slidesPerView: 2.7, spaceBetween: 24 },
+          1024: { slidesPerView: 3.5, spaceBetween: 24 },
+          1280: { slidesPerView: 4, spaceBetween: 24 },
+        }}
+        className="w-full px-6! pb-4 sm:px-16! md:px-20!"
+        allowTouchMove={false}
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SwiperSlide key={i} className="py-1">
+            <div className="aspect-video w-full overflow-hidden rounded-2xl border border-zinc-800/40 bg-zinc-900">
+              <Skeleton className="h-full w-full rounded-none" />
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
+  );
+}

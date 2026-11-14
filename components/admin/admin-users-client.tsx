@@ -5,6 +5,7 @@ import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { UserManagementTable } from "@/components/admin/user-management-table";
+import { AdminNav } from "./admin-nav";
 import { ShieldAlert, ShieldCheck, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -42,7 +43,7 @@ export function AdminUsersClient() {
           Access Denied
         </h1>
         <p className="mb-6 text-sm text-zinc-400">
-          You do not have permission to view the User Management console. Only
+          You do not have permission to access User Management. Only
           platform Owners and Admins can access this area.
         </p>
         <Link
@@ -62,7 +63,7 @@ export function AdminUsersClient() {
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-6 w-6 text-amber-400" />
           <h1 className="text-2xl font-extrabold tracking-tight text-white">
-            User Management Console
+            User Management
           </h1>
         </div>
         <p className="text-xs text-zinc-400">
@@ -70,6 +71,8 @@ export function AdminUsersClient() {
           accounts.
         </p>
       </div>
+
+      <AdminNav />
 
       {/* Main Table Component */}
       <UserManagementTable currentUserRole={role} />

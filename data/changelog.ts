@@ -21,10 +21,163 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.3",
+    title: "Widescreen Discovery, Collections & Personalized Home",
+    releaseDate: "2026-11-14",
+    isLatest: true,
+    summary:
+      "Brings an edge-to-edge widescreen browsing experience, new home discovery rows for streaming platforms, popular collections, trending people, Korean titles, and personalized recommendations.",
+    changes: [
+      {
+        type: "feat",
+        title: "Streaming Services Quick Bar",
+        description:
+          "Jump straight into titles from your favorite streaming platforms right from the top of the home page.",
+      },
+      {
+        type: "feat",
+        title: "Popular Collections & Dedicated Pages",
+        description:
+          "Browse iconic movie franchises on the home screen and open dedicated collection pages with titles ordered chronologically.",
+      },
+      {
+        type: "feat",
+        title: "Personalized Recommendations, Trending People & Korean Spotlight",
+        description:
+          "Added tailored 'Because you watched' suggestions, a trending actors and directors row, and a K-Drama & Korean Cinema section.",
+      },
+      {
+        type: "ui",
+        title: "Edge-to-Edge Layout & Refined Navigation",
+        description:
+          "Expanded browsing pages to full screen width, smoothed the scrolling navigation pill and compact search button, and polished detail page cards and long reviews.",
+      },
+      {
+        type: "perf",
+        title: "Faster Home Screen Startup",
+        description:
+          "Lower home page sections now load as you scroll down, keeping initial page loads snappy and responsive.",
+      },
+    ],
+  },
+  {
+    version: "2.13.2",
+    title: "Streamlined Navigation & Direct Discovery",
+    releaseDate: "2026-11-08",
+    summary:
+      "Streamlines site navigation by keeping the focus directly on movie and TV show discovery, while retaining clear access to privacy policies and the welcome notice.",
+    changes: [
+      {
+        type: "ui",
+        title: "Streamlined Footer Navigation",
+        description:
+          "Cleaned up the footer layout to keep links focused directly on release updates and legal policies.",
+      },
+      {
+        type: "refactor",
+        title: "Simplified Discovery Focus",
+        description:
+          "Kept our interface straightforward and centered on discovering entertainment, removing redundant static pages.",
+      },
+    ],
+  },
+  {
+    version: "2.13.1",
+    title: "Simplified Legal Pages & Non-Intrusive Notices",
+    releaseDate: "2026-11-07",
+    summary:
+      "Redesigns Privacy Policy and Terms of Service into a clean top-to-bottom reading experience, makes the welcome notice non-intrusive, and cleans up external tracking scripts.",
+    changes: [
+      {
+        type: "ui",
+        title: "Refreshed Privacy & Terms of Service",
+        description:
+          "Redesigned our legal and policy documents with a clean, easy-to-read single-column format that presents data safety, user rights, and community terms with zero clutter.",
+      },
+      {
+        type: "ui",
+        title: "Non-Intrusive Welcome Notice",
+        description:
+          "Replaced the blocking full-screen welcome modal with an elegant, dismissible banner at the bottom of the screen so you can start browsing movies immediately.",
+      },
+      {
+        type: "ui",
+        title: "Clean & Familiar Header Branding",
+        description:
+          "Streamlined the header logo to the familiar 'POVI' name while maintaining full accessibility and screen reader support.",
+      },
+      {
+        type: "refactor",
+        title: "Lighter & Cleaner Browsing",
+        description:
+          "Removed unused third-party tracking scripts to give you a faster, more private, and lightweight browsing experience.",
+      },
+    ],
+  },
+  {
+    version: "2.13.0",
+    title: "Modern Flat Rebranding",
+    releaseDate: "2026-11-01",
+    summary:
+      "A sleek modern flat brand refresh for Popcorn Vision, featuring a sharp new app icon for installed devices, seamless transparent visuals, and a crisp icon.",
+    changes: [
+      {
+        type: "feat",
+        title: "Polished App Icon for Installed Devices",
+        description:
+          "When installed on your phone or desktop, Popcorn Vision now features a dedicated app icon with smooth rounded corners that fits beautifully on your home screen.",
+      },
+      {
+        type: "ui",
+        title: "Charming Modern Flat Mascot",
+        description:
+          "Enjoy a clean, high-contrast modern flat look for our popcorn mascot with cinema 3D glasses across headers, footers, dialogs, and community features.",
+      },
+      {
+        type: "fix",
+        title: "Crisp Status Bar & Notification Alerts",
+        description:
+          "Notification alerts now display a clean, contoured mascot icon in your mobile status bar, preventing unwanted solid square boxes on your phone.",
+      },
+      {
+        type: "ui",
+        title: "Seamless In-App Visuals",
+        description:
+          "The mascot now blends naturally with transparent backgrounds across cards, actor placeholders, and profile dialogs for a cleaner look in both dark and light themes.",
+      },
+    ],
+  },
+  {
+    version: "2.12.6",
+    title: "Streamlined Media Details & Interactive Release Notes",
+    releaseDate: "2026-10-31",
+    summary:
+      "A cleaner and more intuitive media details experience with direct hero trailer playback, streamlined cast navigation, and an interactive collapsible release notes timeline.",
+    changes: [
+      {
+        type: "ui",
+        title: "Streamlined Media Details & Hero Player",
+        description:
+          "Watch trailers and play videos directly from the backdrop cover, with a cleaner layout placing cast navigation and details right where you need them.",
+      },
+      {
+        type: "feat",
+        title: "Collapsible Release Notes Timeline",
+        description:
+          "Milestone cards on the release notes page can now be expanded or collapsed to easily browse through updates.",
+      },
+      {
+        type: "perf",
+        title: "Snappier Media Browsing & Smoother Loading",
+        description:
+          "Exploring movies, TV series, and actor filmographies is faster and lighter, paired with updated placeholder screens that smoothly match the layout.",
+      },
+    ],
+  },
+  {
     version: "2.12.5",
     title: "More Responsive Alerts & Quicker Browsing",
     releaseDate: "2026-10-15",
-    isLatest: true,
     summary:
       "Improved notification delivery so you stay instantly up to date with new messages and activity, paired with background speed polishes for smoother navigation.",
     changes: [

@@ -10,29 +10,29 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     display: "standalone",
     orientation: "portrait-primary",
-    background_color: "#131720",
-    theme_color: "#131720",
+    background_color: "#0b0e14",
+    theme_color: "#0b0e14",
     icons: [
       {
-        src: "/favicon/android-chrome-192x192.png",
+        src: "/favicon/v2/android-chrome-192x192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/favicon/android-chrome-512x512.png",
+        src: "/favicon/v2/android-chrome-512x512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/maskable/maskable_icon_x192.png",
+        src: "/maskable/v2/maskable_icon_x192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "maskable",
       },
       {
-        src: "/maskable/maskable_icon_x512.png",
+        src: "/maskable/v2/maskable_icon_x512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",
@@ -40,4 +40,3 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   };
 }
-

@@ -8,10 +8,10 @@ import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
 import { TMDBMedia } from "@/lib/tmdb";
-import { streamingProviderList } from "@/lib/streamingProviderList";
+import { useStreamingServers } from "@/hooks/use-streaming-servers";
 import { MediaDetailSkeleton } from "@/components/skeletons";
 import { TrendingUp } from "lucide-react";
-import Carousel from "./carousel";
+import Card from "./card";
 import { useAuthModalStore } from "@/lib/auth-modal-store";
 import QuickViewModal from "./quick-view-modal";
 import PersonQuickViewModal from "./person-quick-view-modal";
@@ -919,7 +919,7 @@ export default function MediaDetailClient({
     (videos?.[0]?.site === "YouTube" ? videos[0].key : null);
 
   // Streaming server sources
-  const servers = streamingProviderList({
+  const servers = useStreamingServers({
     media_type: mediaType,
     id: String(details?.id),
     season,
@@ -940,11 +940,11 @@ export default function MediaDetailClient({
 
   const backdropUrl = details?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${details.backdrop_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_cropped_transparent.png";
 
   const posterUrl = details?.poster_path
     ? `https://image.tmdb.org/t/p/w500${details.poster_path}`
-    : "/logo/popcorn.png";
+    : "/logo/v2/popcorn_cropped_transparent.png";
 
   const mobileBackdropUrl = textlessPosterPath
     ? `https://image.tmdb.org/t/p/w780${textlessPosterPath}`
@@ -959,6 +959,9 @@ export default function MediaDetailClient({
         backdropRef={backdropRef}
         backdropUrl={backdropUrl}
         mobileBackdropUrl={mobileBackdropUrl}
+        title={details.title ?? details.name ?? "media"}
+        canPlay={!isUnreleased && servers.length > 0}
+        onPlay={() => scrollToPlayer("watch")}
       />
 
       {/* Content Container - Shifted Upwards to Overlap Backdrop */}
@@ -1072,15 +1075,15 @@ export default function MediaDetailClient({
           isUnreleased={isUnreleased}
         />
 
-        <CastSlider
-          cast={cast}
-          onPersonClick={(id) => setQuickViewPersonId(id)}
-        />
-
         {/* Metadata Details Grid */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
           {/* Main Info Column */}
           <div className="space-y-6 lg:col-span-2">
+            <CastSlider
+              cast={cast}
+              onPersonClick={(id) => setQuickViewPersonId(id)}
+            />
+
             <ProductionCompanies
               productionCompanies={details?.production_companies}
               mediaType={mediaType}
@@ -1126,18 +1129,23 @@ export default function MediaDetailClient({
           mediaPosterPath={details.poster_path || undefined}
         />
 
-        {/* Recommendations Carousel */}
+        {/* Recommendations Grid */}
         {recommendations.length > 0 && (
           <div className="space-y-6">
             <h2 className="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
               <TrendingUp className="text-primary h-5 w-5" />
               More Like This
             </h2>
-            <Carousel
-              items={recommendations}
-              onQuickView={handleQuickView}
-              onAuthRequired={openAuth}
-            />
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {recommendations.map((item) => (
+                <Card
+                  key={`${item.media_type}-${item.id}`}
+                  media={item}
+                  onQuickView={handleQuickView}
+                  onAuthRequired={openAuth}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

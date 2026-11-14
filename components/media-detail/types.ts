@@ -77,6 +77,7 @@ export interface TMDBEpisodeToAir {
   vote_average: number;
   vote_count: number;
   air_date: string;
+  airstamp?: string | null;
   episode_number: number;
   episode_type?: string;
   production_code?: string;
@@ -133,6 +134,7 @@ export interface Episode {
   overview: string;
   still_path: string | null;
   air_date: string | null;
+  airstamp?: string | null;
   runtime: number | null;
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Star, Clock, Calendar } from "lucide-react";
 import moment from "moment";
 import type { Duration } from "moment";
@@ -55,12 +56,13 @@ export default function MediaHeaderInfo({
       {details?.genres && details.genres.length > 0 && (
         <div className="mt-1 flex flex-wrap gap-2">
           {details.genres.map((g) => (
-            <span
+            <Link
               key={g.id}
-              className="rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm"
+              href={`/search?mode=discover&type=${mediaType}&genre=${g.id}`}
+              className="hover:border-primary/50 hover:bg-primary/15 rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-300 backdrop-blur-sm transition-colors hover:text-white"
             >
               {g.name}
-            </span>
+            </Link>
           ))}
         </div>
       )}

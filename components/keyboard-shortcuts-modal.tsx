@@ -80,7 +80,7 @@ export function KeyboardShortcutsModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent className="max-h-[85vh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-xl">
+      <DialogContent className="max-h-[85vh] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto rounded-3xl border border-zinc-800 bg-zinc-950 p-6 text-white shadow-2xl backdrop-blur-xl sm:max-w-2xl md:max-w-3xl">
         <DialogHeader className="border-b border-zinc-800/80 pb-4">
           <DialogTitle className="flex items-center gap-2 text-lg font-bold text-white">
             <Command className="h-5 w-5 text-primary" />

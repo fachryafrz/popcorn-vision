@@ -21,11 +21,7 @@ interface NavLinkItem {
   requireAuth?: boolean;
 }
 
-interface NavbarLinksProps {
-  scrolled?: boolean;
-}
-
-export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
+export function NavbarLinks() {
   const pathname = usePathname();
   const session = authClient.useSession();
   const isLoggedIn = !!session.data?.user;
@@ -59,10 +55,7 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
   return (
     <nav
       aria-label="Main Navigation"
-      className={cn(
-        "hidden items-center transition-all duration-300 lg:flex",
-        scrolled ? "gap-5 text-xs" : "gap-6 text-sm",
-      )}
+      className="hidden items-center gap-1.5 text-sm lg:flex"
     >
       {links.map((link) => (
         <Link
@@ -75,10 +68,10 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
             }
           }}
           className={cn(
-            "relative flex items-center gap-1.5 py-1 font-medium transition-colors duration-200",
+            "relative flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-all duration-200",
             link.isActive
-              ? "text-white font-semibold"
-              : "text-zinc-400 hover:text-zinc-200",
+              ? "bg-white/10 font-semibold text-white shadow-xs"
+              : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200",
           )}
         >
           <span>{link.label}</span>
@@ -86,9 +79,6 @@ export function NavbarLinks({ scrolled = false }: NavbarLinksProps) {
             <span className="bg-primary flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-black text-white shadow-sm">
               {link.badge > 99 ? "99+" : link.badge}
             </span>
-          )}
-          {link.isActive && (
-            <span className="bg-primary absolute -bottom-0.5 inset-x-0 h-0.5 rounded-full shadow-[0_0_8px_rgba(229,9,20,0.8)]" />
           )}
         </Link>
       ))}

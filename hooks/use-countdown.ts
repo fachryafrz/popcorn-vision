@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { parseCountdownTargetTime } from "@/lib/countdown";
 
 export interface CountdownResult {
   days: number;
@@ -64,8 +65,8 @@ export function useCountdown(
     };
   }
 
-  const targetTime = new Date(targetDate).getTime();
-  if (isNaN(targetTime)) {
+  const targetTime = parseCountdownTargetTime(targetDate);
+  if (targetTime === null) {
     return {
       days: 0,
       hours: 0,

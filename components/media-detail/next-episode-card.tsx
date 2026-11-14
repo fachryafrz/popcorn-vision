@@ -4,7 +4,7 @@ import { TMDBEpisodeToAir } from "./types";
 import CountdownDisplay from "@/components/ui/countdown-display";
 import { useCountdown } from "@/hooks/use-countdown";
 import { Calendar, Tv, CalendarClock } from "lucide-react";
-import moment from "moment";
+import { formatLocalAirDateTime } from "@/lib/countdown";
 import { cn } from "@/lib/utils";
 
 interface NextEpisodeCardProps {
@@ -16,7 +16,8 @@ export default function NextEpisodeCard({
   episode,
   className,
 }: NextEpisodeCardProps) {
-  const { isImminent, isEnded } = useCountdown(episode?.air_date);
+  const targetTimestamp = episode?.airstamp ?? episode?.air_date;
+  const { isImminent, isEnded } = useCountdown(targetTimestamp);
 
   if (!episode || !episode.air_date) return null;
 
@@ -24,8 +25,10 @@ export default function NextEpisodeCard({
     ? `https://image.tmdb.org/t/p/w500${episode.still_path}`
     : null;
 
-  const formattedAirDate = moment(episode.air_date).format(
-    "dddd, MMMM Do, YYYY",
+  const { dateText, timeText } = formatLocalAirDateTime(
+    episode.air_date,
+    episode.airstamp,
+    "long",
   );
 
   const colorStyles = isEnded
@@ -103,7 +106,13 @@ export default function NextEpisodeCard({
               <Calendar className={cn("h-3.5 w-3.5", colorStyles.icon)} />
               <span>
                 Airs on{" "}
-                <strong className="text-zinc-200">{formattedAirDate}</strong>
+                <strong className="text-zinc-200">{dateText}</strong>
+                {timeText && (
+                  <>
+                    {" "}
+                    at <strong className="text-zinc-200">{timeText}</strong>
+                  </>
+                )}
               </span>
             </div>
           </div>
@@ -112,7 +121,7 @@ export default function NextEpisodeCard({
         {/* Right Countdown Column */}
         <div className="w-full shrink-0 lg:w-72">
           <CountdownDisplay
-            targetDate={episode.air_date}
+            targetDate={targetTimestamp}
             variant="block"
             label="Countdown to Airing"
           />

@@ -42,6 +42,7 @@ import isoCountries from "@/data/iso-3166.json";
 import { MediaDetails } from "@/components/media-detail/types";
 import CountdownDisplay from "@/components/ui/countdown-display";
 import { useCountdown } from "@/hooks/use-countdown";
+import { formatLocalAirDateTime } from "@/lib/countdown";
 
 interface CrewItem {
   id: number;
@@ -253,7 +254,7 @@ export default function QuickViewModal({
     ? `https://image.tmdb.org/t/p/w780${media.backdrop_path}`
     : details?.backdrop_path
       ? `https://image.tmdb.org/t/p/w780${details.backdrop_path}`
-      : "/logo/popcorn.png";
+      : "/logo/v2/popcorn_cropped_transparent.png";
 
   // YouTube trailer resolution
   const trailerVideo = videos?.find(
@@ -414,14 +415,27 @@ export default function QuickViewModal({
                 {/* TV Series Next Episode Countdown Alert */}
                 {media.media_type === "tv" && details?.next_episode_to_air && (
                   <QuickViewCountdownAlert
-                    targetDate={details.next_episode_to_air.air_date}
+                    targetDate={
+                      details.next_episode_to_air.airstamp ??
+                      details.next_episode_to_air.air_date
+                    }
                     icon={Tv}
                     title={`Next: S${details.next_episode_to_air.season_number} E${details.next_episode_to_air.episode_number}`}
-                    subtitle={
-                      details.next_episode_to_air.name
-                        ? ` - "${details.next_episode_to_air.name}"`
-                        : undefined
-                    }
+                    subtitle={(() => {
+                      const ep = details.next_episode_to_air;
+                      const { dateText, timeText } = formatLocalAirDateTime(
+                        ep.air_date,
+                        ep.airstamp,
+                        "short",
+                      );
+                      const namePart = ep.name ? ` - "${ep.name}"` : "";
+                      const timePart = timeText
+                        ? ` (${dateText}, ${timeText})`
+                        : "";
+                      return namePart || timePart
+                        ? `${namePart}${timePart}`
+                        : undefined;
+                    })()}
                   />
                 )}
 
@@ -531,9 +545,9 @@ export default function QuickViewModal({
                       {hasCommunity && (
                         <div
                           className="border-zinc-850 rounded-full border bg-zinc-900/40 px-2.5 py-0.5 text-xs font-medium text-zinc-500"
-                          title="TMDB reference rating"
+                          title="TMDB global rating"
                         >
-                          TMDB Ref: {voteRating}
+                          TMDB: {voteRating}
                         </div>
                       )}
                     </>
@@ -567,12 +581,14 @@ export default function QuickViewModal({
               {details?.genres && details.genres.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {details.genres.map((g) => (
-                    <span
+                    <Link
                       key={g.id}
-                      className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-semibold text-zinc-300"
+                      href={`/search?mode=discover&type=${media.media_type || "movie"}&genre=${g.id}`}
+                      onClick={onClose}
+                      className="hover:border-primary/50 hover:bg-primary/15 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-semibold text-zinc-300 transition-colors hover:text-white"
                     >
                       {g.name}
-                    </span>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -645,7 +661,7 @@ export default function QuickViewModal({
                     {cast.map((actor) => {
                       const actorPic = actor.profile_path
                         ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                        : "/logo/popcorn.png";
+                        : "/logo/v2/popcorn_cropped_transparent.png";
                       return (
                         <Link
                           key={actor.id}

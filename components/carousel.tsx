@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { TMDBMedia } from "@/lib/tmdb";
 import Card from "./card";
 
@@ -13,16 +14,25 @@ interface CarouselProps {
   items: TMDBMedia[];
   onQuickView: (media: TMDBMedia) => void;
   onAuthRequired: () => void;
+  fullBleed?: boolean;
+  swiperClassName?: string;
 }
 
 export default function Carousel({
   items,
   onQuickView,
   onAuthRequired,
+  fullBleed = false,
+  swiperClassName,
 }: CarouselProps) {
   if (!items || items.length === 0) {
     return (
-      <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 text-sm text-zinc-500">
+      <div
+        className={cn(
+          "flex h-48 items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-950/40 text-sm text-zinc-500",
+          fullBleed && "mx-6 sm:mx-16 md:mx-20",
+        )}
+      >
         No titles available in this category.
       </div>
     );
@@ -44,7 +54,11 @@ export default function Carousel({
         mousewheel={{
           forceToAxis: true,
         }}
-        className="w-full pb-4"
+        className={cn(
+          "w-full pb-4",
+          fullBleed && "px-6! sm:px-16! md:px-20!",
+          swiperClassName,
+        )}
       >
         {items.map((item) => (
           <SwiperSlide key={`${item.media_type}-${item.id}`} className="py-1">

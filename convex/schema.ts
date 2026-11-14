@@ -378,5 +378,18 @@ export default defineSchema({
     ratingSum: v.number(),
     totalRatings: v.number(),
   }).index("by_media", ["mediaId", "mediaType"]),
-});
 
+  streamingServers: defineTable({
+    title: v.string(),
+    movieUrl: v.string(),
+    tvUrl: v.string(),
+    order: v.number(),
+    recommended: v.optional(v.boolean()),
+    fast: v.optional(v.boolean()),
+    ads: v.optional(v.boolean()),
+    isActive: v.boolean(),
+    updatedAt: v.optional(v.number()),
+  })
+    .index("by_order", ["isActive", "order"])
+    .index("by_all_order", ["order"]),
+});

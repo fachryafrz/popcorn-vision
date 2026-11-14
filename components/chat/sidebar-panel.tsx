@@ -44,14 +44,15 @@ export default function SidebarPanel({
         <div className="flex items-center justify-between border-b border-zinc-900 p-4">
           <Link
             href="/"
+            aria-label="POVI - Popcorn Vision"
             className="flex max-w-fit cursor-pointer items-center gap-2"
           >
             <h1 className="flex items-center gap-2 text-base font-black tracking-tight text-white">
               <img
-                src="/logo/popcorn.png"
+                src="/logo/v2/popcorn_cropped_transparent.png"
                 alt={siteConfig.name}
                 className={cn(
-                  "h-10 w-10 object-contain transition-all duration-500",
+                  "h-7 w-7 object-contain transition-all duration-500",
                 )}
               />
               <span
@@ -60,6 +61,7 @@ export default function SidebarPanel({
                 )}
               >
                 POVI
+                <span className="sr-only"> - Popcorn Vision</span>
               </span>
             </h1>
           </Link>

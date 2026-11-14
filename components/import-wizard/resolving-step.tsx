@@ -15,10 +15,10 @@ export default function ResolvingStep({
       <Loader2 className="text-primary h-10 w-10 animate-spin" />
       <div>
         <h3 className="mb-1 text-base font-bold text-zinc-200">
-          Resolving Items on TMDB
+          Finding Title Matches
         </h3>
         <p className="text-xs text-zinc-500">
-          Matching your titles and external IDs against TMDB catalog…
+          Matching your movies and TV shows...
         </p>
       </div>
       <div className="h-2.5 w-full max-w-xs overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">

@@ -1,11 +1,9 @@
 import React from "react";
 import {
-  Play,
   Plus,
   Check,
   Heart,
   Loader2,
-  Film,
   CalendarPlus,
   Send,
   List,
@@ -14,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface ActionsSectionProps {
-  trailerKey: string | null;
+  trailerKey?: string | null;
   watchlistLoading: boolean;
   isWatchlisted: boolean | undefined;
   handleWatchlistToggle: (e: React.MouseEvent) => void;
@@ -27,14 +25,13 @@ interface ActionsSectionProps {
   setIsShareDialogOpen: (open: boolean) => void;
   onClickCustomList: () => void;
   watchHistory: { watchCount: number } | null | undefined;
-  scrollToPlayer: (tab: "trailer" | "watch") => void;
+  scrollToPlayer?: (tab: "trailer" | "watch") => void;
   mediaType: "movie" | "tv";
   watchProgress?: { season?: number; episode?: number } | null;
   isUnreleased?: boolean;
 }
 
 export default function ActionsSection({
-  trailerKey,
   watchlistLoading,
   isWatchlisted,
   handleWatchlistToggle,
@@ -47,35 +44,12 @@ export default function ActionsSection({
   setIsShareDialogOpen,
   onClickCustomList,
   watchHistory,
-  scrollToPlayer,
   mediaType,
   watchProgress,
   isUnreleased,
 }: ActionsSectionProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <Button
-        onClick={() => scrollToPlayer("watch")}
-        disabled={isUnreleased}
-        className={cn(
-          "hover:bg-primary bg-primary flex items-center gap-2 rounded-full px-6 py-6 text-sm font-bold text-white transition-all hover:scale-105 active:scale-98 sm:px-8 sm:text-base",
-          isUnreleased && "pointer-events-none opacity-50",
-        )}
-      >
-        <Play className="h-5 w-5 fill-current" />
-        Play
-      </Button>
-
-      {trailerKey && (
-        <Button
-          onClick={() => scrollToPlayer("trailer")}
-          className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/60 px-6 py-6 text-sm font-semibold text-zinc-300 transition-all hover:scale-105 hover:bg-zinc-800 hover:text-white active:scale-98 sm:px-8 sm:text-base"
-        >
-          <Film className="h-5 w-5" />
-          Trailer
-        </Button>
-      )}
-
       {/* Watchlist Toggle */}
       <Button
         onClick={handleWatchlistToggle}

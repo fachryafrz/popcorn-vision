@@ -119,7 +119,7 @@ export default function SecuritySection({
               <AlertCircle className="h-4 w-4" />
               <AlertTitle className="font-semibold text-white">Password Change Disabled</AlertTitle>
               <AlertDescription className="text-xs text-zinc-400">
-                You are logged in via a social provider. Changing password is only supported for email & password accounts.
+                You are logged in with a connected Google account. Password change is only available for email & password accounts.
               </AlertDescription>
             </Alert>
           )}
