@@ -5,6 +5,12 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+export const revalidate = false;
+
+export function generateStaticParams() {
+  return [];
+}
+
 export default function CompanyDetailPage({ params }: PageProps) {
   const { id } = use(params);
   return <CompanyDetailClient id={id} />;

@@ -63,8 +63,8 @@ interface RegionItem {
 }
 
 interface SearchClientProps {
-  initialQuery: string;
-  initialType: SearchType;
+  initialQuery?: string;
+  initialType?: SearchType;
   initialMode?: string;
   initialGenre?: string;
   initialStartDate?: string;
@@ -107,7 +107,7 @@ const LANGUAGES = [
 ];
 
 export default function SearchClient({
-  initialQuery,
+  initialQuery = "",
   initialType,
   initialMode = "",
   initialGenre = "",
@@ -182,65 +182,6 @@ export default function SearchClient({
       .catch(console.error);
   }, [userCountryCode]);
 
-  const [searchModeState, setSearchModeState] = useQueryState("mode", {
-    defaultValue:
-      initialMode ||
-      (initialGenre ||
-      initialStartDate ||
-      initialEndDate ||
-      initialProviderId ||
-      initialMinRuntime ||
-      initialMaxRuntime ||
-      initialActor ||
-      initialCrew ||
-      initialCompany ||
-      initialRatingMin ||
-      initialRatingMax ||
-      initialLanguage ||
-      initialKeywords
-        ? "discover"
-        : "search"),
-  });
-  const searchMode = (
-    searchModeState === "discover" ? "discover" : "search"
-  ) as "search" | "discover";
-  const setSearchMode = (mode: "search" | "discover") => {
-    setSearchModeState(mode);
-  };
-
-  const [query, setQuery] = useQueryState("q", { defaultValue: initialQuery || "" });
-  const [inputValue, setInputValue] = useState(query || initialQuery || "");
-  const [prevQuery, setPrevQuery] = useState(query || initialQuery || "");
-  if (query !== prevQuery) {
-    setPrevQuery(query);
-    setInputValue(query || "");
-  }
-  const [activeType, setActiveType] = useQueryState("type", {
-    defaultValue:
-      searchMode === "discover" && (initialType === "all" || initialType === "users")
-        ? "movie"
-        : initialType,
-  });
-  const [results, setResults] = useState<TMDBMedia[]>([]);
-  const [isPending, startTransition] = useTransition();
-  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
-
-  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
-    if (!quickViewMediaRef) return null;
-    return {
-      id: Number(quickViewMediaRef.id),
-      media_type: quickViewMediaRef.media_type,
-    } as TMDBMedia;
-  }, [quickViewMediaRef]);
-
-  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
-    if (media) {
-      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
-    } else {
-      setQuickViewMediaRef(null);
-    }
-  }, [setQuickViewMediaRef]);
-
   // Advanced Filters State using nuqs useQueryState
   const [genre, setGenre] = useQueryState("genre", { defaultValue: initialGenre || "" });
   const [startDate, setStartDate] = useQueryState("startDate", {
@@ -271,6 +212,72 @@ export default function SearchClient({
   const [keywords, setKeywords] = useQueryState("keywords", {
     defaultValue: initialKeywords || "",
   });
+
+  const hasDiscoverFilters = Boolean(
+    genre ||
+      startDate ||
+      endDate ||
+      providerId ||
+      minRuntime ||
+      maxRuntime ||
+      actor ||
+      crew ||
+      company ||
+      ratingMin ||
+      ratingMax ||
+      language ||
+      keywords,
+  );
+
+  const [searchModeState, setSearchModeState] = useQueryState("mode", {
+    defaultValue: initialMode || "",
+  });
+  const searchMode = (
+    searchModeState === "discover" || (!searchModeState && hasDiscoverFilters)
+      ? "discover"
+      : "search"
+  ) as "search" | "discover";
+  const setSearchMode = (mode: "search" | "discover") => {
+    setSearchModeState(mode);
+  };
+
+  const [query, setQuery] = useQueryState("q", { defaultValue: initialQuery || "" });
+  const [inputValue, setInputValue] = useState(query || initialQuery || "");
+  const [prevQuery, setPrevQuery] = useState(query || initialQuery || "");
+  if (query !== prevQuery) {
+    setPrevQuery(query);
+    setInputValue(query || "");
+  }
+  const [activeTypeState, setActiveType] = useQueryState("type", {
+    defaultValue: "",
+  });
+  const activeType = (
+    activeTypeState &&
+    !(searchMode === "discover" && (activeTypeState === "all" || activeTypeState === "users"))
+      ? activeTypeState
+      : searchMode === "discover"
+        ? "movie"
+        : initialType || "all"
+  ) as SearchType;
+  const [results, setResults] = useState<TMDBMedia[]>([]);
+  const [isPending, startTransition] = useTransition();
+  const [quickViewMediaRef, setQuickViewMediaRef] = useQuickViewMediaState();
+
+  const quickViewMedia = useMemo<TMDBMedia | null>(() => {
+    if (!quickViewMediaRef) return null;
+    return {
+      id: Number(quickViewMediaRef.id),
+      media_type: quickViewMediaRef.media_type,
+    } as TMDBMedia;
+  }, [quickViewMediaRef]);
+
+  const setQuickViewMedia = useCallback((media: TMDBMedia | null) => {
+    if (media) {
+      setQuickViewMediaRef({ id: String(media.id), media_type: media.media_type || "movie" });
+    } else {
+      setQuickViewMediaRef(null);
+    }
+  }, [setQuickViewMediaRef]);
 
   // Infinite Scroll State
   const [page, setPage] = useState(1);
