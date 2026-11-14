@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.4] - 2026-11-14
+
+### Performance
+- **Faster Search & Discovery Loading**: Opening search and filter pages now loads immediately without extra waiting time.
+- **Snappier Detail & Profile Pages**: Movie, TV show, cast, collection, studio, custom list, and user profile pages load faster on repeat visits.
+
+---
+
 ## [2.13.3] - 2026-11-14
 
 ### Added

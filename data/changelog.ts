@@ -21,10 +21,31 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.4",
+    title: "Faster Search & Detail Page Loading",
+    releaseDate: "2026-11-14",
+    isLatest: true,
+    summary:
+      "Improves page loading speed across search, movie and TV details, profiles, and custom lists for a snappier browsing experience.",
+    changes: [
+      {
+        type: "perf",
+        title: "Faster Search & Discovery Loading",
+        description:
+          "Opening search and filter pages now loads immediately without waiting for extra page preparation.",
+      },
+      {
+        type: "perf",
+        title: "Snappier Detail & Profile Pages",
+        description:
+          "Movie, TV show, cast, collection, studio, custom list, and user profile pages load faster on repeat visits.",
+      },
+    ],
+  },
+  {
     version: "2.13.3",
     title: "Widescreen Discovery, Collections & Personalized Home",
     releaseDate: "2026-11-14",
-    isLatest: true,
     summary:
       "Brings an edge-to-edge widescreen browsing experience, new home discovery rows for streaming platforms, popular collections, trending people, Korean titles, and personalized recommendations.",
     changes: [
