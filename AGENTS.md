@@ -287,6 +287,10 @@ Before starting work on any task, read the corresponding documentation:
 - **Release Flow (Web):**
   - Normal: `feature/*` → `develop` (bump version) → `master`
   - Hotfix: `hotfix/*` → `master` (bump patch) → `develop` (sync back)
+- **Version & Changelog Files:** When updating version (e.g. patch bump) and release notes, always update all three files together:
+  - `package.json` (`"version"`)
+  - `CHANGELOG.md` (Keep a Changelog format, user-friendly non-technical language)
+  - `data/changelog.ts` (in-app changelog milestones; set `isLatest: true` on the new version and remove it from the previous latest)
 - **AI Automation & Human Review:** The AI automates the end-to-end workflow (Implementation Plan, `feature/`/`fix/`/`hotfix/` branching, code execution, commit messages [outputting strictly codeblocks when requested], release version bumps, and `--no-ff` merge into `master`) while presenting all plans and changes for user review and approval.
 
 ### 6. No Hardcoded Fallback Anti-Pattern (`||`)
