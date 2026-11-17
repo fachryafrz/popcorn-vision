@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense, use } from "react";
 import CollectionDetailClient from "@/components/collection-detail-client";
 
 interface PageProps {
@@ -13,5 +13,9 @@ export function generateStaticParams() {
 
 export default function CollectionDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  return <CollectionDetailClient id={id} />;
+  return (
+    <Suspense>
+      <CollectionDetailClient id={id} />
+    </Suspense>
+  );
 }

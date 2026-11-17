@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense, use } from "react";
 import PersonDetailClient from "@/components/person-detail-client";
 
 interface PageProps {
@@ -13,5 +13,9 @@ export function generateStaticParams() {
 
 export default function PersonDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  return <PersonDetailClient id={id} />;
+  return (
+    <Suspense>
+      <PersonDetailClient id={id} />
+    </Suspense>
+  );
 }

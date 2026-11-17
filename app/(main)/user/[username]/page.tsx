@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense, use } from "react";
 import UserProfileClient from "@/components/profile/user-profile-client";
 
 interface PageProps {
@@ -13,5 +13,9 @@ export function generateStaticParams() {
 
 export default function UserProfilePage({ params }: PageProps) {
   const { username } = use(params);
-  return <UserProfileClient username={username} />;
+  return (
+    <Suspense>
+      <UserProfileClient username={username} />
+    </Suspense>
+  );
 }

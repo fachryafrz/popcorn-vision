@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.5] - 2026-11-17
+
+### Fixed
+- **Reliable Detail & Profile Page Loading**: Fixed an issue that could cause an error when opening movie, TV show, cast, collection, studio, custom list, or user profile pages directly.
+
+---
+
 ## [2.13.4] - 2026-11-14
 
 ### Performance

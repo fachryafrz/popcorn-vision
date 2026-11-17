@@ -21,10 +21,25 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.5",
+    title: "Detail Page Reliability Fix",
+    releaseDate: "2026-11-17",
+    isLatest: true,
+    summary:
+      "Resolves a loading error when opening movie, TV show, cast, collection, studio, custom list, and user profile pages.",
+    changes: [
+      {
+        type: "fix",
+        title: "Reliable Detail & Profile Page Loading",
+        description:
+          "Fixed an issue that could cause an error when opening movie, TV show, cast, collection, studio, custom list, or user profile pages directly.",
+      },
+    ],
+  },
+  {
     version: "2.13.4",
     title: "Faster Search & Detail Page Loading",
     releaseDate: "2026-11-14",
-    isLatest: true,
     summary:
       "Improves page loading speed across search, movie and TV details, profiles, and custom lists for a snappier browsing experience.",
     changes: [
