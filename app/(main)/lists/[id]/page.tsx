@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense, use } from "react";
 import ListDetailClient from "@/components/custom-lists/list-detail-client";
 
 interface PageProps {
@@ -13,5 +13,9 @@ export function generateStaticParams() {
 
 export default function CustomListDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  return <ListDetailClient id={id} />;
+  return (
+    <Suspense>
+      <ListDetailClient id={id} />
+    </Suspense>
+  );
 }

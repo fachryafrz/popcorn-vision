@@ -1,4 +1,4 @@
-import { use } from "react";
+import { Suspense, use } from "react";
 import MediaDetailClient from "@/components/media-detail-client";
 
 interface PageProps {
@@ -13,5 +13,9 @@ export function generateStaticParams() {
 
 export default function MovieDetailPage({ params }: PageProps) {
   const { id } = use(params);
-  return <MediaDetailClient mediaType="movie" id={id} />;
+  return (
+    <Suspense>
+      <MediaDetailClient mediaType="movie" id={id} />
+    </Suspense>
+  );
 }
