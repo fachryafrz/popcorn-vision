@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
@@ -44,8 +43,7 @@ export default function PopularPeopleSection({
       aria-labelledby="popular-people-heading"
       className="flex w-full flex-col gap-6 py-6"
     >
-      <div className="flex items-center gap-2.5 px-6 sm:px-16 md:px-20">
-        <Users className="text-primary h-5 w-5" aria-hidden="true" />
+      <div className="flex items-center px-6 sm:px-16 md:px-20">
         <h2
           id="popular-people-heading"
           className="text-xl font-bold tracking-tight text-white sm:text-2xl"

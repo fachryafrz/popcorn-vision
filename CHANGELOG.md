@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.13.6] - 2026-11-19
+
+### Added
+- **Automatic Region Detection**: Automatically detects and sets your country/region if not yet configured, so streaming availability and recommendations match your area (editable anytime in Settings).
+- **Hero Keyboard Navigation**: Switch between featured slides on the home hero banner using the Left and Right arrow keys.
+
+### Changed
+- **Cleaner Home Layout**: Removed decorative icons from home section headings and moved personalized recommendations directly above Trending Now.
+- **Privacy Policy Update**: Updated our Privacy Policy to explain automatic country/region detection and how it is used for localized streaming availability.
+
+### Fixed
+- **Localized Streaming Availability**: Fixed an issue where diary logs, imports, and viewing insights could default to US streaming providers instead of your selected country.
+
+---
+
 ## [2.13.5] - 2026-11-17
 
 ### Fixed

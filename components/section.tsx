@@ -5,7 +5,7 @@ import { TMDBMedia, PROVIDERS, GENRE_MAP } from "@/lib/tmdb";
 import { STORAGE_KEYS } from "@/lib/constants";
 import Carousel from "./carousel";
 import { CarouselSkeleton } from "./skeletons";
-import { ChevronDown, CalendarClock } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -255,12 +255,9 @@ export default function Section({
 
         {titleType === "upcoming" && (
           <div className="flex grow flex-wrap items-center justify-between gap-4 sm:gap-6">
-            <div className="flex items-center gap-2">
-              <CalendarClock className="h-5 w-5 text-amber-400" />
-              <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
-                Upcoming Premieres & Releases
-              </h2>
-            </div>
+            <h2 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
+              Upcoming Premieres & Releases
+            </h2>
 
             {/* Segmented Controls / Tabs for Upcoming */}
             {onUpcomingChange && (

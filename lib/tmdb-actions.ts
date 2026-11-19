@@ -1,3 +1,4 @@
+import { resolveCountryCode } from "@/lib/country";
 import {
   TMDBMedia,
   TMDBRawItem,
@@ -838,6 +839,7 @@ export async function batchFetchMediaMetadata(
   items: { mediaId: string; mediaType: "movie" | "tv"; season?: number; episode?: number }[],
   countryCode: string = "US"
 ): Promise<Record<string, StatsMetadata>> {
+  const resolvedCountryCode = resolveCountryCode(countryCode);
   const uniqueItemsMap = new Map<
     string,
     { mediaId: string; mediaType: "movie" | "tv"; season?: number; episode?: number }
@@ -870,7 +872,7 @@ export async function batchFetchMediaMetadata(
               ? `${item.mediaType}-${item.mediaId}-S${item.season}`
               : `${item.mediaType}-${item.mediaId}`;
 
-        const cached = getFromCache<StatsMetadata>(`stats-meta-${key}`);
+        const cached = getFromCache<StatsMetadata>(`stats-meta-${key}-${resolvedCountryCode}`);
         if (cached) {
           resultsMap[key] = cached;
           return;
@@ -952,7 +954,8 @@ export async function batchFetchMediaMetadata(
             (data["watch/providers"] as {
               results?: Record<string, { flatrate?: { provider_name: string }[] }>;
             }) ?? {};
-          const providerData = watchProvidersObj.results?.[countryCode] ?? watchProvidersObj.results?.US;
+          const providerData =
+            watchProvidersObj.results?.[resolvedCountryCode] ?? watchProvidersObj.results?.US;
           const watchProviders = (providerData?.flatrate ?? []).map((p) => p.provider_name);
 
           const meta: StatsMetadata = {
@@ -973,7 +976,7 @@ export async function batchFetchMediaMetadata(
                   : undefined,
           };
 
-          setToCache(`stats-meta-${key}`, meta, CACHE_TTL_LONG);
+          setToCache(`stats-meta-${key}-${resolvedCountryCode}`, meta, CACHE_TTL_LONG);
           resultsMap[key] = meta;
         } catch (error) {
           console.error(`Error fetching stats metadata for ${item.mediaType} ${item.mediaId}:`, error);

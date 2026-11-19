@@ -21,10 +21,43 @@ export const CHANGELOG_MILESTONES: readonly ChangelogMilestone[] = [
   // --- 2026 Milestones ---
   // ==========================================
   {
+    version: "2.13.6",
+    title: "Automatic Region Detection & Home Polish",
+    releaseDate: "2026-11-19",
+    isLatest: true,
+    summary:
+      "Automatically sets your region for localized streaming availability, adds keyboard navigation to the hero banner, and refines the home screen layout.",
+    changes: [
+      {
+        type: "feat",
+        title: "Automatic Region Detection",
+        description:
+          "Automatically sets your country/region when not yet configured so streaming providers and recommendations match your area, while remaining editable in Settings.",
+      },
+      {
+        type: "feat",
+        title: "Hero Keyboard Navigation",
+        description:
+          "Browse featured hero slides using the Left and Right arrow keys on your keyboard.",
+      },
+      {
+        type: "ui",
+        title: "Cleaner Home Layout",
+        description:
+          "Removed decorative icons from home section headings and placed personalized recommendations right above Trending Now.",
+      },
+      {
+        type: "fix",
+        title: "Localized Streaming Availability",
+        description:
+          "Fixed an issue where diary logs, imports, and viewing insights could fall back to US streaming providers instead of your selected country.",
+      },
+    ],
+  },
+  {
     version: "2.13.5",
     title: "Detail Page Reliability Fix",
     releaseDate: "2026-11-17",
-    isLatest: true,
     summary:
       "Resolves a loading error when opening movie, TV show, cast, collection, studio, custom list, and user profile pages.",
     changes: [
