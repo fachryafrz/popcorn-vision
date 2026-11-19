@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Layers } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Mousewheel } from "swiper/modules";
 import "swiper/css";
@@ -43,15 +42,12 @@ export default function CollectionsSection() {
       className="flex w-full flex-col gap-6 py-6"
     >
       <div className="flex items-center justify-between gap-4 px-6 sm:px-16 md:px-20">
-        <div className="flex items-center gap-2.5">
-          <Layers className="text-primary h-5 w-5" aria-hidden="true" />
-          <h2
-            id="popular-collections-heading"
-            className="text-xl font-bold tracking-tight text-white sm:text-2xl"
-          >
-            Popular Collections
-          </h2>
-        </div>
+        <h2
+          id="popular-collections-heading"
+          className="text-xl font-bold tracking-tight text-white sm:text-2xl"
+        >
+          Popular Collections
+        </h2>
       </div>
 
       {isLoading ? (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TMDBMedia, ALL_GENRES } from "@/lib/tmdb";
 import { authClient } from "@/lib/auth-client";
 import { useMutation } from "convex/react";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, EffectFade } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -335,6 +336,9 @@ export default function Hero({
   onQuickView,
   onAuthRequired,
 }: HeroProps) {
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
+
   const [initialIndex] = useState(() => {
     if (typeof window !== "undefined") {
       const saved =
@@ -350,13 +354,61 @@ export default function Hero({
     return 0;
   });
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      if (e.shiftKey || e.altKey || e.ctrlKey || e.metaKey) return;
+
+      const activeEl = document.activeElement;
+      if (
+        activeEl instanceof HTMLElement &&
+        (activeEl.isContentEditable ||
+          activeEl.tagName === "INPUT" ||
+          activeEl.tagName === "TEXTAREA" ||
+          activeEl.tagName === "SELECT")
+      ) {
+        return;
+      }
+
+      if (
+        document.querySelector(
+          '[role="dialog"], [aria-modal="true"], [role="menu"]',
+        )
+      ) {
+        return;
+      }
+
+      const heroEl = heroRef.current;
+      if (!heroEl) return;
+      const rect = heroEl.getBoundingClientRect();
+      if (rect.bottom <= 100 || rect.top >= window.innerHeight) return;
+
+      const swiper = swiperRef.current;
+      if (!swiper || swiper.destroyed) return;
+
+      e.preventDefault();
+      if (e.key === "ArrowLeft") {
+        swiper.slidePrev();
+      } else {
+        swiper.slideNext();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   if (!items || items.length === 0) return null;
 
   return (
-    <div className="relative h-[90svh] w-full overflow-hidden bg-zinc-950 select-none sm:h-svh">
+    <div
+      ref={heroRef}
+      className="relative h-[90svh] w-full overflow-hidden bg-zinc-950 select-none sm:h-svh"
+    >
       <Swiper
         initialSlide={initialIndex}
         onSwiper={(swiper) => {
+          swiperRef.current = swiper;
           if (initialIndex > 0) {
             swiper.slideToLoop(initialIndex, 0);
           }

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Compass } from "lucide-react";
 import { TMDBMedia } from "@/lib/tmdb";
 import { getMediaRecommendations } from "@/lib/tmdb-actions";
 import Carousel from "./carousel";
@@ -74,23 +73,20 @@ export default function BecauseYouWatchedSection({
         {isLoading ? (
           <Skeleton className="h-6 w-64 rounded-md" />
         ) : (
-          <div className="flex flex-wrap items-center gap-2">
-            <Compass className="text-primary h-5 w-5 shrink-0" aria-hidden="true" />
-            <h2
-              id="because-you-watched-heading"
-              className="text-xl font-bold tracking-tight text-white sm:text-2xl"
+          <h2
+            id="because-you-watched-heading"
+            className="text-xl font-bold tracking-tight text-white sm:text-2xl"
+          >
+            {seed.source === "watched"
+              ? "Because you watched"
+              : "Based on your watchlist:"}{" "}
+            <Link
+              href={`/${seed.mediaType}/${seed.mediaId}`}
+              className="text-primary hover:underline underline-offset-4"
             >
-              {seed.source === "watched"
-                ? "Because you watched"
-                : "Based on your watchlist:"}{" "}
-              <Link
-                href={`/${seed.mediaType}/${seed.mediaId}`}
-                className="text-primary hover:underline underline-offset-4"
-              >
-                {seed.title}
-              </Link>
-            </h2>
-          </div>
+              {seed.title}
+            </Link>
+          </h2>
         )}
       </div>
 

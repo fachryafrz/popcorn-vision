@@ -4,6 +4,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   ReactNode,
   useState,
 } from "react";
@@ -11,6 +12,7 @@ import { useMutation } from "convex/react";
 import { useQuery } from "convex-helpers/react/cache";
 import { api } from "@/convex/_generated/api";
 import { authClient } from "@/lib/auth-client";
+import { detectUserCountryName } from "@/lib/country";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -47,6 +49,8 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
   );
   const saveThemeSettings = useMutation(api.users.updateUserThemeSettings);
   const reopenAccount = useMutation(api.users.reopenCurrentUserAccount);
+  const autoSetCountry = useMutation(api.users.autoSetCurrentUserCountry);
+  const attemptedCountrySyncRef = useRef<Set<string>>(new Set());
 
   const [reopening, setReopening] = useState(false);
 
@@ -77,6 +81,28 @@ export function PersonalizationProvider({ children }: { children: ReactNode }) {
     // Set custom theme tag
     root.setAttribute("data-theme", theme);
   }, [theme]);
+
+  // Auto-detect and set country once for signed-in users with an empty country field
+  useEffect(() => {
+    if (!isLoggedIn || !currentUser || currentUser.country?.trim()) return;
+    if (attemptedCountrySyncRef.current.has(currentUser.userId)) return;
+
+    attemptedCountrySyncRef.current.add(currentUser.userId);
+    let active = true;
+
+    detectUserCountryName()
+      .then((countryName) => {
+        if (!active || !countryName) return;
+        return autoSetCountry({ country: countryName });
+      })
+      .catch(() => {
+        // Silently ignore detection/network errors
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [isLoggedIn, currentUser, autoSetCountry]);
 
   return (
     <PersonalizationContext.Provider

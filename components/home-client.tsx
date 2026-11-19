@@ -537,6 +537,13 @@ export default function HomeClient({
             </div>
           ) : null}
 
+          {/* Personal Recommendations ("Because you watched ...") */}
+          <BecauseYouWatchedSection
+            seed={recommendationSeed}
+            onQuickView={handleQuickView}
+            onAuthRequired={openAuth}
+          />
+
           {/* Trending Now */}
           <div id="trending">
             <Section
@@ -548,13 +555,6 @@ export default function HomeClient({
               onAuthRequired={openAuth}
             />
           </div>
-
-          {/* Personal Recommendations ("Because you watched ...") */}
-          <BecauseYouWatchedSection
-            seed={recommendationSeed}
-            onQuickView={handleQuickView}
-            onAuthRequired={openAuth}
-          />
 
           {/* Popular Collections */}
           <LazySection id="collections">

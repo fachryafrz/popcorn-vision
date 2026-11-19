@@ -584,6 +584,37 @@ export const updateUserStatus = mutation({
   },
 });
 
+// Idempotently auto-set country once when the authenticated user has no country configured
+export const autoSetCurrentUserCountry = mutation({
+  args: {
+    country: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const authUser = await authComponent.safeGetAuthUser(ctx);
+    if (!authUser) return null;
+
+    const cleanedCountry = args.country.trim();
+    if (!cleanedCountry || cleanedCountry.length > 100) {
+      return null;
+    }
+
+    const profile = await ctx.db
+      .query("users")
+      .withIndex("by_userId", (q) => q.eq("userId", authUser._id))
+      .first();
+
+    if (!profile || (profile.country && profile.country.trim().length > 0)) {
+      return null;
+    }
+
+    await ctx.db.patch(profile._id, {
+      country: cleanedCountry,
+    });
+
+    return profile._id;
+  },
+});
+
 
 
 

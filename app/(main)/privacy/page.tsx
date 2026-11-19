@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function PrivacyPage() {
-  const lastUpdated = "November 7, 2026";
+  const lastUpdated = "November 19, 2026";
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-300 pt-24 pb-20 md:pt-32 md:pb-28">
@@ -121,7 +121,7 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc pl-5 space-y-1.5 text-zinc-300">
               <li>
-                <strong>Profile Information:</strong> Name, username, email address, profile picture, optional bio, and display settings.
+                <strong>Profile Information:</strong> Name, username, email address, profile picture, optional bio, country/region, and display settings. If no country/region is set on your account, we may automatically detect an approximate country from standard request headers or browser timezone/locale, which you can update or clear anytime in Settings.
               </li>
               <li>
                 <strong>User Content & Activity:</strong> Watchlists, favorites, movie/show ratings (1 to 10 scale), viewing diary logs (watch dates, rewatch counts, personal reviews), and custom curated lists.
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
                 <strong>Social Interactions:</strong> Friend connections, activity feed comments, and list upvotes.
               </li>
               <li>
-                <strong>Technical Information:</strong> Standard server logs, browser type, device information, and IP address for session security and rate-limiting.
+                <strong>Technical Information:</strong> Standard server logs, browser type, device information, and IP address (as well as approximate country-level location derived from edge headers without storing raw IP addresses for profiling) for session security and rate-limiting.
               </li>
             </ul>
           </section>
@@ -144,6 +144,7 @@ export default function PrivacyPage() {
             <ul className="list-disc pl-5 space-y-1.5 text-zinc-300">
               <li>To provide, operate, maintain, and improve platform functionality.</li>
               <li>To synchronize your personal movie and TV tracking data across all your browsers and devices.</li>
+              <li>To display localized streaming availability (watch providers) and regional content relevant to your country/region.</li>
               <li>To compute aggregate community rating scores and popular lists without exposing personal data.</li>
               <li>To detect, prevent, and address technical bugs, bot abuse, and security vulnerabilities.</li>
             </ul>
